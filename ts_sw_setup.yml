@@ -1,0 +1,8 @@
+# This file is for internal use only
+
+openocd v0.11.0
+cmake 3.23.2
+cppcheck 2.6
+ts-python-env 0.4
+texlive 2022
+doxygen 1.10.0
