@@ -1,0 +1,60 @@
+stages:
+  - test
+  - build
+  - docs
+
+run_ceedling_tests:
+
+  stage: test
+
+  tags:
+    - shell
+
+  script:
+    - source setup_env
+    - rm -rf build/
+    - ceedling gcov:all utils:gcov
+
+  coverage: '/^TOTAL.*\s+(\d+\%)$/'
+
+  artifacts:
+    when: always
+    paths:
+      - build/artifacts/gcov/
+    reports:
+      junit: build/artifacts/gcov/junit_report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/artifacts/gcov/GcovCoverageCobertura.xml
+
+
+build_library:
+  stage: build
+  tags:
+    - shell
+  script:
+    - source setup_env
+    - cd examples/unix_example
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
+
+
+build_docs:
+  stage: docs
+  tags:
+    - shell
+  script:
+    - source setup_env
+    - ls -la
+    - cd build
+    - cmake -DBUILD_DOCS=1 ..
+    - make
+    - cd docs/doxygen/latex
+    - make
+    - mv refman.pdf libtropic.pdf
+    - mv libtropic.pdf ../../../../
+  artifacts:
+    paths:
+      - libtropic.pdf

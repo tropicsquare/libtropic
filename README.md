@@ -1,6 +1,6 @@
 # Libtropic
 
-![](https://github.com/tropicsquare/libtropic-c/actions/workflows/main.yml/badge.svg) ![](https://tropic-gitlab.corp.sldev.cz/internal/sw-design/libtropic_c/badges/draft/coverage.svg)
+![](https://github.com/tropicsquare/libtropic/actions/workflows/main.yml/badge.svg) ![](https://tropic-gitlab.corp.sldev.cz/internal/sw-design/libtropic/badges/draft/coverage.svg)
 
 Tropic01's SDK written in C.
 
