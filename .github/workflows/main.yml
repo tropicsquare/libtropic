@@ -1,10 +1,8 @@
 
 name: tests
-#on:
-#  workflow_dispatch:
 on:
   push:
-    branches: [ draft ]
+    branches: [ master ]
 
 jobs:
   tests:
@@ -20,8 +18,3 @@ jobs:
         if: always()
         with:
             files: build/artifacts/test/junit_report.xml
-#      - name: Code Coverage Summary Report
-#        uses: irongut/CodeCoverageSummary@v1.3.0
-#        with:
-#          filename: build/artifacts/gcov/GcovCoverageCobertura.xml
-
