@@ -61,8 +61,6 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t pkey_index, const uint8_t *s
         return ret;
     }
 
-    // Validate it: TODO
-
     uint8_t STPUB[32] = {0};
     #ifdef HOST_KEY_FPGA
     memcpy(STPUB, cert+197, 32);
@@ -71,17 +69,18 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t pkey_index, const uint8_t *s
     #endif
 
     // Create ephemeral host keys
-    uint8_t EHPRIV[32];// = {0x32,0xf6,0x62,0xf4,0x05,0x79,0x62,0x7f,0x84,0x22,0x52,0x65,0xce,0x34,0xb2,0xa8,0x52,0x15,0xd2,0x91,0x94,0x94,0x67,0x09,0x9b,0x42,0x2e,0x3c,0x7f,0x48,0x2c,0x17};
-    uint8_t EHPUB[32];// = {0xf9,0x9c,0xa7,0xf3,0x53,0x72,0x4b,0x30,0x64,0x20,0x5b,0x64,0x38,0x96,0x3c,0xca,0x56,0xee,0x24,0x42,0x96,0x78,0x3b,0xe0,0xd1,0xa2,0xb5,0xda,0xc4,0x7c,0x6b,0x60};
+    uint8_t EHPRIV[32];
+    uint8_t EHPUB[32];
     ret = ts_random_bytes(EHPRIV, 32);
     if(ret != TS_OK) {
         return ret;
     }
     ts_X25519_scalarmult(EHPRIV, EHPUB);
 
-    // Tropic handshake request data
-    struct l2_handshake_req_t* p_req = (struct l2_handshake_req_t*)h->l2_buff_req;
-    struct l2_handshake_rsp_t* p_rsp = (struct l2_handshake_rsp_t*)h->l2_buff_resp;
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct l2_handshake_req_t* p_req = (struct l2_handshake_req_t*)h->l2_buff;
+    // Setup a response pointer to l2 buffer, which is placed in handle
+    struct l2_handshake_rsp_t* p_rsp = (struct l2_handshake_rsp_t*)h->l2_buff;
 
     p_req->req_id = L2_HANDSHAKE_REQ_ID;
     p_req->req_len = L2_HANDSHAKE_REQ_LEN;
@@ -198,7 +197,7 @@ ts_ret_t ts_ping(ts_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
     // Pointer to access l3 buffer when it contains Ping result data.
     struct ts_l3_ping_res_t* p_l3_res = (struct ts_l3_ping_res_t*)&h->l3_buff;
 
-    /* Command part */
+    // Fill l3 buffer
     p_l3_cmd->packet_size = len + 1;
     p_l3_cmd->command = L3_PING_CMD_ID;
     memcpy(p_l3_cmd->data, msg_out, len);
@@ -213,7 +212,6 @@ ts_ret_t ts_ping(ts_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return TS_FAIL;
     }
 
-    /* Result part */
     memcpy(msg_in, (uint8_t*)&p_l3_res->data, p_l3_res->packet_size);
 
     return TS_OK;
@@ -233,7 +231,7 @@ ts_ret_t ts_random_get(ts_handle_t *h, uint8_t *buff, const uint16_t len)
     // Pointer to access l3 buffer when it contains Ping result data.
     struct ts_l3_random_value_get_res_t* p_l3_res = (struct ts_l3_random_value_get_res_t*)&h->l3_buff;
 
-    /* Fill l3 buffer */
+    // Fill l3 buffer
     p_l3_cmd->packet_size = 0x02;
     p_l3_cmd->command = TS_L3_RANDOM_VALUE_GET;
     p_l3_cmd->n_bytes = len;
@@ -267,11 +265,10 @@ ts_ret_t ts_ecc_key_generate(ts_handle_t *h, const uint8_t slot, const uint8_t c
     // Pointer to access l3 buffer when it contains Ping result data.
     struct ts_l3_ecc_key_generate_res_t* p_l3_res = (struct ts_l3_ecc_key_generate_res_t*)&h->l3_buff;
 
-    /* Fill l3 buffer */
+    // Fill l3 buffer
     p_l3_cmd->packet_size = L3_ECC_KEY_GENERATE_CMD_LEN;
     p_l3_cmd->command = TS_L3_ECC_KEY_GENERATE;
     p_l3_cmd->slot = slot;
-    //p_l3_cmd->data[2] = 0;
     p_l3_cmd->curve = curve;
 
     ts_ret_t ret = ts_l3_cmd(h);
@@ -304,11 +301,10 @@ ts_ret_t ts_ecc_key_read(ts_handle_t *h, const uint8_t slot, uint8_t *key, const
     // Pointer to access l3 buffer when it contains Ping result data.
     struct ts_l3_ecc_key_read_res_t* p_l3_res = (struct ts_l3_ecc_key_read_res_t*)&h->l3_buff;
 
-    /* Fill l3 buffer */
+    // Fill l3 buffer
     p_l3_cmd->packet_size = 0x03;
     p_l3_cmd->command= TS_L3_ECC_KEY_READ;
     p_l3_cmd->slot = slot;
-    //p_l3_buff->data[2] = 0;
 
     ts_ret_t ret = ts_l3_cmd(h);
     if(ret != TS_OK) {
@@ -344,7 +340,7 @@ ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
     // Pointer to access l3 buffer when it contains Ping result data.
     struct ts_l3_eddsa_sign_res_t* p_l3_res = (struct ts_l3_eddsa_sign_res_t*)&h->l3_buff;
 
-    /* Fill l3 buffer */
+    // Fill l3 buffer
     p_l3_cmd->packet_size = L3_EDDSA_SIGN_CMD_LEN + msg_len;
     p_l3_cmd->command = TS_L3_EDDSA_SIGN;
     p_l3_cmd->slot = slot;
@@ -375,7 +371,7 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg_ha
     // Pointer to access l3 buffer when it contains Ping result data.
     struct ts_l3_ecdsa_sign_res_t* p_l3_res = (struct ts_l3_ecdsa_sign_res_t*)&h->l3_buff;
 
-    /* Fill l3 buffer */
+    // Fill l3 buffer
     p_l3_cmd->packet_size = 0x30;
     p_l3_cmd->command= TS_L3_ECDSA_SIGN;
     p_l3_cmd->slot = slot;
@@ -404,7 +400,7 @@ ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot)
     // Setup a pointer to l3 buffer, which is placed in handle
     struct l3_frame_t* p_l3_buff = (struct l3_frame_t*)&h->l3_buff;
 
-    /* Fill l3 buffer */
+    // Fill l3 buffer
     p_l3_buff->packet_size = L3_ECC_KEY_ERASE_CMD_LEN;
     p_l3_buff->data[0] = L3_ECC_KEY_ERASE_CMD_ID;
     p_l3_buff->data[1] = slot;
@@ -424,11 +420,11 @@ ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const uint16_t max_len)
         return TS_FAIL;
     }
 
-    // Setup a pointer to l2 request buffer, which is placed in handle
-    struct l2_get_info_req_t* p_l2_buff = (struct l2_get_info_req_t*)&h->l2_buff_req;
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct l2_get_info_req_t* p_l2_buff = (struct l2_get_info_req_t*)&h->l2_buff;
 
     for(int8_t i=0; i<4; i++) {
-        /* Fill l2 request buffer */
+        // Fill l2 request buffer
         p_l2_buff->req_id = L2_GET_INFO_REQ_ID;
         p_l2_buff->req_len = L2_GET_INFO_REQ_LEN;
         p_l2_buff->obj_id = L2_GET_INFO_REQ_OBJ_ID_X509;
@@ -442,7 +438,7 @@ ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const uint16_t max_len)
         if(ret != TS_OK) {
             return ret;
         }
-        memcpy(cert + i*128, ((struct l2_get_info_rsp_t*)h->l2_buff_resp)->data, 128);
+        memcpy(cert + i*128, ((struct l2_get_info_rsp_t*)h->l2_buff)->data, 128);
     }
 
     return TS_OK;

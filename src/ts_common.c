@@ -14,15 +14,7 @@
  */
 const char *ts_ret_verbose(ts_ret_t ret) {
     switch(ret) {
-        /* SDK general ret values */
-        case TS_OK:
-            return "TS_OK";
-        case TS_FAIL:
-            return "TS_FAIL";
-        case TS_PARAM_ERR:
-            return "TS_PARAM_ERR";
-
-        /* Chip MODE */
+        // Chip MODES
         case TS_L1_CHIP_ALARM_MODE:
             return "TS_L1_CHIP_ALARM_MODE";
         case TS_L1_CHIP_STARTUP_MODE:
@@ -30,13 +22,13 @@ const char *ts_ret_verbose(ts_ret_t ret) {
         case TS_L1_CHIP_BUSY:
             return "TS_L1_CHIP_BUSY";
 
-        /* L1 */
+        // L1
         case TS_L1_SPI_ERROR:
             return "TS_L1_SPI_ERROR";
         case TS_L1_DATA_LEN_ERROR:
             return "TS_L1_DATA_LEN_ERROR";
 
-        /* L2 */
+        // L2
         case TS_L2_IN_CRC_ERR:
             return "TS_L2_IN_CRC_ERR";
         case TS_L2_REQ_CONT:
@@ -58,7 +50,7 @@ const char *ts_ret_verbose(ts_ret_t ret) {
         case TS_L2_UNKNOWN_REQ:
             return "TS_L2_UNKNOWN_REQ";
 
-        /* L3 */
+        // L3
         case TS_L3_OK:
             return "TS_L3_OK";
         case TS_L3_FAIL:
@@ -68,11 +60,17 @@ const char *ts_ret_verbose(ts_ret_t ret) {
         case TS_L3_INVALID_CMD:
             return "TS_L3_INVALID_CMD";
 
-        /* Host */
+        // libtropic
         case TS_HOST_NO_SESSION:
             return "TS_HOST_NO_SESSION";
+        case TS_OK:
+            return "TS_OK";
+        case TS_FAIL:
+            return "TS_FAIL";
+        case TS_PARAM_ERR:
+            return "TS_PARAM_ERR";
 
-        /* Default */
+        // Default
         default:
             return "UNKNOWN return value";
   }

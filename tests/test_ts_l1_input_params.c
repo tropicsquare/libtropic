@@ -10,10 +10,6 @@
 
 #define SOME_UNUSED_DEFAULT_BYTE 0xfe
 
-/*
-[ ] pridat popis erroru do verbose output funkce
-*/
-
 void setUp(void)
 {
 }
