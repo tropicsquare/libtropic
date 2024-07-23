@@ -162,9 +162,9 @@ int main(void)
     LOG_OUT("\r\n");
     LOG_OUT("\t\t======================================================================\r\n");
 #if HAL_UART
-    LOG_OUT("\t\t=====    Libtropic stm32 demo, running over UART against model     ===\r\n");
+    LOG_OUT("\t\t=====    libtropic stm32 demo, running over UART against model     ===\r\n");
 #elif HAL_SPI
-    LOG_OUT("\t\t=====    Libtropic stm32 demo, running over SPI against FPGA       ===\r\n");
+    LOG_OUT("\t\t=====    libtropic stm32 demo, running over SPI against FPGA       ===\r\n");
 #endif
     LOG_OUT("\t\t======================================================================\r\n\n");
 
@@ -193,7 +193,7 @@ int main(void)
 
 
     /************************************************************************************************************/
-    LOG_OUT_INFO("Get Tropic01 chip's certificate\r\n");
+    LOG_OUT_INFO("Get TROPIC01 chip's certificate\r\n");
     /************************************************************************************************************/
     /* Example of a call: */
 
@@ -461,10 +461,10 @@ int main(void)
 
   return 0;
 
-  /* Libtropic example code ends here */
-  /* Libtropic example code ends here */
-  /* Libtropic example code ends here */
-  /* Libtropic example code ends here */
+  /* libtropic example code ends here */
+  /* libtropic example code ends here */
+  /* libtropic example code ends here */
+  /* libtropic example code ends here */
 }
 
 

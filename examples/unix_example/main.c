@@ -38,7 +38,7 @@ int main(void)
     /************************************************************************************************************/
     LOG_OUT("\r\n");
     LOG_OUT("\t\t======================================================================\r\n");
-    LOG_OUT("\t\t=====  Libtropic Unix demo, running over TCP against model         ===\r\n");
+    LOG_OUT("\t\t=====  libtropic Unix demo, running over TCP against model         ===\r\n");
     LOG_OUT("\t\t======================================================================\r\n\n");
     LOG_OUT_INFO("List all possible return values:\r\n\n");
     for(int i=0; i<TS_L2_UNKNOWN_REQ+1; i++) {
@@ -67,7 +67,7 @@ int main(void)
 
 
     /************************************************************************************************************/
-    LOG_OUT_INFO("Get Tropic01 chip's certificate\r\n");
+    LOG_OUT_INFO("Get TROPIC01 chip's certificate\r\n");
     /************************************************************************************************************/
     /* Example of a call: */
 

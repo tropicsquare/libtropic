@@ -13,14 +13,14 @@ $ make
 
 ## Crypto tests
 
-This code does not communicate with Tropic01. Its only purpose is to run cryptographic test vectors through library's crypto interfaces and check if they calculate correct results. Might be practical to keep this for the future, when another cryptography backend is introduced.
+This code does not communicate with TROPIC01. Its only purpose is to run cryptographic test vectors through library's crypto interfaces and check if they calculate correct results. Might be practical to keep this for the future, when another cryptography backend is introduced.
 
 
 ## Unix example
 
-This code communicates with running Tropic01 model over TCP.
+This code communicates with running TROPIC01 model over TCP.
 
-It expects Tropic01's model running within a reach of example's TCP client. Tropic's L1 data transfers are over TCP.
+It expects TROPIC01's model running within a reach of example's TCP client. Tropic's L1 data transfers are over TCP.
 
 
 ## STM32 example
@@ -49,7 +49,7 @@ Used pins are:
 
 ### UART
 
-This option is meant to be used when Libtropic application runs on stm32 devboard and instead of a physical chip (or FPGA) it is talking to the model, which is running on the PC.
+This option is meant to be used when libtropic application runs on stm32 devboard and instead of a physical chip (or FPGA) it is talking to the model, which is running on the PC.
 
 Usb-to-serial converter is used.
 

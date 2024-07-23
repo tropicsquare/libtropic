@@ -27,7 +27,7 @@ option(BUILD_DOCS "Build documentation" OFF)
 
 ###########################################################################
 #                                                                         #
-#   Libtropic source files                                               #
+#   libtropic source files                                               #
 #                                                                         #
 ###########################################################################
 
@@ -93,7 +93,7 @@ if (TS_CRYPTO_TREZOR)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
     target_link_libraries(tropic PUBLIC trezor_crypto)
 
-    # Libtropic wrappers for trezor library
+    # libtropic wrappers for trezor library
     add_subdirectory(hal/crypto/trezor_crypto)
     target_compile_definitions(tropic PRIVATE USE_TS_CRYPTO)
 endif()
