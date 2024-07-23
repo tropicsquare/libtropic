@@ -370,7 +370,7 @@ ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_le
     // copy tx_data to tx payload
     for (int i = 0; i < tx_payload_length; i++)
     {
-        *(tx_buffer.PAYLOAD + i) = *(h->l2_buff_req + i);
+        *(tx_buffer.PAYLOAD + i) = *(h->l2_buff + i);
     }
 
     status = ts_communicate(&tx_payload_length, &rx_payload_length);
@@ -382,7 +382,7 @@ ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_le
     // copy rx payload to rx_data
     for (int i = 0; i < rx_payload_length; i++)
     {
-        *(h->l2_buff_resp + i + offset) = *(rx_buffer.PAYLOAD + i);
+        *(h->l2_buff + i + offset) = *(rx_buffer.PAYLOAD + i);
     }
 
     return 0;

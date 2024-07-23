@@ -58,9 +58,7 @@ typedef struct ts_handle_t {
     uint8_t IV[12];
     ts_aes_gcm_ctx_t encrypt;
     ts_aes_gcm_ctx_t decrypt;
-    //
-    uint8_t l2_buff_req  [L2_CHUNK_MAX_FRAME_SIZE];
-    uint8_t l2_buff_resp [1 + L2_CHUNK_MAX_FRAME_SIZE];
+    uint8_t l2_buff [1 + L2_CHUNK_MAX_FRAME_SIZE];
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
 } ts_handle_t;
 

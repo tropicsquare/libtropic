@@ -23,9 +23,7 @@ void tearDown(void)
 {
 }
 
-/*
-    ts_init()
-*/
+// ts_init()
 void test_ts_init___invalid_handle()
 {
     int ret = ts_init(NULL);
@@ -52,9 +50,8 @@ void test_ts_init___correct()
     TEST_ASSERT_EQUAL(TS_OK, ret);
 }
 
-/*
-    ts_deinit()
-*/
+// ts_deinit()
+
 void test_ts_deinit___invalid_handle()
 {
     int ret = ts_deinit(NULL);
@@ -81,9 +78,9 @@ void test_ts_deinit___correct()
     TEST_ASSERT_EQUAL(TS_OK, ret);
 }
 
-/*
-    ts_handshake()
-*/
+
+// ts_handshake()
+
 void test_ts_handshake___invalid_handle()
 {   uint8_t PKEY_INDEX  = 1;
     uint8_t SHiPRIV[]   = {0x80,0x02,0xc5,0xa3,0xff,0x46,0xa2,0x09,0x4e,0x4e,0x71,0xf3,0xc8,0xe3,0xdd,0x79,0xec,0x5c,0x1c,0xcd,0xb0,0x40,0xbb,0xcf,0x6f,0x64,0x9d,0x49,0xe9,0x1d,0x9c,0x53};
