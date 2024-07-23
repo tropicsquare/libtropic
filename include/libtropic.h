@@ -3,7 +3,7 @@
 
 /**
 * @file libtropic.h
-* @brief Libtropic header file
+* @brief libtropic header file
 * @author Tropic Square s.r.o.
 */
 

@@ -1,6 +1,6 @@
 /**
 * @file libtropic.c
-* @brief Implementation of Libtropic API
+* @brief Implementation of libtropic API
 * @author Tropic Square s.r.o.
 */
 

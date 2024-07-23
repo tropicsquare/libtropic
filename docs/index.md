@@ -1,4 +1,4 @@
-# Libtropic
+# libtropic
 
 ## Introduction
 
@@ -8,8 +8,7 @@ Supported TROPIC devices:
 
 |Device                                                  |Comment                                               |
 |--------------------------------------------------------|------------------------------------------------------|
-|[TROPIC01-sample](https://www.tropicsquare.com/TROPIC01)| Engineering sample, not suitable for production use  |
-|[TROPIC0X](https://www.tropicsquare.com/TROPIOC0X)      | Version X TBD                                        |
+|[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                            |
 
 
 
@@ -19,7 +18,7 @@ Used build system is **cmake 3.21**:
 
 ```
     $ sudo apt install cmake
-``` 
+```
 
 [Ceedling](https://www.throwtheswitch.com) is used for running tests and creating code coverage report, install it like this:
 
@@ -86,9 +85,9 @@ option(TS_CRYPTO_TREZOR "Use trezor_crypto as a cryptography provider" ON)
 
  Available L1 implementations are:
 
-* SPI (Libtropic on embedded target and Physical chip, or FPGA)
-* TCP (Libtropic on Unix and Tropic01's model on Unix)
-* Serialport (Libtropic on embedded target and Tropic01's model on Unix)
+* SPI (libtropic on embedded target and Physical chip, or FPGA)
+* TCP (libtropic on Unix and TROPIC01's model on Unix)
+* Serialport (libtropic on embedded target and TROPIC01's model on Unix)
 
 Use `option()` switch to enable libtropic support for a certain platform, have a look in examples.
 
@@ -114,7 +113,7 @@ Related code:
 * ts_l3.c
 * ts_l3.h
 
-**Libtropic**
+**libtropic**
 
 This is a highest abstraction of tropic chip functionalities.
 Library offers various calls to simplify tropic chip usage on a target platform:

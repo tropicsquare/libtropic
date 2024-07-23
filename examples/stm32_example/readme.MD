@@ -2,7 +2,7 @@
 
 This is a minimalistic example for NUCLEO-F439ZI devboard:
 
-* It expects SPI connection to a running Tropic01 - chip, model or FPGA
+* It expects SPI connection to a running TROPIC01 - chip, model or FPGA
 * used SPI pins are: PE2 SCK, PE4 CS, PE5 MISO, PE6 MOSI
 * Debug messages are transmitted over USB ACM, they can be received by opening a serial port
 

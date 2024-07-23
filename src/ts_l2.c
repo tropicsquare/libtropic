@@ -11,7 +11,7 @@
 * @author Tropic Square s.r.o.
 */
 
-/** Safety number - limit number of loops during l3 chunks reception. Tropic01 divides data into 128B
+/** Safety number - limit number of loops during l3 chunks reception. TROPIC01 divides data into 128B
  *  chunks, length of L3 buffer is (2 + 4096 + 16).
  *  Divided by typical chunk length: (2 + 4096 + 16) / 128 => 32,
  *  with a few added loops it is set to 42

@@ -1,5 +1,5 @@
 /////////////////////////
-// C TCP client for communicating with the Tropic01Model
+// C TCP client for communicating with the TROPIC01Model
 
 #include <stdint.h>
 #include <stddef.h>
