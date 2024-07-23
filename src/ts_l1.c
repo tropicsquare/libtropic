@@ -76,12 +76,13 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
         return TS_PARAM_ERR;
     }
 
-    h->l2_buff_req[0] = GET_INFO_REQ_ID;
-
     int max_tries = TS_L1_READ_MAX_TRIES;
+
     while(max_tries > 0) {
 
         max_tries--;
+
+        h->l2_buff[0] = GET_INFO_REQ_ID;
 
         // Try to read CHIP_STATUS
         ts_l1_spi_csn_low(h);
@@ -92,17 +93,17 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
         }
 
         // Check ALARM bit of CHIP_STATUS
-        if (h->l2_buff_resp[0] & CHIP_MODE_ALARM_mask) {
+        if (h->l2_buff[0] & CHIP_MODE_ALARM_mask) {
             ts_l1_spi_csn_high(h);
             return TS_L1_CHIP_ALARM_MODE;
         }
         // Check STARTUP bit of CHIP_STATUS
-        else if (h->l2_buff_resp[0] & CHIP_MODE_STARTUP_mask) {
+        else if (h->l2_buff[0] & CHIP_MODE_STARTUP_mask) {
             ts_l1_spi_csn_high(h);
             return TS_L1_CHIP_STARTUP_MODE;
         }
         // Check READY bit of CHIP_STATUS
-        else if (h->l2_buff_resp[0] & CHIP_MODE_READY_mask) {
+        else if (h->l2_buff[0] & CHIP_MODE_READY_mask) {
             // receive STATUS byte and length byte
             if (ts_l1_spi_transfer(h, 1, 2, timeout) != 0) //offset 1
             {
@@ -113,14 +114,14 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
             // This function as it is now will return chip in alarm mode when
             // spi wires are not connected (and therefore reading 0xff), but I want to get chip busy instead.
             // Hotfix for fpga no resp handling:
-            if (h->l2_buff_resp[1] == 0xff) {
+            if (h->l2_buff[1] == 0xff) {
                 ts_l1_spi_csn_high(h);
                 ts_l1_delay(h, TS_L1_READ_RETRY_DELAY);
                 continue;
             }
 
             // Take length information and add 2B for crc bytes
-            uint16_t length = h->l2_buff_resp[2] + 2;
+            uint16_t length = h->l2_buff[2] + 2;
             if(length > (TS_L1_LEN_MAX - 2)) {
                 ts_l1_spi_csn_high(h);
                 return TS_L1_DATA_LEN_ERROR;

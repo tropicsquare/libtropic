@@ -116,7 +116,7 @@ ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_data_len
     if (offset + tx_data_length > TS_L1_LEN_MAX) {
         return TS_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->l2_buff_req + offset, h->l2_buff_resp + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->l2_buff + offset, h->l2_buff + offset, tx_data_length, timeout);
     if(ret != HAL_OK) {
         return TS_L1_SPI_ERROR;
     }

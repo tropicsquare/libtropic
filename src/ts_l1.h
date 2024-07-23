@@ -14,7 +14,7 @@
 #define CHIP_MODE_STARTUP_mask     0x04
 
 #define TS_L1_READ_MAX_TRIES         10
-#define TS_L1_READ_RETRY_DELAY      100
+#define TS_L1_READ_RETRY_DELAY       25
 
 #define TS_L1_TIMEOUT_MS_MIN          5
 #define TS_L1_TIMEOUT_MS_DEFAULT     70
