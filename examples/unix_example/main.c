@@ -61,7 +61,7 @@ int main(void)
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_l1_init();\r\n");
-    LOG_OUT_VALUE("%s\r\n", ts_ret_verbose(ret));
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
 
 
@@ -80,15 +80,37 @@ int main(void)
     bytes_to_chars(X509_cert, X509_cert_str, 512);
     LOG_OUT_INFO("ts_get_info_cert();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("X509 DER cert:       %s\r\n", X509_cert_str);
-    //printf("\r\nCert debug:\r\n");
-    //for (int x = 0; x<16;x++) {
-    //  for(int i=0;i<32; i++) {
-    //    printf("0x%02X,", X509_cert[i+32*x]);
-    //  }
-    //  printf("\r\n");
-    //}
-    //printf("\r\nEnd of cert debug\r\n");
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("X509 DER cert:       %s\r\n", X509_cert_str);
+        //printf("\r\nCert debug:\r\n");
+        //for (int x = 0; x<16;x++) {
+        //  for(int i=0;i<32; i++) {
+        //    printf("0x%02X,", X509_cert[i+32*x]);
+        //  }
+        //  printf("\r\n");
+        //}
+        //printf("\r\nEnd of cert debug\r\n");
+    }
+    LOG_OUT_LINE();
+
+
+
+    /************************************************************************************************************/
+    LOG_OUT_INFO("Verify and parse TROPIC01 chip's certificate\r\n");
+    /************************************************************************************************************/
+    /* Example of a call: */
+
+    uint8_t stpub[32] = {0};
+    ret = ts_cert_verify_and_parse(X509_cert, 512, stpub);
+
+    /* Following lines only print out some debug: */
+    char stpub_str[64+1] = {0};
+    bytes_to_chars(stpub, stpub_str, 32);
+    LOG_OUT_INFO("ts_cert_verify_and_parse();\r\n");
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("STPUB:         %s\r\n", stpub_str);
+    }
     LOG_OUT_LINE();
 
 
@@ -98,15 +120,15 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t PKEY_INDEX  = PKEY_INDEX_BYTE;
-    uint8_t SHiPRIV[]   = SHiPRIV_BYTES;
-    uint8_t SHiPUB[]    = SHiPUB_BYTES;
+    uint8_t pkey_index  = PKEY_INDEX_BYTE;
+    uint8_t shipriv[]   = SHiPRIV_BYTES;
+    uint8_t shipub[]    = SHiPUB_BYTES;
 
-    ret = ts_handshake(&handle, PKEY_INDEX, SHiPRIV, SHiPUB);
+    ret = ts_handshake(&handle, stpub, pkey_index, shipriv, shipub);
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_handshake();\r\n");
-    LOG_OUT_VALUE("%s\r\n", ts_ret_verbose(ret));
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
 
 
@@ -129,9 +151,11 @@ int main(void)
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ping();\r\n");
-    LOG_OUT_VALUE("ts_ret_t:    %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("ping length: %d\r\n", len_ping);
-    LOG_OUT_VALUE("msg compare: %s\r\n", !memcmp(msg_out, msg_in, L3_PING_MSG_MAX_LEN) ? "OK" : "ERROR");
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    if(ret == TS_OK) {
+        LOG_OUT_VALUE("ping length:   %d\r\n", len_ping);
+        LOG_OUT_VALUE("msg compare:   %s\r\n", !memcmp(msg_out, msg_in, L3_PING_MSG_MAX_LEN) ? "OK" : "ERROR");
+    }
     LOG_OUT_LINE();
 
 
@@ -151,8 +175,10 @@ int main(void)
     bytes_to_chars(buff, string, len_rand);
     LOG_OUT_INFO("ts_random_get();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("random length: %d\r\n", len_rand);
-    LOG_OUT_VALUE("bytes:         %s\r\n", string);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("random length: %d\r\n", len_rand);
+        LOG_OUT_VALUE("bytes:         %s\r\n", string);
+    }
     LOG_OUT_LINE();
 
 
@@ -188,9 +214,11 @@ int main(void)
     bytes_to_chars(key, key_str, n_of_bytes_in_key);
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("curve:         %s\r\n", (curve == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
-    LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
-    LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
+        LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
+    }
     LOG_OUT_LINE();
 
 
@@ -211,12 +239,14 @@ int main(void)
     bytes_to_chars(rs+32, S_str, 32);
     LOG_OUT_INFO("ts_eddsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("msg:           %s\r\n", msg);
-    LOG_OUT_VALUE("R:             %s\r\n", R_str);
-    LOG_OUT_VALUE("S:             %s\r\n", S_str);
-    LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
-    int verified = ed25519_sign_open(msg, 17, key, rs);
-    LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("msg:           %s\r\n", msg);
+        LOG_OUT_VALUE("R:             %s\r\n", R_str);
+        LOG_OUT_VALUE("S:             %s\r\n", S_str);
+        LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
+        int verified = ed25519_sign_open(msg, 17, key, rs);
+        LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+    }
     LOG_OUT_LINE();
 
 
@@ -264,9 +294,11 @@ int main(void)
     bytes_to_chars((uint8_t*)&key2, key2_str, 64);
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
-    LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
-    LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
+        LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
+    }
     LOG_OUT_LINE();
 
 
@@ -298,10 +330,13 @@ int main(void)
     bytes_to_chars(msg_hash, msg_hash_str, 32);
     LOG_OUT_INFO("ts_eddsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("msg:           %s\r\n", ecdsa_msg);
-    LOG_OUT_VALUE("MSG_HASH:      %s\r\n", msg_hash_str);
-    LOG_OUT_VALUE("R:             %s\r\n", R_str2);
-    LOG_OUT_VALUE("S:             %s\r\n", S_str2);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("msg:           %s\r\n", ecdsa_msg);
+        LOG_OUT_VALUE("MSG_HASH:      %s\r\n", msg_hash_str);
+        LOG_OUT_VALUE("R:             %s\r\n", R_str2);
+        LOG_OUT_VALUE("S:             %s\r\n", S_str2);
+    }
+    LOG_OUT_LINE();
 
 
 
