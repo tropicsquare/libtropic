@@ -40,7 +40,7 @@ ts_ret_t ts_deinit(ts_handle_t *h);
  * @param shipub      Secure host public key
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub);
+ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const uint8_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub);
 
 /**
  * @brief             Test secure session by exchanging a message with chip
@@ -130,7 +130,9 @@ ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot);
  * @param max_len     Length of certificate's buffer
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const uint16_t max_len);
+ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const int16_t max_len);
+
+ts_ret_t ts_cert_verify_and_parse(const uint8_t *cert, const int16_t max_len, uint8_t *stpub);
 
 // TODO
 //ts_ret_t ts_get_info_chip_id(ts_handle_t *h, uint8_t chip_id, uint16_t max_len);
