@@ -86,14 +86,14 @@ static UART_HandleTypeDef UartHandle;
  * @brief   Configures the UART peripheral
  *          Put the USART peripheral in the Asynchronous mode (UART Mode)
  *          UART configured as follows:
- *          - Word Length = 8 Bits (7 data bit + 1 parity bit) : 
+ *          - Word Length = 8 Bits (7 data bit + 1 parity bit) :
  *                        BE CAREFUL : Program 7 data bits + 1 parity bit in PC HyperTerminal
  *          - Stop Bit    = One Stop bit
  *          - Parity      = NONE parity
  *          - BaudRate    = 115200 baud
  *          - Hardware flow control disabled (RTS and CTS signals)
- * 
- * @return HAL_StatusTypeDef 
+ *
+ * @return HAL_StatusTypeDef
  */
 static HAL_StatusTypeDef UART_Init(void)
 {
@@ -139,10 +139,10 @@ int main(void)
 {
   /* STM32F4xx HAL library initialization:
        - Configure the Flash prefetch
-       - Systick timer is configured by default as source of time base, but user 
-         can eventually implement his proper time base source (a general purpose 
-         timer for example or other time source), keeping in mind that Time base 
-         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
+       - Systick timer is configured by default as source of time base, but user
+         can eventually implement his proper time base source (a general purpose
+         timer for example or other time source), keeping in mind that Time base
+         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
          handled in milliseconds basis.
        - Set NVIC Group Priority to 4
        - Low Level Initialization
@@ -187,7 +187,7 @@ int main(void)
 
     /* Following lines are only for printing results out: */
     LOG_OUT_INFO("ts_l1_init();\r\n");
-    LOG_OUT_VALUE("%s\r\n", ts_ret_verbose(ret));
+    LOG_OUT_VALUE("ts_ret_t:    %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
 
 
@@ -198,22 +198,45 @@ int main(void)
     /* Example of a call: */
 
     uint8_t X509_cert[512] = {0};
+
     ret = ts_get_info_cert(&handle, X509_cert, 512);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     char X509_cert_str[1024+1] = {0};
     bytes_to_chars(X509_cert, X509_cert_str, 512);
     LOG_OUT_INFO("ts_get_info_cert();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("X509 DER cert:       %s\r\n", X509_cert_str);
-    //printf("\r\nCert debug:\r\n");
-    //for (int x = 0; x<16;x++) {
-    //  for(int i=0;i<32; i++) {
-    //    printf("0x%02X,", X509_cert[i+32*x]);
-    //  }
-    //  printf("\r\n");
-    //}
-    //printf("\r\nEnd of cert debug\r\n");
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("X509 DER cert:       %s\r\n", X509_cert_str);
+        //printf("\r\nCert debug:\r\n");
+        //for (int x = 0; x<16;x++) {
+        //  for(int i=0;i<32; i++) {
+        //    printf("0x%02X,", X509_cert[i+32*x]);
+        //  }
+        //  printf("\r\n");
+        //}
+        //printf("\r\nEnd of cert debug\r\n");
+    }
+    LOG_OUT_LINE();
+
+
+
+    /************************************************************************************************************/
+    LOG_OUT_INFO("Verify and parse TROPIC01 chip's certificate\r\n");
+    /************************************************************************************************************/
+    /* Example of a call: */
+
+    uint8_t stpub[32] = {0};
+    ret = ts_cert_verify_and_parse(X509_cert, 512, stpub);
+
+    /* Following lines only print out some debug: */
+    char stpub_str[64+1] = {0};
+    bytes_to_chars(stpub, stpub_str, 32);
+    LOG_OUT_INFO("ts_cert_verify_and_parse();\r\n");
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("STPUB:         %s\r\n", stpub_str);
+    }
     LOG_OUT_LINE();
 
 
@@ -223,15 +246,15 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t PKEY_INDEX  = PKEY_INDEX_BYTE;
-    uint8_t SHiPRIV[]   = SHiPRIV_BYTES;
-    uint8_t SHiPUB[]    = SHiPUB_BYTES;
+    uint8_t pkey_index  = PKEY_INDEX_BYTE;
+    uint8_t shipriv[]   = SHiPRIV_BYTES;
+    uint8_t shipub[]    = SHiPUB_BYTES;
 
-    ret = ts_handshake(&handle, PKEY_INDEX, SHiPRIV, SHiPUB);
+    ret = ts_handshake(&handle, stpub, pkey_index, shipriv, shipub);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_handshake();\r\n");
-    LOG_OUT_VALUE("%s\r\n", ts_ret_verbose(ret));
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
 
 
@@ -252,11 +275,13 @@ int main(void)
 
     ret = ts_ping(&handle, (uint8_t *)msg_out, (uint8_t *)msg_in, len_ping);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ping();\r\n");
-    LOG_OUT_VALUE("ts_ret_t:    %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("ping length: %d\r\n", len_ping);
-    LOG_OUT_VALUE("msg compare: %s\r\n", !memcmp(msg_out, msg_in, L3_PING_MSG_MAX_LEN) ? "OK" : "ERROR");
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    if(ret == TS_OK) {
+        LOG_OUT_VALUE("ping length:   %d\r\n", len_ping);
+        LOG_OUT_VALUE("msg compare:   %s\r\n", !memcmp(msg_out, msg_in, L3_PING_MSG_MAX_LEN) ? "OK" : "ERROR");
+    }
     LOG_OUT_LINE();
 
 
@@ -268,15 +293,18 @@ int main(void)
 
     uint8_t buff[L3_RANDOM_VALUE_GET_LEN_MAX] = {0};
     uint16_t len_rand = 70;//L3_RANDOM_VALUE_GET_LEN_MAX;//rand() % L3_RANDOM_VALUE_GET_LEN_MAX;
+
     ret = ts_random_get(&handle, buff, len_rand);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     char string[505] = {0};
     bytes_to_chars(buff, string, len_rand);
     LOG_OUT_INFO("ts_random_get();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("random length: %d\r\n", len_rand);
-    LOG_OUT_VALUE("bytes:         %s\r\n", string);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("random length: %d\r\n", len_rand);
+        LOG_OUT_VALUE("bytes:         %s\r\n", string);
+    }
     LOG_OUT_LINE();
 
 
@@ -288,7 +316,7 @@ int main(void)
 
     ret = ts_ecc_key_generate(&handle, ECC_SLOT_1, L3_ECC_KEY_GENERATE_CURVE_ED25519);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
@@ -305,16 +333,18 @@ int main(void)
 
     ret = ts_ecc_key_read(&handle, ECC_SLOT_1, key, 64, &curve, &origin);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     uint8_t key_type = L3_ECC_KEY_GENERATE_CURVE_ED25519;
     int n_of_bytes_in_key = (key_type == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? 32:64);
     char key_str[64] = {0};
     bytes_to_chars(key, key_str, n_of_bytes_in_key);
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("curve:         %s\r\n", (curve == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
-    LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
-    LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
+        LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
+    }
     LOG_OUT_LINE();
 
 
@@ -328,20 +358,21 @@ int main(void)
     uint8_t rs[64];
     ret = ts_eddsa_sign(&handle, ECC_SLOT_1, msg, 17, rs, 64);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     char R_str[64+1] = {0};
     char S_str[64+1] = {0};
     bytes_to_chars(rs, R_str, 32);
     bytes_to_chars(rs+32, S_str, 32);
     LOG_OUT_INFO("ts_eddsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("msg:           %s\r\n", msg);
-    LOG_OUT_VALUE("R:             %s\r\n", R_str);
-    LOG_OUT_VALUE("S:             %s\r\n", S_str);
-    LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
-
-    int verified = ed25519_sign_open(msg, 17, key, rs);
-    LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("msg:           %s\r\n", msg);
+        LOG_OUT_VALUE("R:             %s\r\n", R_str);
+        LOG_OUT_VALUE("S:             %s\r\n", S_str);
+        LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
+        int verified = ed25519_sign_open(msg, 17, key, rs);
+        LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+    }
     LOG_OUT_LINE();
 
 
@@ -353,7 +384,7 @@ int main(void)
 
     ret = ts_ecc_key_erase(&handle, ECC_SLOT_1);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_erase();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
@@ -367,7 +398,7 @@ int main(void)
 
     ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, L3_ECC_KEY_GENERATE_CURVE_P256);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
@@ -384,14 +415,16 @@ int main(void)
 
     ret = ts_ecc_key_read(&handle, ECC_SLOT_2, key2, 64, &curve2, &origin2);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     char key2_str[64+1] = {0};
     bytes_to_chars((uint8_t*)&key2, key2_str, 64);
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
-    LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
-    LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
+        LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
+    }
     LOG_OUT_LINE();
 
 
@@ -402,7 +435,7 @@ int main(void)
     /* Example of a call: */
 
     uint8_t rs2[64];
-    uint8_t ecdsa_msg[] = "Tropic Square FTW -- 32B message";
+    char ecdsa_msg[] = "Tropic Square FTW -- 32B message";
     uint8_t msg_hash[32];
 
     ts_sha256_ctx_t hctx = {0};
@@ -414,20 +447,22 @@ int main(void)
     ret = ts_ecdsa_sign(&handle, ECC_SLOT_2, msg_hash, 32, rs2, 64);
 
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     char R_str2[64+1] = {0};
     char S_str2[64+1] = {0};
     char msg_hash_str[64+1] = {0};
-
     bytes_to_chars(rs2, R_str2, 32);
     bytes_to_chars(rs2+32, S_str2, 32);
     bytes_to_chars(msg_hash, msg_hash_str, 32);
     LOG_OUT_INFO("ts_eddsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
-    LOG_OUT_VALUE("msg:           %s\r\n", ecdsa_msg);
-    LOG_OUT_VALUE("MSG_HASH:      %s\r\n", msg_hash_str);
-    LOG_OUT_VALUE("R:             %s\r\n", R_str2);
-    LOG_OUT_VALUE("S:             %s\r\n", S_str2);
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("msg:           %s\r\n", ecdsa_msg);
+        LOG_OUT_VALUE("MSG_HASH:      %s\r\n", msg_hash_str);
+        LOG_OUT_VALUE("R:             %s\r\n", R_str2);
+        LOG_OUT_VALUE("S:             %s\r\n", S_str2);
+    }
+    LOG_OUT_LINE();
 
 
 
@@ -438,7 +473,7 @@ int main(void)
 
     ret = ts_ecc_key_erase(&handle, ECC_SLOT_2);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_erase();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
@@ -452,7 +487,7 @@ int main(void)
 
     ret = ts_deinit(&handle);
 
-    /* Following lines are only for printing results out: */
+    /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_l1_deinit();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
@@ -470,7 +505,7 @@ int main(void)
 
 /**
   * @brief  System Clock Configuration
-  *         The system Clock is configured as follow : 
+  *         The system Clock is configured as follow :
   *            System Clock source            = PLL (HSE)
   *            SYSCLK(Hz)                     = 180000000
   *            HCLK(Hz)                       = 180000000
@@ -496,12 +531,12 @@ static void SystemClock_Config(void)
 
   /* Enable Power Control clock */
   __HAL_RCC_PWR_CLK_ENABLE();
-  
-  /* The voltage scaling allows optimizing the power consumption when the device is 
-     clocked below the maximum system frequency, to update the voltage scaling value 
+
+  /* The voltage scaling allows optimizing the power consumption when the device is
+     clocked below the maximum system frequency, to update the voltage scaling value
      regarding system frequency refer to product datasheet.  */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-  
+
   /* Enable HSE Oscillator and activate PLL with HSE as source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
@@ -516,20 +551,20 @@ static void SystemClock_Config(void)
     /* Initialization Error */
     Error_Handler();
   }
-  
+
   if(HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     /* Initialization Error */
     Error_Handler();
   }
-  
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 
+
+  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
      clocks dividers */
   RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;  
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;  
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
   if(HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
   {
     /* Initialization Error */
