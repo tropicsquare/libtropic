@@ -10,7 +10,7 @@
 #include "ts_sha256.h"
 
 // Default initial Tropic handshake keys
-#define PKEY_INDEX_BYTE   0
+#define PKEY_INDEX_BYTE   TS_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_0
 #define SHiPRIV_BYTES    {0xf0,0xc4,0xaa,0x04,0x8f,0x00,0x13,0xa0,0x96,0x84,0xdf,0x05,0xe8,0xa2,0x2e,0xf7,0x21,0x38,0x98,0x28,0x2b,0xa9,0x43,0x12,0xf3,0x13,0xdf,0x2d,0xce,0x8d,0x41,0x64};
 #define SHiPUB_BYTES     {0x84,0x2f,0xe3,0x21,0xa8,0x24,0x74,0x08,0x37,0x37,0xff,0x2b,0x9b,0x88,0xa2,0xaf,0x42,0x44,0x2d,0xb0,0xd8,0xaa,0xcc,0x6d,0xc6,0x9e,0x99,0x53,0x33,0x44,0xb2,0x46};
 
@@ -67,17 +67,17 @@ int main(void)
 
 
     /************************************************************************************************************/
-    LOG_OUT_INFO("Get TROPIC01 chip's certificate\r\n");
+    LOG_OUT_INFO("Get TROPIC01 device's certificate\r\n");
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t X509_cert[512] = {0};
+    uint8_t X509_cert[TS_L2_GET_INFO_REQ_CERT_SIZE] = {0};
 
-    ret = ts_get_info_cert(&handle, X509_cert, 512);
+    ret = ts_get_info_cert(&handle, X509_cert, TS_L2_GET_INFO_REQ_CERT_SIZE);
 
     /* Following lines only print out some debug: */
     char X509_cert_str[1024+1] = {0};
-    bytes_to_chars(X509_cert, X509_cert_str, 512);
+    bytes_to_chars(X509_cert, X509_cert_str, TS_L2_GET_INFO_REQ_CERT_SIZE);
     LOG_OUT_INFO("ts_get_info_cert();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
@@ -96,7 +96,7 @@ int main(void)
 
 
     /************************************************************************************************************/
-    LOG_OUT_INFO("Verify and parse TROPIC01 chip's certificate\r\n");
+    LOG_OUT_INFO("Verify and parse TROPIC01 device's certificate\r\n");
     /************************************************************************************************************/
     /* Example of a call: */
 
@@ -138,9 +138,9 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t msg_out[L3_PING_MSG_MAX_LEN] = {0};
-    uint8_t msg_in[L3_PING_MSG_MAX_LEN]  = {0};
-    uint16_t len_ping = L3_PING_MSG_MAX_LEN;// rand() % L3_PING_MSG_MAX_LEN;
+    uint8_t msg_out[PING_LEN_MAX] = {0};
+    uint8_t msg_in[PING_LEN_MAX]  = {0};
+    uint16_t len_ping = PING_LEN_MAX;// rand() % PING_LEN_MAX;
 
     for(int i=0; i<127;i++) {
         memcpy(msg_out + (32*i), "XSome content for Ping message Y", 32);
@@ -154,7 +154,7 @@ int main(void)
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if(ret == TS_OK) {
         LOG_OUT_VALUE("ping length:   %d\r\n", len_ping);
-        LOG_OUT_VALUE("msg compare:   %s\r\n", !memcmp(msg_out, msg_in, L3_PING_MSG_MAX_LEN) ? "OK" : "ERROR");
+        LOG_OUT_VALUE("msg compare: %s\r\n", !memcmp(msg_out, msg_in, len_ping) ? "OK" : "ERROR");
     }
     LOG_OUT_LINE();
 
@@ -165,8 +165,8 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t buff[L3_RANDOM_VALUE_GET_LEN_MAX] = {0};
-    uint16_t len_rand = 70;//L3_RANDOM_VALUE_GET_LEN_MAX;//rand() % L3_RANDOM_VALUE_GET_LEN_MAX;
+    uint8_t buff[RANDOM_VALUE_GET_LEN_MAX] = {0};
+    uint16_t len_rand = 70;//RANDOM_VALUE_GET_LEN_MAX;//rand() % RANDOM_VALUE_GET_LEN_MAX;
 
     ret = ts_random_get(&handle, buff, len_rand);
 
@@ -188,7 +188,7 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    ret = ts_ecc_key_generate(&handle, ECC_SLOT_1, L3_ECC_KEY_GENERATE_CURVE_ED25519);
+    ret = ts_ecc_key_generate(&handle, ECC_SLOT_1, TS_L3_ECC_KEY_GENERATE_CURVE_ED25519);
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
@@ -208,14 +208,14 @@ int main(void)
     ret = ts_ecc_key_read(&handle, ECC_SLOT_1, key, 64, &curve, &origin);
 
     /* Following lines only print out some debug: */
-    uint8_t key_type = L3_ECC_KEY_GENERATE_CURVE_ED25519;
-    int n_of_bytes_in_key = (key_type == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? 32:64);
+    uint8_t key_type = TS_L3_ECC_KEY_GENERATE_CURVE_ED25519;
+    int n_of_bytes_in_key = (key_type == TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 ? 32:64);
     char key_str[64] = {0};
     bytes_to_chars(key, key_str, n_of_bytes_in_key);
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
-        LOG_OUT_VALUE("curve:         %s\r\n", (curve == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve == TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
         LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
         LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
     }
@@ -270,7 +270,7 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, L3_ECC_KEY_GENERATE_CURVE_P256);
+        ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, TS_L3_ECC_KEY_GENERATE_CURVE_P256);
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
@@ -295,7 +295,7 @@ int main(void)
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
-        LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
         LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
         LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
     }
@@ -315,7 +315,7 @@ int main(void)
     ts_sha256_ctx_t hctx = {0};
     ts_sha256_init(&hctx);
     ts_sha256_start(&hctx);
-    ts_sha256_update(&hctx, ecdsa_msg, 32);
+    ts_sha256_update(&hctx, (uint8_t*)ecdsa_msg, 32);
     ts_sha256_finish(&hctx, msg_hash);
 
     ret = ts_ecdsa_sign(&handle, ECC_SLOT_2, msg_hash, 32, rs2, 64);

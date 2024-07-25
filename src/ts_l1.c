@@ -93,17 +93,17 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
         }
 
         // Check ALARM bit of CHIP_STATUS
-        if (h->l2_buff[0] & CHIP_MODE_ALARM_mask) {
+        if (h->l2_buff[0] & CHIP_MODE_ALARM_bit) {
             ts_l1_spi_csn_high(h);
             return TS_L1_CHIP_ALARM_MODE;
         }
         // Check STARTUP bit of CHIP_STATUS
-        else if (h->l2_buff[0] & CHIP_MODE_STARTUP_mask) {
+        else if (h->l2_buff[0] & CHIP_MODE_STARTUP_bit) {
             ts_l1_spi_csn_high(h);
             return TS_L1_CHIP_STARTUP_MODE;
         }
         // Check READY bit of CHIP_STATUS
-        else if (h->l2_buff[0] & CHIP_MODE_READY_mask) {
+        else if (h->l2_buff[0] & CHIP_MODE_READY_bit) {
             // receive STATUS byte and length byte
             if (ts_l1_spi_transfer(h, 1, 2, timeout) != 0) //offset 1
             {

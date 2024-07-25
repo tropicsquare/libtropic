@@ -13,7 +13,9 @@
 typedef uint8_t u8;
 typedef uint16_t u16;
 
+#ifndef UNUSED
 #define UNUSED(x) (void)(x)
+#endif
 
 #define SESSION_ON   0xAA55AA55
 #define SESSION_OFF  0x00000000
@@ -25,7 +27,7 @@ typedef uint16_t u16;
 
 #define L3_PACKET_SIZE_SIZE        sizeof(uint16_t)
 #define L3_CMD_ID_SIZE             (1)
-#define L3_CMD_DATA_SIZE           (4095)
+#define L3_CMD_DATA_SIZE_MAX           (4095)
 
 /** Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE     252u
@@ -36,7 +38,7 @@ typedef uint16_t u16;
 #define TS_L1_LEN_MAX              (1 + 1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
 
 /** Maximum size of l3 ciphertext (or decrypted l3 packet) */
-#define L3_PACKET_MAX_SIZE         (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE)
+#define L3_PACKET_MAX_SIZE         (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
 /** Max size of one unit of transport on l3 layer */
 #define L3_FRAME_MAX_SIZE         (L3_PACKET_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
 

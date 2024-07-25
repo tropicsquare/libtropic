@@ -53,7 +53,7 @@ void test_ts_l1_read___TS_L1_SPI_ERROR()
 //------------------------------------------------------------------------//
 // Used to force l2_buff[0] to contain ALARM bit
 static ts_ret_t callback_TS_L1_CHIP_ALARM_MOD(ts_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
-    h->l2_buff[0] = CHIP_MODE_ALARM_mask;
+    h->l2_buff[0] = CHIP_MODE_ALARM_bit;
     return TS_OK;
 }
 void test_ts_l1_read___TS_L1_CHIP_ALARM_MODE()
@@ -70,7 +70,7 @@ void test_ts_l1_read___TS_L1_CHIP_ALARM_MODE()
 //------------------------------------------------------------------------//
 // Used to force l2_buff[0] to contain STARTUP bit
 static ts_ret_t callback_TS_L1_CHIP_STARTUP_MODE(ts_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
-    h->l2_buff[0] = CHIP_MODE_STARTUP_mask;
+    h->l2_buff[0] = CHIP_MODE_STARTUP_bit;
     return TS_OK;
 }
 void test_ts_l1_read___TS_L1_CHIP_STARTUP_MODE()

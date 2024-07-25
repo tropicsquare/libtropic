@@ -9,19 +9,19 @@
 
 #include "ts_common.h"
 
-#define CHIP_MODE_READY_mask       0x01
-#define CHIP_MODE_ALARM_mask       0x02
-#define CHIP_MODE_STARTUP_mask     0x04
+#define CHIP_MODE_READY_bit 0x01
+#define CHIP_MODE_ALARM_bit 0x02
+#define CHIP_MODE_STARTUP_bit 0x04
 
-#define TS_L1_READ_MAX_TRIES         10
-#define TS_L1_READ_RETRY_DELAY       25
+#define TS_L1_READ_MAX_TRIES 10
+#define TS_L1_READ_RETRY_DELAY 25
 
-#define TS_L1_TIMEOUT_MS_MIN          5
-#define TS_L1_TIMEOUT_MS_DEFAULT     70
-#define TS_L1_TIMEOUT_MS_MAX        150
-#define TS_L1_DELAY_MS_MAX          500
+#define TS_L1_TIMEOUT_MS_MIN 5
+#define TS_L1_TIMEOUT_MS_DEFAULT 70
+#define TS_L1_TIMEOUT_MS_MAX 150
+#define TS_L1_DELAY_MS_MAX 500
 
-#define GET_INFO_REQ_ID            0xAA
+#define GET_INFO_REQ_ID 0xAA
 
 /**
  * @brief Set chip select pin low
