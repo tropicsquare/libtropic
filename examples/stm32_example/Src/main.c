@@ -350,12 +350,12 @@ int main(void)
 
 
     /************************************************************************************************************/
-    LOG_OUT_INFO("EDDSA Sign with L3_ECC_KEY_GENERATE_CURVE_ED25519 key in ECC_SLOT_1\r\n");
+    LOG_OUT_INFO("EdDSA Sign with L3_ECC_KEY_GENERATE_CURVE_ED25519 key in ECC_SLOT_1\r\n");
     /************************************************************************************************************/
     /* Example of a call: */
 
     uint8_t msg[] = {'T','r','o','p','i','c',' ','S','q','u','a','r','e',' ','F','T','W','\0'};
-    uint8_t rs[64];
+    uint8_t rs[64] = {0};
     ret = ts_eddsa_sign(&handle, ECC_SLOT_1, msg, 17, rs, 64);
 
     /* Following lines only print out some debug: */
@@ -370,8 +370,22 @@ int main(void)
         LOG_OUT_VALUE("R:             %s\r\n", R_str);
         LOG_OUT_VALUE("S:             %s\r\n", S_str);
         LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
-        int verified = ed25519_sign_open(msg, 17, key, rs);
-        LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+        //int verified = ed25519_sign_open(msg, 17, key, rs);
+        //LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+    }
+    LOG_OUT_LINE();
+
+    /************************************************************************************************************/
+    LOG_OUT_INFO("Verify EdDSA signature\r\n");
+    /************************************************************************************************************/
+    /* Example of a call: */
+
+    ret = ts_eddsa_sig_verify(&handle, msg, 17, key, rs);
+
+    /* Following lines only print out some debug: */
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("Signature is CORRECT");
     }
     LOG_OUT_LINE();
 
@@ -411,7 +425,7 @@ int main(void)
     /* Example of a call: */
 
     uint8_t key2[64] = {0};
-    uint8_t curve2, origin2;
+    uint8_t curve2, origin2 = 0;
 
     ret = ts_ecc_key_read(&handle, ECC_SLOT_2, key2, 64, &curve2, &origin2);
 
@@ -434,9 +448,9 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t rs2[64];
+    uint8_t rs2[64] = {0};
     char ecdsa_msg[] = "Tropic Square FTW -- 32B message";
-    uint8_t msg_hash[32];
+    uint8_t msg_hash[32] = {0};
 
     ts_sha256_ctx_t hctx = {0};
     ts_sha256_init(&hctx);

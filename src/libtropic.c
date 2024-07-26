@@ -371,6 +371,18 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg_ha
     return TS_OK;
 }
 
+ts_ret_t ts_eddsa_sig_verify(ts_handle_t *h, const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+{
+    int ret = ed25519_sign_open(msg, msg_len, pubkey, rs);
+
+    if(ret != 0) {
+        return TS_CRYPTO_ERR;
+    }
+
+    return TS_OK;
+}
+
+
 ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot)
 {
     if(h->session != SESSION_ON) {

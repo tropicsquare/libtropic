@@ -277,7 +277,7 @@ ts_ret_t ts_ecc_key_read(ts_handle_t *h, const uint8_t slot, uint8_t *key, const
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
  *
- * @param h           Chip's handle
+ * @param h           Device's handle
  * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
@@ -287,6 +287,30 @@ ts_ret_t ts_ecc_key_read(ts_handle_t *h, const uint8_t slot, uint8_t *key, const
  *
  */
 ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len);
+
+/** @} */ // end of group_ts_eddsa_sign
+
+/**
+ * @defgroup group_ts_eddsa_verify ts_eddsa_verify
+ * @brief Verify signature
+ * @details Prior to this call, public key related to used signing slot must be queried from TROPIC01. 
+ *          F siunction verifies signature against this public key.
+ *
+ * @{
+ */
+
+/**
+ * @brief EdDSA signature verify
+ *
+ * @param h           Device's handle
+ * @param pubkey      Public key related to private key which signed the message
+ * @param keylen      Length of public key, expected number is 32 B
+ * @param rs          Signature to be verified, in a form of R and S bytes
+ * @param rs_len      Length of rs buffer should be 64B
+ * @return            TS_OK if success, otherwise returns other error code.
+ *
+ */
+ts_ret_t ts_eddsa_sig_verify(ts_handle_t *h, const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
 /** @} */ // end of group_ts_eddsa_sign
 
@@ -322,7 +346,7 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg_ha
  */
 
 /**
- * @brief Erase ECC key from chip-s slot
+ * @brief Erase ECC key from device's slot
  *
  * @param h           Device's handle
  * @param slot        Slot number ECC_SLOT_1 - ECC_SLOT_32
@@ -342,7 +366,7 @@ ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot);
  * @{
  */
 
-/** @brief The X.509 chip certificate read from I-Memory and signed by Tropic Square (max length of 512B) */
+/** @brief The X.509 device certificate read from I-Memory and signed by Tropic Square (max length of 512B) */
 # define TS_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0
 /** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B) */
 # define TS_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 1

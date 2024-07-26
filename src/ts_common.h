@@ -75,12 +75,6 @@ typedef struct ts_handle_t {
 
 /** Enum return type */
 typedef enum {
-    /** Operation was successful */
-    TS_OK,
-    /** Operation was not succesfull */
-    TS_FAIL,
-    /** Some parameter was not accepted by function */
-    TS_PARAM_ERR,
 
     /** Spi transfer returned error */
     TS_L1_SPI_ERROR,
@@ -116,6 +110,14 @@ typedef enum {
 
     /* Host */
     TS_HOST_NO_SESSION,
+    /** Operation was successful */
+    TS_OK,
+    /** Operation was not succesfull */
+    TS_FAIL,
+    /** Some parameter was not accepted by function */
+    TS_PARAM_ERR,
+    /** Error detected during cryptographic operation */
+    TS_CRYPTO_ERR,
 } ts_ret_t;
 
 /**
