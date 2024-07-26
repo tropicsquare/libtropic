@@ -294,8 +294,8 @@ ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
  *
  * @param h           Device's handle
  * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
- * @param msg         Buffer containing hash of a message
- * @param msg_len     Length of hash's buffer should be 32B
+ * @param msg_hash    Buffer containing hash of a message
+ * @param msg_hash_len Length of hash's buffer should be 32B
  * @param rs          Buffer for storing a signature in a form of R and S bytes
  * @param rs_len      Length of rs buffer should be 64B
  * @return            TS_OK if success, otherwise returns other error code.
