@@ -10,9 +10,12 @@
 #include "stdint.h"
 #include "ts_aesgcm.h"
 
+/** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
+/** Alias for unsigned 16 bit integer */
 typedef uint16_t u16;
 
+/** Macro to sanitize compiler warnings */
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)
 #endif

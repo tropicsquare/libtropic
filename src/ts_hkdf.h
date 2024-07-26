@@ -14,7 +14,7 @@
  * @details The HMAC key derivation function as described in datasheet
  *
  * @param ck          CK parameter
- * @param ck_len      Length of CK parameter
+ * @param ck_size      Length of CK parameter
  * @param input       Input data
  * @param input_size  Size of input data
  * @param nouts       Number of outputs

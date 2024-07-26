@@ -29,6 +29,7 @@
 /** @brief Command ID */
 #define TS_L3_PING_CMD 0x01
 
+/** This structure declares how "Ping command" l3 packet is organized */
 struct ts_l3_ping_cmd_t {
     /** L3 packet size */
     u16 packet_size;
@@ -40,6 +41,7 @@ struct ts_l3_ping_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
+/** This structure declares how "Ping result" l3 packet is organized */
 struct ts_l3_ping_res_t{
     /** L3 packet size */
     u16 packet_size;
@@ -65,6 +67,7 @@ struct ts_l3_ping_res_t{
 /** @brief Command length */
 #define TS_L3_RANDOM_VALUE_GET_CMD_SIZE 2
 
+/** This structure declares how "random value get command" l3 packet is organized */
 struct ts_l3_random_value_get_cmd_t {
     /* L3 packet size */
     u16 packet_size;
@@ -76,7 +79,7 @@ struct ts_l3_random_value_get_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
-
+/** This structure declares how "random value get result" l3 packet is organized */
 struct ts_l3_random_value_get_res_t{
     /** L3 packet size */
     u16 packet_size;
@@ -108,6 +111,7 @@ struct ts_l3_random_value_get_res_t{
 /** @brief ECC_Key_generate max slot number */
 #define TS_L3_ECC_KEY_GENERATE_SLOT_MAX 31
 
+/** This structure declares how "ECC key generate command" l3 packet is organized */
 struct ts_l3_ecc_key_generate_cmd_t {
     /** L3 packet size */
     u16 packet_size;
@@ -121,6 +125,7 @@ struct ts_l3_ecc_key_generate_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
+/** This structure declares how "ECC key generate result" l3 packet is organized */
 struct ts_l3_ecc_key_generate_res_t{
     /** L3 packet size */
     u16 packet_size;
@@ -144,6 +149,7 @@ struct ts_l3_ecc_key_generate_res_t{
 /** @brief Command length */
 #define TS_L3_ECC_KEY_READ_CMD_SIZE 0x03
 
+/** This structure declares how "ECC key read command" l3 packet is organized */
 struct ts_l3_ecc_key_read_cmd_t {
     /**L3 packet size */
     u16 packet_size;
@@ -155,18 +161,15 @@ struct ts_l3_ecc_key_read_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
+/** This structure declares how "ECC key read result" l3 packet is organized */
 struct ts_l3_ecc_key_read_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
     u8 result;
     /** Elliptic Curve */
-    # define TS_L3_ECC_KEY_READ_CURVE_P256 1 // P256 Curve - 64-byte long public key.
-    # define TS_L3_ECC_KEY_READ_CURVE_ED25519 2 // Ed25519 Curve - 32-byte long public key.
     u8 curve;
     /** The origin of the key */
-    # define TS_L3_ECC_KEY_READ_ORIGIN_ECC_KEY_GENERATE 1 // The key is from key generation on the device.
-    # define TS_L3_ECC_KEY_READ_ORIGIN_ECC_KEY_STORE 2 // The key is from key storage in the device.
     u8 origin;
     /** Padding */
     u8 padding[13];
@@ -181,7 +184,7 @@ struct ts_l3_ecc_key_read_res_t{
 /**
  * @defgroup group_ecc_key_erase ECC_Key_Erase
  * @brief Erase ECC key
- * @details Erase ECC private key in a given TROIC01's memory slot
+ * @details Erase ECC private key in a given TROPIC01's memory slot
  * @{
  */
 
@@ -190,6 +193,7 @@ struct ts_l3_ecc_key_read_res_t{
 /** @brief Command length */
 #define TS_L3_ECC_KEY_ERASE_CMD_SIZE 0x03u
 
+/** This structure declares how "EC key erase command" l3 packet is organized */
 struct ts_l3_ecc_key_erase_cmd_t {
     /** L3 packet size */
     u16 packet_size;
@@ -201,6 +205,7 @@ struct ts_l3_ecc_key_erase_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
+/** This structure declares how "EC key erase result" l3 packet is organized */
 struct ts_l3_ecc_key_erase_res_t{
     /** L3 packet size */
     u16 packet_size;
@@ -223,9 +228,12 @@ struct ts_l3_ecc_key_erase_res_t{
 #define TS_L3_EDDSA_SIGN_CMD 0x71
 /** @brief Command length */
 #define TS_L3_EDDSA_SIGN_CMD_SIZE 0x10u
+/** Minimal length of message to be signed with EdDSA */
 #define TS_L3_EDDSA_SIGN_MSG_LEN_MIN 0x01
+/** Maximal length of message to be signed with EdDSA */
 #define TS_L3_EDDSA_SIGN_MSG_LEN_MAX 4096
 
+/** This structure declares how "EdDSA sign command" l3 packet is organized */
 struct ts_l3_eddsa_sign_cmd_t {
     /** L3 packet size */
     u16 packet_size;
@@ -241,6 +249,7 @@ struct ts_l3_eddsa_sign_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
+/** This structure declares how "EdDSA sign result" l3 packet is organized */
 struct ts_l3_eddsa_sign_res_t{
     /** L3 packet size */
     u16 packet_size;
@@ -269,8 +278,10 @@ struct ts_l3_eddsa_sign_res_t{
 #define TS_L3_ECDSA_SIGN 0x70
 /** @brief Command length */
 #define TS_L3_ECDSA_SIGN_CMD_SIZE 0x30u
+/** Length of message hash to be signed with ECDSA */
 #define TS_L3_ECDSA_SIGN_MSG_HASH_LEN 0x20
 
+/** This structure declares how "ECDSA sign command" l3 packet is organized */
 struct ts_l3_ecdsa_sign_cmd_t {
     /** L3 packet size */
     u16 packet_size;
@@ -286,6 +297,7 @@ struct ts_l3_ecdsa_sign_cmd_t {
     u8 tag[16];
 } __attribute__((__packed__));
 
+/** This structure declares how "ECDSA sign result" l3 packet is organized */
 struct ts_l3_ecdsa_sign_res_t{
     /** L3 packet size */
     u16 packet_size;

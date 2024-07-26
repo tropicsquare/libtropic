@@ -215,6 +215,15 @@ ts_ret_t ts_random_get(ts_handle_t *h, uint8_t *buff, const uint16_t len);
 /** @brief Ed25519 Curve - 32-byte long public key */
 # define TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 2
 
+/** Type of ECC key: P256 Curve - 64-byte long public key. */
+# define TS_L3_ECC_KEY_READ_CURVE_P256 1
+/** Type of ECC key: Ed25519 Curve - 32-byte long public key */
+# define TS_L3_ECC_KEY_READ_CURVE_ED25519 2
+/** Origin of the key: The key is from key generation on the device. */
+# define TS_L3_ECC_KEY_READ_ORIGIN_ECC_KEY_GENERATE 1
+/** Origin of the key: The key is from key storage in the device */
+# define TS_L3_ECC_KEY_READ_ORIGIN_ECC_KEY_STORE 2
+
 /**
  * @defgroup group_ts_ecc_key_generate ts_ecc_key_generate
  * @brief Generate ECC key
