@@ -10,12 +10,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/** Length of sha256 digest */
 #define SHA256_DIGEST_LENGTH 32
 
-/**
- * @brief
- *
- */
+/** sha256 context structure */
 typedef struct ts_sha256_ctx
 {
 #ifdef USE_MBEDTLS

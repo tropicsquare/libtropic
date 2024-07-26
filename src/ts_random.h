@@ -7,7 +7,6 @@
 * @author Tropic Square s.r.o.
 */
 
-#include "stdint.h"
 #include "ts_common.h"
 
 /**

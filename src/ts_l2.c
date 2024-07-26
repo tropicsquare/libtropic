@@ -4,6 +4,7 @@
 #include "ts_crc16.h"
 #include "ts_l1.h"
 #include "ts_l2.h"
+#include "ts_l2_api.h"
 
 /**
 * @file ts_l2.c
@@ -96,22 +97,22 @@ ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
     int ret = TS_FAIL;
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct l2_encrypted_req_t *req = (struct l2_encrypted_req_t*)h->l2_buff;
+    struct l2_encrypted_cmd_req_t *req = (struct l2_encrypted_cmd_req_t*)h->l2_buff;
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct l2_encrypted_rsp_t *resp = (struct l2_encrypted_rsp_t*)h->l2_buff;
+    struct l2_encrypted_cmd_rsp_t *resp = (struct l2_encrypted_cmd_rsp_t*)h->l2_buff;
 
     // SENDING PART
 
     struct l3_frame_t * p_frame = (struct l3_frame_t*)h->l3_buff;
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
-    uint16_t chunk_num      = ((L3_PACKET_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
+    uint16_t chunk_num      = ((L3_RES_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
     // Calculate the length of the last
-    uint16_t chunk_last_len = ((L3_PACKET_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) % L2_CHUNK_MAX_DATA_SIZE);
+    uint16_t chunk_last_len = ((L3_RES_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) % L2_CHUNK_MAX_DATA_SIZE);
 
     // Split encrypted buffer into chunks and proceed them into l2 transfers:
     for (int i=0; i<chunk_num; i++) {
 
-        req->req_id = L2_ENCRYPTED_CMD_REQ_ID;
+        req->req_id = TS_L2_ENCRYPTED_CMD_REQ_ID;
         // Update length based on whether actually processed chunk is the last one or not
         if(i == (chunk_num - 1)) {
             req->req_len = chunk_last_len;
@@ -149,13 +150,13 @@ ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
     uint16_t loops = 0;
 
     do {
-        // Get one l2 frame of a chip's response
+        /* Get one l2 frame of a device's response */
         ret = ts_l1_read(h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT);
         if(ret != TS_OK) {
             return ret;
         }
         // Prevent overflow of l3 buffer
-        if (offset + resp->resp_len > L3_FRAME_MAX_SIZE) {
+        if (offset + resp->rsp_len > L3_FRAME_MAX_SIZE) {
             return TS_L2_DATA_LEN_ERROR;
         }
 
@@ -164,13 +165,13 @@ ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
         switch (ret) {
             case TS_L2_RES_CONT:
                 // Copy content of l2 into certain offset of l3 buffer
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->resp_len);
-                offset += resp->resp_len;
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->rsp_len);
+                offset += resp->rsp_len;
                 loops++;
                 break;
             case TS_OK:
                 // This was last l2 frame of l3 packet, copy it and return
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->resp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->rsp_len);
                 return TS_OK;
             default:
                 // Any other L2 packet's status is not expected

@@ -9,19 +9,30 @@
 
 #include "ts_common.h"
 
-#define CHIP_MODE_READY_mask       0x01
-#define CHIP_MODE_ALARM_mask       0x02
-#define CHIP_MODE_STARTUP_mask     0x04
+/** This bit in CHIP_STATUS byte signalizes that chip is ready to accept requests */
+#define CHIP_MODE_READY_bit 0x01
+/** This bit in CHIP_STATUS byte signalizes that chip is in ALARM mode */
+#define CHIP_MODE_ALARM_bit 0x02
+/** This bit in CHIP_STATUS byte signalizes that chip is in STARTUP mode */
+#define CHIP_MODE_STARTUP_bit 0x04
 
-#define TS_L1_READ_MAX_TRIES         10
-#define TS_L1_READ_RETRY_DELAY       25
+/** Max number of GET_INFO requests when chip is not answering */
+#define TS_L1_READ_MAX_TRIES 10
+/** Number of ms to wait between each GET_INFO request */
+#define TS_L1_READ_RETRY_DELAY 25
 
-#define TS_L1_TIMEOUT_MS_MIN          5
-#define TS_L1_TIMEOUT_MS_DEFAULT     70
-#define TS_L1_TIMEOUT_MS_MAX        150
-#define TS_L1_DELAY_MS_MAX          500
+/** Minimal timeout when waiting for activity on SPI bus */
+#define TS_L1_TIMEOUT_MS_MIN 5
+/** Default timeout when waiting for activity on SPI bus */
+#define TS_L1_TIMEOUT_MS_DEFAULT 70
+/** Maximal timeout when waiting for activity on SPI bus */
+#define TS_L1_TIMEOUT_MS_MAX 150
 
-#define GET_INFO_REQ_ID            0xAA
+/** Maximal delay in ms which can be used in delay funtion */
+#define TS_L1_DELAY_MS_MAX 500
+
+/** Get info request's ID */
+#define GET_INFO_REQ_ID 0xAA
 
 /**
  * @brief Set chip select pin low
@@ -44,6 +55,7 @@ ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h);
  *
  * @param h           Chip's handle
  * @param tx_len      The length of data to be transferred
+ * @param offset      Offset in handle's internal buffer where incomming bytes should be stored into
  * @param timeout     Timeout
  * @return            TS_OK if success, otherwise returns other error code.
  */

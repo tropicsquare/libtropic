@@ -10,10 +10,7 @@
 #include "aes.h"
 #include "aesgcm.h"
 
-/**
- * @brief
- *
- */
+/** AES-GCM context structure */
 typedef struct ts_aes_gcm_ctx
 {
 #if USE_TS_CRYPTO
