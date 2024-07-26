@@ -41,20 +41,21 @@ build_library:
     - make
 
 
-build_docs:
-  stage: docs
-  tags:
-    - shell
-  script:
-    - source setup_env
-    - ls -la
-    - cd build
-    - cmake -DBUILD_DOCS=1 ..
-    - make
-    - cd docs/doxygen/latex
-    - make
-    - mv refman.pdf libtropic.pdf
-    - mv libtropic.pdf ../../../../
-  artifacts:
-    paths:
-      - libtropic.pdf
+#build_docs:
+#  stage: docs
+#  tags:
+#    - shell
+#  script:
+#    - source setup_env
+#    - ls -la
+#    - cd build
+#    - cmake -DBUILD_DOCS=1 ..
+#    - make
+#    - cd docs/doxygen/latex
+#    - make
+#    - mv refman.pdf libtropic.pdf
+#    - mv libtropic.pdf ../../../../
+#  artifacts:
+#    paths:
+#      - libtropic.pdf
+#
