@@ -86,7 +86,7 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
 
         // Try to read CHIP_STATUS
         ts_l1_spi_csn_low(h);
-        if (ts_l1_spi_transfer(h, 0, 1, timeout) != 0)
+        if (ts_l1_spi_transfer(h, 0, 1, timeout) != TS_OK)
         {
             ts_l1_spi_csn_high(h);
             return TS_L1_SPI_ERROR;
@@ -105,7 +105,7 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
         // Check READY bit of CHIP_STATUS
         else if (h->l2_buff[0] & CHIP_MODE_READY_bit) {
             // receive STATUS byte and length byte
-            if (ts_l1_spi_transfer(h, 1, 2, timeout) != 0) //offset 1
+            if (ts_l1_spi_transfer(h, 1, 2, timeout) != TS_OK) //offset 1
             {
                 ts_l1_spi_csn_high(h);
                 return TS_L1_SPI_ERROR;
@@ -127,7 +127,7 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
                 return TS_L1_DATA_LEN_ERROR;
             }
             // Receive the rest of incomming bytes, including crc
-            if (ts_l1_spi_transfer(h, 3, length, timeout) != 0) // offset 3
+            if (ts_l1_spi_transfer(h, 3, length, timeout) != TS_OK) // offset 3
             {
                 ts_l1_spi_csn_high(h);
                 return TS_L1_SPI_ERROR;
@@ -161,7 +161,7 @@ ts_ret_t ts_l1_write(ts_handle_t *h, const uint16_t len, const uint32_t timeout)
 
     ts_l1_spi_csn_low(h);
 
-    if (ts_l1_spi_transfer(h, 0, len, timeout) != 0)
+    if (ts_l1_spi_transfer(h, 0, len, timeout) != TS_OK)
     {
         ts_l1_spi_csn_high(h);
         return TS_L1_SPI_ERROR;

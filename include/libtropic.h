@@ -302,15 +302,14 @@ ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
 /**
  * @brief EdDSA signature verify
  *
- * @param h           Device's handle
+ * @param msg         Message
+ * @param msg_len     Length of message. Max length is 4095
  * @param pubkey      Public key related to private key which signed the message
- * @param keylen      Length of public key, expected number is 32 B
  * @param rs          Signature to be verified, in a form of R and S bytes
- * @param rs_len      Length of rs buffer should be 64B
  * @return            TS_OK if success, otherwise returns other error code.
  *
  */
-ts_ret_t ts_eddsa_sig_verify(ts_handle_t *h, const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
+ts_ret_t ts_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
 /** @} */ // end of group_ts_eddsa_sign
 
