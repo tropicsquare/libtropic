@@ -59,9 +59,9 @@ int main(void)
 
     ret = ts_init(&handle);
 
-    /* Following lines only print out some debug: */
+    /* Following lines are only for printing results out: */
     LOG_OUT_INFO("ts_l1_init();\r\n");
-    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    LOG_OUT_VALUE("ts_ret_t:    %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
 
 
@@ -154,7 +154,7 @@ int main(void)
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if(ret == TS_OK) {
         LOG_OUT_VALUE("ping length:   %d\r\n", len_ping);
-        LOG_OUT_VALUE("msg compare: %s\r\n", !memcmp(msg_out, msg_in, len_ping) ? "OK" : "ERROR");
+        LOG_OUT_VALUE("msg compare:   %s\r\n", !memcmp(msg_out, msg_in, len_ping) ? "OK" : "ERROR");
     }
     LOG_OUT_LINE();
 
@@ -166,7 +166,7 @@ int main(void)
     /* Example of a call: */
 
     uint8_t buff[RANDOM_VALUE_GET_LEN_MAX] = {0};
-    uint16_t len_rand = 70;//RANDOM_VALUE_GET_LEN_MAX;//rand() % RANDOM_VALUE_GET_LEN_MAX;
+    uint16_t len_rand = 70;//L3_RANDOM_VALUE_GET_LEN_MAX;//rand() % L3_RANDOM_VALUE_GET_LEN_MAX;
 
     ret = ts_random_get(&handle, buff, len_rand);
 
@@ -224,12 +224,12 @@ int main(void)
 
 
     /************************************************************************************************************/
-    LOG_OUT_INFO("EDDSA Sign with L3_ECC_KEY_GENERATE_CURVE_ED25519 key in ECC_SLOT_1\r\n");
+    LOG_OUT_INFO("EdDSA Sign with L3_ECC_KEY_GENERATE_CURVE_ED25519 key in ECC_SLOT_1\r\n");
     /************************************************************************************************************/
     /* Example of a call: */
 
     uint8_t msg[] = {'T','r','o','p','i','c',' ','S','q','u','a','r','e',' ','F','T','W','\0'};
-    uint8_t rs[64];
+    uint8_t rs[64] = {0};
     ret = ts_eddsa_sign(&handle, ECC_SLOT_1, msg, 17, rs, 64);
 
     /* Following lines only print out some debug: */
@@ -244,8 +244,20 @@ int main(void)
         LOG_OUT_VALUE("R:             %s\r\n", R_str);
         LOG_OUT_VALUE("S:             %s\r\n", S_str);
         LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
-        int verified = ed25519_sign_open(msg, 17, key, rs);
-        LOG_OUT_VALUE("Signature is %s\r\n", verified == 0 ? "CORRECT" : "WRONG");
+    }
+    LOG_OUT_LINE();
+
+    /************************************************************************************************************/
+    LOG_OUT_INFO("Verify EdDSA signature of previously signed message\r\n");
+    /************************************************************************************************************/
+    /* Example of a call: */
+
+    ret = ts_eddsa_sig_verify(msg, 17, key, rs);
+
+    /* Following lines only print out some debug: */
+    LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
+    if (ret == TS_OK) {
+        LOG_OUT_VALUE("Signature is CORRECT\r\n");
     }
     LOG_OUT_LINE();
 
@@ -270,7 +282,7 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-        ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, TS_L3_ECC_KEY_GENERATE_CURVE_P256);
+    ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, TS_L3_ECC_KEY_GENERATE_CURVE_P256);
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
@@ -285,7 +297,7 @@ int main(void)
     /* Example of a call: */
 
     uint8_t key2[64] = {0};
-    uint8_t curve2, origin2;
+    uint8_t curve2, origin2 = 0;
 
     ret = ts_ecc_key_read(&handle, ECC_SLOT_2, key2, 64, &curve2, &origin2);
 
@@ -308,31 +320,20 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    uint8_t rs2[64];
-    char ecdsa_msg[] = "Tropic Square FTW -- 32B message";
-    uint8_t msg_hash[32];
+    uint8_t rs2[64] = {0};
+    char msg2[] = "Tropic Square FTW";
 
-    ts_sha256_ctx_t hctx = {0};
-    ts_sha256_init(&hctx);
-    ts_sha256_start(&hctx);
-    ts_sha256_update(&hctx, (uint8_t*)ecdsa_msg, 32);
-    ts_sha256_finish(&hctx, msg_hash);
-
-    ret = ts_ecdsa_sign(&handle, ECC_SLOT_2, msg_hash, 32, rs2, 64);
-
+    ret = ts_ecdsa_sign(&handle, ECC_SLOT_2, (uint8_t*)msg2, strlen(msg2), rs2, 64);
 
     /* Following lines only print out some debug: */
     char R_str2[64+1] = {0};
     char S_str2[64+1] = {0};
-    char msg_hash_str[64+1] = {0};
     bytes_to_chars(rs2, R_str2, 32);
     bytes_to_chars(rs2+32, S_str2, 32);
-    bytes_to_chars(msg_hash, msg_hash_str, 32);
-    LOG_OUT_INFO("ts_eddsa_sign();\r\n");
+    LOG_OUT_INFO("ts_ecdsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
-        LOG_OUT_VALUE("msg:           %s\r\n", ecdsa_msg);
-        LOG_OUT_VALUE("MSG_HASH:      %s\r\n", msg_hash_str);
+        LOG_OUT_VALUE("msg:           %s\r\n", msg2);
         LOG_OUT_VALUE("R:             %s\r\n", R_str2);
         LOG_OUT_VALUE("S:             %s\r\n", S_str2);
     }

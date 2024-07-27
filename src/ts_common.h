@@ -75,12 +75,6 @@ typedef struct ts_handle_t {
 
 /** Enum return type */
 typedef enum {
-    /** Operation was successful */
-    TS_OK,
-    /** Operation was not succesfull */
-    TS_FAIL,
-    /** Some parameter was not accepted by function */
-    TS_PARAM_ERR,
 
     /** Spi transfer returned error */
     TS_L1_SPI_ERROR,
@@ -94,28 +88,48 @@ typedef enum {
     TS_L1_CHIP_BUSY,
 
     /** Return values based on STATUS field */
-    /** Indicates that there are more l2 frames to be received */
+    /** l2 response frame contains CRC error */
     TS_L2_IN_CRC_ERR,
+    /** There is more than one chunk to be expected for a current request */
     TS_L2_REQ_CONT,
+    /** There is more than one chunk to be received for a current response */
     TS_L2_RES_CONT,
+    /** There were an error during handshake establishing */
     TS_L2_HSK_ERR,
+    /** There is no secure session */
     TS_L2_NO_SESSION,
+    /** There were error during checking message authenticity */
     TS_L2_TAG_ERR,
+    /** l2 request contained crc error */
     TS_L2_CRC_ERR,
+    /** There were some other error */
     TS_L2_GEN_ERR,
+    /** Chip has no response to be transmitted */
     TS_L2_NO_RESP,
+    /** ID of last request is not known to TROPIC01 */
     TS_L2_UNKNOWN_REQ,
     /** L2 data does not have an expected length */
     TS_L2_DATA_LEN_ERROR,
 
-    /* L3 */
+    /** L3 command was received correctly*/
     TS_L3_OK,
+    /** L3 command was not received correctly */
     TS_L3_FAIL,
+    /** Current pairing keys are not authorized for execution of the last command */
     TS_L3_UNAUTHORIZED,
+    /** Received L3 command is invalid */
     TS_L3_INVALID_CMD,
 
-    /* Host */
+    /* Host no session */
     TS_HOST_NO_SESSION,
+    /** Operation was successful */
+    TS_OK,
+    /** Operation was not succesfull */
+    TS_FAIL,
+    /** Some parameter was not accepted by function */
+    TS_PARAM_ERR,
+    /** Error detected during cryptographic operation */
+    TS_CRYPTO_ERR,
 } ts_ret_t;
 
 /**

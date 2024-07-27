@@ -53,7 +53,7 @@ ts_ret_t ts_l3_cmd(ts_handle_t *h)
     struct l3_frame_t * p_frame = (struct l3_frame_t*)h->l3_buff;
 
     int ret = ts_aesgcm_encrypt(&h->encrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE);
-    if (ret != RETURN_GOOD) {
+    if (ret != TS_OK) {
         return ret;
     }
 
@@ -63,7 +63,7 @@ ts_ret_t ts_l3_cmd(ts_handle_t *h)
     }
 
     ret = ts_aesgcm_decrypt(&h->decrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE);
-    if (ret != RETURN_GOOD) {
+    if (ret != TS_OK) {
         return ret;
     }
 

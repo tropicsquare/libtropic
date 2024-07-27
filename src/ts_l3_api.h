@@ -278,8 +278,8 @@ struct ts_l3_eddsa_sign_res_t{
 #define TS_L3_ECDSA_SIGN 0x70
 /** @brief Command length */
 #define TS_L3_ECDSA_SIGN_CMD_SIZE 0x30u
-/** Length of message hash to be signed with ECDSA */
-#define TS_L3_ECDSA_SIGN_MSG_HASH_LEN 0x20
+/** TODO Max length of message to be signed with ECDSA */
+#define TS_L3_ECDSA_SIGN_MSG_LEN_MAX 4096 
 
 /** This structure declares how "ECDSA sign command" l3 packet is organized */
 struct ts_l3_ecdsa_sign_cmd_t {

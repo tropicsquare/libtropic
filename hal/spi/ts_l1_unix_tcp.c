@@ -90,7 +90,7 @@ static int ts_connect_to_server ()
     if (socket_fd < 0)
     {
         LOG_ERR("Could not create socket: %s (%d).\n", strerror(errno), errno);
-        return 1;
+        return TS_FAIL;
     }
     LOG_OUT("Socket created.\n");
 
@@ -105,11 +105,11 @@ static int ts_connect_to_server ()
     if (connect(socket_fd, (struct sockaddr *)(&server), sizeof(server)) < 0)
     {
         LOG_ERR("Could not connect: %s (%d).\n", strerror(errno), errno);
-        return 1;
+        return TS_FAIL;
     }
     LOG_OUT("Connected to the server.\n");
 
-    return 0;
+    return TS_OK;
 }
 
 static int ts_send_all (int socket, uint8_t * buffer, size_t length)
@@ -118,7 +118,7 @@ static int ts_send_all (int socket, uint8_t * buffer, size_t length)
     if (length <= 0)
     {
         LOG_ERR("Parameter length is not striclty positive: %lu.\n", length);
-        return 1;
+        return TS_FAIL;
     }
 
     int       nb_bytes_sent;
@@ -135,14 +135,14 @@ static int ts_send_all (int socket, uint8_t * buffer, size_t length)
         if (nb_bytes_sent < 1)
         {
             LOG_ERR("Send failed: %s (%d).\n", strerror(errno), errno);
-            return 1;
+            return TS_FAIL;
         }
 
         nb_bytes_to_send -= nb_bytes_sent;
         if (nb_bytes_to_send == 0)
         {
             LOG_OUT("All %ld bytes sent successfully.\n", length);
-            return 0;
+            return TS_OK;
         }
 
         ptr += nb_bytes_sent;
@@ -153,7 +153,7 @@ static int ts_send_all (int socket, uint8_t * buffer, size_t length)
     LOG_ERR("%d bytes sent instead of expected %lu ", nb_bytes_sent_total,
             length);
     LOG_ERR("after %d attempts.\n", TX_ATTEMPTS);
-    return 1;
+    return TS_OK;
 }
 
 static int ts_communicate (int * tx_payload_length_ptr, int * rx_payload_length_ptr)
@@ -179,7 +179,7 @@ static int ts_communicate (int * tx_payload_length_ptr, int * rx_payload_length_
     LOG_U8_ARRAY(tx_buffer.BUFFER, nb_bytes_to_send);
 
     status = ts_send_all(socket_fd, tx_buffer.BUFFER, nb_bytes_to_send);
-    if (status != 0)
+    if (status != TS_OK)
     {
         return status;
     }
@@ -219,7 +219,7 @@ static int ts_communicate (int * tx_payload_length_ptr, int * rx_payload_length_
             if (nb_bytes_received < 0)
             {
                 LOG_ERR("Receive failed: %s (%d).\n", strerror(errno), errno);
-                return 1;
+                return TS_FAIL;
             }
             nb_bytes_received_total += nb_bytes_received;
             if (nb_bytes_received_total >= nb_bytes_to_receive)
@@ -235,27 +235,27 @@ static int ts_communicate (int * tx_payload_length_ptr, int * rx_payload_length_
     {
         LOG_ERR("Received %d bytes in total instead of %d.\n",
                 nb_bytes_received_total, nb_bytes_to_receive);
-        return 1;
+        return TS_FAIL;
     }
 
     // server does not know the sent tag
     if (rx_buffer.TAG == TAG_E_INVALID)
     {
         LOG_ERR("Tag %d is not known by the server.\n", tx_buffer.TAG);
-        return 1;
+        return TS_FAIL;
     }
     // server does not know what to do with the sent tag
     else if (rx_buffer.TAG == TAG_E_UNSUPPORTED)
     {
         LOG_ERR("Tag %d is not supported by the server.\n", tx_buffer.TAG);
-        return 1;
+        return TS_FAIL;
     }
     // RX tag and TX tag should be identical
     else if (rx_buffer.TAG != tx_buffer.TAG)
     {
         LOG_ERR("Expected tag %d, received %d.\n", rx_buffer.TAG,
                 tx_buffer.TAG);
-        return 1;
+        return TS_FAIL;
     }
 
     LOG_OUT("Rx tag and tx tag match: %d.\n", rx_buffer.TAG);
@@ -263,7 +263,7 @@ static int ts_communicate (int * tx_payload_length_ptr, int * rx_payload_length_
     {
         *rx_payload_length_ptr = nb_bytes_received_total - MIN_BUFFER_LEN;
     }
-    return 0;
+    return TS_OK;
 }
 
 static int ts_tropic01_power_on(void)
@@ -293,11 +293,11 @@ static int server_connect(void)
     bzero(rx_buffer.BUFFER, MAX_BUFFER_LEN);
 
     int ret = ts_connect_to_server();
-    if (ret != 0)
+    if (ret != TS_OK)
     {
         return ret;
     }
-    return 0;
+    return TS_OK;
 }
 
 static int server_disconnect(void)
@@ -318,11 +318,11 @@ ts_ret_t ts_l1_init(ts_handle_t *h)
     memset(h, 0, sizeof(ts_handle_t));
 
     int ret = server_connect();
-    if(ret != 0) {
+    if(ret != TS_OK) {
         return TS_FAIL;
     }
     ret = ts_reset_target();
-    if(ret != 0) {
+    if(ret != TS_OK) {
         return TS_FAIL;
     }
     return TS_OK;
@@ -331,7 +331,11 @@ ts_ret_t ts_l1_init(ts_handle_t *h)
 ts_ret_t ts_l1_deinit(ts_handle_t *h)
 {
     UNUSED(h);
-    return server_disconnect();
+    if(server_disconnect() != 0) {
+        return TS_FAIL;
+    }
+
+    return TS_OK;
 }
 
 ts_ret_t ts_l1_spi_csn_low (ts_handle_t *h)
@@ -374,7 +378,7 @@ ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_le
     }
 
     status = ts_communicate(&tx_payload_length, &rx_payload_length);
-    if (status != 0)
+    if (status != TS_OK)
     {
         return status;
     }
@@ -385,7 +389,7 @@ ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_le
         *(h->l2_buff + i + offset) = *(rx_buffer.PAYLOAD + i);
     }
 
-    return 0;
+    return TS_OK;
 }
 
 ts_ret_t ts_l1_delay (ts_handle_t *h, uint32_t wait_time_usecs)

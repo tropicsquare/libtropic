@@ -25,7 +25,7 @@
  */
 
 /**
- * @defgroup group_get_info_req get_info_req
+ * @defgroup group_get_info_request get_info_req
  *
  * @brief Get some info
  * @details Get some info from the device
@@ -66,10 +66,10 @@ struct l2_get_info_rsp_t{
     u8 crc[2];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_get_info_req
+/** @} */ // end of group_get_info_request
 
 /**
- * @defgroup group_handshake_req handshake_req
+ * @defgroup group_handshake_request handshake_req
  * @brief Establish a secure session
  * @details Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure Channel Mode).
  * @{
@@ -111,10 +111,10 @@ struct l2_handshake_rsp_t{
     u8 crc[2];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_handshake_req
+/** @} */ // end of group_handshake_request
 
 /**
- * @defgroup group_encrypted_cmd_req encrypted_cmd_req
+ * @defgroup group_encrypted_cmd_request encrypted_cmd_req
  * @brief Request to execute encrypted command
  * @details Transmission of one encrypted command may consist of multiple encrypted_cmd_req requests/responses
  * @{
@@ -150,7 +150,7 @@ struct l2_encrypted_cmd_rsp_t{
 } __attribute__((__packed__));
 
 
-/** @} */ // end of group_encrypted_cmd_req
+/** @} */ // end of group_encrypted_cmd_request
 
 /** @} */ // end of group_L2_API
 

@@ -17,6 +17,7 @@
 #include "ts_l3.h"
 #include "ts_l3_api.h"
 #include "ts_x25519.h"
+#include "ts_ed25519.h"
 #include "ts_hkdf.h"
 #include "ts_sha256.h"
 #include "ts_aesgcm.h"
@@ -141,23 +142,23 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const uint8_t pkey_i
     ts_hkdf(output_1, 32, (uint8_t*)"", 0, 2, kcmd, kres);
 
     ret = ts_aesgcm_init_and_key(&h->decrypt, kauth, 32);
-    if(ret != RETURN_GOOD) {
-        return ret;
+    if(ret != TS_OK) {
+        return TS_CRYPTO_ERR;
     }
 
     ret = ts_aesgcm_decrypt(&h->decrypt, h->IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_auth, 16u);
-    if(ret != RETURN_GOOD) {
-        return ret;
+    if(ret != TS_OK) {
+        return TS_CRYPTO_ERR;
     }
 
     ret = ts_aesgcm_init_and_key(&h->encrypt, kcmd, 32);
-    if(ret != RETURN_GOOD) {
-        return ret;
+    if(ret != TS_OK) {
+        return TS_CRYPTO_ERR;
     }
 
     ret = ts_aesgcm_init_and_key(&h->decrypt, kres, 32);
-    if(ret != RETURN_GOOD) {
-        return ret;
+    if(ret != TS_OK) {
+        return TS_CRYPTO_ERR;
     }
 
     h->session = SESSION_ON;
@@ -340,14 +341,22 @@ ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
     return TS_OK;
 }
 
-ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg_hash, const int16_t msg_hash_len, uint8_t *rs, const int8_t rs_len)
+ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
 {
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
     }
-    if(!h || !msg_hash || !rs || (msg_hash_len < TS_L3_ECDSA_SIGN_MSG_HASH_LEN) || (rs_len < 64)) {
+    if(!h || !msg || !rs || (msg_len > TS_L3_ECDSA_SIGN_MSG_LEN_MAX) || (rs_len < 64)) {
         return TS_PARAM_ERR;
     }
+
+    // Prepare hash of a message
+    uint8_t msg_hash[32] = {0};
+    ts_sha256_ctx_t hctx = {0};
+    ts_sha256_init(&hctx);
+    ts_sha256_start(&hctx);
+    ts_sha256_update(&hctx, (uint8_t*)msg, msg_len);
+    ts_sha256_finish(&hctx, msg_hash);
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct ts_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct ts_l3_ecdsa_sign_cmd_t*)&h->l3_buff;
@@ -358,7 +367,7 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg_ha
     p_l3_cmd->packet_size = TS_L3_ECDSA_SIGN_CMD_SIZE;
     p_l3_cmd->command= TS_L3_ECDSA_SIGN;
     p_l3_cmd->slot = slot;
-    memcpy(p_l3_cmd->msg_hash, msg_hash, TS_L3_ECDSA_SIGN_MSG_HASH_LEN);
+    memcpy(p_l3_cmd->msg_hash, msg_hash, 32);
 
     ts_ret_t ret = ts_l3_cmd(h);
     if(ret != TS_OK) {
@@ -370,6 +379,14 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg_ha
 
     return TS_OK;
 }
+
+ts_ret_t ts_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+{
+    ts_ed25519_sign_open(msg, msg_len, pubkey, rs);
+
+    return TS_OK;
+}
+
 
 ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot)
 {
