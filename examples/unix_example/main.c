@@ -258,6 +258,8 @@ int main(void)
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
         LOG_OUT_VALUE("Signature is CORRECT\r\n");
+    } else {
+        LOG_OUT_VALUE("Signature verification FAILED\r\n");
     }
     LOG_OUT_LINE();
 

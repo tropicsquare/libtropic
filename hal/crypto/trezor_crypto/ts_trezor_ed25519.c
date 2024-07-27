@@ -8,9 +8,9 @@
 #include "memzero.h"
 #include "ts_x25519.h"
 
-void ts_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+int ts_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    ed25519_sign_open(msg, msg_len, pubkey, rs);
+    return ed25519_sign_open(msg, msg_len, pubkey, rs);
 }
 
 #endif
