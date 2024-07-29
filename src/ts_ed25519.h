@@ -9,6 +9,6 @@
 
 #include "stdint.h"
 
-void ts_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
+int ts_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
 #endif

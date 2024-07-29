@@ -382,7 +382,9 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
 
 ts_ret_t ts_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    ts_ed25519_sign_open(msg, msg_len, pubkey, rs);
+    if (ts_ed25519_sign_open(msg, msg_len, pubkey, rs) != 0) {
+        return TS_FAIL;
+    }
 
     return TS_OK;
 }
