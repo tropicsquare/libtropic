@@ -34,15 +34,21 @@
   \newunicodechar{³}{${}^{3}$}% Superscript three
 
 % Hyperlinks (required, but should be loaded last)
-\ifpdf
-  \PassOptionsToPackage{pdftex,pagebackref=true}{hyperref}
-\else
-  \ifxetex
-    \PassOptionsToPackage{pagebackref=true}{hyperref}
-  \else
-    \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
-  \fi
-\fi
+% \ifpdf
+%   \PassOptionsToPackage{pdftex,pagebackref=true}{hyperref}
+% \else
+%   \ifxetex
+%     \PassOptionsToPackage{pagebackref=true}{hyperref}
+%   \else
+%     \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
+%   \fi
+% \fi
+% \hypersetup{%
+%   colorlinks=true,%
+%   linkcolor=TropicBlue,%
+%   citecolor=TropicBlue,%
+%   unicode%
+% }
 
 % Custom commands for Doxygen
 \newcommand{\clearemptydoublepage}{%
