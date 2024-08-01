@@ -18,7 +18,7 @@ typedef struct ts_sha256_ctx
 {
 #ifdef USE_MBEDTLS
     uint32_t space[32];
-#elif USE_TS_CRYPTO
+#elif USE_TREZOR_CRYPTO
     uint32_t space[256];  // mbedtls is ok with 32. TODO how big is Hasher struct
 #endif
 } ts_sha256_ctx_t;

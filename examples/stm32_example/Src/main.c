@@ -18,9 +18,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include <string.h>
 #include "main.h"
 #include "libtropic.h"
-#include "cryptography_tests.h"
 
 
 //#include "ts_sha256.h"

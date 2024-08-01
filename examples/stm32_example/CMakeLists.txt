@@ -27,6 +27,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake)
 ###########################################################################
 
 project(${TARGET} LANGUAGES C ASM)
+SET_PROPERTY(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS true)
 
 ###########################################################################
 #                                                                         #
@@ -38,7 +39,7 @@ project(${TARGET} LANGUAGES C ASM)
 set(TS_HAL_STM32_SPI ON)
 #set(TS_HAL_STM32_UART ON)
 # Use trezor crypto as a source of backend cryptography code
-set(TS_CRYPTO_TREZOR ON)
+set(USE_TREZOR_CRYPTO ON)
 # Provide path to a root of libtropic repository
 add_subdirectory(../../ "libtropic")
 
@@ -57,7 +58,6 @@ set(OPENOCD_CFG "/usr/share/openocd/scripts/board/stm32f429discovery.cfg")
 # Fill in your source files here (duh).
 set(SOURCES
     Src/main.c
-    Src/cryptography_tests.c
     Src/stm32f4xx_it.c
     Src/stm32f4xx_hal_msp.c
     Src/system_stm32f4xx.c
@@ -119,18 +119,24 @@ include_directories(
 
 # Add this so HAL knows what target MCU we use
 add_definitions(-DSTM32F439xx)
-add_definitions(-DUSE_TS_CRYPTO) # TODO unify and fix this definition with option 
+add_definitions(-DUSE_TREZOR_CRYPTO) # TODO unify and fix this definition with option
 
 # Compile the sources to an .elf
 add_executable(${TARGET}.elf ${SOURCES} ${HEADERS})
 
 # Link with libtropic
-target_link_libraries(${TARGET}.elf PUBLIC tropic)
+target_link_options(${TARGET}.elf PRIVATE -Wl,--gc-sections -Wl,--strip-all)
+target_link_libraries(${TARGET}.elf PRIVATE tropic)
 
 # Create a binary from the elf
 add_custom_command(TARGET ${TARGET}.elf POST_BUILD
     COMMAND arm-none-eabi-objcopy -Oihex ${TARGET}.elf ${TARGET}.hex
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+add_custom_command(TARGET ${TARGET}.elf
+    POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${TARGET}.elf ${TARGET}.bin
 )
 
 add_custom_target(flash

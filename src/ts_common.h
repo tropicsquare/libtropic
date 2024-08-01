@@ -8,7 +8,6 @@
 */
 
 #include "stdint.h"
-#include "ts_aesgcm.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
@@ -67,8 +66,12 @@ typedef struct ts_handle_t {
     void *device;
     uint32_t session;
     uint8_t IV[12];
-    ts_aes_gcm_ctx_t encrypt;
-    ts_aes_gcm_ctx_t decrypt;
+#if    USE_TREZOR_CRYPTO
+    uint8_t encrypt[352]; // sizeof(ts_aes_gcm_ctx_t) == 352;
+    uint8_t decrypt[352];
+#elif USE_MBEDTLS
+#warning "Warning: MBED Tls is not implemented yet";
+#endif
     uint8_t l2_buff [1 + L2_MAX_FRAME_SIZE];
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
 } ts_handle_t;

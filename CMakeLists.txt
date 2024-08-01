@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21.0)
 
 project(libtropic_SDK
         VERSION 0.0.1
-        DESCRIPTION "Tropic Square software development kit"
+        DESCRIPTION "TROPIC01 software development kit"
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
 
@@ -18,10 +18,10 @@ option(TS_HAL_UNIX "Use TCP and connect to model" OFF)
 option(TS_HAL_STM32_UART "Use UART and connect to model" OFF)
 option(TS_HAL_STM32_SPI "Use SPI and connect to real chip" OFF)
 
-option(TS_CRYPTO_TREZOR "Use trezor_crypto as a cryptography provider" ON)
+option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" ON)
 option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 
-option(DEBUG "Compile with -g -Wextra -Wpedantic -Werror" ON)
+option(DEBUG "Compile with -g -Wextra -Wpedantic -Werror" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 
 
@@ -47,7 +47,7 @@ elseif(TS_HAL_STM32_SPI)
     # appropriate hal/XXX/XXX/folder into its sources and compile it,
     # For more info check examples.
 elseif(TS_HAL_STM32_UART)
-    message(DEBUG "STM32 HAL selected ")
+    message(DEBUG "STM32 UART HAL selected ")
     add_definitions(-DTS_HAL_STM32_UART=1)
     # Main program is responsible for adding file from
     # appropriate hal/XXX/XXX/folder into its sources and compile it,
@@ -67,18 +67,28 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.c
 )
+set(SDK_INCS ${SDK_INCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_common.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.h
+)
 
-add_library(tropic ${SDK_SRCS})
+add_library(tropic STATIC ${SDK_SRCS} ${SDK_INCS})
 
 target_include_directories(tropic PUBLIC
-                            ${CMAKE_CURRENT_SOURCE_DIR}/include/
                             ${CMAKE_CURRENT_SOURCE_DIR}/src/
+                            ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 
 target_compile_options(tropic PRIVATE -Wall)
-
+target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 if(DEBUG)
-    target_compile_options(tropic PRIVATE -g -Wextra -Wpedantic -Werror)
+    target_compile_options(tropic PRIVATE -g)
 endif()
 
 
@@ -88,14 +98,13 @@ endif()
 #                                                                         #
 ###########################################################################
 
-if (TS_CRYPTO_TREZOR)
+if (USE_TREZOR_CRYPTO)
     # Trezor library
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_link_libraries(tropic PUBLIC trezor_crypto)
-
+    target_link_libraries(tropic PRIVATE trezor_crypto)
     # libtropic wrappers for trezor library
     add_subdirectory(hal/crypto/trezor_crypto)
-    target_compile_definitions(tropic PRIVATE USE_TS_CRYPTO)
+    target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()
 
 if (TS_CRYPTO_MBEDTLS)
