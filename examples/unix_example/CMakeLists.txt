@@ -47,4 +47,5 @@ add_executable(main main.c
 )
 
 target_compile_definitions(main PRIVATE USE_TREZOR_CRYPTO)
+target_link_options(main PRIVATE -Wl,--gc-sections -Wl,--strip-all)
 target_link_libraries(main PRIVATE tropic)

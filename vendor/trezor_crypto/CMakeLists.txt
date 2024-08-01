@@ -50,4 +50,4 @@ target_compile_definitions(trezor_crypto PRIVATE
                            AES_VAR
                           )
 
-target_compile_options(trezor_crypto PRIVATE -ffunction-sections -fdata-sections -fPIC)
+target_compile_options(trezor_crypto PRIVATE -ffunction-sections -fdata-sections)

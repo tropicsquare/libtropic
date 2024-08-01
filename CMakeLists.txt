@@ -78,7 +78,7 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.h
 )
 
-add_library(tropic SHARED ${SDK_SRCS} ${SDK_INCS})
+add_library(tropic STATIC ${SDK_SRCS} ${SDK_INCS})
 
 target_include_directories(tropic PUBLIC
                             ${CMAKE_CURRENT_SOURCE_DIR}/src/
