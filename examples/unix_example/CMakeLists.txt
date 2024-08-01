@@ -24,7 +24,8 @@ set(CMAKE_BUILD_TYPE Debug)
 set(TS_HAL_UNIX ON)
 # Use trezor crypto as a source of backend cryptography code
 set(USE_TREZOR_CRYPTO ON)
-
+# Compile for debug
+set(DEBUG ON)
 
 ###########################################################################
 #                                                                         #
@@ -46,6 +47,11 @@ add_executable(main main.c
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/system/ts_random_unix.c
 )
 
+
 target_compile_definitions(main PRIVATE USE_TREZOR_CRYPTO)
-target_link_options(main PRIVATE -Wl,--gc-sections -Wl,--strip-all)
-target_link_libraries(main PRIVATE tropic)
+if(DEBUG)
+    target_link_options(main PRIVATE -Wl,--gc-sections)
+else()
+    target_link_options(main PRIVATE -Wl,--gc-sections -Wl,--strip-all)
+endif()
+    target_link_libraries(main PRIVATE tropic)
