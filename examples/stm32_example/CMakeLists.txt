@@ -125,7 +125,7 @@ add_definitions(-DUSE_TREZOR_CRYPTO) # TODO unify and fix this definition with o
 add_executable(${TARGET}.elf ${SOURCES} ${HEADERS})
 
 # Link with libtropic
-target_link_options(${TARGET}.elf PRIVATE -Wl,--gc-sections  -Wl,--strip-all)
+target_link_options(${TARGET}.elf PRIVATE -Wl,--gc-sections -Wl,--strip-all)
 target_link_libraries(${TARGET}.elf PRIVATE tropic)
 
 # Create a binary from the elf
