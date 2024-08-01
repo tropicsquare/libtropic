@@ -33,6 +33,17 @@
 \let\DoxyItemize\itemize
 \let\DoxyEnumerate\enumerate
 
+% Redefine environments for tables with params
+\renewenvironment{DoxyParams}[2][0]
+{%
+  \subsubsection*{#2}%
+  \TropicSimpleTable%
+  {Parameter & Description}%
+}
+{%
+  \endTropicSimpleTable%
+}
+
 \usepackage{newunicodechar}
   \newunicodechar{⁻}{${}^{-}$}% Superscript minus
   \newunicodechar{²}{${}^{2}$}% Superscript two
