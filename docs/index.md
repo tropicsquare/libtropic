@@ -73,7 +73,7 @@ Current default provider of cryptogprahy is `vendor/trezor_crypto`.
 ```
 # Use trezor_crypto library:
 
-option(TS_CRYPTO_TREZOR "Use trezor_crypto as a cryptography provider" ON)
+option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" ON)
 ```
 
 

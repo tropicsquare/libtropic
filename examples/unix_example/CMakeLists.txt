@@ -7,7 +7,10 @@ cmake_minimum_required(VERSION 3.21.0)
 #                                                                         #
 ###########################################################################
 
-project(unix_example LANGUAGES C)
+project(libtropic_unix_example
+        VERSION 0.1.0
+        DESCRIPTION "Example of libtropic's usage in Unix environment"
+        LANGUAGES C)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -17,10 +20,10 @@ set(CMAKE_BUILD_TYPE Debug)
 #                                                                         #
 ###########################################################################
 
-# This example is compiled for linux, so use unix hal functions:
+# This example is compiled for linux, therefore use unix hal functions:
 set(TS_HAL_UNIX ON)
 # Use trezor crypto as a source of backend cryptography code
-set(TS_CRYPTO_TREZOR ON)
+set(USE_TREZOR_CRYPTO ON)
 
 
 ###########################################################################
@@ -29,7 +32,7 @@ set(TS_CRYPTO_TREZOR ON)
 #                                                                         #
 ###########################################################################
 
-add_subdirectory(../../ "src")
+add_subdirectory(../../ "libtropic")
 
 
 ###########################################################################
@@ -40,6 +43,8 @@ add_subdirectory(../../ "src")
 
 add_executable(main main.c
                     ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/spi/ts_l1_unix_tcp.c
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/system/ts_random_unix.c)
-target_compile_definitions(main PRIVATE USE_TS_CRYPTO)
-target_link_libraries(main PUBLIC tropic)
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/system/ts_random_unix.c
+)
+
+target_compile_definitions(main PRIVATE USE_TREZOR_CRYPTO)
+target_link_libraries(main PRIVATE tropic)

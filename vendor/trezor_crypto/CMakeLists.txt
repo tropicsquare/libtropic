@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 
-project(trezor_crypto 
-        LANGUAGES C)
-
-
 set(TREZOR_CRYPTO_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/aes/aesgcm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/aes/aesccm.c
@@ -37,19 +33,21 @@ set(TREZOR_CRYPTO_SRCS
 
 add_library(trezor_crypto ${TREZOR_CRYPTO_SRCS})
 
-target_include_directories(trezor_crypto PUBLIC 
+target_include_directories(trezor_crypto PUBLIC
                             ${CMAKE_CURRENT_SOURCE_DIR}/
                             ${CMAKE_CURRENT_SOURCE_DIR}/aes/
                             ${CMAKE_CURRENT_SOURCE_DIR}/ed25519-donna/
                             )
 
-target_link_directories(trezor_crypto PUBLIC
+target_link_directories(trezor_crypto PRIVATE
                             ${CMAKE_CURRENT_SOURCE_DIR}/
                             ${CMAKE_CURRENT_SOURCE_DIR}/aes/
                             ${CMAKE_CURRENT_SOURCE_DIR}/ed25519-donna/
                             )
 
-target_compile_definitions(trezor_crypto PRIVATE 
-                           USE_INSECURE_PRNG 
+target_compile_definitions(trezor_crypto PRIVATE
+                           USE_INSECURE_PRNG
                            AES_VAR
                           )
+
+target_compile_options(trezor_crypto PRIVATE -ffunction-sections -fdata-sections -fPIC)

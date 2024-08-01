@@ -35,7 +35,7 @@
   :test:
     - *common_defines
     - TEST
-    - USE_TS_CRYPTO
+    - USE_TREZOR_CRYPTO
   :test_preprocess:
     - *common_defines
     - TEST

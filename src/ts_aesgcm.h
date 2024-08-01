@@ -13,7 +13,7 @@
 /** AES-GCM context structure */
 typedef struct ts_aes_gcm_ctx
 {
-#if USE_TS_CRYPTO
+#if USE_TREZOR_CRYPTO
     gcm_ctx ctx;
 #elif USE_MBEDTLS
 

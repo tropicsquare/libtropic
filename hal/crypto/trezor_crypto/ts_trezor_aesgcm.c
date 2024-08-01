@@ -1,4 +1,4 @@
-#ifdef USE_TS_CRYPTO
+#ifdef USE_TREZOR_CRYPTO
 #include "aes.h"
 #include "aesgcm.h"
 #include "ts_aesgcm.h"

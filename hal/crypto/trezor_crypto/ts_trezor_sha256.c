@@ -1,4 +1,4 @@
-#ifdef USE_TS_CRYPTO
+#ifdef USE_TREZOR_CRYPTO
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>

@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#if USE_TS_CRYPTO
+#if USE_TREZOR_CRYPTO
 #include "ts_hmac_sha256.h"
 #include "hasher.h"
 #include "blake256.h"
