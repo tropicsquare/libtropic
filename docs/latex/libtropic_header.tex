@@ -29,6 +29,10 @@
 % Put sections on new page
 \AddToHook{cmd/doxysection/before}{\clearpage}
 
+% Use itemize and enumerate from ts-latex-lib
+\let\DoxyItemize\itemize
+\let\DoxyEnumerate\enumerate
+
 \usepackage{newunicodechar}
   \newunicodechar{⁻}{${}^{-}$}% Superscript minus
   \newunicodechar{²}{${}^{2}$}% Superscript two
