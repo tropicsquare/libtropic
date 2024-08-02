@@ -33,15 +33,72 @@
 \let\DoxyItemize\itemize
 \let\DoxyEnumerate\enumerate
 
-% Redefine environments for tables with params
-\renewenvironment{DoxyParams}[2][0]
+% TODO: redo this
+\newenvironment{TropicRatioTableTwoCol}[3]
 {%
-  \subsubsection*{#2}%
-  \TropicSimpleTable%
-  {Parameter & Description}%
+  \renewcommand{\tropicnumtablecols}{2}
+  \TropicRatioGuts {2}{#3}{#1}{#2}{0}{0}{0}{0}{0}
 }
 {%
-  \endTropicSimpleTable%
+  \endtabularx%
+}
+
+% TODO: redo this
+\newenvironment{TropicRatioTableThreeCol}[4]
+{%
+  \renewcommand{\tropicnumtablecols}{3}
+  \TropicRatioGuts {3}{#4}{#1}{#2}{#3}{0}{0}{0}{0}
+}
+{%
+  \endtabularx%
+}
+
+% Redefine environment for tables with params
+\renewenvironment{DoxyParams}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableTwoCol%
+  {0.2} {0.8}%
+  {Name & Description}%
+}
+{%
+  \endTropicRatioTableTwoCol%
+}
+
+% Redefine environment for tables with data fields
+\renewenvironment{DoxyFields}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableThreeCol%
+  {0.22} {0.43} {0.35}%
+  {Type & Name & Description}%
+}
+{%
+  \endTropicRatioTableThreeCol%
+}
+
+% Redefine environment for tables with enumerators
+\renewenvironment{DoxyEnumFields}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableTwoCol%
+  {0.4} {0.6}%
+  {Name & Description}%
+}
+{%
+  \endTropicRatioTableTwoCol%
+}
+
+% Redefine DoxyCodeLine cmd to make code bigger
+\renewcommand\DoxyCodeLine[1]
+{
+  \ifthenelse{\equal{\detokenize{#1}}{}}
+  {
+    \vspace*{\baselineskip}
+  }
+  {
+    \hangpara{\DoxyCodeWidth}{1}{\normalsize #1}\par
+  }
 }
 
 \usepackage{newunicodechar}
@@ -80,9 +137,11 @@
   \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
 \fi
 \hypersetup{%
-  colorlinks=true,%
-  linkcolor=TropicBlue,%
-  citecolor=TropicBlue,%
+  colorlinks  = true,%
+  linkcolor   = TropicBlue,%
+  citecolor   = TropicBlue,%
+  urlcolor    = TropicBlue,%
+  anchorcolor = TropicBlue,%
   unicode%
 }
 
