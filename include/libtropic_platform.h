@@ -19,7 +19,7 @@
 /** Max number of GET_INFO requests when chip is not answering */
 #define TS_L1_READ_MAX_TRIES 10
 /** Number of ms to wait between each GET_INFO request */
-#define TS_L1_READ_RETRY_DELAY 25
+#define TS_L1_READ_RETRY_DELAY 70
 
 /** Minimal timeout when waiting for activity on SPI bus */
 #define TS_L1_TIMEOUT_MS_MIN 5
@@ -85,5 +85,14 @@ ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uin
  * @return            TS_OK if success, otherwise returns other error code.
  */
 ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms);
+
+/**
+ * @brief Fill buffer with random bytes
+ *
+ * @param buff        Buffer to be filled
+ * @param len         number of 32bit numbers
+ * @return ts_ret_t   S_OK if success, otherwise returns other error code.
+ */
+ts_ret_t ts_random_bytes(uint32_t *buff, uint16_t len);
 
 #endif

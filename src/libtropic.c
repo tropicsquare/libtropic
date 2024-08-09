@@ -10,7 +10,7 @@
 #include <string.h>
 
 #include "libtropic_common.h"
-#include "ts_random.h"
+#include "libtropic_platform.h"
 #include "ts_l1.h"
 #include "ts_l2.h"
 #include "ts_l2_api.h"
@@ -60,7 +60,7 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const uint8_t pkey_i
     // Create ephemeral host keys
     uint8_t ehpriv[32];
     uint8_t ehpub[32];
-    ts_ret_t ret = ts_random_bytes(ehpriv, 32);
+    ts_ret_t ret = ts_random_bytes((uint32_t*)ehpriv, 8);
     if(ret != TS_OK) {
         return ret;
     }

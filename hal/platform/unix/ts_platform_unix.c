@@ -76,6 +76,15 @@ static buffer_s tx_buffer;
 // server socket
 static int socket_fd = -1;
 
+ts_ret_t ts_random_bytes(uint32_t *buff, uint16_t len) {
+
+    for(int i=0; i<len; i++) {
+        buff[i] = 0xabcdabcd;
+    }
+
+    return TS_OK;
+}
+
 static int ts_connect_to_server ()
 {
     struct sockaddr_in server;

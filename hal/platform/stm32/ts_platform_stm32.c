@@ -7,6 +7,20 @@
 #include "libtropic_common.h"
 #include "libtropic_platform.h"
 
+// Random number generator's handle
+RNG_HandleTypeDef rng;
+
+ts_ret_t ts_random_bytes(uint32_t *buff, uint16_t len) {
+
+
+    for(int i=0; i<len; i++) {
+        uint32_t helper = HAL_RNG_GetRandomNumber(&rng);
+        buff[i] = helper;
+    }
+
+    return TS_OK;
+}
+
 #ifdef USE_UART
 
 #define MIN_UART_PAYLOAD_LEN  3
@@ -138,6 +152,13 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h)
 {
     UNUSED(h);
 
+    // RNG Init:
+    rng.Instance = RNG;
+
+    if (HAL_RNG_Init(&rng) != HAL_OK) {
+        return TS_FAIL;
+    }
+
     // UART init:
     // Enable clock for used uart
     UART_MODEL_CLK_ENABLE();
@@ -165,6 +186,10 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h)
 ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
 {
     UNUSED(h);
+
+    if (HAL_RNG_DeInit(&rng) != HAL_OK) {
+        return TS_FAIL;
+    }
 
     if (HAL_UART_DeInit(&UartHandle) != HAL_OK) {
       return TS_L1_SPI_ERROR;
@@ -252,6 +277,10 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h)
 {
     UNUSED(h);
 
+    if (HAL_RNG_Init(&rng) != HAL_OK) {
+        return TS_FAIL;
+    }
+
     /* Set the SPI parameters */
     SpiHandle.Instance               = TS_SPI_INSTANCE;
     SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
@@ -299,6 +328,10 @@ ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
 {
     UNUSED(h);
 
+    if (HAL_RNG_DeInit(&rng) != HAL_OK) {
+        return TS_FAIL;
+    }
+    
     #ifdef FPGA_REMOTE
     // Clear pin for controlling SPI access
     GPIO_InitTypeDef  GPIO_InitStruct = {0};

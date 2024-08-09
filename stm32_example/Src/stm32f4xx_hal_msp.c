@@ -203,6 +203,35 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
   */
 
 /**
+  * @brief RNG MSP Initialization
+  *        This function inicializes hardware resources used in this example:
+  *          - Enable the Peripheral's clock
+  * @param hrng: RNG handle pointer
+  * @retval None
+  */
+void HAL_RNG_MspInit(RNG_HandleTypeDef *hrng)
+{
+  /* RNG Peripheral clock enable */
+  __HAL_RCC_RNG_CLK_ENABLE();
+}
+
+/**
+  * @brief RNG MSP De-Initialization
+  *        This function freeze the hardware resources used in this example:
+  *          - Disable the Peripheral's clock
+  * @param hrng: RNG handle pointer
+  * @retval None
+  */
+void HAL_RNG_MspDeInit(RNG_HandleTypeDef *hrng)
+{
+  /* Enable RNG reset state */
+  __HAL_RCC_RNG_FORCE_RESET();
+
+  /* Release RNG from reset state */
+  __HAL_RCC_RNG_RELEASE_RESET();
+}
+
+/**
   * @}
   */
 
