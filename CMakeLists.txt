@@ -10,8 +10,24 @@ option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 
+###########################################################################
+#                                                                         #
+#   Building documentation                                                #
+#                                                                         #
+###########################################################################
+
+if(BUILD_DOCS)
+    find_package(Doxygen)
+    if(Doxygen_FOUND)
+        add_subdirectory(docs)
+        message(STATUS "Doxygen found, building docs")
+    else()
+        message(STATUS "Doxygen not found, not building docs")
+    endif()
+endif()
+
 # Check if cryptography provider is defined
-if((NOT USE_TREZOR_CRYPTO) AND (NOT TS_CRYPTO_MBEDTLS))
+if((NOT USE_TREZOR_CRYPTO) AND (NOT TS_CRYPTO_MBEDTLS) AND (NOT BUILD_DOCS))
     message(FATAL_ERROR "Mbed TLS or trezor_crypto must be enabled!")
 endif()
 
@@ -34,18 +50,17 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.c
 )
 
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_platform.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.h
 )
 
 set(SDK_SRCS ${SDK_SRCS}
@@ -79,18 +94,3 @@ target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 
 
-###########################################################################
-#                                                                         #
-#   Building documentation is off by default                              #
-#                                                                         #
-###########################################################################
-
-if(BUILD_DOCS)
-    find_package(Doxygen)
-    if(Doxygen_FOUND)
-        add_subdirectory(docs)
-        message(STATUS "Doxygen found, building docs")
-    else()
-        message(STATUS "Doxygen not found, not building docs")
-    endif()
-endif()

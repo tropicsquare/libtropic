@@ -4,7 +4,7 @@
 #include "libtropic_common.h"
 #include "ts_l1.h"
 
-#include "mock_support_ts_l1.h"
+#include "mock_libtropic_platform.h"
 
 
 #define SOME_UNUSED_DEFAULT_BYTE 0xfe

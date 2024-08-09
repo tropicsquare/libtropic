@@ -1,8 +1,16 @@
 # This file is for internal use only
 
+# Documentation and Latex
+texlive 2022
+doxygen 1.10.0
+
+# RISC-V tools
 openocd v0.11.0
 cmake 3.23.2
 cppcheck 2.6
+
+# Python environment packages
 ts-python-env 0.4
-texlive 2022
-doxygen 1.10.0
+
+# Tropic flow tools
+ts-latex-lib v0.18

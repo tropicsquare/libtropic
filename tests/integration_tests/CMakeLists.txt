@@ -35,8 +35,7 @@ project(libtropic_unix_example
 ###########################################################################
 
 add_executable(main main.c
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/platform/unix/ts_unix_l1.c
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/platform/unix/ts_unix_random.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/platform/unix/ts_platform_unix.c
 )
 
 
