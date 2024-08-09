@@ -61,6 +61,7 @@ build_docs:
     - source setup_env
     - rm -rf build/
     - mkdir build
+    - cd build
     - cmake -DBUILD_DOCS=1 ..
     - make doc_doxygen
     - cd docs/doxygen/latex
