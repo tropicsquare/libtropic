@@ -3,60 +3,49 @@ cmake_minimum_required(VERSION 3.21.0)
 
 ###########################################################################
 #                                                                         #
+#   Paths and setup                                                       #
+#                                                                         #
+###########################################################################
+
+# Specify stm32 device
+set(STM32_DEVICE "STM32F439xx")
+# Openocd config file for used nucleo board
+set(OPENOCD_CFG "/usr/share/openocd/scripts/board/stm32f429discovery.cfg")
+# Path to linker script file
+set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/STM32F429ZITX_FLASH.ld)
+# Path to toolchain file
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake)
+# Paths to stm32 drivers
+set(PATH_TO_STM32CUBEF4 "drivers/" )
+# Path to libtropic
+set(PATH_TO_LIBTROPIC "../")
+# Path to trezor_crypto
+set(PATH_TREZOR_CRYPTO "../vendor/trezor_crypto/")
+
+# Libtropic related setup, use trezor crypto library for host side cryptography
+set(USE_TREZOR_CRYPTO ON)
+
+# Possibly switch transport layer here:
+#option(USE_UART "Use UART as a transport layer" ON)
+#option(USE_SPI "Use SPI as a transport layer" OFF)
+
+###########################################################################
+#                                                                         #
 #   Define project's name                                                 #
 #                                                                         #
 ###########################################################################
 
-set(TARGET stm32_example)
+project(stm32_example LANGUAGES C ASM)
 
 
 ###########################################################################
 #                                                                         #
-#   Define toolchaion file and linker script                              #
+#   Sources                                                               #
 #                                                                         #
 ###########################################################################
 
-set(LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/STM32F429ZITX_FLASH.ld)
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/toolchain.cmake)
-
-
-###########################################################################
-#                                                                         #
-#   Define project                                                        #
-#                                                                         #
-###########################################################################
-
-project(${TARGET} LANGUAGES C ASM)
-SET_PROPERTY(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS true)
-
-###########################################################################
-#                                                                         #
-#   Add and configure libtropic for this exmaple                          #
-#                                                                         #
-###########################################################################
-
-# This example is compiled for stm32F439, UART transport layer is set as default
-set(TS_HAL_STM32_SPI ON)
-#set(TS_HAL_STM32_UART ON)
-# Use trezor crypto as a source of backend cryptography code
-set(USE_TREZOR_CRYPTO ON)
-# Provide path to a root of libtropic repository
-add_subdirectory(../../ "libtropic")
-
-
-###########################################################################
-#                                                                         #
-#   Example's source files                                                #
-#                                                                         #
-###########################################################################
-
-# Path to cloned STM32CubeF4 repository
-set(PATH_TO_STM32CUBEF4 "../../vendor" )
-# Openocd config file for used nucleo board
-set(OPENOCD_CFG "/usr/share/openocd/scripts/board/stm32f429discovery.cfg")
-
-# Fill in your source files here (duh).
-set(SOURCES
+# Specify other source files
+set(SOURCES ${SOURCES}
     Src/main.c
     Src/stm32f4xx_it.c
     Src/stm32f4xx_hal_msp.c
@@ -64,6 +53,8 @@ set(SOURCES
     System/Startup/startup_stm32f429zitx.s
     System/User/syscalls.c
     System/User/sysmem.c
+    ${PATH_TO_LIBTROPIC}hal/platform/stm32/ts_stm32_l1.c
+    ${PATH_TO_LIBTROPIC}hal/platform/stm32/ts_stm32_random.c
     # Sources related to STM32f439ZInucleo board
     ${PATH_TO_STM32CUBEF4}/STM32CubeF4/Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.c
     # Sources for HAL functionalities used in this example
@@ -75,18 +66,6 @@ set(SOURCES
     ${PATH_TO_STM32CUBEF4}/STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
     ${PATH_TO_STM32CUBEF4}/STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
 )
-if(TS_HAL_STM32_SPI)
-    add_definitions(-DHAL_SPI)
-    message(INFO "Using SPI as a transport layer")
-    set(SOURCES ${SOURCES} ../../hal/spi/ts_l1_stm32_spi.c)
-    set(SOURCES ${SOURCES} ../../hal/system/ts_random_stm32.c)
-elseif(TS_HAL_STM32_UART)
-    add_definitions(-DHAL_UART)
-    message(WARNING "Using UART as a transport layer")
-    set(SOURCES ${SOURCES} ../../hal/spi/ts_l1_stm32_uart.c)
-else()
-    message(FATAL_ERROR "No transport layer selected")
-endif()
 
 # Find all HAL header files
 file(GLOB_RECURSE HAL_HEADERS ${PATH_TO_STM32CUBEF4}/STM32CubeF4/Drivers/STM32F4xx_HAL_Driver/Inc/*.h)
@@ -113,34 +92,58 @@ include_directories(
 
 ###########################################################################
 #                                                                         #
-#   Example's compilation                                                 #
+#   Add executable and set definitions                                    #
 #                                                                         #
 ###########################################################################
 
+add_executable(stm32_example.elf ${SOURCES} ${HEADERS})
+
 # Add this so HAL knows what target MCU we use
-add_definitions(-DSTM32F439xx)
-add_definitions(-DUSE_TREZOR_CRYPTO) # TODO unify and fix this definition with option
+add_definitions(-D${STM32_DEVICE})
+# Transport layer (USE_UART or USE_SPI):
+if(USE_UART)
+    target_compile_definitions(stm32_example.elf PRIVATE USE_UART)
+else()
+    target_compile_definitions(stm32_example.elf PRIVATE USE_SPI)
+endif()
 
-# Compile the sources to an .elf
-add_executable(${TARGET}.elf ${SOURCES} ${HEADERS})
+if(USE_TREZOR_CRYPTO)
+    target_compile_definitions(stm32_example.elf PRIVATE USE_TREZOR_CRYPTO)
+endif()
 
-# Link with libtropic
-target_link_options(${TARGET}.elf PRIVATE -Wl,--gc-sections -Wl,--strip-all)
-target_link_libraries(${TARGET}.elf PRIVATE tropic)
+
+###########################################################################
+#                                                                         #
+#   Add libtropic                                                         #
+#                                                                         #
+###########################################################################
+
+# Provide path to a root of libtropic repository
+add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
+
+#target_link_options(stm32_example.elf PRIVATE -Wl,--gc-sections -Wl,--strip-all)
+target_link_libraries(stm32_example.elf PRIVATE tropic)
+
+
+###########################################################################
+#                                                                         #
+#   Compilation outputs                                                   #
+#                                                                         #
+###########################################################################
 
 # Create a binary from the elf
-add_custom_command(TARGET ${TARGET}.elf POST_BUILD
-    COMMAND arm-none-eabi-objcopy -Oihex ${TARGET}.elf ${TARGET}.hex
+add_custom_command(TARGET stm32_example.elf POST_BUILD
+    COMMAND arm-none-eabi-objcopy -Oihex stm32_example.elf stm32_example.hex
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_custom_command(TARGET ${TARGET}.elf
+add_custom_command(TARGET stm32_example.elf
     POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} ARGS -O binary ${TARGET}.elf ${TARGET}.bin
+    COMMAND ${CMAKE_OBJCOPY} ARGS -O binary stm32_example.elf stm32_example.bin
 )
 
 add_custom_target(flash
-    COMMAND openocd -f ${OPENOCD_CFG} -c 'program ${TARGET}.elf verify reset exit'
+    COMMAND openocd -f ${OPENOCD_CFG} -c 'program stm32_example.elf verify reset exit'
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS ${TARGET}.elf
+    DEPENDS stm32_example.elf
 )

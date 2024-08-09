@@ -6,9 +6,10 @@
 * @brief  AESGCM function declarations
 * @author Tropic Square s.r.o.
 */
-
+#if USE_TREZOR_CRYPTO
 #include "aes.h"
 #include "aesgcm.h"
+#endif
 
 /** AES-GCM context structure */
 typedef struct ts_aes_gcm_ctx

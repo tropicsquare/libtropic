@@ -66,7 +66,7 @@ typedef struct ts_handle_t {
     void *device;
     uint32_t session;
     uint8_t IV[12];
-#if    USE_TREZOR_CRYPTO
+#if USE_TREZOR_CRYPTO
     uint8_t encrypt[352]; // sizeof(ts_aes_gcm_ctx_t) == 352;
     uint8_t decrypt[352];
 #elif USE_MBEDTLS
@@ -134,13 +134,5 @@ typedef enum {
     /** Error detected during cryptographic operation */
     TS_CRYPTO_ERR,
 } ts_ret_t;
-
-/**
- * @details Helper function for printing out error's associated name
- *
- * @param ret ts_ret_t return type
- * @return const char* name of error.
- */
-const char *ts_ret_verbose(ts_ret_t ret);
 
 #endif

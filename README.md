@@ -11,9 +11,9 @@ For more info about TROPIC01 check datasheet and API pdf.
 
 # Repository structure
 * `docs/` Documentation
-* `examples/` Examples of usage
+* `stm32_example/` POC project for stm32, soon this will be moved into separate repository
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
-* `include/` Public header file
+* `include/` Public header files
 * `src/` Library's source files
 * `tests/` Tests
 * `vendor/` Third party libraries and tools

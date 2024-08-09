@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 
 /**
  * @defgroup group_libtropic_API [PUBLIC API]
@@ -293,7 +293,7 @@ ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
 /**
  * @defgroup group_ts_eddsa_verify ts_eddsa_verify
  * @brief Verify signature
- * @details Prior to this call, public key related to used signing slot must be queried from TROPIC01. 
+ * @details Prior to this call, public key related to used signing slot must be queried from TROPIC01.
  *          F siunction verifies signature against this public key.
  *
  * @{
@@ -416,5 +416,13 @@ ts_ret_t ts_cert_verify_and_parse(const uint8_t *cert, const int16_t max_len, ui
 //ts_ret_t ts_get_info_riscv_fw_ver(ts_handle_t *h, uint8_t ver, uint16_t max_len);
 //ts_ret_t ts_get_info_spect_fw_ver(ts_handle_t *h, uint8_t ver, uint16_t max_len);
 //ts_ret_t ts_get_info_fw_bank(ts_handle_t *h, uint8_t fw_bank, uint16_t max_len);
+
+/**
+ * @details Helper function for printing out name of returned value
+ *
+ * @param ret ts_ret_t returned type value
+ * @return const char* description of return value.
+ */
+const char *ts_ret_verbose(ts_ret_t ret);
 
 #endif

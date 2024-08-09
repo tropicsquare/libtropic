@@ -7,7 +7,7 @@
 * @author Tropic Square s.r.o.
 */
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 
 /**
  * @brief Get a number of random bytes from the host platform RNG

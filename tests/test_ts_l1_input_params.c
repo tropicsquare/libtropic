@@ -1,7 +1,7 @@
 
 #include "unity.h"
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 
 #include "ts_l1.h"
 #include "mock_support_ts_l1.h"

@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 #include "ts_crc16.h"
 #include "ts_l1.h"
 #include "ts_l2.h"

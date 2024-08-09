@@ -3,7 +3,7 @@
 
 /**
 * @file ts_l1.h
-* @brief Layer 1 interfaces
+* @brief Header file with layer 1 interfaces
 * @author Tropic Square s.r.o.
 */
 
@@ -34,41 +34,56 @@
 /** Get info request's ID */
 #define GET_INFO_REQ_ID 0xAA
 
-
 /**
- * @brief Initialize handle and l1
+ * @brief Platform agonostic init function, configurable during build. Check libtropic's documentation for more info about platform configuration.
  *
  * @param h           Chip's handle
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_init(ts_handle_t *h);
+ts_ret_t ts_l1_platform_init(ts_handle_t *h);
 
 /**
- * @brief Wipe handle and deinitialize l1
+ * @brief Platform agonostic deinit function, configurable during build. Check libtropic's documentation for more info about platform configuration.
  *
  * @param h           Chip's handle
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_deinit(ts_handle_t *h);
+ts_ret_t ts_l1_platform_deinit(ts_handle_t *h);
 
 /**
- * @brief Read data from Tropic chip into host platform
+ * @brief Set chip select pin low
  *
  * @param h           Chip's handle
- * @param max_len     Max len of receive buffer
- * @param timeout     Timeout - how long function will wait for response
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeout);
+ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h);
 
 /**
- * @brief Write data from host platform into Tropic chip
+ * @brief Set chip select pin high
  *
  * @param h           Chip's handle
- * @param len         Length of data to send
+ * @return            TS_OK if success, otherwise returns other error code.
+ */
+ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h);
+
+/**
+ * @brief Do l1 transfer
+ *
+ * @param h           Chip's handle
+ * @param tx_len      The length of data to be transferred
+ * @param offset      Offset in handle's internal buffer where incomming bytes should be stored into
  * @param timeout     Timeout
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_write(ts_handle_t *h, const uint16_t len, const uint32_t timeout);
+ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout);
+
+/**
+ * @brief Platform's definition for delay, specifies what host platform should do when libtropic's functions need some delay
+ *
+ * @param h           Chip's handle
+ * @param ms          Time to wait in miliseconds
+ * @return            TS_OK if success, otherwise returns other error code.
+ */
+ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms);
 
 #endif

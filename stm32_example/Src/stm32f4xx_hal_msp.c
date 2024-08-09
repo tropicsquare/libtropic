@@ -49,33 +49,57 @@
   */
 void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
-  GPIO_InitTypeDef  GPIO_InitStruct;
+  GPIO_InitTypeDef  GPIO_InitStruct = {0};
 
+  /* Init pins for Debug uart port */
+  if(huart->Instance == USART_DBG) {
+    /*##-1- Enable peripherals and GPIO Clocks #################################*/
+    /* Enable GPIO TX/RX clock */
+    USART_DBG_TX_GPIO_CLK_ENABLE();
+    USART_DBG_RX_GPIO_CLK_ENABLE();
 
-  /*##-1- Enable peripherals and GPIO Clocks #################################*/
-  /* Enable GPIO TX/RX clock */
-  USARTx_TX_GPIO_CLK_ENABLE();
-  USARTx_RX_GPIO_CLK_ENABLE();
+    /* Enable USART_DBG clock */
+    USART_DBG_CLK_ENABLE();
 
+    /*##-2- Configure peripheral GPIO ##########################################*/
+    /* UART TX GPIO pin configuration  */
+    GPIO_InitStruct.Pin       = USART_DBG_TX_PIN;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull      = GPIO_PULLUP;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = USART_DBG_TX_AF;
 
-  /* Enable USARTx clock */
-  USARTx_CLK_ENABLE();
+    HAL_GPIO_Init(USART_DBG_TX_GPIO_PORT, &GPIO_InitStruct);
 
-  /*##-2- Configure peripheral GPIO ##########################################*/
-  /* UART TX GPIO pin configuration  */
-  GPIO_InitStruct.Pin       = USARTx_TX_PIN;
-  GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull      = GPIO_PULLUP;
-  GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = USARTx_TX_AF;
+    /* UART RX GPIO pin configuration  */
+    GPIO_InitStruct.Pin = USART_DBG_RX_PIN;
+    GPIO_InitStruct.Alternate = USART_DBG_RX_AF;
 
-  HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &GPIO_InitStruct);
+    HAL_GPIO_Init(USART_DBG_RX_GPIO_PORT, &GPIO_InitStruct);
+  /* Init pins for Model uart port */
+  }
+#ifdef USE_UART
+  else if(huart->Instance == UART_MODEL) {
 
-  /* UART RX GPIO pin configuration  */
-  GPIO_InitStruct.Pin = USARTx_RX_PIN;
-  GPIO_InitStruct.Alternate = USARTx_RX_AF;
-
-  HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
+   // GPIOs init:
+    // Initialize GPIO pins used by UART
+    GPIO_InitTypeDef  GPIO_InitStruct;
+    // Enable clock for used gpios
+    UART_MODEL_TX_GPIO_CLK_ENABLE();
+    UART_MODEL_RX_GPIO_CLK_ENABLE();
+    // UART TX GPIO pin configuration
+    GPIO_InitStruct.Pin       = UART_MODEL_TX_PIN;
+    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull      = GPIO_PULLUP;
+    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = UART_MODEL_TX_AF;
+    HAL_GPIO_Init(UART_MODEL_TX_GPIO_PORT, &GPIO_InitStruct);
+    // UART RX GPIO pin configuration
+    GPIO_InitStruct.Pin = UART_MODEL_RX_PIN;
+    GPIO_InitStruct.Alternate = UART_MODEL_RX_AF;
+    HAL_GPIO_Init(UART_MODEL_RX_GPIO_PORT, &GPIO_InitStruct);
+  }
+#endif
 }
 
 /**
@@ -88,16 +112,20 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
   */
 void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 {
-  /*##-1- Reset peripherals ##################################################*/
-  USARTx_FORCE_RESET();
-  USARTx_RELEASE_RESET();
-
-  /*##-2- Disable peripherals and GPIO Clocks #################################*/
-  /* Configure UART Tx as alternate function  */
-  HAL_GPIO_DeInit(USARTx_TX_GPIO_PORT, USARTx_TX_PIN);
-  /* Configure UART Rx as alternate function  */
-  HAL_GPIO_DeInit(USARTx_RX_GPIO_PORT, USARTx_RX_PIN);
-
+  if(huart->Instance == USART_DBG) {
+    USART_DBG_FORCE_RESET();
+    USART_DBG_RELEASE_RESET();
+    HAL_GPIO_DeInit(USART_DBG_TX_GPIO_PORT, USART_DBG_TX_PIN);
+    HAL_GPIO_DeInit(USART_DBG_RX_GPIO_PORT, USART_DBG_RX_PIN);
+  }
+#ifdef USE_UART
+  else if(huart->Instance == UART_MODEL) {
+    UART_MODEL_FORCE_RESET();
+    UART_MODEL_RELEASE_RESET();
+    HAL_GPIO_DeInit(UART_MODEL_TX_GPIO_PORT, UART_MODEL_TX_PIN);
+    HAL_GPIO_DeInit(UART_MODEL_RX_GPIO_PORT, UART_MODEL_RX_PIN);
+  }
+#endif
 }
 
 /**
@@ -110,6 +138,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
   */
 void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
 {
+#ifdef USE_SPI
   GPIO_InitTypeDef  GPIO_InitStruct;
 
   /*##-1- Enable peripherals and GPIO Clocks #################################*/
@@ -124,7 +153,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
   /* SPI SCK GPIO pin configuration  */
   GPIO_InitStruct.Pin       = SPIx_SCK_PIN;
   GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull      = GPIO_PULLUP; //TODO nopull is here so I can see some movement on my analyzer without anything connected to this pin. Replace with PULLUP
+  GPIO_InitStruct.Pull      = GPIO_PULLUP;
   GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
   GPIO_InitStruct.Alternate = SPIx_SCK_AF;
 
@@ -141,6 +170,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
   GPIO_InitStruct.Alternate = SPIx_MOSI_AF;
 
   HAL_GPIO_Init(SPIx_MOSI_GPIO_PORT, &GPIO_InitStruct);
+#endif
 }
 
 /**
@@ -153,6 +183,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
   */
 void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
 {
+#ifdef USE_SPI
   /*##-1- Reset peripherals ##################################################*/
   SPIx_FORCE_RESET();
   SPIx_RELEASE_RESET();
@@ -164,6 +195,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
   HAL_GPIO_DeInit(SPIx_MISO_GPIO_PORT, SPIx_MISO_PIN);
   /* Configure SPI MOSI as alternate function  */
   HAL_GPIO_DeInit(SPIx_MOSI_GPIO_PORT, SPIx_MOSI_PIN);
+#endif
 }
 
 /**
