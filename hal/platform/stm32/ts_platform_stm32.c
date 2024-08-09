@@ -331,7 +331,7 @@ ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
     if (HAL_RNG_DeInit(&rng) != HAL_OK) {
         return TS_FAIL;
     }
-    
+
     #ifdef FPGA_REMOTE
     // Clear pin for controlling SPI access
     GPIO_InitTypeDef  GPIO_InitStruct = {0};
@@ -361,7 +361,6 @@ ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_data_len
 
     return TS_OK;
 }
-
 
 ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms)
 {
