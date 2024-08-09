@@ -8,12 +8,13 @@
 #include "mock_ts_l1.h"
 #include "mock_ts_l2.h"
 #include "mock_ts_l3.h"
-#include "mock_ts_random.h"
 #include "mock_ts_x25519.h"
 #include "mock_ts_ed25519.h"
 #include "mock_ts_hkdf.h"
 #include "mock_ts_sha256.h"
 #include "mock_ts_aesgcm.h"
+#include "mock_libtropic_platform.h"
+
 
 
 void setUp(void)

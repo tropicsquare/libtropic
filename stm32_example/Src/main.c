@@ -182,7 +182,7 @@ int main(void)
     ret = ts_init(&handle);
 
     /* Following lines are only for printing results out: */
-    LOG_OUT_INFO("ts_l1_init();\r\n");
+    LOG_OUT_INFO("ts_init();\r\n");
     LOG_OUT_VALUE("ts_ret_t:    %s\r\n", ts_ret_verbose(ret));
     LOG_OUT_LINE();
 
