@@ -2,7 +2,7 @@
 #include "unity.h"
 #include "string.h"
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 #include "libtropic.h"
 
 #include "mock_ts_l1.h"
@@ -23,6 +23,36 @@ void setUp(void)
 void tearDown(void)
 {
 }
+
+
+void test_ts_ret_verbose()
+{
+    TEST_ASSERT_EQUAL_STRING("TS_OK", ts_ret_verbose(TS_OK));
+    TEST_ASSERT_EQUAL_STRING("TS_FAIL", ts_ret_verbose(TS_FAIL));
+    TEST_ASSERT_EQUAL_STRING("TS_PARAM_ERR", ts_ret_verbose(TS_PARAM_ERR));
+    TEST_ASSERT_EQUAL_STRING("TS_L1_SPI_ERROR", ts_ret_verbose(TS_L1_SPI_ERROR));
+    TEST_ASSERT_EQUAL_STRING("TS_L1_DATA_LEN_ERROR", ts_ret_verbose(TS_L1_DATA_LEN_ERROR));
+    TEST_ASSERT_EQUAL_STRING("TS_L1_CHIP_STARTUP_MODE", ts_ret_verbose(TS_L1_CHIP_STARTUP_MODE));
+    TEST_ASSERT_EQUAL_STRING("TS_L1_CHIP_ALARM_MODE", ts_ret_verbose(TS_L1_CHIP_ALARM_MODE));
+    TEST_ASSERT_EQUAL_STRING("TS_L1_CHIP_BUSY", ts_ret_verbose(TS_L1_CHIP_BUSY));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_IN_CRC_ERR", ts_ret_verbose(TS_L2_IN_CRC_ERR));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_REQ_CONT", ts_ret_verbose(TS_L2_REQ_CONT));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_RES_CONT", ts_ret_verbose(TS_L2_RES_CONT));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_HSK_ERR", ts_ret_verbose(TS_L2_HSK_ERR));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_NO_SESSION", ts_ret_verbose(TS_L2_NO_SESSION));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_TAG_ERR", ts_ret_verbose(TS_L2_TAG_ERR));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_CRC_ERR", ts_ret_verbose(TS_L2_CRC_ERR));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_GEN_ERR", ts_ret_verbose(TS_L2_GEN_ERR));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_NO_RESP", ts_ret_verbose(TS_L2_NO_RESP));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_UNKNOWN_REQ", ts_ret_verbose(TS_L2_UNKNOWN_REQ));
+    TEST_ASSERT_EQUAL_STRING("TS_L3_FAIL", ts_ret_verbose(TS_L3_FAIL));
+    TEST_ASSERT_EQUAL_STRING("TS_L3_OK", ts_ret_verbose(TS_L3_OK));
+    TEST_ASSERT_EQUAL_STRING("TS_L3_UNAUTHORIZED", ts_ret_verbose(TS_L3_UNAUTHORIZED));
+    TEST_ASSERT_EQUAL_STRING("TS_L3_INVALID_CMD", ts_ret_verbose(TS_L3_INVALID_CMD));
+    TEST_ASSERT_EQUAL_STRING("TS_HOST_NO_SESSION", ts_ret_verbose(TS_HOST_NO_SESSION));
+    TEST_ASSERT_EQUAL_STRING("UNKNOWN return value", ts_ret_verbose(99));
+}
+
 
 // ts_init()
 void test_ts_init___invalid_handle()

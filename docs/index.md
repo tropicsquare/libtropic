@@ -121,3 +121,11 @@ Library offers various calls to simplify tropic chip usage on a target platform:
 Related code:
 * libtropic.c
 * libtropic.h
+
+## Cross compiling
+
+Provide toolchain file and linker script:
+
+```
+rm -rf build/; mkdir build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/STM32F429ZITX_FLASH.ld .. ; make ; cd ../
+```

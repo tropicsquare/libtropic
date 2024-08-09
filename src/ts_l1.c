@@ -12,57 +12,19 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "ts_common.h"
+#include "libtropic_common.h"
+#include "libtropic_platform.h"
 #include "ts_l1.h"
 
-
-#if ((TS_HAL_UNIX == 0) && (TS_HAL_STM32_SPI == 0) && (TS_HAL_STM32_UART == 0) && (TEST == 0)) // && other platforms here
-#pragma message("Provide own implementation for:    ts_l1_init()")
-#pragma message("Provide own implementation for:    ts_l1_deinit()")
-#pragma message("Provide own implementation for:    ts_l1_spi_transfer()")
-#pragma message("Provide own implementation for:    ts_l1_spi_csn_low()")
-#pragma message("Provide own implementation for:    ts_l1_spi_csn_high()")
-#pragma message("Provide own implementation for:    ts_l1_delay()")
-
-__attribute__((weak)) ts_ret_t ts_l1_init(ts_handle_t *h)
+ts_ret_t ts_l1_init(ts_handle_t *h)
 {
-    UNUSED(h);
-    return TS_FAIL;
+    return ts_l1_platform_init(h);
 }
 
-__attribute__((weak)) ts_ret_t ts_l1_deinit(ts_handle_t *h)
+ts_ret_t ts_l1_deinit(ts_handle_t *h)
 {
-    UNUSED(h);
-    return TS_FAIL;
+    return ts_l1_platform_deinit(h);
 }
-
-__attribute__((weak)) ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout)
-{
-    UNUSED(h);
-    UNUSED(offset);
-    UNUSED(tx_len);
-    UNUSED(timeout);
-    return TS_FAIL;
-}
-
-__attribute__((weak)) ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h)
-{
-    UNUSED(h);
-    return TS_FAIL;
-}
-
-__attribute__((weak)) ts_ret_t ts_l1_spi_csn_high (ts_handle_t *h)
-{
-    UNUSED(h);
-    return TS_FAIL;
-}
-__attribute__((weak)) ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms) {
-    UNUSED(ms);
-    UNUSED(h);
-    return TS_FAIL;
-}
-
-#endif
 
 ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeout)
 {

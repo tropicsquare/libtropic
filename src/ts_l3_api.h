@@ -7,7 +7,7 @@
 * @author Tropic Square s.r.o.
 */
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 
 
 /**

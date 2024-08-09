@@ -95,9 +95,9 @@ static UART_HandleTypeDef UartHandle;
  *
  * @return HAL_StatusTypeDef
  */
-static HAL_StatusTypeDef UART_Init(void)
+static HAL_StatusTypeDef DBG_UART_Init(void)
 {
-  UartHandle.Instance        = USARTx;
+  UartHandle.Instance        = USART_DBG;
   UartHandle.Init.BaudRate   = 115200;
   UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
   UartHandle.Init.StopBits   = UART_STOPBITS_1;
@@ -153,7 +153,7 @@ int main(void)
   /* Initialize BSP Led for LED2 */
   BSP_LED_Init(LED2);
 
-  if(UART_Init() != HAL_OK) {
+  if(DBG_UART_Init() != HAL_OK) {
     Error_Handler();
   }
 
@@ -161,11 +161,7 @@ int main(void)
     /* Welcome banner */
     LOG_OUT("\r\n");
     LOG_OUT("\t\t======================================================================\r\n");
-#if HAL_UART
-    LOG_OUT("\t\t=====    libtropic stm32 demo, running over UART against model     ===\r\n");
-#elif HAL_SPI
-    LOG_OUT("\t\t=====    libtropic stm32 demo, running over SPI against FPGA       ===\r\n");
-#endif
+    LOG_OUT("\t\t=====    libtropic stm32 demo                                      ===\r\n");
     LOG_OUT("\t\t======================================================================\r\n\n");
 
     LOG_OUT_INFO("List all possible return values:\r\n\n");

@@ -1,5 +1,25 @@
 cmake_minimum_required(VERSION 3.21.0)
 
+###########################################################################
+#                                                                         #
+#   Setup                                                                 #
+#                                                                         #
+###########################################################################
+
+option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
+option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
+option(BUILD_DOCS "Build documentation" OFF)
+
+# Check if cryptography provider is defined
+if((NOT USE_TREZOR_CRYPTO) AND (NOT TS_CRYPTO_MBEDTLS))
+    message(FATAL_ERROR "Mbed TLS or trezor_crypto must be enabled!")
+endif()
+
+###########################################################################
+#                                                                         #
+#   Collect files                                                         #
+#                                                                         #
+###########################################################################
 
 project(libtropic_SDK
         VERSION 0.0.1
@@ -7,58 +27,7 @@ project(libtropic_SDK
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
 
-
-###########################################################################
-#                                                                         #
-#   Library setup                                                         #
-#                                                                         #
-###########################################################################
-
-option(TS_HAL_UNIX "Use TCP and connect to model" OFF)
-option(TS_HAL_STM32_UART "Use UART and connect to model" OFF)
-option(TS_HAL_STM32_SPI "Use SPI and connect to real chip" OFF)
-
-option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" ON)
-option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
-
-option(DEBUG "Compile with -g -Wextra -Wpedantic -Werror" OFF)
-option(BUILD_DOCS "Build documentation" OFF)
-
-
-###########################################################################
-#                                                                         #
-#   libtropic source files                                               #
-#                                                                         #
-###########################################################################
-
-# Enable l1 implementation for a target platform
-if (TS_HAL_UNIX)
-    message(DEBUG "UNIX TCP HAL selected (for model)")
-    add_definitions(-DTS_HAL_UNIX=1)
-    # Main program is responsible for adding file from
-    # appropriate hal/XXX/XXX/folder into its sources and compile it,
-    # For more info check examples.
-elseif(TS_HAL_STM32_SPI)
-    message(DEBUG "STM32 HAL selected ")
-    add_definitions(-DTS_HAL_STM32_SPI=1)
-    # TODO get rid of HOST_KEY_* once get info req with cert is working
-    add_definitions(-DHOST_KEY_FPGA=1)
-    # Main program is responsible for adding file from
-    # appropriate hal/XXX/XXX/folder into its sources and compile it,
-    # For more info check examples.
-elseif(TS_HAL_STM32_UART)
-    message(DEBUG "STM32 UART HAL selected ")
-    add_definitions(-DTS_HAL_STM32_UART=1)
-    # Main program is responsible for adding file from
-    # appropriate hal/XXX/XXX/folder into its sources and compile it,
-    # For more info check examples.
-else()
-    message(WARNING "No HAL enabled, add your own implementation for L1 functions !! ")
-    set(SDK_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.c)
-endif()
-
 set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_common.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.c
@@ -67,8 +36,9 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.c
 )
+
 set(SDK_INCS ${SDK_INCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_common.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.h
@@ -78,38 +48,35 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.h
 )
 
-add_library(tropic STATIC ${SDK_SRCS} ${SDK_INCS})
-
-target_include_directories(tropic PUBLIC
-                            ${CMAKE_CURRENT_SOURCE_DIR}/src/
-                            ${CMAKE_CURRENT_SOURCE_DIR}/include/
+set(SDK_SRCS ${SDK_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_x25519.c
 )
 
-target_compile_options(tropic PRIVATE -Wall)
-target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
-if(DEBUG)
-    target_compile_options(tropic PRIVATE -g)
-endif()
+add_library(tropic ${SDK_SRCS} ${SDK_INCS})
+
+target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
+target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
 
 ###########################################################################
 #                                                                         #
-#   Setting up crypto backend based on option switches                    #
+#   Compile and link                                                      #
 #                                                                         #
 ###########################################################################
 
-if (USE_TREZOR_CRYPTO)
-    # Trezor library
+if(USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR)
     target_link_libraries(tropic PRIVATE trezor_crypto)
-    # libtropic wrappers for trezor library
-    add_subdirectory(hal/crypto/trezor_crypto)
     target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()
 
-if (TS_CRYPTO_MBEDTLS)
-    message(FATAL_ERROR "Mbedtls support is not implemented yet")
-endif()
+target_compile_options(tropic PRIVATE -Wall)
+target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
+target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 
 
 ###########################################################################

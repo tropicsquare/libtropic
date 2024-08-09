@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "ts_common.h"
-#include "ts_l1.h"
+#include "libtropic_common.h"
+//#include "libtropic_platform.h"
 
 #define TCP_ADDR "127.0.0.1"
 #define TCP_PORT 28992
@@ -300,7 +300,7 @@ static int server_disconnect(void)
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-ts_ret_t ts_l1_init(ts_handle_t *h)
+ts_ret_t ts_l1_platform_init(ts_handle_t *h)
 {
     UNUSED(h);
     memset(h, 0, sizeof(ts_handle_t));
@@ -316,7 +316,7 @@ ts_ret_t ts_l1_init(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_deinit(ts_handle_t *h)
+ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
 {
     UNUSED(h);
     if(server_disconnect() != 0) {

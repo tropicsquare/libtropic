@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "ts_common.h"
+#include "libtropic_common.h"
 #include "ts_l1.h"
 #include "ts_l2.h"
 #include "ts_l3.h"

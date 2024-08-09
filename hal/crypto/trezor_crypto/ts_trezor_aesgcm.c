@@ -2,7 +2,7 @@
 #include "aes.h"
 #include "aesgcm.h"
 #include "ts_aesgcm.h"
-#include "ts_common.h"
+#include "libtropic_common.h"
 
 int ts_aesgcm_init_and_key(void *ctx,
                     const uint8_t *key,
