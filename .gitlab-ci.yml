@@ -53,21 +53,20 @@ build_integration_tests:
     - cmake -DUSE_TREZOR_CRYPTO=1 ..
     - make
 
-#build_docs:
-#  stage: docs
-#  tags:
-#    - shell
-#  script:
-#    - source setup_env
-#    - ls -la
-#    - cd build
-#    - cmake -DBUILD_DOCS=1 ..
-#    - make
-#    - cd docs/doxygen/latex
-#    - make
-#    - mv refman.pdf libtropic.pdf
-#    - mv libtropic.pdf ../../../../
-#  artifacts:
-#    paths:
-#      - libtropic.pdf
-#
+build_docs:
+  stage: docs
+  tags:
+    - shell
+  script:
+    - source setup_env
+    - rm -rf build/
+    - mkdir build
+    - cmake -DBUILD_DOCS=1 ..
+    - make doc_doxygen
+    - cd docs/doxygen/latex
+    - make
+    - mv refman.pdf libtropic.pdf
+    - mv libtropic.pdf ../../../../
+  artifacts:
+    paths:
+      - libtropic.pdf
