@@ -5,13 +5,12 @@
 #include "main.h"
 
 #include "libtropic_common.h"
-#include "libtropic_platform.h"
+#include "libtropic_port.h"
 
 // Random number generator's handle
 RNG_HandleTypeDef rng;
 
-ts_ret_t ts_random_bytes(uint32_t *buff, uint16_t len) {
-
+ts_ret_t ts_port_random_bytes(uint32_t *buff, uint16_t len) {
 
     for(int i=0; i<len; i++) {
         uint32_t helper = HAL_RNG_GetRandomNumber(&rng);
@@ -132,7 +131,7 @@ static int ts_reset_target(void)
     return ts_communicate(NULL);
 }
 
-ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h)
+ts_ret_t ts_port_spi_csn_low(ts_handle_t *h)
 {
     UNUSED(h);
     ////LOG_OUT("-- Driving Chip Select to Low.\n");
@@ -140,7 +139,7 @@ ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h)
     return ts_communicate(NULL);
 }
 
-ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h)
+ts_ret_t ts_port_spi_csn_high(ts_handle_t *h)
 {
     UNUSED(h);
     ////LOG_OUT("-- Driving Chip Select to High.\n");
@@ -148,7 +147,7 @@ ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h)
     return ts_communicate(NULL);
 }
 
-ts_ret_t ts_l1_platform_init(ts_handle_t *h)
+ts_ret_t ts_port_init(ts_handle_t *h)
 {
     UNUSED(h);
 
@@ -183,7 +182,7 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
+ts_ret_t ts_port_deinit(ts_handle_t *h)
 {
     UNUSED(h);
 
@@ -198,7 +197,7 @@ ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+ts_ret_t ts_port_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(h);
 
@@ -223,7 +222,7 @@ ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_le
     return TS_OK;
 }
 
-ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms)
+ts_ret_t ts_port_delay(ts_handle_t *h, uint32_t ms)
 {
     UNUSED(h);
 
@@ -249,7 +248,7 @@ ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms)
 /* SPI handle declaration */
 SPI_HandleTypeDef SpiHandle;
 
-ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h)
+ts_ret_t ts_port_spi_csn_low(ts_handle_t *h)
 {
     UNUSED(h);
 
@@ -261,7 +260,7 @@ ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h)
+ts_ret_t ts_port_spi_csn_high(ts_handle_t *h)
 {
     UNUSED(h);
 
@@ -273,7 +272,7 @@ ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_platform_init(ts_handle_t *h)
+ts_ret_t ts_port_init(ts_handle_t *h)
 {
     UNUSED(h);
 
@@ -324,7 +323,7 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
+ts_ret_t ts_port_deinit(ts_handle_t *h)
 {
     UNUSED(h);
 
@@ -349,7 +348,7 @@ ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+ts_ret_t ts_port_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     if (offset + tx_data_length > TS_L1_LEN_MAX) {
         return TS_L1_DATA_LEN_ERROR;
@@ -362,7 +361,7 @@ ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_data_len
     return TS_OK;
 }
 
-ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms)
+ts_ret_t ts_port_delay(ts_handle_t *h, uint32_t ms)
 {
     UNUSED(h);
 

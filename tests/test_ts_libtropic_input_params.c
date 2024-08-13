@@ -5,6 +5,7 @@
 #include "libtropic_common.h"
 #include "libtropic.h"
 
+#include "mock_ts_random.h"
 #include "mock_ts_l1.h"
 #include "mock_ts_l2.h"
 #include "mock_ts_l3.h"
@@ -13,7 +14,7 @@
 #include "mock_ts_hkdf.h"
 #include "mock_ts_sha256.h"
 #include "mock_ts_aesgcm.h"
-#include "mock_libtropic_platform.h"
+
 
 
 
@@ -46,10 +47,12 @@ void test_ts_ret_verbose()
     TEST_ASSERT_EQUAL_STRING("TS_L2_GEN_ERR", ts_ret_verbose(TS_L2_GEN_ERR));
     TEST_ASSERT_EQUAL_STRING("TS_L2_NO_RESP", ts_ret_verbose(TS_L2_NO_RESP));
     TEST_ASSERT_EQUAL_STRING("TS_L2_UNKNOWN_REQ", ts_ret_verbose(TS_L2_UNKNOWN_REQ));
+    TEST_ASSERT_EQUAL_STRING("TS_L2_STATUS_NOT_RECOGNIZED", ts_ret_verbose(TS_L2_STATUS_NOT_RECOGNIZED));
     TEST_ASSERT_EQUAL_STRING("TS_L3_FAIL", ts_ret_verbose(TS_L3_FAIL));
     TEST_ASSERT_EQUAL_STRING("TS_L3_OK", ts_ret_verbose(TS_L3_OK));
     TEST_ASSERT_EQUAL_STRING("TS_L3_UNAUTHORIZED", ts_ret_verbose(TS_L3_UNAUTHORIZED));
     TEST_ASSERT_EQUAL_STRING("TS_L3_INVALID_CMD", ts_ret_verbose(TS_L3_INVALID_CMD));
+    TEST_ASSERT_EQUAL_STRING("TS_L3_DATA_LEN_ERROR", ts_ret_verbose(TS_L3_DATA_LEN_ERROR));
     TEST_ASSERT_EQUAL_STRING("TS_HOST_NO_SESSION", ts_ret_verbose(TS_HOST_NO_SESSION));
     TEST_ASSERT_EQUAL_STRING("UNKNOWN return value", ts_ret_verbose(99));
 }

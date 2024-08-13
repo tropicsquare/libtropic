@@ -10,7 +10,8 @@
 #include <string.h>
 
 #include "libtropic_common.h"
-#include "libtropic_platform.h"
+#include "libtropic_port.h"
+#include "ts_random.h"
 #include "ts_l1.h"
 #include "ts_l2.h"
 #include "ts_l2_api.h"
@@ -86,7 +87,6 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const uint8_t pkey_i
     uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
     // h = SHA_256(protocol_name)
     ts_sha256_ctx_t hctx = {0};
-
     ts_sha256_init(&hctx);
     ts_sha256_start(&hctx);
     ts_sha256_update(&hctx, protocol_name, 32);
@@ -528,6 +528,8 @@ const char *ts_ret_verbose(ts_ret_t ret) {
             return "TS_L2_GEN_ERR";
         case TS_L2_NO_RESP:
             return "TS_L2_NO_RESP";
+        case TS_L2_STATUS_NOT_RECOGNIZED:
+            return "TS_L2_STATUS_NOT_RECOGNIZED";
         case TS_L2_UNKNOWN_REQ:
             return "TS_L2_UNKNOWN_REQ";
 
@@ -540,6 +542,8 @@ const char *ts_ret_verbose(ts_ret_t ret) {
             return "TS_L3_UNAUTHORIZED";
         case TS_L3_INVALID_CMD:
             return "TS_L3_INVALID_CMD";
+        case TS_L3_DATA_LEN_ERROR:
+            return "TS_L3_DATA_LEN_ERROR";
 
         // libtropic
         case TS_HOST_NO_SESSION:

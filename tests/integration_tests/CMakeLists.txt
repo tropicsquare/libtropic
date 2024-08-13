@@ -35,7 +35,7 @@ project(libtropic_unix_example
 ###########################################################################
 
 add_executable(main main.c
-                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/platform/unix/ts_platform_unix.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../hal/port/unix/ts_port_unix.c
 )
 
 
@@ -58,6 +58,11 @@ endif()
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
+
+# Customize libtropic's compilation
+target_compile_options(tropic PRIVATE -Wall)
+target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
+target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 
 # Customize trezor_crypto library compilation:
 target_compile_definitions(trezor_crypto PRIVATE USE_INSECURE_PRNG)

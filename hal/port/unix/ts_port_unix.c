@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #include "libtropic_common.h"
-//#include "libtropic_platform.h"
+#include "libtropic_port.h"
 
 #define TCP_ADDR "127.0.0.1"
 #define TCP_PORT 28992
@@ -76,14 +76,6 @@ static buffer_s tx_buffer;
 // server socket
 static int socket_fd = -1;
 
-ts_ret_t ts_random_bytes(uint32_t *buff, uint16_t len) {
-
-    for(int i=0; i<len; i++) {
-        buff[i] = 0xabcdabcd;
-    }
-
-    return TS_OK;
-}
 
 static int ts_connect_to_server ()
 {
@@ -302,14 +294,7 @@ static int server_disconnect(void)
     return close(socket_fd);
 }
 
-
-//////////////////////////////////////////////////////////////////////
-//                                                                  //
-// ts_l1 HAL definitions:                                           //
-//                                                                  //
-//////////////////////////////////////////////////////////////////////
-
-ts_ret_t ts_l1_platform_init(ts_handle_t *h)
+ts_ret_t ts_port_init(ts_handle_t *h)
 {
     UNUSED(h);
     memset(h, 0, sizeof(ts_handle_t));
@@ -325,7 +310,7 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
+ts_ret_t ts_port_deinit(ts_handle_t *h)
 {
     UNUSED(h);
     if(server_disconnect() != 0) {
@@ -335,7 +320,7 @@ ts_ret_t ts_l1_platform_deinit(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_l1_spi_csn_low (ts_handle_t *h)
+ts_ret_t ts_port_spi_csn_low (ts_handle_t *h)
 {
     UNUSED(h);
     LOG_OUT("-- Driving Chip Select to Low.\n");
@@ -343,7 +328,7 @@ ts_ret_t ts_l1_spi_csn_low (ts_handle_t *h)
     return ts_communicate(NULL, NULL);
 }
 
-ts_ret_t ts_l1_spi_csn_high (ts_handle_t *h)
+ts_ret_t ts_port_spi_csn_high (ts_handle_t *h)
 {
     UNUSED(h);
     LOG_OUT("-- Driving Chip Select to High.\n");
@@ -351,7 +336,7 @@ ts_ret_t ts_l1_spi_csn_high (ts_handle_t *h)
     return ts_communicate(NULL, NULL);
 }
 
-ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+ts_ret_t ts_port_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(h);
     UNUSED(timeout);
@@ -377,13 +362,12 @@ ts_ret_t ts_l1_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_le
         return TS_FAIL;
     }
 
-    // copy rx payload to rx_data
     memcpy(h->l2_buff + offset, &rx_buffer.PAYLOAD, rx_payload_length);
 
     return TS_OK;
 }
 
-ts_ret_t ts_l1_delay (ts_handle_t *h, uint32_t wait_time_usecs)
+ts_ret_t ts_port_delay (ts_handle_t *h, uint32_t wait_time_usecs)
 {
     UNUSED(h);
     LOG_OUT("-- Waiting for the target.\n");
@@ -393,4 +377,13 @@ ts_ret_t ts_l1_delay (ts_handle_t *h, uint32_t wait_time_usecs)
     *(uint32_t *)(&tx_buffer.PAYLOAD) = wait_time_usecs;
 
     return ts_communicate(&payload_length, NULL);
+}
+
+ts_ret_t ts_port_random_bytes(uint32_t *buff, uint16_t len) {
+
+    for(int i=0; i<len; i++) {
+        buff[i] = 0xabcdabcd;
+    }
+
+    return TS_OK;
 }

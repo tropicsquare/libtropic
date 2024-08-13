@@ -111,6 +111,8 @@ typedef enum {
     TS_L2_NO_RESP,
     /** ID of last request is not known to TROPIC01 */
     TS_L2_UNKNOWN_REQ,
+    /** Returned status byte is not recognized at all */
+    TS_L2_STATUS_NOT_RECOGNIZED,
     /** L2 data does not have an expected length */
     TS_L2_DATA_LEN_ERROR,
 
@@ -122,6 +124,8 @@ typedef enum {
     TS_L3_UNAUTHORIZED,
     /** Received L3 command is invalid */
     TS_L3_INVALID_CMD,
+    /** L3 data does not have an expected length */
+    TS_L3_DATA_LEN_ERROR,
 
     /* Host no session */
     TS_HOST_NO_SESSION,

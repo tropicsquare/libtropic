@@ -53,7 +53,7 @@ set(SOURCES ${SOURCES}
     System/Startup/startup_stm32f429zitx.s
     System/User/syscalls.c
     System/User/sysmem.c
-    ${PATH_TO_LIBTROPIC}hal/platform/stm32/ts_platform_stm32.c
+    ${PATH_TO_LIBTROPIC}hal/port/stm32/ts_port_stm32.c
     # Sources related to STM32f439ZInucleo board
     ${PATH_TO_STM32CUBEF4}/STM32CubeF4/Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.c
     # Sources for HAL functionalities used in this example

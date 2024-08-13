@@ -135,5 +135,5 @@ void test_ts_l2_frame_check___TS_FAIL()
 {
     test_data[0] = CHIP_MODE_READY_bit;
     test_data[1] = INVALID_BYTE;
-    TEST_ASSERT_EQUAL(TS_FAIL, ts_l2_frame_check(test_data));
+    TEST_ASSERT_EQUAL(TS_L2_STATUS_NOT_RECOGNIZED, ts_l2_frame_check(test_data));
 }

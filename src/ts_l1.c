@@ -1,34 +1,126 @@
 /**
-* @file
+* @file ts_l1.c
+* @brief Layer 1 functions
 * @author Tropic Square s.r.o.
-* @version 0.1
-*
-*
-* @brief DESCRIPTION
-*
 */
+
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 
 #include "libtropic_common.h"
-#include "libtropic_platform.h"
+#include "libtropic_port.h"
 #include "ts_l1.h"
+
+/**
+ * @brief Sets chip select pin low, static wrapper
+ *
+ * @param h           Chip's handle
+ * @return            TS_OK if success, otherwise returns other error code.
+ */
+static ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h);
+
+/**
+ * @brief Set chip select pin high, , static wrapper
+ *
+ * @param h           Chip's handle
+ * @return            TS_OK if success, otherwise returns other error code.
+ */
+static ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h);
+
+/**
+ * @brief Do l1 transfer, static wrapper
+ *
+ * @param h           Chip's handle
+ * @param tx_len      The length of data to be transferred
+ * @param offset      Offset in handle's internal buffer where incomming bytes should be stored into
+ * @param timeout     Timeout
+ * @return            TS_OK if success, otherwise returns other error code.
+ */
+static ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout);
+
+/**
+ * @brief Platform's definition for delay, specifies what host
+ *        platform should do when libtropic's functions need some delay. Static wrapper.
+ *
+ * @param h           Chip's handle
+ * @param ms          Time to wait in miliseconds
+ * @return            TS_OK if success, otherwise returns other error code.
+ */
+static ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms);
+
+
+static ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h)
+{
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
+
+    return ts_port_spi_csn_low(h);
+}
+
+static ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h)
+{
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
+
+    return ts_port_spi_csn_high(h);
+}
+
+static ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout)
+{
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
+
+    return ts_port_spi_transfer(h, offset, tx_len, timeout);
+}
+
+static ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms)
+{
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
+
+    return ts_port_delay(h, ms);
+}
 
 ts_ret_t ts_l1_init(ts_handle_t *h)
 {
-    return ts_l1_platform_init(h);
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
+
+    return ts_port_init(h);
 }
 
 ts_ret_t ts_l1_deinit(ts_handle_t *h)
 {
-    return ts_l1_platform_deinit(h);
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
+
+    return ts_port_deinit(h);
 }
 
 ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeout)
 {
-    if (!h) {
+#ifdef LIBT_DEBUG
+    if(!h) {
         return TS_PARAM_ERR;
     }
     if ((timeout<TS_L1_TIMEOUT_MS_MIN) | (timeout > TS_L1_TIMEOUT_MS_MAX)) {
@@ -37,7 +129,7 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
     if ((max_len < TS_L1_LEN_MIN) | (max_len > TS_L1_LEN_MAX)) {
         return TS_PARAM_ERR;
     }
-
+#endif
     int max_tries = TS_L1_READ_MAX_TRIES;
 
     while(max_tries > 0) {
@@ -111,7 +203,8 @@ ts_ret_t ts_l1_read(ts_handle_t *h, const uint32_t max_len, const uint32_t timeo
 
 ts_ret_t ts_l1_write(ts_handle_t *h, const uint16_t len, const uint32_t timeout)
 {
-    if (!h) {
+#ifdef LIBT_DEBUG
+    if(!h) {
         return TS_PARAM_ERR;
     }
     if ((timeout<TS_L1_TIMEOUT_MS_MIN) | (timeout > TS_L1_TIMEOUT_MS_MAX)) {
@@ -120,7 +213,7 @@ ts_ret_t ts_l1_write(ts_handle_t *h, const uint16_t len, const uint32_t timeout)
     if ((len < TS_L1_LEN_MIN) | (len > TS_L1_LEN_MAX)) {
         return TS_PARAM_ERR;
     }
-
+#endif
     ts_l1_spi_csn_low(h);
 
     if (ts_l1_spi_transfer(h, 0, len, timeout) != TS_OK)

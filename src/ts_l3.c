@@ -16,20 +16,22 @@
 
 ts_ret_t ts_l3_nonce_init(ts_handle_t *h)
 {
+#ifdef LIBT_DEBUG
     if(!h) {
         return TS_PARAM_ERR;
     }
-
+#endif
     memset(&h->IV,0,12);
     return TS_OK;
 }
 
 ts_ret_t ts_l3_nonce_increase(ts_handle_t *h)
 {
+#ifdef LIBT_DEBUG
     if(!h) {
         return TS_PARAM_ERR;
     }
-
+#endif
     uint32_t nonce = (h->IV[3] << 24) | (h->IV[2] << 16) | (h->IV[1] << 8) | (h->IV[0]);
 
     nonce ++;
@@ -43,9 +45,11 @@ ts_ret_t ts_l3_nonce_increase(ts_handle_t *h)
 
 ts_ret_t ts_l3_cmd(ts_handle_t *h)
 {
+#ifdef LIBT_DEBUG
     if(!h) {
         return TS_PARAM_ERR;
     }
+#endif
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
     }

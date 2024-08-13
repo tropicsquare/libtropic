@@ -34,7 +34,6 @@
 /** Get info request's ID */
 #define GET_INFO_REQ_ID 0xAA
 
-
 /**
  * @brief Initialize handle and l1
  *

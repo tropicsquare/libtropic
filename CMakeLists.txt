@@ -50,17 +50,19 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.c
 )
 
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_platform.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.h
 )
 
 set(SDK_SRCS ${SDK_SRCS}
@@ -75,6 +77,7 @@ add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
+target_compile_definitions(tropic PUBLIC "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 
 ###########################################################################
 #                                                                         #
@@ -88,9 +91,3 @@ if(USE_TREZOR_CRYPTO)
     target_link_libraries(tropic PRIVATE trezor_crypto)
     target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()
-
-target_compile_options(tropic PRIVATE -Wall)
-target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
-target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
-
-

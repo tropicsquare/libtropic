@@ -21,10 +21,11 @@
 
 ts_ret_t ts_l2_frame_check(const uint8_t *frame)
 {
+#ifdef LIBT_DEBUG
     if(!frame) {
         return TS_PARAM_ERR;
     }
-
+#endif
     // Take status, len and crc values from incomming frame
     uint8_t status = frame[1];
     uint8_t len = frame[2];
@@ -60,16 +61,17 @@ ts_ret_t ts_l2_frame_check(const uint8_t *frame)
         case L2_STATUS_UNKNOWN_ERR:
             return TS_L2_UNKNOWN_REQ;
         default:
-            return TS_FAIL;
+            return TS_L2_STATUS_NOT_RECOGNIZED;
     }
 }
 
 ts_ret_t ts_l2_transfer(ts_handle_t *h)
 {
+#ifdef LIBT_DEBUG
     if(!h) {
         return TS_PARAM_ERR;
     }
-
+#endif
     add_crc(h->l2_buff);
 
     uint8_t len = h->l2_buff[1];
@@ -94,6 +96,11 @@ ts_ret_t ts_l2_transfer(ts_handle_t *h)
 
 ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
 {
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return TS_PARAM_ERR;
+    }
+#endif
     int ret = TS_FAIL;
 
     // Setup a request pointer to l2 buffer, which is placed in handle
@@ -157,7 +164,7 @@ ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
         }
         // Prevent overflow of l3 buffer
         if (offset + resp->rsp_len > L3_FRAME_MAX_SIZE) {
-            return TS_L2_DATA_LEN_ERROR;
+            return TS_L3_DATA_LEN_ERROR;
         }
 
         // Check status byte of this frame

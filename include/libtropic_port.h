@@ -1,38 +1,13 @@
-#ifndef TS_L1_H
-#define TS_L1_H
+#ifndef TS_PORT_H
+#define TS_PORT_H
 
 /**
 * @file ts_l1.h
-* @brief Layer 1 interfaces
+* @brief Header file with layer 1 interfaces
 * @author Tropic Square s.r.o.
 */
 
 #include "libtropic_common.h"
-
-/** This bit in CHIP_STATUS byte signalizes that chip is ready to accept requests */
-#define CHIP_MODE_READY_bit 0x01
-/** This bit in CHIP_STATUS byte signalizes that chip is in ALARM mode */
-#define CHIP_MODE_ALARM_bit 0x02
-/** This bit in CHIP_STATUS byte signalizes that chip is in STARTUP mode */
-#define CHIP_MODE_STARTUP_bit 0x04
-
-/** Max number of GET_INFO requests when chip is not answering */
-#define TS_L1_READ_MAX_TRIES 10
-/** Number of ms to wait between each GET_INFO request */
-#define TS_L1_READ_RETRY_DELAY 25
-
-/** Minimal timeout when waiting for activity on SPI bus */
-#define TS_L1_TIMEOUT_MS_MIN 5
-/** Default timeout when waiting for activity on SPI bus */
-#define TS_L1_TIMEOUT_MS_DEFAULT 70
-/** Maximal timeout when waiting for activity on SPI bus */
-#define TS_L1_TIMEOUT_MS_MAX 150
-
-/** Maximal delay in ms which can be used in delay funtion */
-#define TS_L1_DELAY_MS_MAX 500
-
-/** Get info request's ID */
-#define GET_INFO_REQ_ID 0xAA
 
 /**
  * @brief Platform agonostic init function, configurable during build. Check libtropic's documentation for more info about platform configuration.
@@ -40,7 +15,7 @@
  * @param h           Chip's handle
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_platform_init(ts_handle_t *h);
+ts_ret_t ts_port_init(ts_handle_t *h);
 
 /**
  * @brief Platform agonostic deinit function, configurable during build. Check libtropic's documentation for more info about platform configuration.
@@ -48,7 +23,7 @@ ts_ret_t ts_l1_platform_init(ts_handle_t *h);
  * @param h           Chip's handle
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_platform_deinit(ts_handle_t *h);
+ts_ret_t ts_port_deinit(ts_handle_t *h);
 
 /**
  * @brief Set chip select pin low
@@ -56,7 +31,7 @@ ts_ret_t ts_l1_platform_deinit(ts_handle_t *h);
  * @param h           Chip's handle
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h);
+ts_ret_t ts_port_spi_csn_low(ts_handle_t *h);
 
 /**
  * @brief Set chip select pin high
@@ -64,7 +39,7 @@ ts_ret_t ts_l1_spi_csn_low(ts_handle_t *h);
  * @param h           Chip's handle
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h);
+ts_ret_t ts_port_spi_csn_high(ts_handle_t *h);
 
 /**
  * @brief Do l1 transfer
@@ -75,7 +50,7 @@ ts_ret_t ts_l1_spi_csn_high(ts_handle_t *h);
  * @param timeout     Timeout
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout);
+ts_ret_t ts_port_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout);
 
 /**
  * @brief Platform's definition for delay, specifies what host platform should do when libtropic's functions need some delay
@@ -84,6 +59,15 @@ ts_ret_t ts_l1_spi_transfer(ts_handle_t *h, uint8_t offset, uint16_t tx_len, uin
  * @param ms          Time to wait in miliseconds
  * @return            TS_OK if success, otherwise returns other error code.
  */
-ts_ret_t ts_l1_delay(ts_handle_t *h, uint32_t ms);
+ts_ret_t ts_port_delay(ts_handle_t *h, uint32_t ms);
+
+/**
+ * @brief Fill buffer with random bytes
+ *
+ * @param buff        Buffer to be filled
+ * @param len         number of 32bit numbers
+ * @return ts_ret_t   S_OK if success, otherwise returns other error code.
+ */
+ts_ret_t ts_port_random_bytes(uint32_t *buff, uint16_t len);
 
 #endif
