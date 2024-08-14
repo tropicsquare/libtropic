@@ -10,15 +10,37 @@ Supported TROPIC devices:
 |--------------------------------------------------------|------------------------------------------------------|
 |[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                            |
 
-
-
-## Dependencies
+## Common dependencies
 
 Used build system is **cmake 3.21**:
 
 ```
-    $ sudo apt install cmake
+$ sudo apt install cmake
 ```
+Specific version of compiler depends on your target platform. 
+
+## Compiling
+
+You can choose compiler by passing a toolchain file to cmake call.
+It is also possible to cross compile the library as a static archive:
+
+```
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/STM32F429ZITX_FLASH.ld ..
+$ make
+```
+
+## Debug mode
+
+For compiling in debug mode pass `cmake -DCMAKE_BUILD_TYPE=Debug ..` during cmake call.
+
+## Integration tests and examples
+
+Example of usage can be found in `tests/integration_tests`. For more info check `tests/integration_tests/index.md`
+
+
+## Unit tests
 
 [Ceedling](https://www.throwtheswitch.com) is used for running tests and creating code coverage report, install it like this:
 
@@ -33,17 +55,7 @@ Used build system is **cmake 3.21**:
     $ pip install gcovr
 ```
 
-
-## Examples
-
-A few examples of library's usage are placed in `examples/` folder.
-
-
-## Running tests
-
-Make sure you have Ceedling installed (as described in Dependencies).
-
-Expected version:
+Then make sure you have Ceedling installed, expected version:
 
 ```
 $ ceedling version
@@ -54,78 +66,24 @@ $ ceedling version
 
 ```
 
-Running tests and creating code coverage report:
+Once ceedling is installed, run tests and create code coverage report:
 
 ```
 $ ceedling gcov:all utils:gcov
 ```
+## Documentation
 
-## Library configuration
+We use Doxygen 1.9.1 and LaTeX (TODO VERSION).
 
-See option() calls in root **CMakelists.txt** and check also how CMakeLists.txt looks in example projects.
-
-### Cryptography support
-
-For certain operations on application's side, libtropic needs cryptography support. It is possible to choose a cryptography provider, because definitions of crypto functions are chosen during compilation.
-
-Current default provider of cryptogprahy is `vendor/trezor_crypto`.
-
+Build html docs:
 ```
-# Use trezor_crypto library:
-
-option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" ON)
+$ mkdir build/
+$ cd build/
+$ cmake -DBUILD_DOCS=1 ..
+$ make doc_doxygen
 ```
-
-
-## Library overview
-
-**Tropic layer 1**
-
- This layer is processing raw data transfers.
-
- Available L1 implementations are:
-
-* SPI (libtropic on embedded target and Physical chip, or FPGA)
-* TCP (libtropic on Unix and TROPIC01's model on Unix)
-* Serialport (libtropic on embedded target and TROPIC01's model on Unix)
-
-Use `option()` switch to enable libtropic support for a certain platform, have a look in examples.
-
-If there is no support for a platform, user is expected to provide own implementation for weak functions in this layer.
-
-Related code:
-* ts_l1.c
-* ts_l1.h
-
-**Tropic layer 2**
-
-This layer is responsible for executing l2 request/response functions.
-
-Related code:
-* ts_l2.c
-* ts_l2.h
-
-**Tropic layer 3**
-
-This layer is preparing and parsing l3 commands/results, it uses l2 functions to send and receive payloads.
-
-Related code:
-* ts_l3.c
-* ts_l3.h
-
-**libtropic**
-
-This is a highest abstraction of tropic chip functionalities.
-Library offers various calls to simplify tropic chip usage on a target platform:
-
-Related code:
-* libtropic.c
-* libtropic.h
-
-## Cross compiling
-
-Provide toolchain file and linker script:
-
+Once html docs is built, pdf documentation can be built like this:
 ```
-rm -rf build/; mkdir build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/STM32F429ZITX_FLASH.ld .. ; make ; cd ../
+$ cd docs/doxygen/latex
+$ make
 ```

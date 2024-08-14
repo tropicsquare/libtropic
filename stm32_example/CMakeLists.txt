@@ -25,9 +25,10 @@ set(PATH_TREZOR_CRYPTO "../vendor/trezor_crypto/")
 # Libtropic related setup, use trezor crypto library for host side cryptography
 set(USE_TREZOR_CRYPTO ON)
 
-# Possibly switch transport layer here:
+# If your environment doesn't allow you to pass -D arguments during compilation, 
+# it is possible to define transport layer here:
 #option(USE_UART "Use UART as a transport layer" ON)
-#option(USE_SPI "Use SPI as a transport layer" OFF)
+#option(USE_SPI "Use SPI as a transport layer" ON)
 
 ###########################################################################
 #                                                                         #
@@ -121,7 +122,7 @@ endif()
 # Provide path to a root of libtropic repository
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
-#target_link_options(stm32_example.elf PRIVATE -Wl,--gc-sections -Wl,--strip-all)
+#target_link_options(stm32_example.elf PRIVATE -Wl,--gc-sections -Wl,--strip-all)  # Use this to make compiled size smaller
 target_link_libraries(stm32_example.elf PRIVATE tropic)
 
 

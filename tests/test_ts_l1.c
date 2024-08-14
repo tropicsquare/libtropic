@@ -18,12 +18,14 @@ void tearDown(void)
 {
 }
 
-//------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------------------
 // Used to force l2_buff[0] to contain zeroed busy bit
 static ts_ret_t callback_CHIP_BUSY(ts_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = 0;
     return TS_OK;
 }
+
+// Test if function returns TS_L1_CHIP_BUSY when transferred chip status byte has READY bit == 0
 void test_ts_l1_read___CHIP_BUSY()
 {
     ts_handle_t h = {0};
@@ -37,8 +39,7 @@ void test_ts_l1_read___CHIP_BUSY()
     TEST_ASSERT_EQUAL(TS_L1_CHIP_BUSY, ts_l1_read(&h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
-//------------------------------------------------------------------------//
-// SPI error during transfer
+// Test SPI error during transfer
 void test_ts_l1_read___TS_L1_SPI_ERROR()
 {
     ts_handle_t h = {0};
@@ -50,12 +51,13 @@ void test_ts_l1_read___TS_L1_SPI_ERROR()
     TEST_ASSERT_EQUAL(TS_L1_SPI_ERROR, ts_l1_read(&h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
-//------------------------------------------------------------------------//
 // Used to force l2_buff[0] to contain ALARM bit
 static ts_ret_t callback_TS_L1_CHIP_ALARM_MOD(ts_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = CHIP_MODE_ALARM_bit;
     return TS_OK;
 }
+
+// Test if function returns TS_L1_CHIP_ALARM_MODE when transferred chip status byte has ALARM bit == 1
 void test_ts_l1_read___TS_L1_CHIP_ALARM_MODE()
 {
     ts_handle_t h = {0};
@@ -67,12 +69,12 @@ void test_ts_l1_read___TS_L1_CHIP_ALARM_MODE()
     TEST_ASSERT_EQUAL(TS_L1_CHIP_ALARM_MODE, ts_l1_read(&h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
-//------------------------------------------------------------------------//
 // Used to force l2_buff[0] to contain STARTUP bit
 static ts_ret_t callback_TS_L1_CHIP_STARTUP_MODE(ts_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = CHIP_MODE_STARTUP_bit;
     return TS_OK;
 }
+// Test if function returns TS_L1_CHIP_STARTUP_MODE when transferred chip status byte has STARTUP bit == 1
 void test_ts_l1_read___TS_L1_CHIP_STARTUP_MODE()
 {
     ts_handle_t h = {0};
@@ -83,3 +85,5 @@ void test_ts_l1_read___TS_L1_CHIP_STARTUP_MODE()
 
     TEST_ASSERT_EQUAL(TS_L1_CHIP_STARTUP_MODE, ts_l1_read(&h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT));
 }
+
+//---------------------------------------------------------------------------------------------------------------------

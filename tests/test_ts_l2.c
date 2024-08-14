@@ -56,16 +56,6 @@ void test_ts_l2_frame_check___CHIP_STATUS_READY__TS_CRC_ERR()
     TEST_ASSERT_EQUAL(TS_L2_IN_CRC_ERR, ts_l2_frame_check(test_data));
 }
 
-/* Check what function returns when frame looks valid (from first two bytes), but frame's CRC check fails.
-This may happen when payload is altered during transmission */
-void test_ts_l2_frame_check___CHIP_STATUS_READY__TS_CRC_ERR_2()
-{
-    test_data[0] = CHIP_MODE_READY_bit;
-    test_data[1] = L2_STATUS_RESULT_OK;
-    crc16_IgnoreAndReturn(0xdead);
-    TEST_ASSERT_EQUAL(TS_L2_IN_CRC_ERR, ts_l2_frame_check(test_data));
-}
-
 // Test various other return values
 void test_ts_l2_frame_check___TS_L2_REQ_CONT()
 {

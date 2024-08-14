@@ -18,7 +18,7 @@
   :test:
     - +:tests/**
     - -:tests/support
-#    - -:tests/integration_tests 
+#    - -:tests/integration_tests
   :source:
     - ./include/*
     - ./src/**

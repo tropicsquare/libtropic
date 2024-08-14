@@ -16,6 +16,7 @@ void tearDown(void)
 {
 }
 
+// Test correct nonce initialization
 void test_ts_l3_nonce_init___correct()
 {
     ts_handle_t handle = {0};
@@ -31,6 +32,7 @@ void test_ts_l3_nonce_init___correct()
     TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_2, handle.IV, 12);
 }
 
+// Test if nonce increases correctly
 void test_ts_l3_nonce_increase___correct()
 {
     ts_handle_t handle = {0};
@@ -47,6 +49,7 @@ void test_ts_l3_nonce_increase___correct()
     //TEST_ASSERT_EQUAL(0xff, h.IV[8]);
 }
 
+// Test if ts_l3_cmd() fails when secure session is not active
 void test_ts_l3_cmd___fail_when_no_session()
 {
     ts_handle_t handle = {0};
@@ -55,6 +58,7 @@ void test_ts_l3_cmd___fail_when_no_session()
     TEST_ASSERT_EQUAL(TS_HOST_NO_SESSION, ret);
 }
 
+// Test if ts_l3_cmd() returns TS_FAIL, if some error happens during aesgcm encrypt operations
 void test_ts_l3_cmd___fail_during_ts_aesgcm_encrypt()
 {
     ts_handle_t h = {0};
@@ -67,6 +71,7 @@ void test_ts_l3_cmd___fail_during_ts_aesgcm_encrypt()
     TEST_ASSERT_EQUAL(TS_FAIL, ret);
 }
 
+// Test if ts_l3_cmd() returns TS_FAIL, if some error happens during l2 exchange
 void test_ts_l3_cmd___fail_during_ts_l2_encrypted_cmd()
 {
     ts_handle_t h = {0};
@@ -82,6 +87,7 @@ void test_ts_l3_cmd___fail_during_ts_l2_encrypted_cmd()
     TEST_ASSERT_EQUAL(TS_FAIL, ret);
 }
 
+// Test if ts_l3_cmd() returns TS_FAIL, if some error happens during aesgcm decrypt operations
 void test_ts_l3_cmd___fail_during_ts_aesgcm_decrypt()
 {
     ts_handle_t h = {0};
@@ -99,6 +105,7 @@ void test_ts_l3_cmd___fail_during_ts_aesgcm_decrypt()
     TEST_ASSERT_EQUAL(TS_FAIL, ret);
 }
 
+// Test that all possible L3_IDs are correctly parsed in ts_l3cmd() function and that they are propagated to upper layers
 void test_ts_l3_cmd___test_all_l3_results()
 {
     // Note: correct execution is tested at the end

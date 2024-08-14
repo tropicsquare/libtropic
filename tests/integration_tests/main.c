@@ -37,7 +37,7 @@ int main(void)
     LOG_OUT("\t\t=====  libtropic Unix demo, running over TCP against model         ===\r\n");
     LOG_OUT("\t\t======================================================================\r\n\n");
     LOG_OUT_INFO("List all possible return values:\r\n\n");
-    for(int i=0; i<TS_L2_UNKNOWN_REQ+1; i++) {
+    for(int i=0; i<TS_CRYPTO_ERR+1; i++) {
         LOG_OUT_VALUE("(ts_ret_t) %d: \t%s \r\n", i,   ts_ret_verbose(i));
     }
     LOG_OUT("\r\n");

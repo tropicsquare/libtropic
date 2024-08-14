@@ -528,10 +528,12 @@ const char *ts_ret_verbose(ts_ret_t ret) {
             return "TS_L2_GEN_ERR";
         case TS_L2_NO_RESP:
             return "TS_L2_NO_RESP";
-        case TS_L2_STATUS_NOT_RECOGNIZED:
-            return "TS_L2_STATUS_NOT_RECOGNIZED";
         case TS_L2_UNKNOWN_REQ:
             return "TS_L2_UNKNOWN_REQ";
+        case TS_L2_STATUS_NOT_RECOGNIZED:
+            return "TS_L2_STATUS_NOT_RECOGNIZED";
+        case TS_L2_DATA_LEN_ERROR:
+            return "TS_L2_DATA_LEN_ERROR";
 
         // L3
         case TS_L3_OK:
@@ -557,6 +559,6 @@ const char *ts_ret_verbose(ts_ret_t ret) {
 
         // Default
         default:
-            return "UNKNOWN return value";
+            return "FATAL ERROR, unknown return value";
   }
 }

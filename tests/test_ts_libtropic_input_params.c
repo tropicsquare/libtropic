@@ -26,7 +26,7 @@ void tearDown(void)
 {
 }
 
-
+// Test that all return values can be displayed as a string (for better debug)
 void test_ts_ret_verbose()
 {
     TEST_ASSERT_EQUAL_STRING("TS_OK", ts_ret_verbose(TS_OK));
@@ -54,17 +54,18 @@ void test_ts_ret_verbose()
     TEST_ASSERT_EQUAL_STRING("TS_L3_INVALID_CMD", ts_ret_verbose(TS_L3_INVALID_CMD));
     TEST_ASSERT_EQUAL_STRING("TS_L3_DATA_LEN_ERROR", ts_ret_verbose(TS_L3_DATA_LEN_ERROR));
     TEST_ASSERT_EQUAL_STRING("TS_HOST_NO_SESSION", ts_ret_verbose(TS_HOST_NO_SESSION));
-    TEST_ASSERT_EQUAL_STRING("UNKNOWN return value", ts_ret_verbose(99));
+    TEST_ASSERT_EQUAL_STRING("FATAL ERROR, unknown return value", ts_ret_verbose(99));
 }
 
 
-// ts_init()
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_init___invalid_handle()
 {
     int ret = ts_init(NULL);
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_FAIL when l1 init failed
 void test_ts_init___error_during_ts_l1_init()
 {
     ts_handle_t h = {0};
@@ -75,6 +76,7 @@ void test_ts_init___error_during_ts_l1_init()
     TEST_ASSERT_EQUAL(TS_FAIL, ret);
 }
 
+// Test if function returns TS_OK when all went correctly
 void test_ts_init___correct()
 {
     ts_handle_t h = {0};
@@ -85,14 +87,15 @@ void test_ts_init___correct()
     TEST_ASSERT_EQUAL(TS_OK, ret);
 }
 
-// ts_deinit()
-
+//---------------------------------------------------------------------
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_deinit___invalid_handle()
 {
     int ret = ts_deinit(NULL);
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_FAIL when l1 deinit failed
 void test_ts_deinit___error_during_ts_l1_deinit()
 {
     ts_handle_t h = {0};
@@ -103,6 +106,7 @@ void test_ts_deinit___error_during_ts_l1_deinit()
     TEST_ASSERT_EQUAL(TS_FAIL, ret);
 }
 
+// Test if function returns TS_OK when all went correctly
 void test_ts_deinit___correct()
 {
     ts_handle_t h = {0};
@@ -114,8 +118,8 @@ void test_ts_deinit___correct()
 }
 
 
-// ts_handshake()
-
+//---------------------------------------------------------------------
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_handshake___invalid_handle()
 {   uint8_t pkey_index  = 1;
     uint8_t shipriv[]   = {0x80,0x02,0xc5,0xa3,0xff,0x46,0xa2,0x09,0x4e,0x4e,0x71,0xf3,0xc8,0xe3,0xdd,0x79,0xec,0x5c,0x1c,0xcd,0xb0,0x40,0xbb,0xcf,0x6f,0x64,0x9d,0x49,0xe9,0x1d,0x9c,0x53};
@@ -125,6 +129,7 @@ void test_ts_handshake___invalid_handle()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_handshake___invalid_pkey_index()
 {
     ts_handle_t handle  = {0};
@@ -137,6 +142,7 @@ void test_ts_handshake___invalid_pkey_index()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_handshake___invalid_shipriv()
 {
     ts_handle_t handle  = {0};
@@ -148,6 +154,7 @@ void test_ts_handshake___invalid_shipriv()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_handshake___invalid_shipub()
 {
     ts_handle_t handle  = {0};

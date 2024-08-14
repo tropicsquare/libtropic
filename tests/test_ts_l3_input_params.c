@@ -16,18 +16,21 @@ void tearDown(void)
 {
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l3_nonce_init___NULL_h()
 {
     ts_ret_t ret = ts_l3_nonce_init(NULL);
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l3_nonce_increase___NULL_h()
 {
     ts_ret_t ret = ts_l3_nonce_increase(NULL);
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ret);
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l3_cmd___NULL_h()
 {
     int ret = ts_l3_cmd(NULL);

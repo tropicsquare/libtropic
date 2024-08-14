@@ -9,6 +9,8 @@ void tearDown(void)
 {
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+// Test if crc function calculate known crc bytes
 void test_crc16___correct()
 {
     uint8_t data[6] = {0x01, 0x02, 0x01, 0x01, 0, 0};
@@ -17,6 +19,7 @@ void test_crc16___correct()
     TEST_ASSERT_EQUAL_HEX16(0x2e12, crc);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 // Prepare (uint8_t*)req as this {0x01, 0x02, 0x01, 0x01, 0x00, 0x00};
 // And test if function fills crc bytes instead of last two null bytes
 void test_add_crc___correct()

@@ -18,13 +18,15 @@ void tearDown(void)
 {
 }
 
-
+//---------------------------------------------------------------------------------------------------------------------
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_read___NULL_h()
 {
 
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_read(NULL, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_read___invalid_max_len_smaller()
 {
     ts_handle_t h = {0};
@@ -32,6 +34,7 @@ void test_ts_l1_read___invalid_max_len_smaller()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_read(&h, TS_L1_LEN_MIN-1, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_read___invalid_max_len_bigger()
 {
     ts_handle_t h = {0};
@@ -39,6 +42,7 @@ void test_ts_l1_read___invalid_max_len_bigger()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_read(&h, TS_L1_LEN_MAX+1, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_read___invalid_timeout_smaller()
 {
     ts_handle_t h = {0};
@@ -46,6 +50,7 @@ void test_ts_l1_read___invalid_timeout_smaller()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_read(&h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_MIN-1));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_read___invalid_timeout_bigger()
 {
     ts_handle_t h = {0};
@@ -54,11 +59,13 @@ void test_ts_l1_read___invalid_timeout_bigger()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_write___NULL_h()
 {
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_write(NULL, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_write___invalid_len_smaller()
 {
     ts_handle_t h = {0};
@@ -66,6 +73,7 @@ void test_ts_l1_write___invalid_len_smaller()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_write(&h, TS_L1_LEN_MIN-1, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_write___invalid_len_bigger()
 {
     ts_handle_t h = {0};
@@ -73,6 +81,7 @@ void test_ts_l1_write___invalid_len_bigger()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_write(&h, TS_L1_LEN_MAX+1, TS_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_write___invalid_timeout_smaller()
 {
     ts_handle_t h = {0};
@@ -80,6 +89,7 @@ void test_ts_l1_write___invalid_timeout_smaller()
     TEST_ASSERT_EQUAL(TS_PARAM_ERR, ts_l1_write(&h, TS_L1_LEN_MAX, TS_L1_TIMEOUT_MS_MIN-1));
 }
 
+// Test if function returns TS_PARAM_ERR on non valid input parameter
 void test_ts_l1_write___invalid_timeout_bigger()
 {
     ts_handle_t h = {0};
