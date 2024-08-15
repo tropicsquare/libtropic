@@ -110,7 +110,7 @@ ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
 
     // SENDING PART
 
-    struct l3_frame_t * p_frame = (struct l3_frame_t*)h->l3_buff;
+    struct ts_l3_gen_frame_t * p_frame = (struct ts_l3_gen_frame_t*)h->l3_buff;
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
     uint16_t chunk_num      = ((L3_RES_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
     // Calculate the length of the last

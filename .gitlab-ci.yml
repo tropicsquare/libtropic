@@ -47,7 +47,7 @@ build_integration_tests:
     - shell
   script:
     - source setup_env
-    - cd tests/integration_tests
+    - cd tests/integration/
     - mkdir build
     - cd build
     - cmake -DUSE_TREZOR_CRYPTO=1 ..

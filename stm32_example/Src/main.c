@@ -310,7 +310,7 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    ret = ts_ecc_key_generate(&handle, ECC_SLOT_1, TS_L3_ECC_KEY_GENERATE_CURVE_ED25519);
+    ret = ts_ecc_key_generate(&handle, ECC_SLOT_1, CURVE_ED25519);
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
@@ -330,15 +330,15 @@ int main(void)
     ret = ts_ecc_key_read(&handle, ECC_SLOT_1, key, 64, &curve, &origin);
 
     /* Following lines only print out some debug: */
-    uint8_t key_type = TS_L3_ECC_KEY_GENERATE_CURVE_ED25519;
-    int n_of_bytes_in_key = (key_type == TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 ? 32:64);
+    uint8_t key_type = CURVE_ED25519;
+    int n_of_bytes_in_key = (key_type == CURVE_ED25519 ? 32:64);
     char key_str[64] = {0};
     bytes_to_chars(key, key_str, n_of_bytes_in_key);
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
-        LOG_OUT_VALUE("curve:         %s\r\n", (curve == TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
-        LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve == CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("origin:        %s\r\n", (origin == CURVE_GENERATED ? "Generated" : "Stored"));
         LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
     }
     LOG_OUT_LINE();
@@ -352,14 +352,14 @@ int main(void)
 
     uint8_t msg[] = {'T','r','o','p','i','c',' ','S','q','u','a','r','e',' ','F','T','W','\0'};
     uint8_t rs[64] = {0};
-    ret = ts_eddsa_sign(&handle, ECC_SLOT_1, msg, 17, rs, 64);
+    ret = ts_ecc_eddsa_sign(&handle, ECC_SLOT_1, msg, 17, rs, 64);
 
     /* Following lines only print out some debug: */
     char R_str[64+1] = {0};
     char S_str[64+1] = {0};
     bytes_to_chars(rs, R_str, 32);
     bytes_to_chars(rs+32, S_str, 32);
-    LOG_OUT_INFO("ts_eddsa_sign();\r\n");
+    LOG_OUT_INFO("ts_ecc_eddsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
         LOG_OUT_VALUE("msg:           %s\r\n", msg);
@@ -374,7 +374,7 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    ret = ts_eddsa_sig_verify(msg, 17, key, rs);
+    ret = ts_ecc_eddsa_sig_verify(msg, 17, key, rs);
 
     /* Following lines only print out some debug: */
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
@@ -404,7 +404,7 @@ int main(void)
     /************************************************************************************************************/
     /* Example of a call: */
 
-    ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, TS_L3_ECC_KEY_GENERATE_CURVE_P256);
+    ret = ts_ecc_key_generate(&handle, ECC_SLOT_2, CURVE_P256);
 
     /* Following lines only print out some debug: */
     LOG_OUT_INFO("ts_ecc_key_generate();\r\n");
@@ -429,7 +429,7 @@ int main(void)
     LOG_OUT_INFO("ts_ecc_key_read();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
-        LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == TS_L3_ECC_KEY_GENERATE_CURVE_ED25519 ? "ED25519" : "P256"));
+        LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == CURVE_ED25519 ? "ED25519" : "P256"));
         LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
         LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
     }
@@ -445,14 +445,14 @@ int main(void)
     uint8_t rs2[64] = {0};
     char msg2[] = "Tropic Square FTW";
 
-    ret = ts_ecdsa_sign(&handle, ECC_SLOT_2, (uint8_t*)msg2, strlen(msg2), rs2, 64);
+    ret = ts_ecc_ecdsa_sign(&handle, ECC_SLOT_2, (uint8_t*)msg2, strlen(msg2), rs2, 64);
 
     /* Following lines only print out some debug: */
     char R_str2[64+1] = {0};
     char S_str2[64+1] = {0};
     bytes_to_chars(rs2, R_str2, 32);
     bytes_to_chars(rs2+32, S_str2, 32);
-    LOG_OUT_INFO("ts_ecdsa_sign();\r\n");
+    LOG_OUT_INFO("ts_ecc_ecdsa_sign();\r\n");
     LOG_OUT_VALUE("ts_ret_t:      %s\r\n", ts_ret_verbose(ret));
     if (ret == TS_OK) {
         LOG_OUT_VALUE("msg:           %s\r\n", msg2);

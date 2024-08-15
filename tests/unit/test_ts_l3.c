@@ -64,7 +64,7 @@ void test_ts_l3_cmd___fail_during_ts_aesgcm_encrypt()
     ts_handle_t h = {0};
     h.session = SESSION_ON;
 
-    struct l3_frame_t * p_frame = (struct l3_frame_t*)&h.l3_buff;
+    struct ts_l3_gen_frame_t * p_frame = (struct ts_l3_gen_frame_t*)&h.l3_buff;
     ts_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE,TS_FAIL);
 
     int ret = ts_l3_cmd(&h);
@@ -77,7 +77,7 @@ void test_ts_l3_cmd___fail_during_ts_l2_encrypted_cmd()
     ts_handle_t h = {0};
     h.session = SESSION_ON;
 
-    struct l3_frame_t * p_frame = (struct l3_frame_t*)&h.l3_buff;
+    struct ts_l3_gen_frame_t * p_frame = (struct ts_l3_gen_frame_t*)&h.l3_buff;
     ts_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE,TS_OK);
 
     ts_l2_encrypted_cmd_ExpectAndReturn(&h, TS_FAIL);
@@ -93,7 +93,7 @@ void test_ts_l3_cmd___fail_during_ts_aesgcm_decrypt()
     ts_handle_t h = {0};
     h.session = SESSION_ON;
 
-    struct l3_frame_t * p_frame = (struct l3_frame_t*)&h.l3_buff;
+    struct ts_l3_gen_frame_t * p_frame = (struct ts_l3_gen_frame_t*)&h.l3_buff;
     ts_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE,TS_OK);
 
     ts_l2_encrypted_cmd_ExpectAndReturn(&h, TS_OK);
@@ -115,7 +115,7 @@ void test_ts_l3_cmd___test_all_l3_results()
         ts_handle_t h = {0};
         h.session = SESSION_ON;
 
-        struct l3_frame_t * p_frame = (struct l3_frame_t*)&h.l3_buff;
+        struct ts_l3_gen_frame_t * p_frame = (struct ts_l3_gen_frame_t*)&h.l3_buff;
         ts_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE,TS_OK);
 
         ts_l2_encrypted_cmd_ExpectAndReturn(&h, TS_OK);

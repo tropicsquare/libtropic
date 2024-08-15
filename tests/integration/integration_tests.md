@@ -1,6 +1,6 @@
 # Integration tests
 
-All tests here are running against model, that means no chip or external hardware is needed.
+This code should be compiled under unix and all tests here are running against model, that means no chip or external hardware is needed.
 
 ## Model of TROPIC01
 
@@ -28,3 +28,5 @@ Compilation shouldn't take long, then run it like this:
 ```
 ./main
 ```
+
+For compiling in debug mode pass `cmake -DCMAKE_BUILD_TYPE=Debug ..` during cmake call.

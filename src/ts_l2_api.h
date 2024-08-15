@@ -9,29 +9,6 @@
 
 #include "libtropic_common.h"
 
-/**
- * @defgroup group_private_API [PRIVATE API]
- *
- * @details Dear users, please DO NOT USE this API. Private API is used by libtropic internally.
- * @{
- */
-
-/**
- * @defgroup group_L2_API [L2 API]
- * @brief Data Link Layer
- * @details This layer uses unencrypted Request/Response packets
- *
- * @{
- */
-
-/**
- * @defgroup group_get_info_request get_info_req
- *
- * @brief Get some info
- * @details Get some info from the device
- *
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L2_GET_INFO_REQ_ID 0x01
@@ -66,14 +43,6 @@ struct l2_get_info_rsp_t{
     u8 crc[2];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_get_info_request
-
-/**
- * @defgroup group_handshake_request handshake_req
- * @brief Establish a secure session
- * @details Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure Channel Mode).
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L2_HANDSHAKE_REQ_ID 0x02
@@ -94,7 +63,6 @@ struct l2_handshake_req_t {
     uint8_t crc[2];
 } __attribute__((__packed__));
 
-
 /** This structure declares how "handshake response" l2 frame is are organized */
 struct l2_handshake_rsp_t{
     /** CHIP_STATUS byte */
@@ -111,16 +79,8 @@ struct l2_handshake_rsp_t{
     u8 crc[2];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_handshake_request
 
-/**
- * @defgroup group_encrypted_cmd_request encrypted_cmd_req
- * @brief Request to execute encrypted command
- * @details Transmission of one encrypted command may consist of multiple encrypted_cmd_req requests/responses
- * @{
- */
-
-/** Command ID */
+/** @brief Command ID */
 #define TS_L2_ENCRYPTED_CMD_REQ_ID 0x04
 
 /** This structure declares how "encrypted cmd request" l2 frame is organized */
@@ -148,12 +108,5 @@ struct l2_encrypted_cmd_rsp_t{
     /** Checksum */
     u8 crc[2];
 } __attribute__((__packed__));
-
-
-/** @} */ // end of group_encrypted_cmd_request
-
-/** @} */ // end of group_L2_API
-
-/** @} */ // end of group_private_API
 
 #endif

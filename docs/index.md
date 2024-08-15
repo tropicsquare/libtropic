@@ -1,48 +1,88 @@
-# libtropic
+# Introduction
 
-## Introduction
+`libtropic` is a C library, which implements functionalities for interfacing applications with TROPIC01 device. It comes without any security claims and shall be used for evaluation purpose only.
 
-This library implements functionalities for interfacing applications with TROPIC01 device. It comes without any security claims and shall be used for evaluation purpose only.
 
-Supported TROPIC devices:
+|Supported devices                                       |Description                                              |
+|--------------------------------------------------------|---------------------------------------------------------|
+|[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                               |
 
-|Device                                                  |Comment                                               |
-|--------------------------------------------------------|------------------------------------------------------|
-|[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                            |
+# Usage
 
-## Common dependencies
+## Dependencies
 
 Used build system is **cmake 3.21**:
 
 ```
 $ sudo apt install cmake
 ```
-Specific version of compiler depends on your target platform. 
 
-## Compiling
+## Options
 
-You can choose compiler by passing a toolchain file to cmake call.
-It is also possible to cross compile the library as a static archive:
+This library was designed to be compiled during the build of a parent project.
+
+It provides following options to be defined during building:
+
+```
+option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
+option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider"       OFF)
+option(BUILD_DOCS        "Build documentation"                          OFF)
+```
+
+Options could be passed as a command line argument, or they could be defined in main project's cmake files when this library is added to its build tree.
+
+
+## Examples 
+
+List of projects which uses `libtropic`:
+* `tests/integration/integration_tests.md`: Unix program to test API calls against model of TROPIC01
+* `STM32 example`: Firmware for STM32f429 discovery board which implements libropic's API calls against TROPIC01 chip (or model)
+
+## Static archive
+
+*Note: When compiling the library standalone as a static archive, a cryptography provider must be defined through cmake -D arguments*
+
+Compile `libtropic` as a static archive under Unix:
 
 ```
 $ mkdir build
 $ cd build
-$ cmake -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/STM32F429ZITX_FLASH.ld ..
+$ cmake -DUSE_TREZOR_CRYPTO=1 ..
 $ make
 ```
 
-## Debug mode
+Cross-compile `libtropic` as a static archive:
 
-For compiling in debug mode pass `cmake -DCMAKE_BUILD_TYPE=Debug ..` during cmake call.
+```
+$ mkdir build
+$ cd build
+$ cmake -DUSE_TREZOR_CRYPTO=1 -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
+$ make
+```
 
-## Integration tests and examples
+## Build documentation
 
-Example of usage can be found in `tests/integration_tests`. For more info check `tests/integration_tests/index.md`
+We use Doxygen (1.9.1) and LaTeX (pdfTeX 3.141592653-2.6-1.40.24 (TeX Live 2022))
 
+Build html docs:
+```
+$ mkdir build/
+$ cd build/
+$ cmake -DBUILD_DOCS=1 ..
+$ make doc_doxygen
+```
+
+Build pdf documentation:
+```
+$ cd docs/doxygen/latex
+$ make
+```
+
+# Testing
 
 ## Unit tests
 
-[Ceedling](https://www.throwtheswitch.com) is used for running tests and creating code coverage report, install it like this:
+Unit tests files are in `tests/unit/` folder. They are written in [Ceedling](https://www.throwtheswitch.com) framework, install it like this:
 
 ```
     # Install Ruby
@@ -55,7 +95,7 @@ Example of usage can be found in `tests/integration_tests`. For more info check 
     $ pip install gcovr
 ```
 
-Then make sure you have Ceedling installed, expected version:
+Then make sure that you have correct version:
 
 ```
 $ ceedling version
@@ -71,19 +111,6 @@ Once ceedling is installed, run tests and create code coverage report:
 ```
 $ ceedling gcov:all utils:gcov
 ```
-## Documentation
+## Integration tests
 
-We use Doxygen 1.9.1 and LaTeX (TODO VERSION).
-
-Build html docs:
-```
-$ mkdir build/
-$ cd build/
-$ cmake -DBUILD_DOCS=1 ..
-$ make doc_doxygen
-```
-Once html docs is built, pdf documentation can be built like this:
-```
-$ cd docs/doxygen/latex
-$ make
-```
+For more info check `tests/integration/integration_tests.md`

@@ -52,9 +52,9 @@ ts_ret_t ts_deinit(ts_handle_t *h)
     return TS_OK;
 }
 
-ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const uint8_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub)
+ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub)
 {
-    if (!h || !shipriv || !shipub || (pkey_index > TS_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_3)) {
+    if (!h || !shipriv || !shipub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)) {
         return TS_PARAM_ERR;
     }
 
@@ -113,7 +113,7 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const uint8_t pkey_i
     // h = SHA256(h||PKEY_INDEX)
     ts_sha256_start(&hctx);
     ts_sha256_update(&hctx, hash, 32);
-    ts_sha256_update(&hctx, &pkey_index, 1);
+    ts_sha256_update(&hctx, (uint8_t*)&pkey_index, 1);
     ts_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||ETPUB)
@@ -235,12 +235,12 @@ ts_ret_t ts_random_get(ts_handle_t *h, uint8_t *buff, const uint16_t len)
     return TS_OK;
 }
 
-ts_ret_t ts_ecc_key_generate(ts_handle_t *h, const uint8_t slot, const uint8_t curve)
+ts_ret_t ts_ecc_key_generate(ts_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve)
 {
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
     }
-    if(slot > TS_L3_ECC_KEY_GENERATE_SLOT_MAX || !h || ((curve != TS_L3_ECC_KEY_GENERATE_CURVE_P256) && (curve != TS_L3_ECC_KEY_GENERATE_CURVE_ED25519))  ){
+    if(slot > TS_L3_ECC_KEY_GENERATE_SLOT_MAX || !h || ((curve != CURVE_P256) && (curve != CURVE_ED25519))  ){
         return TS_PARAM_ERR;
     }
 
@@ -252,8 +252,8 @@ ts_ret_t ts_ecc_key_generate(ts_handle_t *h, const uint8_t slot, const uint8_t c
     // Fill l3 buffer
     p_l3_cmd->packet_size = TS_L3_ECC_KEY_GENERATE_CMD_SIZE;
     p_l3_cmd->command = TS_L3_ECC_KEY_GENERATE_CMD;
-    p_l3_cmd->slot = slot;
-    p_l3_cmd->curve = curve;
+    p_l3_cmd->slot = (uint8_t)slot;
+    p_l3_cmd->curve = (uint8_t)curve;
 
     ts_ret_t ret = ts_l3_cmd(h);
     if(ret != TS_OK) {
@@ -268,7 +268,7 @@ ts_ret_t ts_ecc_key_generate(ts_handle_t *h, const uint8_t slot, const uint8_t c
     return TS_OK;
 }
 
-ts_ret_t ts_ecc_key_read(ts_handle_t *h, const uint8_t slot, uint8_t *key, const int8_t keylen, uint8_t *curve, uint8_t *origin)
+ts_ret_t ts_ecc_key_read(ts_handle_t *h, const ecc_slot_t slot, uint8_t *key, const int8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin)
 {
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
@@ -296,10 +296,10 @@ ts_ret_t ts_ecc_key_read(ts_handle_t *h, const uint8_t slot, uint8_t *key, const
     }
 
     // Check incomming l3 length
-    if((p_l3_res->curve == TS_L3_ECC_KEY_READ_CURVE_ED25519) && ((p_l3_res->packet_size -1-1-1-13) != 32)) {
+    if((p_l3_res->curve == (uint8_t)CURVE_ED25519) && ((p_l3_res->packet_size -1-1-1-13) != 32)) {
         return TS_FAIL;
     }
-    if((p_l3_res->curve == TS_L3_ECC_KEY_READ_CURVE_P256) && ((p_l3_res->packet_size -1-1-1-13) != 64)) {
+    if((p_l3_res->curve == (uint8_t)CURVE_P256) && ((p_l3_res->packet_size -1-1-1-13) != 64)) {
         return TS_FAIL;
     }
 
@@ -310,7 +310,7 @@ ts_ret_t ts_ecc_key_read(ts_handle_t *h, const uint8_t slot, uint8_t *key, const
     return TS_OK;
 }
 
-ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
+ts_ret_t ts_ecc_eddsa_sign(ts_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
 {
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
@@ -341,7 +341,7 @@ ts_ret_t ts_eddsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
     return TS_OK;
 }
 
-ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
+ts_ret_t ts_ecc_ecdsa_sign(ts_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
 {
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
@@ -380,7 +380,7 @@ ts_ret_t ts_ecdsa_sign(ts_handle_t *h, const uint8_t slot, const uint8_t *msg, c
     return TS_OK;
 }
 
-ts_ret_t ts_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+ts_ret_t ts_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
     if (ts_ed25519_sign_open(msg, msg_len, pubkey, rs) != 0) {
         return TS_FAIL;
@@ -390,7 +390,7 @@ ts_ret_t ts_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const u
 }
 
 
-ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot)
+ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const ecc_slot_t slot)
 {
     if(h->session != SESSION_ON) {
         return TS_HOST_NO_SESSION;
@@ -414,6 +414,26 @@ ts_ret_t ts_ecc_key_erase(ts_handle_t *h, const uint8_t slot)
 
     return TS_OK;
 }
+
+/** @brief Block index for data bytes 0-511 of the object */
+typedef enum {
+TS_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127,
+TS_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255,
+TS_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383,
+TS_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511,
+} block_index_t;
+
+
+/** @brief The X.509 device certificate read from I-Memory and signed by Tropic Square (max length of 512B) */
+# define TS_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0
+/** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B) */
+# define TS_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 1
+/** @brief The RISCV current running FW version (4 Bytes) */
+# define TS_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION 2
+/** @brief The SPECT FW version (4 Bytes) */
+# define TS_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION 4
+/** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode */
+# define TS_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 176
 
 ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const int16_t max_len)
 {

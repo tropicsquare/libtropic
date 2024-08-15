@@ -1,8 +1,8 @@
-#ifndef TS_PORT_H
-#define TS_PORT_H
+#ifndef TS_LIBTROPIC_PORT_H
+#define TS_LIBTROPIC_PORT_H
 
 /**
-* @file ts_l1.h
+* @file libtropic_port.h
 * @brief Header file with layer 1 interfaces
 * @author Tropic Square s.r.o.
 */

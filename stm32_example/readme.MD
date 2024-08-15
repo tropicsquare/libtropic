@@ -1,9 +1,9 @@
 # About
 
-This is a minimalistic example for NUCLEO-F439ZI devboard:
+This is an example of libtropic's usage on NUCLEO-F439ZI devboard:
 
-* Based on used transport layer, example works with TROPIC01 model or FPGA(physical silicon)
-* Debug messages are transmitted over devboard's USB ACM serial port, they can be received by opening a serial port
+* Based on used transport layer, example works against TROPIC01 model or FPGA(physical silicon)
+* Debug messages are transmitted over devboard's USB ACM serial port, they can be received by opening a serial port on PC
 
 
 ## Dependencies
@@ -17,7 +17,7 @@ This is a minimalistic example for NUCLEO-F439ZI devboard:
 
 Transport layer must be defined by uncommenting apropriate option in example's CMakeLists.txt.
 
-If SPI is enabled, hardware uses folowing pins:
+If SPI is enabled, hardware talks to a TROPIC01 chip and uses folowing pins:
 
 |       |          |
 |-------|----------|
@@ -27,32 +27,28 @@ If SPI is enabled, hardware uses folowing pins:
 |  CS   | GPIOE_4  |
 
 
-If UART is enabled, hardware uses folowing pins:
+If UART is enabled, hardware talks to the model of TROPIC01 and uses folowing pins:
 
 |       |           |
 |-------|-----------|
 |  TX   | GPIOC_12  |
 |  RX   | GPIOD_2   |
 
+Check model's repository on how to start model with serial transpot layer.
+
 
 
 # How to compile and flash?
 
-Check if a transport layer is defined in CMakeLists.txt. Then connect devboard and run in this folder:
+When a transport layer is defined in CMakeLists.txt, connect devboard and execute following commands in this folder:
 ```
 mkdir build
 cd build
 cmake ..
 make flash
 ```
-Alternatively, definition for transport layer `-DUSE_UART=1` or `-DUSE_SPI=1` can be passed to define transport layer without modifying CMakeFile.txt:
 
-```
-mkdir build
-cd build
-cmake -DUSE_SPI=1 ..
-make flash
-```
+For compiling in debug mode pass `cmake -DCMAKE_BUILD_TYPE=Debug ..` during cmake call.
 
 # Debugging in VS Code
 
@@ -80,17 +76,6 @@ Then place this launch.json file into .vscode folder:
             "configFiles": [
                 "/usr/share/openocd/scripts/board/stm32f429discovery.cfg"
             ],
-            // Commented setup is not working at the moment, but lets have it here anyway
-            //"svdFile": "${workspaceRoot}/.vscode/STM32F303.svd",
-            //"swoConfig": {
-            //    "enabled": true,
-            //    "cpuFrequency": 8000000,
-            //    "swoFrequency": 2000000,
-            //    "source": "probe",
-            //    "decoders": [
-            //        { "type": "console", "label": "ITM", "port": 0 }
-            //    ]
-            //}
         }
     ]
 }

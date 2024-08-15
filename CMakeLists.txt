@@ -77,7 +77,7 @@ add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
-target_compile_definitions(tropic PUBLIC "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
+target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 
 ###########################################################################
 #                                                                         #

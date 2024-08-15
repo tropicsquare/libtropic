@@ -1,8 +1,8 @@
-#ifndef TS_COMMON_H
-#define TS_COMMON_H
+#ifndef TS_LIBTROPIC_COMMON_H
+#define TS_LIBTROPIC_COMMON_H
 
 /**
-* @file ts_common.h
+* @file libtropic_common.h
 * @brief Shared definitions and functions commonly used by more layers
 * @author Tropic Square s.r.o.
 */
@@ -22,7 +22,7 @@ typedef uint16_t u16;
 /** This particular value means that secure session was succesfully established and it is currently ON */
 #define SESSION_ON   0xAA55AA55
 /** This particular value means that secure session is currently OFF */
-#define SESSION_OFF  0x00000000
+#define SESSION_OFF  0x55AA55AA
 
 /** Size of l3 ID field */
 #define L3_ID_SIZE 1u
@@ -53,9 +53,11 @@ typedef uint16_t u16;
 #define L3_FRAME_MAX_SIZE         (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
 
 /** Generic L3 command and result frame */
-struct __attribute__((packed)) l3_frame_t{
-    uint16_t packet_size;                   /** RES_SIZE or CMD_SIZE value */
-    uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE]; /** Command or result data including ID and TAG */
+struct __attribute__((packed)) ts_l3_gen_frame_t {
+    /** RES_SIZE or CMD_SIZE value */
+    uint16_t packet_size;
+    /** Command or result data including ID and TAG */
+    uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
 /**
