@@ -10,22 +10,6 @@
 #include "libtropic_common.h"
 
 
-/**
- * @defgroup group_L3_API [L3 API]
- * @brief Secure Session Layer
- * @details This layer uses encrypted Command/Result packets
- * @ingroup group_private_API
- *
- * @{
- */
-
-/**
- * @defgroup group_l3_ping Ping
- * @brief Ping command
- * @details Run arbitrary message through the secure session to verify that all works.
- * @{
- */
-
 /** @brief Command ID */
 #define TS_L3_PING_CMD 0x01
 
@@ -53,14 +37,6 @@ struct ts_l3_ping_res_t{
     u8 tag[16];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_l3_ping
-
-/**
- * @defgroup group_l3_random_value_get Random_Value_Get
- * @brief Get random bytes from TROPIC01
- * @details Uses TRNG2 inside of TROPIC01
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L3_RANDOM_VALUE_GET_CMD 0x50
@@ -93,14 +69,6 @@ struct ts_l3_random_value_get_res_t{
     u8 tag[16];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_l3_random_value_get
-
-/**
- * @defgroup group_ecc_key_generate ECC_Key_Generate
- * @brief Generate ECC key
- * @details Generate ECC private key inside of TROPIC01's memory slot.
- * @{
- */
 
 /** @brief ECC_Key_generate command ID */
 #define TS_L3_ECC_KEY_GENERATE_CMD 0x60
@@ -135,14 +103,6 @@ struct ts_l3_ecc_key_generate_res_t{
     u8 tag[16];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_ecc_key_generate
-
-/**
- * @defgroup group_ecc_key_read ECC_Key_Read
- * @brief Read ECC key
- * @details Read ECC public key which corresponds to TROPIC01's memory slot.
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L3_ECC_KEY_READ_CMD 0x62
@@ -179,14 +139,6 @@ struct ts_l3_ecc_key_read_res_t{
     u8 tag[16];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_ecc_key_read
-
-/**
- * @defgroup group_ecc_key_erase ECC_Key_Erase
- * @brief Erase ECC key
- * @details Erase ECC private key in a given TROPIC01's memory slot
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L3_ECC_KEY_ERASE_CMD 0x63u
@@ -215,14 +167,6 @@ struct ts_l3_ecc_key_erase_res_t{
     u8 tag[16];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_ecc_key_erase
-
-/**
- * @defgroup group_eddsa_sign EDDSA_Sign
- * @brief Sign with EDDSA key
- * @details Use private key from a given slot to sign a message
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L3_EDDSA_SIGN_CMD 0x71
@@ -265,14 +209,6 @@ struct ts_l3_eddsa_sign_res_t{
     u8 tag[16];
 } __attribute__((__packed__));
 
-/** @} */ // end of group_eddsa_sign
-
-/**
- * @defgroup group_ecdsa_sign ECDSA_Sign
- * @brief Sign with ECDSA key
- * @details Use private key from a given slot to sign a message
- * @{
- */
 
 /** @brief Command ID */
 #define TS_L3_ECDSA_SIGN 0x70
@@ -312,9 +248,5 @@ struct ts_l3_ecdsa_sign_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
-
-/** @} */ // end of group_ecdsa_sign
-
-/** @} */ // end of group_L3_API
 
 #endif

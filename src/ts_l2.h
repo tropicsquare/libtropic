@@ -11,37 +11,35 @@
 
 
 /**
- * @defgroup group_l2_functions [L2 functions]
- * @ingroup group_private_API
- * @brief Functions controlling l2 transmission
+ * @defgroup group_l2_functions Layer 2 functions
+ * @brief Used internally
  * @details Function used during l2 operation.
  *
  * @{
  */
 
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_REQUEST_OK       0x01
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_RESULT_OK        0x02
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_REQUEST_CONT     0x03
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_RESULT_CONT      0x04
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_HSK_ERR          0x79
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_NO_SESSION       0x7A
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_TAG_ERR          0x7B
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_CRC_ERR          0x7C
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_UNKNOWN_ERR      0x7E
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_GEN_ERR          0x7F
-/** STATUS ﬁeld value */
+/** @brief STATUS ﬁeld value */
 #define L2_STATUS_NO_RESP          0xFF
-
 
 /**
  * @brief This function checks if incomming L2 frame is valid

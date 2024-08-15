@@ -54,7 +54,7 @@ ts_ret_t ts_l3_cmd(ts_handle_t *h)
         return TS_HOST_NO_SESSION;
     }
 
-    struct l3_frame_t * p_frame = (struct l3_frame_t*)h->l3_buff;
+    struct ts_l3_gen_frame_t * p_frame = (struct ts_l3_gen_frame_t*)h->l3_buff;
 
     int ret = ts_aesgcm_encrypt(&h->encrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE);
     if (ret != TS_OK) {

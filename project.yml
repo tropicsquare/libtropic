@@ -16,16 +16,15 @@
 
 :paths:
   :test:
-    - +:tests/**
-    - -:tests/support
-#    - -:tests/integration_tests
+    - +:tests/unit/**
+    - -:tests/unit/support
   :source:
     - ./include/*
     - ./src/**
     - ./vendor/trezor_crypto/**
     - ./hal/**
   :support:
-    - tests/support
+    - tests/unit/support
   :libraries: []
 
 :defines:

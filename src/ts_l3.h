@@ -10,23 +10,21 @@
 #include "libtropic_common.h"
 
 /**
- * @defgroup group_l3_functions [L3 functions]
- * @ingroup group_private_API
- * @brief Functions controlling l3 transmission
+ * @defgroup group_l3_functions Layer 3 functions
+ * @brief Used internally
  * @details Function used during l3 operation.
  *
  * @{
  */
 
-/** L3 RESULT ﬁeld Value */
+/** @brief L3 RESULT ﬁeld Value */
 #define L3_RESULT_OK                        0xC3u
-/** L3 RESULT ﬁeld Value */
+/** @brief L3 RESULT ﬁeld Value */
 #define L3_RESULT_FAIL                      0x3Cu
-/** L3 RESULT ﬁeld Value */
+/** @brief L3 RESULT ﬁeld Value */
 #define L3_RESULT_UNAUTHORIZED              0x01u
-/** L3 RESULT ﬁeld Value */
+/** @brief L3 RESULT ﬁeld Value */
 #define L3_RESULT_INVALID_CMD               0x02u
-
 
 /**
  * @details  Initializes nonce in handle to 0. This function is used during secure handshake.
@@ -53,4 +51,5 @@ ts_ret_t ts_l3_nonce_increase(ts_handle_t *h);
 ts_ret_t ts_l3_cmd(ts_handle_t *h);
 
 /** @} */ // end of group_l3_functions
+
 #endif
