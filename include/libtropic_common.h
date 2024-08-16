@@ -1,11 +1,11 @@
-#ifndef TS_LIBTROPIC_COMMON_H
-#define TS_LIBTROPIC_COMMON_H
+#ifndef LT_LIBTROPIC_COMMON_H
+#define LT_LIBTROPIC_COMMON_H
 
 /**
-* @file libtropic_common.h
-* @brief Shared definitions and functions commonly used by more layers
-* @author Tropic Square s.r.o.
-*/
+ * @file libtropic_common.h
+ * @brief Shared definitions and functions commonly used by more libtropic's layers
+ * @author Tropic Square s.r.o.
+ */
 
 #include "stdint.h"
 
@@ -43,9 +43,9 @@ typedef uint16_t u16;
 /** Maximal size of one l2 frame */
 #define L2_MAX_FRAME_SIZE (1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
 /** Maximal number of data bytes in one L1 transfer */
-#define TS_L1_LEN_MIN 1
+#define LT_L1_LEN_MIN 1
 /** Maximal number of data bytes in one L1 transfer */
-#define TS_L1_LEN_MAX (1 + 1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
+#define LT_L1_LEN_MAX (1 + 1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
 
 /** Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define L3_PACKET_MAX_SIZE         (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
@@ -53,7 +53,7 @@ typedef uint16_t u16;
 #define L3_FRAME_MAX_SIZE         (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
 
 /** Generic L3 command and result frame */
-struct __attribute__((packed)) ts_l3_gen_frame_t {
+struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** RES_SIZE or CMD_SIZE value */
     uint16_t packet_size;
     /** Command or result data including ID and TAG */
@@ -64,81 +64,81 @@ struct __attribute__((packed)) ts_l3_gen_frame_t {
  * @details This structure holds data related to one physical chip.
  * Contains AESGCM contexts for encrypting and decrypting L3 commands, nonce and device void pointer, which can be used for passing arbitrary data.
  */
-typedef struct ts_handle_t {
+typedef struct lt_handle_t {
     void *device;
     uint32_t session;
     uint8_t IV[12];
 #if USE_TREZOR_CRYPTO
-    uint8_t encrypt[352]; // sizeof(ts_aes_gcm_ctx_t) == 352;
+    uint8_t encrypt[352]; // sizeof(lt_aes_gcm_ctx_t) == 352;
     uint8_t decrypt[352];
 #elif USE_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
 #endif
     uint8_t l2_buff [1 + L2_MAX_FRAME_SIZE];
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
-} ts_handle_t;
+} lt_handle_t;
 
 /** Enum return type */
 typedef enum {
 
     /** Spi transfer returned error */
-    TS_L1_SPI_ERROR,
+    LT_L1_SPI_ERROR,
     /** Data does not have an expected length */
-    TS_L1_DATA_LEN_ERROR,
+    LT_L1_DATA_LEN_ERROR,
     /** Chip is in STARTUP mode */
-    TS_L1_CHIP_STARTUP_MODE,
+    LT_L1_CHIP_STARTUP_MODE,
     /** Chip is in ALARM mode */
-    TS_L1_CHIP_ALARM_MODE,
+    LT_L1_CHIP_ALARM_MODE,
     /** Chip is BUSY - typically chip is still booting */
-    TS_L1_CHIP_BUSY,
+    LT_L1_CHIP_BUSY,
 
     /** Return values based on STATUS field */
     /** l2 response frame contains CRC error */
-    TS_L2_IN_CRC_ERR,
+    LT_L2_IN_CRC_ERR,
     /** There is more than one chunk to be expected for a current request */
-    TS_L2_REQ_CONT,
+    LT_L2_REQ_CONT,
     /** There is more than one chunk to be received for a current response */
-    TS_L2_RES_CONT,
+    LT_L2_RES_CONT,
     /** There were an error during handshake establishing */
-    TS_L2_HSK_ERR,
+    LT_L2_HSK_ERR,
     /** There is no secure session */
-    TS_L2_NO_SESSION,
+    LT_L2_NO_SESSION,
     /** There were error during checking message authenticity */
-    TS_L2_TAG_ERR,
+    LT_L2_TAG_ERR,
     /** l2 request contained crc error */
-    TS_L2_CRC_ERR,
+    LT_L2_CRC_ERR,
     /** There were some other error */
-    TS_L2_GEN_ERR,
+    LT_L2_GEN_ERR,
     /** Chip has no response to be transmitted */
-    TS_L2_NO_RESP,
+    LT_L2_NO_RESP,
     /** ID of last request is not known to TROPIC01 */
-    TS_L2_UNKNOWN_REQ,
+    LT_L2_UNKNOWN_REQ,
     /** Returned status byte is not recognized at all */
-    TS_L2_STATUS_NOT_RECOGNIZED,
+    LT_L2_STATUS_NOT_RECOGNIZED,
     /** L2 data does not have an expected length */
-    TS_L2_DATA_LEN_ERROR,
+    LT_L2_DATA_LEN_ERROR,
 
     /** L3 command was received correctly*/
-    TS_L3_OK,
+    LT_L3_OK,
     /** L3 command was not received correctly */
-    TS_L3_FAIL,
+    LT_L3_FAIL,
     /** Current pairing keys are not authorized for execution of the last command */
-    TS_L3_UNAUTHORIZED,
+    LT_L3_UNAUTHORIZED,
     /** Received L3 command is invalid */
-    TS_L3_INVALID_CMD,
+    LT_L3_INVALID_CMD,
     /** L3 data does not have an expected length */
-    TS_L3_DATA_LEN_ERROR,
+    LT_L3_DATA_LEN_ERROR,
 
     /* Host no session */
-    TS_HOST_NO_SESSION,
+    LT_HOST_NO_SESSION,
     /** Operation was successful */
-    TS_OK,
+    LT_OK,
     /** Operation was not succesfull */
-    TS_FAIL,
+    LT_FAIL,
     /** Some parameter was not accepted by function */
-    TS_PARAM_ERR,
+    LT_PARAM_ERR,
     /** Error detected during cryptographic operation */
-    TS_CRYPTO_ERR,
-} ts_ret_t;
+    LT_CRYPTO_ERR,
+} lt_ret_t;
 
 #endif

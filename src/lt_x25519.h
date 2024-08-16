@@ -1,9 +1,9 @@
-#ifndef TS_X25519_H
-#define TS_X25519_H
+#ifndef LT_X25519_H
+#define LT_X25519_H
 
 /**
-* @file ts_x25519.h
-* @brief X25519 function declarations
+* @file lt_x25519.h
+* @brief X25519 functiosn declarations
 * @author Tropic Square s.r.o.
 */
 
@@ -15,7 +15,7 @@
  * @param pub    Public key 32B long
  * @param secret Shared secret 32B long
  */
-void ts_X25519(const uint8_t *priv, const uint8_t *pub, uint8_t *secret);
+void lt_X25519(const uint8_t *priv, const uint8_t *pub, uint8_t *secret);
 
 /**
  * @brief X25519 scalar multiplication with a base point
@@ -23,6 +23,6 @@ void ts_X25519(const uint8_t *priv, const uint8_t *pub, uint8_t *secret);
  * @param sk Secret key
  * @param pk Public key
  */
-void ts_X25519_scalarmult(const uint8_t *sk, uint8_t *pk);
+void lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk);
 
 #endif

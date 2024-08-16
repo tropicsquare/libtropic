@@ -77,7 +77,7 @@ static buffer_s tx_buffer;
 static int socket_fd = -1;
 
 
-static int ts_connect_to_server ()
+static int lt_connect_to_server ()
 {
     struct sockaddr_in server;
 
@@ -86,7 +86,7 @@ static int ts_connect_to_server ()
     if (socket_fd < 0)
     {
         LOG_ERR("Could not create socket: %s (%d).\n", strerror(errno), errno);
-        return TS_FAIL;
+        return LT_FAIL;
     }
     LOG_OUT("Socket created.\n");
 
@@ -108,7 +108,7 @@ static int ts_connect_to_server ()
     return 0;
 }
 
-static int ts_send_all (int socket, uint8_t *buffer, size_t length)
+static int lt_send_all (int socket, uint8_t *buffer, size_t length)
 {
     int nb_bytes_sent;
     int nb_bytes_sent_total = 0;
@@ -142,7 +142,7 @@ static int ts_send_all (int socket, uint8_t *buffer, size_t length)
     return 1;
 }
 
-static int ts_communicate (int *tx_payload_length_ptr, int *rx_payload_length_ptr)
+static int lt_communicate (int *tx_payload_length_ptr, int *rx_payload_length_ptr)
 {
     int status;
     int nb_bytes_received;
@@ -162,7 +162,7 @@ static int ts_communicate (int *tx_payload_length_ptr, int *rx_payload_length_pt
     // send data
     LOG_U8_ARRAY(tx_buffer.BUFFER, nb_bytes_to_send);
 
-    status = ts_send_all(socket_fd, tx_buffer.BUFFER, nb_bytes_to_send);
+    status = lt_send_all(socket_fd, tx_buffer.BUFFER, nb_bytes_to_send);
     if (status != 0)
     {
         return status;
@@ -253,26 +253,26 @@ static int ts_communicate (int *tx_payload_length_ptr, int *rx_payload_length_pt
     return 0;
 }
 
-//static int ts_tropic01_power_on(void)
+//static int lt_tropic01_power_on(void)
 //{
 //    LOG_OUT("-- Powering on the TROPIC01 chip.\n");
 //    tx_buffer.TAG = TAG_E_POWER_ON;
-//    return ts_communicate(NULL, NULL);
+//    return lt_communicate(NULL, NULL);
 //}
 //
-//static int ts_tropic01_power_off(void)
+//static int lt_tropic01_power_off(void)
 //{
 //    LOG_OUT("-- Powering off the TROPIC01 chip.\n");
 //    tx_buffer.TAG = TAG_E_POWER_OFF;
-//    return ts_communicate(NULL, NULL);
+//    return lt_communicate(NULL, NULL);
 //}
 //
-static int ts_reset_target(void)
+static int lt_reset_target(void)
 {
     LOG_OUT("-- Resetting TROPIC01 target.\n");
     tx_buffer.TAG = TAG_E_RESET_TARGET;
 
-    return ts_communicate(NULL, NULL);
+    return lt_communicate(NULL, NULL);
 }
 
 static int server_connect(void)
@@ -280,7 +280,7 @@ static int server_connect(void)
     bzero(tx_buffer.BUFFER, MAX_BUFFER_LEN);
     bzero(rx_buffer.BUFFER, MAX_BUFFER_LEN);
 
-    int ret = ts_connect_to_server();
+    int ret = lt_connect_to_server();
     if (ret != 0)
     {
         return ret;
@@ -294,55 +294,55 @@ static int server_disconnect(void)
     return close(socket_fd);
 }
 
-ts_ret_t ts_port_init(ts_handle_t *h)
+lt_ret_t lt_port_init(lt_handle_t *h)
 {
     UNUSED(h);
-    memset(h, 0, sizeof(ts_handle_t));
+    memset(h, 0, sizeof(lt_handle_t));
 
     int ret = server_connect();
     if(ret != 0) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
-    ret = ts_reset_target();
+    ret = lt_reset_target();
     if(ret != 0) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
-    return TS_OK;
+    return LT_OK;
 }
 
-ts_ret_t ts_port_deinit(ts_handle_t *h)
+lt_ret_t lt_port_deinit(lt_handle_t *h)
 {
     UNUSED(h);
     if(server_disconnect() != 0) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
 
-    return TS_OK;
+    return LT_OK;
 }
 
-ts_ret_t ts_port_spi_csn_low (ts_handle_t *h)
+lt_ret_t lt_port_spi_csn_low (lt_handle_t *h)
 {
     UNUSED(h);
     LOG_OUT("-- Driving Chip Select to Low.\n");
     tx_buffer.TAG = TAG_E_SPI_DRIVE_CSN_LOW;
-    return ts_communicate(NULL, NULL);
+    return lt_communicate(NULL, NULL);
 }
 
-ts_ret_t ts_port_spi_csn_high (ts_handle_t *h)
+lt_ret_t lt_port_spi_csn_high (lt_handle_t *h)
 {
     UNUSED(h);
     LOG_OUT("-- Driving Chip Select to High.\n");
     tx_buffer.TAG = TAG_E_SPI_DRIVE_CSN_HIGH;
-    return ts_communicate(NULL, NULL);
+    return lt_communicate(NULL, NULL);
 }
 
-ts_ret_t ts_port_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer (lt_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(h);
     UNUSED(timeout);
 
-    if (offset + tx_data_length > TS_L1_LEN_MAX) {
-        return TS_L1_DATA_LEN_ERROR;
+    if (offset + tx_data_length > LT_L1_LEN_MAX) {
+        return LT_L1_DATA_LEN_ERROR;
     }
 
     LOG_OUT("-- Sending data through SPI bus.\n");
@@ -356,18 +356,18 @@ ts_ret_t ts_port_spi_transfer (ts_handle_t *h, uint8_t offset, uint16_t tx_data_
     // copy tx_data to tx payload
     memcpy(&tx_buffer.PAYLOAD, h->l2_buff, tx_payload_length);
 
-    int status = ts_communicate(&tx_payload_length, &rx_payload_length);
+    int status = lt_communicate(&tx_payload_length, &rx_payload_length);
     if (status != 0)
     {
-        return TS_FAIL;
+        return LT_FAIL;
     }
 
     memcpy(h->l2_buff + offset, &rx_buffer.PAYLOAD, rx_payload_length);
 
-    return TS_OK;
+    return LT_OK;
 }
 
-ts_ret_t ts_port_delay (ts_handle_t *h, uint32_t wait_time_usecs)
+lt_ret_t lt_port_delay (lt_handle_t *h, uint32_t wait_time_usecs)
 {
     UNUSED(h);
     LOG_OUT("-- Waiting for the target.\n");
@@ -376,14 +376,14 @@ ts_ret_t ts_port_delay (ts_handle_t *h, uint32_t wait_time_usecs)
     int payload_length                = sizeof(uint32_t);
     *(uint32_t *)(&tx_buffer.PAYLOAD) = wait_time_usecs;
 
-    return ts_communicate(&payload_length, NULL);
+    return lt_communicate(&payload_length, NULL);
 }
 
-ts_ret_t ts_port_random_bytes(uint32_t *buff, uint16_t len) {
+lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len) {
 
     for(int i=0; i<len; i++) {
         buff[i] = 0xabcdabcd;
     }
 
-    return TS_OK;
+    return LT_OK;
 }

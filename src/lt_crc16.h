@@ -1,11 +1,11 @@
-#ifndef TS_CRC16_H
-#define TS_CRC16_H
+#ifndef LT_CRC16_H
+#define LT_CRC16_H
 
 /**
-* @file ts_crc16.h
-* @brief CRC16 functions are defined here
-* @author Tropic Square s.r.o.
-*/
+ * @file lt_crc16.h
+ * @brief CRC16 functions declarations
+ * @author Tropic Square s.r.o.
+ */
 
 #include <stdint.h>
 /**

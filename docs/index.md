@@ -25,7 +25,7 @@ It provides following options to be defined during building:
 
 ```
 option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
-option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider"       OFF)
+option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider"       OFF)
 option(BUILD_DOCS        "Build documentation"                          OFF)
 ```
 

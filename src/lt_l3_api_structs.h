@@ -1,9 +1,9 @@
-#ifndef TS_L3_API_H
-#define TS_L3_API_H
+#ifndef LT_L3_API_H
+#define LT_L3_API_H
 
 /**
-* @file ts_l3_api_structs.h
-* @brief Layer 3 API structures for various requests
+* @file lt_l3_api_structs.h
+* @brief API structures for layer 3 commands and results
 * @author Tropic Square s.r.o.
 */
 
@@ -11,10 +11,10 @@
 
 
 /** @brief Command ID */
-#define TS_L3_PING_CMD 0x01
+#define LT_L3_PING_CMD 0x01
 
 /** This structure declares how "Ping command" l3 packet is organized */
-struct ts_l3_ping_cmd_t {
+struct lt_l3_ping_cmd_t {
     /** L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -26,7 +26,7 @@ struct ts_l3_ping_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "Ping result" l3 packet is organized */
-struct ts_l3_ping_res_t{
+struct lt_l3_ping_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
@@ -39,12 +39,12 @@ struct ts_l3_ping_res_t{
 
 
 /** @brief Command ID */
-#define TS_L3_RANDOM_VALUE_GET_CMD 0x50
+#define LT_L3_RANDOM_VALUE_GET_CMD 0x50
 /** @brief Command length */
-#define TS_L3_RANDOM_VALUE_GET_CMD_SIZE 2
+#define LT_L3_RANDOM_VALUE_GET_CMD_SIZE 2
 
 /** This structure declares how "random value get command" l3 packet is organized */
-struct ts_l3_random_value_get_cmd_t {
+struct lt_l3_random_value_get_cmd_t {
     /* L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -56,7 +56,7 @@ struct ts_l3_random_value_get_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "random value get result" l3 packet is organized */
-struct ts_l3_random_value_get_res_t{
+struct lt_l3_random_value_get_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
@@ -71,16 +71,16 @@ struct ts_l3_random_value_get_res_t{
 
 
 /** @brief ECC_Key_generate command ID */
-#define TS_L3_ECC_KEY_GENERATE_CMD 0x60
+#define LT_L3_ECC_KEY_GENERATE_CMD 0x60
 /** @brief ECC_Key_generate command size */
-#define TS_L3_ECC_KEY_GENERATE_CMD_SIZE 0x04u
+#define LT_L3_ECC_KEY_GENERATE_CMD_SIZE 0x04u
 /** @brief ECC_Key_generate min slot number */
-#define TS_L3_ECC_KEY_GENERATE_SLOT_MIN 0
+#define LT_L3_ECC_KEY_GENERATE_SLOT_MIN 0
 /** @brief ECC_Key_generate max slot number */
-#define TS_L3_ECC_KEY_GENERATE_SLOT_MAX 31
+#define LT_L3_ECC_KEY_GENERATE_SLOT_MAX 31
 
 /** This structure declares how "ECC key generate command" l3 packet is organized */
-struct ts_l3_ecc_key_generate_cmd_t {
+struct lt_l3_ecc_key_generate_cmd_t {
     /** L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -94,7 +94,7 @@ struct ts_l3_ecc_key_generate_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "ECC key generate result" l3 packet is organized */
-struct ts_l3_ecc_key_generate_res_t{
+struct lt_l3_ecc_key_generate_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
@@ -105,12 +105,12 @@ struct ts_l3_ecc_key_generate_res_t{
 
 
 /** @brief Command ID */
-#define TS_L3_ECC_KEY_READ_CMD 0x62
+#define LT_L3_ECC_KEY_READ_CMD 0x62
 /** @brief Command length */
-#define TS_L3_ECC_KEY_READ_CMD_SIZE 0x03
+#define LT_L3_ECC_KEY_READ_CMD_SIZE 0x03
 
 /** This structure declares how "ECC key read command" l3 packet is organized */
-struct ts_l3_ecc_key_read_cmd_t {
+struct lt_l3_ecc_key_read_cmd_t {
     /**L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -122,7 +122,7 @@ struct ts_l3_ecc_key_read_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "ECC key read result" l3 packet is organized */
-struct ts_l3_ecc_key_read_res_t{
+struct lt_l3_ecc_key_read_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
@@ -141,12 +141,12 @@ struct ts_l3_ecc_key_read_res_t{
 
 
 /** @brief Command ID */
-#define TS_L3_ECC_KEY_ERASE_CMD 0x63u
+#define LT_L3_ECC_KEY_ERASE_CMD 0x63u
 /** @brief Command length */
-#define TS_L3_ECC_KEY_ERASE_CMD_SIZE 0x03u
+#define LT_L3_ECC_KEY_ERASE_CMD_SIZE 0x03u
 
 /** This structure declares how "EC key erase command" l3 packet is organized */
-struct ts_l3_ecc_key_erase_cmd_t {
+struct lt_l3_ecc_key_erase_cmd_t {
     /** L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -158,7 +158,7 @@ struct ts_l3_ecc_key_erase_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "EC key erase result" l3 packet is organized */
-struct ts_l3_ecc_key_erase_res_t{
+struct lt_l3_ecc_key_erase_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
@@ -169,16 +169,16 @@ struct ts_l3_ecc_key_erase_res_t{
 
 
 /** @brief Command ID */
-#define TS_L3_EDDSA_SIGN_CMD 0x71
+#define LT_L3_EDDSA_SIGN_CMD 0x71
 /** @brief Command length */
-#define TS_L3_EDDSA_SIGN_CMD_SIZE 0x10u
+#define LT_L3_EDDSA_SIGN_CMD_SIZE 0x10u
 /** Minimal length of message to be signed with EdDSA */
-#define TS_L3_EDDSA_SIGN_MSG_LEN_MIN 0x01
+#define LT_L3_EDDSA_SIGN_MSG_LEN_MIN 0x01
 /** Maximal length of message to be signed with EdDSA */
-#define TS_L3_EDDSA_SIGN_MSG_LEN_MAX 4096
+#define LT_L3_EDDSA_SIGN_MSG_LEN_MAX 4096
 
 /** This structure declares how "EdDSA sign command" l3 packet is organized */
-struct ts_l3_eddsa_sign_cmd_t {
+struct lt_l3_eddsa_sign_cmd_t {
     /** L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -194,7 +194,7 @@ struct ts_l3_eddsa_sign_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "EdDSA sign result" l3 packet is organized */
-struct ts_l3_eddsa_sign_res_t{
+struct lt_l3_eddsa_sign_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */
@@ -211,14 +211,14 @@ struct ts_l3_eddsa_sign_res_t{
 
 
 /** @brief Command ID */
-#define TS_L3_ECDSA_SIGN 0x70
+#define LT_L3_ECDSA_SIGN 0x70
 /** @brief Command length */
-#define TS_L3_ECDSA_SIGN_CMD_SIZE 0x30u
+#define LT_L3_ECDSA_SIGN_CMD_SIZE 0x30u
 /** TODO Max length of message to be signed with ECDSA */
-#define TS_L3_ECDSA_SIGN_MSG_LEN_MAX 4096 
+#define LT_L3_ECDSA_SIGN_MSG_LEN_MAX 4096 
 
 /** This structure declares how "ECDSA sign command" l3 packet is organized */
-struct ts_l3_ecdsa_sign_cmd_t {
+struct lt_l3_ecdsa_sign_cmd_t {
     /** L3 packet size */
     u16 packet_size;
     /** L3 Command Identifier */
@@ -234,7 +234,7 @@ struct ts_l3_ecdsa_sign_cmd_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "ECDSA sign result" l3 packet is organized */
-struct ts_l3_ecdsa_sign_res_t{
+struct lt_l3_ecdsa_sign_res_t{
     /** L3 packet size */
     u16 packet_size;
     /** L3 Result status indication */

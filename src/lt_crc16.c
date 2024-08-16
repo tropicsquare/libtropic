@@ -1,10 +1,10 @@
 /**
-* @file ts_crc16.c
-* @brief CRC16 functions are defined here
-* @author Tropic Square s.r.o.
-*/
+ * @file lt_crc16.c
+ * @brief CRC16 functions definitions
+ * @author Tropic Square s.r.o.
+ */
 
-#include "ts_crc16.h"
+#include "lt_crc16.h"
 
 /* Generator polynomial value used */
 #define CRC16_POLYNOMIAL      0x8005

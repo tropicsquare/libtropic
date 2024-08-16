@@ -1,14 +1,14 @@
 /**
-* @file   ts_hkdf.c
-* @brief  HKDF function definition
-* @author Tropic Square s.r.o.
-*/
+ * @file   lt_hkdf.c
+ * @brief  HKDF functions definitions
+ * @author Tropic Square s.r.o.
+ */
 
 #include <stdint.h>
 #include <string.h>
 
 #if USE_TREZOR_CRYPTO
-#include "ts_hmac_sha256.h"
+#include "lt_hmac_sha256.h"
 #include "hasher.h"
 #include "blake256.h"
 #include "blake2b.h"
@@ -24,19 +24,19 @@
 
 #define UNUSED(x) (void)(x)
 
-void ts_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1, uint8_t *output_2)
+void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1, uint8_t *output_2)
 {
     UNUSED(nouts);
 
     uint8_t tmp[32] = {0};
     uint8_t one = 0x01;
 
-    ts_hmac_sha256(ck, ck_size, input, input_size, tmp);
-    ts_hmac_sha256(tmp, 32, &one, 1, output_1);
+    lt_hmac_sha256(ck, ck_size, input, input_size, tmp);
+    lt_hmac_sha256(tmp, 32, &one, 1, output_1);
 
     uint8_t helper[33] = {0};
     memcpy(helper, output_1, 32);
     helper[32] = 2;
 
-    ts_hmac_sha256(tmp, 32, helper, 33, output_2);
+    lt_hmac_sha256(tmp, 32, helper, 33, output_2);
 }
