@@ -2,7 +2,7 @@
 #define TS_L3_API_H
 
 /**
-* @file ts_l3_api.h
+* @file ts_l3_api_structs.h
 * @brief Layer 3 API structures for various requests
 * @author Tropic Square s.r.o.
 */

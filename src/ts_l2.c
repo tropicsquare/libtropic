@@ -4,7 +4,7 @@
 #include "ts_crc16.h"
 #include "ts_l1.h"
 #include "ts_l2.h"
-#include "ts_l2_api.h"
+#include "ts_l2_api_structs.h"
 
 /**
 * @file ts_l2.c
@@ -104,9 +104,9 @@ ts_ret_t ts_l2_encrypted_cmd(ts_handle_t *h)
     int ret = TS_FAIL;
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct l2_encrypted_cmd_req_t *req = (struct l2_encrypted_cmd_req_t*)h->l2_buff;
+    struct ts_l2_encrypted_cmd_req_t *req = (struct ts_l2_encrypted_cmd_req_t*)h->l2_buff;
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct l2_encrypted_cmd_rsp_t *resp = (struct l2_encrypted_cmd_rsp_t*)h->l2_buff;
+    struct ts_l2_encrypted_cmd_rsp_t *resp = (struct ts_l2_encrypted_cmd_rsp_t*)h->l2_buff;
 
     // SENDING PART
 

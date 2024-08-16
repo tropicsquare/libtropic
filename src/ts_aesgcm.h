@@ -12,14 +12,14 @@
 #endif
 
 /** AES-GCM context structure */
-typedef struct ts_aes_gcm_ctx
+typedef struct ts_crypto_aes_gcm_ctx
 {
 #if USE_TREZOR_CRYPTO
     gcm_ctx ctx;
 #elif USE_MBEDTLS
 
 #endif
-} ts_aes_gcm_ctx_t;
+} ts_crypto_aes_gcm_ctx_t;
 
 /**
  * @details This function initializes AES GCM context with keys

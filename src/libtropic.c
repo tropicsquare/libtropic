@@ -14,9 +14,9 @@
 #include "ts_random.h"
 #include "ts_l1.h"
 #include "ts_l2.h"
-#include "ts_l2_api.h"
+#include "ts_l2_api_structs.h"
 #include "ts_l3.h"
-#include "ts_l3_api.h"
+#include "ts_l3_api_structs.h"
 #include "ts_x25519.h"
 #include "ts_ed25519.h"
 #include "ts_hkdf.h"
@@ -68,9 +68,9 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const pkey_index_t p
     ts_X25519_scalarmult(ehpriv, ehpub);
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct l2_handshake_req_t* p_req = (struct l2_handshake_req_t*)h->l2_buff;
+    struct ts_l2_handshake_req_t* p_req = (struct ts_l2_handshake_req_t*)h->l2_buff;
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct l2_handshake_rsp_t* p_rsp = (struct l2_handshake_rsp_t*)h->l2_buff;
+    struct ts_l2_handshake_rsp_t* p_rsp = (struct ts_l2_handshake_rsp_t*)h->l2_buff;
 
     p_req->req_id = TS_L2_HANDSHAKE_REQ_ID;
     p_req->req_len = TS_L2_HANDSHAKE_REQ_LEN;
@@ -86,7 +86,7 @@ ts_ret_t ts_handshake(ts_handle_t *h, const uint8_t *stpub, const pkey_index_t p
     uint8_t protocol_name[32] = {'N','o','i','s','e','_','K','K','1','_','2','5','5','1','9','_','A','E','S','G','C','M','_','S','H','A','2','5','6',0x00,0x00,0x00};
     uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
     // h = SHA_256(protocol_name)
-    ts_sha256_ctx_t hctx = {0};
+     ts_crypto_sha256_ctx_t hctx = {0};
     ts_sha256_init(&hctx);
     ts_sha256_start(&hctx);
     ts_sha256_update(&hctx, protocol_name, 32);
@@ -352,7 +352,7 @@ ts_ret_t ts_ecc_ecdsa_sign(ts_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
     // Prepare hash of a message
     uint8_t msg_hash[32] = {0};
-    ts_sha256_ctx_t hctx = {0};
+     ts_crypto_sha256_ctx_t hctx = {0};
     ts_sha256_init(&hctx);
     ts_sha256_start(&hctx);
     ts_sha256_update(&hctx, (uint8_t*)msg, msg_len);
@@ -442,7 +442,7 @@ ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const int16_t max_len)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct l2_get_info_req_t* p_l2_buff = (struct l2_get_info_req_t*)&h->l2_buff;
+    struct ts_l2_get_info_req_t* p_l2_buff = (struct ts_l2_get_info_req_t*)&h->l2_buff;
 
     for(int8_t i=0; i<4; i++) {
         // Fill l2 request buffer
@@ -459,7 +459,7 @@ ts_ret_t ts_get_info_cert(ts_handle_t *h, uint8_t *cert, const int16_t max_len)
         if(ret != TS_OK) {
             return ret;
         }
-        memcpy(cert + i*128, ((struct l2_get_info_rsp_t*)h->l2_buff)->data, 128);
+        memcpy(cert + i*128, ((struct ts_l2_get_info_rsp_t*)h->l2_buff)->data, 128);
     }
 
     return TS_OK;

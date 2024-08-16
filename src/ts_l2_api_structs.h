@@ -2,7 +2,7 @@
 #define TS_L2_API_H
 
 /**
-* @file ts_l2_api.h
+* @file ts_l2_api_structs.h
 * @brief Layer 2 API structures for various requests
 * @author Tropic Square s.r.o.
 */
@@ -16,7 +16,7 @@
 #define TS_L2_GET_INFO_REQ_LEN 0x02
 
 /** This structure declares how "get info request" l2 frame is organized */
-struct l2_get_info_req_t {
+struct ts_l2_get_info_req_t {
     /** Request ID  byte */
     u8 req_id;
     /** Length byte */
@@ -30,7 +30,7 @@ struct l2_get_info_req_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "get info response" l2 frame is organized */
-struct l2_get_info_rsp_t{
+struct ts_l2_get_info_rsp_t{
     /** CHIP_STATUS byte */
     u8 chip_status;
     /** l2 status byte */
@@ -50,7 +50,7 @@ struct l2_get_info_rsp_t{
 #define TS_L2_HANDSHAKE_REQ_LEN 0x21
 
 /** This structure declares how "handshake request" l2 frame is organized */
-struct l2_handshake_req_t {
+struct ts_l2_handshake_req_t {
     /** Request ID  byte */
     u8 req_id;
     /** Length byte */
@@ -64,7 +64,7 @@ struct l2_handshake_req_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "handshake response" l2 frame is are organized */
-struct l2_handshake_rsp_t{
+struct ts_l2_handshake_rsp_t{
     /** CHIP_STATUS byte */
     u8 chip_status;
     /** l2 status byte */
@@ -84,7 +84,7 @@ struct l2_handshake_rsp_t{
 #define TS_L2_ENCRYPTED_CMD_REQ_ID 0x04
 
 /** This structure declares how "encrypted cmd request" l2 frame is organized */
-struct l2_encrypted_cmd_req_t {
+struct ts_l2_encrypted_cmd_req_t {
     /** Request ID  byte */
     u8 req_id;
     /** Length byte */
@@ -96,7 +96,7 @@ struct l2_encrypted_cmd_req_t {
 } __attribute__((__packed__));
 
 /** This structure declares how "encrypted cmd response" l2 frame is organized */
-struct l2_encrypted_cmd_rsp_t{
+struct ts_l2_encrypted_cmd_rsp_t{
     /** CHIP_STATUS byte */
     u8 chip_status;
     /** l2 status byte */
