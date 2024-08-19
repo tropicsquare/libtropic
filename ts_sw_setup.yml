@@ -10,7 +10,7 @@ cmake 3.23.2
 cppcheck 2.6
 
 # Python environment packages
-ts-python-env 0.4
+ts-python-env 0.5
 
 # Tropic flow tools
 ts-latex-lib v0.19
