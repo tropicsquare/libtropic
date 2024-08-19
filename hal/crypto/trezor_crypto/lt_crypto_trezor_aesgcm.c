@@ -1,10 +1,10 @@
 #ifdef USE_TREZOR_CRYPTO
 #include "aes.h"
 #include "aesgcm.h"
-#include "ts_aesgcm.h"
+#include "lt_aesgcm.h"
 #include "libtropic_common.h"
 
-int ts_aesgcm_init_and_key(void *ctx,
+int lt_aesgcm_init_and_key(void *ctx,
                     const uint8_t *key,
                     uint32_t key_len
                     )
@@ -13,12 +13,12 @@ int ts_aesgcm_init_and_key(void *ctx,
 
     int ret = gcm_init_and_key(key, key_len, _ctx);
     if(ret != RETURN_GOOD) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
-    return TS_OK;
+    return LT_OK;
 }
 
-int ts_aesgcm_encrypt( void *ctx,
+int lt_aesgcm_encrypt( void *ctx,
                     const uint8_t *iv,
                     uint32_t iv_len,
                     const uint8_t *aad,
@@ -32,15 +32,15 @@ int ts_aesgcm_encrypt( void *ctx,
 
     int ret = gcm_encrypt_message(iv, iv_len, aad, aad_len, msg, msg_len, tag, tag_len, _ctx);
     if(ret != RETURN_GOOD) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
 
-    return TS_OK;;
+    return LT_OK;;
 }
 
 
 
-int ts_aesgcm_decrypt(void *ctx,
+int lt_aesgcm_decrypt(void *ctx,
                     const uint8_t *iv,
                     uint32_t iv_len,
                     const uint8_t *aad,
@@ -54,20 +54,20 @@ int ts_aesgcm_decrypt(void *ctx,
 
     int ret = gcm_decrypt_message(iv, iv_len, aad, aad_len, msg, msg_len, tag, tag_len, _ctx);
     if(ret != RETURN_GOOD) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
 
-    return TS_OK;
+    return LT_OK;
 }
 
-int ts_aesgcm_end(void *ctx)
+int lt_aesgcm_end(void *ctx)
 {
     gcm_ctx *_ctx = (gcm_ctx*) ctx;
     int ret = gcm_end(_ctx);
     if(ret != RETURN_GOOD) {
-        return TS_FAIL;
+        return LT_FAIL;
     }
-    return TS_OK;
+    return LT_OK;
 }
 
 #endif

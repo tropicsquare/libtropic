@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.21.0)
 ###########################################################################
 
 option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
-option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
+option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 
 ###########################################################################
@@ -27,7 +27,7 @@ if(BUILD_DOCS)
 endif()
 
 # Check if cryptography provider is defined
-if((NOT USE_TREZOR_CRYPTO) AND (NOT TS_CRYPTO_MBEDTLS) AND (NOT BUILD_DOCS))
+if((NOT USE_TREZOR_CRYPTO) AND (NOT LT_CRYPTO_MBEDTLS) AND (NOT BUILD_DOCS))
     message(FATAL_ERROR "Mbed TLS or trezor_crypto must be enabled!")
 endif()
 
@@ -45,31 +45,31 @@ project(libtropic_SDK
 
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
 )
 
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
 )
 
 set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_aesgcm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_ed25519.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/ts_trezor_x25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
 )
 
 add_library(tropic ${SDK_SRCS} ${SDK_INCS})

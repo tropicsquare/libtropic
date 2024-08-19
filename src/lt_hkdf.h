@@ -1,11 +1,11 @@
-#ifndef TS_HKDF_H
-#define TS_HKDF_H
+#ifndef LT_HKDF_H
+#define LT_HKDF_H
 
 /**
-* @file   ts_hkdf.h
-* @brief  HKDF function declaration
-* @author Tropic Square s.r.o.
-*/
+ * @file   lt_hkdf.h
+ * @brief  HKDF function declaration
+ * @author Tropic Square s.r.o.
+ */
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -21,6 +21,6 @@
  * @param output_1    Output data 1
  * @param output_2    Output data 2
  */
-void ts_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1, uint8_t *output_2);
+void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1, uint8_t *output_2);
 
 #endif
