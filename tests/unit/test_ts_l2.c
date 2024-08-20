@@ -160,3 +160,30 @@ void test_lt_l2_transfer__fail_during_l1_read()
 
 //     TEST_ASSERT_EQUAL(LT_OK, lt_l2_transfer(&h));
 // }
+
+//--------------------------------------------------------------------------------------------------
+
+void test_lt_l2_encrypted_cmd__l1_write_fail()
+{
+    lt_handle_t h = {0};
+    int chunk_len = L3_RES_SIZE_SIZE + L3_TAG_SIZE;
+
+    add_crc_Ignore();
+    lt_l1_write_ExpectAndReturn(&h, chunk_len + 4, LT_L1_TIMEOUT_MS_DEFAULT, LT_L1_SPI_ERROR);
+
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l2_encrypted_cmd(&h));
+}
+
+void test_lt_l2_encrypted_cmd__l1_read_fail()
+{
+    lt_handle_t h = {0};
+    int chunk_len = L3_RES_SIZE_SIZE + L3_TAG_SIZE;
+
+    add_crc_Ignore();
+    lt_l1_write_ExpectAndReturn(&h, chunk_len + 4, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
+    lt_l1_read_ExpectAndReturn(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT, LT_L1_SPI_ERROR);
+
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l2_encrypted_cmd(&h));
+}
+
+// TODO: frame check
