@@ -29,3 +29,10 @@ void test_lt_l2_transfer___NULL_h()
 {
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l2_transfer(NULL));
 }
+
+//----------------------------------------------------------------------
+// Test if function returns expected error on non valid input parameter
+void test_lt_l2_encrypted_cmd___NULL_h()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l2_encrypted_cmd(NULL));
+}
