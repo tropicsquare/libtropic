@@ -1,6 +1,7 @@
 
 #include "unity.h"
 #include "string.h"
+#include "time.h"
 
 #include "libtropic_common.h"
 #include "libtropic.h"
@@ -21,6 +22,17 @@
 
 void setUp(void)
 {
+    char buffer[100];
+    #ifdef RNG_SEED
+        srand(RNG_SEED);
+    #else
+        time_t seed = time(NULL);
+        // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
+        // Also, raw printf is worse solution (without additional debug msgs, such as line).
+        snprintf(buffer, sizeof(buffer), "Using random seed: %lu\n", seed);
+        TEST_MESSAGE(buffer);
+        srand(seed);
+    #endif
 }
 
 void tearDown(void)
@@ -165,4 +177,47 @@ void test_lt_handshake___invalid_shipub()
 
     int ret = lt_handshake(&handle, stpub, pkey_index, shipriv, NULL);
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+//---------------------------------------------------------------------
+// void test_lt_ping__invalid_handle()
+// {
+//     uint8_t msg_out, msg_in;
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(NULL, &msg_out, &msg_in, 0));
+// }
+
+void test_lt_ping__invalid_msg_out()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+    uint8_t msg_in;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, NULL, &msg_in, 0));
+}
+
+void test_lt_ping__invalid_msg_in()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+    uint8_t msg_out;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, &msg_out, NULL, 0));
+}
+
+void test_lt_ping__invalid_len()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg_out, msg_in;
+    uint16_t len;
+
+    for (int i = 0; i < 25; i++) {
+        len = PING_LEN_MAX + 1;
+        len += rand() % (UINT16_MAX - len);
+        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, &msg_out, &msg_in, len));
+    }
+}
+//---------------------------------------------------------------------
+void test_lt_ping__lt_random_get()
+{
+
 }
