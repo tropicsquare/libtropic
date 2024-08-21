@@ -169,11 +169,12 @@ lt_ret_t lt_handshake(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t p
 
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if((len > PING_LEN_MAX) || !h || !msg_out || !msg_in) {
         return LT_PARAM_ERR;
+    }
+    
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains Ping command data
@@ -203,11 +204,12 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
 
 lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if((len > RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
         return LT_PARAM_ERR;
+    }
+
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains Ping command data
@@ -237,11 +239,12 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if(slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX || !h || ((curve != CURVE_P256) && (curve != CURVE_ED25519))  ){
         return LT_PARAM_ERR;
+    }
+
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains Ping command data
@@ -270,11 +273,11 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
 
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const int8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if(!h || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX || !key || !curve || !origin) {
         return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
     if(keylen < 64) {
         return LT_PARAM_ERR;
@@ -312,11 +315,11 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
 
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if(!h || !msg || !rs || rs_len < 64 || ((msg_len < LT_L3_EDDSA_SIGN_MSG_LEN_MIN) | (msg_len > LT_L3_EDDSA_SIGN_MSG_LEN_MAX))) {
         return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains Ping command data
@@ -343,11 +346,11 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if(!h || !msg || !rs || (msg_len > LT_L3_ECDSA_SIGN_MSG_LEN_MAX) || (rs_len < 64)) {
         return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Prepare hash of a message
@@ -392,11 +395,11 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if(!h || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX) {
         return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
