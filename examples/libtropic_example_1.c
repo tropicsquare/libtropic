@@ -1,3 +1,10 @@
+/**
+ * @file libtropic_example_1.c
+ * @author Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
+
 // This header is only thing needed to work with libtropic
 #include <stdlib.h>
 #include <string.h>

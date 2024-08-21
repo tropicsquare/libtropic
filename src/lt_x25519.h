@@ -2,10 +2,12 @@
 #define LT_X25519_H
 
 /**
-* @file lt_x25519.h
-* @brief X25519 functiosn declarations
-* @author Tropic Square s.r.o.
-*/
+ * @file lt_x25519.h
+ * @brief X25519 functiosn declarations
+ * @author Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
 
 #include "stdint.h"
 

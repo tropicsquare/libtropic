@@ -3,10 +3,12 @@
 #define LT_RANDOM_H
 
 /**
-* @file lt_random.h
-* @brief Declarations of functions related to random number generator
-* @author Tropic Square s.r.o.
-*/
+ * @file lt_random.h
+ * @brief Declarations of functions related to random number generator
+ * @author Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
 
 #include "libtropic_common.h"
 

@@ -11,6 +11,8 @@
  * @file lt_l2.c
  * @brief Layer 2 functions definitions
  * @author Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 /** Safety number - limit number of loops during l3 chunks reception. TROPIC01 divides data into 128B
