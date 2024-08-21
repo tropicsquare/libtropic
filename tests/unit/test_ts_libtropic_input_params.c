@@ -11,6 +11,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic.h"
+#include "lt_l3_api_structs.h"
 
 #include "mock_lt_random.h"
 #include "mock_lt_l1_port_wrap.h"
@@ -223,7 +224,153 @@ void test_lt_ping__invalid_len()
     }
 }
 //---------------------------------------------------------------------
-void test_lt_ping__lt_random_get()
-{
+// void test_lt_random_get__invalid_handle()
+// {
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(NULL, (uint8_t*)"", 0));
+// }
 
+void test_lt_random_get__invalid_buff()
+{
+    lt_handle_t h;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(&h, NULL, 0));
 }
+
+void test_lt_random_get__invalid_len()
+{
+    lt_handle_t h;
+    uint16_t len;
+
+    h.session = SESSION_ON;
+
+    for (int i = 0; i < 25; i++) {
+        len = RANDOM_VALUE_GET_LEN_MAX + 1;
+        len += rand() % (UINT16_MAX - len);
+        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(&h, (uint8_t*)"", len));
+    }
+}
+
+//---------------------------------------------------------------------
+// void test_lt_ecc_key_generate__invalid_handle()
+// {
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(NULL, ECC_SLOT_1, CURVE_ED25519));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(NULL, ECC_SLOT_1, CURVE_P256));
+// }
+
+// void test_lt_ecc_key_generate__invalid_slot()
+// {
+//     lt_handle_t h;
+//     h.session = SESSION_ON;
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, CURVE_ED25519));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, CURVE_ED25519));
+// }
+
+void test_lt_ecc_key_generate__invalid_curve()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    // Test random values.
+    int curve;
+    for (int i = 0; i < 25; i++) {
+        curve = rand();
+        if (curve != CURVE_ED25519 && curve != CURVE_P256) {
+            TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_1, curve));
+        }
+    }
+
+    // Test top and lower bound.
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_1, 0));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_1, 3));
+}
+
+//---------------------------------------------------------------------
+// void test_lt_ecc_key_read__invalid_handle()
+// {
+//     ecc_curve_type_t curve;
+//     ecc_key_origin_t origin;
+//     uint8_t key[64];
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(NULL, ECC_SLOT_1, key, 64, &curve, &origin));
+// }
+
+// void test_lt_ecc_key_read__invalid_slot()
+// {
+//     lt_handle_t h;
+//     h.session = SESSION_ON;
+
+//     ecc_curve_type_t curve;
+//     ecc_key_origin_t origin;
+//     uint8_t key[64];
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, key, 64, &curve, &origin));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, key, 64, &curve, &origin));
+// }
+
+void test_lt_ecc_key_read__invalid_key()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    ecc_curve_type_t curve;
+    ecc_key_origin_t origin;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, NULL, 64, &curve, &origin));
+}
+
+void test_lt_ecc_key_read__invalid_key_len()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    ecc_curve_type_t curve;
+    ecc_key_origin_t origin;
+    uint8_t key[64];
+
+    for (int i = 0; i < 25; i++) {
+        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, key, rand() % 64, &curve, &origin));
+    }
+}
+
+void test_lt_ecc_key_read__invalid_curve()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    ecc_key_origin_t origin;
+    uint8_t key[64];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, key, 64, NULL, &origin));
+}
+
+void test_lt_ecc_key_read__invalid_origin()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    ecc_curve_type_t curve;
+    uint8_t key[64];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, key, 64, &curve, NULL));
+}
+
+//---------------------------------------------------------------------
+// void test_lt_ecc_eddsa_sign__invalid_handle()
+// {
+//     uint8_t msg[1];
+//     int8_t  rs[64];
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(NULL, ECC_SLOT_1, msg, 1, rs, 64));
+// }
+
+// void test_lt_ecc_eddsa_sign__invalid_slot()
+// {
+//     lt_handle_t h;
+//     h.session = SESSION_ON;
+
+//     uint8_t msg[1];
+//     uint8_t rs[64];
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, msg, 1, rs, 64));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, msg, 1, rs, 64));
+// }
