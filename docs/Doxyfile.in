@@ -289,7 +289,7 @@ TAB_SIZE               = 4
 # with the commands \{ and \} for these it is advised to use the version @{ and
 # @} or use a double escape (\\{ and \\})
 
-ALIASES                += "license=@par License^^"
+ALIASES                = "license=@par License^^"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources
 # only. Doxygen will then generate output that is more tailored for C. For
@@ -1162,6 +1162,15 @@ FILTER_SOURCE_PATTERNS =
 # and want to reuse the introduction page also for the doxygen output.
 
 USE_MDFILE_AS_MAINPAGE = @CMAKE_CURRENT_SOURCE_DIR@/index.md
+
+# The Fortran standard specifies that for fixed formatted Fortran code all
+# characters from position 72 are to be considered as comment. A common
+# extension is to allow longer lines before the automatic comment starts. The
+# setting FORTRAN_COMMENT_AFTER will also make it possible that longer lines can
+# be processed before the automatic comment starts.
+# Minimum value: 7, maximum value: 10000, default value: 72.
+
+FORTRAN_COMMENT_AFTER  = 72
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
