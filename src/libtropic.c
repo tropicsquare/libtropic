@@ -174,7 +174,6 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
     if((len > PING_LEN_MAX) || !h || !msg_out || !msg_in) {
         return LT_PARAM_ERR;
     }
-    
     if(h->session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
@@ -209,7 +208,6 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     if((len > RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
         return LT_PARAM_ERR;
     }
-
     if(h->session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
@@ -244,7 +242,6 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
     if(slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX || !h || ((curve != CURVE_P256) && (curve != CURVE_ED25519))  ){
         return LT_PARAM_ERR;
     }
-
     if(h->session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
