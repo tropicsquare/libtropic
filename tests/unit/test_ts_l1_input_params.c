@@ -27,6 +27,13 @@ void tearDown(void)
 
 //---------------------------------------------------------------------------------------------------------------------
 // Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_init___NULL_h()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_init(NULL));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Test if function returns LT_PARAM_ERR on non valid input parameter
 void test_lt_l1_read___NULL_h()
 {
 
