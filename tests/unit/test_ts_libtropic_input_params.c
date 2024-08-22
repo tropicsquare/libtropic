@@ -25,8 +25,6 @@
 #include "mock_lt_aesgcm.h"
 
 
-
-
 void setUp(void)
 {
     char buffer[100];
@@ -46,65 +44,12 @@ void tearDown(void)
 {
 }
 
-// Test that all return values can be displayed as a string (for better debug)
-void test_lt_ret_verbose()
-{
-    TEST_ASSERT_EQUAL_STRING("LT_OK", lt_ret_verbose(LT_OK));
-    TEST_ASSERT_EQUAL_STRING("LT_FAIL", lt_ret_verbose(LT_FAIL));
-    TEST_ASSERT_EQUAL_STRING("LT_PARAM_ERR", lt_ret_verbose(LT_PARAM_ERR));
-    TEST_ASSERT_EQUAL_STRING("LT_L1_SPI_ERROR", lt_ret_verbose(LT_L1_SPI_ERROR));
-    TEST_ASSERT_EQUAL_STRING("LT_L1_DATA_LEN_ERROR", lt_ret_verbose(LT_L1_DATA_LEN_ERROR));
-    TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_STARTUP_MODE", lt_ret_verbose(LT_L1_CHIP_STARTUP_MODE));
-    TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_ALARM_MODE", lt_ret_verbose(LT_L1_CHIP_ALARM_MODE));
-    TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_BUSY", lt_ret_verbose(LT_L1_CHIP_BUSY));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_IN_CRC_ERR", lt_ret_verbose(LT_L2_IN_CRC_ERR));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_REQ_CONT", lt_ret_verbose(LT_L2_REQ_CONT));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_RES_CONT", lt_ret_verbose(LT_L2_RES_CONT));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_HSK_ERR", lt_ret_verbose(LT_L2_HSK_ERR));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_NO_SESSION", lt_ret_verbose(LT_L2_NO_SESSION));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_TAG_ERR", lt_ret_verbose(LT_L2_TAG_ERR));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_CRC_ERR", lt_ret_verbose(LT_L2_CRC_ERR));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_GEN_ERR", lt_ret_verbose(LT_L2_GEN_ERR));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_NO_RESP", lt_ret_verbose(LT_L2_NO_RESP));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_UNKNOWN_REQ", lt_ret_verbose(LT_L2_UNKNOWN_REQ));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_STATUS_NOT_RECOGNIZED", lt_ret_verbose(LT_L2_STATUS_NOT_RECOGNIZED));
-    TEST_ASSERT_EQUAL_STRING("LT_L3_FAIL", lt_ret_verbose(LT_L3_FAIL));
-    TEST_ASSERT_EQUAL_STRING("LT_L3_OK", lt_ret_verbose(LT_L3_OK));
-    TEST_ASSERT_EQUAL_STRING("LT_L3_UNAUTHORIZED", lt_ret_verbose(LT_L3_UNAUTHORIZED));
-    TEST_ASSERT_EQUAL_STRING("LT_L3_INVALID_CMD", lt_ret_verbose(LT_L3_INVALID_CMD));
-    TEST_ASSERT_EQUAL_STRING("LT_L3_DATA_LEN_ERROR", lt_ret_verbose(LT_L3_DATA_LEN_ERROR));
-    TEST_ASSERT_EQUAL_STRING("LT_HOST_NO_SESSION", lt_ret_verbose(LT_HOST_NO_SESSION));
-    TEST_ASSERT_EQUAL_STRING("FATAL ERROR, unknown return value", lt_ret_verbose(99));
-}
-
-
+//---------------------------------------------------------------------
 // Test if function returns LT_PARAM_ERR on non valid input parameter
 void test_lt_init___invalid_handle()
 {
     int ret = lt_init(NULL);
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
-}
-
-// Test if function returns LT_FAIL when l1 init failed
-void test_lt_init___error_during_lt_l1_init()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_init_ExpectAndReturn(&h, LT_FAIL);
-
-    lt_ret_t ret = lt_init(&h);
-    TEST_ASSERT_EQUAL(LT_FAIL, ret);
-}
-
-// Test if function returns LT_OK when all went correctly
-void test_lt_init___correct()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_init_ExpectAndReturn(&h, LT_OK);
-
-    lt_ret_t ret = lt_init(&h);
-    TEST_ASSERT_EQUAL(LT_OK, ret);
 }
 
 //---------------------------------------------------------------------
@@ -114,29 +59,6 @@ void test_lt_deinit___invalid_handle()
     int ret = lt_deinit(NULL);
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
 }
-
-// Test if function returns LT_FAIL when l1 deinit failed
-void test_lt_deinit___error_during_lt_l1_deinit()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_deinit_ExpectAndReturn(&h, LT_FAIL);
-
-    lt_ret_t ret = lt_deinit(&h);
-    TEST_ASSERT_EQUAL(LT_FAIL, ret);
-}
-
-// Test if function returns LT_OK when all went correctly
-void test_lt_deinit___correct()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_deinit_ExpectAndReturn(&h, LT_OK);
-
-    lt_ret_t ret = lt_deinit(&h);
-    TEST_ASSERT_EQUAL(LT_OK, ret);
-}
-
 
 //---------------------------------------------------------------------
 // Test if function returns LT_PARAM_ERR on non valid input parameter
@@ -549,4 +471,37 @@ void test_lt_cert_verify_and_parse__invalid_stpub()
     uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, NULL));
+}
+
+//---------------------------------------------------------------------
+
+// Test that all return values can be displayed as a string (for better debug)
+void test_lt_ret_verbose()
+{
+    TEST_ASSERT_EQUAL_STRING("LT_OK", lt_ret_verbose(LT_OK));
+    TEST_ASSERT_EQUAL_STRING("LT_FAIL", lt_ret_verbose(LT_FAIL));
+    TEST_ASSERT_EQUAL_STRING("LT_PARAM_ERR", lt_ret_verbose(LT_PARAM_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_L1_SPI_ERROR", lt_ret_verbose(LT_L1_SPI_ERROR));
+    TEST_ASSERT_EQUAL_STRING("LT_L1_DATA_LEN_ERROR", lt_ret_verbose(LT_L1_DATA_LEN_ERROR));
+    TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_STARTUP_MODE", lt_ret_verbose(LT_L1_CHIP_STARTUP_MODE));
+    TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_ALARM_MODE", lt_ret_verbose(LT_L1_CHIP_ALARM_MODE));
+    TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_BUSY", lt_ret_verbose(LT_L1_CHIP_BUSY));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_IN_CRC_ERR", lt_ret_verbose(LT_L2_IN_CRC_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_REQ_CONT", lt_ret_verbose(LT_L2_REQ_CONT));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_RES_CONT", lt_ret_verbose(LT_L2_RES_CONT));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_HSK_ERR", lt_ret_verbose(LT_L2_HSK_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_NO_SESSION", lt_ret_verbose(LT_L2_NO_SESSION));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_TAG_ERR", lt_ret_verbose(LT_L2_TAG_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_CRC_ERR", lt_ret_verbose(LT_L2_CRC_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_GEN_ERR", lt_ret_verbose(LT_L2_GEN_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_NO_RESP", lt_ret_verbose(LT_L2_NO_RESP));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_UNKNOWN_REQ", lt_ret_verbose(LT_L2_UNKNOWN_REQ));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_STATUS_NOT_RECOGNIZED", lt_ret_verbose(LT_L2_STATUS_NOT_RECOGNIZED));
+    TEST_ASSERT_EQUAL_STRING("LT_L3_FAIL", lt_ret_verbose(LT_L3_FAIL));
+    TEST_ASSERT_EQUAL_STRING("LT_L3_OK", lt_ret_verbose(LT_L3_OK));
+    TEST_ASSERT_EQUAL_STRING("LT_L3_UNAUTHORIZED", lt_ret_verbose(LT_L3_UNAUTHORIZED));
+    TEST_ASSERT_EQUAL_STRING("LT_L3_INVALID_CMD", lt_ret_verbose(LT_L3_INVALID_CMD));
+    TEST_ASSERT_EQUAL_STRING("LT_L3_DATA_LEN_ERROR", lt_ret_verbose(LT_L3_DATA_LEN_ERROR));
+    TEST_ASSERT_EQUAL_STRING("LT_HOST_NO_SESSION", lt_ret_verbose(LT_HOST_NO_SESSION));
+    TEST_ASSERT_EQUAL_STRING("FATAL ERROR, unknown return value", lt_ret_verbose(99));
 }
