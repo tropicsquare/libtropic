@@ -368,3 +368,179 @@ void test_lt_ecc_key_read__invalid_origin()
 //     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, msg, 1, rs, 64));
 //     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, msg, 1, rs, 64));
 // }
+
+void test_lt_ecc_eddsa_sign__invalid_msg()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t rs[64];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, NULL, 1, rs, 64));
+}
+
+void test_lt_ecc_eddsa_sign__invalid_msg_len()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg[LT_L3_EDDSA_SIGN_MSG_LEN_MAX + 1];
+    uint8_t rs[64];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_MSG_LEN_MAX + 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_MSG_LEN_MIN - 1, rs, 64));
+}
+
+void test_lt_ecc_eddsa_sign__invalid_rs()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg[1];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, 1, NULL, 64));
+}
+
+void test_lt_ecc_eddsa_sign__invalid_rs_len()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg[1];
+    uint8_t rs[64];
+
+    for (int i = 0; i < 25; i++) {
+        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, 1, rs, rand() % 64));
+    }
+}
+
+//---------------------------------------------------------------------
+// void test_lt_ecc_ecdsa_sign__invalid_handle()
+// {
+//     uint8_t msg[1];
+//     int8_t  rs[64];
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(NULL, ECC_SLOT_1, msg, 1, rs, 64));
+// }
+
+// void test_lt_ecc_ecdsa_sign__invalid_slot()
+// {
+//     lt_handle_t h;
+//     h.session = SESSION_ON;
+
+//     uint8_t msg[1];
+//     uint8_t rs[64];
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, msg, 1, rs, 64));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, msg, 1, rs, 64));
+// }
+
+void test_lt_ecc_ecdsa_sign__invalid_msg()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t rs[64];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, NULL, 1, rs, 64));
+}
+
+void test_lt_ecc_ecdsa_sign__invalid_msg_len()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg[LT_L3_ECDSA_SIGN_MSG_LEN_MAX + 1];
+    uint8_t rs[64];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, LT_L3_ECDSA_SIGN_MSG_LEN_MAX + 1, rs, 64));
+}
+
+void test_lt_ecc_ecdsa_sign__invalid_rs()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg[1];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, 1, NULL, 64));
+}
+
+void test_lt_ecc_ecdsa_sign__invalid_rs_len()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t msg[1];
+    uint8_t rs[64];
+
+    for (int i = 0; i < 25; i++) {
+        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, 1, rs, rand() % 64));
+    }
+}
+
+//---------------------------------------------------------------------
+// void test_lt_ecc_key_erase__invalid_handle()
+// {
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(NULL, ECC_SLOT_1));
+// }
+
+void test_lt_ecc_key_erase__invalid_slot()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1));
+}
+
+//---------------------------------------------------------------------
+// void test_lt_get_info_cert__invalid_handle()
+// {
+//     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(NULL, cert, LT_L2_GET_INFO_REQ_CERT_SIZE));
+// }
+
+// void test_lt_get_info_cert__invalid_cert()
+// {
+//     lt_handle_t h;
+//     h.session = SESSION_ON;
+
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(&h, NULL, LT_L2_GET_INFO_REQ_CERT_SIZE));
+// }
+
+// void test_lt_get_info_cert__invalid_cert_len()
+// {
+//     lt_handle_t h;
+//     uint8_t     cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+
+//     h.session = SESSION_ON;
+
+//     for (int i = 0; i < 25; i++) {
+//         TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(&h, cert, rand() % LT_L2_GET_INFO_REQ_CERT_SIZE));
+//     }
+// }
+//---------------------------------------------------------------------
+void test_lt_cert_verify_and_parse__invalid_cert()
+{
+    uint8_t     stpub[] = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(NULL, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+}
+
+void test_lt_cert_verify_and_parse__invalid_len()
+{
+    uint8_t dummy_cert[1024];
+    uint8_t stpub[] = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE + 1, stpub));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE + 500, stpub));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE + 1000, stpub));
+}
+
+void test_lt_cert_verify_and_parse__invalid_stpub()
+{
+    uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, NULL));
+}
