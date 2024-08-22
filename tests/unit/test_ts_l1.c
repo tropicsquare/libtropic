@@ -43,6 +43,23 @@ void test_lt_l1_init___fail_during_lt_port_init()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// Test error when lt_port_deinit() fails
+void test_lt_l1_deinit___fail_during_lt_port_deinit()
+{
+    lt_handle_t h = {0};
+    
+    // Test LT_FAIL
+    lt_port_deinit_ExpectAndReturn(&h, LT_FAIL);
+    int ret = lt_l1_deinit(&h);
+    TEST_ASSERT_EQUAL(LT_FAIL, ret);
+
+    // Test LT_L1_SPI_ERROR
+    lt_port_deinit_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    ret = lt_l1_deinit(&h);
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, ret);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 // Used to force l2_buff[0] to contain zeroed busy bit
 static lt_ret_t callback_CHIP_BUSY(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = 0;
