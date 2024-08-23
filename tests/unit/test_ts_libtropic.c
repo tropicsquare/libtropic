@@ -350,3 +350,32 @@ void test_lt_ecc_key_read__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_eddsa_sign__l3_fail()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+
+    uint8_t     msg[10];
+    uint8_t     rs[64];
+
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (int i = 0; i < sizeof(rets); i++) {
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    }
+}
+
+void test_lt_ecc_eddsa_sign__correct()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+
+    uint8_t     msg[10];
+    uint8_t     rs[64];
+
+    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+}
+
+//---------------------------------------------------------------------
