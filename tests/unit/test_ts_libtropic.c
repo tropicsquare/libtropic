@@ -273,3 +273,80 @@ void test_lt_ecc_key_generate__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_key_read__l3_fail()
+{
+    lt_handle_t h =  {0};
+    h.session     = SESSION_ON;
+    
+    uint8_t          key[64];
+    ecc_curve_type_t curve;
+    ecc_key_origin_t origin;
+
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (int i = 0; i < sizeof(rets); i++) {
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
+    }
+}
+
+int                 lt_ecc_key_read_packet_size_inject_value;
+ecc_curve_type_t    lt_ecc_key_read_curve_inject_value;
+
+lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
+
+    p_l3_res->packet_size = lt_ecc_key_read_packet_size_inject_value;
+    p_l3_res->curve       = lt_ecc_key_read_curve_inject_value;
+
+    return LT_OK;
+}
+
+void test_lt_ecc_key_read__ed25519_size_mismatch()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    
+    uint8_t          key[64];
+    ecc_curve_type_t curve;
+    ecc_key_origin_t origin;
+
+    lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
+
+    for (int i = 0; i < 25; i++) {
+        lt_ecc_key_read_packet_size_inject_value = rand() % L3_PACKET_MAX_SIZE;
+        
+        if (lt_ecc_key_read_packet_size_inject_value != 48) { // skip correct value
+            lt_ecc_key_read_curve_inject_value       = CURVE_ED25519;
+            TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
+        }
+
+        if (lt_ecc_key_read_packet_size_inject_value != 80) { // skip correct value
+            lt_ecc_key_read_curve_inject_value       = CURVE_P256;
+            TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
+        }
+    }
+}
+
+void test_lt_ecc_key_read__correct()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    
+    uint8_t          key[64];
+    ecc_curve_type_t curve;
+    ecc_key_origin_t origin;
+
+    lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
+
+    lt_ecc_key_read_packet_size_inject_value = 48;
+    lt_ecc_key_read_curve_inject_value       = CURVE_ED25519;
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
+
+    lt_ecc_key_read_packet_size_inject_value = 80;
+    lt_ecc_key_read_curve_inject_value       = CURVE_P256;
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
+}
+
+//---------------------------------------------------------------------
