@@ -379,3 +379,44 @@ void test_lt_ecc_eddsa_sign__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_ecdsa_sign__l3_fail()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+
+    uint8_t                msg[10];
+    uint8_t                rs[64];
+    lt_crypto_sha256_ctx_t hctx         = {0};
+    uint8_t                msg_hash[32] = {0};
+
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (int i = 0; i < sizeof(rets); i++) {
+        lt_sha256_init_Expect(&hctx);
+        lt_sha256_start_Expect(&hctx);
+        lt_sha256_update_Expect(&hctx, msg, sizeof(msg));
+        lt_sha256_finish_Expect(&hctx, msg_hash);
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    }
+}
+
+void test_lt_ecc_ecdsa_sign__correct()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+
+    uint8_t                msg[10];
+    uint8_t                rs[64];
+    lt_crypto_sha256_ctx_t hctx         = {0};
+    uint8_t                msg_hash[32] = {0};
+
+    lt_sha256_init_Expect(&hctx);
+    lt_sha256_start_Expect(&hctx);
+    lt_sha256_update_Expect(&hctx, msg, sizeof(msg));
+    lt_sha256_finish_Expect(&hctx, msg_hash);
+    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+}
+
+//---------------------------------------------------------------------
