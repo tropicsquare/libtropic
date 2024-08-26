@@ -44,21 +44,6 @@
 /** Get info request's ID */
 #define GET_INFO_REQ_ID 0xAA
 
-/**
- * @brief Initialize handle and l1. This is wrapper for platform defined function.
- *
- * @param h           Chip's handle
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_l1_init(lt_handle_t *h);
-
-/**
- * @brief Wipe handle and deinitialize l1. This is wrapper for platform defined function.
- *
- * @param h           Chip's handle
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_l1_deinit(lt_handle_t *h);
 
 /**
  * @brief Read data from Tropic chip into host platform
