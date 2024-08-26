@@ -420,3 +420,89 @@ void test_lt_ecc_ecdsa_sign__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_eddsa_sig_verify__fail()
+{
+    uint8_t msg[10];
+    uint8_t pubkey[64];
+    uint8_t rs[64];
+
+    lt_ed25519_sign_open_ExpectAndReturn(msg, sizeof(msg), pubkey, rs, 1);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_eddsa_sig_verify(msg, sizeof(msg), pubkey, rs));
+}
+
+void test_lt_ecc_eddsa_sig_verify__correct()
+{
+    uint8_t msg[10];
+    uint8_t pubkey[64];
+    uint8_t rs[64];
+
+    lt_ed25519_sign_open_ExpectAndReturn(msg, sizeof(msg), pubkey, rs, 0);
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sig_verify(msg, sizeof(msg), pubkey, rs));
+}
+
+//---------------------------------------------------------------------
+
+void test_lt_ecc_key_erase__l3_fail()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (int i = 0; i < sizeof(rets); i++) {
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_erase(&h, ECC_SLOT_1));
+    }
+}
+
+void test_lt_ecc_key_erase__correct()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+
+    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, ECC_SLOT_1));
+}
+
+//---------------------------------------------------------------------
+
+void test_lt_get_info_cert__l2_fail()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+
+    uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+
+    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
+
+    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
+
+    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
+
+    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
+}
+
+void test_lt_get_info_cert__l2_correct()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+
+    uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+
+    for (int i = 0; i < 4; i++) {
+        lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+    }
+    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_cert(&h, cert, sizeof(cert))); 
+}
+
+//---------------------------------------------------------------------
