@@ -28,9 +28,9 @@ void setUp(void)
         time_t seed = time(NULL);
         // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
         // Also, raw printf is worse solution (without additional debug msgs, such as line).
-        snprintf(buffer, sizeof(buffer), "Using random seed: %lu\n", seed);
+        snprintf(buffer, sizeof(buffer), "Using random seed: %ld\n", seed);
         TEST_MESSAGE(buffer);
-        srand(seed);
+        srand((unsigned int)seed);
     #endif
 }
 
@@ -94,15 +94,15 @@ void test_lt_ping__l3_fail()
     uint8_t msg_out, msg_in;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ping(&h, &msg_out, &msg_in, 0));
     }
 }
 
-int lt_ping_packet_size_inject_value;
+uint16_t lt_ping_packet_size_inject_value;
 
-lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
     p_l3_res->packet_size = lt_ping_packet_size_inject_value;
@@ -112,7 +112,7 @@ lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
 
 void test_lt_ping__len_mismatch()
 {   
-    const size_t             msg_max_size = 200;
+    const int                msg_max_size = 200;
     lt_handle_t h =  {0};
     uint8_t                  msg_out[msg_max_size], msg_in[msg_max_size];
     int                      rand_size, rand_len_offset;
@@ -126,19 +126,19 @@ void test_lt_ping__len_mismatch()
             rand_len_offset++;
         }
 
-        lt_ping_packet_size_inject_value = rand_size;
+        lt_ping_packet_size_inject_value = (uint16_t)rand_size;
 
         // Packet size for both cmd and res has the same position, so
         // it would be overwritten by "p_l3_cmd->packet_size = len + 1;",
         // so we need to modify the value inside the callback.
         lt_l3_cmd_Stub(callback_lt_ping_lt_l3_cmd);
-        TEST_ASSERT_EQUAL(LT_FAIL, lt_ping(&h, msg_out, msg_in, rand_size + rand_len_offset));
+        TEST_ASSERT_EQUAL(LT_FAIL, lt_ping(&h, msg_out, msg_in, (uint16_t)(rand_size + rand_len_offset)));
     }
 }
 
 void test_lt_ping__correct()
 {
-    const size_t    msg_max_size = 200;
+    const int       msg_max_size = 200;
     lt_handle_t h =  {0};
     uint8_t         msg_out[200], msg_in[200];
 
@@ -147,7 +147,7 @@ void test_lt_ping__correct()
     // Because packet size position is shared by both cmd and res,
     // it will already be set correctly by "p_l3_cmd->packet_size = len + 1;".
     lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
-    TEST_ASSERT_EQUAL(LT_OK, lt_ping(&h, msg_out, msg_in, rand() % msg_max_size));
+    TEST_ASSERT_EQUAL(LT_OK, lt_ping(&h, msg_out, msg_in, (uint16_t)(rand() % msg_max_size)));
 }
 
 //---------------------------------------------------------------------
@@ -160,15 +160,15 @@ void test_lt_random_get__l3_fail()
     h.session = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_random_get(&h, buff, sizeof(buff)));
     }
 }
 
-int lt_random_get_packet_size_inject_value;
+uint16_t lt_random_get_packet_size_inject_value;
 
-lt_ret_t callback_lt_random_get_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback_lt_random_get_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
     p_l3_res->packet_size = lt_random_get_packet_size_inject_value;
@@ -178,7 +178,7 @@ lt_ret_t callback_lt_random_get_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
 
 void test_lt_random_get__len_mismatch()
 {
-    const size_t             buff_max_size = 200;
+    const int                buff_max_size = 200;
     lt_handle_t h =  {0};
     uint8_t                  buff[buff_max_size];
     int                      rand_size, rand_len_offset;
@@ -192,27 +192,27 @@ void test_lt_random_get__len_mismatch()
             rand_len_offset++;
         }
 
-        lt_random_get_packet_size_inject_value = rand_size;
+        lt_random_get_packet_size_inject_value = (uint16_t)rand_size;
 
         lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
-        TEST_ASSERT_EQUAL(LT_FAIL, lt_random_get(&h, buff, rand_size + rand_len_offset));
+        TEST_ASSERT_EQUAL(LT_FAIL, lt_random_get(&h, buff, (uint16_t)(rand_size + rand_len_offset)));
     }
 }
 
 void test_lt_random_get__correct()
 {
-    const size_t    buff_max_size = 200;
+    const int       buff_max_size = 200;
     uint8_t         buff[200];
-    int16_t         packet_size;
+    int             packet_size;
     lt_handle_t h =  {0};
 
     h.session   = SESSION_ON;
     packet_size = rand() % buff_max_size;
 
     // No correct value will be set for us as in ping, so injecting again...
-    lt_random_get_packet_size_inject_value = packet_size;
+    lt_random_get_packet_size_inject_value = (uint16_t)packet_size;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, packet_size - 4));
+    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, (uint16_t)(packet_size - 4)));
 }
 
 //---------------------------------------------------------------------
@@ -224,15 +224,15 @@ void test_lt_ecc_key_generate__l3_fail()
     h.session = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
     }
 }
 
-int lt_ecc_key_generate_packet_size_inject_value;
+uint16_t lt_ecc_key_generate_packet_size_inject_value;
 
-lt_ret_t callback_lt_ecc_key_generate_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback_lt_ecc_key_generate_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
     p_l3_res->packet_size = lt_ecc_key_generate_packet_size_inject_value;
@@ -253,7 +253,7 @@ void test_lt_ecc_key_generate__packet_size_mismatch()
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 
-    lt_random_get_packet_size_inject_value = (rand() % 65534) + 2;
+    lt_random_get_packet_size_inject_value = (uint16_t)((rand() % 65534) + 2);
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 }
@@ -284,16 +284,16 @@ void test_lt_ecc_key_read__l3_fail()
     ecc_key_origin_t origin;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
     }
 }
 
-int                 lt_ecc_key_read_packet_size_inject_value;
+uint16_t            lt_ecc_key_read_packet_size_inject_value;
 ecc_curve_type_t    lt_ecc_key_read_curve_inject_value;
 
-lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
 
@@ -315,7 +315,7 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
     lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
 
     for (int i = 0; i < 25; i++) {
-        lt_ecc_key_read_packet_size_inject_value = rand() % L3_PACKET_MAX_SIZE;
+        lt_ecc_key_read_packet_size_inject_value = (uint16_t)(rand() % L3_PACKET_MAX_SIZE);
         
         if (lt_ecc_key_read_packet_size_inject_value != 48) { // skip correct value
             lt_ecc_key_read_curve_inject_value       = CURVE_ED25519;
@@ -360,7 +360,7 @@ void test_lt_ecc_eddsa_sign__l3_fail()
     uint8_t     rs[64];
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
     }
@@ -391,7 +391,7 @@ void test_lt_ecc_ecdsa_sign__l3_fail()
     uint8_t                msg_hash[32] = {0};
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_sha256_init_Expect(&hctx);
         lt_sha256_start_Expect(&hctx);
         lt_sha256_update_Expect(&hctx, msg, sizeof(msg));
@@ -449,7 +449,7 @@ void test_lt_ecc_key_erase__l3_fail()
     h.session = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (int i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < sizeof(rets); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_erase(&h, ECC_SLOT_1));
     }
