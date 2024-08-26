@@ -6,6 +6,7 @@
 #include "libtropic.h"
 
 #include "mock_lt_random.h"
+#include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
 #include "mock_lt_l3.h"

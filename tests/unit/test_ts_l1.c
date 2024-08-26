@@ -4,7 +4,7 @@
 #include "libtropic_common.h"
 #include "lt_l1.h"
 
-#include "mock_libtropic_port.h"
+#include "mock_lt_l1_port_wrap.h"
 
 
 #define SOME_UNUSED_DEFAULT_BYTE 0xfe
@@ -18,40 +18,6 @@ void tearDown(void)
 {
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-// Test error when lt_port_init() fails
-void test_lt_l1_init___fail_during_lt_port_init()
-{
-    // Test LT_FAIL
-    lt_handle_t h = {0};
-    lt_port_init_ExpectAndReturn(&h, LT_FAIL);
-
-    int ret = lt_l1_init(&h);
-    TEST_ASSERT_EQUAL(LT_FAIL, ret);
-
-    // Test LT_L1_SPI_ERROR
-    lt_port_init_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
-
-    ret = lt_l1_init(&h);
-    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, ret);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-// Test error when lt_port_deinit() fails
-void test_lt_l1_deinit___fail_during_lt_port_deinit()
-{
-    lt_handle_t h = {0};
-    
-    // Test LT_FAIL
-    lt_port_deinit_ExpectAndReturn(&h, LT_FAIL);
-    int ret = lt_l1_deinit(&h);
-    TEST_ASSERT_EQUAL(LT_FAIL, ret);
-
-    // Test LT_L1_SPI_ERROR
-    lt_port_deinit_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
-    ret = lt_l1_deinit(&h);
-    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, ret);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 // Used to force l2_buff[0] to contain zeroed busy bit
@@ -66,10 +32,10 @@ void test_lt_l1_read___CHIP_BUSY()
     lt_handle_t h = {0};
 
     for(int i=0; i< LT_L1_READ_MAX_TRIES; i++) {
-        lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-        lt_port_spi_transfer_StubWithCallback(callback_CHIP_BUSY);
-        lt_port_spi_csn_high_ExpectAndReturn(&h, LT_OK);
-        lt_port_delay_ExpectAndReturn(&h, LT_L1_READ_RETRY_DELAY, LT_OK);
+        lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+        lt_l1_spi_transfer_StubWithCallback(callback_CHIP_BUSY);
+        lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+        lt_l1_delay_ExpectAndReturn(&h, LT_L1_READ_RETRY_DELAY, LT_OK);
     }
     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
@@ -79,9 +45,9 @@ void test_lt_l1_read___LT_L1_SPI_ERROR()
 {
     lt_handle_t h = {0};
 
-    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_port_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
-    lt_port_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
+    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
@@ -97,9 +63,9 @@ void test_lt_l1_read___LT_L1_CHIP_ALARM_MODE()
 {
     lt_handle_t h = {0};
 
-    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_port_spi_transfer_StubWithCallback(callback_LT_L1_CHIP_ALARM_MOD);
-    lt_port_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_transfer_StubWithCallback(callback_LT_L1_CHIP_ALARM_MOD);
+    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 
     TEST_ASSERT_EQUAL(LT_L1_CHIP_ALARM_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
@@ -114,9 +80,9 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
 {
     lt_handle_t h = {0};
 
-    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_port_spi_transfer_StubWithCallback(callback_LT_L1_CHIP_STARTUP_MODE);
-    lt_port_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_transfer_StubWithCallback(callback_LT_L1_CHIP_STARTUP_MODE);
+    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 
     TEST_ASSERT_EQUAL(LT_L1_CHIP_STARTUP_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
@@ -124,8 +90,16 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
 // Used to force lt_handle_t.l2_buff[0] to contain CHIP_MODE_READY bit
 static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls)
 {
-    h->l2_buff[0] = CHIP_MODE_READY_bit;
-    return LT_OK;
+    if(cmock_num_calls == 0) {
+        h->l2_buff[0] = CHIP_MODE_READY_bit;
+        return LT_OK;
+    }
+    if(cmock_num_calls == 1) {
+        return LT_FAIL;
+    }
+
+    // Just in case, return some invalid number:
+    return 0xfefe;
 }
 
 // Test if function returns LT_L1_SPI_ERROR if chip is in ready mode and lt_l1_spi_transfer() fails
@@ -133,12 +107,12 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR()
 {
     lt_handle_t h = {0};
 
-    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_port_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_bit);
-    lt_port_spi_transfer_ExpectAndReturn(&h, 1, 2, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
-    lt_port_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_bit);
+    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
+
 
 //---------------------------------------------------------------------------------------------------------------------

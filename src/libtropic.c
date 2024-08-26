@@ -12,6 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 #include "lt_random.h"
+#include "lt_l1_port_wrap.h"
 #include "lt_l1.h"
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"
