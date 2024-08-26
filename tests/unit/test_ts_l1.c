@@ -121,4 +121,24 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_STARTUP_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Used to force lt_handle_t.l2_buff[0] to contain CHIP_MODE_READY bit
+static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls)
+{
+    h->l2_buff[0] = CHIP_MODE_READY_bit;
+    return LT_OK;
+}
+
+// Test if function returns LT_L1_SPI_ERROR if chip is in ready mode and lt_l1_spi_transfer() fails
+void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR()
+{
+    lt_handle_t h = {0};
+
+    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_port_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_bit);
+    lt_port_spi_transfer_ExpectAndReturn(&h, 1, 2, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
+    lt_port_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
 //---------------------------------------------------------------------------------------------------------------------
