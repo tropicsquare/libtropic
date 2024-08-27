@@ -25,8 +25,8 @@ void tearDown(void)
 {
 }
 
-
 //---------------------------------------------------------------------------------------------------------------------
+// TESTING CALLBACK:
 // Used to force l2_buff[0] to contain zeroed busy bit
 static lt_ret_t callback_CHIP_BUSY(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout,
                                    int cmock_num_calls) {
@@ -34,7 +34,7 @@ static lt_ret_t callback_CHIP_BUSY(lt_handle_t* h, uint8_t offset, uint16_t tx_l
     return LT_OK;
 }
 
-// Test if function returns LT_L1_CHIP_BUSY when transferred chip status byte has READY bit == 0
+// Test if lt_l1_read() function returns LT_L1_CHIP_BUSY when transferred chip status byte has READY bit == 0
 void test_lt_l1_read___CHIP_BUSY()
 {
     lt_handle_t h = {0};
@@ -48,7 +48,7 @@ void test_lt_l1_read___CHIP_BUSY()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Test SPI error during transfer
+// Test if lt_l1_read() function returns LT_L1_SPI_ERROR if spi transfer returns LT_FAIL
 void test_lt_l1_read___LT_L1_SPI_ERROR()
 {
     lt_handle_t h = {0};
@@ -60,6 +60,7 @@ void test_lt_l1_read___LT_L1_SPI_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// TESTING CALLBACK:
 // Used to force l2_buff[0] to contain ALARM bit
 static lt_ret_t callback_LT_L1_CHIP_ALARM_MOD(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                               uint32_t timeout, int cmock_num_calls) {
@@ -79,12 +80,14 @@ void test_lt_l1_read___LT_L1_CHIP_ALARM_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_ALARM_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// TESTING CALLBACK:
 // Used to force l2_buff[0] to contain STARTUP bit
 static lt_ret_t callback_LT_L1_CHIP_STARTUP_MODE(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                  uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = CHIP_MODE_STARTUP_bit;
     return LT_OK;
 }
+
 // Test if function returns LT_L1_CHIP_STARTUP_MODE when transferred chip status byte has STARTUP bit == 1
 void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
 {
@@ -97,7 +100,8 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_STARTUP_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force values so first LT_L1_SPI_ERROR is returned
+// TESTING CALLBACK:
+// Used to force transfer function to return LT_FAIL during second transfer
 static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                              uint32_t timeout, int cmock_num_calls)
 {
@@ -125,7 +129,8 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to values so fpga resp handling is always called
+// TESTING CALLBACK:
+// Used to force values into response buffer, so fpga looks busy and resp handling is always called
 static lt_ret_t callback_CHIP_MODE_READY_fpga_no_resp(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                       uint32_t timeout, int cmock_num_calls)
 {
@@ -156,7 +161,8 @@ void test_lt_l1_read___CHIP_MODE_READY_fpga_no_resp()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force values so LT_L1_LEN_MAX is returned
+// TESTING CALLBACK:
+// Used to force values into buffer so LT_L1_LEN_MAX is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR(lt_handle_t* h, uint8_t offset,
                                                               uint16_t tx_len, uint32_t timeout,
                                                               int cmock_num_calls)
@@ -175,7 +181,7 @@ static lt_ret_t callback_CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR(lt_handle_t* h, ui
     return 0xfefe;
 }
 
-// Test if function returns LT_L1_DATA_LEN_ERROR if chip is in ready mode
+// Test if function returns LT_L1_DATA_LEN_ERROR if chip is in ready mode but tries to send longer l2 data frame
 void test_lt_l1_read___CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR()
 {
     lt_handle_t h = {0};
@@ -187,6 +193,7 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_DATA_LEN_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// TESTING CALLBACK:
 // Used to force values so second LT_L1_SPI_ERROR is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_L1_SPI_ERROR_2(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                            uint32_t timeout, int cmock_num_calls)
@@ -208,7 +215,7 @@ static lt_ret_t callback_CHIP_MODE_READY_LT_L1_SPI_ERROR_2(lt_handle_t* h, uint8
     return 0xfefe;
 }
 
-// Test if function returns LT_L1_SPI_ERROR when receiving the rest of incoming bytes
+// Test if function returns LT_L1_SPI_ERROR when reception of the rest of incoming bytes fails
 void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR_2()
 {
     lt_handle_t h = {0};
@@ -220,6 +227,7 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR_2()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// TESTING CALLBACK:
 // Used to force values so LT_OK is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_OK(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                uint32_t timeout, int cmock_num_calls)
@@ -241,7 +249,7 @@ static lt_ret_t callback_CHIP_MODE_READY_LT_OK(lt_handle_t* h, uint8_t offset, u
     return 0xfefe;
 }
 
-// Test if function returns LT_OK
+// Test if function returns LT_OK when execution is correct
 void test_lt_l1_read___CHIP_MODE_READY_LT_OK()
 {
     lt_handle_t h = {0};
@@ -253,6 +261,7 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_OK()
     TEST_ASSERT_EQUAL(LT_OK, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 // Test LT_L1_SPI_ERROR return value during write
 void test_lt_l1_write___LT_L1_SPI_ERROR()
 {
