@@ -171,7 +171,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     UartHandle.Init.Mode       = UART_MODE_TX_RX;
     UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
     if (HAL_UART_Init(&UartHandle) != HAL_OK) {
-      return LT_L1_SPI_ERROR;
+      return LT_FAIL;
     }
 
     // Empty buffers used to talk to model
@@ -191,7 +191,7 @@ lt_ret_t lt_port_deinit(lt_handle_t *h)
     }
 
     if (HAL_UART_DeInit(&UartHandle) != HAL_OK) {
-      return LT_L1_SPI_ERROR;
+      return LT_FAIL;
     }
 
     return LT_OK;
@@ -355,7 +355,7 @@ lt_ret_t lt_port_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_data_l
     }
     int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->l2_buff + offset, h->l2_buff + offset, tx_data_length, timeout);
     if(ret != HAL_OK) {
-        return LT_L1_SPI_ERROR;
+        return LT_FAIL;
     }
 
     return LT_OK;

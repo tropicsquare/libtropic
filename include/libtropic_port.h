@@ -21,7 +21,7 @@
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
  * @param h           Chip's handle
- * @return            LT_OK if success, otherwise returns other error code.
+ * @return            LT_OK if success, otherwise LT_FAIL.
  */
 lt_ret_t lt_port_init(lt_handle_t *h);
 

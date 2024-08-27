@@ -46,6 +46,7 @@ project(libtropic_SDK
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.c
@@ -59,6 +60,7 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.h
