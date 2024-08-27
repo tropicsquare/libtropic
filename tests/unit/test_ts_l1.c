@@ -220,4 +220,28 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR_2()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
+// Test LT_L1_SPI_ERROR return value during write
+void test_lt_l1_write___LT_L1_SPI_ERROR()
+{
+    lt_handle_t h = {0};
+
+    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
+    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_write(&h, 1, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test LT_OK return value
+void test_lt_l1_write___LT_OK()
+{
+    lt_handle_t h = {0};
+
+    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+    lt_l1_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
+    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
+
+    TEST_ASSERT_EQUAL(LT_OK, lt_l1_write(&h, 1, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
 //---------------------------------------------------------------------------------------------------------------------
