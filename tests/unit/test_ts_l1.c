@@ -97,7 +97,7 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_STARTUP_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force lt_handle_t.l2_buff[0] to contain CHIP_MODE_READY bit
+// Used to force values so first LT_L1_SPI_ERROR is returned
 static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                              uint32_t timeout, int cmock_num_calls)
 {
@@ -125,7 +125,7 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force lt_handle_t.l2_buff[0] to contain CHIP_MODE_READY bit
+// Used to values so fpga resp handling is always called
 static lt_ret_t callback_CHIP_MODE_READY_fpga_no_resp(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                       uint32_t timeout, int cmock_num_calls)
 {
@@ -156,7 +156,7 @@ void test_lt_l1_read___CHIP_MODE_READY_fpga_no_resp()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force lt_handle_t.l2_buff[2] to LT_L1_LEN_MAX
+// Used to force values so LT_L1_LEN_MAX is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR(lt_handle_t* h, uint8_t offset,
                                                               uint16_t tx_len, uint32_t timeout,
                                                               int cmock_num_calls)
@@ -187,7 +187,7 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_DATA_LEN_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force lt_handle_t.l2_buff[2] to LT_L1_LEN_MAX
+// Used to force values so second LT_L1_SPI_ERROR is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_L1_SPI_ERROR_2(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                            uint32_t timeout, int cmock_num_calls)
 {
