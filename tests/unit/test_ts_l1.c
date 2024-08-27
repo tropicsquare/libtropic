@@ -21,7 +21,8 @@ void tearDown(void)
 
 //---------------------------------------------------------------------------------------------------------------------
 // Used to force l2_buff[0] to contain zeroed busy bit
-static lt_ret_t callback_CHIP_BUSY(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
+static lt_ret_t callback_CHIP_BUSY(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout,
+                                   int cmock_num_calls) {
     h->l2_buff[0] = 0;
     return LT_OK;
 }
@@ -53,7 +54,8 @@ void test_lt_l1_read___LT_L1_SPI_ERROR()
 }
 
 // Used to force l2_buff[0] to contain ALARM bit
-static lt_ret_t callback_LT_L1_CHIP_ALARM_MOD(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
+static lt_ret_t callback_LT_L1_CHIP_ALARM_MOD(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
+                                              uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = CHIP_MODE_ALARM_bit;
     return LT_OK;
 }
@@ -71,7 +73,8 @@ void test_lt_l1_read___LT_L1_CHIP_ALARM_MODE()
 }
 
 // Used to force l2_buff[0] to contain STARTUP bit
-static lt_ret_t callback_LT_L1_CHIP_STARTUP_MODE(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls) {
+static lt_ret_t callback_LT_L1_CHIP_STARTUP_MODE(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
+                                                 uint32_t timeout, int cmock_num_calls) {
     h->l2_buff[0] = CHIP_MODE_STARTUP_bit;
     return LT_OK;
 }
@@ -88,7 +91,8 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
 }
 
 // Used to force lt_handle_t.l2_buff[0] to contain CHIP_MODE_READY bit
-static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout, int cmock_num_calls)
+static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
+                                             uint32_t timeout, int cmock_num_calls)
 {
     if(cmock_num_calls == 0) {
         h->l2_buff[0] = CHIP_MODE_READY_bit;
