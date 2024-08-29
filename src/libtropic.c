@@ -269,7 +269,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const int8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin)
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin)
 {
     if(!h || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX || !key || !curve || !origin) {
         return LT_PARAM_ERR;
@@ -311,7 +311,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
+lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len)
 {
     if(!h || !msg || !rs || rs_len < 64 || ((msg_len < LT_L3_EDDSA_SIGN_MSG_LEN_MIN) | (msg_len > LT_L3_EDDSA_SIGN_MSG_LEN_MAX))) {
         return LT_PARAM_ERR;
@@ -342,7 +342,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len)
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint16_t rs_len)
 {
     if(!h || !msg || !rs || (msg_len > LT_L3_ECDSA_SIGN_MSG_LEN_MAX) || (rs_len < 64)) {
         return LT_PARAM_ERR;
@@ -440,7 +440,7 @@ LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511,
 /** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode */
 # define LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 176
 
-lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const int16_t max_len)
+lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 {
     if (max_len < LT_L2_GET_INFO_REQ_CERT_SIZE || !h || !cert) {
         return LT_PARAM_ERR;
@@ -470,7 +470,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const int16_t max_len)
     return LT_OK;
 }
 
-lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const int16_t max_len, uint8_t *stpub)
+lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub)
 {
     if(!cert || !stpub || (max_len > 512)) {
         return LT_PARAM_ERR;
