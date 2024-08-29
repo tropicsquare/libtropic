@@ -383,6 +383,10 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
+    if (!msg || msg_len < LT_L3_EDDSA_SIGN_MSG_LEN_MIN || msg_len > LT_L3_EDDSA_SIGN_MSG_LEN_MAX || !pubkey || !rs) {
+        return LT_PARAM_ERR;
+    }
+
     if (lt_ed25519_sign_open(msg, msg_len, pubkey, rs) != 0) {
         return LT_FAIL;
     }
