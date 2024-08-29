@@ -7,6 +7,7 @@
 #include "lt_l2_api_structs.h"
 
 #include "mock_lt_random.h"
+#include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
 #include "mock_lt_l3.h"
@@ -15,7 +16,6 @@
 #include "mock_lt_hkdf.h"
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
-
 
 void setUp(void)
 {
