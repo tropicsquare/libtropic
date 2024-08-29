@@ -86,7 +86,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
 /** @brief ECC key slot indexes */
 typedef enum {
-    ECC_SLOT_1 = 1, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
+    ECC_SLOT_1 = 0, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
     ECC_SLOT_5,     ECC_SLOT_6,  ECC_SLOT_7,  ECC_SLOT_8,
     ECC_SLOT_9,     ECC_SLOT_10, ECC_SLOT_11, ECC_SLOT_12, 
     ECC_SLOT_13,    ECC_SLOT_14, ECC_SLOT_15, ECC_SLOT_16,
