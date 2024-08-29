@@ -441,7 +441,7 @@ LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511,
 lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const int16_t max_len)
 {
     if (max_len < LT_L2_GET_INFO_REQ_CERT_SIZE || !h || !cert) {
-        return LT_FAIL;
+        return LT_PARAM_ERR;
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
