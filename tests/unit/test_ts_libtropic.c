@@ -9,6 +9,7 @@
 #include "lt_l3_api_structs.h"
 
 #include "mock_lt_random.h"
+#include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
 #include "mock_lt_l3.h"
@@ -17,7 +18,6 @@
 #include "mock_lt_hkdf.h"
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
-
 
 void setUp(void)
 {
@@ -86,6 +86,15 @@ void test_lt_deinit___correct()
 
 //---------------------------------------------------------------------
 
+void test_lt_ping__no_session()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_OFF;
+
+    uint8_t msg_out, msg_in;
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ping(&h, &msg_out, &msg_in, 1));
+}
+
 void test_lt_ping__l3_fail()
 {
     lt_handle_t h =  {0};
@@ -152,6 +161,15 @@ void test_lt_ping__correct()
 
 //---------------------------------------------------------------------
 
+void test_lt_random_get__no_session()
+{
+    uint8_t     buff[200];
+    lt_handle_t h =  {0};
+    h.session     = SESSION_OFF;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_random_get(&h, buff, sizeof(buff)));
+}
+
 void test_lt_random_get__l3_fail()
 {
     lt_handle_t h =  {0};
@@ -207,7 +225,8 @@ void test_lt_random_get__correct()
     lt_handle_t h =  {0};
 
     h.session   = SESSION_ON;
-    packet_size = rand() % buff_max_size;
+    // Making this at least 4 to not underflow in packet_size - 4.
+    packet_size = (rand() % (buff_max_size - 4)) + 4;
 
     // No correct value will be set for us as in ping, so injecting again...
     lt_random_get_packet_size_inject_value = (uint16_t)packet_size;
@@ -216,6 +235,15 @@ void test_lt_random_get__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_key_generate__no_session()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_OFF;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_P256));
+}
 
 void test_lt_ecc_key_generate__l3_fail()
 {
@@ -273,6 +301,18 @@ void test_lt_ecc_key_generate__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_key_read__no_session()
+{
+    lt_handle_t h =  {0};
+    h.session     =  SESSION_OFF;
+    
+    uint8_t          key[64];
+    ecc_curve_type_t curve;
+    ecc_key_origin_t origin;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
+}
 
 void test_lt_ecc_key_read__l3_fail()
 {
@@ -351,6 +391,17 @@ void test_lt_ecc_key_read__correct()
 
 //---------------------------------------------------------------------
 
+void test_lt_ecc_eddsa_sign__no_session()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_OFF;
+
+    uint8_t     msg[10];
+    uint8_t     rs[64];
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+}
+
 void test_lt_ecc_eddsa_sign__l3_fail()
 {
     lt_handle_t h = {0};
@@ -379,6 +430,17 @@ void test_lt_ecc_eddsa_sign__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_ecdsa_sign__no_session()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_OFF;
+
+    uint8_t     msg[10];
+    uint8_t     rs[64];
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+}
 
 void test_lt_ecc_ecdsa_sign__l3_fail()
 {
@@ -442,6 +504,14 @@ void test_lt_ecc_eddsa_sig_verify__correct()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_key_erase__no_session()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_OFF;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, ECC_SLOT_1));
+}
 
 void test_lt_ecc_key_erase__l3_fail()
 {
