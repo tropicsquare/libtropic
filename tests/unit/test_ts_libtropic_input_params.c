@@ -409,6 +409,32 @@ void test_lt_ecc_ecdsa_sign__invalid_rs_len()
 }
 
 //---------------------------------------------------------------------
+
+void test_lt_ecc_eddsa_sig_verify__invalid_msg()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify(NULL, LT_L3_EDDSA_SIGN_MSG_LEN_MIN, (uint8_t*)"", (uint8_t*)""));
+}
+
+void test_lt_ecc_eddsa_sig_verify__invalid_msg_len()
+{
+    uint8_t msg[LT_L3_EDDSA_SIGN_MSG_LEN_MAX + 1];
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify((uint8_t*)"", 0, (uint8_t*)"", (uint8_t*)""));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify(msg, sizeof(msg), (uint8_t*)"", (uint8_t*)""));
+}
+
+void test_lt_ecc_eddsa_sig_verify__invalid_pubkey()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify((uint8_t*)"", 1, NULL, (uint8_t*)""));
+}
+
+void test_lt_ecc_eddsa_sig_verify__invalid_rs()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify((uint8_t*)"", 1, (uint8_t*)"", NULL));
+}
+
+//---------------------------------------------------------------------
+
 void test_lt_ecc_key_erase__invalid_handle()
 {
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(NULL, ECC_SLOT_1));
@@ -511,6 +537,6 @@ void test_lt_ret_verbose()
     TEST_ASSERT_EQUAL_STRING("LT_OK", lt_ret_verbose(LT_OK));
     TEST_ASSERT_EQUAL_STRING("LT_FAIL", lt_ret_verbose(LT_FAIL));
     TEST_ASSERT_EQUAL_STRING("LT_PARAM_ERR", lt_ret_verbose(LT_PARAM_ERR));
-    
+
     TEST_ASSERT_EQUAL_STRING("FATAL ERROR, unknown return value", lt_ret_verbose(99));
 }
