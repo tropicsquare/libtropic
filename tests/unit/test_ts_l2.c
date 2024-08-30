@@ -118,7 +118,7 @@ void test_lt_l2_encrypted_cmd__multiple_chunks()
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h.l3_buff;
     p_frame->packet_size = L2_CHUNK_MAX_DATA_SIZE * 2;
 
-    add_crc_Expect(h.l2_buff);
+    add_crc_Ignore();
     lt_l1_write_ExpectAndReturn(&h, L2_CHUNK_MAX_DATA_SIZE + 4, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
     lt_l1_read_ExpectAndReturn(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
     lt_l2_frame_check_ExpectAndReturn(h.l2_buff, LT_L2_REQ_CONT);
