@@ -86,7 +86,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
 /** @brief ECC key slot indexes */
 typedef enum {
-    ECC_SLOT_1 = 1, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
+    ECC_SLOT_1 = 0, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
     ECC_SLOT_5,     ECC_SLOT_6,  ECC_SLOT_7,  ECC_SLOT_8,
     ECC_SLOT_9,     ECC_SLOT_10, ECC_SLOT_11, ECC_SLOT_12, 
     ECC_SLOT_13,    ECC_SLOT_14, ECC_SLOT_15, ECC_SLOT_16,
@@ -129,7 +129,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const int8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
@@ -143,7 +143,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
  * @return            LT_OK if success, otherwise returns other error code.
  *
  */
-lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const int16_t msg_len, uint8_t *rs, const int8_t rs_len);
+lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief EdDSA signature verify
@@ -168,7 +168,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
  * @param rs_len      Length of rs buffer should be 64B
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg_hash, const int16_t msg_hash_len, uint8_t *rs, const int8_t rs_len);
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg_hash, const uint16_t msg_hash_len, uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief Erase ECC key from device's slot
@@ -190,7 +190,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
  * @param max_len     Length of certificate's buffer
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const int16_t max_len);
+lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len);
 
 /**
  * @brief Verify certificate chain and parse STPUB
@@ -200,7 +200,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const int16_t max_len);
  * @param stpub       TROPIC01 STPUB, unique for each device
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const int16_t max_len, uint8_t *stpub);
+lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
 
 /**
  * @details Helper function for printing out name of returned value
