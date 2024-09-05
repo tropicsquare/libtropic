@@ -38,6 +38,8 @@ void tearDown(void)
 {
 }
 
+//---------------------------------------------------------------------
+
 // Test if function returns LT_FAIL when l1 init failed
 void test_lt_init___error_during_lt_l1_init()
 {
@@ -89,7 +91,7 @@ void test_lt_deinit___correct()
 void test_lt_ping__no_session()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_OFF;
+    h.session     = SESSION_OFF;
 
     uint8_t msg_out, msg_in;
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ping(&h, &msg_out, &msg_in, 1));
@@ -98,7 +100,7 @@ void test_lt_ping__no_session()
 void test_lt_ping__l3_fail()
 {
     lt_handle_t h =  {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     uint8_t msg_out, msg_in;
 
@@ -122,11 +124,11 @@ lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) 
 void test_lt_ping__len_mismatch()
 {   
     const int                msg_max_size = 200;
-    lt_handle_t h =  {0};
     uint8_t                  msg_out[msg_max_size], msg_in[msg_max_size];
     int                      rand_size, rand_len_offset;
 
-    h.session = SESSION_ON;
+    lt_handle_t h =  {0};
+    h.session     = SESSION_ON;
 
     for (int i = 0; i < 25; i++) {
         rand_size       = rand() % msg_max_size;
@@ -148,10 +150,10 @@ void test_lt_ping__len_mismatch()
 void test_lt_ping__correct()
 {
     const int       msg_max_size = 200;
-    lt_handle_t h =  {0};
     uint8_t         msg_out[200], msg_in[200];
 
-    h.session = SESSION_ON;
+    lt_handle_t h =  {0};
+    h.session     = SESSION_ON;
 
     // Because packet size position is shared by both cmd and res,
     // it will already be set correctly by "p_l3_cmd->packet_size = len + 1;".
@@ -172,10 +174,10 @@ void test_lt_random_get__no_session()
 
 void test_lt_random_get__l3_fail()
 {
-    lt_handle_t h =  {0};
     uint8_t     buff[10];
 
-    h.session = SESSION_ON;
+    lt_handle_t h =  {0};
+    h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < sizeof(rets); i++) {
@@ -197,11 +199,11 @@ lt_ret_t callback_lt_random_get_lt_l3_cmd(lt_handle_t *h, int __attribute__((unu
 void test_lt_random_get__len_mismatch()
 {
     const int                buff_max_size = 200;
-    lt_handle_t h =  {0};
     uint8_t                  buff[buff_max_size];
     int                      rand_size, rand_len_offset;
 
-    h.session = SESSION_ON;
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
 
     for (int i = 0; i < 25; i++) {
         rand_size       = rand() % buff_max_size;
@@ -222,9 +224,10 @@ void test_lt_random_get__correct()
     const int       buff_max_size = 200;
     uint8_t         buff[200];
     int             packet_size;
-    lt_handle_t h =  {0};
 
-    h.session   = SESSION_ON;
+    lt_handle_t h =  {0};
+    h.session     = SESSION_ON;
+
     // Making this at least 4 to not underflow in packet_size - 4.
     packet_size = (rand() % (buff_max_size - 4)) + 4;
 
@@ -248,8 +251,7 @@ void test_lt_ecc_key_generate__no_session()
 void test_lt_ecc_key_generate__l3_fail()
 {
     lt_handle_t h =  {0};
-
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < sizeof(rets); i++) {
@@ -271,7 +273,7 @@ lt_ret_t callback_lt_ecc_key_generate_lt_l3_cmd(lt_handle_t *h, int __attribute_
 void test_lt_ecc_key_generate__packet_size_mismatch()
 {
     lt_handle_t h =  {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     lt_random_get_packet_size_inject_value = 0;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
@@ -281,7 +283,7 @@ void test_lt_ecc_key_generate__packet_size_mismatch()
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 
-    lt_random_get_packet_size_inject_value = (uint16_t)((rand() % 65534) + 2);
+    lt_random_get_packet_size_inject_value = (uint16_t)((rand() % (L3_PACKET_MAX_SIZE - 2)) + 2);
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 }
@@ -289,7 +291,7 @@ void test_lt_ecc_key_generate__packet_size_mismatch()
 void test_lt_ecc_key_generate__correct()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     lt_random_get_packet_size_inject_value = 1;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
@@ -346,7 +348,7 @@ lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int __attribute__((u
 void test_lt_ecc_key_read__ed25519_size_mismatch()
 {
     lt_handle_t h =  {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
     
     uint8_t          key[64];
     ecc_curve_type_t curve;
@@ -372,7 +374,7 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
 void test_lt_ecc_key_read__correct()
 {
     lt_handle_t h =  {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
     
     uint8_t          key[64];
     ecc_curve_type_t curve;
@@ -508,7 +510,7 @@ void test_lt_ecc_eddsa_sig_verify__correct()
 void test_lt_ecc_key_erase__no_session()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_OFF;
+    h.session     = SESSION_OFF;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, ECC_SLOT_1));
 }
@@ -516,7 +518,7 @@ void test_lt_ecc_key_erase__no_session()
 void test_lt_ecc_key_erase__l3_fail()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < sizeof(rets); i++) {
@@ -528,7 +530,7 @@ void test_lt_ecc_key_erase__l3_fail()
 void test_lt_ecc_key_erase__correct()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, ECC_SLOT_1));
@@ -539,7 +541,7 @@ void test_lt_ecc_key_erase__correct()
 void test_lt_get_info_cert__l2_fail()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
@@ -565,7 +567,7 @@ void test_lt_get_info_cert__l2_fail()
 void test_lt_get_info_cert__l2_correct()
 {
     lt_handle_t h = {0};
-    h.session = SESSION_ON;
+    h.session     = SESSION_ON;
 
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
