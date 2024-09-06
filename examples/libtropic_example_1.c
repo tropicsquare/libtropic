@@ -37,17 +37,12 @@ static void bytes_to_chars(uint8_t const *key, char *buffer, uint16_t len)
 
 int libtropic_example_1(void)
 {
-    /************************************************************************************************************/
     LOG_OUT("\r\n");
-    LOG_OUT("\t\t======================================================================\r\n");
-    LOG_OUT("\t\t=====  libtropic Unix demo, running over TCP against model         ===\r\n");
-    LOG_OUT("\t\t======================================================================\r\n\n");
     LOG_OUT_INFO("List all possible return values:\r\n\n");
     for(int i=0; i<LT_CRYPTO_ERR+1; i++) {
         LOG_OUT_VALUE("(lt_ret_t) %d: \t%s \r\n", i,   lt_ret_verbose(i));
     }
-    LOG_OUT("\r\n");
-    /************************************************************************************************************/
+    LOG_OUT_LINE();
 
 
 
@@ -62,9 +57,13 @@ int libtropic_example_1(void)
     ret = lt_init(&handle);
 
     /* Following lines are only for printing results out: */
-    LOG_OUT_INFO("lt_init();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:    %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_init();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:    %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
 
 
@@ -92,6 +91,8 @@ int libtropic_example_1(void)
         //  printf("\r\n");
         //}
         //printf("\r\nEnd of cert debug\r\n");
+    } else {
+        return 1;
     }
     LOG_OUT_LINE();
 
@@ -112,6 +113,8 @@ int libtropic_example_1(void)
     LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
     if (ret == LT_OK) {
         LOG_OUT_VALUE("STPUB:         %s\r\n", stpub_str);
+    } else {
+        return 1;
     }
     LOG_OUT_LINE();
 
@@ -129,10 +132,13 @@ int libtropic_example_1(void)
     ret = lt_handshake(&handle, stpub, pkey_index, shipriv, shipub);
 
     /* Following lines only print out some debug: */
-    LOG_OUT_INFO("lt_handshake();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
-
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_handshake();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
 
     /************************************************************************************************************/
@@ -157,8 +163,10 @@ int libtropic_example_1(void)
     if(ret == LT_OK) {
         LOG_OUT_VALUE("ping length:   %d\r\n", len_ping);
         LOG_OUT_VALUE("msg compare:   %s\r\n", !memcmp(msg_out, msg_in, len_ping) ? "OK" : "ERROR");
+        LOG_OUT_LINE();
+    } else {
+        return 1;
     }
-    LOG_OUT_LINE();
 
 
 
@@ -180,8 +188,10 @@ int libtropic_example_1(void)
     if (ret == LT_OK) {
         LOG_OUT_VALUE("random length: %d\r\n", len_rand);
         LOG_OUT_VALUE("bytes:         %s\r\n", string);
+        LOG_OUT_LINE();
+    } else {
+        return 1;
     }
-    LOG_OUT_LINE();
 
 
 
@@ -193,9 +203,13 @@ int libtropic_example_1(void)
     ret = lt_ecc_key_generate(&handle, ECC_SLOT_1, CURVE_ED25519);
 
     /* Following lines only print out some debug: */
-    LOG_OUT_INFO("lt_ecc_key_generate();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_ecc_key_generate();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
 
 
@@ -221,8 +235,10 @@ int libtropic_example_1(void)
         LOG_OUT_VALUE("curve:         %s\r\n", (curve == CURVE_ED25519 ? "ED25519" : "P256"));
         LOG_OUT_VALUE("origin:        %s\r\n", (origin == 0x01 ? "Generated" : "Saved"));
         LOG_OUT_VALUE("pubkey:        %s\r\n", key_str);
+        LOG_OUT_LINE();
+    } else {
+        return 1;
     }
-    LOG_OUT_LINE();
 
 
 
@@ -247,8 +263,10 @@ int libtropic_example_1(void)
         LOG_OUT_VALUE("R:             %s\r\n", R_str);
         LOG_OUT_VALUE("S:             %s\r\n", S_str);
         LOG_OUT_INFO("Verify ED25519 signature on host side:\r\n");
+        LOG_OUT_LINE();
+    } else {
+        return 1;
     }
-    LOG_OUT_LINE();
 
     /************************************************************************************************************/
     LOG_OUT_INFO("Verify EdDSA signature of previously signed message\r\n");
@@ -258,13 +276,16 @@ int libtropic_example_1(void)
     ret = lt_ecc_eddsa_sig_verify(msg, 17, key, rs);
 
     /* Following lines only print out some debug: */
+    LOG_OUT_INFO("lt_ecc_eddsa_sig_verify();\r\n");
     LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
     if (ret == LT_OK) {
         LOG_OUT_VALUE("Signature is CORRECT\r\n");
+        LOG_OUT_LINE();
     } else {
         LOG_OUT_VALUE("Signature verification FAILED\r\n");
+        return 1;
     }
-    LOG_OUT_LINE();
+
 
 
 
@@ -276,9 +297,13 @@ int libtropic_example_1(void)
     ret = lt_ecc_key_erase(&handle, ECC_SLOT_1);
 
     /* Following lines only print out some debug: */
-    LOG_OUT_INFO("lt_ecc_key_erase();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_ecc_key_erase();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
 
 
@@ -290,9 +315,13 @@ int libtropic_example_1(void)
     ret = lt_ecc_key_generate(&handle, ECC_SLOT_2, CURVE_P256);
 
     /* Following lines only print out some debug: */
-    LOG_OUT_INFO("lt_ecc_key_generate();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_ecc_key_generate();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
 
 
@@ -316,8 +345,10 @@ int libtropic_example_1(void)
         LOG_OUT_VALUE("curve:         %s\r\n", (curve2 == CURVE_ED25519 ? "ED25519" : "P256"));
         LOG_OUT_VALUE("origin:        %s\r\n", (origin2 == 0x01 ? "Generated" : "Saved"));
         LOG_OUT_VALUE("pubkey:        %s\r\n", key2_str);
+        LOG_OUT_LINE();
+    } else {
+        return 1;
     }
-    LOG_OUT_LINE();
 
 
 
@@ -342,8 +373,10 @@ int libtropic_example_1(void)
         LOG_OUT_VALUE("msg:           %s\r\n", msg2);
         LOG_OUT_VALUE("R:             %s\r\n", R_str2);
         LOG_OUT_VALUE("S:             %s\r\n", S_str2);
+        LOG_OUT_LINE();
+    } else {
+        return 1;
     }
-    LOG_OUT_LINE();
 
 
 
@@ -355,9 +388,13 @@ int libtropic_example_1(void)
     ret = lt_ecc_key_erase(&handle, ECC_SLOT_2);
 
     /* Following lines only print out some debug: */
-    LOG_OUT_INFO("lt_ecc_key_erase();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_ecc_key_erase();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
 
 
@@ -369,9 +406,13 @@ int libtropic_example_1(void)
     ret = lt_deinit(&handle);
 
     /* Following lines only print out some debug: */
-    LOG_OUT_INFO("lt_l1_deinit();\r\n");
-    LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
-    LOG_OUT_LINE();
+    if (ret == LT_OK) {
+        LOG_OUT_INFO("lt_l1_deinit();\r\n");
+        LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+        LOG_OUT_LINE();
+    } else {
+        return 1;
+    }
 
     LOG_OUT("\r\n\n");
 
