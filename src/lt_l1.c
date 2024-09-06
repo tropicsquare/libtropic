@@ -93,7 +93,6 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
             lt_l1_spi_csn_high(h);
             lt_l1_delay(h, LT_L1_READ_RETRY_DELAY);
         }
-
     }
 
     return LT_L1_CHIP_BUSY;

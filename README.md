@@ -11,11 +11,11 @@ For more info about TROPIC01 check datasheet and API pdf.
 
 # Repository structure
 * `docs/` Documentation
-* `stm32_example/` POC project for stm32, soon this will be moved into separate repository
+* `examples/` A few examples how libtropic might be used
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
 * `include/` Public header files
 * `src/` Library's source files
-* `tests/` Tests
+* `tests/` Unit tests and integration tests
 * `vendor/` Third party libraries and tools
 
 # Documentation
