@@ -12,10 +12,14 @@
 #include <stddef.h>
 
 #include "libtropic_common.h"
-//#include "libtropic_port.h"
 #include "lt_l1.h"
 #include "lt_l1_port_wrap.h"
 
+#define EXPERIMENTAL_SPI_UART 0
+#if EXPERIMENTAL_SPI_UART
+#define READ_DELAY_MS  1600
+#define WRITE_DELAY_MS 1600
+#endif
 
 lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeout)
 {
@@ -30,6 +34,11 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
         return LT_PARAM_ERR;
     }
 #endif
+
+#ifdef EXPERIMENTAL_SPI_UART
+    lt_l1_delay(h, READ_DELAY_MS);
+#endif
+
     int max_tries = LT_L1_READ_MAX_TRIES;
 
     while(max_tries > 0) {
@@ -113,6 +122,11 @@ lt_ret_t lt_l1_write(lt_handle_t *h, const uint16_t len, const uint32_t timeout)
         return LT_PARAM_ERR;
     }
 #endif
+
+#ifdef EXPERIMENTAL_SPI_UART
+    lt_l1_delay(h, WRITE_DELAY_MS);
+#endif
+
     lt_l1_spi_csn_low(h);
 
     if (lt_l1_spi_transfer(h, 0, len, timeout) != LT_OK)
