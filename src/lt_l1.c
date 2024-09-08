@@ -31,7 +31,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
     }
 #endif
 
-#ifdef EXPERIMENTAL_SPI_UART
+#if EXPERIMENTAL_SPI_UART
     lt_l1_delay(h, READ_DELAY_MS);
 #endif
 
@@ -119,7 +119,7 @@ lt_ret_t lt_l1_write(lt_handle_t *h, const uint16_t len, const uint32_t timeout)
     }
 #endif
 
-#ifdef EXPERIMENTAL_SPI_UART
+#if EXPERIMENTAL_SPI_UART
     lt_l1_delay(h, WRITE_DELAY_MS);
 #endif
 
