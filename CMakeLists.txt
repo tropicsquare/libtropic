@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.21.0)
 option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
+option(EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
 
 ###########################################################################
 #                                                                         #
@@ -88,6 +89,12 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #   Compile and link                                                      #
 #                                                                         #
 ###########################################################################
+
+# This options just add 10ms synchronisation delay before read and write functions.
+# Needed for hardware spi slave to uart converter.
+if(EXPERIMENTAL_SPI_UART)
+    target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_UART=1)
+endif()
 
 if(USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
