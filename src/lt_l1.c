@@ -16,8 +16,8 @@
 #include "lt_l1_port_wrap.h"
 
 #define EXPERIMENTAL_SPI_UART 0
-#define READ_DELAY_MS  1600
-#define WRITE_DELAY_MS 1600
+#define READ_DELAY_MS  10
+#define WRITE_DELAY_MS 10
 
 lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeout)
 {

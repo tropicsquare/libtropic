@@ -148,7 +148,7 @@ int libtropic_example_1(void)
 
     uint8_t msg_out[PING_LEN_MAX] = {0};
     uint8_t msg_in[PING_LEN_MAX]  = {0};
-    uint16_t len_ping = PING_LEN_MAX;// rand() % PING_LEN_MAX;
+    uint16_t len_ping = 300;// Note: PING_LEN_MAX takes some time
 
     for(int i=0; i<127;i++) {
         memcpy(msg_out + (32*i), "XSome content for Ping message Y", 32);
