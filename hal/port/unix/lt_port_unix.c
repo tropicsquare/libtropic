@@ -274,13 +274,13 @@ static int lt_communicate (int *tx_payload_length_ptr, int *rx_payload_length_pt
 //    return lt_communicate(NULL, NULL);
 //}
 //
-static int lt_reset_target(void)
-{
-    LOG_OUT("-- Resetting TROPIC01 target.\n");
-    tx_buffer.TAG = TAG_E_RESET_TARGET;
-
-    return lt_communicate(NULL, NULL);
-}
+//static int lt_reset_target(void)
+//{
+//    LOG_OUT("-- Resetting TROPIC01 target.\n");
+//    tx_buffer.TAG = TAG_E_RESET_TARGET;
+//
+//    return lt_communicate(NULL, NULL);
+//}
 
 static int server_connect(void)
 {
@@ -310,10 +310,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     if(ret != 0) {
         return LT_FAIL;
     }
-    ret = lt_reset_target();
-    if(ret != 0) {
-        return LT_FAIL;
-    }
+
     return LT_OK;
 }
 
@@ -381,7 +378,11 @@ lt_ret_t lt_port_delay (lt_handle_t *h, uint32_t wait_time_usecs)
 
     tx_buffer.TAG                     = TAG_E_WAIT;
     int payload_length                = sizeof(uint32_t);
-    *(uint32_t *)(&tx_buffer.PAYLOAD) = wait_time_usecs;
+    //*(uint32_t *)(&tx_buffer.PAYLOAD) = wait_time_usecs;
+    rx_buffer.PAYLOAD[0] = wait_time_usecs  & 0x000000ff;
+    rx_buffer.PAYLOAD[1] = (wait_time_usecs & 0x0000ff00) >> 8;
+    rx_buffer.PAYLOAD[2] = (wait_time_usecs & 0x00ff0000) >> 16;
+    rx_buffer.PAYLOAD[3] = (wait_time_usecs & 0xff000000) >> 24;
 
     return lt_communicate(&payload_length, NULL);
 }

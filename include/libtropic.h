@@ -59,7 +59,7 @@ typedef enum {
 lt_ret_t lt_handshake(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub);
 
 /** @brief Maximal length of Ping command message */
-#define PING_LEN_MAX                     L3_CMD_DATA_SIZE_MAX
+#define PING_LEN_MAX                     (L3_CMD_DATA_SIZE_MAX-1)
 
 /**
  * @brief Test secure session by exchanging a message with chip
@@ -90,7 +90,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 typedef enum {
     ECC_SLOT_1 = 0, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
     ECC_SLOT_5,     ECC_SLOT_6,  ECC_SLOT_7,  ECC_SLOT_8,
-    ECC_SLOT_9,     ECC_SLOT_10, ECC_SLOT_11, ECC_SLOT_12, 
+    ECC_SLOT_9,     ECC_SLOT_10, ECC_SLOT_11, ECC_SLOT_12,
     ECC_SLOT_13,    ECC_SLOT_14, ECC_SLOT_15, ECC_SLOT_16,
     ECC_SLOT_17,    ECC_SLOT_18, ECC_SLOT_19, ECC_SLOT_20,
     ECC_SLOT_21,    ECC_SLOT_22, ECC_SLOT_23, ECC_SLOT_24,
