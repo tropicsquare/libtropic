@@ -7,8 +7,8 @@
  * @author Tropic Square s.r.o.
  */
 #if USE_TREZOR_CRYPTO
-#include "aes.h"
-#include "aesgcm.h"
+#include "aes/aes.h"
+#include "aes/aesgcm.h"
 #endif
 
 /** AES-GCM context structure */

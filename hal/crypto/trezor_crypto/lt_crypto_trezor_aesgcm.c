@@ -1,6 +1,6 @@
 #ifdef USE_TREZOR_CRYPTO
-#include "aes.h"
-#include "aesgcm.h"
+#include "aes/aes.h"
+#include "aes/aesgcm.h"
 #include "lt_aesgcm.h"
 #include "libtropic_common.h"
 

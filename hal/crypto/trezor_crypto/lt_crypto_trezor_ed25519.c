@@ -1,9 +1,9 @@
 #ifdef USE_TREZOR_CRYPTO
 #include <stdint.h>
 
-#include "ed25519-donna.h"
-#include "ed25519.h"
-#include "ed25519-hash-custom.h"
+#include "ed25519-donna/ed25519-donna.h"
+#include "ed25519-donna/ed25519.h"
+#include "ed25519-donna/ed25519-hash-custom.h"
 #include "rand.h"
 #include "memzero.h"
 #include "lt_x25519.h"

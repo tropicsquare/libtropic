@@ -35,6 +35,4 @@ add_library(trezor_crypto ${TREZOR_CRYPTO_SRCS})
 
 target_include_directories(trezor_crypto PUBLIC
                             ${CMAKE_CURRENT_SOURCE_DIR}/
-                            ${CMAKE_CURRENT_SOURCE_DIR}/aes/
-                            ${CMAKE_CURRENT_SOURCE_DIR}/ed25519-donna/
                             )
