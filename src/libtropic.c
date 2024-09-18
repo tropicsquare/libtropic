@@ -197,7 +197,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return LT_FAIL;
     }
 
-    memcpy(msg_in, (uint8_t*)&p_l3_res->data, p_l3_res->packet_size);
+    memcpy(msg_in, p_l3_res->data, len);
 
     return LT_OK;
 }
@@ -231,7 +231,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
         return LT_FAIL;
     }
 
-    memcpy(buff, (uint8_t*)&p_l3_res->random_data, p_l3_res->packet_size);
+    memcpy(buff, p_l3_res->random_data, p_l3_res->packet_size);
 
     return LT_OK;
 }
@@ -316,7 +316,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
 
     *curve = p_l3_res->curve;
     *origin = p_l3_res->origin;
-    memcpy(key, (uint8_t*)&p_l3_res->pub_key, p_l3_res->packet_size);
+    memcpy(key, p_l3_res->pub_key, p_l3_res->packet_size);
 
     return LT_OK;
 }
@@ -324,11 +324,11 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len)
 {
     if(    !h
-        || !msg 
+        || !msg
         || !rs
         || rs_len < 64
         || ((msg_len < LT_L3_EDDSA_SIGN_MSG_LEN_MIN) | (msg_len > LT_L3_EDDSA_SIGN_MSG_LEN_MAX))
-        || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN        
+        || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN
         || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
     ) {
         return LT_PARAM_ERR;
@@ -346,26 +346,26 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     p_l3_cmd->packet_size = LT_L3_EDDSA_SIGN_CMD_SIZE + msg_len;
     p_l3_cmd->command = LT_L3_EDDSA_SIGN_CMD;
     p_l3_cmd->slot = slot;
-    memcpy(p_l3_cmd->msg, msg, msg_len + LT_L3_EDDSA_SIGN_CMD_SIZE);
+    memcpy(p_l3_cmd->msg, msg, msg_len);
 
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
         return ret;
     }
 
-    memcpy(rs, (uint8_t*)&p_l3_res->r, 32);
-    memcpy(rs + 32, (uint8_t*)&p_l3_res->s, 32);
+    memcpy(rs, p_l3_res->r, 32);
+    memcpy(rs + 32, p_l3_res->s, 32);
 
     return LT_OK;
 }
 
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len)
 {
-    if(    !h 
-        || !msg 
+    if(    !h
+        || !msg
         || !rs
         || (msg_len > LT_L3_ECDSA_SIGN_MSG_LEN_MAX) || (rs_len < 64)
-        || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN        
+        || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN
         || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
     ) {
         return LT_PARAM_ERR;
@@ -398,8 +398,8 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
         return ret;
     }
 
-    memcpy(rs, (uint8_t*)&p_l3_res->r, 32);
-    memcpy(rs + 32, (uint8_t*)&p_l3_res->s, 32);
+    memcpy(rs, p_l3_res->r, 32);
+    memcpy(rs + 32, p_l3_res->s, 32);
 
     return LT_OK;
 }
