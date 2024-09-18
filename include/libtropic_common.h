@@ -69,8 +69,8 @@ typedef struct lt_handle_t {
     uint32_t session;
     uint8_t IV[12];
 #if USE_TREZOR_CRYPTO
-    uint8_t encrypt[352]; // sizeof(lt_aes_gcm_ctx_t) == 352;
-    uint8_t decrypt[352];
+    uint8_t encrypt[352] __attribute__ ((aligned (16))); // Because sizeof(lt_aes_gcm_ctx_t) == 352;
+    uint8_t decrypt[352] __attribute__ ((aligned (16)));
 #elif USE_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
 #endif
