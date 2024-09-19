@@ -1,20 +1,19 @@
 
-name: tests
+name: Unit tests
 on:
   push:
-    branches: [ master ]
+    branches:
+     - 'master'
 
 jobs:
-  tests:
-    name: "Testing"
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Run tests
-        uses: batov/ceedling_action@master
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-            files: build/artifacts/test/junit_report.xml
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Run Unit Tests
+      uses: sjscymru/action-ceedling-unit-test@v1.0
+      with:
+        unit-test-path: '${{ github.workspace }}/'

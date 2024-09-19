@@ -32,7 +32,7 @@ option(BUILD_DOCS        "Build documentation"                          OFF)
 Options could be passed as a command line argument, or they could be defined in main project's cmake files when this library is added to its build tree.
 
 
-## Examples 
+## Examples
 
 List of projects which uses `libtropic`:
 * `tests/integration/integration_tests.md`: Unix program to test API calls against model of TROPIC01
