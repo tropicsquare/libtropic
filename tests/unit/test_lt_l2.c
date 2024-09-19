@@ -25,7 +25,7 @@ void tearDown(void)
 void test_lt_l2_transfer__fail_during_l1_write()
 {
     lt_handle_t h = {0};
-    
+
     add_crc_Expect(h.l2_buff);
     lt_l1_write_ExpectAndReturn(&h, 4, LT_L1_TIMEOUT_MS_DEFAULT, LT_L1_SPI_ERROR);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l2_transfer(&h));
@@ -115,7 +115,7 @@ void test_lt_l2_encrypted_cmd__multiple_chunks()
     lt_l1_write_ExpectAndReturn(&h, L2_CHUNK_MAX_DATA_SIZE + 4, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
     lt_l1_read_ExpectAndReturn(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
     lt_l2_frame_check_ExpectAndReturn(h.l2_buff, LT_L2_REQ_CONT);
-    
+
     lt_l1_write_ExpectAndReturn(&h, L2_CHUNK_MAX_DATA_SIZE + 4, LT_L1_TIMEOUT_MS_DEFAULT, LT_L1_SPI_ERROR);
 
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l2_encrypted_cmd(&h));
@@ -132,7 +132,7 @@ void test_lt_l2_encrypted_cmd__recv_lt_l1_read_fail()
     lt_l2_frame_check_ExpectAndReturn(h.l2_buff, LT_OK);
     lt_l1_read_ExpectAndReturn(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT, LT_L1_SPI_ERROR);
 
-    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l2_encrypted_cmd(&h)); 
+    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l2_encrypted_cmd(&h));
 }
 
 lt_ret_t test_lt_l2_encrypted_cmd__overflow_callback(const uint8_t *frame, int cmock_num_calls)
@@ -161,7 +161,7 @@ void test_lt_l2_encrypted_cmd__recv_overflow()
     lt_l2_frame_check_Stub(test_lt_l2_encrypted_cmd__overflow_callback);
     lt_l1_read_IgnoreAndReturn(LT_OK);
 
-    TEST_ASSERT_EQUAL(LT_L3_DATA_LEN_ERROR, lt_l2_encrypted_cmd(&h)); 
+    TEST_ASSERT_EQUAL(LT_L3_DATA_LEN_ERROR, lt_l2_encrypted_cmd(&h));
 }
 
 void test_lt_l2_encrypted_cmd__recv_last_frame()
@@ -176,7 +176,7 @@ void test_lt_l2_encrypted_cmd__recv_last_frame()
     lt_l1_read_ExpectAndReturn(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
     lt_l2_frame_check_ExpectAndReturn(h.l2_buff, LT_OK);
 
-    TEST_ASSERT_EQUAL(LT_OK, lt_l2_encrypted_cmd(&h));   
+    TEST_ASSERT_EQUAL(LT_OK, lt_l2_encrypted_cmd(&h));
 }
 
 void test_lt_l2_encrypted_cmd__recv_frame_err()
@@ -191,7 +191,7 @@ void test_lt_l2_encrypted_cmd__recv_frame_err()
     lt_l1_read_ExpectAndReturn(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
     lt_l2_frame_check_ExpectAndReturn(h.l2_buff, LT_L2_IN_CRC_ERR);
 
-    TEST_ASSERT_EQUAL(LT_L2_IN_CRC_ERR, lt_l2_encrypted_cmd(&h));   
+    TEST_ASSERT_EQUAL(LT_L2_IN_CRC_ERR, lt_l2_encrypted_cmd(&h));
 }
 
 void test_lt_l2_encrypted_cmd__loop_overflow()
@@ -209,6 +209,5 @@ void test_lt_l2_encrypted_cmd__loop_overflow()
         lt_l2_frame_check_ExpectAndReturn(h.l2_buff, LT_L2_RES_CONT);
     }
 
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_l2_encrypted_cmd(&h));   
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_l2_encrypted_cmd(&h));
 }
-

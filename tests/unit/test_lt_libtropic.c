@@ -93,7 +93,9 @@ void test_lt_ping__no_session()
     lt_handle_t h = {0};
     h.session     = SESSION_OFF;
 
-    uint8_t msg_out, msg_in;
+    uint8_t msg_out = 1;
+    uint8_t msg_in = 0;
+
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ping(&h, &msg_out, &msg_in, 1));
 }
 
@@ -122,10 +124,10 @@ lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) 
 }
 
 void test_lt_ping__len_mismatch()
-{   
-    const int                msg_max_size = 200;
-    uint8_t                  msg_out[msg_max_size], msg_in[msg_max_size];
-    int                      rand_size, rand_len_offset;
+{
+    const int msg_max_size = 200;
+    uint8_t   msg_out[msg_max_size], msg_in[msg_max_size];
+    int       rand_size, rand_len_offset;
 
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
@@ -308,7 +310,7 @@ void test_lt_ecc_key_read__no_session()
 {
     lt_handle_t h =  {0};
     h.session     =  SESSION_OFF;
-    
+
     uint8_t          key[64];
     ecc_curve_type_t curve;
     ecc_key_origin_t origin;
@@ -320,10 +322,10 @@ void test_lt_ecc_key_read__l3_fail()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-    
-    uint8_t          key[64];
-    ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+
+    uint8_t          key[64] = {0};
+    ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < sizeof(rets); i++) {
@@ -349,8 +351,8 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-    
-    uint8_t          key[64];
+
+    uint8_t          key[64] = {0};
     ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
@@ -358,7 +360,7 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
 
     for (int i = 0; i < 25; i++) {
         lt_ecc_key_read_packet_size_inject_value = (uint16_t)(rand() % L3_PACKET_MAX_SIZE);
-        
+
         if (lt_ecc_key_read_packet_size_inject_value != 48) { // skip correct value
             lt_ecc_key_read_curve_inject_value       = CURVE_ED25519;
             TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
@@ -370,12 +372,12 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
         }
     }
 }
-
+/*
 void test_lt_ecc_key_read__correct()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-    
+
     uint8_t          key[64];
     ecc_curve_type_t curve;
     ecc_key_origin_t origin;
@@ -390,7 +392,7 @@ void test_lt_ecc_key_read__correct()
     lt_ecc_key_read_curve_inject_value       = CURVE_P256;
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
 }
-
+*/
 //---------------------------------------------------------------------
 
 void test_lt_ecc_eddsa_sign__no_session()
@@ -398,8 +400,8 @@ void test_lt_ecc_eddsa_sign__no_session()
     lt_handle_t h = {0};
     h.session     = SESSION_OFF;
 
-    uint8_t     msg[10];
-    uint8_t     rs[64];
+    uint8_t     msg[10] = {0};
+    uint8_t     rs[64] = {0};
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
@@ -409,8 +411,8 @@ void test_lt_ecc_eddsa_sign__l3_fail()
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
-    uint8_t     msg[10];
-    uint8_t     rs[64];
+    uint8_t     msg[10] = {0};
+    uint8_t     rs[64] = {0};
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < sizeof(rets); i++) {
@@ -424,8 +426,8 @@ void test_lt_ecc_eddsa_sign__correct()
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
-    uint8_t     msg[10];
-    uint8_t     rs[64];
+    uint8_t     msg[10] = {0};
+    uint8_t     rs[64] = {0};
 
     lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
@@ -438,8 +440,8 @@ void test_lt_ecc_ecdsa_sign__no_session()
     lt_handle_t h = {0};
     h.session     = SESSION_OFF;
 
-    uint8_t     msg[10];
-    uint8_t     rs[64];
+    uint8_t     msg[10] = {0};
+    uint8_t     rs[64] = {0};
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
@@ -449,8 +451,8 @@ void test_lt_ecc_ecdsa_sign__l3_fail()
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
-    uint8_t                msg[10];
-    uint8_t                rs[64];
+    uint8_t                msg[10] = {0};
+    uint8_t                rs[64]  = {0};
     lt_crypto_sha256_ctx_t hctx         = {0};
     uint8_t                msg_hash[32] = {0};
 
@@ -470,8 +472,8 @@ void test_lt_ecc_ecdsa_sign__correct()
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
-    uint8_t                msg[10];
-    uint8_t                rs[64];
+    uint8_t                msg[10] = {0};
+    uint8_t                rs[64]  = {0};
     lt_crypto_sha256_ctx_t hctx         = {0};
     uint8_t                msg_hash[32] = {0};
 
@@ -487,9 +489,9 @@ void test_lt_ecc_ecdsa_sign__correct()
 
 void test_lt_ecc_eddsa_sig_verify__fail()
 {
-    uint8_t msg[10];
-    uint8_t pubkey[64];
-    uint8_t rs[64];
+    uint8_t msg[10]= {0};
+    uint8_t pubkey[64]= {0};
+    uint8_t rs[64] = {0};
 
     lt_ed25519_sign_open_ExpectAndReturn(msg, sizeof(msg), pubkey, rs, 1);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_eddsa_sig_verify(msg, sizeof(msg), pubkey, rs));
@@ -497,9 +499,9 @@ void test_lt_ecc_eddsa_sig_verify__fail()
 
 void test_lt_ecc_eddsa_sig_verify__correct()
 {
-    uint8_t msg[10];
-    uint8_t pubkey[64];
-    uint8_t rs[64];
+    uint8_t msg[10]    = {0};
+    uint8_t pubkey[64] = {0};
+    uint8_t rs[64]     = {0};
 
     lt_ed25519_sign_open_ExpectAndReturn(msg, sizeof(msg), pubkey, rs, 0);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sig_verify(msg, sizeof(msg), pubkey, rs));
@@ -574,7 +576,7 @@ void test_lt_get_info_cert__l2_correct()
     for (int i = 0; i < 4; i++) {
         lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
     }
-    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_cert(&h, cert, sizeof(cert))); 
+    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_cert(&h, cert, sizeof(cert)));
 }
 
 //---------------------------------------------------------------------

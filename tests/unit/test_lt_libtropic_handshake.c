@@ -19,7 +19,7 @@
 
 void setUp(void)
 {
-    
+
 }
 
 void tearDown(void)
@@ -28,7 +28,7 @@ void tearDown(void)
 
 void mock_all_sha256()
 {
-    // Static needed, because data here are used after function return for comparison 
+    // Static needed, because data here are used after function return for comparison
     // by CMock.
     static lt_crypto_sha256_ctx_t hctx = {0};
     static uint8_t protocol_name[32] = {'N','o','i','s','e','_','K','K','1','_','2','5','5','1','9','_','A','E','S','G','C','M','_','S','H','A','2','5','6',0x00,0x00,0x00};
@@ -58,7 +58,7 @@ void test_lt_handshake__random_bytes_error()
 {
     lt_handle_t h       = {0};
     uint8_t     stpub   = 0;
-    uint8_t     shipriv = 0; 
+    uint8_t     shipriv = 0;
     uint8_t     shipub  = 0;
 
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_FAIL);
@@ -69,7 +69,7 @@ void test_lt_handshake__l2_transfer_error()
 {
     lt_handle_t h = {0};
     uint8_t     stpub   = 0;
-    uint8_t     shipriv = 0; 
+    uint8_t     shipriv = 0;
     uint8_t     shipub  = 0;
 
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_OK);
@@ -83,11 +83,11 @@ void test_lt_handshake__lt_aesgcm_init_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
-    uint8_t      shipriv    = 0; 
+    uint8_t      shipriv    = 0;
     uint8_t      shipub     = 0;
     pkey_index_t pkey_index = 0;
 
-    
+
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_OK);
     lt_X25519_scalarmult_ExpectAnyArgs();
     lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
@@ -95,18 +95,18 @@ void test_lt_handshake__lt_aesgcm_init_error()
 
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_FAIL);
 
-    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, 0, &shipriv, &shipub), LT_CRYPTO_ERR);
+    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
 void test_lt_handshake__lt_aesgcm_decrypt_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
-    uint8_t      shipriv    = 0; 
+    uint8_t      shipriv    = 0;
     uint8_t      shipub     = 0;
     pkey_index_t pkey_index = 0;
 
-    
+
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_OK);
     lt_X25519_scalarmult_ExpectAnyArgs();
     lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
@@ -115,18 +115,17 @@ void test_lt_handshake__lt_aesgcm_decrypt_error()
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_OK);
     lt_aesgcm_decrypt_ExpectAnyArgsAndReturn(LT_FAIL);
 
-    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, 0, &shipriv, &shipub), LT_CRYPTO_ERR);
+    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
 void test_lt_handshake__lt_aesgcm_2nd_init_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
-    uint8_t      shipriv    = 0; 
+    uint8_t      shipriv    = 0;
     uint8_t      shipub     = 0;
     pkey_index_t pkey_index = 0;
 
-    
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_OK);
     lt_X25519_scalarmult_ExpectAnyArgs();
     lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
@@ -136,18 +135,17 @@ void test_lt_handshake__lt_aesgcm_2nd_init_error()
     lt_aesgcm_decrypt_ExpectAnyArgsAndReturn(LT_OK);
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_FAIL);
 
-    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, 0, &shipriv, &shipub), LT_CRYPTO_ERR);
+    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
 void test_lt_handshake__lt_aesgcm_3rd_init_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
-    uint8_t      shipriv    = 0; 
+    uint8_t      shipriv    = 0;
     uint8_t      shipub     = 0;
     pkey_index_t pkey_index = 0;
 
-    
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_OK);
     lt_X25519_scalarmult_ExpectAnyArgs();
     lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
@@ -158,18 +156,17 @@ void test_lt_handshake__lt_aesgcm_3rd_init_error()
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_OK);
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_FAIL);
 
-    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, 0, &shipriv, &shipub), LT_CRYPTO_ERR);
+    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
 void test_lt_handshake__correct()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
-    uint8_t      shipriv    = 0; 
+    uint8_t      shipriv    = 0;
     uint8_t      shipub     = 0;
     pkey_index_t pkey_index = 0;
 
-    
     lt_random_bytes_ExpectAnyArgsAndReturn(LT_OK);
     lt_X25519_scalarmult_ExpectAnyArgs();
     lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
@@ -180,5 +177,5 @@ void test_lt_handshake__correct()
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_OK);
     lt_aesgcm_init_and_key_ExpectAnyArgsAndReturn(LT_OK);
 
-    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, 0, &shipriv, &shipub), LT_OK);
+    TEST_ASSERT_EQUAL(lt_handshake(&h, &stpub, pkey_index, &shipriv, &shipub), LT_OK);
 }
