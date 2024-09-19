@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# This file is for internal purposes only
+
+deactivate 2>/dev/null || true
+
+# Set TS_REPO_ROOT variable, important for compilation flow
+echo "Setting TS_REPO_ROOT to: `pwd`"
+export TS_REPO_ROOT=`pwd`
+
+# Generate temporary file which will configure SW
+ts_sw_cfg.py -v ts_sw_setup.yml
+
+# Source it and get rid of it
+source ./source_me_to_get_all_set
+rm source_me_to_get_all_set
