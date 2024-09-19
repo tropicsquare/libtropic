@@ -14,7 +14,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Run Unit Tests
-      uses: sjscymru/action-ceedling-unit-test@v1.0
+    - name: Run Ceedling Unit Tests
+      uses: sjscymru/action-ceedling-unit-test@v1.0.0
       with:
         unit-test-path: '${{ github.workspace }}/'
