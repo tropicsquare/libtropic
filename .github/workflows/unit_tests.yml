@@ -7,13 +7,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4.1.7
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.7
 
-    - name: Run Ceedling Unit Tests
-      uses: pavelpolach321/action-ceedling-unit-test@2.0.0
-      with:
-        unit-test-path: '${{ github.workspace }}/'
+      - name: Run Ceedling Unit Tests
+        uses: pavelpolach321/action-ceedling-unit-test@2.0.0
+        with:
+          unit-test-path: '${{ github.workspace }}/'
