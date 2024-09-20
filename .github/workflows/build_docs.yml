@@ -38,8 +38,8 @@ jobs:
       - name: Build Integration tests
         uses: threeal/cmake-action@v2.0.0
         with:
-        source-dir: ./
-        build-dir: build
-        options: |
-          BUILD_DOCS=ON
-          USE_TREZOR_CRYPTO=ON
+          source-dir: ./
+          build-dir: build
+          options: |
+            BUILD_DOCS=ON
+            USE_TREZOR_CRYPTO=ON
