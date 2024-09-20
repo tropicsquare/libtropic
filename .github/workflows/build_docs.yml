@@ -17,4 +17,4 @@ jobs:
         uses: mattnotmitt/doxygen-action@v1.9.5
         with:
             doxyfile-path: 'docs/Doxyfile.in'
-            enable-latex: true
+            enable-latex: false
