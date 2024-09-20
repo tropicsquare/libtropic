@@ -16,6 +16,5 @@ jobs:
       - name: Build Docs
         uses: mattnotmitt/doxygen-action@v1.9.5
         with:
-            working-directory: ''
             doxyfile-path: 'docs/Doxyfile.in'
             enable-latex: true
