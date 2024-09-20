@@ -15,6 +15,6 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Run Ceedling Unit Tests
-      uses: pavelpolach321/action-ceedling-unit-test@v1.0.0
+      uses: pavelpolach321/action-ceedling-unit-test@2.0.0
       with:
         unit-test-path: '${{ github.workspace }}/'
