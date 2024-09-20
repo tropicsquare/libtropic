@@ -1,6 +1,10 @@
-name: Build
+name: Integration test
 on:
   push:
+    branches:
+      - 'master'
+      - 'develop'
+
 jobs:
   build-project:
     name: Build Project
