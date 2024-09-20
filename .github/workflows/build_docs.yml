@@ -13,8 +13,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.7
 
-      - name: Build Integration tests
-        uses: threeal/cmake-action@v2.0.0
+      - name: Build Docs
+        uses: mattnotmitt/doxygen-action@v1.9.5
         with:
-          source-dir: tests/integration/
-          build-dir: tests/integration/build
+            working-directory: 'submodule/'
+            doxyfile-path: 'docs/Doxygen'
+            enable-latex: true
