@@ -56,7 +56,7 @@ lt_ret_t lt_l3_cmd(lt_handle_t *h)
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h->l3_buff;
 
-    int ret = lt_aesgcm_encrypt(&h->encrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE);
+    int ret = lt_aesgcm_encrypt(&h->encrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE);
     if (ret != LT_OK) {
         return ret;
     }
@@ -66,7 +66,7 @@ lt_ret_t lt_l3_cmd(lt_handle_t *h)
         return ret;
     }
 
-    ret = lt_aesgcm_decrypt(&h->decrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->packet_size, p_frame->data + p_frame->packet_size, L3_TAG_SIZE);
+    ret = lt_aesgcm_decrypt(&h->decrypt, h->IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE);
     if (ret != LT_OK) {
         return ret;
     }

@@ -57,7 +57,7 @@ typedef enum {
 lt_ret_t lt_handshake(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub);
 
 /** @brief Maximal length of Ping command message */
-#define PING_LEN_MAX                     (L3_CMD_DATA_SIZE_MAX-1)
+#define PING_LEN_MAX                     (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
 
 /**
  * @brief Test secure session by exchanging a message with chip
@@ -70,6 +70,40 @@ lt_ret_t lt_handshake(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t p
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len);
+
+/** @brief ECC key slot indexes */
+typedef enum {
+    SH0PUB = 0, SH1PUB,  SH2PUB,  SH3PUB,
+} pairing_key_slot_t;
+
+/**
+ * @brief Write pairing public key into TROPIC01's pairing key slot 0-3
+ *
+ * @param h           Device's handle
+ * @param pubkey      32B of pubkey
+ * @param slot        Pairing key lot SH0PUB - SH3PUB
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8_t slot);
+
+/**
+ * @brief Read pairing public key from TROPIC01's pairing key slot 0-3
+ *
+ * @param h           Device's handle
+ * @param pubkey      32B of pubkey
+ * @param slot        Pairing key lot SH0PUB - SH3PUB
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot);
+
+/**
+ * @brief Invalidate pairing key in slo 0-3
+ *
+ * @param h           Device's handle
+ * @param slot        Pairing key lot SH0PUB - SH3PUB
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
 
 /** @brief Maximum number of random bytes requested at once */
 #define RANDOM_VALUE_GET_LEN_MAX         L2_CHUNK_MAX_DATA_SIZE
@@ -138,9 +172,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
  * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
- * @param rs          Buffer for storing a signature in a form of R and S bytes
- * @param rs_len      Length of rs buffer should be 64B
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param rs          Buffer for storing a silt_r_mem_data_erasewise returns other error code.
  *
  */
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
@@ -202,6 +234,83 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
  */
 lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
 
+#define LT_L2_GET_INFO_CHIP_ID_SIZE         128
+/**
+ * @brief Read TROPIC01's chip ID
+ *
+ * @param h           Device's handle
+ * @param chip_id     Buffer for CHIP ID bytes
+ * @param max_len     Length of a buffer to store id in
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, uint16_t max_len);
+
+#define LT_L2_GET_INFO_RISCV_FW_SIZE         4
+/**
+ * @brief Read TROPIC01's RISCV firmware version
+ *
+ * @param h           Device's handle
+ * @param ver         Buffer for FW version bytes
+ * @param max_len     Length of a buffer to store fw version in
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len);
+
+#define LT_L2_GET_INFO_SPECT_FW_SIZE        4
+/**
+ * @brief Read TROPIC01's SPECT firmware version
+ *
+ * @param h           Device's handle
+ * @param ver         Buffer for SPECT version bytes
+ * @param max_len     Length of a buffer to store fw version in
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len);
+
+#define LT_L2_GET_INFO_FW_HEADER_SIZE       512
+/**
+ * @brief Read TROPIC01's fw bank info
+ *
+ * @param h           Device's handle
+ * @param header      Buffer to store fw header bytes into
+ * @param max_len     Length of a buffer
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, uint16_t max_len);
+
+#define R_MEM_DATA_SIZE_MAX                    (444)
+#define R_MEM_DATA_SLOT_MAX                    (511)
+/**
+ * @brief Write bytes into a given slot of R MEMORY
+ *
+ * @param h           Device's handle
+ * @param udata_slot  Memory's slot to be written
+ * @param data        Buffer of data to be written into R MEMORY slot
+ * @param size        Size of data to be read
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t size);
+
+/**
+ * @brief Read bytes from a given slot of R MEMORY
+ *
+ * @param h           Device's handle
+ * @param udata_slot  Memory's slot to be read
+ * @param data        Buffer to read data into
+ * @param size        Size of data to be read
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t size);
+
+/**
+ * @brief Erase bytes from a given slot of R MEMORY
+ *
+ * @param h           Device's handle
+ * @param udata_slot  Memory's slot to be erased
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
+
 /**
  * @details Helper function for printing out name of returned value
  *
@@ -211,11 +320,5 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
 const char *lt_ret_verbose(lt_ret_t ret);
 
 /** @} */ // end of group_libtropic_API
-
-// TODO
-//lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t chip_id, uint16_t max_len);
-//lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t ver, uint16_t max_len);
-//lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t ver, uint16_t max_len);
-//lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t fw_bank, uint16_t max_len);
 
 #endif

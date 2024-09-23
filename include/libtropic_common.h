@@ -20,9 +20,7 @@ typedef uint16_t u16;
 #endif
 
 /** This particular value means that secure session was succesfully established and it is currently ON */
-#define SESSION_ON   0xAA55AA55
-/** This particular value means that secure session is currently OFF */
-#define SESSION_OFF  0x55AA55AA
+#define SESSION_ON   0xA5A55A5A
 
 /** Size of l3 ID field */
 #define L3_ID_SIZE 1u
@@ -36,9 +34,9 @@ typedef uint16_t u16;
 /** Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
 /** Maximal size of l3 RES/RSP DATA field */
-#define L3_CMD_DATA_SIZE_MAX (4095)
+#define L3_CMD_DATA_SIZE_MAX (4097)
 
-/** Maximal size of data field in one L2 transfer */
+/** TODO Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
 /** Maximal size of one l2 frame */
 #define L2_MAX_FRAME_SIZE (1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
@@ -55,7 +53,7 @@ typedef uint16_t u16;
 /** Generic L3 command and result frame */
 struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** RES_SIZE or CMD_SIZE value */
-    uint16_t packet_size;
+    uint16_t cmd_size;
     /** Command or result data including ID and TAG */
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
@@ -80,6 +78,16 @@ typedef struct lt_handle_t {
 
 /** Enum return type */
 typedef enum {
+    /** Operation was successful */
+    LT_OK,
+    /** Operation was not succesfull */
+    LT_FAIL,
+    /* Host no session */
+    LT_HOST_NO_SESSION,
+    /** Some parameter was not accepted by function */
+    LT_PARAM_ERR,
+    /** Error detected during cryptographic operation */
+    LT_CRYPTO_ERR,
 
     /** Spi transfer returned error */
     LT_L1_SPI_ERROR,
@@ -128,17 +136,6 @@ typedef enum {
     LT_L3_INVALID_CMD,
     /** L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR,
-
-    /* Host no session */
-    LT_HOST_NO_SESSION,
-    /** Operation was successful */
-    LT_OK,
-    /** Operation was not succesfull */
-    LT_FAIL,
-    /** Some parameter was not accepted by function */
-    LT_PARAM_ERR,
-    /** Error detected during cryptographic operation */
-    LT_CRYPTO_ERR,
 } lt_ret_t;
 
 #endif

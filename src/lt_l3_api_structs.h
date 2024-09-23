@@ -16,9 +16,9 @@
 /** This structure declares how "Ping command" l3 packet is organized */
 struct lt_l3_ping_cmd_t {
     /** L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** Data transferred from host into chip */
     u8 data[4096];
     /** L3 tag */
@@ -28,7 +28,7 @@ struct lt_l3_ping_cmd_t {
 /** This structure declares how "Ping result" l3 packet is organized */
 struct lt_l3_ping_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** Data transferred from chip into host */
@@ -46,9 +46,9 @@ struct lt_l3_ping_res_t{
 /** This structure declares how "random value get command" l3 packet is organized */
 struct lt_l3_random_value_get_cmd_t {
     /* L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** The number of random bytes to get */
     u8 n_bytes;
     /** L3 tag */
@@ -58,7 +58,7 @@ struct lt_l3_random_value_get_cmd_t {
 /** This structure declares how "random value get result" l3 packet is organized */
 struct lt_l3_random_value_get_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** The padding by dummy data */
@@ -68,6 +68,187 @@ struct lt_l3_random_value_get_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
+
+
+
+
+/** @brief Command ID */
+#define LT_L3_PAIRING_KEY_WRITE_CMD 0x10u
+#define LT_L3_PAIRING_KEY_WRITE_CMD_SIZE 0x24u
+
+struct lt_l3_pairing_key_write_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** Pairing key slot */
+    u16 slot;
+    /** Pairing key bytes */
+    u8 key[32];
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+struct lt_l3_pairing_key_write_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+/** @brief Command ID */
+#define LT_L3_PAIRING_KEY_READ_CMD 0x11u
+#define LT_L3_PAIRING_KEY_READ_CMD_SIZE 0x3u
+
+struct lt_l3_pairing_key_read_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** Pairing key slot */
+    u16 slot;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+#define LT_L3_PAIRING_KEY_READ_RES_SIZE 0x24u
+struct lt_l3_pairing_key_read_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+
+    u8 padding[3];
+    u8 key[32];
+
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+/** @brief Command ID */
+#define LT_L3_PAIRING_KEY_INVALIDATE_CMD 0x12u
+#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_SIZE 0x3u
+
+struct lt_l3_pairing_key_invalidate_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** Pairing key slot */
+    u16 slot;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+struct lt_l3_pairing_key_invalidate_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+
+
+/** @brief Command ID */
+#define LT_L3_R_MEM_DATA_WRITE_CMD 0x40u
+//#define LT_L3_R_MEM_DATA_WRITE_CMD_SIZE 0x3u
+
+struct lt_l3_r_mem_data_write_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** Pairing key slot */
+    u16 slot;
+    u8 padding;
+    u8 data[444];
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+struct lt_l3_r_mem_data_write_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+
+
+/** @brief Command ID */
+#define LT_L3_R_MEM_DATA_READ_CMD 0x41u
+#define LT_L3_R_MEM_DATA_READ_CMD_SIZE 0x3u
+
+struct lt_l3_r_mem_data_read_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** Pairing key slot */
+    u16 slot;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+struct lt_l3_r_mem_data_read_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    u8 padding[3];
+    u8 data[444];
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+
+
+/** @brief Command ID */
+#define LT_L3_R_MEM_DATA_ERASE_CMD 0x42u
+#define LT_L3_R_MEM_DATA_ERASE_CMD_SIZE 0x3u
+
+struct lt_l3_r_mem_data_erase_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** Pairing key slot */
+    u16 slot;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+struct lt_l3_r_mem_data_erase_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+
+
+
+
 
 
 /** @brief ECC_Key_generate command ID */
@@ -82,9 +263,9 @@ struct lt_l3_random_value_get_res_t{
 /** This structure declares how "ECC key generate command" l3 packet is organized */
 struct lt_l3_ecc_key_generate_cmd_t {
     /** L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** The slot to write the generated key. Valid values are 0 - 31 */
     u16 slot;
     /** The Elliptic Curve the key is generated from */
@@ -96,7 +277,7 @@ struct lt_l3_ecc_key_generate_cmd_t {
 /** This structure declares how "ECC key generate result" l3 packet is organized */
 struct lt_l3_ecc_key_generate_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** L3 tag */
@@ -112,9 +293,9 @@ struct lt_l3_ecc_key_generate_res_t{
 /** This structure declares how "ECC key read command" l3 packet is organized */
 struct lt_l3_ecc_key_read_cmd_t {
     /**L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** ECC Key slot */
     u16 slot;
     /** L3 tag */
@@ -124,7 +305,7 @@ struct lt_l3_ecc_key_read_cmd_t {
 /** This structure declares how "ECC key read result" l3 packet is organized */
 struct lt_l3_ecc_key_read_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** Elliptic Curve */
@@ -148,9 +329,9 @@ struct lt_l3_ecc_key_read_res_t{
 /** This structure declares how "EC key erase command" l3 packet is organized */
 struct lt_l3_ecc_key_erase_cmd_t {
     /** L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** ECC Key slot */
     u16 slot;
     /** L3 tag */
@@ -160,7 +341,7 @@ struct lt_l3_ecc_key_erase_cmd_t {
 /** This structure declares how "EC key erase result" l3 packet is organized */
 struct lt_l3_ecc_key_erase_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** L3 tag */
@@ -180,9 +361,9 @@ struct lt_l3_ecc_key_erase_res_t{
 /** This structure declares how "EdDSA sign command" l3 packet is organized */
 struct lt_l3_eddsa_sign_cmd_t {
     /** L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** ECC Key slot */
     u16 slot;
     /** Padding */
@@ -196,7 +377,7 @@ struct lt_l3_eddsa_sign_cmd_t {
 /** This structure declares how "EdDSA sign result" l3 packet is organized */
 struct lt_l3_eddsa_sign_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** Padding */
@@ -215,14 +396,14 @@ struct lt_l3_eddsa_sign_res_t{
 /** @brief Command length */
 #define LT_L3_ECDSA_SIGN_CMD_SIZE 0x30u
 /** TODO Max length of message to be signed with ECDSA */
-#define LT_L3_ECDSA_SIGN_MSG_LEN_MAX 4096 
+#define LT_L3_ECDSA_SIGN_MSG_LEN_MAX (4096  - L3_CMD_ID_SIZE)
 
 /** This structure declares how "ECDSA sign command" l3 packet is organized */
 struct lt_l3_ecdsa_sign_cmd_t {
     /** L3 packet size */
-    u16 packet_size;
+    u16 cmd_size;
     /** L3 Command Identifier */
-    u8 command;
+    u8 cmd_id;
     /** ECC Key slot */
     u16 slot;
     /** Padding */
@@ -236,7 +417,7 @@ struct lt_l3_ecdsa_sign_cmd_t {
 /** This structure declares how "ECDSA sign result" l3 packet is organized */
 struct lt_l3_ecdsa_sign_res_t{
     /** L3 packet size */
-    u16 packet_size;
+    u16 res_size;
     /** L3 Result status indication */
     u8 result;
     /** Padding */

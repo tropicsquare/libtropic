@@ -141,6 +141,185 @@ void test_lt_ping__invalid_len()
 }
 
 //---------------------------------------------------------------------
+void test_lt_pairing_key_write__invalid_handle()
+{
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(NULL, pubkey, slot));
+}
+
+void test_lt_pairing_key_write__invalid_pubkey()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(&h, NULL, slot));
+}
+
+
+void test_lt_pairing_key_write__invalid_slot()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(&h, pubkey, 4));
+}
+
+//---------------------------------------------------------------------
+void test_lt_pairing_key_read__invalid_handle()
+{
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(NULL, pubkey, slot));
+}
+
+void test_lt_pairing_key_read__invalid_pubkey()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(&h, NULL, slot));
+}
+
+
+void test_lt_pairing_key_read__invalid_slot()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(&h, pubkey, 4));
+}
+
+
+//---------------------------------------------------------------------
+void test_lt_pairing_key_invalidate__invalid_handle()
+{
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(NULL, slot));
+}
+
+void test_lt_pairing_key_invalidate__invalid_slot()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+
+    uint8_t slot = 0;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(&h, 4));
+}
+
+//---------------------------------------------------------------------
+void test_lt_r_mem_data_write__invalid_handle()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(NULL, udata_slot, udata, size));
+}
+
+void test_lt_r_mem_data_write__invalid_udata_slot()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(&h, 512, udata, size));
+}
+
+void test_lt_r_mem_data_write__invalid_udata()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(&h, 0, NULL, size));
+}
+
+void test_lt_r_mem_data_write__invalid_size()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(&h, udata_slot, udata, 445));
+}
+
+
+//---------------------------------------------------------------------
+void test_lt_r_mem_data_read__invalid_handle()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(NULL, udata_slot, udata, size));
+}
+
+void test_lt_r_mem_data_read__invalid_udata_slot()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, 512, udata, size));
+}
+
+void test_lt_r_mem_data_read__invalid_udata()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, 0, NULL, size));
+}
+
+void test_lt_r_mem_data_read__invalid_size()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, udata_slot, udata, 445));
+}
+
+//---------------------------------------------------------------------
+void test_lt_r_mem_data_erase__invalid_handle()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_erase(NULL, udata_slot));
+}
+
+void test_lt_r_mem_data_erase__invalid_udata_slot()
+{
+    lt_handle_t h;
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_erase(&h, 512));
+}
+
+//---------------------------------------------------------------------
 void test_lt_random_get__invalid_handle()
 {
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(NULL, (uint8_t*)"", 0));
@@ -165,6 +344,7 @@ void test_lt_random_get__invalid_len()
         TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(&h, (uint8_t*)"", len));
     }
 }
+
 
 //---------------------------------------------------------------------
 void test_lt_ecc_key_generate__invalid_handle()

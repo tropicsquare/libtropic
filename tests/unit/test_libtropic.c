@@ -91,7 +91,7 @@ void test_lt_deinit___correct()
 void test_lt_ping__no_session()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_OFF;
+    h.session     = 0;
 
     uint8_t msg_out = 1;
     uint8_t msg_in = 0;
@@ -107,18 +107,18 @@ void test_lt_ping__l3_fail()
     uint8_t msg_out, msg_in;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ping(&h, &msg_out, &msg_in, 0));
     }
 }
 
-uint16_t lt_ping_packet_size_inject_value;
+uint16_t lt_ping_cmd_size_inject_value;
 
 lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
-    p_l3_res->packet_size = lt_ping_packet_size_inject_value;
+    p_l3_res->res_size = lt_ping_cmd_size_inject_value;
 
     return LT_OK;
 }
@@ -139,12 +139,12 @@ void test_lt_ping__len_mismatch()
             rand_len_offset++;
         }
 
-        lt_ping_packet_size_inject_value = (uint16_t)rand_size;
+        lt_ping_cmd_size_inject_value = (uint16_t)rand_size;
 
         // Packet size for both cmd and res has the same position, so
-        // it would be overwritten by "p_l3_cmd->packet_size = len + 1;",
+        // it would be overwritten by "p_l3_cmd->cmd_size = len + 1;",
         // so we need to modify the value inside the callback.
-        lt_l3_cmd_Stub(callback_lt_ping_lt_l3_cmd);
+        lt_l3_cmd_StubWithCallback(callback_lt_ping_lt_l3_cmd);
         TEST_ASSERT_EQUAL(LT_FAIL, lt_ping(&h, msg_out, msg_in, (uint16_t)(rand_size + rand_len_offset)));
     }
 }
@@ -158,9 +158,238 @@ void test_lt_ping__correct()
     h.session     = SESSION_ON;
 
     // Because packet size position is shared by both cmd and res,
-    // it will already be set correctly by "p_l3_cmd->packet_size = len + 1;".
+    // it will already be set correctly by "p_l3_cmd->cmd_size = len + 1;".
     lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_ping(&h, msg_out, msg_in, (uint16_t)(rand() % msg_max_size)));
+}
+
+//---------------------------------------------------------------------
+
+void test_lt_pairing_key_write__no_session()
+{
+    lt_handle_t h =  {0};
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_write(&h, pubkey, slot));
+}
+
+void test_lt_pairing_key_write__l3_cmd_fail()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    lt_l3_cmd_ExpectAndReturn(&h, LT_FAIL);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_write(&h, pubkey, slot));
+}
+
+// // // //
+lt_ret_t callback_lt_pairing_key_write(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)&h->l3_buff;
+    p_l3_res->res_size = 100;
+
+    return LT_OK;
+}
+
+void test_lt_pairing_key_write__len_mismatch()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    lt_l3_cmd_Stub(callback_lt_pairing_key_write);
+
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_write(&h, pubkey, slot));
+}
+
+lt_ret_t callback2_lt_pairing_key_write(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)&h->l3_buff;
+    p_l3_res->res_size = 1;
+
+    return LT_OK;
+}
+
+void test_lt_pairing_key_write__correct()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    lt_l3_cmd_Stub(callback2_lt_pairing_key_write);
+
+    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_write(&h, pubkey, slot));
+}
+
+//---------------------------------------------------------------------
+
+void test_lt_pairing_key_read__no_session()
+{
+    lt_handle_t h =  {0};
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_read(&h, pubkey, slot));
+}
+
+
+void test_lt_pairing_key_read__l3_cmd_fail()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    lt_l3_cmd_ExpectAndReturn(&h, LT_FAIL);
+
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_read(&h, pubkey, slot));
+}
+
+// // // //
+lt_ret_t callback_lt_pairing_key_read(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
+    p_l3_res->res_size = 100;
+
+    return LT_OK;
+}
+
+void test_lt_pairing_key_read__len_mismatch()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    lt_l3_cmd_Stub(callback_lt_pairing_key_read);
+
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_read(&h, pubkey, slot));
+}
+
+lt_ret_t callback2_lt_pairing_key_read(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
+    p_l3_res->res_size = LT_L3_PAIRING_KEY_READ_RES_SIZE;
+
+    return LT_OK;
+}
+
+void test_lt_pairing_key_read__correct()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    lt_l3_cmd_Stub(callback2_lt_pairing_key_read);
+
+    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_read(&h, pubkey, slot));
+}
+
+//---------------------------------------------------------------------
+
+void test_lt_pairing_key_invalidate__no_session()
+{
+    lt_handle_t h =  {0};
+
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_invalidate(&h, slot));
+}
+
+void test_lt_pairing_key_invalidate__l3_cmd_fail()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    lt_l3_cmd_ExpectAndReturn(&h, LT_FAIL);
+
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, slot));
+}
+
+
+lt_ret_t callback_lt_pairing_key_invalidate(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
+    p_l3_res->res_size = 100;
+
+    return LT_OK;
+}
+
+void test_lt_pairing_key_invalidate__len_mismatch()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    lt_l3_cmd_Stub(callback_lt_pairing_key_invalidate);
+
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, slot));
+}
+
+lt_ret_t callback2_lt_pairing_key_invalidate(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
+    p_l3_res->res_size = 1;
+
+    return LT_OK;
+}
+
+void test_lt_pairing_key_invalidate__correct()
+{
+    lt_handle_t h =  {0};
+    h.session = SESSION_ON;
+    uint8_t pubkey[32] = {0};
+    uint8_t slot = 0;
+    lt_l3_cmd_Stub(callback2_lt_pairing_key_invalidate);
+
+    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_invalidate(&h, slot));
+}
+
+
+
+
+//---------------------------------------------------------------------
+void test_lt_r_mem_data_write__no_session()
+{
+    lt_handle_t h = {0};
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_r_mem_data_write(&h, udata_slot, udata, size));
+}
+
+//---------------------------------------------------------------------
+void test_lt_r_mem_data_read__no_session()
+{
+    lt_handle_t h = {0};
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_r_mem_data_read(&h, udata_slot, udata, size));
+}
+
+//---------------------------------------------------------------------
+void test_lt_r_mem_data_erase__no_session()
+{
+    lt_handle_t h = {0};
+    uint16_t udata_slot;
+    uint8_t udata[100];
+    uint16_t size;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_r_mem_data_erase(&h, udata_slot));
 }
 
 //---------------------------------------------------------------------
@@ -169,7 +398,7 @@ void test_lt_random_get__no_session()
 {
     uint8_t     buff[200];
     lt_handle_t h =  {0};
-    h.session     = SESSION_OFF;
+    h.session     = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_random_get(&h, buff, sizeof(buff)));
 }
@@ -177,23 +406,22 @@ void test_lt_random_get__no_session()
 void test_lt_random_get__l3_fail()
 {
     uint8_t     buff[10];
-
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < 4; i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_random_get(&h, buff, sizeof(buff)));
     }
 }
 
-uint16_t lt_random_get_packet_size_inject_value;
+uint16_t lt_random_get_cmd_size_inject_value;
 
 lt_ret_t callback_lt_random_get_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
-    p_l3_res->packet_size = lt_random_get_packet_size_inject_value;
+    p_l3_res->res_size = lt_random_get_cmd_size_inject_value;
 
     return LT_OK;
 }
@@ -214,7 +442,7 @@ void test_lt_random_get__len_mismatch()
             rand_len_offset++;
         }
 
-        lt_random_get_packet_size_inject_value = (uint16_t)rand_size;
+        lt_random_get_cmd_size_inject_value = (uint16_t)rand_size;
 
         lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
         TEST_ASSERT_EQUAL(LT_FAIL, lt_random_get(&h, buff, (uint16_t)(rand_size + rand_len_offset)));
@@ -225,18 +453,18 @@ void test_lt_random_get__correct()
 {
     const int       buff_max_size = 200;
     uint8_t         buff[200];
-    int             packet_size;
+    int             cmd_size;
 
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
 
-    // Making this at least 4 to not underflow in packet_size - 4.
-    packet_size = (rand() % (buff_max_size - 4)) + 4;
+    // Making this at least 4 to not underflow in cmd_size - 4.
+    cmd_size = (rand() % (buff_max_size - 4)) + 4;
 
     // No correct value will be set for us as in ping, so injecting again...
-    lt_random_get_packet_size_inject_value = (uint16_t)packet_size;
+    lt_random_get_cmd_size_inject_value = (uint16_t)cmd_size;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, (uint16_t)(packet_size - 4)));
+    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, (uint16_t)(cmd_size - 4)));
 }
 
 //---------------------------------------------------------------------
@@ -244,7 +472,7 @@ void test_lt_random_get__correct()
 void test_lt_ecc_key_generate__no_session()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_OFF;
+    h.session     = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_P256));
@@ -256,36 +484,36 @@ void test_lt_ecc_key_generate__l3_fail()
     h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < 4; i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
     }
 }
 
-uint16_t lt_ecc_key_generate_packet_size_inject_value;
+uint16_t lt_ecc_key_generate_cmd_size_inject_value;
 
 lt_ret_t callback_lt_ecc_key_generate_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
-    p_l3_res->packet_size = lt_ecc_key_generate_packet_size_inject_value;
+    p_l3_res->res_size = lt_ecc_key_generate_cmd_size_inject_value;
 
     return LT_OK;
 }
 
-void test_lt_ecc_key_generate__packet_size_mismatch()
+void test_lt_ecc_key_generate__cmd_size_mismatch()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
 
-    lt_random_get_packet_size_inject_value = 0;
+    lt_random_get_cmd_size_inject_value = 0;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 
-    lt_random_get_packet_size_inject_value = 2;
+    lt_random_get_cmd_size_inject_value = 2;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 
-    lt_random_get_packet_size_inject_value = (uint16_t)((rand() % (L3_PACKET_MAX_SIZE - 2)) + 2);
+    lt_random_get_cmd_size_inject_value = (uint16_t)((rand() % (L3_PACKET_MAX_SIZE - 2)) + 2);
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 }
@@ -295,7 +523,7 @@ void test_lt_ecc_key_generate__correct()
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
-    lt_random_get_packet_size_inject_value = 1;
+    lt_random_get_cmd_size_inject_value = 1;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
 
     for (ecc_slot_t slot = ECC_SLOT_1; slot < ECC_SLOT_32; slot++) {
@@ -309,7 +537,7 @@ void test_lt_ecc_key_generate__correct()
 void test_lt_ecc_key_read__no_session()
 {
     lt_handle_t h =  {0};
-    h.session     =  SESSION_OFF;
+    h.session     =  0;
 
     uint8_t          key[64];
     ecc_curve_type_t curve;
@@ -328,20 +556,20 @@ void test_lt_ecc_key_read__l3_fail()
     ecc_key_origin_t origin = 0;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
     }
 }
 
-uint16_t            lt_ecc_key_read_packet_size_inject_value;
+uint16_t            lt_ecc_key_read_cmd_size_inject_value;
 ecc_curve_type_t    lt_ecc_key_read_curve_inject_value;
 
-lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
 
-    p_l3_res->packet_size = lt_ecc_key_read_packet_size_inject_value;
+    p_l3_res->res_size = lt_ecc_key_read_cmd_size_inject_value;
     p_l3_res->curve       = lt_ecc_key_read_curve_inject_value;
 
     return LT_OK;
@@ -359,46 +587,46 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
     lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
 
     for (int i = 0; i < 25; i++) {
-        lt_ecc_key_read_packet_size_inject_value = (uint16_t)(rand() % L3_PACKET_MAX_SIZE);
+        lt_ecc_key_read_cmd_size_inject_value = (uint16_t)(rand() % L3_PACKET_MAX_SIZE);
 
-        if (lt_ecc_key_read_packet_size_inject_value != 48) { // skip correct value
+        if (lt_ecc_key_read_cmd_size_inject_value != 48) { // skip correct value
             lt_ecc_key_read_curve_inject_value       = CURVE_ED25519;
             TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
         }
 
-        if (lt_ecc_key_read_packet_size_inject_value != 80) { // skip correct value
+        if (lt_ecc_key_read_cmd_size_inject_value != 80) { // skip correct value
             lt_ecc_key_read_curve_inject_value       = CURVE_P256;
             TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
         }
     }
 }
-/*
+
 void test_lt_ecc_key_read__correct()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
 
-    uint8_t          key[64];
+    uint8_t          key[64] = {0};
     ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
     lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
 
-    lt_ecc_key_read_packet_size_inject_value = 48;
+    lt_ecc_key_read_cmd_size_inject_value = 48;
     lt_ecc_key_read_curve_inject_value       = CURVE_ED25519;
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
 
-    lt_ecc_key_read_packet_size_inject_value = 80;
+    lt_ecc_key_read_cmd_size_inject_value = 80;
     lt_ecc_key_read_curve_inject_value       = CURVE_P256;
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
 }
-*/
+
 //---------------------------------------------------------------------
 
 void test_lt_ecc_eddsa_sign__no_session()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_OFF;
+    h.session     = 0;
 
     uint8_t     msg[10] = {0};
     uint8_t     rs[64] = {0};
@@ -415,10 +643,19 @@ void test_lt_ecc_eddsa_sign__l3_fail()
     uint8_t     rs[64] = {0};
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
     }
+}
+
+lt_ret_t callback_lt_ecc_eddsa_sign_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
+
+    p_l3_res->res_size = 0x50;
+
+    return LT_OK;
 }
 
 void test_lt_ecc_eddsa_sign__correct()
@@ -429,7 +666,8 @@ void test_lt_ecc_eddsa_sign__correct()
     uint8_t     msg[10] = {0};
     uint8_t     rs[64] = {0};
 
-    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
+    lt_l3_cmd_Stub(callback_lt_ecc_eddsa_sign_lt_l3_cmd);
+
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
 
@@ -438,7 +676,7 @@ void test_lt_ecc_eddsa_sign__correct()
 void test_lt_ecc_ecdsa_sign__no_session()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_OFF;
+    h.session     = 0;
 
     uint8_t     msg[10] = {0};
     uint8_t     rs[64] = {0};
@@ -457,7 +695,7 @@ void test_lt_ecc_ecdsa_sign__l3_fail()
     uint8_t                msg_hash[32] = {0};
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_sha256_init_Expect(&hctx);
         lt_sha256_start_Expect(&hctx);
         lt_sha256_update_Expect(&hctx, msg, sizeof(msg));
@@ -465,6 +703,15 @@ void test_lt_ecc_ecdsa_sign__l3_fail()
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
     }
+}
+
+lt_ret_t callback_lt_ecc_ecdsa_sign_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
+
+    p_l3_res->res_size = 0x50;
+
+    return LT_OK;
 }
 
 void test_lt_ecc_ecdsa_sign__correct()
@@ -481,7 +728,7 @@ void test_lt_ecc_ecdsa_sign__correct()
     lt_sha256_start_Expect(&hctx);
     lt_sha256_update_Expect(&hctx, msg, sizeof(msg));
     lt_sha256_finish_Expect(&hctx, msg_hash);
-    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
+    lt_l3_cmd_Stub(callback_lt_ecc_ecdsa_sign_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_ecdsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
 
@@ -512,7 +759,7 @@ void test_lt_ecc_eddsa_sig_verify__correct()
 void test_lt_ecc_key_erase__no_session()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_OFF;
+    h.session     = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, ECC_SLOT_1));
 }
@@ -523,10 +770,19 @@ void test_lt_ecc_key_erase__l3_fail()
     h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
-    for (size_t i = 0; i < sizeof(rets); i++) {
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_erase(&h, ECC_SLOT_1));
     }
+}
+
+lt_ret_t callback_lt_ecc_key_erase_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
+
+    p_l3_res->res_size = 1;
+
+    return LT_OK;
 }
 
 void test_lt_ecc_key_erase__correct()
@@ -534,11 +790,47 @@ void test_lt_ecc_key_erase__correct()
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
-    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
+    lt_l3_cmd_Stub(callback_lt_ecc_key_erase_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, ECC_SLOT_1));
 }
 
 //---------------------------------------------------------------------
+
+lt_ret_t callback1_lt_get_info_cert_lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_rsp->rsp_len = 128;
+
+    switch(cmock_num_calls) {
+        case 0:
+            return LT_L1_SPI_ERROR;
+
+        case 1:
+            return LT_OK;
+        case 2:
+            return LT_L1_SPI_ERROR;
+
+        case 3:
+            return LT_OK;
+        case 4:
+            return LT_OK;
+        case 5:
+            return LT_L1_SPI_ERROR;
+
+        case 6:
+            return LT_OK;
+        case 7:
+            return LT_OK;
+        case 8:
+            return LT_OK;
+        case 9:
+            return LT_L1_SPI_ERROR;
+
+        default:
+            return 100;
+    }
+}
 
 void test_lt_get_info_cert__l2_fail()
 {
@@ -547,23 +839,43 @@ void test_lt_get_info_cert__l2_fail()
 
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
-    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
-    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
-    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
-    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
-    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
-    lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
-    lt_l2_transfer_ExpectAndReturn(&h, LT_L1_SPI_ERROR);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
+}
+
+lt_ret_t callback2_lt_get_info_cert_lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_rsp->rsp_len = 128;
+
+    switch(cmock_num_calls) {
+        case 0:
+            return LT_OK;
+        case 1:
+            return LT_OK;
+        case 2:
+            return LT_OK;
+        case 3:
+            return LT_OK;
+        default:
+            return 100;
+    }
 }
 
 void test_lt_get_info_cert__l2_correct()
@@ -574,7 +886,7 @@ void test_lt_get_info_cert__l2_correct()
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     for (int i = 0; i < 4; i++) {
-        lt_l2_transfer_ExpectAndReturn(&h, LT_OK);
+        lt_l2_transfer_StubWithCallback(callback2_lt_get_info_cert_lt_l2_transfer);
     }
     TEST_ASSERT_EQUAL(LT_OK, lt_get_info_cert(&h, cert, sizeof(cert)));
 }
