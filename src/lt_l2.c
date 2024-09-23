@@ -69,9 +69,9 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h->l3_buff;
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
-    uint16_t chunk_num      = ((L3_RES_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
+    uint16_t chunk_num      = ((L3_RES_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
     // Calculate the length of the last
-    uint16_t chunk_last_len = ((L3_RES_SIZE_SIZE + p_frame->packet_size + L3_TAG_SIZE) % L2_CHUNK_MAX_DATA_SIZE);
+    uint16_t chunk_last_len = ((L3_RES_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) % L2_CHUNK_MAX_DATA_SIZE);
 
     // Split encrypted buffer into chunks and proceed them into l2 transfers:
     for (int i=0; i<chunk_num; i++) {

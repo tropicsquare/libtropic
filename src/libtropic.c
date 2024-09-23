@@ -57,7 +57,11 @@ lt_ret_t lt_deinit(lt_handle_t *h)
 
 lt_ret_t lt_handshake(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub)
 {
-    if (!h || !shipriv || !shipub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)) {
+    if (    !h
+         || !shipriv
+         || !shipub
+         || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)
+    ) {
         return LT_PARAM_ERR;
     }
 
@@ -172,7 +176,11 @@ lt_ret_t lt_handshake(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t p
 
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
 {
-    if((len > PING_LEN_MAX) || !h || !msg_out || !msg_in) {
+    if(    (len > PING_LEN_MAX)
+        || !h
+        || !msg_out
+        || !msg_in
+    ) {
         return LT_PARAM_ERR;
     }
     if(h->session != SESSION_ON) {
@@ -181,12 +189,12 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer when it contains Ping result data.
+    // Pointer to access l3 buffer with result data
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->packet_size = len + 1;
-    p_l3_cmd->command = LT_L3_PING_CMD;
+    p_l3_cmd->cmd_size = len + 1;
+    p_l3_cmd->cmd_id = LT_L3_PING_CMD;
     memcpy(p_l3_cmd->data, msg_out, len);
 
     lt_ret_t ret = lt_l3_cmd(h);
@@ -194,7 +202,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return ret;
     }
 
-    if(len != (p_l3_res->packet_size - 1))
+    if(len != (p_l3_res->res_size - 1))
     {
         return LT_FAIL;
     }
@@ -204,9 +212,221 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
     return LT_OK;
 }
 
+lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8_t slot)
+{
+    if(    !h
+        || !pubkey
+        || (slot > 3)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+ // Pointer to access l3 buffer when it contains Ping command data
+    struct lt_l3_pairing_key_write_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_write_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_PAIRING_KEY_WRITE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_PAIRING_KEY_WRITE_CMD;
+    memcpy(p_l3_cmd->key, pubkey, 32);
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot)
+{
+    if(    !h
+        || !pubkey
+        || (slot > 3)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains Ping command data
+    struct lt_l3_pairing_key_read_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_read_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_PAIRING_KEY_READ_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_PAIRING_KEY_READ_CMD;
+    p_l3_cmd->slot = slot;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(LT_L3_PAIRING_KEY_READ_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    memcpy(pubkey, p_l3_res->key, 32);
+
+    return LT_OK;
+}
+lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
+{
+    if(    !h
+        || (slot > 3)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains Ping command data
+    struct lt_l3_pairing_key_invalidate_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_invalidate_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_pairing_key_invalidate_res_t* p_l3_res = (struct lt_l3_pairing_key_invalidate_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_PAIRING_KEY_INVALIDATE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_PAIRING_KEY_INVALIDATE_CMD;
+    // cmd data
+    p_l3_cmd->slot = slot;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+
+lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t size)
+{
+     if(   !h
+        || !data
+        ||  size > R_MEM_DATA_SIZE_MAX
+        || (udata_slot > R_MEM_DATA_SLOT_MAX)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains Ping command data
+    struct lt_l3_r_mem_data_write_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_r_mem_data_write_res_t* p_l3_res = (struct lt_l3_r_mem_data_write_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = size + 4;
+    p_l3_cmd->cmd_id = LT_L3_R_MEM_DATA_WRITE_CMD;
+    p_l3_cmd->slot = udata_slot;
+    memcpy(p_l3_cmd->data, data, size);
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t size)
+{
+    if(    !h
+        || !data
+        ||  size > 444
+        || (udata_slot > 511)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains Ping command data
+    struct lt_l3_r_mem_data_read_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_read_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_r_mem_data_read_res_t* p_l3_res = (struct lt_l3_r_mem_data_read_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_MEM_DATA_READ_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_R_MEM_DATA_READ_CMD;
+    p_l3_cmd->slot = udata_slot;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(4 + size != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+    memcpy(data, p_l3_res->data, size);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
+{
+    if(    !h
+        || (udata_slot > 511)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains Ping command data
+    struct lt_l3_r_mem_data_erase_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_erase_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_r_mem_data_erase_res_t* p_l3_res = (struct lt_l3_r_mem_data_erase_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_MEM_DATA_ERASE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_R_MEM_DATA_ERASE_CMD;
+    p_l3_cmd->slot = udata_slot;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+
 lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 {
-    if((len > RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
+    if(    (len > RANDOM_VALUE_GET_LEN_MAX)
+        || !h
+        || !buff
+    ) {
         return LT_PARAM_ERR;
     }
     if(h->session != SESSION_ON) {
@@ -215,12 +435,12 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct lt_l3_random_value_get_cmd_t* p_l3_cmd = (struct lt_l3_random_value_get_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer when it contains Ping result data.
+    // Pointer to access l3 buffer with result data
     struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->packet_size = LT_L3_RANDOM_VALUE_GET_CMD_SIZE;
-    p_l3_cmd->command = LT_L3_RANDOM_VALUE_GET_CMD;
+    p_l3_cmd->cmd_size = LT_L3_RANDOM_VALUE_GET_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_RANDOM_VALUE_GET_CMD;
     p_l3_cmd->n_bytes = len;
 
     lt_ret_t ret = lt_l3_cmd(h);
@@ -228,12 +448,11 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
         return ret;
     }
 
-    if(len != (p_l3_res->packet_size - 1 - 3))
-    {
+    if(1 + len != (p_l3_res->res_size - 3)) {
         return LT_FAIL;
     }
 
-    memcpy(buff, p_l3_res->random_data, p_l3_res->packet_size);
+    memcpy(buff, p_l3_res->random_data, p_l3_res->res_size);
 
     return LT_OK;
 }
@@ -244,7 +463,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
         || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
         || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN
         || ((curve != CURVE_P256) && (curve != CURVE_ED25519))
-    ){
+    ) {
         return LT_PARAM_ERR;
     }
     if(h->session != SESSION_ON) {
@@ -253,12 +472,12 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer when it contains Ping result data.
+    // Pointer to access l3 buffer with result data
     struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->packet_size = LT_L3_ECC_KEY_GENERATE_CMD_SIZE;
-    p_l3_cmd->command = LT_L3_ECC_KEY_GENERATE_CMD;
+    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_GENERATE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_ECC_KEY_GENERATE_CMD;
     p_l3_cmd->slot = (uint8_t)slot;
     p_l3_cmd->curve = (uint8_t)curve;
 
@@ -267,8 +486,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
         return ret;
     }
 
-    if(0 != (p_l3_res->packet_size - 1))
-    {
+    if(1 != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
@@ -295,12 +513,12 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer when it contains Ping result data.
+    // Pointer to access l3 buffer with result data
     struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->packet_size = LT_L3_ECC_KEY_READ_CMD_SIZE;
-    p_l3_cmd->command= LT_L3_ECC_KEY_READ_CMD;
+    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_READ_CMD_SIZE;
+    p_l3_cmd->cmd_id= LT_L3_ECC_KEY_READ_CMD;
     p_l3_cmd->slot = slot;
 
     lt_ret_t ret = lt_l3_cmd(h);
@@ -309,16 +527,22 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
     }
 
     // Check incomming l3 length
-    if((p_l3_res->curve == (uint8_t)CURVE_ED25519) && ((p_l3_res->packet_size -1-1-1-13) != 32)) {
+    if((p_l3_res->curve == (uint8_t)CURVE_ED25519) && ((p_l3_res->res_size -1-1-1-13) != 32)) {
         return LT_FAIL;
     }
-    if((p_l3_res->curve == (uint8_t)CURVE_P256) && ((p_l3_res->packet_size -1-1-1-13) != 64)) {
+    if((p_l3_res->curve == (uint8_t)CURVE_P256) && ((p_l3_res->res_size -1-1-1-13) != 64)) {
         return LT_FAIL;
     }
 
     *curve = p_l3_res->curve;
     *origin = p_l3_res->origin;
-    memcpy(key, p_l3_res->pub_key, p_l3_res->packet_size);
+
+    if((p_l3_res->curve == (uint8_t)CURVE_ED25519)) {
+        memcpy(key, p_l3_res->pub_key, 32);
+    }
+    if((p_l3_res->curve == (uint8_t)CURVE_P256)) {
+        memcpy(key, p_l3_res->pub_key, 64);
+    }
 
     return LT_OK;
 }
@@ -341,18 +565,22 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct lt_l3_eddsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer when it contains Ping result data.
+    // Pointer to access l3 buffer with result data
     struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->packet_size = LT_L3_EDDSA_SIGN_CMD_SIZE + msg_len;
-    p_l3_cmd->command = LT_L3_EDDSA_SIGN_CMD;
+    p_l3_cmd->cmd_size = LT_L3_EDDSA_SIGN_CMD_SIZE + msg_len;
+    p_l3_cmd->cmd_id = LT_L3_EDDSA_SIGN_CMD;
     p_l3_cmd->slot = slot;
     memcpy(p_l3_cmd->msg, msg, msg_len);
 
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
         return ret;
+    }
+
+    if(0x50 != (p_l3_res->res_size)) {
+        return LT_FAIL;
     }
 
     memcpy(rs, p_l3_res->r, 32);
@@ -386,18 +614,22 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
     // Pointer to access l3 buffer when it contains Ping command data
     struct lt_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer when it contains Ping result data.
+    // Pointer to access l3 buffer with result data
     struct lt_l3_ecdsa_sign_res_t* p_l3_res = (struct lt_l3_ecdsa_sign_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->packet_size = LT_L3_ECDSA_SIGN_CMD_SIZE;
-    p_l3_cmd->command= LT_L3_ECDSA_SIGN;
+    p_l3_cmd->cmd_size = LT_L3_ECDSA_SIGN_CMD_SIZE;
+    p_l3_cmd->cmd_id= LT_L3_ECDSA_SIGN;
     p_l3_cmd->slot = slot;
     memcpy(p_l3_cmd->msg_hash, msg_hash, 32);
 
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
         return ret;
+    }
+
+    if(0x50 != (p_l3_res->res_size)) {
+        return LT_FAIL;
     }
 
     memcpy(rs, p_l3_res->r, 32);
@@ -408,7 +640,12 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    if (!msg || msg_len < LT_L3_EDDSA_SIGN_MSG_LEN_MIN || msg_len > LT_L3_EDDSA_SIGN_MSG_LEN_MAX || !pubkey || !rs) {
+    if (   !msg
+        ||  msg_len < LT_L3_EDDSA_SIGN_MSG_LEN_MIN
+        ||  msg_len > LT_L3_EDDSA_SIGN_MSG_LEN_MAX
+        || !pubkey
+        || !rs
+    ) {
         return LT_PARAM_ERR;
     }
 
@@ -422,7 +659,10 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 {
-    if(!h || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX) {
+    if( !h
+        || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN
+        || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
+    ) {
         return LT_PARAM_ERR;
     }
     if(h->session != SESSION_ON) {
@@ -431,15 +671,21 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 
     // Setup a pointer to l3 buffer, which is placed in handle
     struct lt_l3_ecc_key_erase_cmd_t* p_l3_buff = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_buff->packet_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
-    p_l3_buff->command = LT_L3_ECC_KEY_ERASE_CMD;
+    p_l3_buff->cmd_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
+    p_l3_buff->cmd_id = LT_L3_ECC_KEY_ERASE_CMD;
     p_l3_buff->slot = slot;
 
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
         return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
     }
 
     return LT_OK;
@@ -467,28 +713,38 @@ LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511,
 
 lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 {
-    if (max_len < LT_L2_GET_INFO_REQ_CERT_SIZE || !h || !cert) {
+    if (     max_len < LT_L2_GET_INFO_REQ_CERT_SIZE
+         || !h
+         || !cert
+    ) {
         return LT_PARAM_ERR;
     }
 
-    // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_get_info_req_t* p_l2_buff = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with request data
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
 
     for(int8_t i=0; i<4; i++) {
         // Fill l2 request buffer
-        p_l2_buff->req_id = LT_L2_GET_INFO_REQ_ID;
-        p_l2_buff->req_len = LT_L2_GET_INFO_REQ_LEN;
-        p_l2_buff->obj_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
+        p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
+        p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
+        p_l2_req->obj_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
 
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127    = 0, "i" is used
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255  = 1, "i" is used
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383  = 2, "i" is used
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511  = 3, "i" is used
-        p_l2_buff->block_index = i;
+        p_l2_req->block_index = i;
         lt_ret_t ret = lt_l2_transfer(h);
         if(ret != LT_OK) {
             return ret;
         }
+
+        if((LT_L2_GET_INFO_REQ_CERT_SIZE/4) != (p_l2_resp->rsp_len)) {
+            return LT_FAIL;
+        }
+
         memcpy(cert + i*128, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, 128);
     }
 
@@ -497,7 +753,10 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 
 lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub)
 {
-    if(!cert || !stpub || (max_len > 512)) {
+    if(    !cert
+        || !stpub
+        || (max_len > 512)
+    ) {
         return LT_PARAM_ERR;
     }
 
@@ -517,24 +776,135 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
 }
 
 
-// TODO
-//lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t chip_id, uint16_t max_len)
-//{
-//    return LT_OK;
-//}
-//lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t ver, uint16_t max_len)
-//{
-//    return LT_OK;
-//}
-//lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t ver, uint16_t max_len)
-//{
-//    return LT_OK;
-//}
-//lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t fw_bank, uint16_t max_len)
-//{
-//    return LT_OK;
-//}
-//
+lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, uint16_t max_len)
+{
+    if (    !h
+         || !chip_id
+         ||  max_len < LT_L2_GET_INFO_CHIP_ID_SIZE) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
+    p_l2_req->obj_id = LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID;
+    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+
+    lt_ret_t ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(128 != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, 128);
+
+    return LT_OK;
+}
+
+
+lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len)
+{
+    if (    !h
+         || !ver
+         ||  max_len < LT_L2_GET_INFO_RISCV_FW_SIZE
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
+    p_l2_req->obj_id = LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION;
+    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+
+    lt_ret_t ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(LT_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    memcpy(ver, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, LT_L2_GET_INFO_RISCV_FW_SIZE);
+
+    return LT_OK;
+}
+lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len)
+{
+    if (    !h
+         || !ver
+         ||  max_len < LT_L2_GET_INFO_SPECT_FW_SIZE) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
+    p_l2_req->obj_id = LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION;
+    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+
+    lt_ret_t ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(LT_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    memcpy(ver, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, LT_L2_GET_INFO_SPECT_FW_SIZE);
+
+    return LT_OK;
+}
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, uint16_t max_len)
+{
+    if (    !h
+         || !header
+         ||  max_len < LT_L2_GET_INFO_FW_HEADER_SIZE
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
+    p_l2_req->obj_id = LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID;
+    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+
+    lt_ret_t ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(128 != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    memcpy(header, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, 128); //TODO specify and fix size of header
+
+    return LT_OK;
+}
+
 
 
 /**
