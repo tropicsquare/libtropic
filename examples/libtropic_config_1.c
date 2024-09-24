@@ -3,7 +3,6 @@
 #include "libtropic.h"
 #include "utils.h"
 
-
 struct lt_config_obj_t {
     char desc[60];
     enum CONFIGURATION_OBJECTS_REGS reg;
@@ -49,6 +48,13 @@ lt_ret_t libtropic_example___show_config_objects(lt_handle_t *h)
     for (int i=0; i<27;i++) {
 
         lt_ret_t ret = lt_r_config_read(h, config_table[i].reg, &config_table[i].config);
+        if(ret == LT_OK) {
+            LOG_OUT_LINE();
+        } else {
+            LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+            ret = lt_deinit(h);
+            return 1;
+        }
         /* Following lines only print out some debug: */
         char config_str[8+1] = {0};
         bytes_to_chars(config_table[i].config.byte, config_str, 4);
@@ -60,13 +66,27 @@ lt_ret_t libtropic_example___show_config_objects(lt_handle_t *h)
     conf.word = 0x11223344;
     for (int i=0; i<27;i++) {
         lt_ret_t ret = lt_r_config_write(h, config_table[i].reg, &conf);
+        if(ret == LT_OK) {
+            LOG_OUT_LINE();
+        } else {
+            LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+            ret = lt_deinit(h);
+            return 1;
+        }
     }
 
-     LOG_OUT_LINE();
+    LOG_OUT_LINE();
 
     for (int i=0; i<27;i++) {
 
         lt_ret_t ret = lt_r_config_read(h, config_table[i].reg, &config_table[i].config);
+        if(ret == LT_OK) {
+            LOG_OUT_LINE();
+        } else {
+            LOG_OUT_VALUE("lt_ret_t:      %s\r\n", lt_ret_verbose(ret));
+            ret = lt_deinit(h);
+            return 1;
+        }
         /* Following lines only print out some debug: */
         char config_str[8+1] = {0};
         bytes_to_chars(config_table[i].config.byte, config_str, 4);

@@ -18,6 +18,7 @@
 #include <stddef.h>
 
 #include "libtropic_common.h"
+#include "TROPIC01_configuration_objects.h"
 
 /**
  * @brief Initialize handle and transport layer
@@ -104,6 +105,73 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
+
+/** @brief Union for accessing config object as bytes or as one 32bit number */
+union config_obj
+{
+    uint8_t byte[4];
+    uint32_t word;
+};
+
+/** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
+enum CONFIGURATION_OBJECTS_REGS {
+  CONFIGURATION_OBJECTS_CFG_START_UP_ADDR = 0X0,
+  CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR = 0X4,
+  CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR = 0X8,
+  CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR = 0X10,
+  CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR = 0X20,
+  CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR = 0X24,
+  CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR = 0X28,
+  CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR = 0X30,
+  CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR = 0X34,
+  CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR = 0X40,
+  CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR = 0X44,
+  CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR = 0X100,
+  CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR = 0X110,
+  CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR = 0X114,
+  CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR = 0X118,
+  CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR = 0X120,
+  CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR = 0X130,
+  CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR = 0X134,
+  CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR = 0X138,
+  CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR = 0X13C,
+  CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR = 0X140,
+  CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR = 0X144,
+  CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR = 0X150,
+  CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR = 0X154,
+  CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR = 0X158,
+  CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = 0X160,
+  CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR = 0X170
+};
+
+/**
+ * @brief Read one configuration object
+ *
+ * @param h           Device's handle
+ * @param addr        Address of a config object
+ * @param obj         Variable to read content into
+ * @return            LT_OK if success, otherwise returns other error code.
+ *
+ */
+lt_ret_t lt_r_config_read(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, union config_obj *obj);
+
+/**
+ * @brief Write one configuration object
+ *
+ * @param h           Device's handle
+ * @param addr        Address of a config object
+ * @param obj         Content to be written
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, union config_obj *obj);
+
+/**
+ * @brief Erase the whole config space
+ *
+ * @param h           Device's handle
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_r_config_erase(lt_handle_t *h);
 
 /** @brief Maximum number of random bytes requested at once */
 #define RANDOM_VALUE_GET_LEN_MAX         L2_CHUNK_MAX_DATA_SIZE
