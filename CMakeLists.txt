@@ -10,6 +10,7 @@ option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 option(EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
+option(EXPERIMENTAL_SPI_RASPBERRYPI "Experimental feature for spi slave on rpi 4" OFF)
 
 ###########################################################################
 #                                                                         #
@@ -94,6 +95,10 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 # Needed for hardware spi slave to uart converter.
 if(EXPERIMENTAL_SPI_UART)
     target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_UART=1)
+endif()
+
+if(EXPERIMENTAL_SPI_RASPBERRYPI)
+    target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_RASPBERRYPI=1)
 endif()
 
 if(USE_TREZOR_CRYPTO)
