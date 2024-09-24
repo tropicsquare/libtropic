@@ -26,6 +26,7 @@
 #include "lt_sha256.h"
 #include "lt_aesgcm.h"
 #include "libtropic.h"
+#include "TROPIC01_configuration_objects.h"
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
@@ -187,7 +188,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
@@ -224,7 +225,7 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8
         return LT_HOST_NO_SESSION;
     }
 
- // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_pairing_key_write_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_write_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)&h->l3_buff;
@@ -245,6 +246,7 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8
 
     return LT_OK;
 }
+
 lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot)
 {
     if(    !h
@@ -257,7 +259,7 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_pairing_key_read_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_read_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
@@ -280,6 +282,7 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot
 
     return LT_OK;
 }
+
 lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
 {
     if(    !h
@@ -291,7 +294,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_pairing_key_invalidate_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_invalidate_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_pairing_key_invalidate_res_t* p_l3_res = (struct lt_l3_pairing_key_invalidate_res_t*)&h->l3_buff;
@@ -314,6 +317,100 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     return LT_OK;
 }
 
+lt_ret_t lt_r_config_read(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, union config_obj *obj)
+{
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+    if(!h) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_r_config_read_cmd_t* p_l3_cmd = (struct lt_l3_r_config_read_cmd_t*)&h->l3_buff;
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_r_config_read_res_t* p_l3_res = (struct lt_l3_r_config_read_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_CONFIG_READ_SIZE;
+    p_l3_cmd->command = LT_L3_R_CONFIG_READ;
+    p_l3_cmd->address = (uint16_t)addr;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(8 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    obj->word = ((struct lt_l3_r_config_read_res_t*)h->l3_buff)->value;
+
+    return LT_OK;
+}
+
+lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, union config_obj *obj)
+{
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+    if(!h) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_r_config_write_cmd_t* p_l3_cmd = (struct lt_l3_r_config_write_cmd_t*)&h->l3_buff;
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_r_config_write_res_t* p_l3_res = (struct lt_l3_r_config_write_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_CONFIG_WRITE_SIZE;
+    p_l3_cmd->command = LT_L3_R_CONFIG_WRITE;
+    p_l3_cmd->address = (uint16_t)addr;
+    p_l3_cmd->value = obj->word;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_r_config_erase(lt_handle_t *h)
+{
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+    if(!h) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_r_config_erase_cmd_t* p_l3_cmd = (struct lt_l3_r_config_erase_cmd_t*)&h->l3_buff;
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_r_config_erase_res_t* p_l3_res = (struct lt_l3_r_config_erase_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_CONFIG_ERASE_SIZE;
+    p_l3_cmd->command = LT_L3_R_CONFIG_ERASE;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
 
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t size)
 {
@@ -328,7 +425,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_r_mem_data_write_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_r_mem_data_write_res_t* p_l3_res = (struct lt_l3_r_mem_data_write_res_t*)&h->l3_buff;
@@ -364,7 +461,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_r_mem_data_read_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_read_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_r_mem_data_read_res_t* p_l3_res = (struct lt_l3_r_mem_data_read_res_t*)&h->l3_buff;
@@ -398,7 +495,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_r_mem_data_erase_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_erase_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_r_mem_data_erase_res_t* p_l3_res = (struct lt_l3_r_mem_data_erase_res_t*)&h->l3_buff;
@@ -420,7 +517,6 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
     return LT_OK;
 }
 
-
 lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 {
     if(    (len > RANDOM_VALUE_GET_LEN_MAX)
@@ -433,7 +529,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_random_value_get_cmd_t* p_l3_cmd = (struct lt_l3_random_value_get_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
@@ -470,7 +566,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
@@ -511,7 +607,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
         return LT_PARAM_ERR;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
@@ -563,7 +659,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_eddsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
@@ -612,7 +708,7 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     lt_sha256_update(&hctx, (uint8_t*)msg, msg_len);
     lt_sha256_finish(&hctx, msg_hash);
 
-    // Pointer to access l3 buffer when it contains Ping command data
+    // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_ecdsa_sign_res_t* p_l3_res = (struct lt_l3_ecdsa_sign_res_t*)&h->l3_buff;
@@ -656,7 +752,6 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
     return LT_OK;
 }
 
-
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 {
     if( !h
@@ -698,7 +793,6 @@ LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255,
 LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383,
 LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511,
 } block_index_t;
-
 
 /** @brief The X.509 device certificate read from I-Memory and signed by Tropic Square (max length of 512B) */
 # define LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0
@@ -775,7 +869,6 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
     return LT_FAIL;
 }
 
-
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, uint16_t max_len)
 {
     if (    !h
@@ -807,7 +900,6 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, uint16_t max_len)
 
     return LT_OK;
 }
-
 
 lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len)
 {
@@ -841,6 +933,7 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len
 
     return LT_OK;
 }
+
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len)
 {
     if (    !h
@@ -872,6 +965,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, uint16_t max_len
 
     return LT_OK;
 }
+
 lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, uint16_t max_len)
 {
     if (    !h
@@ -905,14 +999,6 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, uint16_t max_len)
     return LT_OK;
 }
 
-
-
-/**
- * @brief Returns more verbose description of ts return value
- *
- * @param error         lt_ret_t value
- * @return const char*
- */
 const char *lt_ret_verbose(lt_ret_t ret) {
     switch(ret) {
         // Chip MODES

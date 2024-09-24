@@ -40,6 +40,7 @@ struct lt_l3_ping_res_t{
 } __attribute__((__packed__));
 
 
+
 /** @brief Command ID */
 #define LT_L3_RANDOM_VALUE_GET_CMD 0x50
 /** @brief Command length */
@@ -70,7 +71,6 @@ struct lt_l3_random_value_get_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
-
 
 
 
@@ -159,6 +159,97 @@ struct lt_l3_pairing_key_invalidate_res_t{
 
 
 
+/** @brief Command ID */
+#define LT_L3_R_CONFIG_WRITE 0x20
+/** @brief Command length */
+#define LT_L3_R_CONFIG_WRITE_SIZE 0x8u
+
+/**  */
+struct lt_l3_r_config_write_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 command;
+    /** CO offset address */
+    u16 address;
+    /** Padding */
+    u8 padding;
+    /**  */
+    u32 value;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+/**  */
+struct lt_l3_r_config_write_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+/** @brief Command ID */
+#define LT_L3_R_CONFIG_READ 0x21
+/** @brief Command length */
+#define LT_L3_R_CONFIG_READ_SIZE 0x3u
+
+/**  */
+struct lt_l3_r_config_read_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 command;
+    /** CO offset address */
+    u16 address;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+/**  */
+struct lt_l3_r_config_read_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** Padding */
+    u8 padding[3];
+    /** Value */
+    u32 value;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+
+
+/** @brief Command ID */
+#define LT_L3_R_CONFIG_ERASE 0x22
+/** @brief Command length */
+#define LT_L3_R_CONFIG_ERASE_SIZE 0x1u
+
+/**  */
+struct lt_l3_r_config_erase_cmd_t {
+    /** L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 command;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+/**  */
+struct lt_l3_r_config_erase_res_t{
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
 
 
 /** @brief Command ID */
@@ -186,8 +277,6 @@ struct lt_l3_r_mem_data_write_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
-
-
 
 
 
@@ -219,8 +308,6 @@ struct lt_l3_r_mem_data_read_res_t{
 
 
 
-
-
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_ERASE_CMD 0x42u
 #define LT_L3_R_MEM_DATA_ERASE_CMD_SIZE 0x3u
@@ -244,12 +331,6 @@ struct lt_l3_r_mem_data_erase_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
-
-
-
-
-
-
 
 
 
@@ -323,6 +404,7 @@ struct lt_l3_ecc_key_read_res_t{
 } __attribute__((__packed__));
 
 
+
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_ERASE_CMD 0x63u
 /** @brief Command length */
@@ -349,6 +431,7 @@ struct lt_l3_ecc_key_erase_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
+
 
 
 /** @brief Command ID */
@@ -391,6 +474,7 @@ struct lt_l3_eddsa_sign_res_t{
     /** L3 tag */
     u8 tag[16];
 } __attribute__((__packed__));
+
 
 
 /** @brief Command ID */

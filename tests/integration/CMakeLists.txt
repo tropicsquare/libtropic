@@ -37,6 +37,8 @@ project(libtropic_unix_example
 add_executable(integration_tests main.c
                     ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix/lt_port_unix.c
                     ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/libtropic_example_1.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/libtropic_config_1.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/utils.c
 )
 target_include_directories(integration_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/)
 
