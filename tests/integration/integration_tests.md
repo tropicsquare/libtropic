@@ -12,7 +12,7 @@ Don't forget to provide model with config file, keys and chip's certificate as i
 
 ## Compile integration tests
 
-Once the model is running, compile integration tests:
+Keep the model running in its own terminal, open a new terminal and compile integration tests:
 
 ```
 $ cd tests/integration_tests/
@@ -22,12 +22,12 @@ $ cmake ..
 $ make
 ```
 
-Compilation shouldn't take long, for compiling in debug mode replace `cmake ..` with `cmake -DCMAKE_BUILD_TYPE=Debug ..`
+Compilation shouldn't take long, for compiling in debug mode replace `cmake ..` with `cmake -DCMAKE_BUILD_TYPE=Debug ..` (this will allow to step through with a debugger)
 
 
 ## Run it all together
 
-Keep the model running in a separate terminal and execute integration tests in another one:
+While model is still running in first terminal, execute integration tests:
 
 ```
 ./build/integration_test

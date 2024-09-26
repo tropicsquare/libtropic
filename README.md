@@ -24,7 +24,7 @@ Instructions differ based on whether you have physical chip on hand or not:
 
 ### Physical TROPIC01
 
-[This](phttps://github.com/tropicsquare/libtropic-stm32) link leads to an example embedded project, featuring `STM32` devboard and `real TROPIC01` chip.
+[This](https://github.com/tropicsquare/libtropic-stm32) link leads to an example embedded project, featuring `STM32` devboard and `real TROPIC01` chip.
 
 ### Emulated TROPIC01
 
