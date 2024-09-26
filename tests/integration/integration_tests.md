@@ -1,19 +1,18 @@
 # Integration tests
 
-This code should be compiled under unix and all tests here are running against model, that means no chip or external hardware is needed.
+This code is meant to be compiled under Unix and all tests here are running against TROPIC01's emulation model, that means no chip or external hardware is needed.
 
 ## Model of TROPIC01
 
-To start a model, follow readme in its repository here [here](https://github.com/tropicsquare/ts-tvl).
+To start a model, follow readme in [its](https://github.com/tropicsquare/ts-tvl) repository.
 
-Keep it running in a separate terminal, while executing integration tests. They will talk to each other through TCP socket.
+Don't forget to provide model with config file, keys and chip's certificate as is described [here](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#configuration-file)!
 
-*Note: During tests against model, SPI layer between libtropic and model is emulated through TCP connection.
-Model responses are exactly the same as from physical TROPIC01 chip.*
 
-## Compile and run integration tests
 
-Once the model is running, compile integration tests:
+## Compile integration tests
+
+Keep the model running in its own terminal, open a new terminal and compile integration tests:
 
 ```
 $ cd tests/integration_tests/
@@ -23,10 +22,23 @@ $ cmake ..
 $ make
 ```
 
-Compilation shouldn't take long, then run it like this:
+Compilation shouldn't take long, for compiling in debug mode replace `cmake ..` with `cmake -DCMAKE_BUILD_TYPE=Debug ..` (this will allow to step through with a debugger)
+
+
+## Run it all together
+
+While model is still running in first terminal, execute integration tests:
 
 ```
-./main
+./build/integration_test
 ```
 
-For compiling in debug mode pass `cmake -DCMAKE_BUILD_TYPE=Debug ..` during cmake call.
+## How it works?
+
+Both processes will talk to each other through TCP socket 127.0.0.1:28992.
+
+*Note: During tests against model, SPI layer between libtropic and model is emulated through TCP connection.
+Model responses are exactly the same as from physical TROPIC01 chip.*
+
+*Note2: Restarting the model is equivalent to plugging a fresh TROPIC01 straight out factory*
+
