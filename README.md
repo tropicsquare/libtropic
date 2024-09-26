@@ -18,6 +18,18 @@ For more info about TROPIC01 check datasheet and API pdf.
 * `tests/` Unit tests and integration tests
 * `vendor/` Third party libraries and tools
 
+# Get started!
+
+Instructions differ based on whether you have physical chip on hand or not:
+
+### Physical TROPIC01
+
+[This](phttps://github.com/tropicsquare/libtropic-stm32) link leads to an example embedded project, featuring `STM32` devboard and `real TROPIC01` chip.
+
+### Emulated TROPIC01
+
+[This](tests/integration/integration_tests.md) link leads to an example project, featuring `Unix` environment and `emulated TROPIC01` chip.
+
 # Documentation
 
-Start with reading `docs/index.md`
+More info can be found here: `docs/index.md`
