@@ -13,6 +13,8 @@
 typedef uint8_t u8;
 /** Alias for unsigned 16 bit integer */
 typedef uint16_t u16;
+/** Alias for unsigned 32 bit integer */
+typedef uint32_t u32;
 
 /** Macro to sanitize compiler warnings */
 #ifndef UNUSED

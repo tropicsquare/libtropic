@@ -1,6 +1,13 @@
-#include "libtropic_example_1.h"
 
+
+#include <stdio.h>
+#include "string.h"
+
+#include "hw_wallet.h"
+
+// Code can be found in examples/hw/wallet/
 int main(void)
 {
-    return libtropic_example_1();
+    int x = tropic01_hw_wallet_example();
+    return x;
 }
