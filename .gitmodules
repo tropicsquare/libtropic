@@ -1,3 +1,3 @@
-[submodule "vendor/STM32CubeF4"]
-	path = vendor/STM32CubeF4
+[submodule "stm32_example/drivers/STM32CubeF4"]
+	path = stm32_example/drivers/STM32CubeF4
 	url = https://github.com/STMicroelectronics/STM32CubeF4
