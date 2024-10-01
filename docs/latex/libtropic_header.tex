@@ -1,131 +1,105 @@
-% Latex header for doxygen 1.9.1
-%\let\mypdfximage\pdfximage\def\pdfximage{\immediate\mypdfximage}\documentclass[twoside]{report}
-\documentclass{report}
-\renewcommand{\thesection}{\arabic{section}}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Header and footer  TODO make git stuff automatic
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parameters Needed by Design spec class (must be inside document)
-% Set these parameters according to your project.
-\def \projectname {libtropic}
-\def \documentname {C library for TROPIC devices}
-\def \versionnumber {0.0.1}
-\def \GitTag {v0.0.1}
-\def \GitHash {0xhashhash}
-
-%% moved from doxygen.sty due to workaround for LaTex 2019 version and unmaintained tabu package
-\usepackage{ifthen}
-\ifx\requestedLaTeXdate\undefined
-\usepackage{array}
-\else
-\usepackage{array}[=2016-10-06]
-\fi
 %%
+%% Copyright © 2022 Tropic Square s.r.o. (https://tropicsquare.com/)
+%%
+%% This work is subject to the license terms of the LICENSE.txt file in the
+%% root directory of this source tree.
+%%
+%% If a copy of the LICENSE file was not distributed with this work, you can
+%% obtain one at (https://tropicsquare.com/license).
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Specify Tropic Square document class
+\documentclass[notconfidential]{tropic_design_spec}
+
+% Undefine these commands defined in ts-latex-lib (doxygen redefines it)
+\makeatletter
+	\let\c@LT@tables\undefined
+	\let\c@LT@chunks\undefined
+\makeatother
+
 % Packages required by doxygen
-\usepackage{fixltx2e}
+\PassOptionsToPackage{rgb,table}{xcolor}
 \usepackage{doxygen}
-\usepackage{graphicx}
-\usepackage[utf8]{inputenc}
 \usepackage{makeidx}
-\PassOptionsToPackage{warn}{textcomp}
-\usepackage{textcomp}
-\usepackage[nointegrals]{wasysym}
-\usepackage{ifxetex}
 
-% Font selection
-\usepackage[T1]{fontenc}
-\usepackage[scaled=.90]{helvet}
-\usepackage{courier}
-\renewcommand{\familydefault}{\sfdefault}
-\usepackage{sectsty}
-\allsectionsfont{%
-  \fontseries{bc}\selectfont%
-  \color{darkgray}%
-}
-\renewcommand{\DoxyLabelFont}{%
-  \fontseries{bc}\selectfont%
-  \color{darkgray}%
-}
-\newcommand{\+}{\discretionary{\mbox{\scriptsize$\hookleftarrow$}}{}{}}
-
-% Arguments of doxygenemoji:
-% 1) ':<text>:' form of the emoji, already "LaTeX"-escaped
-% 2) file with the name of the emoji without the .png extension
-% in case image exist use this otherwise use the ':<text>:' form
-\newcommand{\doxygenemoji}[2]{%
-  \IfFileExists{./#2.png}{\raisebox{-0.1em}{\includegraphics[height=0.9em]{./#2.png}}}{#1}%
-}
-% Page & text layout
-\usepackage{geometry}
-\geometry{%
-  a4paper,%
-  top=2.5cm,%
-  bottom=2.5cm,%
-  left=1.5cm,%
-  right=1.5cm%
-}
-\tolerance=750
-\hfuzz=15pt
-\hbadness=750
-\setlength{\emergencystretch}{15pt}
-\setlength{\parindent}{0cm}
-\newcommand{\doxynormalparskip}{\setlength{\parskip}{3ex plus 2ex minus 2ex}}
-\newcommand{\doxytocparskip}{\setlength{\parskip}{1ex plus 0ex minus 0ex}}
-\doxynormalparskip
-\makeatletter
-\renewcommand{\paragraph}{%
-  \@startsection{paragraph}{4}{0ex}{-1.0ex}{1.0ex}{%
-    \normalfont\normalsize\bfseries\SS@parafont%
-  }%
-}
-\renewcommand{\subparagraph}{%
-  \@startsection{subparagraph}{5}{0ex}{-1.0ex}{1.0ex}{%
-    \normalfont\normalsize\bfseries\SS@subparafont%
-  }%
-}
-\makeatother
-
-\makeatletter
-\newcommand\hrulefilll{\leavevmode\leaders\hrule\hskip 0pt plus 1filll\kern\z@}
-\makeatother
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Header and footer
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\renewcommand{\footrulewidth}{0.4pt}
-%
-\fancyhf{}
-\fancyhead[R]{\leftmark}
-\fancyhead[L]{%
-    % Then put table with two rows and two columns
-    \begin{tabular}{ c l }
-        \multirow{2}{*}
-            {\includegraphics[width=0.8cm]{\detokenize{TS_logo_blue_symbol.pdf}}}  & \projectname\space \\
-                                                                                   & \documentname \\
-    \end{tabular}%
-}
-
-\fancyhf[cf]{\textcolor{red}{\textbf{WORK IN PROGRESS}}}
-
-\rfoot{Page: \thepage}
-\lfoot{Version: \versionnumber \newline Git commit: \GitHash}
-
-\renewcommand{\chaptermark}[1]{%
-  \markboth{#1}{}%
-}
-\renewcommand{\sectionmark}[1]{%
-  \markright{\thesection\ #1}%
-}
-
-% Indices & bibliography
-\usepackage{natbib}
-\usepackage[titles]{tocloft}
-\setcounter{tocdepth}{3}
-\setcounter{secnumdepth}{5}
 \makeindex
+
+% Put sections on new page
+\AddToHook{cmd/doxysection/before}{\clearpage}
+
+% Use itemize and enumerate from ts-latex-lib
+\let\DoxyItemize\itemize
+\let\DoxyEnumerate\enumerate
+
+% TODO: redo this
+\newenvironment{TropicRatioTableTwoCol}[3]
+{%
+  \renewcommand{\tropicnumtablecols}{2}
+  \TropicRatioGuts {2}{#3}{#1}{#2}{0}{0}{0}{0}{0}
+}
+{%
+  \endtabularx%
+}
+
+% TODO: redo this
+\newenvironment{TropicRatioTableThreeCol}[4]
+{%
+  \renewcommand{\tropicnumtablecols}{3}
+  \TropicRatioGuts {3}{#4}{#1}{#2}{#3}{0}{0}{0}{0}
+}
+{%
+  \endtabularx%
+}
+
+% Redefine environment for tables with params
+\renewenvironment{DoxyParams}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableTwoCol%
+  {0.2} {0.8}%
+  {Name & Description}%
+}
+{%
+  \endTropicRatioTableTwoCol%
+}
+
+% Redefine environment for tables with data fields
+\renewenvironment{DoxyFields}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableThreeCol%
+  {0.22} {0.43} {0.35}%
+  {Type & Name & Description}%
+}
+{%
+  \endTropicRatioTableThreeCol%
+}
+
+% Redefine environment for tables with enumerators
+\renewenvironment{DoxyEnumFields}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableTwoCol%
+  {0.4} {0.6}%
+  {Name & Description}%
+}
+{%
+  \endTropicRatioTableTwoCol%
+}
+
+% Redefine DoxyCodeLine cmd to make code bigger
+\renewcommand\DoxyCodeLine[1]
+{
+  \ifthenelse{\equal{\detokenize{#1}}{}}
+  {
+    \vspace*{\baselineskip}
+  }
+  {
+    \hangpara{\DoxyCodeWidth}{1}{\normalsize #1}\par
+  }
+}
 
 \usepackage{newunicodechar}
   \newunicodechar{⁻}{${}^{-}$}% Superscript minus
@@ -133,142 +107,64 @@
   \newunicodechar{³}{${}^{3}$}% Superscript three
 
 % Hyperlinks (required, but should be loaded last)
-\ifpdf
-  \usepackage[pdftex,pagebackref=true]{hyperref}
-\else
-  \ifxetex
-    \usepackage[pagebackref=true]{hyperref}
-  \else
-    \usepackage[ps2pdf,pagebackref=true]{hyperref}
-  \fi
-\fi
+% \ifpdf
+%   \PassOptionsToPackage{pdftex,pagebackref=true}{hyperref}
+% \else
+%   \ifxetex
+%     \PassOptionsToPackage{pagebackref=true}{hyperref}
+%   \else
+%     \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
+%   \fi
+% \fi
+% \hypersetup{%
+%   colorlinks=true,%
+%   linkcolor=TropicBlue,%
+%   citecolor=TropicBlue,%
+%   unicode%
+% }
 
-\hypersetup{%
-  colorlinks=true,%
-  linkcolor=blue,%
-  citecolor=blue,%
-  unicode%
-}
-
-% Custom commands
+% Custom commands for Doxygen
 \newcommand{\clearemptydoublepage}{%
   \newpage{\pagestyle{empty}\cleardoublepage}%
 }
-
-\usepackage{caption}
-\captionsetup{labelsep=space,justification=centering,font={bf},singlelinecheck=off,skip=4pt,position=top}
-
-\usepackage{etoc}
-\etocsettocstyle{\doxytocparskip}{\doxynormalparskip}
-\renewcommand{\numberline}[1]{#1~}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Define Tropic Square colors based on graphic manual
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\definecolor{TropicBlue}{RGB}{0,50,255}
-\definecolor{TropicDarkBlue}{RGB}{26,55,97}
-\definecolor{TropicVeryDarkBlue}{RGB}{18,21,33}
-% Color for requirements which are "DESIGNED"
-\definecolor{ReqDesignedGreen}{RGB}{0.0, 125, 0.0}
-% Colors for Code highlighting
-\definecolor{CodeGreen}{rgb}{0,0.6,0}
-\definecolor{CodeGray}{rgb}{0.5,0.5,0.5}
-\definecolor{CodePurple}{rgb}{0.58,0,0.82}
-\definecolor{CodeBgGray}{rgb}{0.95,0.95,0.92}
+\newcommand{\+}{\discretionary{\mbox{\scriptsize$\hookleftarrow$}}{}{}}
 
 % Hyperlinks (required, but should be loaded last)
 \usepackage{ifpdf}
 \ifpdf
-  \usepackage[pdftex,pagebackref=true]{hyperref}
+  \PassOptionsToPackage{pdftex,pagebackref=true}{hyperref}
 \else
-  \usepackage[ps2pdf,pagebackref=true]{hyperref}
+  \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
 \fi
 \hypersetup{%
-  colorlinks=true,%
-  linkcolor=TropicBlue,%
-  citecolor=TropicBlue,%
+  colorlinks  = true,%
+  linkcolor   = TropicBlue,%
+  citecolor   = TropicBlue,%
+  urlcolor    = TropicBlue,%
+  anchorcolor = TropicBlue,%
   unicode%
 }
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Title page
+% Document properties and title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\renewcommand*{\maketitle}{
-\begin{titlepage}
-    \begin{flushright}
+\title{Design specification - Template}
+\author{Ondrej Ille, Tropic Square}
+\date{July 2021}
 
-        % Draw horizontal line above the page
-        \color{TropicBlue}
-        \par\noindent\rule{\textwidth}{5pt}
-        \color{black}
-
-           \vspace*{1cm}
-
-        \huge
-           \textbf{\projectname}
-
-           \vspace{0.5cm}
-
-        \large
-           \textbf{\documentname}
-
-        \vspace{0.1cm}
-
-        \normalsize
-           \textbf{Version: \versionnumber}
-         
-        \vspace{0.1cm}
-        
-        \normalsize
-        \textbf{Git tag: \GitTag}
-        \vfill
-
-        \vfill
-
-        \large
-           Tropic Square
-
-
-        % Current date
-        \normalsize
-           \today
-
-           \vspace{0.5cm}
-
-           \includegraphics[width=0.4\textwidth]{\detokenize{TS_logo_blue.pdf}}
-
-        % Line below the title page
-        \color{TropicBlue}
-        \par\noindent\rule{\textwidth}{5pt}
-
-       \end{flushright}
-\end{titlepage}
-}
-
-
-%===== C O N T E N T S =====
-
+% Start of document
 \begin{document}
-\raggedbottom
 
-% Titlepage & ToC
-\hypersetup{pageanchor=false,
-             bookmarksnumbered=true,
-             pdfencoding=unicode
-            }
-\pagenumbering{alph}
+% Parameters Needed by Design spec class (must be inside document)
+% Set these parameters according to your project.
+\def \projectname {libtropic}
+\def \documentname {C library for TROPIC01 devices}
+\def \versionnumber {0.0.1}
 
-% Make title page
+% Title page
 \maketitle
+\pagebreak
 
-\pagenumbering{roman}
+% Table of contents
 \tableofcontents
-\clearemptydoublepage
-\pagenumbering{arabic}
-\hypersetup{pageanchor=true}
-
-%--- Begin generated contents ---
+\pagebreak

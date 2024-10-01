@@ -1,6 +1,7 @@
 stages:
   - test
-  - build
+  - build_lib
+  - build_integration
   - docs
 
 run_ceedling_tests:
@@ -29,17 +30,28 @@ run_ceedling_tests:
 
 
 build_library:
-  stage: build
+  stage: build_lib
   tags:
     - shell
   script:
     - source setup_env
-    - cd examples/unix_example
+    - rm -rf build/
     - mkdir build
     - cd build
-    - cmake ..
+    - cmake -DUSE_TREZOR_CRYPTO=1 ..
     - make
 
+build_integration_tests:
+  stage: build_integration
+  tags:
+    - shell
+  script:
+    - source setup_env
+    - cd tests/integration/
+    - mkdir build
+    - cd build
+    - cmake -DUSE_TREZOR_CRYPTO=1 ..
+    - make
 
 build_docs:
   stage: docs
@@ -47,10 +59,11 @@ build_docs:
     - shell
   script:
     - source setup_env
-    - ls -la
+    - rm -rf build/
+    - mkdir build
     - cd build
     - cmake -DBUILD_DOCS=1 ..
-    - make
+    - make doc_doxygen
     - cd docs/doxygen/latex
     - make
     - mv refman.pdf libtropic.pdf

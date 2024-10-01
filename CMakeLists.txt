@@ -1,111 +1,20 @@
 cmake_minimum_required(VERSION 3.21.0)
 
-
-project(libtropic_SDK
-        VERSION 0.0.1
-        DESCRIPTION "Tropic Square software development kit"
-        HOMEPAGE_URL "www.tropicsquare.com"
-        LANGUAGES C)
-
-
 ###########################################################################
 #                                                                         #
-#   Library setup                                                         #
+#   Setup                                                                 #
 #                                                                         #
 ###########################################################################
 
-option(TS_HAL_UNIX "Use TCP and connect to model" OFF)
-option(TS_HAL_STM32_UART "Use UART and connect to model" OFF)
-option(TS_HAL_STM32_SPI "Use SPI and connect to real chip" OFF)
-
-option(TS_CRYPTO_TREZOR "Use trezor_crypto as a cryptography provider" ON)
-option(TS_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
-
-option(DEBUG "Compile with -g -Wextra -Wpedantic -Werror" ON)
+option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
+option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
-
-
-###########################################################################
-#                                                                         #
-#   libtropic source files                                               #
-#                                                                         #
-###########################################################################
-
-# Enable l1 implementation for a target platform
-if (TS_HAL_UNIX)
-    message(DEBUG "UNIX TCP HAL selected (for model)")
-    add_definitions(-DTS_HAL_UNIX=1)
-    # Main program is responsible for adding file from
-    # appropriate hal/XXX/XXX/folder into its sources and compile it,
-    # For more info check examples.
-elseif(TS_HAL_STM32_SPI)
-    message(DEBUG "STM32 HAL selected ")
-    add_definitions(-DTS_HAL_STM32_SPI=1)
-    # TODO get rid of HOST_KEY_* once get info req with cert is working
-    add_definitions(-DHOST_KEY_FPGA=1)
-    # Main program is responsible for adding file from
-    # appropriate hal/XXX/XXX/folder into its sources and compile it,
-    # For more info check examples.
-elseif(TS_HAL_STM32_UART)
-    message(DEBUG "STM32 HAL selected ")
-    add_definitions(-DTS_HAL_STM32_UART=1)
-    # Main program is responsible for adding file from
-    # appropriate hal/XXX/XXX/folder into its sources and compile it,
-    # For more info check examples.
-else()
-    message(WARNING "No HAL enabled, add your own implementation for L1 functions !! ")
-    set(SDK_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.c)
-endif()
-
-set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_common.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_crc16.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l1.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l2.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_l3.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_hkdf.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/ts_random.c
-)
-
-add_library(tropic ${SDK_SRCS})
-
-target_include_directories(tropic PUBLIC
-                            ${CMAKE_CURRENT_SOURCE_DIR}/include/
-                            ${CMAKE_CURRENT_SOURCE_DIR}/src/
-)
-
-target_compile_options(tropic PRIVATE -Wall)
-
-if(DEBUG)
-    target_compile_options(tropic PRIVATE -g -Wextra -Wpedantic -Werror)
-endif()
-
+option(EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
+option(EXPERIMENTAL_SPI_RASPBERRYPI "Experimental feature for spi slave on rpi 4" OFF)
 
 ###########################################################################
 #                                                                         #
-#   Setting up crypto backend based on option switches                    #
-#                                                                         #
-###########################################################################
-
-if (TS_CRYPTO_TREZOR)
-    # Trezor library
-    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_link_libraries(tropic PUBLIC trezor_crypto)
-
-    # libtropic wrappers for trezor library
-    add_subdirectory(hal/crypto/trezor_crypto)
-    target_compile_definitions(tropic PRIVATE USE_TS_CRYPTO)
-endif()
-
-if (TS_CRYPTO_MBEDTLS)
-    message(FATAL_ERROR "Mbedtls support is not implemented yet")
-endif()
-
-
-###########################################################################
-#                                                                         #
-#   Building documentation is off by default                              #
+#   Building documentation                                                #
 #                                                                         #
 ###########################################################################
 
@@ -117,4 +26,84 @@ if(BUILD_DOCS)
     else()
         message(STATUS "Doxygen not found, not building docs")
     endif()
+endif()
+
+# Check if cryptography provider is defined
+if((NOT USE_TREZOR_CRYPTO) AND (NOT LT_CRYPTO_MBEDTLS) AND (NOT BUILD_DOCS))
+    message(FATAL_ERROR "Mbed TLS or trezor_crypto must be enabled!")
+endif()
+
+###########################################################################
+#                                                                         #
+#   Collect files                                                         #
+#                                                                         #
+###########################################################################
+
+project(libtropic_SDK
+        VERSION 0.0.1
+        DESCRIPTION "TROPIC01 software development kit"
+        HOMEPAGE_URL "www.tropicsquare.com"
+        LANGUAGES C)
+
+set(SDK_SRCS ${SDK_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
+)
+
+set(SDK_INCS ${SDK_INCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
+)
+
+set(SDK_SRCS ${SDK_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
+)
+
+add_library(tropic ${SDK_SRCS} ${SDK_INCS})
+
+target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
+target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+
+target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
+
+###########################################################################
+#                                                                         #
+#   Compile and link                                                      #
+#                                                                         #
+###########################################################################
+
+# This options just add 10ms synchronisation delay before read and write functions.
+# Needed for hardware spi slave to uart converter.
+if(EXPERIMENTAL_SPI_UART)
+    target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_UART=1)
+endif()
+
+if(EXPERIMENTAL_SPI_RASPBERRYPI)
+    target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_RASPBERRYPI=1)
+endif()
+
+if(USE_TREZOR_CRYPTO)
+    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR)
+    target_link_libraries(tropic PRIVATE trezor_crypto)
+    target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()

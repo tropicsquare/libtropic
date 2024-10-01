@@ -1,26 +1,97 @@
-# libtropic
+# Introduction
 
-## Introduction
-
-This library implements functionalities for interfacing applications with TROPIC01 device. It comes without any security claims and shall be used for evaluation purpose only.
-
-Supported TROPIC devices:
-
-|Device                                                  |Comment                                               |
-|--------------------------------------------------------|------------------------------------------------------|
-|[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                            |
+`libtropic` is a C library, which implements functionalities for interfacing applications with TROPIC01 device. It comes without any security claims and shall be used for evaluation purpose only.
 
 
+|Supported devices                                       |Description                                              |
+|--------------------------------------------------------|---------------------------------------------------------|
+|[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                               |
+
+# Repository overview
+
+Codebase consists of:
+* `examples`: C code concepts to show how libtropic might be used on host system
+* `hal`: Contains `crypto` and `port` interfaces. Files in these folders allows libtropic to be used with various cryptography libraries and on different hardware platforms. Both `crypto` and `port` folders are meant to be compiled within a main project (the one which consumes libtropic library). They provide a way for libtropic core to interact with host's cryptography primitives and hardware layer.
+* `src`: Libtropic's core source files, facilitating data handling between host's application and TROPIC01 chip
+* `tests`: Unit and integration tests
+* `vendor`: External libraries and tools
+
+# Library usage
 
 ## Dependencies
 
 Used build system is **cmake 3.21**:
 
 ```
-    $ sudo apt install cmake
+$ sudo apt install cmake
 ```
 
-[Ceedling](https://www.throwtheswitch.com) is used for running tests and creating code coverage report, install it like this:
+## Options
+
+This library was designed to be compiled during the build of a parent project.
+
+It provides following options to be defined during building:
+
+```
+option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
+option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider"       OFF)
+option(BUILD_DOCS        "Build documentation"                          OFF)
+```
+
+Options could be passed as a command line argument, or they could be defined in main project's cmake files when this library is added to its build tree.
+
+
+## Examples
+
+List of projects which uses `libtropic`:
+* `tests/integration/integration_tests.md`: Unix program to test API calls against model of TROPIC01
+* `STM32 example`: Firmware for STM32f429 discovery board which implements libropic's API calls against TROPIC01 chip (or model)
+
+## Static archive
+
+*Note: When compiling the library standalone as a static archive, a cryptography provider must be defined through cmake -D arguments*
+
+Compile `libtropic` as a static archive under Unix:
+
+```
+$ mkdir build
+$ cd build
+$ cmake -DUSE_TREZOR_CRYPTO=1 ..
+$ make
+```
+
+Cross-compile `libtropic` as a static archive:
+
+```
+$ mkdir build
+$ cd build
+$ cmake -DUSE_TREZOR_CRYPTO=1 -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
+$ make
+```
+
+## Build documentation
+
+We use Doxygen (1.9.1) and LaTeX (pdfTeX 3.141592653-2.6-1.40.24 (TeX Live 2022))
+
+Build html docs:
+```
+$ mkdir build/
+$ cd build/
+$ cmake -DBUILD_DOCS=1 ..
+$ make doc_doxygen
+```
+
+Build pdf documentation:
+```
+$ cd docs/doxygen/latex
+$ make
+```
+
+# Testing
+
+## Unit tests
+
+Unit tests files are in `tests/unit/` folder. They are written in [Ceedling](https://www.throwtheswitch.com) framework, install it like this:
 
 ```
     # Install Ruby
@@ -33,17 +104,7 @@ Used build system is **cmake 3.21**:
     $ pip install gcovr
 ```
 
-
-## Examples
-
-A few examples of library's usage are placed in `examples/` folder.
-
-
-## Running tests
-
-Make sure you have Ceedling installed (as described in Dependencies).
-
-Expected version:
+Then make sure that you have correct version:
 
 ```
 $ ceedling version
@@ -54,70 +115,22 @@ $ ceedling version
 
 ```
 
-Running tests and creating code coverage report:
+Once ceedling is installed, run tests and create code coverage report:
 
 ```
 $ ceedling gcov:all utils:gcov
 ```
 
-## Library configuration
+### Randomization
+Some tests use a rudimentary randomization mechanism using standard C functions. The PRNG is normally
+seeded with current time. Used seed is always printed to stdout. You can find the seed in logs
+(`build/gcov/results/...`).
 
-See option() calls in root **CMakelists.txt** and check also how CMakeLists.txt looks in example projects.
+To run tests with fixed seed, set `RNG_SEED` parameter to your
+desired seed (either directly in the file, or in the project.yml section `:defines:`). This is
+useful mainly to replicate a failed test run -- just find out what seed was used and then
+set `RNG_SEED` to this.
 
-### Cryptography support
+## Integration tests
 
-For certain operations on application's side, libtropic needs cryptography support. It is possible to choose a cryptography provider, because definitions of crypto functions are chosen during compilation.
-
-Current default provider of cryptogprahy is `vendor/trezor_crypto`.
-
-```
-# Use trezor_crypto library:
-
-option(TS_CRYPTO_TREZOR "Use trezor_crypto as a cryptography provider" ON)
-```
-
-
-## Library overview
-
-**Tropic layer 1**
-
- This layer is processing raw data transfers.
-
- Available L1 implementations are:
-
-* SPI (libtropic on embedded target and Physical chip, or FPGA)
-* TCP (libtropic on Unix and TROPIC01's model on Unix)
-* Serialport (libtropic on embedded target and TROPIC01's model on Unix)
-
-Use `option()` switch to enable libtropic support for a certain platform, have a look in examples.
-
-If there is no support for a platform, user is expected to provide own implementation for weak functions in this layer.
-
-Related code:
-* ts_l1.c
-* ts_l1.h
-
-**Tropic layer 2**
-
-This layer is responsible for executing l2 request/response functions.
-
-Related code:
-* ts_l2.c
-* ts_l2.h
-
-**Tropic layer 3**
-
-This layer is preparing and parsing l3 commands/results, it uses l2 functions to send and receive payloads.
-
-Related code:
-* ts_l3.c
-* ts_l3.h
-
-**libtropic**
-
-This is a highest abstraction of tropic chip functionalities.
-Library offers various calls to simplify tropic chip usage on a target platform:
-
-Related code:
-* libtropic.c
-* libtropic.h
+For more info check `tests/integration/integration_tests.md`
