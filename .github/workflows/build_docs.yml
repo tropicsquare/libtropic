@@ -39,11 +39,20 @@ jobs:
       #  with:
       #    version: "1.12.0"
 
-      - name: Build Integration tests
+      - name: Build docs
         uses: threeal/cmake-action@v2.0.0
         with:
           source-dir: ./
           build-dir: build
           options: |
             BUILD_DOCS=ON
-            USE_TREZOR_CRYPTO=ON
+
+      - name: Create html release
+        uses: svenstaro/upload-release-action@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/docs/doxygen/html/
+          release_name: HTML Documentation
+          make_latest: true
+          overwrite: true
+          file_glob: true
