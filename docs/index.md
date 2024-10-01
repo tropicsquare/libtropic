@@ -7,7 +7,16 @@
 |--------------------------------------------------------|---------------------------------------------------------|
 |[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                               |
 
-# Usage
+# Repository overview
+
+Codebase consists of:
+* `examples`: C code concepts to show how libtropic might be used on host system
+* `hal`: Contains `crypto` and `port` interfaces. Files in these folders allows libtropic to be used with various cryptography libraries and on different hardware platforms. Both `crypto` and `port` folders are meant to be compiled within a main project (the one which consumes libtropic library). They provide a way for libtropic core to interact with host's cryptography primitives and hardware layer.
+* `src`: Libtropic's core source files, facilitating data handling between host's application and TROPIC01 chip
+* `tests`: Unit and integration tests
+* `vendor`: External libraries and tools
+
+# Library usage
 
 ## Dependencies
 
