@@ -77,6 +77,7 @@ lt_ret_t lt_l3_cmd(lt_handle_t *h)
         case L3_RESULT_FAIL:
             return LT_L3_FAIL;
         case L3_RESULT_UNAUTHORIZED:
+            lt_l3_nonce_increase(h);
             return LT_L3_UNAUTHORIZED;
         case L3_RESULT_INVALID_CMD:
             return LT_L3_INVALID_CMD;

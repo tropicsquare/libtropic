@@ -17,10 +17,10 @@
 #define __AC(X,Y)   (X##Y)
 #define _AC(X,Y)    __AC(X,Y)
 
-#define _UL(x)      (_AC(x, UL))
-#define UL(x)       (_UL(x))
+#define _U(x)      (_AC(x, U))
+#define U(x)       (_U(x))
 
-#define BIT(nr) (1UL << (nr))
+#define BIT(nr) (1U << (nr))
 
 #define BIT64(nr) (((u64)(1)) << ((u64)(nr)))
 
@@ -33,8 +33,8 @@
 // __GENMASK returns 32 bit number with 1s in the h-to-l field
 // if h = 4 and l = 1, __GENMASK would return 00000000000000000000000000011110
 #define __GENMASK(h, l) \
-    (((~UL(0)) - (UL(1) << (l)) + 1) & \
-     (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+    (((~U(0)) - (U(1) << (l)) + 1) & \
+     (~U(0) >> (BITS_PER_LONG - 1 - (h))))
 
 #define GENMASK(h, l) \
     (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
