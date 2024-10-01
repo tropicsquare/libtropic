@@ -46,6 +46,7 @@ jobs:
           build-dir: build
           options: |
             BUILD_DOCS=ON
+            USE_TREZOR_CRYPTO=ON
 
       - name: Create html release
         uses: svenstaro/upload-release-action@latest
