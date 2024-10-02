@@ -58,8 +58,12 @@ jobs:
           directory: 'build/docs/doxygen/html/'
 
       - name: Upload HTML docs release
-        uses: ncipollo/release-action@v1.12.0
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          artifacts: 'html-docs.zip'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "HTML documentation"
+          files: |
+            build/docs/doxygen/html/html-docs.zip
           
