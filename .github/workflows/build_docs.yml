@@ -54,7 +54,7 @@ jobs:
         uses: svenstaro/upload-release-action@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/docs/doxygen/html/
+          file: build/docs/doxygen/html/*
           release_name: HTML Documentation
           make_latest: true
           overwrite: true
