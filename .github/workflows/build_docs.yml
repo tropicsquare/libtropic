@@ -58,11 +58,14 @@ jobs:
           directory: 'build/docs/doxygen/html/'
 
       - name: Upload HTML docs release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: 'latest'
-          release_name: 'HTML Documentation'
-          draft: false
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
+          makeLatest: true
+          name: 'HTML Documentation'
           prerelease: false
+          removeArtifacts: true
+          replacesArtifacts: true
+          tag: 'latest'
