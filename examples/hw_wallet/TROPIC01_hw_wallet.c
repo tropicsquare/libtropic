@@ -4,7 +4,7 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "hw_wallet.h"
+#include "TROPIC01_hw_wallet.h"
 
 /*
 [Note] We recommend reading TROPIC01's datasheet before diving into this example!
@@ -23,6 +23,27 @@ Example shows how content of config objects might be used to set different acces
 during the device's lifecycle.
 
 */
+
+#if defined(_MSC_VER) || (defined(__INTEL_COMPILER) && defined(_WIN32))
+   #if defined(_M_X64)
+      #define BITNESS 64
+      #define LONG_SIZE 4
+   #else
+      #define BITNESS 32
+      #define LONG_SIZE 4
+   #endif
+#elif defined(__clang__) || defined(__INTEL_COMPILER) || defined(__GNUC__)
+   #if defined(__x86_64)
+      #define BITNESS 64
+   #else
+      #define BITNESS 32
+   #endif
+   #if __LONG_MAX__ == 2147483647L
+      #define LONG_SIZE 4
+   #else
+      #define LONG_SIZE 8
+   #endif
+#endif
 
 // Default factory pairing keys
 uint8_t pkey_index_0 =  PAIRING_KEY_SLOT_INDEX_0;
@@ -164,7 +185,11 @@ static lt_ret_t read_whole_I_config(lt_handle_t *h)
         if(ret != LT_OK) {
             return ret;
         }
-        printf("\t\t%s  %08X\r\n", config_description[i].desc, check);
+#if(BITNESS == 64)
+            printf("\t\t%s  %08X\r\n", config_description[i].desc, check);
+#else
+            printf("\t\t%s  %08lX\r\n", config_description[i].desc, check);
+#endif
     }
     printf("\r\n");
 
@@ -188,7 +213,11 @@ static lt_ret_t read_whole_R_config(lt_handle_t *h)
         if(ret != LT_OK) {
             return ret;
         }
-        printf("\t\t%s  %08X\r\n", config_description[i].desc, check);
+#if(BITNESS == 64)
+            printf("\t\t%s  %08X\r\n", config_description[i].desc, check);
+#else
+            printf("\t\t%s  %08lX\r\n", config_description[i].desc, check);
+#endif
     }
     printf("\r\n");
 
@@ -423,7 +452,6 @@ static lt_ret_t write_whole_R_config(lt_handle_t *h)
  * @return            0 if success, otherwise -1
  */
 static int session_initial(lt_handle_t *h) {
-    lt_ret_t ret;
 
     // Establish secure handshake with default H0 pairing keys
     LOG_OUT_SESSION("%s", "Creating session with initial factory keys H0");
@@ -463,7 +491,6 @@ static int session_initial(lt_handle_t *h) {
  * @return            0 if success, otherwise -1
  */
 static int session_H0(lt_handle_t *h) {
-    lt_ret_t ret;
 
     /* Establish secure handshake with default H0 pairing keys should fail, because this H0 key was invalidated at the end of initial session */
     LOG_OUT_SESSION("%s", "Establish session with H0 must fail");
@@ -479,7 +506,6 @@ static int session_H0(lt_handle_t *h) {
  * @return            0 if success, otherwise -1
  */
 static int session_H1(lt_handle_t *h) {
-    lt_ret_t ret;
 
     /* Establish secure handshake with default H0 pairing keys */
     LOG_OUT_SESSION("%s", "Creating session with H1 keys");
@@ -522,7 +548,6 @@ static int session_H1(lt_handle_t *h) {
  * @return            0 if success, otherwise -1
  */
 static int session_H2(lt_handle_t *h) {
-    lt_ret_t ret;
 
     LOG_OUT_SESSION("%s", "Creating session with H2 keys");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh2priv, sh2pub, pkey_index_2));
@@ -564,7 +589,6 @@ static int session_H2(lt_handle_t *h) {
  * @return            0 if success, otherwise -1
  */
 static int session_H3(lt_handle_t *h) {
-    lt_ret_t ret;
 
     LOG_OUT_SESSION("%s", "Creating session with H3 keys");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh3priv, sh3pub, pkey_index_3));
