@@ -63,6 +63,8 @@ jobs:
           name: 'HTML Documentation'
           artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
           artifactErrorsFailBuild: true
+          removeArtifacts: true
+          replacesArtifacts: true
           allowUpdates: true
           makeLatest: true
           tag: 'latest'
