@@ -1,4 +1,4 @@
-name: Build documentation (develop)
+name: Build docs and upload as artifact (develop)
 on:
   push:
     branches:
