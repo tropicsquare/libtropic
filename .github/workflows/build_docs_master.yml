@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - 'master'
-      - 'develop'
 
 jobs:
   build:
@@ -44,6 +43,5 @@ jobs:
           makeLatest: true
           name: 'HTML Documentation'
           prerelease: false
-          removeArtifacts: true
           replacesArtifacts: true
           tag: 'latest'
