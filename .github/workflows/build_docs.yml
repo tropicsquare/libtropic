@@ -20,7 +20,7 @@ jobs:
           version: 1.0  # Version of cache to load. Each version will have its own cache.
 
       - name: Build docs
-        uses: threeal/cmake-action@latest
+        uses: threeal/cmake-action@v2.0.0
         with:
           source-dir: ./
           build-dir: build
@@ -29,7 +29,7 @@ jobs:
             USE_TREZOR_CRYPTO=ON
 
       - name: Archive HTML docs
-        uses: thedoctor0/zip-release@latest
+        uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: 'libtropic-html-docs.zip'
