@@ -19,6 +19,15 @@ jobs:
           source-dir: tests/integration/
           build-dir: tests/integration/build
 
+      - name: Create token for ts-tvl-package
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: 'ts-tvl'
+
       - name: Download ts-tvl-package artifact
         uses: actions/download-artifact@v4
         with:
@@ -45,7 +54,7 @@ jobs:
           # The GitHub token used to authenticate with the GitHub API.
           # This is required when downloading artifacts from a different repository or from a different workflow run.
           # Optional. If unspecified, the action will download artifacts from the current repo and the current workflow run.
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ steps.app-token.outputs.token }}
 
           # The repository owner and the repository name joined together by "/".
           # If github-token is specified, this is the repository that artifacts will be downloaded from.
