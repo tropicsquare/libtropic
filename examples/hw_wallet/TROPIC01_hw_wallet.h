@@ -13,7 +13,6 @@
 #define LOG_OUT_SESSION(f_, ...) printf("\t\t- "f_, ##__VA_ARGS__)
 
 #define LT_ASSERT(func, expected)   \
-                    ret = (func); \
                     if(func!=expected) \
                     { \
                         printf("\t\t\tERROR\r\n"); return -1; \
