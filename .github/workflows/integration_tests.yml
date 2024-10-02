@@ -20,7 +20,7 @@ jobs:
           build-dir: tests/integration/build
 
       - name: Download ts-tvl-package artifact
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4
         with:
           # Name of the artifact to download.
           # If unspecified, all artifacts for the run are downloaded.
