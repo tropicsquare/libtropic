@@ -45,7 +45,7 @@ jobs:
           # The GitHub token used to authenticate with the GitHub API.
           # This is required when downloading artifacts from a different repository or from a different workflow run.
           # Optional. If unspecified, the action will download artifacts from the current repo and the current workflow run.
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GH_PAT }}
 
           # The repository owner and the repository name joined together by "/".
           # If github-token is specified, this is the repository that artifacts will be downloaded from.
@@ -55,7 +55,7 @@ jobs:
           # The id of the workflow run where the desired download artifact was uploaded from.
           # If github-token is specified, this is the run that artifacts will be downloaded from.
           # Optional. Default is ${{ github.run_id }}
-          run-id:
+          run-id: 10248812472
 
       - name: List downloaded file
         run: ls -l ts-tvl-package
