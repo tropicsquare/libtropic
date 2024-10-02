@@ -50,12 +50,16 @@ jobs:
             BUILD_DOCS=ON
             USE_TREZOR_CRYPTO=ON
 
-      - name: Create html release
-        uses: svenstaro/upload-release-action@latest
+      - name: Archive HTML docs
+        uses: thedoctor0/zip-release@0.7.5
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/docs/doxygen/html/*
-          release_name: HTML Documentation
-          make_latest: true
-          overwrite: true
-          file_glob: true
+          type: 'zip'
+          filename: 'html-docs.zip'
+          directory: 'build/docs/doxygen/html/'
+
+      - name: Upload HTML docs release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: 'html-docs.zip'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
