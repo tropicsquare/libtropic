@@ -1,25 +1,3 @@
-#name: Build documentation
-#on:
-#  push:
-#    branches:
-#      - 'master'
-#      - 'develop'
-#
-#jobs:
-#  build:
-#    runs-on: ubuntu-22.04
-#
-#    steps:
-#      - name: Checkout Repository
-#        uses: actions/checkout@v4.1.7
-#
-#      - name: Build Docs
-#        uses: mattnotmitt/doxygen-action@v1.9.5
-#        with:
-#            doxyfile-path: 'docs/Doxyfile.in'
-#            enable-latex: false
-
-
 name: Build documentation
 on:
   push:
