@@ -26,8 +26,6 @@ on:
     branches:
       - 'master'
       - 'develop'
-    tags:
-      - '*'
 
 jobs:
   build:
@@ -63,3 +61,4 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
+          tag: 'latest'
