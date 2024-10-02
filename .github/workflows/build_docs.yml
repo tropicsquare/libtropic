@@ -20,7 +20,7 @@ jobs:
           version: 1.0  # Version of cache to load. Each version will have its own cache.
 
       - name: Build docs
-        uses: threeal/cmake-action@v2.0.0
+        uses: threeal/cmake-action@latest
         with:
           source-dir: ./
           build-dir: build
@@ -29,14 +29,14 @@ jobs:
             USE_TREZOR_CRYPTO=ON
 
       - name: Archive HTML docs
-        uses: thedoctor0/zip-release@0.7.5
+        uses: thedoctor0/zip-release@latest
         with:
           type: 'zip'
           filename: 'libtropic-html-docs.zip'
           directory: 'build/docs/doxygen/html/'
 
       - name: Upload HTML docs release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@latest
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
