@@ -61,8 +61,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: 'HTML Documentation'
-          artifacts: '${{github.workspace}}/build/docs/doxygen/html/libtropic-html-docs.zip'
-          # artifactErrorsFailBuild: true
+          artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
+          artifactErrorsFailBuild: true
           makeLatest: true
           tag: 'latest'
           prerelease: false
