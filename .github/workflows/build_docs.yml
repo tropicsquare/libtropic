@@ -30,6 +30,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -60,12 +62,12 @@ jobs:
       - name: Upload HTML docs release
         uses: ncipollo/release-action@v1
         with:
-          name: 'HTML Documentation'
-          artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
+          allowUpdates: true
           artifactErrorsFailBuild: true
+          artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
+          makeLatest: true
+          name: 'HTML Documentation'
+          prerelease: false
           removeArtifacts: true
           replacesArtifacts: true
-          allowUpdates: true
-          makeLatest: true
           tag: 'latest'
-          prerelease: false
