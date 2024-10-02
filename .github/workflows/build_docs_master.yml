@@ -1,4 +1,4 @@
-name: Build documentation
+name: Build and release HTML documentation (master)
 on:
   push:
     branches:
