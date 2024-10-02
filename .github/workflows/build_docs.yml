@@ -54,16 +54,16 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: 'zip'
-          filename: 'html-docs.zip'
+          filename: 'libtropic-html-docs.zip'
           directory: 'build/docs/doxygen/html/'
 
       - name: Upload HTML docs release
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          name: 'HTML Documentation'
+          artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
+          artifactErrorsFailBuild: true
+          allowUpdates: true
+          makeLatest: true
+          tag: 'latest'
           prerelease: false
-          title: "HTML documentation"
-          files: |
-            build/docs/doxygen/html/html-docs.zip
-          
