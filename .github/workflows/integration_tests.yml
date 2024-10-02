@@ -18,3 +18,44 @@ jobs:
         with:
           source-dir: tests/integration/
           build-dir: tests/integration/build
+
+      - name: Download ts-tvl-package artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          # Name of the artifact to download.
+          # If unspecified, all artifacts for the run are downloaded.
+          # Optional.
+          name: 'ts-tvl-package'
+
+          # Destination path. Supports basic tilde expansion.
+          # Optional. Default is $GITHUB_WORKSPACE
+          path:
+
+          # A glob pattern to the artifacts that should be downloaded.
+          # Ignored if name is specified.
+          # Optional.
+          pattern:
+
+          # When multiple artifacts are matched, this changes the behavior of the destination directories.
+          # If true, the downloaded artifacts will be in the same directory specified by path.
+          # If false, the downloaded artifacts will be extracted into individual named directories within the specified path.
+          # Optional. Default is 'false'
+          merge-multiple:
+
+          # The GitHub token used to authenticate with the GitHub API.
+          # This is required when downloading artifacts from a different repository or from a different workflow run.
+          # Optional. If unspecified, the action will download artifacts from the current repo and the current workflow run.
+          github-token: ${{secrets.GITHUB_TOKEN}}
+
+          # The repository owner and the repository name joined together by "/".
+          # If github-token is specified, this is the repository that artifacts will be downloaded from.
+          # Optional. Default is ${{ github.repository }}
+          repository: 'tropicsquare/ts-tvl'
+
+          # The id of the workflow run where the desired download artifact was uploaded from.
+          # If github-token is specified, this is the run that artifacts will be downloaded from.
+          # Optional. Default is ${{ github.run_id }}
+          run-id: 10248812472
+
+      - name: List downloaded file
+        run: ls -l ts-tvl-package
