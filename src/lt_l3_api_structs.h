@@ -600,15 +600,96 @@ struct lt_l3_eddsa_sign_res_t{
 } __attribute__((__packed__));
 
 //--------------------------------------------------------------------------------------------------------------------//
-/*
+/** @brief Command ID */
+#define LT_L3_MCOUNTER_INIT_CMD 0x80
+/** @brief Command length */
+#define LT_L3_MCOUNTER_INIT_SIZE 0x08
 
-MCounter_Init
+/** This structure declares how "MCounter init command" l3 packet is organized */
+struct lt_l3_mcounter_init_cmd_t {
+    /**L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** The index of the Monotonic Counter to initialize. Valid values are 0 - 15*/
+    u16 mcounter_index;
+    /** Padding */
+    u8 padding;
+    /** The initialization value of the Monotonic Counter */
+    u32 mcounter_val;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
 
-MCounter_Update
+/** This structure declares how "MCounter init result" l3 packet is organized */
+struct lt_l3_mcounter_init_res_t {
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
 
-MCounter_Get
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Command ID */
+#define LT_L3_MCOUNTER_UPDATE_CMD 0x81
+/** @brief Command length */
+#define LT_L3_MCOUNTER_UPDATE_SIZE 0x03
 
-*/
+/** This structure declares how "MCounter update command" l3 packet is organized */
+struct lt_l3_mcounter_update_cmd_t {
+    /**L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** The index of the Monotonic Counter to initialize. Valid values are 0 - 15*/
+    u16 mcounter_index;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+/** This structure declares how "MCounter update result" l3 packet is organized */
+struct lt_l3_mcounter_update_res_t {
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Command ID */
+#define LT_L3_MCOUNTER_GET_CMD 0x82
+/** @brief Command length */
+#define LT_L3_MCOUNTER_GET_SIZE 0x03
+
+/** This structure declares how "MCounter get command" l3 packet is organized */
+struct lt_l3_mcounter_get_cmd_t {
+    /**L3 packet size */
+    u16 cmd_size;
+    /** L3 Command Identifier */
+    u8 cmd_id;
+    /** The index of the Monotonic Counter to initialize. Valid values are 0 - 15*/
+    u16 mcounter_index;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
+
+/** This structure declares how "MCounter get result" l3 packet is organized */
+struct lt_l3_mcounter_get_res_t {
+    /** L3 packet size */
+    u16 res_size;
+    /** L3 Result status indication */
+    u8 result;
+    /** Padding */
+    u8 padding[3];
+    /** MCounter value */
+    u32 mcounter_val;
+    /** L3 tag */
+    u8 tag[16];
+} __attribute__((__packed__));
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Command ID */

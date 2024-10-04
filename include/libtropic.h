@@ -343,14 +343,14 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
 typedef enum {
-    ECC_SLOT_1 = 0, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
-    ECC_SLOT_5,     ECC_SLOT_6,  ECC_SLOT_7,  ECC_SLOT_8,
-    ECC_SLOT_9,     ECC_SLOT_10, ECC_SLOT_11, ECC_SLOT_12,
-    ECC_SLOT_13,    ECC_SLOT_14, ECC_SLOT_15, ECC_SLOT_16,
-    ECC_SLOT_17,    ECC_SLOT_18, ECC_SLOT_19, ECC_SLOT_20,
-    ECC_SLOT_21,    ECC_SLOT_22, ECC_SLOT_23, ECC_SLOT_24,
-    ECC_SLOT_25,    ECC_SLOT_26, ECC_SLOT_27, ECC_SLOT_28,
-    ECC_SLOT_29,    ECC_SLOT_30, ECC_SLOT_31, ECC_SLOT_32,
+    ECC_SLOT_0 = 0, ECC_SLOT_1, ECC_SLOT_2,  ECC_SLOT_3,
+    ECC_SLOT_4, ECC_SLOT_5, ECC_SLOT_6,  ECC_SLOT_7,
+    ECC_SLOT_8, ECC_SLOT_9, ECC_SLOT_10, ECC_SLOT_11,
+    ECC_SLOT_12, ECC_SLOT_13, ECC_SLOT_14, ECC_SLOT_15,
+    ECC_SLOT_16, ECC_SLOT_17, ECC_SLOT_18, ECC_SLOT_19,
+    ECC_SLOT_20, ECC_SLOT_21, ECC_SLOT_22, ECC_SLOT_23,
+    ECC_SLOT_24, ECC_SLOT_25, ECC_SLOT_26, ECC_SLOT_27,
+    ECC_SLOT_28, ECC_SLOT_29, ECC_SLOT_30, ECC_SLOT_31,
 } ecc_slot_t;
 
 /** @brief ECC key type */
@@ -446,15 +446,13 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
 //--------------------------------------------------------------------------------------------------------------------//
-/*
 
-MCounter_Init
 
-MCounter_Update
+lt_ret_t lt_mcounter_init(lt_handle_t *h,  const uint16_t mcounter_index, const uint32_t mcounter_value);
+lt_ret_t lt_mcounter_update(lt_handle_t *h,  const uint16_t mcounter_index);
+lt_ret_t lt_mcounter_get(lt_handle_t *h,  const uint16_t mcounter_index, uint32_t *mcounter_value);
 
-MCounter_Get
 
-*/
 
 //--------------------------------------------------------------------------------------------------------------------//
 #define SERIAL_CODE_SIZE 32u

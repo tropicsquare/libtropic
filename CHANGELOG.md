@@ -10,3 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - TROPIC01 hw wallet example updated - compiles for 32 and 64 bit system
+- ECC_SLOT1-32 numbering chabged to ECC_SLOT_0-31
+
+### Added
+
+- MCounter init, update and get commands
