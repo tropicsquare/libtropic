@@ -617,14 +617,22 @@ static int session_H3(void)
     // TODO read r mem data
 
     uint32_t mcounter_value = 0x000000ff;
+#if(BITNESS == 64)
     LOG_OUT_VALUE("mcounter_value %08X\r\n", mcounter_value);
+#else
+    LOG_OUT_VALUE("mcounter_value %08lX\r\n", mcounter_value);
+#endif
     LOG_OUT_SESSION("%s","Initializing mcounter 0 ");
     LT_ASSERT(LT_OK, lt_mcounter_init(&h,  0, mcounter_value));
     LOG_OUT_SESSION("%s","Mcounter 0 update");
     LT_ASSERT(LT_OK, lt_mcounter_update(&h, 0));
     LOG_OUT_SESSION("%s","Mcounter get ");
     LT_ASSERT(LT_OK, lt_mcounter_get(&h, 0, &mcounter_value));
+#if(BITNESS == 64)
     LOG_OUT_VALUE("mcounter_value %08X\r\n", mcounter_value);
+#else
+    LOG_OUT_VALUE("mcounter_value %08lX\r\n", mcounter_value);
+#endif
 
 
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
@@ -646,7 +654,7 @@ static int session_H3(void)
     LOG_OUT_SESSION("%s","Pairing key write into slot 3 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_3));
 
-    LOG_OUT_SESSION("%s", "Aborting session H2");
+    LOG_OUT_SESSION("%s", "Aborting session H3");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     lt_deinit(&h);
@@ -695,6 +703,8 @@ int tropic01_hw_wallet_example(void)
         return -1;
     }
     LOG_OUT_LINE();
+
+    printf("\t End of execution, no errors.\r\n");
 
     return 0;
 }

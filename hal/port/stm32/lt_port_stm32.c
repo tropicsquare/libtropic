@@ -320,6 +320,10 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     HAL_Delay(100);
     #endif
 
+    // TODO this is probably crap, this function should be called by HAL
+    // internally. But lt_init didnt work properly if it is not here.
+    HAL_SPI_MspInit(&SpiHandle);
+
     return LT_OK;
 }
 
