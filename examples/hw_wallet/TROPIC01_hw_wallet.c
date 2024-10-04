@@ -1,26 +1,33 @@
+/**
+ * @file TROPIC01_hw_wallet.c
+ * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
+ * @author Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
+
 #include "string.h"
 
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "TROPIC01_hw_wallet.h"
 
-/*
-[Note] We recommend reading TROPIC01's datasheet before diving into this example!
+/**
+ * @name CONCEPT: Generic Hardware Wallet
+ * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ * @par 
+    This code aims to show an example usage of TROPIC01 chip in a generic *hardware wallet* project.
 
-                           CONCEPT: Generic Hardware Wallet
+    It is not focused on final application's usage, even though there is a few
+    hints in session_H3() function.
+    
+    Instead of that, this code mainly walks you through a different stages during a chip's lifecycle:
+    - Initial power up during PCB manufacturing
+    - Attestation key uploading
+    - Final product usage
 
-This code aims to show an example usage of TROPIC01 chip in a generic 'hardware wallet' project.
-
-It is not focused on final application's usage, even though there is a few
-hints in session_H3() function. Instead of that, this code mainly walks you through a different stages during a chip's lifecycle:
-  * Initial power up during PCB manufacturing
-  * Attestation key uploading
-  * Final product usage
-
-Example shows how content of config objects might be used to set different access rights and how chip behaves
-during the device's lifecycle.
-
-*/
+    Example shows how content of config objects might be used to set different access rights and how chip behaves during the device's lifecycle.
+ */
 
 #if defined(_MSC_VER) || (defined(__INTEL_COMPILER) && defined(_WIN32))
    #if defined(_M_X64)
