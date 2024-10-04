@@ -1049,14 +1049,14 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_ecc_key_erase_cmd_t* p_l3_buff = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_erase_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_buff->cmd_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
-    p_l3_buff->cmd_id = LT_L3_ECC_KEY_ERASE_CMD;
-    p_l3_buff->slot = slot;
+    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_ECC_KEY_ERASE_CMD;
+    p_l3_cmd->slot = slot;
 
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
@@ -1182,19 +1182,114 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
     return LT_OK;
 }
 
-/*
+lt_ret_t lt_mcounter_init(lt_handle_t *h,  const uint16_t mcounter_index, const uint32_t mcounter_value)
+{
+    if( !h
+        || mcounter_index > 15
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
 
-MCounter_Init
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mcounter_init_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_init_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_mcounter_init_res_t* p_l3_res = (struct lt_l3_mcounter_init_res_t*)&h->l3_buff;
 
-MCounter_Update
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MCOUNTER_INIT_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MCOUNTER_INIT_CMD;
+    p_l3_cmd->mcounter_index = mcounter_index;
+    p_l3_cmd->mcounter_val = mcounter_value;
 
-MCounter_Get
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
 
-*/
+    // Check incomming l3 length
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+lt_ret_t lt_mcounter_update(lt_handle_t *h,  const uint16_t mcounter_index)
+{
+    if( !h
+        || mcounter_index > 15
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mcounter_update_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_update_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_mcounter_update_res_t* p_l3_res = (struct lt_l3_mcounter_update_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MCOUNTER_UPDATE_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MCOUNTER_UPDATE_CMD;
+    p_l3_cmd->mcounter_index = mcounter_index;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(1 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_mcounter_get(lt_handle_t *h,  const uint16_t mcounter_index, uint32_t *mcounter_value)
+{
+    if( !h
+        || mcounter_index > 15
+        || !mcounter_value
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mcounter_get_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_get_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result data
+    struct lt_l3_mcounter_get_res_t* p_l3_res = (struct lt_l3_mcounter_get_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MCOUNTER_GET_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MCOUNTER_GET_CMD;
+    p_l3_cmd->mcounter_index = mcounter_index;
+
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(0x08 != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    *mcounter_value = p_l3_res->mcounter_val;
+
+    return LT_OK;
+}
 
 lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t size)
 {
-     if( !h
+    if( !h
         || !serial_code
         || size > SERIAL_CODE_SIZE
     ) {
@@ -1205,13 +1300,13 @@ lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_serial_data_get_cmd_t* p_l3_buff = (struct lt_l3_serial_data_get_cmd_t*)&h->l3_buff;
+    struct lt_l3_serial_data_get_cmd_t* p_l3_cmd = (struct lt_l3_serial_data_get_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result data
     struct lt_l3_serial_data_get_res_t* p_l3_res = (struct lt_l3_serial_data_get_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_buff->cmd_size = LT_L3_SERIAL_DATA_GET_SIZE;
-    p_l3_buff->cmd_id = LT_L3_SERIAL_DATA_GET_CMD;
+    p_l3_cmd->cmd_size = LT_L3_SERIAL_DATA_GET_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_SERIAL_DATA_GET_CMD;
 
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
