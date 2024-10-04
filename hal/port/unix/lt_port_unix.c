@@ -304,7 +304,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
         return LT_FAIL;
     }
 
-    lt_reset_target();
+    //lt_reset_target();
 
     return LT_OK;
 }

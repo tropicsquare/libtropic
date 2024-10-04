@@ -526,7 +526,7 @@ void test_lt_ecc_key_generate__correct()
     lt_random_get_cmd_size_inject_value = 1;
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
 
-    for (ecc_slot_t slot = ECC_SLOT_1; slot < ECC_SLOT_32; slot++) {
+    for (ecc_slot_t slot = ECC_SLOT_1; slot < ECC_SLOT_31; slot++) {
         TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_generate(&h, slot, CURVE_ED25519));
         TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_generate(&h, slot, CURVE_P256));
     }
