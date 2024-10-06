@@ -3,7 +3,7 @@
 
 /**
  * @file lt_x25519.h
- * @brief X25519 functiosn declarations
+ * @brief X25519 function declarations
  * @author Tropic Square s.r.o.
  * 
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
