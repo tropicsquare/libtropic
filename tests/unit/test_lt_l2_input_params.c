@@ -1,6 +1,6 @@
 
 /**
- * @file test_ts_l2_input_params.c
+ * @file test_lt_l2_input_params.c
  * @author Tropic Square s.r.o.
  * 
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
