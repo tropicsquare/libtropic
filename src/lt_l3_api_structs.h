@@ -5,7 +5,7 @@
  * @file lt_l3_api_structs.h
  * @brief API structures for layer 3 commands and results
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 

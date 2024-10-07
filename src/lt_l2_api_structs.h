@@ -139,6 +139,62 @@ struct lt_l2_encrypted_session_abt_rsp_t{
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Request's ID */
+#define LT_L2_RESEND_REQ_ID 0x10
+#define LT_L2_RESEND_REQ_LEN 0x0
+
+/** This structure declares how "resend_req request" l2 frame is organized */
+struct lt_l2_resend_req_t {
+    /** Request ID  byte */
+    u8 req_id;
+    /** Length byte */
+    u8 req_len;
+    /** Checksum */
+    uint8_t crc[2];
+} __attribute__((__packed__));
+
+/** This structure declares how "resend_req response" l2 frame is organized */
+struct lt_l2_resend_rsp_t{
+    /** CHIP_STATUS byte */
+    u8 chip_status;
+    /** l2 status byte */
+    u8 status;
+    /** Length of incomming data */
+    u8 rsp_len;
+    /** Checksum */
+    u8 crc[2];
+} __attribute__((__packed__));
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Request's ID */
+#define LT_L2_SLEEP_REQ_ID 0x20
+#define LT_L2_SLEEP_REQ_LEN 0x0
+
+/** This structure declares how "sleep_req request" l2 frame is organized */
+struct lt_l2_sleep_req_t {
+    /** Request ID  byte */
+    u8 req_id;
+    /** Length byte */
+    u8 req_len;
+    /** Sleep mode */
+    u8 sleep_kind;
+    /** Checksum */
+    uint8_t crc[2];
+} __attribute__((__packed__));
+
+/** This structure declares how "sleep_req response" l2 frame is organized */
+struct lt_l2_sleep_rsp_t{
+    /** CHIP_STATUS byte */
+    u8 chip_status;
+    /** l2 status byte */
+    u8 status;
+    /** Length of incomming data */
+    u8 rsp_len;
+    /** Checksum */
+    u8 crc[2];
+} __attribute__((__packed__));
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Request's ID */
 #define LT_L2_STARTUP_REQ_ID 0xB3
 #define LT_L2_STARTUP_REQ_LEN 0x1
 
@@ -162,6 +218,42 @@ struct lt_l2_startup_rsp_t{
     u8 status;
     /** Length of incomming data */
     u8 rsp_len;
+    /** Checksum */
+    u8 crc[2];
+} __attribute__((__packed__));
+
+
+
+// Mutable_FW_Update_Req
+
+// Mutable_FW_Erase_Req
+
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Request's ID */
+#define LT_L2_GET_LOG_REQ_ID 0xA2
+#define LT_L2_GET_LOG_REQ_LEN 0x0
+
+/** This structure declares how "get_log_req request" l2 frame is organized */
+struct lt_l2_get_log_req_t {
+    /** Request ID  byte */
+    u8 req_id;
+    /** Length byte */
+    u8 req_len;
+    /** Checksum */
+    uint8_t crc[2];
+} __attribute__((__packed__));
+
+/** This structure declares how "get_log_req response" l2 frame is organized */
+struct lt_l2_get_log_rsp_t{
+    /** CHIP_STATUS byte */
+    u8 chip_status;
+    /** l2 status byte */
+    u8 status;
+    /** Length of incomming data */
+    u8 rsp_len;
+    /** Length of incomming data */
+    u8 log_msg[255];
     /** Checksum */
     u8 crc[2];
 } __attribute__((__packed__));

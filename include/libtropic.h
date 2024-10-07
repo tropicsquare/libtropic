@@ -144,6 +144,19 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
 lt_ret_t lt_session_abort(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
+#define LT_L2_SLEEP_KIND_SLEEP 0x05
+#define LT_L2_SLEEP_KIND_DEEP_SLEEP 0x0a
+
+/**
+ * @brief Put TROPIC01 into sleep
+ *
+ * @param h           Device's handle
+ * @param sleep_kind  Kind of sleep
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
+
+//--------------------------------------------------------------------------------------------------------------------//
 #define LT_L2_STARTUP_ID_REBOOT 0x01
 #define LT_L2_STARTUP_ID_MAINTENANCE 0x03
 
@@ -155,6 +168,19 @@ lt_ret_t lt_session_abort(lt_handle_t *h);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal length of TROPIC01's log message */
+#define GET_LOG_MAX_MSG_LEN    255
+/**
+ * @brief Get TROPIC01's internal log message (if enabled/available)
+ *
+ * @param h           Device's handle
+ * @param log_msg     Log message
+ * @param msg_len_max Max possible length of TROPIC01's log message
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
