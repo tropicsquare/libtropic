@@ -11,7 +11,7 @@
  * @file lt_l2.c
  * @brief Layer 2 functions definitions
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -44,11 +44,37 @@ lt_ret_t lt_l2_transfer(lt_handle_t *h)
     }
 
     ret = lt_l2_frame_check(h->l2_buff);
-    if(ret != LT_OK) {
-        return ret;
+    // We can ask TROPIC01 to resend the last response. It makes sense to do it if
+    // lt_l2_frame_check() returned CRC error or some generic error.
+    if((ret == LT_L2_CRC_ERR) || (ret == LT_L2_GEN_ERR)) {
+        // Payload's CRC is not OK, let's try to resend it three times
+        for(int i=0; i<3; i++) {
+
+            // Setup a request pointer to l2 buffer, which is placed in handle
+            struct lt_l2_resend_req_t* p_l2_req = (struct lt_l2_resend_req_t*)&h->l2_buff;
+            p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
+            p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
+
+            int ret = lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
+            if(ret != LT_OK) {
+                return ret;
+            }
+
+            ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+            if(ret != LT_OK) {
+                return ret;
+            }
+
+            ret = lt_l2_frame_check(h->l2_buff);
+            if(ret == LT_OK) {
+                 // Payload is ok, returning
+                return LT_OK;
+            }
+        }
     }
 
-    return LT_OK;
+    // Rest of errors are reported directly to upper layers, without trying to resend response.
+    return ret;
 }
 
 lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
