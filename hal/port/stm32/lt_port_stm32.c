@@ -1,3 +1,10 @@
+/**
+ * @file lt_port_stm32.c
+ * @author Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
+
 #include <stdint.h>
 #include <string.h>
 #include "stm32f4xx_hal.h"
