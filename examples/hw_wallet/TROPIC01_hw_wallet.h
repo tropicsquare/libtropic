@@ -5,7 +5,7 @@
  * @file TROPIC01_hw_wallet.h
  * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -25,8 +25,11 @@
                     { \
                         printf("\t\t\tERROR\r\n"); return -1; \
                     } else {printf(" %s\r\n", "(ok)");};
-
-
+/**
+ * @brief  This is example of using TROPIC01 in a generic hardware wallet project
+ *
+ * @return int        Returns 0 if all commands were executed successfuly, otherwise returns 1
+ */
 int tropic01_hw_wallet_example(void);
 
 #endif

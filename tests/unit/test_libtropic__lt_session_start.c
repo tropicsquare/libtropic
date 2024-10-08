@@ -1,12 +1,13 @@
 /**
- * @file test_lt_libtropic_handshake.c
+ * @file test_libtropic__lt_session_start.c
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "unity.h"
 #include "string.h"
+#include "time.h"
 
 #include "libtropic_common.h"
 #include "libtropic.h"
@@ -23,14 +24,83 @@
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
 
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
 void setUp(void)
 {
-
+    char buffer[100];
+    #ifdef RNG_SEED
+        srand(RNG_SEED);
+    #else
+        time_t seed = time(NULL);
+        // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
+        // Also, raw printf is worse solution (without additional debug msgs, such as line).
+        snprintf(buffer, sizeof(buffer), "Using random seed: %ld\n", seed);
+        TEST_MESSAGE(buffer);
+        srand((unsigned int)seed);
+    #endif
 }
 
 void tearDown(void)
 {
 }
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_session_start___invalid_handle()
+{   uint8_t pkey_index  = 1;
+    uint8_t shipriv[]   = {0x80,0x02,0xc5,0xa3,0xff,0x46,0xa2,0x09,0x4e,0x4e,0x71,0xf3,0xc8,0xe3,0xdd,0x79,0xec,0x5c,0x1c,0xcd,0xb0,0x40,0xbb,0xcf,0x6f,0x64,0x9d,0x49,0xe9,0x1d,0x9c,0x53};
+    uint8_t shipub[]    = {0x83,0xc3,0x36,0x3c,0xff,0x27,0x47,0xb7,0xf7,0xeb,0x19,0x85,0x17,0x63,0x1a,0x71,0x54,0x76,0xb4,0xfe,0x22,0x46,0x01,0x45,0x89,0xc3,0xac,0x11,0x8b,0xb8,0x9e,0x51};
+    uint8_t stpub[]     = {0};
+    int ret = lt_session_start(NULL, stpub, pkey_index, shipriv, shipub);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_session_start___invalid_pkey_index()
+{
+    lt_handle_t handle  = {0};
+    uint8_t pkey_index  = 5;
+    uint8_t shipriv[]   = {0x80,0x02,0xc5,0xa3,0xff,0x46,0xa2,0x09,0x4e,0x4e,0x71,0xf3,0xc8,0xe3,0xdd,0x79,0xec,0x5c,0x1c,0xcd,0xb0,0x40,0xbb,0xcf,0x6f,0x64,0x9d,0x49,0xe9,0x1d,0x9c,0x53};
+    uint8_t shipub[]    = {0x83,0xc3,0x36,0x3c,0xff,0x27,0x47,0xb7,0xf7,0xeb,0x19,0x85,0x17,0x63,0x1a,0x71,0x54,0x76,0xb4,0xfe,0x22,0x46,0x01,0x45,0x89,0xc3,0xac,0x11,0x8b,0xb8,0x9e,0x51};
+    uint8_t stpub[]     = {0};
+
+    int ret = lt_session_start(&handle, stpub, pkey_index, shipriv, shipub);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_session_start___invalid_shipriv()
+{
+    lt_handle_t handle  = {0};
+    uint8_t pkey_index  = 5;
+    uint8_t shipub[]    = {0x83,0xc3,0x36,0x3c,0xff,0x27,0x47,0xb7,0xf7,0xeb,0x19,0x85,0x17,0x63,0x1a,0x71,0x54,0x76,0xb4,0xfe,0x22,0x46,0x01,0x45,0x89,0xc3,0xac,0x11,0x8b,0xb8,0x9e,0x51};
+    uint8_t stpub[]     = {0};
+
+    int ret = lt_session_start(&handle, stpub, pkey_index, NULL, shipub);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_session_start___invalid_shipub()
+{
+    lt_handle_t handle  = {0};
+    uint8_t pkey_index  = 5;
+    uint8_t shipriv[]   = {0x80,0x02,0xc5,0xa3,0xff,0x46,0xa2,0x09,0x4e,0x4e,0x71,0xf3,0xc8,0xe3,0xdd,0x79,0xec,0x5c,0x1c,0xcd,0xb0,0x40,0xbb,0xcf,0x6f,0x64,0x9d,0x49,0xe9,0x1d,0x9c,0x53};
+    uint8_t stpub[]     = {0};
+
+    int ret = lt_session_start(&handle, stpub, pkey_index, shipriv, NULL);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- EXECUTION ------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 void mock_all_sha256()
 {
@@ -60,7 +130,7 @@ void mock_all_sha256()
     lt_hkdf_ExpectAnyArgs();
 }
 
-void test_lt_session_start__random_bytes_error()
+void test__random_bytes_error()
 {
     lt_handle_t h       = {0};
     uint8_t     stpub   = 0;
@@ -71,7 +141,7 @@ void test_lt_session_start__random_bytes_error()
     TEST_ASSERT_EQUAL(lt_session_start(&h, &stpub, 0, &shipriv, &shipub), LT_FAIL);
 }
 
-void test_lt_session_start__l2_transfer_error()
+void test__l2_transfer_error()
 {
     lt_handle_t h = {0};
     uint8_t     stpub   = 0;
@@ -85,7 +155,7 @@ void test_lt_session_start__l2_transfer_error()
     TEST_ASSERT_EQUAL(lt_session_start(&h, &stpub, 0, &shipriv, &shipub), LT_FAIL);
 }
 
-void test_lt_session_start__lt_aesgcm_init_error()
+void test__lt_aesgcm_init_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
@@ -104,7 +174,7 @@ void test_lt_session_start__lt_aesgcm_init_error()
     TEST_ASSERT_EQUAL(lt_session_start(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
-void test_lt_session_start__lt_aesgcm_decrypt_error()
+void test__lt_aesgcm_decrypt_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
@@ -124,7 +194,7 @@ void test_lt_session_start__lt_aesgcm_decrypt_error()
     TEST_ASSERT_EQUAL(lt_session_start(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
-void test_lt_session_start__lt_aesgcm_2nd_init_error()
+void test__lt_aesgcm_2nd_init_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
@@ -144,7 +214,7 @@ void test_lt_session_start__lt_aesgcm_2nd_init_error()
     TEST_ASSERT_EQUAL(lt_session_start(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
-void test_lt_session_start__lt_aesgcm_3rd_init_error()
+void test__lt_aesgcm_3rd_init_error()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;
@@ -165,7 +235,7 @@ void test_lt_session_start__lt_aesgcm_3rd_init_error()
     TEST_ASSERT_EQUAL(lt_session_start(&h, &stpub, pkey_index, &shipriv, &shipub), LT_CRYPTO_ERR);
 }
 
-void test_lt_session_start__correct()
+void test__correct()
 {
     lt_handle_t  h          = {0};
     uint8_t      stpub      = 0;

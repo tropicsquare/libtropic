@@ -1,7 +1,7 @@
 /**
  * @file test_lt_l1.c
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -14,8 +14,11 @@
 
 
 #define SOME_UNUSED_DEFAULT_BYTE 0xfe
-
 #define L2_BUFF_WHEN_NOT_LT_L1_DATA_LEN_ERROR 0
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 void setUp(void)
 {
@@ -25,8 +28,94 @@ void tearDown(void)
 {
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-// TESTING CALLBACK:
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_read___NULL_h()
+{
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(NULL, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_read___invalid_max_len_smaller()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_read___invalid_max_len_bigger()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_read___invalid_timeout_smaller()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_read___invalid_timeout_bigger()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_write___NULL_h()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(NULL, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_write___invalid_len_smaller()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_write___invalid_len_bigger()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_write___invalid_timeout_smaller()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
+}
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l1_write___invalid_timeout_bigger()
+{
+    lt_handle_t h = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
+}
+
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- EXECUTION ------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
 // Used to force l2_buff[0] to contain zeroed busy bit
 static lt_ret_t callback_CHIP_BUSY(lt_handle_t* h, uint8_t offset, uint16_t tx_len, uint32_t timeout,
                                    int cmock_num_calls) {
@@ -60,7 +149,6 @@ void test_lt_l1_read___LT_L1_SPI_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// TESTING CALLBACK:
 // Used to force l2_buff[0] to contain ALARM bit
 static lt_ret_t callback_LT_L1_CHIP_ALARM_MOD(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                               uint32_t timeout, int cmock_num_calls) {
@@ -80,7 +168,6 @@ void test_lt_l1_read___LT_L1_CHIP_ALARM_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_ALARM_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// TESTING CALLBACK:
 // Used to force l2_buff[0] to contain STARTUP bit
 static lt_ret_t callback_LT_L1_CHIP_STARTUP_MODE(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                  uint32_t timeout, int cmock_num_calls) {
@@ -100,7 +187,6 @@ void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_STARTUP_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// TESTING CALLBACK:
 // Used to force transfer function to return LT_FAIL during second transfer
 static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                              uint32_t timeout, int cmock_num_calls)
@@ -129,7 +215,6 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_SPI_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// TESTING CALLBACK:
 // Used to force values into response buffer, so fpga looks busy and resp handling is always called
 static lt_ret_t callback_CHIP_MODE_READY_fpga_no_resp(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                       uint32_t timeout, int cmock_num_calls)
@@ -161,7 +246,6 @@ void test_lt_l1_read___CHIP_MODE_READY_fpga_no_resp()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// TESTING CALLBACK:
 // Used to force values into buffer so LT_L1_LEN_MAX is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR(lt_handle_t* h, uint8_t offset,
                                                               uint16_t tx_len, uint32_t timeout,
@@ -193,7 +277,6 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR()
     TEST_ASSERT_EQUAL(LT_L1_DATA_LEN_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// TESTING CALLBACK:
 // Used to force values so second LT_L1_SPI_ERROR is returned
 static lt_ret_t callback_CHIP_MODE_READY_LT_L1_SPI_ERROR_2(lt_handle_t* h, uint8_t offset, uint16_t tx_len,
                                                            uint32_t timeout, int cmock_num_calls)
@@ -261,7 +344,8 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_OK()
     TEST_ASSERT_EQUAL(LT_OK, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------//
+
 // Test LT_L1_SPI_ERROR return value during write
 void test_lt_l1_write___LT_L1_SPI_ERROR()
 {

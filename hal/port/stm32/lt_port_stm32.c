@@ -1,7 +1,7 @@
 /**
  * @file lt_port_stm32.c
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -239,18 +239,15 @@ lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms)
 }
 
 #else
-
+/* Most of this SPI code is taken from:
+   vendor/STM32CubeF4/Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
+*/
 
 #define LT_SPI_CS_BANK   GPIOE
 #define LT_SPI_CS_PIN    GPIO_PIN_4
 #define LT_SPI_INSTANCE  SPI4
-
-// Use 1 here to enable SPI on FPGA board
+// Use 1 here to handle FPGA's SPI enable with stm32's gpio
 #define FPGA_REMOTE 1
-
-/* Most of this SPI code is taken from:
-   vendor/STM32CubeF4/Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
-*/
 
 /* SPI handle declaration */
 SPI_HandleTypeDef SpiHandle;
