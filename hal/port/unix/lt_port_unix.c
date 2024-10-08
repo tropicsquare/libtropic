@@ -1,12 +1,11 @@
 /**
  * @file lt_port_unix.c
  * @author Tropic Square s.r.o.
- * 
+ * @brief  C TCP client for communicating with the TROPIC01 Model
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-/////////////////////////
-// C TCP client for communicating with the TROPIC01 Model
 
 #include <stdint.h>
 #include <stddef.h>
@@ -82,7 +81,6 @@ static buffer_s rx_buffer;
 static buffer_s tx_buffer;
 // server socket
 static int socket_fd = -1;
-
 
 static int lt_connect_to_server ()
 {
@@ -273,7 +271,7 @@ static int lt_communicate (int *tx_payload_length_ptr, int *rx_payload_length_pt
 //    tx_buffer.TAG = TAG_E_POWER_OFF;
 //    return lt_communicate(NULL, NULL);
 //}
-//
+
 static int lt_reset_target(void)
 {
     LOG_OUT("-- Resetting TROPIC01 target.\n");

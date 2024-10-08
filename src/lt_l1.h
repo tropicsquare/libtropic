@@ -13,7 +13,7 @@
  * @file lt_l1.h
  * @brief Layer 1 functions declarations
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -43,7 +43,6 @@
 
 /** Get info request's ID */
 #define GET_INFO_REQ_ID 0xAA
-
 
 /**
  * @brief Read data from Tropic chip into host platform

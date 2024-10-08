@@ -2,7 +2,7 @@
 /**
  * @file test_lt_l3.c
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -15,6 +15,10 @@
 #include "mock_lt_l2.h"
 #include "mock_lt_aesgcm.h"
 
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
 void setUp(void)
 {
 }
@@ -22,6 +26,39 @@ void setUp(void)
 void tearDown(void)
 {
 }
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l3_nonce_init___NULL_h()
+{
+    lt_ret_t ret = lt_l3_nonce_init(NULL);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l3_nonce_increase___NULL_h()
+{
+    lt_ret_t ret = lt_l3_nonce_increase(NULL);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on non valid input parameter
+void test_lt_l3_cmd___NULL_h()
+{
+    int ret = lt_l3_cmd(NULL);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+}
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- EXECUTION ------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 // Test correct nonce initialization
 void test_lt_l3_nonce_init___correct()
@@ -39,6 +76,8 @@ void test_lt_l3_nonce_init___correct()
     TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_2, handle.IV, 12);
 }
 
+//---------------------------------------------------------------------------------------------------------//
+
 // Test if nonce increases correctly
 void test_lt_l3_nonce_increase___correct()
 {
@@ -55,6 +94,8 @@ void test_lt_l3_nonce_increase___correct()
     //TEST_ASSERT_EQUAL(0xff, h.IV[9]);
     //TEST_ASSERT_EQUAL(0xff, h.IV[8]);
 }
+
+//---------------------------------------------------------------------------------------------------------//
 
 // Test if lt_l3_cmd() fails when secure session is not active
 void test_lt_l3_cmd___fail_when_no_session()

@@ -2,7 +2,7 @@
  * @file TROPIC01_hw_wallet.c
  * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -15,12 +15,12 @@
 /**
  * @name CONCEPT: Generic Hardware Wallet
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
- * @par 
+ * @par
     This code aims to show an example usage of TROPIC01 chip in a generic *hardware wallet* project.
 
     It is not focused on final application's usage, even though there is a few
     hints in session_H3() function.
-    
+
     Instead of that, this code mainly walks you through a different stages during a chip's lifecycle:
     - Initial power up during PCB manufacturing
     - Attestation key uploading
@@ -93,6 +93,7 @@ struct lt_config_obj_desc_t {
     char desc[60];
     enum CONFIGURATION_OBJECTS_REGS addr;
 };
+
 /** @brief This structure is used glocally in this example to simplify looping
  *         through all config addresses and printing out them into debug */
 static struct lt_config_obj_desc_t config_description[27] = {
@@ -124,7 +125,6 @@ static struct lt_config_obj_desc_t config_description[27] = {
     {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET        ", CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR}
 };
-
 
 /** @brief  User Conﬁguration Objects - values set here reflect the concept of a generic hardware wallet */
 static uint32_t TROPIC01_config[27] = {
@@ -641,9 +641,7 @@ static int session_H3(void)
     LOG_OUT_VALUE("mcounter_value %08lX\r\n", mcounter_value);
 #endif
 
-
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
-
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
     LOG_OUT_SESSION("%s","Serial code get must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
@@ -676,14 +674,12 @@ int tropic01_hw_wallet_example(void)
     LOG_OUT("\t=====  TROPIC01 example 1 - Hardware Wallet                         ===\r\n");
     LOG_OUT("\t=======================================================================\r\n\n");
 
-
     LOG_OUT_LINE();
     printf("\t Session initial: \r\n\n");
     if(session_initial() == -1) {
         printf("\r\nError during session_initial()\r\n");
         return -1;
     }
-
 
     LOG_OUT_LINE();
     printf("\t Session H0: \r\n\n");

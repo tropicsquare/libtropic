@@ -5,7 +5,7 @@
  * @file libtropic_common.h
  * @brief Shared definitions and functions commonly used by more libtropic's layers
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 

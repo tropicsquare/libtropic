@@ -13,13 +13,11 @@
  * @file lt_l1_port_wrap.h
  * @brief Layer 1 functions declarations
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "libtropic_common.h"
-
-
 
 /**
  * @brief Initialize handle and l1. This is wrapper for platform defined function.

@@ -5,9 +5,10 @@
  * @file   lt_aesgcm.h
  * @brief  AESGCM function declarations
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
+
 #if USE_TREZOR_CRYPTO
 #include "aes/aes.h"
 #include "aes/aesgcm.h"
