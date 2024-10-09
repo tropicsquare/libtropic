@@ -51,7 +51,8 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_ecc_eddsa_sign__invalid_handle()
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
 {
     uint8_t msg[1] = {0};
     uint8_t  rs[64] = {0};
@@ -59,7 +60,10 @@ void test_lt_ecc_eddsa_sign__invalid_handle()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(NULL, ECC_SLOT_1, msg, 1, rs, 64));
 }
 
-void test_lt_ecc_eddsa_sign__invalid_slot()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid slot
+void test__invalid_slot()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -71,7 +75,10 @@ void test_lt_ecc_eddsa_sign__invalid_slot()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, msg, 1, rs, 64));
 }
 
-void test_lt_ecc_eddsa_sign__invalid_msg()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid msg
+void test__invalid_msg()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -81,7 +88,10 @@ void test_lt_ecc_eddsa_sign__invalid_msg()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, NULL, 1, rs, 64));
 }
 
-void test_lt_ecc_eddsa_sign__invalid_msg_len()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid msg_len
+void test__invalid_msg_len()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -93,7 +103,10 @@ void test_lt_ecc_eddsa_sign__invalid_msg_len()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_MSG_LEN_MIN - 1, rs, 64));
 }
 
-void test_lt_ecc_eddsa_sign__invalid_rs()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid rs
+void test__invalid_rs()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -103,7 +116,10 @@ void test_lt_ecc_eddsa_sign__invalid_rs()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, 1, NULL, 64));
 }
 
-void test_lt_ecc_eddsa_sign__invalid_rs_len()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid rs_len
+void test__invalid_rs_len()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -120,7 +136,8 @@ void test_lt_ecc_eddsa_sign__invalid_rs_len()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_ecc_eddsa_sign__no_session()
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
+void test__no_session()
 {
     lt_handle_t h = {0};
     h.session     = 0;
@@ -131,7 +148,10 @@ void test_lt_ecc_eddsa_sign__no_session()
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
 
-void test_lt_ecc_eddsa_sign__l3_fail()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test__lt_l3_cmd_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
@@ -146,24 +166,50 @@ void test_lt_ecc_eddsa_sign__l3_fail()
     }
 }
 
-lt_ret_t callback_lt_ecc_eddsa_sign_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+//---------------------------------------------------------------------------------------------------------//
+
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
-
-    p_l3_res->res_size = 0x50;
+    p_l3_res->res_size = size_inject_value;
 
     return LT_OK;
 }
 
-void test_lt_ecc_eddsa_sign__correct()
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test__res_size_mismatch()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+    uint8_t msg[10] = {0};
+    uint8_t rs[64]  = {0};
+
+    size_inject_value = 0;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+
+    size_inject_value = 2;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+
+    size_inject_value = (uint16_t)((rand() % (L3_PACKET_MAX_SIZE - 2)) + 2);
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_OK when executed correctly
+void test__correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t     msg[10] = {0};
     uint8_t     rs[64] = {0};
 
-    lt_l3_cmd_Stub(callback_lt_ecc_eddsa_sign_lt_l3_cmd);
+    size_inject_value = 0x50;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
 
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }

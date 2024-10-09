@@ -51,12 +51,16 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_ecc_key_erase__invalid_handle()
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
 {
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(NULL, ECC_SLOT_1));
 }
 
-void test_lt_ecc_key_erase__invalid_slot()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid slot
+void test__invalid_slot()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -69,7 +73,8 @@ void test_lt_ecc_key_erase__invalid_slot()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_ecc_key_erase__no_session()
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
+void test__no_session()
 {
     lt_handle_t h = {0};
     h.session     = 0;
@@ -77,7 +82,10 @@ void test_lt_ecc_key_erase__no_session()
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, ECC_SLOT_1));
 }
 
-void test_lt_ecc_key_erase__l3_fail()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test__lt_l3_cmd_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
@@ -89,20 +97,46 @@ void test_lt_ecc_key_erase__l3_fail()
     }
 }
 
-lt_ret_t callback_lt_ecc_key_erase_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
-{
-    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
+//---------------------------------------------------------------------------------------------------------//
 
-    p_l3_res->res_size = 1;
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
+    p_l3_res->res_size = size_inject_value;
 
     return LT_OK;
 }
 
-void test_lt_ecc_key_erase__correct()
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test__res_size_mismatch()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+    uint8_t msg[10] = {0};
+    uint8_t rs[64]  = {0};
+
+    size_inject_value = 0;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, ECC_SLOT_1));
+
+    size_inject_value = 2;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, ECC_SLOT_1));
+
+    size_inject_value = (uint16_t)((rand() % (L3_PACKET_MAX_SIZE - 2)) + 2);
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, ECC_SLOT_1));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_OK when executed correctly
+void test__correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
-    lt_l3_cmd_Stub(callback_lt_ecc_key_erase_lt_l3_cmd);
+    size_inject_value = 1;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, ECC_SLOT_1));
 }

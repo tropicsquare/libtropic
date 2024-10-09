@@ -2,7 +2,7 @@
  * @file libtropic.c
  * @brief Implementation of libtropic API
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -120,7 +120,7 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
 {
     if(    !cert
         || !stpub
-        || (max_len > LT_L2_GET_INFO_REQ_CERT_SIZE)
+        || (max_len < LT_L2_GET_INFO_REQ_CERT_SIZE)
     ) {
         return LT_PARAM_ERR;
     }
@@ -130,7 +130,7 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
     /* TODO Improve this
     Currently DER certificate is searched for "OBJECT IDENTIFIER curveX25519 (1 3 101 110)",
     which is represented by four bytes: 0x65, 0x6e, 0x03 and 0x21 */
-    for(int i = 0; i<(512-3); i++) {
+    for(int i = 0; i<(512-3-32); i++) {
         if(cert[i] == 0x65 && cert[i+1] == 0x6e && cert[i+2] == 0x03 && cert[i+3] == 0x21) {
             memcpy(stpub, cert + i + 5, 32);
             return LT_OK;
@@ -164,11 +164,11 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, const uint16_t ma
     }
 
     // Check incomming l3 length
-    if(128 != (p_l2_resp->rsp_len)) {
+    if(LT_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, 128);
+    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, LT_L2_GET_INFO_CHIP_ID_SIZE);
 
     return LT_OK;
 }
@@ -265,11 +265,11 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, const uint16_t max
     }
 
     // Check incomming l3 length
-    if(128 != (p_l2_resp->rsp_len)) {
+    if(LT_L2_GET_INFO_FW_HEADER_SIZE != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(header, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, 128); //TODO specify and fix size of header
+    memcpy(header, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->data, LT_L2_GET_INFO_FW_HEADER_SIZE); //TODO specify and fix size of header
 
     return LT_OK;
 }
@@ -970,7 +970,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve)
+lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
     if(    !h
         || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
@@ -1007,12 +1007,12 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve, const uint8_t *key)
+lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
 {
     if(    !h
         || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
         || slot < LT_L3_ECC_KEY_GENERATE_SLOT_MIN
-        || !curve
+        || ((curve != CURVE_P256) && (curve != CURVE_ED25519))
         || !key
     ) {
         return LT_PARAM_ERR;
@@ -1046,7 +1046,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin)
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
 {
     if(    !h
         || slot > LT_L3_ECC_KEY_GENERATE_SLOT_MAX
@@ -1096,7 +1096,8 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
     if((p_l3_res->curve == (uint8_t)CURVE_P256)) {
         memcpy(key, p_l3_res->pub_key, 64);
     }
-
+    // TODO I think that we are not checking exactly curve type in this function?
+    // Function should return fail if curve is neither ED25519 or P256
     return LT_OK;
 }
 
