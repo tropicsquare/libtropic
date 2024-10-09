@@ -15,18 +15,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.7
       
-      - name: Prepare build
-        run: |
-          cd tests/integration
-          mkdir -p build
-          cd build
-          cmake ..
+      # - name: Prepare build
+      #   run: |
+      #     cd tests/integration
+      #     mkdir -p build
+      #     cd build
+      #     cmake ..
       
       - name: Run CodeChecker analysis
         uses: whisperity/codechecker-analysis-action@v1
         id: codechecker
         with:
-          build-command: "make -C tests/integration/build"
+          config: $(project-root)/codechecker_config.json
+          build-command: "$(project-root)/codechecker_build.sh"
 
       - name: Upload results artifacts
         uses: actions/upload-artifact@v4
