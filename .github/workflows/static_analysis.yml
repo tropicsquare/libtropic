@@ -29,7 +29,7 @@ jobs:
           build-command: "make"
 
       - name: Upload results artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: "CodeChecker Bug Reports"
           path: ${{ steps.codechecker.outputs.result-html-dir }}
