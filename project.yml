@@ -78,6 +78,10 @@
     :compile:
       :*:
         - -Wall -Wextra -pedantic
+  :gcov:
+    :compile:
+      :*:
+        - -Wall -Wextra -pedantic
 
 :plugins:
   :load_paths:
