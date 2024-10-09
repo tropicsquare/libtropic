@@ -51,8 +51,8 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_deinit___invalid_handle()
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
 {
     int ret = lt_deinit(NULL);
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
@@ -63,7 +63,7 @@ void test_lt_deinit___invalid_handle()
 //---------------------------------------------------------------------------------------------------------//
 
 // Test if function returns LT_FAIL when l1 deinit failed
-void test_lt_deinit___error_during_lt_l1_deinit()
+void test__lt_l1_deinit_fail()
 {
     lt_handle_t h = {0};
 
@@ -73,8 +73,10 @@ void test_lt_deinit___error_during_lt_l1_deinit()
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
 }
 
+//---------------------------------------------------------------------------------------------------------//
+
 // Test if function returns LT_OK when all went correctly
-void test_lt_deinit___correct()
+void test__correct()
 {
     lt_handle_t h = {0};
 

@@ -102,7 +102,7 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
-#define LT_L2_GET_INFO_FW_HEADER_SIZE       512
+#define LT_L2_GET_INFO_FW_HEADER_SIZE       128// TODO update model to 48
 /**
  * @brief Read TROPIC01's fw bank info
  *
@@ -383,7 +383,7 @@ typedef enum {
 typedef enum {
     CURVE_P256 = 1,
     CURVE_ED25519
-} ecc_curve_type_t;
+} lt_ecc_curve_type_t;
 
 /** @brief ECC key origin */
 typedef enum {
@@ -399,7 +399,7 @@ typedef enum {
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve);
+lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
  * @brief Store ECC key in the device's ECC key slot
@@ -410,7 +410,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
  * @param key         Key to store
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve, const uint8_t *key);
+lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
 
 /**
  * @brief Read ECC public key corresponding to a private key in device's slot
@@ -423,7 +423,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief Erase ECC key from device's slot

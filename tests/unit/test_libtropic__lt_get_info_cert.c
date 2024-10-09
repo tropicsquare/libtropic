@@ -51,13 +51,17 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_get_info_cert__invalid_handle()
+// Test if function returns LT_PARAM_ERROR when wrong handle is passed
+void test__invalid_handle()
 {
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(NULL, cert, LT_L2_GET_INFO_REQ_CERT_SIZE));
 }
 
-void test_lt_get_info_cert__invalid_cert()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERROR when wrong spect_fw_ver is passed
+void test__invalid_cert()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -65,7 +69,10 @@ void test_lt_get_info_cert__invalid_cert()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(&h, NULL, LT_L2_GET_INFO_REQ_CERT_SIZE));
 }
 
-void test_lt_get_info_cert__invalid_cert_len()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERROR when wrong max_len is passed
+void test__invalid_cert_len()
 {
     lt_handle_t h;
     uint8_t     cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
@@ -81,7 +88,7 @@ void test_lt_get_info_cert__invalid_cert_len()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-lt_ret_t callback1_lt_get_info_cert_lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback_1__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
 
@@ -117,33 +124,66 @@ lt_ret_t callback1_lt_get_info_cert_lt_l2_transfer(lt_handle_t *h, int cmock_num
     }
 }
 
-void test_lt_get_info_cert__l2_fail()
+// Test if function propagates l2 error if l2 transfer fails
+void test__l2_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
 
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
+    for(int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_get_info_cert(&h, cert, sizeof(cert)));
+    }
+
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback1_lt_get_info_cert_lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 }
 
-lt_ret_t callback2_lt_get_info_cert_lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function fails on size mismatch in l2 response
+lt_ret_t callback_2__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_rsp->rsp_len = (LT_L2_GET_INFO_REQ_CERT_SIZE/4) + 1;
+
+    return LT_OK;
+}
+
+void test__resp_size_mismatch()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+
+    uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+
+    lt_l2_transfer_StubWithCallback(callback_2__lt_l2_transfer);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_cert(&h, cert, sizeof(cert)));
+
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+lt_ret_t callback_3__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
 
@@ -163,7 +203,8 @@ lt_ret_t callback2_lt_get_info_cert_lt_l2_transfer(lt_handle_t *h, int cmock_num
     }
 }
 
-void test_lt_get_info_cert__l2_correct()
+// Test if function returns LT_OK if all went correctly
+void test__l2_correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
@@ -171,7 +212,7 @@ void test_lt_get_info_cert__l2_correct()
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     for (int i = 0; i < 4; i++) {
-        lt_l2_transfer_StubWithCallback(callback2_lt_get_info_cert_lt_l2_transfer);
+        lt_l2_transfer_StubWithCallback(callback_3__lt_l2_transfer);
     }
     TEST_ASSERT_EQUAL(LT_OK, lt_get_info_cert(&h, cert, sizeof(cert)));
 }

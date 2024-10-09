@@ -52,24 +52,28 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_cert_verify_and_parse__invalid_cert()
+// Test if function returns LT_PARAM_ERROR when invalid handle is passed
+void test__invalid_cert()
 {
-    uint8_t     stpub[] = {0};
-
+    uint8_t     stpub[32] = {0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(NULL, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
 }
 
-void test_lt_cert_verify_and_parse__invalid_len()
-{
-    uint8_t dummy_cert[1024] = {0};
-    uint8_t stpub[] = {0};
+//---------------------------------------------------------------------------------------------------------//
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE + 1, stpub));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE + 500, stpub));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE + 1000, stpub));
+// Test if function returns LT_PARAM_ERROR when invalid max_len is passed
+void test__invalid_len()
+{
+    uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
+    uint8_t stpub[32] = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE - 1, stpub));
 }
 
-void test_lt_cert_verify_and_parse__invalid_stpub()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERROR when invalid stpub is passed
+void test__invalid_stpub()
 {
     uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
 
@@ -79,3 +83,27 @@ void test_lt_cert_verify_and_parse__invalid_stpub()
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when certificate buffer does not contain identificator for stpub key
+void test__cert_without_key()
+{
+    uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
+    uint8_t stpub[32] = {0};
+
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when certificate buffer does not contain identificator for stpub key
+void test__correct()
+{
+    uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
+    dummy_cert[511-35] = 0x65;
+    dummy_cert[511-34] = 0x6e;
+    dummy_cert[511-33] = 0x03;
+    dummy_cert[511-32] = 0x21;
+    uint8_t stpub[32] = {0};
+
+    TEST_ASSERT_EQUAL(LT_OK, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+}

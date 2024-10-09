@@ -603,7 +603,7 @@ static int session_H3(void)
 
     LOG_OUT_SESSION("%s", "lt_ecc_key_read() ");
     uint8_t slot_1_pubkey[64];
-    ecc_curve_type_t curve;
+    lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
     LT_ASSERT(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_0, slot_1_pubkey, 64, &curve, &origin));
 
