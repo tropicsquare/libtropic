@@ -1,5 +1,6 @@
 {
     "analyze": [
-        "--enable=security"       
+        "--enable=security",
+        "--skip=codechecker.skip" 
     ]
 }
