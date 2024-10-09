@@ -1,0 +1,5 @@
+{
+    "analyze": [
+        "--enable=security"       
+    ]
+}
