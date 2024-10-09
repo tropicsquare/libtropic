@@ -26,7 +26,7 @@ jobs:
         uses: whisperity/codechecker-analysis-action@v1
         id: codechecker
         with:
-          build-command: "make"
+          build-command: "make -C tests/integration/build"
 
       - name: Upload results artifacts
         uses: actions/upload-artifact@v4
