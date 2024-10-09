@@ -77,7 +77,7 @@
   :test:
     :compile:
       :*:
-        - -Wall -Wextra -Wconversion -pedantic
+        - -Wall -Wextra -pedantic
 
 :plugins:
   :load_paths:
