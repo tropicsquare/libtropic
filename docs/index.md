@@ -134,3 +134,26 @@ set `RNG_SEED` to this.
 ## Integration tests
 
 For more info check `tests/integration/integration_tests.md`
+
+## Static code analysis
+The CodeChecker tool is used to do static code analysis and generate reports.
+
+There are 3 options how to get reports:
+1. Download pre-generated HTML report artifact from GitHub Actions.
+    This is the simplest way. Reports are generated on every push to develop branch for now.
+2. Generate HTML report yourself.
+    - You need to install CodeChecker (e.g. via pip). After that, run:
+    ```sh
+    CodeChecker check -b "./codechecker_build.sh" --config ./codechecker_config.json --output ./.codechecker/reports
+    CodeChecker parse -e html ./.codechecker/reports -o ./.codechecker/reports_html
+    ```
+    - Open `./.codechecker/reports_html/index.html` in your browser.
+3. Use CodeChecker add-on.
+    - Add these lines to your VS Code's workspace settings (`.vscode/settings.json`):
+    ```json
+    "codechecker.executor.executablePath": <path to CodeChecker>,
+    "codechecker.executor.arguments": "--config codechecker_config.json",
+    "codechecker.executor.logBuildCommand": "./codechecker_build.sh",
+    "codechecker.backend.compilationDatabasePath": "${workspaceFolder}/.codechecker/compile_commands.json"
+    ```
+    - `<path to CodeChecker>` can be replaced with "CodeChecker" if the CodeChecker is available in your `$PATH`. Otherwise, you need to specify full path to the CodeChecker executable.
