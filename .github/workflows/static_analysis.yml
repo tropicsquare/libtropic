@@ -1,0 +1,35 @@
+name: Run static code analysis
+on:
+  push:
+    branches:
+      - 'develop'
+
+jobs:
+  static_analysis:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.7
+      
+      - name: Prepare build
+        run: |
+          cd tests/integration
+          mkdir -p build
+          cd build
+          cmake ..
+      
+      - name: Run CodeChecker analysis
+        uses: whisperity/codechecker-analysis-action@v1
+        id: codechecker
+        with:
+          build-command: "make"
+
+      - name: Upload results artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: "CodeChecker Bug Reports"
+          path: ${{ steps.codechecker.outputs.result-html-dir }}
