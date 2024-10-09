@@ -1,7 +1,7 @@
 /**
  * @file test_lt_l2.c
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -15,10 +15,9 @@
 #include "mock_lt_l2_frame_check.h"
 #include "mock_lt_crc16.h"
 
-
-/*
-[ ] pridat popis erroru do verbose output funkce
-*/
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 void setUp(void)
 {
@@ -27,6 +26,28 @@ void setUp(void)
 void tearDown(void)
 {
 }
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns expected error on non valid input parameter
+void test_lt_l2_transfer___NULL_h()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l2_transfer(NULL));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns expected error on non valid input parameter
+void test_lt_l2_encrypted_cmd___NULL_h()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l2_encrypted_cmd(NULL));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+//---------------------------------- EXECUTION ------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------------//
 
 void test_lt_l2_transfer__fail_during_l1_write()
 {
@@ -71,7 +92,7 @@ void test_lt_l2_transfer__correct()
     TEST_ASSERT_EQUAL(LT_OK, lt_l2_transfer(&h));
 }
 
-//--------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------//
 
 void test_lt_l2_encrypted_cmd__l1_write_fail()
 {

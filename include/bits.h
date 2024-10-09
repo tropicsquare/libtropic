@@ -2,7 +2,7 @@
  * @file bits.h
  * @brief Struct and function declarations for dealing with bit assignment.
  * @author Ondrej Ille
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
