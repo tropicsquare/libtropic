@@ -67,8 +67,8 @@ void test_lt_ecc_key_erase__invalid_slot()
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, curve, key));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, curve, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0 - 1, curve, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_31 + 1, curve, key));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid curve

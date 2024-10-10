@@ -54,7 +54,7 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid msg
 void test__invalid_msg()
 {
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify(NULL, LT_L3_EDDSA_SIGN_MSG_LEN_MIN, (uint8_t*)"", (uint8_t*)""));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify(NULL, LT_L3_EDDSA_SIGN_CMD_MSG_MIN_LEN, (uint8_t*)"", (uint8_t*)""));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -62,7 +62,7 @@ void test__invalid_msg()
 // Test if function returns LT_PARAM_ERR on invalid msg_len
 void test__invalid_msg_len()
 {
-    uint8_t msg[LT_L3_EDDSA_SIGN_MSG_LEN_MAX + 1];
+    uint8_t msg[LT_L3_EDDSA_SIGN_CMD_MSG_MAX_LEN + 1];
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify((uint8_t*)"", 0, (uint8_t*)"", (uint8_t*)""));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sig_verify(msg, sizeof(msg), (uint8_t*)"", (uint8_t*)""));
