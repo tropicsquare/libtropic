@@ -85,7 +85,7 @@ void test___no_session()
 //---------------------------------------------------------------------------------------------------------//
 
 // Test if function returns LT_FAIL when lt_l3() fails
-void test____l3_cmd_fail()
+void test___l3_cmd_fail()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;

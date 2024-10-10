@@ -51,14 +51,18 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_ping__invalid_handle()
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
 {
     uint8_t msg_out = 0;
     uint8_t msg_in = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(NULL, &msg_out, &msg_in, 0));
 }
 
-void test_lt_ping__invalid_msg_out()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid msg_out
+void test__invalid_msg_out()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -66,7 +70,10 @@ void test_lt_ping__invalid_msg_out()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, NULL, &msg_in, 0));
 }
 
-void test_lt_ping__invalid_msg_in()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid msg_in
+void test__invalid_msg_in()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -74,7 +81,10 @@ void test_lt_ping__invalid_msg_in()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, &msg_out, NULL, 0));
 }
 
-void test_lt_ping__invalid_len()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid len
+void test__invalid_len()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
@@ -93,42 +103,46 @@ void test_lt_ping__invalid_len()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_ping__no_session()
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
+void test__no_session()
 {
     lt_handle_t h = {0};
     h.session     = 0;
-
     uint8_t msg_out = 1;
     uint8_t msg_in = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ping(&h, &msg_out, &msg_in, 1));
 }
 
-void test_lt_ping__l3_fail()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test__lt_l3_fail()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-
     uint8_t msg_out, msg_in;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_ping(&h, &msg_out, &msg_in, 0));
+        TEST_ASSERT_EQUAL(rets[i], lt_ping(&h, &msg_out, &msg_in, 1));
     }
 }
 
-uint16_t lt_ping_cmd_size_inject_value;
+//---------------------------------------------------------------------------------------------------------//
 
-lt_ret_t callback_lt_ping_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
-    p_l3_res->res_size = lt_ping_cmd_size_inject_value;
+    p_l3_res->res_size = size_inject_value;
 
     return LT_OK;
 }
 
-void test_lt_ping__len_mismatch()
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test__len_mismatch()
 {
     const int msg_max_size = 200;
     uint8_t   msg_out[msg_max_size], msg_in[msg_max_size];
@@ -144,17 +158,16 @@ void test_lt_ping__len_mismatch()
             rand_len_offset++;
         }
 
-        lt_ping_cmd_size_inject_value = (uint16_t)rand_size;
-
-        // Packet size for both cmd and res has the same position, so
-        // it would be overwritten by "p_l3_cmd->cmd_size = len + 1;",
-        // so we need to modify the value inside the callback.
-        lt_l3_cmd_StubWithCallback(callback_lt_ping_lt_l3_cmd);
+        size_inject_value = (uint16_t)rand_size;
+        lt_l3_cmd_StubWithCallback(callback__lt_l3_cmd);
         TEST_ASSERT_EQUAL(LT_FAIL, lt_ping(&h, msg_out, msg_in, (uint16_t)(rand_size + rand_len_offset)));
     }
 }
 
-void test_lt_ping__correct()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_OK when executed correctly
+void test__correct()
 {
     const int       msg_max_size = 200;
     uint8_t         msg_out[200], msg_in[200];
