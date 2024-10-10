@@ -729,11 +729,11 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
 
 lt_ret_t lt_r_config_erase(lt_handle_t *h)
 {
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
     if(!h) {
         return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
