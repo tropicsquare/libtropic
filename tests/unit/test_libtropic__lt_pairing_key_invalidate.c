@@ -51,81 +51,86 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_pairing_key_invalidate__invalid_handle()
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test___invalid_handle()
 {
     uint8_t slot = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(NULL, slot));
 }
 
-void test_lt_pairing_key_invalidate__invalid_slot()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid slot
+void test___invalid_slot()
 {
     lt_handle_t h;
     h.session = SESSION_ON;
 
-    uint8_t slot = 0;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(&h, 4));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_3 + 1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_pairing_key_invalidate__no_session()
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
+void test___no_session()
 {
     lt_handle_t h =  {0};
-
-    uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_invalidate(&h, slot));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
 }
 
-void test_lt_pairing_key_invalidate__l3_cmd_fail()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test____l3_cmd_fail()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
-    lt_l3_cmd_ExpectAndReturn(&h, LT_FAIL);
 
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, slot));
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
+    }
 }
 
+//---------------------------------------------------------------------------------------------------------//
 
-lt_ret_t callback_lt_pairing_key_invalidate(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
-    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
-    p_l3_res->res_size = 100;
+    struct lt_l3_pairing_key_invalidate_res_t* p_l3_res = (struct lt_l3_pairing_key_invalidate_res_t*)&h->l3_buff;
+    p_l3_res->res_size = size_inject_value;
 
     return LT_OK;
 }
 
-void test_lt_pairing_key_invalidate__len_mismatch()
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test___len_mismatch()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
-    lt_l3_cmd_Stub(callback_lt_pairing_key_invalidate);
 
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, slot));
+    size_inject_value = 1+1;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
 }
 
-lt_ret_t callback2_lt_pairing_key_invalidate(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
-{
-    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
-    p_l3_res->res_size = 1;
+//---------------------------------------------------------------------------------------------------------//
 
-    return LT_OK;
-}
-
-void test_lt_pairing_key_invalidate__correct()
+// Test if function returns LT_OK when executed correctly
+void test___correct()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
-    lt_l3_cmd_Stub(callback2_lt_pairing_key_invalidate);
 
-    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_invalidate(&h, slot));
+    size_inject_value = 1;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
 }

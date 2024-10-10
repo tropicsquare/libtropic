@@ -113,8 +113,6 @@ void test__res_size_mismatch()
 {
     lt_handle_t h = {0};
     h.session = SESSION_ON;
-    uint8_t msg[10] = {0};
-    uint8_t rs[64]  = {0};
 
     size_inject_value = 0;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);

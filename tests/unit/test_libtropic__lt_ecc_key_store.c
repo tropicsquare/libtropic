@@ -56,6 +56,7 @@ void test_lt_ecc_key_erase__invalid_handle()
 {
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
+
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(NULL, ECC_SLOT_0, curve, key));
 }
 
@@ -65,6 +66,7 @@ void test_lt_ecc_key_erase__invalid_slot()
     lt_handle_t h = {0};
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
+
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, curve, key));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, curve, key));
 }
@@ -73,10 +75,10 @@ void test_lt_ecc_key_erase__invalid_slot()
 void test_lt_ecc_key_erase__invalid_curve()
 {
     lt_handle_t h = {0};
-    lt_ecc_curve_type_t curve = 3;
     uint8_t key[32] = {0};
+
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 0, key));
-   TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 3, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 3, key));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid key
@@ -84,7 +86,7 @@ void test_lt_ecc_key_erase__invalid_key()
 {
     lt_handle_t h = {0};
     lt_ecc_curve_type_t curve = CURVE_ED25519;
-    uint8_t key[32] = {0};
+
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, curve, NULL));
 }
 
@@ -98,6 +100,7 @@ void test_lt_ecc_key_erase__no_session()
     lt_handle_t h = {0};
     lt_ecc_curve_type_t curve = CURVE_P256;
     uint8_t key[32] = {0};
+
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
 }
 
@@ -108,7 +111,6 @@ void test_lt_ecc_key_read__l3_fail()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
 

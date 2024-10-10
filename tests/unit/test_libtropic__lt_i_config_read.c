@@ -11,7 +11,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic.h"
-#include "lt_l2_api_structs.h"
+#include "lt_l3_api_structs.h"
 
 #include "mock_lt_random.h"
 #include "mock_lt_l1_port_wrap.h"
@@ -51,6 +51,102 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
+{
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR;
+    uint32_t obj;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_read(NULL, addr, &obj));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid slot
+void test__invalid_addr()
+{
+    lt_handle_t h;
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR + 1;
+    uint32_t obj;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_read(&h, addr, &obj));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid msg
+void test__invalid_obj()
+{
+    lt_handle_t h;
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_read(&h, addr, NULL));
+}
+
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
+
+
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
+void test__no_session()
+{
+    lt_handle_t h;
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR;
+    uint32_t obj;
+
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_i_config_read(&h, addr, &obj));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test__lt_l3_cmd_fail()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR;
+    uint32_t obj;
+
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i],  lt_i_config_read(&h, addr, &obj));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------//
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l3_i_config_read_res_t* p_l3_res = (struct lt_l3_i_config_read_res_t*)&h->l3_buff;
+    p_l3_res->res_size = size_inject_value;
+
+    return LT_OK;
+}
+
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test__res_size_mismatch()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR;
+    uint32_t obj;
+
+    size_inject_value = 8+1;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_i_config_read(&h, addr, &obj));
+}
+
+// Test if function returns LT_OK when executed correctly
+void test__correct()
+{
+    lt_handle_t h;
+    h.session = SESSION_ON;
+    enum CONFIGURATION_OBJECTS_REGS addr = CONFIGURATION_OBJECTS_CFG_START_UP_ADDR;
+    uint32_t obj;
+
+    size_inject_value = 8;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_OK, lt_i_config_read(&h, addr, &obj));
+}

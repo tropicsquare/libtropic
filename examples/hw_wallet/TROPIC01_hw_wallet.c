@@ -300,12 +300,12 @@ static lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *sh
         return ret;
     }
 
-    // This is not used in this example, but let's read it anyway
-    uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-    ret = lt_get_info_fw_bank(h, header, LT_L2_GET_INFO_FW_HEADER_SIZE);
-    if (ret != LT_OK) {
-        return ret;
-    }
+    // This is not used in this example, command works only when chip is in STARTUP mode
+    //uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    //ret = lt_get_info_fw_bank(h, header, LT_L2_GET_INFO_FW_HEADER_SIZE);
+    //if (ret != LT_OK) {
+    //    return ret;
+    //}
 
     uint8_t X509_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
     ret = lt_get_info_cert(h, X509_cert, LT_L2_GET_INFO_REQ_CERT_SIZE);
