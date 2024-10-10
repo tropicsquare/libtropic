@@ -473,10 +473,16 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
 
 //--------------------------------------------------------------------------------------------------------------------//
 
+enum lt_mcounter_index_t {
+    MCOUNTER_INDEX_0 = 0, MCOUNTER_INDEX_1 = 1, MCOUNTER_INDEX_2 = 2, MCOUNTER_INDEX_3 = 3,
+    MCOUNTER_INDEX_4 = 4, MCOUNTER_INDEX_5 = 5, MCOUNTER_INDEX_6 = 6, MCOUNTER_INDEX_7 = 7,
+    MCOUNTER_INDEX_8 = 8, MCOUNTER_INDEX_9 = 9, MCOUNTER_INDEX_10 = 10, MCOUNTER_INDEX_11 = 11,
+    MCOUNTER_INDEX_12 = 12, MCOUNTER_INDEX_13 = 13, MCOUNTER_INDEX_14 = 14, MCOUNTER_INDEX_15 = 15
+};
 
-lt_ret_t lt_mcounter_init(lt_handle_t *h,  const uint16_t mcounter_index, const uint32_t mcounter_value);
-lt_ret_t lt_mcounter_update(lt_handle_t *h,  const uint16_t mcounter_index);
-lt_ret_t lt_mcounter_get(lt_handle_t *h,  const uint16_t mcounter_index, uint32_t *mcounter_value);
+lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
+lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index);
+lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
 
 
 

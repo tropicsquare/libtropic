@@ -179,7 +179,7 @@ lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
 // Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
 void test__res_size_mismatch()
 {
-lt_handle_t h = {0};
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[10] = {0};
     uint8_t rs[64]  = {0};
