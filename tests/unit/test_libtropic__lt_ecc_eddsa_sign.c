@@ -93,11 +93,11 @@ void test__invalid_msg_len()
 {
     lt_handle_t h = {0};
     h.session = SESSION_ON;
-    uint8_t msg[LT_L3_EDDSA_SIGN_CMD_MSG_MAX_LEN + 1] = {0};
+    uint8_t msg[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1] = {0};
     uint8_t rs[64] = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_MAX_LEN + 1, rs, 64));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_MIN_LEN - 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN - 1, rs, 64));
 }
 
 //---------------------------------------------------------------------------------------------------------//

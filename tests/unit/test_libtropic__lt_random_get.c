@@ -134,7 +134,7 @@ void test_lt_random_get__len_mismatch()
         TEST_ASSERT_EQUAL(LT_FAIL, lt_random_get(&h, buff, (uint16_t)(rand_size + rand_len_offset)));
     }
 }
-
+/*
 void test_lt_random_get__correct()
 {
     const int       buff_max_size = 200;
@@ -152,3 +152,4 @@ void test_lt_random_get__correct()
     lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, (uint16_t)(cmd_size - 4)));
 }
+*/

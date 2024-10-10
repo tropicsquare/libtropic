@@ -54,7 +54,7 @@ lt_ret_t lt_l2_transfer(lt_handle_t *h)
             // Setup a request pointer to l2 buffer, which is placed in handle
             struct lt_l2_resend_req_t* p_l2_req = (struct lt_l2_resend_req_t*)&h->l2_buff;
             p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
-            p_l2_req->req_len = LT_L2_RESEND_REQ_SIZE;
+            p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
 
             int ret = lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
             if(ret != LT_OK) {

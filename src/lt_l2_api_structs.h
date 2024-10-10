@@ -1,4 +1,4 @@
-// GENERATED ON 2024-10-10 12:12:19.754275
+// GENERATED ON 2024-10-10 16:07:36.959632
 // BY internal VERSION 1.6
 // INPUT FILE: 20402444E43870FE5FEA170E6AADDC8A15CFA812CA74D39EEC3A8B75FA10ED56
 //
@@ -20,8 +20,7 @@
 /** @brief Request ID */
 #define LT_L2_GET_INFO_REQ_ID 0x01
 /** @brief Request length */
-#define LT_L2_GET_INFO_REQ_SIZE 2u
-
+#define LT_L2_GET_INFO_REQ_LEN 2u
 /** @brief The X.509 chip certificate read from I-Memory and signed by Tropic Square (max length of 512B). */
 #define LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0x00
 /** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B). */
@@ -40,6 +39,10 @@
 #define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383 0x02
 /** @brief Request for data bytes 384-511 of object (only needed for the X.509 certificate). */
 #define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511 0x03
+
+
+/** @brief Response length */
+#define LT_L2_GET_INFO_RSP_LEN_MIN 1u
 
 /**
  * @brief
@@ -87,8 +90,7 @@ struct lt_l2_get_info_rsp_t {
 /** @brief Request ID */
 #define LT_L2_HANDSHAKE_REQ_ID 0x02
 /** @brief Request length */
-#define LT_L2_HANDSHAKE_REQ_SIZE 33u
-
+#define LT_L2_HANDSHAKE_REQ_LEN 33u
 /** @brief Corresponds to $S_{H0Pub}$. */
 #define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_0 0x00
 /** @brief Corresponds to $S_{H1Pub}$. */
@@ -97,6 +99,10 @@ struct lt_l2_get_info_rsp_t {
 #define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_2 0x02
 /** @brief Corresponds to $S_{H3Pub}$. */
 #define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_3 0x03
+
+
+/** @brief Response length */
+#define LT_L2_HANDSHAKE_RSP_LEN 48u
 
 /**
  * @brief
@@ -143,12 +149,15 @@ struct lt_l2_handshake_rsp_t {
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_CMD_REQ_ID 0x04
 /** @brief Request length */
-#define LT_L2_ENCRYPTED_CMD_REQ_MIN_SIZE 19u
+#define LT_L2_ENCRYPTED_CMD_REQ_LEN_MIN 19u
 /** Minimal length of field cmd_ciphertext */
-#define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_MIN_LEN 1u
+#define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MIN 1u
 /** Maximal length of field cmd_ciphertext */
-#define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_MAX_LEN 4096u
+#define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MAX 4096u
 
+
+/** @brief Response length */
+#define LT_L2_ENCRYPTED_CMD_RSP_LEN_MIN 19u
 
 /**
  * @brief
@@ -203,10 +212,13 @@ struct lt_l2_encrypted_cmd_rsp_t {
 
 
 /** @brief Request ID */
-#define LT_L2_ENCRYPTED_SESSION_ABT_REQ_ID 0x08
+#define LT_L2_ENCRYPTED_SESSION_ABT_ID 0x08
 /** @brief Request length */
-#define LT_L2_ENCRYPTED_SESSION_ABT_SIZE 0u
+#define LT_L2_ENCRYPTED_SESSION_ABT_LEN 0u
 
+
+/** @brief Response length */
+#define LT_L2_ENCRYPTED_SESSION_ABT_RSP_LEN 0u
 
 /**
  * @brief
@@ -233,8 +245,11 @@ struct lt_l2_encrypted_session_abt_rsp_t {
 /** @brief Request ID */
 #define LT_L2_RESEND_REQ_ID 0x10
 /** @brief Request length */
-#define LT_L2_RESEND_REQ_SIZE 0u
+#define LT_L2_RESEND_REQ_LEN 0u
 
+
+/** @brief Response length */
+#define LT_L2_RESEND_RSP_LEN 0u
 
 /**
  * @brief
@@ -261,12 +276,15 @@ struct lt_l2_resend_rsp_t {
 /** @brief Request ID */
 #define LT_L2_SLEEP_REQ_ID 0x20
 /** @brief Request length */
-#define LT_L2_SLEEP_REQ_SIZE 1u
-
+#define LT_L2_SLEEP_REQ_LEN 1u
 /** @brief Sleep Mode */
 #define LT_L2_SLEEP_REQ_SLEEP_KIND_SLEEP_MODE 0x05
 /** @brief Deep Sleep Mode */
 #define LT_L2_SLEEP_REQ_SLEEP_KIND_DEEP_SLEEP_MODE 0x0a
+
+
+/** @brief Response length */
+#define LT_L2_SLEEP_RSP_LEN 0u
 
 /**
  * @brief
@@ -298,12 +316,15 @@ struct lt_l2_sleep_rsp_t {
 /** @brief Request ID */
 #define LT_L2_STARTUP_REQ_ID 0xb3
 /** @brief Request length */
-#define LT_L2_STARTUP_REQ_SIZE 1u
-
+#define LT_L2_STARTUP_REQ_LEN 1u
 /** @brief Restart, then initialize as if a power-cycle was applied. */
 #define LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT 0x01
 /** @brief Restart, then initialize. Stay in Start-up mode and do not load the mutable FW from R-Memory. */
 #define LT_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT 0x03
+
+
+/** @brief Response length */
+#define LT_L2_STARTUP_RSP_LEN 0u
 
 /**
  * @brief
@@ -331,12 +352,11 @@ struct lt_l2_startup_rsp_t {
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
 /** @brief Request length */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_MIN_SIZE 7u
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN 7u
 /** Minimal length of field data */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_MIN_LEN 4u
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MIN 4u
 /** Maximal length of field data */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_MAX_LEN 248u
-
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MAX 248u
 /** @brief Firmware bank 1. */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_FW1 0x01
 /** @brief Firmware bank 2 */
@@ -345,6 +365,10 @@ struct lt_l2_startup_rsp_t {
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT1 0x11
 /** @brief SPECT bank 2 */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT2 0x12
+
+
+/** @brief Response length */
+#define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
 
 /**
  * @brief
@@ -380,8 +404,7 @@ struct lt_l2_mutable_fw_update_rsp_t {
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
 /** @brief Request length */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_SIZE 1u
-
+#define LT_L2_MUTABLE_FW_ERASE_REQ_LEN 1u
 /** @brief Firmware bank 1. */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_FW1 0x01
 /** @brief Firmware bank 2 */
@@ -390,6 +413,10 @@ struct lt_l2_mutable_fw_update_rsp_t {
 #define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT1 0x11
 /** @brief SPECT bank 2 */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT2 0x12
+
+
+/** @brief Response length */
+#define LT_L2_MUTABLE_FW_ERASE_RSP_LEN 0u
 
 /**
  * @brief
@@ -419,8 +446,11 @@ struct lt_l2_mutable_fw_erase_rsp_t {
 /** @brief Request ID */
 #define LT_L2_GET_LOG_REQ_ID 0xa2
 /** @brief Request length */
-#define LT_L2_GET_LOG_REQ_SIZE 0u
+#define LT_L2_GET_LOG_REQ_LEN 0u
 
+
+/** @brief Response length */
+#define LT_L2_GET_LOG_RSP_LEN_MIN 0u
 
 /**
  * @brief
