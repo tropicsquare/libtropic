@@ -128,7 +128,7 @@ void test_lt_pairing_key_read__len_mismatch()
 lt_ret_t callback2_lt_pairing_key_read(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
-    p_l3_res->res_size = LT_L3_PAIRING_KEY_READ_RES_SIZE;
+    p_l3_res->res_size = 0x24;
 
     return LT_OK;
 }

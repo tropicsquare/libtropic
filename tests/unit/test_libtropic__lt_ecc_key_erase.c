@@ -65,8 +65,8 @@ void test__invalid_slot()
     lt_handle_t h;
     h.session = SESSION_ON;
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_0 - 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_31 + 1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
