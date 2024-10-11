@@ -166,21 +166,8 @@ struct lt_l2_handshake_rsp_t {
 struct lt_l2_encrypted_cmd_req_t {
     u8 req_id; /**< Request ID byte */
     u8 req_len; /**< Length byte */
-    /**
-     * @brief
-     * The size of the CMD_CIPHERTEXT L3 Field in bytes.
-     */
-    u16 cmd_size; /**< L3 Command size. */
-    /**
-     * @brief
-     * An encrypted L3 Command.
-     */
-    u8 cmd_ciphertext[4096]; /**< L3 Command. */
-    /**
-     * @brief
-     * The L3 Command Authentication Tag.
-     */
-    u8 cmd_tag[16]; /**< Authentication Tag. */
+    /** Contains a chunk of encrypted command */
+    uint8_t l3_chunk[255];
     u8 crc[2]; /**< Checksum */
 } __attribute__((__packed__));
 
@@ -196,17 +183,8 @@ struct lt_l2_encrypted_cmd_rsp_t {
      * @brief
      * The size of the RES_CIPHERTEXT L3 Field in bytes.
      */
-    u16 res_size; /**< L3 Result size. */
-    /**
-     * @brief
-     * An encrypted L3 Result.
-     */
-    u8 res_ciphertext[4096]; /**< L3 Result */
-    /**
-     * @brief
-     * The L3 Result Authentication Tag.
-     */
-    u8 res_tag[16]; /**< Authentication tag. */
+    /** Contains a chunk of encrypted command */
+    uint8_t l3_chunk[255];
     u8 crc[2]; /**< Checksum */
 } __attribute__((__packed__));
 

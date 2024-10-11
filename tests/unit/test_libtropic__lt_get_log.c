@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -56,26 +56,21 @@ void tearDown(void)
 void test__invalid_handle()
 {
     uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
-    uint16_t msg_len_max = GET_LOG_MAX_MSG_LEN;
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(NULL, msg, msg_len_max));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(NULL, msg, GET_LOG_MAX_MSG_LEN));
 }
 
-// Test if function returns LT_PARAM_ERR on invalid slot
+// Test if function returns LT_PARAM_ERR on invalid log_msg
 void test__invalid_log_msg()
 {
     lt_handle_t h = {0};
-    uint16_t msg_len_max = GET_LOG_MAX_MSG_LEN;
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(&h, NULL, msg_len_max));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(&h, NULL, GET_LOG_MAX_MSG_LEN));
 }
 
-// Test if function returns LT_PARAM_ERR on invalid curve
+// Test if function returns LT_PARAM_ERR on invalid msg_len_max
 void test__invalid_msg_len_max()
 {
     lt_handle_t h = {0};
-    uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
-
+    uint8_t msg[GET_LOG_MAX_MSG_LEN+1] = {0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(&h, msg, GET_LOG_MAX_MSG_LEN + 1));
 }
 
@@ -87,7 +82,6 @@ void test__invalid_msg_len_max()
 void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
     uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
@@ -103,7 +97,6 @@ uint16_t size_inject_value;
 lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-
     p_l2_rsp->rsp_len = size_inject_value;
 
     return LT_OK;
@@ -113,7 +106,6 @@ lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 void test__correct()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
     uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
 
     size_inject_value = GET_LOG_MAX_MSG_LEN;

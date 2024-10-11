@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -58,7 +58,7 @@ void tearDown(void)
 //---------------------------------------------------------------------------------------------------------//
 
 // Test that all return values can be displayed as a string (for better debug)
-void test_lt_ret_verbose()
+void test__correct()
 {
     TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_STARTUP_MODE", lt_ret_verbose(LT_L1_CHIP_STARTUP_MODE));
     TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_ALARM_MODE", lt_ret_verbose(LT_L1_CHIP_ALARM_MODE));
@@ -77,8 +77,8 @@ void test_lt_ret_verbose()
     TEST_ASSERT_EQUAL_STRING("LT_L2_GEN_ERR", lt_ret_verbose(LT_L2_GEN_ERR));
     TEST_ASSERT_EQUAL_STRING("LT_L2_NO_RESP", lt_ret_verbose(LT_L2_NO_RESP));
     TEST_ASSERT_EQUAL_STRING("LT_L2_UNKNOWN_REQ", lt_ret_verbose(LT_L2_UNKNOWN_REQ));
-    TEST_ASSERT_EQUAL_STRING("LT_L2_DATA_LEN_ERROR", lt_ret_verbose(LT_L2_DATA_LEN_ERROR));
     TEST_ASSERT_EQUAL_STRING("LT_L2_STATUS_NOT_RECOGNIZED", lt_ret_verbose(LT_L2_STATUS_NOT_RECOGNIZED));
+    TEST_ASSERT_EQUAL_STRING("LT_L2_DATA_LEN_ERROR", lt_ret_verbose(LT_L2_DATA_LEN_ERROR));
 
     TEST_ASSERT_EQUAL_STRING("LT_L3_OK", lt_ret_verbose(LT_L3_OK));
     TEST_ASSERT_EQUAL_STRING("LT_L3_FAIL", lt_ret_verbose(LT_L3_FAIL));
@@ -90,6 +90,7 @@ void test_lt_ret_verbose()
     TEST_ASSERT_EQUAL_STRING("LT_OK", lt_ret_verbose(LT_OK));
     TEST_ASSERT_EQUAL_STRING("LT_FAIL", lt_ret_verbose(LT_FAIL));
     TEST_ASSERT_EQUAL_STRING("LT_PARAM_ERR", lt_ret_verbose(LT_PARAM_ERR));
+    TEST_ASSERT_EQUAL_STRING("LT_CRYPTO_ERR", lt_ret_verbose(LT_CRYPTO_ERR));
 
     TEST_ASSERT_EQUAL_STRING("FATAL ERROR, unknown return value", lt_ret_verbose(99));
 }

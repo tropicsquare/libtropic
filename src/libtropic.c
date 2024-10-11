@@ -542,7 +542,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
     }
 
     // Check incomming l3 length
-    if(len != (p_l3_res->res_size - 1))
+    if(len != (p_l3_res->res_size - LT_L3_PING_CMD_SIZE_MIN))
     {
         return LT_FAIL;
     }
@@ -660,13 +660,53 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     return LT_OK;
 }
 
+static bool conf_obj_valid(enum CONFIGURATION_OBJECTS_REGS addr)
+{
+    bool valid = false;
+
+    switch(addr) {
+        case CONFIGURATION_OBJECTS_CFG_START_UP_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR:
+            valid = true;
+        }
+    return valid;
+}
+
 lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj)
 {
+    if(    !h
+        || !conf_obj_valid(addr)
+        // TODO how to check object?
+        ) {
+        return LT_PARAM_ERR;
+    }
     if(h->session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
-    }
-    if(!h) {
-        return LT_PARAM_ERR;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
@@ -695,11 +735,14 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
 
 lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj)
 {
+    if(    !h
+        || !conf_obj_valid(addr)
+        || !obj
+        ) {
+        return LT_PARAM_ERR;
+    }
     if(h->session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
-    }
-    if(!h) {
-        return LT_PARAM_ERR;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
@@ -756,43 +799,6 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
     }
 
     return LT_OK;
-}
-
-static bool conf_obj_valid(enum CONFIGURATION_OBJECTS_REGS addr)
-{
-    bool valid = false;
-
-    switch(addr) {
-        case CONFIGURATION_OBJECTS_CFG_START_UP_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR:
-            valid = true;
-        }
-    return valid;
 }
 
 lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index)
@@ -898,7 +904,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
     }
 
     // Check incomming l3 length
-    if(1 != (p_l3_res->res_size)) {
+    if(LT_L3_R_MEM_DATA_WRITE_RES_SIZE != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
@@ -1004,7 +1010,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     }
 
     // Check incomming l3 length
-    if(LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size - 3u)) {
+    if(LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
@@ -1251,7 +1257,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_EDDSA_SIGN_CMD_SIZE_MIN + msg_len;
+    p_l3_cmd->cmd_size = LT_L3_EDDSA_SIGN_CMD_SIZE_MIN + msg_len - 1;   // -1 Because the LT_L3_EDDSA_SIGN_CMD_SIZE_MIN already includes minimal message size 1B
     p_l3_cmd->cmd_id = LT_L3_EDDSA_SIGN_CMD_ID;
     p_l3_cmd->slot = slot;
     memcpy(p_l3_cmd->msg, msg, msg_len);

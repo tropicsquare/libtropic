@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -51,8 +51,10 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
+// Test if function returns LT_PARAM_ERR on invalid handle
 void test_lt_r_mem_data_read__invalid_handle()
 {
+    lt_handle_t h = {0};
     uint16_t udata_slot;
     uint8_t udata[100];
     uint16_t size;
@@ -60,26 +62,38 @@ void test_lt_r_mem_data_read__invalid_handle()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(NULL, udata_slot, udata, size));
 }
 
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid udata_slot
 void test_lt_r_mem_data_read__invalid_udata_slot()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
+    uint16_t udata_slot;
     uint8_t udata[100];
     uint16_t size;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, 512, udata, size));
 }
 
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid udata
 void test_lt_r_mem_data_read__invalid_udata()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
+    uint16_t udata_slot;
+    uint8_t udata[100];
     uint16_t size;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, 0, NULL, size));
 }
 
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid size
 void test_lt_r_mem_data_read__invalid_size()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     uint16_t udata_slot;
     uint8_t udata[100];
 
@@ -90,12 +104,72 @@ void test_lt_r_mem_data_read__invalid_size()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
 void test_lt_r_mem_data_read__no_session()
 {
     lt_handle_t h = {0};
-    uint16_t udata_slot;
-    uint8_t udata[100];
-    uint16_t size;
+    uint16_t udata_slot = 0;
+    uint8_t udata[444];
+    uint16_t size = 444;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_r_mem_data_read(&h, udata_slot, udata, size));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test___l3_cmd_fail()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+    uint16_t udata_slot = 0;
+    uint8_t udata[444];
+    uint16_t size = 444;
+
+    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_r_mem_data_read(&h, udata_slot, udata, size));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+{
+    struct lt_l3_r_config_read_res_t* p_l3_res = (struct lt_l3_r_config_read_res_t*)&h->l3_buff;
+    p_l3_res->res_size = size_inject_value;
+
+    return LT_OK;
+}
+
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test___len_mismatch()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+    uint16_t udata_slot = 0;
+    uint8_t udata[444];
+    uint16_t size = 444;
+
+    size_inject_value = 4+444+1;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_r_mem_data_read(&h, udata_slot, udata, size));
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_OK when executed correctly
+void test___correct()
+{
+    lt_handle_t h = {0};
+    h.session = SESSION_ON;
+    uint16_t udata_slot = 0;
+    uint8_t udata[444];
+    uint16_t size = 444;
+
+    size_inject_value = 4+444;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_OK, lt_r_mem_data_read(&h, udata_slot, udata, size));
 }

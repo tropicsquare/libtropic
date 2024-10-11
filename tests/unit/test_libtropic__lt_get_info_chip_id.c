@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -51,7 +51,7 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when wrong handle is passed
+// Test if function returns LT_PARAM_ERROR when invalid handle is passed
 void test__invalid_handle()
 {
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
@@ -60,24 +60,21 @@ void test__invalid_handle()
 
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when wrong chip_id is passed
+// Test if function returns LT_PARAM_ERROR when invalid chip_id is passed
 void test__invalid_chip_id()
 {
-    lt_handle_t h;
-    h.session = SESSION_ON;
+    lt_handle_t h = {0};
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(&h, NULL, LT_L2_GET_INFO_CHIP_ID_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when wrong max_len is passed
-void test__invalid_chip_id_len()
+// Test if function returns LT_PARAM_ERROR when invalid max_len is passed
+void test__invalid_max_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
-
-    h.session = SESSION_ON;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(&h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE - 1));
 }
@@ -90,7 +87,6 @@ void test__invalid_chip_id_len()
 void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
@@ -103,10 +99,11 @@ void test__lt_l2_transfer_fail()
 
 //---------------------------------------------------------------------------------------------------------//
 
-lt_ret_t callback_1__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+uint8_t inject_rsp_len;
+lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-    p_l2_rsp->rsp_len = LT_L2_GET_INFO_CHIP_ID_SIZE + 1;
+    p_l2_rsp->rsp_len = inject_rsp_len;
 
     return LT_OK;
 }
@@ -115,31 +112,23 @@ lt_ret_t callback_1__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
 
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    inject_rsp_len = 128+1;
+    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_chip_id(&h, chip_id, sizeof(chip_id)));
 
 }
 
 //---------------------------------------------------------------------------------------------------------//
 
-lt_ret_t callback_2_lt__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
-{
-    struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-    p_l2_rsp->rsp_len = LT_L2_GET_INFO_CHIP_ID_SIZE;
-
-    return LT_OK;
-}
-
 // Test if function returns LT_OK if all went correctly
 void test__correct()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE+1];
 
-    lt_l2_transfer_StubWithCallback(callback_2_lt__lt_l2_transfer);
+    inject_rsp_len = 128;
+    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_OK, lt_get_info_chip_id(&h, chip_id, sizeof(chip_id)));
 }

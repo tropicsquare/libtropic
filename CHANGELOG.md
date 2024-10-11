@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - lt_handshake() function renamed to lt_start_session()
 - TROPIC01 hw wallet example updated - compiles for 32 and 64 bit system
 - Unit tests organization was updated
+- Included lt_l2_api_structs.h and lt_l3_api_structs.h are automatically generated
 
 ### Added
 

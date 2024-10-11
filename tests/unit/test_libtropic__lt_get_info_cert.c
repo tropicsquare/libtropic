@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -51,7 +51,7 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when wrong handle is passed
+// Test if function returns LT_PARAM_ERROR when invalid handle is passed
 void test__invalid_handle()
 {
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
@@ -60,24 +60,21 @@ void test__invalid_handle()
 
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when wrong spect_fw_ver is passed
+// Test if function returns LT_PARAM_ERROR when invalid cert is passed
 void test__invalid_cert()
 {
-    lt_handle_t h;
-    h.session = SESSION_ON;
+    lt_handle_t h = {0};
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(&h, NULL, LT_L2_GET_INFO_REQ_CERT_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when wrong max_len is passed
-void test__invalid_cert_len()
+// Test if function returns LT_PARAM_ERROR when invalid max_len is passed
+void test__invalid_max_len()
 {
-    lt_handle_t h;
-    uint8_t     cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
-
-    h.session = SESSION_ON;
+    lt_handle_t h = {0};
+    uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     for (int i = 0; i < 25; i++) {
         TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert(&h, cert, rand() % LT_L2_GET_INFO_REQ_CERT_SIZE));
@@ -129,7 +126,6 @@ void test__l2_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
@@ -171,7 +167,7 @@ lt_ret_t callback_2__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     lt_l2_transfer_StubWithCallback(callback_2__lt_l2_transfer);
@@ -204,7 +200,7 @@ lt_ret_t callback_3__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 void test__l2_correct()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     for (int i = 0; i < 4; i++) {
