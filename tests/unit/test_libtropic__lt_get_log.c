@@ -94,7 +94,7 @@ void test__lt_l2_transfer_fail()
 
 //---------------------------------------------------------------------------------------------------------//
 uint16_t size_inject_value;
-lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
     p_l2_rsp->rsp_len = size_inject_value;

@@ -54,7 +54,7 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 void test__invalid_handle()
 {
-    uint32_t obj;
+    uint32_t obj = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_write(NULL, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR, obj));
 }
 
@@ -62,7 +62,7 @@ void test__invalid_handle()
 void test__invalid_addr()
 {
     lt_handle_t h = {0};
-    uint32_t obj;
+    uint32_t obj = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_write(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR +1, obj));
 }
 

@@ -54,7 +54,6 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 void test__invalid_handle()
 {
-    lt_handle_t h = {0};
     uint8_t serial_code;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_serial_code_get(NULL, &serial_code, SERIAL_CODE_SIZE));
 }
@@ -112,7 +111,7 @@ void test__lt_l3_cmd_fail()
 //---------------------------------------------------------------------------------------------------------//
 
 uint16_t size_inject_value;
-lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_mcounter_get_res_t* p_l3_res = (struct lt_l3_mcounter_get_res_t*)&h->l3_buff;
     p_l3_res->res_size = size_inject_value;

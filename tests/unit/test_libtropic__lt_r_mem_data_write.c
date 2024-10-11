@@ -54,8 +54,7 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 void test__invalid_handle()
 {
-    lt_handle_t h = {0};
-    uint16_t udata_slot;
+    uint16_t udata_slot = 0;
     uint8_t udata[100];
     uint16_t size = 100;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(NULL, udata_slot, udata, size));
@@ -67,7 +66,6 @@ void test__invalid_handle()
 void test__invalid_udata_slot()
 {
     lt_handle_t h = {0};
-    uint16_t udata_slot;
     uint8_t udata[100];
     uint16_t size = 100;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(&h, 512, udata, size));
@@ -79,8 +77,6 @@ void test__invalid_udata_slot()
 void test__invalid_udata()
 {
     lt_handle_t h = {0};
-    uint16_t udata_slot;
-    uint8_t udata[100];
     uint16_t size = 100;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(&h, 0, NULL, size));
 }
@@ -91,7 +87,7 @@ void test__invalid_udata()
 void test__invalid_size()
 {
     lt_handle_t h = {0};
-    uint16_t udata_slot;
+    uint16_t udata_slot = 0;
     uint8_t udata[100];
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_write(&h, udata_slot, udata, 445));

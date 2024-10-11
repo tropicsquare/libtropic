@@ -110,7 +110,7 @@ void test__lt_l3_cmd_fail()
 
 //---------------------------------------------------------------------------------------------------------//
 uint16_t size_inject_value;
-lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_i_config_read_res_t* p_l3_res = (struct lt_l3_i_config_read_res_t*)&h->l3_buff;
     p_l3_res->res_size = size_inject_value;

@@ -153,7 +153,7 @@ void test_lt_ecc_key_read__l3_fail()
 uint16_t size_inject_value;
 lt_ecc_curve_type_t curve_inject_valuet_value;
 
-lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls)
+lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
     p_l3_res->res_size = size_inject_value;

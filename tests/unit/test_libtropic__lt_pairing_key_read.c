@@ -65,7 +65,6 @@ void test__invalid_handle()
 void test__invalid_pubkey()
 {
     lt_handle_t h = {0};
-    uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(&h, NULL, slot));
 }
@@ -77,7 +76,6 @@ void test__invalid_slot()
 {
     lt_handle_t h = {0};
     uint8_t pubkey[32] = {0};
-    uint8_t slot = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(&h, pubkey, PAIRING_KEY_SLOT_INDEX_3+1));
 }
 
