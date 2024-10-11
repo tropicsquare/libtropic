@@ -71,8 +71,8 @@ void test_lt_ecc_key_read__invalid_slot()
     ecc_key_origin_t origin;
     uint8_t key[64];
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, key, 64, &curve, &origin));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, key, 64, &curve, &origin));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_0 - 1, key, 64, &curve, &origin));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_31 + 1, key, 64, &curve, &origin));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid key

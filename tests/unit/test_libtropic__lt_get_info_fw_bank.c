@@ -91,8 +91,8 @@ void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
+
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
 
     for(int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
@@ -141,7 +141,6 @@ void test__correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE+1];
 
     lt_l2_transfer_StubWithCallback(callback_2__lt_l2_transfer);

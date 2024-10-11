@@ -51,6 +51,72 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
+
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
+{
+    uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
+    uint16_t msg_len_max = GET_LOG_MAX_MSG_LEN;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(NULL, msg, msg_len_max));
+}
+
+// Test if function returns LT_PARAM_ERR on invalid slot
+void test__invalid_log_msg()
+{
+    lt_handle_t h = {0};
+    uint16_t msg_len_max = GET_LOG_MAX_MSG_LEN;
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(&h, NULL, msg_len_max));
+}
+
+// Test if function returns LT_PARAM_ERR on invalid curve
+void test__invalid_msg_len_max()
+{
+    lt_handle_t h = {0};
+    uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
+
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_log(&h, msg, GET_LOG_MAX_MSG_LEN + 1));
+}
+
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
+
+// Test if function propagates l2 error if l2 transfer fails
+void test__lt_l2_transfer_fail()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+    uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
+
+    lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
+
+    for(int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_get_log(&h, msg, GET_LOG_MAX_MSG_LEN));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------//
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    p_l2_rsp->rsp_len = size_inject_value;
+
+    return LT_OK;
+}
+
+// Test if function returns LT_OK if all went correctly
+void test__correct()
+{
+    lt_handle_t h = {0};
+    h.session     = SESSION_ON;
+    uint8_t msg[GET_LOG_MAX_MSG_LEN] = {0};
+
+    size_inject_value = GET_LOG_MAX_MSG_LEN;
+    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
+    TEST_ASSERT_EQUAL(LT_OK, lt_get_log(&h, msg, GET_LOG_MAX_MSG_LEN));
+}

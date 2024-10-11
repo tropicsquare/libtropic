@@ -95,7 +95,7 @@ void test__cert_without_key()
 
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_FAIL when certificate buffer does not contain identificator for stpub key
+// Test if function returns LT_OK for some correct inputs
 void test__correct()
 {
     uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};

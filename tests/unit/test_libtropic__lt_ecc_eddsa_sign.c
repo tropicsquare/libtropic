@@ -65,14 +65,13 @@ void test__invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test__invalid_slot()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
     uint8_t msg[1] = {0};
     uint8_t rs[64] = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MIN - 1, msg, 1, rs, 64));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, LT_L3_ECC_KEY_GENERATE_SLOT_MAX + 1, msg, 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_0 - 1, msg, 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_31 + 1, msg, 1, rs, 64));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -80,9 +79,8 @@ void test__invalid_slot()
 // Test if function returns LT_PARAM_ERR on invalid msg
 void test__invalid_msg()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
     uint8_t rs[64];
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, NULL, 1, rs, 64));
@@ -93,14 +91,13 @@ void test__invalid_msg()
 // Test if function returns LT_PARAM_ERR on invalid msg_len
 void test__invalid_msg_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
-    uint8_t msg[LT_L3_EDDSA_SIGN_MSG_LEN_MAX + 1] = {0};
+    uint8_t msg[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1] = {0};
     uint8_t rs[64] = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_MSG_LEN_MAX + 1, rs, 64));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_MSG_LEN_MIN - 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN - 1, rs, 64));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -108,9 +105,8 @@ void test__invalid_msg_len()
 // Test if function returns LT_PARAM_ERR on invalid rs
 void test__invalid_rs()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
     uint8_t msg[1] = {0};
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, 1, NULL, 64));
@@ -121,9 +117,8 @@ void test__invalid_rs()
 // Test if function returns LT_PARAM_ERR on invalid rs_len
 void test__invalid_rs_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
     uint8_t msg[1] = {0};
     uint8_t rs[64] = {0};
 
@@ -141,7 +136,6 @@ void test__no_session()
 {
     lt_handle_t h = {0};
     h.session     = 0;
-
     uint8_t     msg[10] = {0};
     uint8_t     rs[64] = {0};
 
@@ -155,7 +149,6 @@ void test__lt_l3_cmd_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t     msg[10] = {0};
     uint8_t     rs[64] = {0};
 

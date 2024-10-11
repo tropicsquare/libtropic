@@ -110,7 +110,7 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         } else {
             req->req_len = L2_CHUNK_MAX_DATA_SIZE;
         }
-        memcpy(req->body, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
+        memcpy(req->cmd_ciphertext, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
 
         add_crc(req);
 
@@ -156,13 +156,13 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         switch (ret) {
             case LT_L2_RES_CONT:
                 // Copy content of l2 into certain offset of l3 buffer
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->rsp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->res_ciphertext, resp->rsp_len);
                 offset += resp->rsp_len;
                 loops++;
                 break;
             case LT_OK:
                 // This was last l2 frame of l3 packet, copy it and return
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->rsp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->res_ciphertext, resp->rsp_len);
                 return LT_OK;
             default:
                 // Any other L2 packet's status is not expected

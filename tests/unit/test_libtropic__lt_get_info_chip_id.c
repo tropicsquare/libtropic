@@ -91,8 +91,8 @@ void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
+
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
 
     for(int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
@@ -106,7 +106,6 @@ void test__lt_l2_transfer_fail()
 lt_ret_t callback_1__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-
     p_l2_rsp->rsp_len = LT_L2_GET_INFO_CHIP_ID_SIZE + 1;
 
     return LT_OK;
@@ -117,7 +116,6 @@ void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
 
     lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
@@ -130,7 +128,6 @@ void test__resp_size_mismatch()
 lt_ret_t callback_2_lt__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-
     p_l2_rsp->rsp_len = LT_L2_GET_INFO_CHIP_ID_SIZE;
 
     return LT_OK;
@@ -141,7 +138,6 @@ void test__correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE+1];
 
     lt_l2_transfer_StubWithCallback(callback_2_lt__lt_l2_transfer);

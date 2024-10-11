@@ -163,7 +163,6 @@ void test__l2_fail()
 lt_ret_t callback_2__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-
     p_l2_rsp->rsp_len = (LT_L2_GET_INFO_REQ_CERT_SIZE/4) + 1;
 
     return LT_OK;
@@ -173,7 +172,6 @@ void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     lt_l2_transfer_StubWithCallback(callback_2__lt_l2_transfer);
@@ -186,7 +184,6 @@ void test__resp_size_mismatch()
 lt_ret_t callback_3__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
 {
     struct lt_l2_get_info_rsp_t* p_l2_rsp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
-
     p_l2_rsp->rsp_len = 128;
 
     switch(cmock_num_calls) {
@@ -208,7 +205,6 @@ void test__l2_correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
-
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     for (int i = 0; i < 4; i++) {
