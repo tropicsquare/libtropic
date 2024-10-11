@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -60,7 +60,6 @@ void test__invalid_handle()
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
-
 
 // Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
 void test___no_session()

@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -56,7 +56,6 @@ void test_lt_ecc_key_erase__invalid_handle()
 {
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(NULL, ECC_SLOT_0, curve, key));
 }
 
@@ -66,7 +65,6 @@ void test_lt_ecc_key_erase__invalid_slot()
     lt_handle_t h = {0};
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0 - 1, curve, key));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_31 + 1, curve, key));
 }
@@ -76,7 +74,6 @@ void test_lt_ecc_key_erase__invalid_curve()
 {
     lt_handle_t h = {0};
     uint8_t key[32] = {0};
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 0, key));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 3, key));
 }
@@ -86,7 +83,6 @@ void test_lt_ecc_key_erase__invalid_key()
 {
     lt_handle_t h = {0};
     lt_ecc_curve_type_t curve = CURVE_ED25519;
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, curve, NULL));
 }
 
@@ -110,7 +106,7 @@ void test_lt_ecc_key_erase__no_session()
 void test_lt_ecc_key_read__l3_fail()
 {
     lt_handle_t h =  {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
 
@@ -136,12 +132,11 @@ lt_ret_t callback_lt_ecc_key_store_lt_l3_cmd(lt_handle_t *h, int cmock_num_calls
 void test_lt_ecc_key_read__res_size_mismatch()
 {
     lt_handle_t h =  {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
 
     lt_l3_cmd_Stub(callback_lt_ecc_key_store_lt_l3_cmd);
-
     TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
 }
 
@@ -150,12 +145,11 @@ void test_lt_ecc_key_read__res_size_mismatch()
 void test_lt_ecc_key_read__correct()
 {
     lt_handle_t h =  {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
     lt_ecc_curve_type_t curve = CURVE_ED25519;
     uint8_t key[32] = {0};
 
     size_mock = 1;
     lt_l3_cmd_Stub(callback_lt_ecc_key_store_lt_l3_cmd);
-
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
 }

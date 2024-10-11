@@ -31,7 +31,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -52,6 +52,70 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
+// Test if function returns LT_PARAM_ERROR when invalid handle is passed
+void test__invalid_handle()
+{
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(NULL, LT_L2_SLEEP_KIND_DEEP_SLEEP));
+}
+
+// Test if function returns LT_PARAM_ERROR when invalid sleep_kind is passed
+void test__invalid_sleep_kind()
+{
+    lt_handle_t h = {0};
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_DEEP_SLEEP+1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_DEEP_SLEEP-1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP+1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP-1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, 0));
+}
+
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
+
+// Test if function propagates l2 error if l2 transfer fails
+void test__lt_l2_transfer_fail()
+{
+    lt_handle_t h = {0};
+
+    lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
+
+    for(int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+uint16_t inject_rsp_len;
+lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int cmock_num_calls)
+{
+    struct lt_l2_encrypted_session_abt_rsp_t* p_l2_rsp = (struct lt_l2_encrypted_session_abt_rsp_t*)&h->l2_buff;
+    p_l2_rsp->rsp_len = inject_rsp_len;
+
+    return LT_OK;
+}
+
+// Test if function fails on size mismatch in l2 response
+void test__resp_size_mismatch()
+{
+    lt_handle_t h = {0};
+
+    inject_rsp_len = 0+1;
+    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
+
+}
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_OK if all went correctly
+void test__correct()
+{
+    lt_handle_t h = {0};
+
+    inject_rsp_len = 0;
+    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
+    TEST_ASSERT_EQUAL(LT_OK, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
+}

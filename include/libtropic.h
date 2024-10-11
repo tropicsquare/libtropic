@@ -354,7 +354,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximum number of random bytes requested at once */
-#define RANDOM_VALUE_GET_LEN_MAX         L2_CHUNK_MAX_DATA_SIZE
+#define RANDOM_VALUE_GET_LEN_MAX         255//L2_CHUNK_MAX_DATA_SIZE
 
 /**
  * @brief Get number of random bytes
@@ -439,13 +439,13 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
  *
  * @param h           Device's handle
  * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
- * @param msg_hash    Buffer containing hash of a message
- * @param msg_hash_len Length of hash's buffer should be 32B
+ * @param msg         Buffer containing a message
+ * @param msg_len     Length of msg's buffer
  * @param rs          Buffer for storing a signature in a form of R and S bytes
  * @param rs_len      Length of rs buffer should be 64B
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg_hash, const uint16_t msg_hash_len, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device

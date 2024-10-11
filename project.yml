@@ -23,6 +23,7 @@
     - ./src/**
     - ./vendor/trezor_crypto/**
     - ./hal/**
+    - ./hal/crypto/trezor_crypto/*
   :support:
     - tests/unit/support
   :libraries: []

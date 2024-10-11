@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -62,9 +62,8 @@ void test__invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test__invalid_slot()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_0 - 1));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_31 + 1));
 }
@@ -77,7 +76,6 @@ void test__invalid_slot()
 void test__no_session()
 {
     lt_handle_t h = {0};
-    h.session     = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, ECC_SLOT_1));
 }
@@ -88,7 +86,7 @@ void test__no_session()
 void test__lt_l3_cmd_fail()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
@@ -134,6 +132,7 @@ void test__correct()
 {
     lt_handle_t h = {0};
     h.session     = SESSION_ON;
+
     size_inject_value = 1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
     TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, ECC_SLOT_1));

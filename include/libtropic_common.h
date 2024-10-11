@@ -35,6 +35,8 @@ typedef uint32_t u32;
 
 /** Size of RES_SIZE field */
 #define L3_RES_SIZE_SIZE sizeof(uint16_t)
+/** Size of CMD_SIZE field */
+#define L3_CMD_SIZE_SIZE sizeof(uint16_t)
 /** Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
 /** Maximal size of l3 RES/RSP DATA field */

@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -65,7 +65,7 @@ void test__invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test__invalid_slot()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[1] = {0};
     uint8_t rs[64] = {0};
@@ -79,7 +79,7 @@ void test__invalid_slot()
 // Test if function returns LT_PARAM_ERR on invalid msg
 void test__invalid_msg()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t rs[64] = {0};
 
@@ -91,7 +91,7 @@ void test__invalid_msg()
 // Test if function returns LT_PARAM_ERR on invalid msg_len
 void test__invalid_msg_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1] = {0};
     uint8_t rs[64] = {0};
@@ -104,7 +104,7 @@ void test__invalid_msg_len()
 // Test if function returns LT_PARAM_ERR on invalid rs
 void test__invalid_rs()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[1] = {0};
 
@@ -116,7 +116,7 @@ void test__invalid_rs()
 // Test if function returns LT_PARAM_ERR on invalid rs_len
 void test__invalid_rs_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[1] = {0};
     uint8_t rs[64] = {0};
@@ -134,8 +134,6 @@ void test__invalid_rs_len()
 void test__no_session()
 {
     lt_handle_t h = {0};
-    h.session = 0;
-
     uint8_t msg[10] = {0};
     uint8_t rs[64] = {0};
 
@@ -148,12 +146,11 @@ void test__no_session()
 void test__lt_l3_cmd_fail()
 {
     lt_handle_t h = {0};
-    h.session     = SESSION_ON;
-
-    uint8_t                msg[10] = {0};
-    uint8_t                rs[64]  = {0};
-    lt_crypto_sha256_ctx_t hctx         = {0};
-    uint8_t                msg_hash[32] = {0};
+    h.session = SESSION_ON;
+    uint8_t msg[10] = {0};
+    uint8_t rs[64] = {0};
+    lt_crypto_sha256_ctx_t hctx = {0};
+    uint8_t msg_hash[32] = {0};
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
@@ -182,7 +179,7 @@ void test__res_size_mismatch()
     lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[10] = {0};
-    uint8_t rs[64]  = {0};
+    uint8_t rs[64] = {0};
     lt_crypto_sha256_ctx_t hctx = {0};
     uint8_t msg_hash[32] = {0};
 
@@ -218,7 +215,7 @@ void test__correct()
     lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg[10] = {0};
-    uint8_t rs[64]  = {0};
+    uint8_t rs[64] = {0};
     lt_crypto_sha256_ctx_t hctx = {0};
     uint8_t msg_hash[32] = {0};
 

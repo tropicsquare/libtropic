@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -54,23 +54,20 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 void test_lt_ecc_key_read__invalid_handle()
 {
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
     uint8_t key[64];
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(NULL, ECC_SLOT_1, key, 64, &curve, &origin));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test_lt_ecc_key_read__invalid_slot()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
     uint8_t key[64];
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_0 - 1, key, 64, &curve, &origin));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_31 + 1, key, 64, &curve, &origin));
 }
@@ -78,25 +75,21 @@ void test_lt_ecc_key_read__invalid_slot()
 // Test if function returns LT_PARAM_ERR on invalid key
 void test_lt_ecc_key_read__invalid_key()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
-
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, NULL, 64, &curve, &origin));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid key_len
 void test_lt_ecc_key_read__invalid_key_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
-    uint8_t key[64];
-
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
+    uint8_t key[64] = {0};
     for (int i = 0; i < 25; i++) {
         TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, key, rand() % 64, &curve, &origin));
     }
@@ -105,24 +98,20 @@ void test_lt_ecc_key_read__invalid_key_len()
 // Test if function returns LT_PARAM_ERR on invalid curve
 void test_lt_ecc_key_read__invalid_curve()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
-    ecc_key_origin_t origin;
-    uint8_t key[64];
-
+    ecc_key_origin_t origin = 0;
+    uint8_t key[64] ={0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, key, 64, NULL, &origin));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid origin
 void test_lt_ecc_key_read__invalid_origin()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
-    lt_ecc_curve_type_t curve;
-    uint8_t key[64];
-
+    lt_ecc_curve_type_t curve = 0;
+    uint8_t key[64] = {0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_read(&h, ECC_SLOT_1, key, 64, &curve, NULL));
 }
 
@@ -134,10 +123,9 @@ void test_lt_ecc_key_read__invalid_origin()
 void test_lt_ecc_key_read__no_session()
 {
     lt_handle_t h =  {0};
-    h.session     =  0;
-    uint8_t          key[64];
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    uint8_t key[64] = {0};
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_read(&h, ECC_SLOT_1, key, sizeof(key), &curve, &origin));
 }
@@ -149,7 +137,6 @@ void test_lt_ecc_key_read__l3_fail()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-
     uint8_t          key[64] = {0};
     lt_ecc_curve_type_t curve = 0;
     ecc_key_origin_t origin = 0;
@@ -180,10 +167,9 @@ void test_lt_ecc_key_read__ed25519_size_mismatch()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-
     uint8_t          key[64] = {0};
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
 
     lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
 
@@ -209,10 +195,9 @@ void test_lt_ecc_key_read__correct()
 {
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
-
     uint8_t          key[64] = {0};
-    lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_curve_type_t curve = 0;
+    ecc_key_origin_t origin = 0;
 
     lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
 

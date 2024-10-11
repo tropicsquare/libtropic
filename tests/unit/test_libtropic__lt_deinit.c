@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -54,8 +54,7 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 void test__invalid_handle()
 {
-    int ret = lt_deinit(NULL);
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_deinit(NULL));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -68,9 +67,7 @@ void test__lt_l1_deinit_fail()
     lt_handle_t h = {0};
 
     lt_l1_deinit_ExpectAndReturn(&h, LT_FAIL);
-
-    lt_ret_t ret = lt_deinit(&h);
-    TEST_ASSERT_EQUAL(LT_FAIL, ret);
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_deinit(&h));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -81,7 +78,5 @@ void test__correct()
     lt_handle_t h = {0};
 
     lt_l1_deinit_ExpectAndReturn(&h, LT_OK);
-
-    lt_ret_t ret = lt_deinit(&h);
-    TEST_ASSERT_EQUAL(LT_OK, ret);
+    TEST_ASSERT_EQUAL(LT_OK, lt_deinit(&h));
 }

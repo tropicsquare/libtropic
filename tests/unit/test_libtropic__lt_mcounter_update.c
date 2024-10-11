@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -55,7 +55,6 @@ void tearDown(void)
 void test__invalid_handle()
 {
     uint32_t mcounter_value = 100;
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_update(NULL, MCOUNTER_INDEX_0));
 }
 
@@ -66,7 +65,6 @@ void test__invalid_mcounter_index()
 {
     lt_handle_t h = {0};
     uint32_t mcounter_value = 100;
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_update(&h, MCOUNTER_INDEX_0-1));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_update(&h, MCOUNTER_INDEX_15+1));
 }
