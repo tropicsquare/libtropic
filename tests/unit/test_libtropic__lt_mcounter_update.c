@@ -54,8 +54,6 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 void test__invalid_handle()
 {
-    uint32_t mcounter_value = 100;
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_update(NULL, MCOUNTER_INDEX_0));
 }
 
@@ -65,7 +63,6 @@ void test__invalid_handle()
 void test__invalid_mcounter_index()
 {
     lt_handle_t h = {0};
-    uint32_t mcounter_value = 100;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_update(&h, MCOUNTER_INDEX_0-1));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_update(&h, MCOUNTER_INDEX_15+1));

@@ -77,7 +77,6 @@ void test___invalid_slot()
 void test___no_session()
 {
     lt_handle_t h =  {0};
-    uint8_t slot = 0;
 
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
 }
@@ -89,7 +88,6 @@ void test___l3_cmd_fail()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t slot = 0;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
@@ -114,7 +112,6 @@ void test___len_mismatch()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t slot = 0;
 
     size_inject_value = 1+1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
@@ -128,7 +125,6 @@ void test___correct()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t slot = 0;
 
     size_inject_value = 1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);

@@ -53,7 +53,6 @@ void tearDown(void)
 
 void test_lt_r_mem_data_read__invalid_handle()
 {
-    lt_handle_t h;
     uint16_t udata_slot;
     uint8_t udata[100];
     uint16_t size;
@@ -64,7 +63,6 @@ void test_lt_r_mem_data_read__invalid_handle()
 void test_lt_r_mem_data_read__invalid_udata_slot()
 {
     lt_handle_t h;
-    uint16_t udata_slot;
     uint8_t udata[100];
     uint16_t size;
 
@@ -74,8 +72,6 @@ void test_lt_r_mem_data_read__invalid_udata_slot()
 void test_lt_r_mem_data_read__invalid_udata()
 {
     lt_handle_t h;
-    uint16_t udata_slot;
-    uint8_t udata[100];
     uint16_t size;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, 0, NULL, size));
@@ -86,7 +82,6 @@ void test_lt_r_mem_data_read__invalid_size()
     lt_handle_t h;
     uint16_t udata_slot;
     uint8_t udata[100];
-    uint16_t size;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_read(&h, udata_slot, udata, 445));
 }
