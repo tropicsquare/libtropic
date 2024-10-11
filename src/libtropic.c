@@ -1004,7 +1004,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     }
 
     // Check incomming l3 length
-    if(LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size - 3)) {
+    if(LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size - 3u)) {
         return LT_FAIL;
     }
 
