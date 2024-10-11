@@ -56,8 +56,6 @@ void test_lt_r_mem_data_erase__invalid_handle()
 {
     lt_handle_t h = {0};
     uint16_t udata_slot;
-    uint8_t udata[100];
-    uint16_t size;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_mem_data_erase(NULL, udata_slot));
 }

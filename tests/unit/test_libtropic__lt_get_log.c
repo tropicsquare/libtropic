@@ -86,7 +86,7 @@ void test__lt_l2_transfer_fail()
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
 
-    for(int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
+    for(unsigned int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_get_log(&h, msg, GET_LOG_MAX_MSG_LEN));
     }
