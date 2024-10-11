@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -63,9 +63,7 @@ void test___invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test___invalid_slot()
 {
-    lt_handle_t h;
-    h.session = SESSION_ON;
-
+    lt_handle_t h = {0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_3 + 1));
 }
 

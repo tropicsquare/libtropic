@@ -96,7 +96,7 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h->l3_buff;
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
-    uint16_t chunk_num      = ((L3_RES_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
+    uint16_t chunk_num      = ((L3_CMD_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
     // Calculate the length of the last
     uint16_t chunk_last_len = ((L3_RES_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) % L2_CHUNK_MAX_DATA_SIZE);
 
@@ -110,7 +110,7 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         } else {
             req->req_len = L2_CHUNK_MAX_DATA_SIZE;
         }
-        memcpy(req->cmd_ciphertext, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
+        memcpy(req->l3_chunk, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
 
         add_crc(req);
 
@@ -156,13 +156,13 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         switch (ret) {
             case LT_L2_RES_CONT:
                 // Copy content of l2 into certain offset of l3 buffer
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->res_ciphertext, resp->rsp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
                 offset += resp->rsp_len;
                 loops++;
                 break;
             case LT_OK:
                 // This was last l2 frame of l3 packet, copy it and return
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->res_ciphertext, resp->rsp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
                 return LT_OK;
             default:
                 // Any other L2 packet's status is not expected

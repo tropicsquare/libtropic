@@ -602,13 +602,13 @@ static int session_H3(void)
     LT_ASSERT(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_0, msg, 4, rs, 64));
 
     LOG_OUT_SESSION("%s", "lt_ecc_key_read() ");
-    uint8_t slot_1_pubkey[64];
+    uint8_t slot_0_pubkey[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
-    LT_ASSERT(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_0, slot_1_pubkey, 64, &curve, &origin));
+    LT_ASSERT(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_0, slot_0_pubkey, 64, &curve, &origin));
 
     LOG_OUT_SESSION("%s", "lt_ecc_eddsa_sig_verify() ");
-    LT_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg, 4, slot_1_pubkey, rs));
+    LT_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg, 4, slot_0_pubkey, rs));
 
     // TODO generate key
     LOG_OUT_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_8");
@@ -617,6 +617,10 @@ static int session_H3(void)
     LT_ASSERT(LT_OK, lt_ecc_key_generate(&h, ECC_SLOT_16, CURVE_ED25519));
     LOG_OUT_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_24");
     LT_ASSERT(LT_OK, lt_ecc_key_generate(&h, ECC_SLOT_24, CURVE_ED25519));
+
+    LOG_OUT_SESSION("%s", "lt_random_get() RANDOM_VALUE_GET_LEN_MAX == 255");
+    uint8_t buff[RANDOM_VALUE_GET_LEN_MAX];
+    LT_ASSERT(LT_OK, lt_random_get(&h, buff, RANDOM_VALUE_GET_LEN_MAX));
 
     // TODO write r mem data
     LOG_OUT_SESSION("%s", "lt_r_mem_data_erase() slot 0 ");

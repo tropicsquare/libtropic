@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -61,7 +61,7 @@ void test_lt_ecc_key_generate__invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test_lt_ecc_key_generate__invalid_slot()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
 
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_0 - 1, CURVE_ED25519));
@@ -71,9 +71,8 @@ void test_lt_ecc_key_generate__invalid_slot()
 // Test if function returns LT_PARAM_ERR on invalid curve
 void test_lt_ecc_key_generate__invalid_curve()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
-
     // Test random values.
     int curve;
     for (int i = 0; i < 25; i++) {
@@ -82,7 +81,6 @@ void test_lt_ecc_key_generate__invalid_curve()
             TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_1, curve));
         }
     }
-
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_P256-1));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519+1));
 }
@@ -156,7 +154,6 @@ void test_lt_ecc_key_generate__correct()
 
     size_inject_value = 1;
     lt_l3_cmd_Stub(callback_lt_ecc_key_generate_lt_l3_cmd);
-
     for (ecc_slot_t slot = ECC_SLOT_1; slot < ECC_SLOT_31; slot++) {
         TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_generate(&h, slot, CURVE_ED25519));
         TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_generate(&h, slot, CURVE_P256));

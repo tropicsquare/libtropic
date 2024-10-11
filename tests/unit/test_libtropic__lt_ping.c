@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -64,7 +64,7 @@ void test__invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid msg_out
 void test__invalid_msg_out()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg_in;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, NULL, &msg_in, 0));
@@ -75,7 +75,7 @@ void test__invalid_msg_out()
 // Test if function returns LT_PARAM_ERR on invalid msg_in
 void test__invalid_msg_in()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t msg_out = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, &msg_out, NULL, 0));
@@ -86,7 +86,7 @@ void test__invalid_msg_in()
 // Test if function returns LT_PARAM_ERR on invalid len
 void test__invalid_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     h.session = SESSION_ON;
 
     uint8_t msg_out, msg_in;

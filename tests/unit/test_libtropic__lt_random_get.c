@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -51,24 +51,28 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_random_get__invalid_handle()
+// Test if function returns LT_PARAM_ERR on invalid handle
+void test__invalid_handle()
 {
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(NULL, (uint8_t*)"", 0));
 }
 
-void test_lt_random_get__invalid_buff()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid buff
+void test__invalid_buff()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(&h, NULL, 0));
 }
 
-void test_lt_random_get__invalid_len()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERR on invalid len
+void test__invalid_len()
 {
-    lt_handle_t h;
+    lt_handle_t h = {0};
     uint16_t len;
-
-    h.session = SESSION_ON;
-
     for (int i = 0; i < 25; i++) {
         len = RANDOM_VALUE_GET_LEN_MAX + 1;
         len += rand() % (UINT16_MAX - len);
@@ -80,7 +84,8 @@ void test_lt_random_get__invalid_len()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void test_lt_random_get__no_session()
+// Test if function returns LT_HOST_NO_SESSION when handle's variable 'session' is not set to SESSION_ON
+void test__no_session()
 {
     uint8_t     buff[200];
     lt_handle_t h =  {0};
@@ -89,30 +94,36 @@ void test_lt_random_get__no_session()
     TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_random_get(&h, buff, sizeof(buff)));
 }
 
-void test_lt_random_get__l3_fail()
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_FAIL when lt_l3() fails
+void test__l3_fail()
 {
     uint8_t     buff[10];
     lt_handle_t h =  {0};
     h.session     = SESSION_ON;
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
+
     for (size_t i = 0; i < 4; i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_random_get(&h, buff, sizeof(buff)));
     }
 }
 
-uint16_t lt_random_get_cmd_size_inject_value;
+//---------------------------------------------------------------------------------------------------------//
 
-lt_ret_t callback_lt_random_get_lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+uint16_t size_inject_value;
+lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
 {
     struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
-    p_l3_res->res_size = lt_random_get_cmd_size_inject_value;
+    p_l3_res->res_size = size_inject_value;
 
     return LT_OK;
 }
 
-void test_lt_random_get__len_mismatch()
+// Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
+void test__len_mismatch()
 {
     const int                buff_max_size = 200;
     uint8_t                  buff[buff_max_size];
@@ -128,28 +139,23 @@ void test_lt_random_get__len_mismatch()
             rand_len_offset++;
         }
 
-        lt_random_get_cmd_size_inject_value = (uint16_t)rand_size;
+        size_inject_value = (uint16_t)rand_size;
 
-        lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
+        lt_l3_cmd_Stub(callback__lt_l3_cmd);
         TEST_ASSERT_EQUAL(LT_FAIL, lt_random_get(&h, buff, (uint16_t)(rand_size + rand_len_offset)));
     }
 }
-/*
-void test_lt_random_get__correct()
+
+//---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_OK when executed correctly
+void test__correct()
 {
-    const int       buff_max_size = 200;
-    uint8_t         buff[200];
-    int             cmd_size;
-
     lt_handle_t h =  {0};
-    h.session     = SESSION_ON;
+    h.session = SESSION_ON;
+    uint8_t buff[RANDOM_VALUE_GET_LEN_MAX];
 
-    // Making this at least 4 to not underflow in cmd_size - 4.
-    cmd_size = (rand() % (buff_max_size - 4)) + 4;
-
-    // No correct value will be set for us as in ping, so injecting again...
-    lt_random_get_cmd_size_inject_value = (uint16_t)cmd_size;
-    lt_l3_cmd_Stub(callback_lt_random_get_lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, (uint16_t)(cmd_size - 4)));
+    size_inject_value = RANDOM_VALUE_GET_LEN_MAX + LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN;
+    lt_l3_cmd_Stub(callback__lt_l3_cmd);
+    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, RANDOM_VALUE_GET_LEN_MAX));
 }
-*/

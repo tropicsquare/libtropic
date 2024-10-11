@@ -30,7 +30,7 @@
 
 void setUp(void)
 {
-    char buffer[100];
+    char buffer[100] = {0};
     #ifdef RNG_SEED
         srand(RNG_SEED);
     #else
@@ -64,9 +64,7 @@ void test__invalid_handle()
 // Test if function returns LT_PARAM_ERR on invalid pubkey
 void test__invalid_pubkey()
 {
-    lt_handle_t h;
-    h.session = SESSION_ON;
-
+    lt_handle_t h = {0};
     uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(&h, NULL, slot));
@@ -77,9 +75,7 @@ void test__invalid_pubkey()
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test__invalid_slot()
 {
-    lt_handle_t h;
-    h.session = SESSION_ON;
-
+    lt_handle_t h = {0};
     uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(&h, pubkey, PAIRING_KEY_SLOT_INDEX_3 + 1));
