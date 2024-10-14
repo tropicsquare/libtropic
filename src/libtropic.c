@@ -1439,20 +1439,54 @@ lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t
 
 const char *lt_ret_verbose(lt_ret_t ret) {
     switch(ret) {
-        // Chip MODES
+        // libtropic
+        case LT_OK:
+            return "LT_OK";
+        case LT_FAIL:
+            return "LT_FAIL";
+        case LT_HOST_NO_SESSION:
+            return "LT_HOST_NO_SESSION";
+        case LT_PARAM_ERR:
+            return "LT_PARAM_ERR";
+        case LT_CRYPTO_ERR:
+            return "LT_CRYPTO_ERR";
+        // L1
+        case LT_L1_SPI_ERROR:
+            return "LT_L1_SPI_ERROR";
+        case LT_L1_DATA_LEN_ERROR:
+            return "LT_L1_DATA_LEN_ERROR";
         case LT_L1_CHIP_ALARM_MODE:
             return "LT_L1_CHIP_ALARM_MODE";
         case LT_L1_CHIP_STARTUP_MODE:
             return "LT_L1_CHIP_STARTUP_MODE";
         case LT_L1_CHIP_BUSY:
             return "LT_L1_CHIP_BUSY";
-
-        // L1
-        case LT_L1_SPI_ERROR:
-            return "LT_L1_SPI_ERROR";
-        case LT_L1_DATA_LEN_ERROR:
-            return "LT_L1_DATA_LEN_ERROR";
-
+        // L3 custom
+        case LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL:
+            return "LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL";
+        case LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED:
+            return "LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED";
+        case LT_L3_ECC_INVALID_KEY:
+            return "LT_L3_ECC_INVALID_KEY";
+        case LT_L3_MCOUNTER_UPDATE_UPDATE_ERR:
+            return "LT_L3_MCOUNTER_UPDATE_UPDATE_ERR";
+        case LT_L3_COUNTER_INVALID:
+            return "LT_L3_COUNTER_INVALID";
+        case LT_L3_PAIRING_KEY_EMPTY:
+            return "LT_L3_PAIRING_KEY_EMPTY";
+        case LT_L3_PAIRING_KEY_INVALID:
+            return "LT_L3_PAIRING_KEY_INVALID";
+        // L3 universal
+        case LT_L3_OK:
+            return "LT_L3_OK";
+        case LT_L3_FAIL:
+            return "LT_L3_FAIL";
+        case LT_L3_UNAUTHORIZED:
+            return "LT_L3_UNAUTHORIZED";
+        case LT_L3_INVALID_CMD:
+            return "LT_L3_INVALID_CMD";
+        case LT_L3_DATA_LEN_ERROR:
+            return "LT_L3_DATA_LEN_ERROR";
         // L2
         case LT_L2_IN_CRC_ERR:
             return "LT_L2_IN_CRC_ERR";
@@ -1478,31 +1512,6 @@ const char *lt_ret_verbose(lt_ret_t ret) {
             return "LT_L2_STATUS_NOT_RECOGNIZED";
         case LT_L2_DATA_LEN_ERROR:
             return "LT_L2_DATA_LEN_ERROR";
-
-        // L3
-        case LT_L3_OK:
-            return "LT_L3_OK";
-        case LT_L3_FAIL:
-            return "LT_L3_FAIL";
-        case LT_L3_UNAUTHORIZED:
-            return "LT_L3_UNAUTHORIZED";
-        case LT_L3_INVALID_CMD:
-            return "LT_L3_INVALID_CMD";
-        case LT_L3_DATA_LEN_ERROR:
-            return "LT_L3_DATA_LEN_ERROR";
-
-        // libtropic
-        case LT_HOST_NO_SESSION:
-            return "LT_HOST_NO_SESSION";
-        case LT_OK:
-            return "LT_OK";
-        case LT_FAIL:
-            return "LT_FAIL";
-        case LT_PARAM_ERR:
-            return "LT_PARAM_ERR";
-        case LT_CRYPTO_ERR:
-            return "LT_CRYPTO_ERR";
-
         // Default
         default:
             return "FATAL ERROR, unknown return value";
