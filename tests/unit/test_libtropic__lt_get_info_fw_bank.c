@@ -114,7 +114,7 @@ void test__resp_size_mismatch()
     lt_handle_t h = {0};
     uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
 
-    inject_rsp_len = 128+1;
+    inject_rsp_len = 20+1;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_fw_bank(&h, fw_bank, sizeof(fw_bank)));
 
@@ -129,7 +129,7 @@ void test__correct()
     h.session = SESSION_ON;
     uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE+1];
 
-    inject_rsp_len = 128;
+    inject_rsp_len = 20;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_OK, lt_get_info_fw_bank(&h, fw_bank, sizeof(fw_bank)));
 }

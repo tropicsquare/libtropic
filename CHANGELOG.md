@@ -19,3 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - L3 commands: MCounter init, update and get
 - L2 commands: Resend, Sleep and Log req
+
+### Fixed
+
+- Return values for L3 API

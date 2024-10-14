@@ -41,7 +41,7 @@ lt_ret_t lt_init(lt_handle_t *h);
 lt_ret_t lt_deinit(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief Maximal size of certificate */
+/** @brief Maximal size of TROPIC01's certificate */
 #define LT_L2_GET_INFO_REQ_CERT_SIZE         512
 
 /**
@@ -66,6 +66,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned CHIP ID */
 #define LT_L2_GET_INFO_CHIP_ID_SIZE         128
 /**
  * @brief Read TROPIC01's chip ID
@@ -78,6 +79,7 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned RISCV fw version */
 #define LT_L2_GET_INFO_RISCV_FW_SIZE         4
 /**
  * @brief Read TROPIC01's RISCV firmware version
@@ -90,6 +92,7 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, const uint16_t ma
 lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned SPECT fw version */
 #define LT_L2_GET_INFO_SPECT_FW_SIZE        4
 /**
  * @brief Read TROPIC01's SPECT firmware version
@@ -102,7 +105,8 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
-#define LT_L2_GET_INFO_FW_HEADER_SIZE       128// TODO update model to 48
+/** @brief Maximal size of returned fw header */
+#define LT_L2_GET_INFO_FW_HEADER_SIZE       20
 /**
  * @brief Read TROPIC01's fw bank info
  *
@@ -144,7 +148,9 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
 lt_ret_t lt_session_abort(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Basic sleep mode */
 #define LT_L2_SLEEP_KIND_SLEEP 0x05
+/** @brief Deep sleep mode */
 #define LT_L2_SLEEP_KIND_DEEP_SLEEP 0x0a
 
 /**
@@ -157,7 +163,9 @@ lt_ret_t lt_session_abort(lt_handle_t *h);
 lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Reboot TROPIC01 chip */
 #define LT_L2_STARTUP_ID_REBOOT 0x01
+/** @brief Reboot TROPIC01 chip and stay in maintenance mode */
 #define LT_L2_STARTUP_ID_MAINTENANCE 0x03
 
 /**
@@ -317,7 +325,9 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
 lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of one data slot */
 #define R_MEM_DATA_SIZE_MAX                    (444)
+/** @brief Index of last data slot */
 #define R_MEM_DATA_SLOT_MAX                    (511)
 /**
  * @brief Write bytes into a given slot of R MEMORY
@@ -354,7 +364,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximum number of random bytes requested at once */
-#define RANDOM_VALUE_GET_LEN_MAX         255//L2_CHUNK_MAX_DATA_SIZE
+#define RANDOM_VALUE_GET_LEN_MAX         255
 
 /**
  * @brief Get number of random bytes
@@ -480,13 +490,37 @@ enum lt_mcounter_index_t {
     MCOUNTER_INDEX_12 = 12, MCOUNTER_INDEX_13 = 13, MCOUNTER_INDEX_14 = 14, MCOUNTER_INDEX_15 = 15
 };
 
+/**
+ * @brief Initialize monotonic counter of a given index
+ *
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @param mcounter_value  Value to set as an initial value
+ * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ */
 lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
+
+/**
+ * @brief Update monotonic counter of a given index
+ *
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ */
 lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index);
+
+/**
+ * @brief Get a value of a monotonic counter of a given index
+ *
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @param mcounter_value  Value of monotonic counter
+ * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ */
 lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
 
-
-
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned serial code */
 #define SERIAL_CODE_SIZE 32u
 
 /**
