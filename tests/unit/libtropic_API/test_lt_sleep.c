@@ -84,6 +84,11 @@ void test__lt_l2_transfer_fail()
         lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
     }
+
+    for(uint32_t i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
+        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        TEST_ASSERT_EQUAL(rets[i], lt_sleep(&h, LT_L2_SLEEP_KIND_DEEP_SLEEP));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------//
