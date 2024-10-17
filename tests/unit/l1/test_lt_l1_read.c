@@ -72,47 +72,6 @@ void test_lt_l1_read___invalid_timeout_bigger()
 }
 
 //---------------------------------------------------------------------------------------------------------//
-
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_l1_write___NULL_h()
-{
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(NULL, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
-}
-
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_l1_write___invalid_len_smaller()
-{
-    lt_handle_t h = {0};
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
-}
-
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_l1_write___invalid_len_bigger()
-{
-    lt_handle_t h = {0};
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
-}
-
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_l1_write___invalid_timeout_smaller()
-{
-    lt_handle_t h = {0};
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
-}
-
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_l1_write___invalid_timeout_bigger()
-{
-    lt_handle_t h = {0};
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
-}
-
-
-//---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
@@ -359,7 +318,7 @@ static lt_ret_t callback_CHIP_MODE_READY_LT_OK(lt_handle_t* h,
 }
 
 // Test if function returns LT_OK when execution is correct
-void test_lt_l1_read___CHIP_MODE_READY_LT_OK()
+void test__correct()
 {
     lt_handle_t h = {0};
 
@@ -369,31 +328,3 @@ void test_lt_l1_read___CHIP_MODE_READY_LT_OK()
 
     TEST_ASSERT_EQUAL(LT_OK, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
-
-//---------------------------------------------------------------------------------------------------------//
-
-// Test LT_L1_SPI_ERROR return value during write
-void test_lt_l1_write___LT_L1_SPI_ERROR()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_l1_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
-    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
-
-    TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_write(&h, 1, LT_L1_TIMEOUT_MS_DEFAULT));
-}
-
-// Test LT_OK return value
-void test_lt_l1_write___LT_OK()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_l1_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_OK);
-    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
-
-    TEST_ASSERT_EQUAL(LT_OK, lt_l1_write(&h, 1, LT_L1_TIMEOUT_MS_DEFAULT));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
