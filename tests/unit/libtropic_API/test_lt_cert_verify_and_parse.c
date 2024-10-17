@@ -91,6 +91,12 @@ void test__cert_without_key()
     uint8_t stpub[32] = {0};
 
     TEST_ASSERT_EQUAL(LT_FAIL, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+    dummy_cert[0] = 0x65;
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+    dummy_cert[1] = 0x6e;
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+    dummy_cert[2] = 0x03;
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -98,12 +104,16 @@ void test__cert_without_key()
 // Test if function returns LT_OK for some correct inputs
 void test__correct()
 {
-    uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
-    dummy_cert[511-35] = 0x65;
-    dummy_cert[511-34] = 0x6e;
-    dummy_cert[511-33] = 0x03;
-    dummy_cert[511-32] = 0x21;
     uint8_t stpub[32] = {0};
 
-    TEST_ASSERT_EQUAL(LT_OK, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+    for(int i = 0; i < (512-3-1-32); i++) {
+        // Prepare certificate
+        uint8_t dummy_cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
+        dummy_cert[i]   = 0x65;
+        dummy_cert[i+1] = 0x6e;
+        dummy_cert[i+2] = 0x03;
+        dummy_cert[i+3] = 0x21;
+
+        TEST_ASSERT_EQUAL(LT_OK, lt_cert_verify_and_parse(dummy_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+    }
 }

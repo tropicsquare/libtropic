@@ -130,9 +130,9 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
     /* TODO Improve this
     Currently DER certificate is searched for "OBJECT IDENTIFIER curveX25519 (1 3 101 110)",
     which is represented by four bytes: 0x65, 0x6e, 0x03 and 0x21 */
-    for(int i = 0; i<(512-3-32); i++) {
+    for(int i = 0; i<(476); i++) {
         if(cert[i] == 0x65 && cert[i+1] == 0x6e && cert[i+2] == 0x03 && cert[i+3] == 0x21) {
-            memcpy(stpub, cert + i + 5, 32);
+            memcpy(stpub, cert + i + 4 + 1, 32); // +1 because pubkey starts one byte after object identifier
             return LT_OK;
         }
     }
