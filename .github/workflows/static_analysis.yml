@@ -40,3 +40,8 @@ jobs:
         with:
           name: "CodeChecker Bug Reports"
           path: ${{ steps.codechecker.outputs.result-html-dir }}
+
+      # For now let's keep this disabled.
+      # - name: "Break build if CodeChecker reported any findings"
+      #   if: ${{ steps.codechecker.outputs.warnings == 'true' }}
+      #   run: exit 1
