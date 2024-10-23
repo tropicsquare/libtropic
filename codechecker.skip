@@ -1,2 +1,3 @@
 -*/vendor/trezor_crypto/*
 -*/tests/integration/build/CMakeFiles/*
+-CMakeCCompilerABI.c
