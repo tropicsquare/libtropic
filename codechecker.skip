@@ -1,3 +1,4 @@
--*/vendor/trezor_crypto/*
--*/tests/integration/build/CMakeFiles/*
--CMakeCCompilerABI.c
+# Include source directory.
++*src/*
+# Skip everything else (vendor libs, CMake internal libs...)
+-*
