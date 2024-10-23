@@ -31,7 +31,6 @@ jobs:
       - name: Run CodeChecker analysis
         uses: whisperity/codechecker-analysis-action@v1
         id: codechecker
-        working_directory: ${{ github.workspace }}
         with:
           config: ./codechecker_config.json
           build-command: ./codechecker_build.sh
