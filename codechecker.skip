@@ -1,2 +1,2 @@
 -*/vendor/trezor_crypto/*
--*/tests/integration/build/CMakeFiles*
+-*/tests/integration/build/CMakeFiles/*
