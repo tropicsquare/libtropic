@@ -1,4 +1,8 @@
-# Include source directory.
+# Include source directories.
 +*src/*
++*hal/*
++*include/*
++*examples/*
+
 # Skip everything else (vendor libs, CMake internal libs...)
 -*
