@@ -261,7 +261,7 @@ static uint32_t TROPIC01_config[27] = {
          TO_LT_MCOUNTER_8_11(SESSION_H3_HAS_ACCESS)  |
          TO_LT_MCOUNTER_12_15(SESSION_H3_HAS_ACCESS)),
     //------- CONFIGURATION_OBJECTS_TODO -----------------------
-        (0x0f0f0f0f),
+        (0xffffffff),
     //------- CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET -----------------------
         (0),
 };
@@ -490,13 +490,15 @@ static int session_H1(void)
     LOG_OUT_SESSION("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 100));
 
+    LOG_OUT_SESSION("%s", "Macand: ");
+    uint8_t data_in[32] = {0};
+    uint8_t data_out[32] = {0};
+    memset(data_out, 0xab, 32);
+    LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
+
     uint8_t attestation_key[32] = {0x22,0x57,0xa8,0x2f,0x85,0x8f,0x13,0x32,0xfa,0x0f,0xf6,0x0c,0x76,0x29,0x42,0x70,0xa9,0x58,0x9d,0xfd,0x47,0xa5,0x23,0x78,0x18,0x4d,0x2d,0x38,0xf0,0xa7,0xc4,0x01};
     LOG_OUT_SESSION("%s", "Storing attestation key into slot 0");
     LT_ASSERT(LT_OK, lt_ecc_key_store(&h, ECC_SLOT_0, CURVE_ED25519, attestation_key));
-    //LOG_OUT_SESSION("%s", "Macand: ");
-    //uint8_t data_in[32] = {0};
-    //uint8_t data_out[32] = {0};
-    //LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
 
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
     LOG_OUT_SESSION("%s","Serial code get must fail");
@@ -540,6 +542,12 @@ static int session_H2(void)
     uint8_t out[100];
     LOG_OUT_SESSION("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 100));
+
+    LOG_OUT_SESSION("%s", "Macand: ");
+    uint8_t data_in[32] = {0};
+    uint8_t data_out[32] = {0};
+    memset(data_out, 0xab, 32);
+    LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
 
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
     LOG_OUT_SESSION("%s","Serial code get must fail");
@@ -598,6 +606,12 @@ static int session_H3(void)
     uint8_t in[100];
     uint8_t out[100];
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 100));
+
+    LOG_OUT_SESSION("%s", "Macand: ");
+    uint8_t data_in[32] = {0};
+    uint8_t data_out[32] = {0};
+    memset(data_out, 0xab, 32);
+    LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
 
     // Sign with attestation key which was updated through session keys H1
     LOG_OUT_SESSION("%s", "lt_ecc_eddsa_sign() ");
