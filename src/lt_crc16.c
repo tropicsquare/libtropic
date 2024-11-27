@@ -2,6 +2,8 @@
  * @file lt_crc16.c
  * @brief CRC16 functions definitions
  * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "lt_crc16.h"

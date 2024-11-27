@@ -4,7 +4,8 @@
 /**
  * @file libtropic_common.h
  * @brief Shared definitions and functions commonly used by more libtropic's layers
- * @author Tropic Square s.r.o.
+ * @author Tropic Square s.r.o. *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "stdint.h"
@@ -33,6 +34,8 @@ typedef uint32_t u32;
 
 /** Size of RES_SIZE field */
 #define L3_RES_SIZE_SIZE sizeof(uint16_t)
+/** Size of CMD_SIZE field */
+#define L3_CMD_SIZE_SIZE sizeof(uint16_t)
 /** Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
 /** Maximal size of l3 RES/RSP DATA field */
@@ -102,6 +105,32 @@ typedef enum {
     /** Chip is BUSY - typically chip is still booting */
     LT_L1_CHIP_BUSY,
 
+    /** Return values based on RESULT field */
+    /** L3 result [API r_mem_data_write]: write failed, because slot is already written in */
+    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL,
+    /** L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
+    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED,
+    /** L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is invalid. */
+    LT_L3_ECC_INVALID_KEY,
+    /** L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter is already at 0. */
+    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR,
+    /** L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
+    LT_L3_COUNTER_INVALID,
+    /** L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been written to it yet */
+    LT_L3_PAIRING_KEY_EMPTY,
+    /** L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has been invalidated */
+    LT_L3_PAIRING_KEY_INVALID,
+    /** L3 command was received correctly*/
+    LT_L3_OK,
+    /** L3 command was not received correctly */
+    LT_L3_FAIL,
+    /** Current pairing keys are not authorized for execution of the last command */
+    LT_L3_UNAUTHORIZED,
+    /** Received L3 command is invalid */
+    LT_L3_INVALID_CMD,
+    /** L3 data does not have an expected length */
+    LT_L3_DATA_LEN_ERROR,
+
     /** Return values based on STATUS field */
     /** l2 response frame contains CRC error */
     LT_L2_IN_CRC_ERR,
@@ -128,16 +157,6 @@ typedef enum {
     /** L2 data does not have an expected length */
     LT_L2_DATA_LEN_ERROR,
 
-    /** L3 command was received correctly*/
-    LT_L3_OK,
-    /** L3 command was not received correctly */
-    LT_L3_FAIL,
-    /** Current pairing keys are not authorized for execution of the last command */
-    LT_L3_UNAUTHORIZED,
-    /** Received L3 command is invalid */
-    LT_L3_INVALID_CMD,
-    /** L3 data does not have an expected length */
-    LT_L3_DATA_LEN_ERROR,
 } lt_ret_t;
 
 #endif

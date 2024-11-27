@@ -10,10 +10,12 @@
  */
 
 /**
-* @file lt_l3.h
-* @brief Layer 3 functions declarations
-* @author Tropic Square s.r.o.
-*/
+ * @file lt_l3.h
+ * @brief Layer 3 functions declarations
+ * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
 
 #include "libtropic_common.h"
 

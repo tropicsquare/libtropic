@@ -5,6 +5,8 @@
  * @file   lt_hmac_sha256.h
  * @brief  HMAC SHA256 functions declarations
  * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include <stddef.h>

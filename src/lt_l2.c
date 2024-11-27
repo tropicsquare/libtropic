@@ -11,6 +11,8 @@
  * @file lt_l2.c
  * @brief Layer 2 functions definitions
  * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 /** Safety number - limit number of loops during l3 chunks reception. TROPIC01 divides data into 128B
@@ -42,11 +44,37 @@ lt_ret_t lt_l2_transfer(lt_handle_t *h)
     }
 
     ret = lt_l2_frame_check(h->l2_buff);
-    if(ret != LT_OK) {
-        return ret;
+    // We can ask TROPIC01 to resend the last response. It makes sense to do it if
+    // lt_l2_frame_check() returned CRC error or some generic error.
+    if((ret == LT_L2_CRC_ERR) || (ret == LT_L2_GEN_ERR)) {
+        // Payload's CRC is not OK, let's try to resend it three times
+        for(int i=0; i<3; i++) {
+
+            // Setup a request pointer to l2 buffer, which is placed in handle
+            struct lt_l2_resend_req_t* p_l2_req = (struct lt_l2_resend_req_t*)&h->l2_buff;
+            p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
+            p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
+
+            int ret = lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
+            if(ret != LT_OK) {
+                return ret;
+            }
+
+            ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+            if(ret != LT_OK) {
+                return ret;
+            }
+
+            ret = lt_l2_frame_check(h->l2_buff);
+            if(ret == LT_OK) {
+                 // Payload is ok, returning
+                return LT_OK;
+            }
+        }
     }
 
-    return LT_OK;
+    // Rest of errors are reported directly to upper layers, without trying to resend response.
+    return ret;
 }
 
 lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
@@ -67,7 +95,7 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h->l3_buff;
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
-    uint16_t chunk_num      = ((L3_RES_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
+    uint16_t chunk_num      = ((L3_CMD_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
     // Calculate the length of the last
     uint16_t chunk_last_len = ((L3_RES_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) % L2_CHUNK_MAX_DATA_SIZE);
 
@@ -81,7 +109,7 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         } else {
             req->req_len = L2_CHUNK_MAX_DATA_SIZE;
         }
-        memcpy(req->body, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
+        memcpy(req->l3_chunk, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
 
         add_crc(req);
 
@@ -127,13 +155,13 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         switch (ret) {
             case LT_L2_RES_CONT:
                 // Copy content of l2 into certain offset of l3 buffer
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->rsp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
                 offset += resp->rsp_len;
                 loops++;
                 break;
             case LT_OK:
                 // This was last l2 frame of l3 packet, copy it and return
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->body, resp->rsp_len);
+                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
                 return LT_OK;
             default:
                 // Any other L2 packet's status is not expected

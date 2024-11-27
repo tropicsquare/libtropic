@@ -12,6 +12,8 @@
  * @file libtropic.h
  * @brief libtropic library main API header file
  * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include <stdbool.h>
@@ -39,7 +41,7 @@ lt_ret_t lt_init(lt_handle_t *h);
 lt_ret_t lt_deinit(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief Maximal size of certificate */
+/** @brief Maximal size of TROPIC01's certificate */
 #define LT_L2_GET_INFO_REQ_CERT_SIZE         512
 
 /**
@@ -64,6 +66,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned CHIP ID */
 #define LT_L2_GET_INFO_CHIP_ID_SIZE         128
 /**
  * @brief Read TROPIC01's chip ID
@@ -76,6 +79,7 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned RISCV fw version */
 #define LT_L2_GET_INFO_RISCV_FW_SIZE         4
 /**
  * @brief Read TROPIC01's RISCV firmware version
@@ -88,6 +92,7 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, const uint16_t ma
 lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned SPECT fw version */
 #define LT_L2_GET_INFO_SPECT_FW_SIZE        4
 /**
  * @brief Read TROPIC01's SPECT firmware version
@@ -100,7 +105,8 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
-#define LT_L2_GET_INFO_FW_HEADER_SIZE       512
+/** @brief Maximal size of returned fw header */
+#define LT_L2_GET_INFO_FW_HEADER_SIZE       20
 /**
  * @brief Read TROPIC01's fw bank info
  *
@@ -142,7 +148,24 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
 lt_ret_t lt_session_abort(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Basic sleep mode */
+#define LT_L2_SLEEP_KIND_SLEEP 0x05
+/** @brief Deep sleep mode */
+#define LT_L2_SLEEP_KIND_DEEP_SLEEP 0x0a
+
+/**
+ * @brief Put TROPIC01 into sleep
+ *
+ * @param h           Device's handle
+ * @param sleep_kind  Kind of sleep
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Reboot TROPIC01 chip */
 #define LT_L2_STARTUP_ID_REBOOT 0x01
+/** @brief Reboot TROPIC01 chip and stay in maintenance mode */
 #define LT_L2_STARTUP_ID_MAINTENANCE 0x03
 
 /**
@@ -153,6 +176,19 @@ lt_ret_t lt_session_abort(lt_handle_t *h);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal length of TROPIC01's log message */
+#define GET_LOG_MAX_MSG_LEN    255
+/**
+ * @brief Get TROPIC01's internal log message (if enabled/available)
+ *
+ * @param h           Device's handle
+ * @param log_msg     Log message
+ * @param msg_len_max Max possible length of TROPIC01's log message
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
@@ -289,7 +325,9 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
 lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of one data slot */
 #define R_MEM_DATA_SIZE_MAX                    (444)
+/** @brief Index of last data slot */
 #define R_MEM_DATA_SLOT_MAX                    (511)
 /**
  * @brief Write bytes into a given slot of R MEMORY
@@ -326,7 +364,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximum number of random bytes requested at once */
-#define RANDOM_VALUE_GET_LEN_MAX         L2_CHUNK_MAX_DATA_SIZE
+#define RANDOM_VALUE_GET_LEN_MAX         255
 
 /**
  * @brief Get number of random bytes
@@ -341,21 +379,21 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
 typedef enum {
-    ECC_SLOT_1 = 0, ECC_SLOT_2,  ECC_SLOT_3,  ECC_SLOT_4,
-    ECC_SLOT_5,     ECC_SLOT_6,  ECC_SLOT_7,  ECC_SLOT_8,
-    ECC_SLOT_9,     ECC_SLOT_10, ECC_SLOT_11, ECC_SLOT_12,
-    ECC_SLOT_13,    ECC_SLOT_14, ECC_SLOT_15, ECC_SLOT_16,
-    ECC_SLOT_17,    ECC_SLOT_18, ECC_SLOT_19, ECC_SLOT_20,
-    ECC_SLOT_21,    ECC_SLOT_22, ECC_SLOT_23, ECC_SLOT_24,
-    ECC_SLOT_25,    ECC_SLOT_26, ECC_SLOT_27, ECC_SLOT_28,
-    ECC_SLOT_29,    ECC_SLOT_30, ECC_SLOT_31, ECC_SLOT_32,
+    ECC_SLOT_0 = 0, ECC_SLOT_1, ECC_SLOT_2,  ECC_SLOT_3,
+    ECC_SLOT_4, ECC_SLOT_5, ECC_SLOT_6,  ECC_SLOT_7,
+    ECC_SLOT_8, ECC_SLOT_9, ECC_SLOT_10, ECC_SLOT_11,
+    ECC_SLOT_12, ECC_SLOT_13, ECC_SLOT_14, ECC_SLOT_15,
+    ECC_SLOT_16, ECC_SLOT_17, ECC_SLOT_18, ECC_SLOT_19,
+    ECC_SLOT_20, ECC_SLOT_21, ECC_SLOT_22, ECC_SLOT_23,
+    ECC_SLOT_24, ECC_SLOT_25, ECC_SLOT_26, ECC_SLOT_27,
+    ECC_SLOT_28, ECC_SLOT_29, ECC_SLOT_30, ECC_SLOT_31,
 } ecc_slot_t;
 
 /** @brief ECC key type */
 typedef enum {
     CURVE_P256 = 1,
     CURVE_ED25519
-} ecc_curve_type_t;
+} lt_ecc_curve_type_t;
 
 /** @brief ECC key origin */
 typedef enum {
@@ -371,7 +409,7 @@ typedef enum {
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve);
+lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
  * @brief Store ECC key in the device's ECC key slot
@@ -382,7 +420,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const ecc_cu
  * @param key         Key to store
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve_type_t curve, const uint8_t *key);
+lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
 
 /**
  * @brief Read ECC public key corresponding to a private key in device's slot
@@ -395,7 +433,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const ecc_curve
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief Erase ECC key from device's slot
@@ -411,13 +449,13 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
  *
  * @param h           Device's handle
  * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
- * @param msg_hash    Buffer containing hash of a message
- * @param msg_hash_len Length of hash's buffer should be 32B
+ * @param msg         Buffer containing a message
+ * @param msg_len     Length of msg's buffer
  * @param rs          Buffer for storing a signature in a form of R and S bytes
  * @param rs_len      Length of rs buffer should be 64B
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg_hash, const uint16_t msg_hash_len, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
@@ -444,17 +482,96 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
 //--------------------------------------------------------------------------------------------------------------------//
-/*
 
-MCounter_Init
+enum lt_mcounter_index_t {
+    MCOUNTER_INDEX_0 = 0, MCOUNTER_INDEX_1 = 1, MCOUNTER_INDEX_2 = 2, MCOUNTER_INDEX_3 = 3,
+    MCOUNTER_INDEX_4 = 4, MCOUNTER_INDEX_5 = 5, MCOUNTER_INDEX_6 = 6, MCOUNTER_INDEX_7 = 7,
+    MCOUNTER_INDEX_8 = 8, MCOUNTER_INDEX_9 = 9, MCOUNTER_INDEX_10 = 10, MCOUNTER_INDEX_11 = 11,
+    MCOUNTER_INDEX_12 = 12, MCOUNTER_INDEX_13 = 13, MCOUNTER_INDEX_14 = 14, MCOUNTER_INDEX_15 = 15
+};
 
-MCounter_Update
+/**
+ * @brief Initialize monotonic counter of a given index
+ *
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @param mcounter_value  Value to set as an initial value
+ * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ */
+lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
 
-MCounter_Get
+/**
+ * @brief Update monotonic counter of a given index
+ *
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ */
+lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index);
 
-*/
+/**
+ * @brief Get a value of a monotonic counter of a given index
+ *
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @param mcounter_value  Value of monotonic counter
+ * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ */
+lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned MAC-and-Destroy data */
+#define MAC_AND_DESTROY_DATA_SIZE 32u
+
+/** @brief Mac-and-Destroy slot indexes */
+typedef enum {
+    MAC_AND_DESTROY_SLOT_0 = 0, MAC_AND_DESTROY_SLOT_1, MAC_AND_DESTROY_SLOT_2,   MAC_AND_DESTROY_SLOT_3,
+    MAC_AND_DESTROY_SLOT_4,   MAC_AND_DESTROY_SLOT_5,   MAC_AND_DESTROY_SLOT_6,   MAC_AND_DESTROY_SLOT_7,
+    MAC_AND_DESTROY_SLOT_8,   MAC_AND_DESTROY_SLOT_9,   MAC_AND_DESTROY_SLOT_10,  MAC_AND_DESTROY_SLOT_11,
+    MAC_AND_DESTROY_SLOT_12,  MAC_AND_DESTROY_SLOT_13,  MAC_AND_DESTROY_SLOT_14,  MAC_AND_DESTROY_SLOT_15,
+    MAC_AND_DESTROY_SLOT_16,  MAC_AND_DESTROY_SLOT_17,  MAC_AND_DESTROY_SLOT_18,  MAC_AND_DESTROY_SLOT_19,
+    MAC_AND_DESTROY_SLOT_20,  MAC_AND_DESTROY_SLOT_21,  MAC_AND_DESTROY_SLOT_22,  MAC_AND_DESTROY_SLOT_23,
+    MAC_AND_DESTROY_SLOT_24,  MAC_AND_DESTROY_SLOT_25,  MAC_AND_DESTROY_SLOT_26,  MAC_AND_DESTROY_SLOT_27,
+    MAC_AND_DESTROY_SLOT_28,  MAC_AND_DESTROY_SLOT_29,  MAC_AND_DESTROY_SLOT_30,  MAC_AND_DESTROY_SLOT_31,
+    MAC_AND_DESTROY_SLOT_32,  MAC_AND_DESTROY_SLOT_33,  MAC_AND_DESTROY_SLOT_34,  MAC_AND_DESTROY_SLOT_35,
+    MAC_AND_DESTROY_SLOT_36,  MAC_AND_DESTROY_SLOT_37,  MAC_AND_DESTROY_SLOT_38,  MAC_AND_DESTROY_SLOT_39,
+    MAC_AND_DESTROY_SLOT_40,  MAC_AND_DESTROY_SLOT_41,  MAC_AND_DESTROY_SLOT_42,  MAC_AND_DESTROY_SLOT_43,
+    MAC_AND_DESTROY_SLOT_44,  MAC_AND_DESTROY_SLOT_45,  MAC_AND_DESTROY_SLOT_46,  MAC_AND_DESTROY_SLOT_47,
+    MAC_AND_DESTROY_SLOT_48,  MAC_AND_DESTROY_SLOT_49,  MAC_AND_DESTROY_SLOT_50,  MAC_AND_DESTROY_SLOT_51,
+    MAC_AND_DESTROY_SLOT_52,  MAC_AND_DESTROY_SLOT_53,  MAC_AND_DESTROY_SLOT_54,  MAC_AND_DESTROY_SLOT_55,
+    MAC_AND_DESTROY_SLOT_56,  MAC_AND_DESTROY_SLOT_57,  MAC_AND_DESTROY_SLOT_58,  MAC_AND_DESTROY_SLOT_59,
+    MAC_AND_DESTROY_SLOT_60,  MAC_AND_DESTROY_SLOT_61,  MAC_AND_DESTROY_SLOT_62,  MAC_AND_DESTROY_SLOT_63,
+    MAC_AND_DESTROY_SLOT_64,  MAC_AND_DESTROY_SLOT_65,  MAC_AND_DESTROY_SLOT_66,  MAC_AND_DESTROY_SLOT_67,
+    MAC_AND_DESTROY_SLOT_68,  MAC_AND_DESTROY_SLOT_69,  MAC_AND_DESTROY_SLOT_70,  MAC_AND_DESTROY_SLOT_71,
+    MAC_AND_DESTROY_SLOT_72,  MAC_AND_DESTROY_SLOT_73,  MAC_AND_DESTROY_SLOT_74,  MAC_AND_DESTROY_SLOT_75,
+    MAC_AND_DESTROY_SLOT_76,  MAC_AND_DESTROY_SLOT_77,  MAC_AND_DESTROY_SLOT_78,  MAC_AND_DESTROY_SLOT_79,
+    MAC_AND_DESTROY_SLOT_80,  MAC_AND_DESTROY_SLOT_81,  MAC_AND_DESTROY_SLOT_82,  MAC_AND_DESTROY_SLOT_83,
+    MAC_AND_DESTROY_SLOT_84,  MAC_AND_DESTROY_SLOT_85,  MAC_AND_DESTROY_SLOT_86,  MAC_AND_DESTROY_SLOT_87,
+    MAC_AND_DESTROY_SLOT_88,  MAC_AND_DESTROY_SLOT_89,  MAC_AND_DESTROY_SLOT_90,  MAC_AND_DESTROY_SLOT_91,
+    MAC_AND_DESTROY_SLOT_92,  MAC_AND_DESTROY_SLOT_93,  MAC_AND_DESTROY_SLOT_94,  MAC_AND_DESTROY_SLOT_95,
+    MAC_AND_DESTROY_SLOT_96,  MAC_AND_DESTROY_SLOT_97,  MAC_AND_DESTROY_SLOT_98,  MAC_AND_DESTROY_SLOT_99,
+    MAC_AND_DESTROY_SLOT_100, MAC_AND_DESTROY_SLOT_101, MAC_AND_DESTROY_SLOT_102, MAC_AND_DESTROY_SLOT_103,
+    MAC_AND_DESTROY_SLOT_104, MAC_AND_DESTROY_SLOT_105, MAC_AND_DESTROY_SLOT_106, MAC_AND_DESTROY_SLOT_107,
+    MAC_AND_DESTROY_SLOT_108, MAC_AND_DESTROY_SLOT_109, MAC_AND_DESTROY_SLOT_110, MAC_AND_DESTROY_SLOT_111,
+    MAC_AND_DESTROY_SLOT_112, MAC_AND_DESTROY_SLOT_113, MAC_AND_DESTROY_SLOT_114, MAC_AND_DESTROY_SLOT_115,
+    MAC_AND_DESTROY_SLOT_116, MAC_AND_DESTROY_SLOT_117, MAC_AND_DESTROY_SLOT_118, MAC_AND_DESTROY_SLOT_119,
+    MAC_AND_DESTROY_SLOT_120, MAC_AND_DESTROY_SLOT_121, MAC_AND_DESTROY_SLOT_122, MAC_AND_DESTROY_SLOT_123,
+    MAC_AND_DESTROY_SLOT_124, MAC_AND_DESTROY_SLOT_125, MAC_AND_DESTROY_SLOT_126, MAC_AND_DESTROY_SLOT_127
+} mac_and_destroy_slot_t;
+
+/**
+ * @brief Execute the MAC-and-Destroy sequence.
+ *
+ * @param h           Device's handle
+ * @param slot        Mac-and-Destroy slot index, valid values are 0-127
+ * @param data_out    Data to be sent into chip
+ * @param data_in     Mac and destroy returned data
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned serial code */
 #define SERIAL_CODE_SIZE 32u
 
 /**
