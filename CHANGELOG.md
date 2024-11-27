@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- L3 commands: MCounter init, update and get
+- L3 commands: MCounter (init, update and get), MAC-and-destroy,
 - L2 commands: Resend, Sleep and Log req
 
 ### Fixed
