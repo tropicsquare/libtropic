@@ -528,7 +528,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -566,7 +566,7 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_pairing_key_write_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_write_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -602,7 +602,7 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_pairing_key_read_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_read_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -638,7 +638,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_pairing_key_invalidate_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_invalidate_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_pairing_key_invalidate_res_t* p_l3_res = (struct lt_l3_pairing_key_invalidate_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -889,7 +889,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_r_mem_data_write_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_r_mem_data_write_res_t* p_l3_res = (struct lt_l3_r_mem_data_write_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -926,7 +926,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_r_mem_data_read_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_read_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_r_mem_data_read_res_t* p_l3_res = (struct lt_l3_r_mem_data_read_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -961,7 +961,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_r_mem_data_erase_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_erase_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_r_mem_data_erase_res_t* p_l3_res = (struct lt_l3_r_mem_data_erase_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -996,7 +996,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_random_value_get_cmd_t* p_l3_cmd = (struct lt_l3_random_value_get_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1034,7 +1034,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1072,7 +1072,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecc_key_store_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_store_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_ecc_key_store_res_t* p_l3_res = (struct lt_l3_ecc_key_store_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1115,7 +1115,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1164,7 +1164,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 
     // Setup a pointer to l3 buffer, which is placed in handle
     struct lt_l3_ecc_key_erase_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1210,7 +1210,7 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_ecdsa_sign_res_t* p_l3_res = (struct lt_l3_ecdsa_sign_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1253,7 +1253,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_eddsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1309,7 +1309,7 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcount
 
     // Setup a pointer to l3 buffer, which is placed in handle
     struct lt_l3_mcounter_init_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_init_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_mcounter_init_res_t* p_l3_res = (struct lt_l3_mcounter_init_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1343,7 +1343,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcou
 
     // Setup a pointer to l3 buffer, which is placed in handle
     struct lt_l3_mcounter_update_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_update_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_mcounter_update_res_t* p_l3_res = (struct lt_l3_mcounter_update_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1378,7 +1378,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounte
 
     // Setup a pointer to l3 buffer, which is placed in handle
     struct lt_l3_mcounter_get_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_get_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_mcounter_get_res_t* p_l3_res = (struct lt_l3_mcounter_get_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
@@ -1401,6 +1401,43 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounte
     return LT_OK;
 }
 
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in)
+{
+    if( !h
+        || !data_out
+        || !data_in
+        || slot > MAC_AND_DESTROY_SLOT_127
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mac_and_destroy_cmd_t * p_l3_cmd = (struct lt_l3_mac_and_destroy_cmd_t*)&h->l3_buff;
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_mac_and_destroy_res_t* p_l3_res = (struct lt_l3_mac_and_destroy_res_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MAC_AND_DESTROY_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MAC_AND_DESTROY_CMD_ID;
+    memcpy(p_l3_cmd->data_in, data_out, MAC_AND_DESTROY_DATA_SIZE);
+    lt_ret_t ret = lt_l3_cmd(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_MAC_AND_DESTROY_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    memcpy(data_in, p_l3_res->data_out, MAC_AND_DESTROY_DATA_SIZE);
+
+    return LT_OK;
+}
+
 lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t size)
 {
     if( !h
@@ -1415,7 +1452,7 @@ lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t
 
     // Setup a pointer to l3 buffer, which is placed in handle
     struct lt_l3_serial_code_get_cmd_t* p_l3_cmd = (struct lt_l3_serial_code_get_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result data
+    // Pointer to access l3 buffer with result's data
     struct lt_l3_serial_code_get_res_t* p_l3_res = (struct lt_l3_serial_code_get_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
