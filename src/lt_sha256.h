@@ -2,10 +2,12 @@
 #define LT_SHA256_H
 
 /**
-* @file   lt_sha256.h
-* @brief  SHA256 functions declarations
-* @author Tropic Square s.r.o.
-*/
+ * @file   lt_sha256.h
+ * @brief  SHA256 functions declarations
+ * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
 
 #include <stdint.h>
 #include <stddef.h>

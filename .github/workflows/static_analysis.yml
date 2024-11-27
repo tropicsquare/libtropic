@@ -1,0 +1,47 @@
+name: Run static code analysis
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
+
+jobs:
+  static_analysis:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2
+
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 13
+
+      - name: Install dependencies
+        run: |
+            sudo apt-get install cppcheck
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.7
+      
+      - name: Run CodeChecker analysis
+        uses: whisperity/codechecker-analysis-action@v1
+        id: codechecker
+        with:
+          config: ./codechecker_config.json
+          build-command: ./codechecker_build.sh
+
+      - name: Upload results artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: "CodeChecker Bug Reports"
+          path: ${{ steps.codechecker.outputs.result-html-dir }}
+
+      # For now let's keep this disabled.
+      # - name: "Break build if CodeChecker reported any findings"
+      #   if: ${{ steps.codechecker.outputs.warnings == 'true' }}
+      #   run: exit 1

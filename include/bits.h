@@ -1,11 +1,10 @@
-/**********************************************************************//**
+/**
  * @file bits.h
- * @author Ondrej Ille
  * @brief Struct and function declarations for dealing with bit assignment.
+ * @author Ondrej Ille
  *
- * @license For the license see file LICENSE.txt file in the root directory 
- *          of this source tree.
- **************************************************************************/
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
 
 #ifndef BITS_H
 #define BITS_H
@@ -86,4 +85,3 @@
     }
 
 #endif // ! BITS_H
-

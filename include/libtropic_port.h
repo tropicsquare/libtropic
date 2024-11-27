@@ -13,6 +13,8 @@
  * @file libtropic_port.h
  * @brief Header file with layer 1 interfaces which are defined based on host platform
  * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "libtropic_common.h"

@@ -2,9 +2,9 @@
  * @file lt_l1.c
  * @brief Layer 1 functions definitions
  * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
-
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -12,7 +12,6 @@
 #include "libtropic_common.h"
 #include "lt_l1.h"
 #include "lt_l1_port_wrap.h"
-
 
 lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeout)
 {
