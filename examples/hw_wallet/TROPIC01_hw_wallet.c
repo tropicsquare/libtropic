@@ -261,6 +261,7 @@ static uint32_t TROPIC01_config[27] = {
          TO_LT_MCOUNTER_8_11(SESSION_H3_HAS_ACCESS)  |
          TO_LT_MCOUNTER_12_15(SESSION_H3_HAS_ACCESS)),
     //------- CONFIGURATION_OBJECTS_TODO -----------------------
+    // All slots can use MAC-and-destroy
         (0xffffffff),
     //------- CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET -----------------------
         (0),

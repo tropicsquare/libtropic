@@ -85,4 +85,3 @@
     }
 
 #endif // ! BITS_H
-

@@ -20,7 +20,6 @@
  *  Divided by typical chunk length: (2 + 4096 + 16) / 128 => 32,
  *  with a few added loops it is set to 42
  */
-
 #define MAX_LOOPS 42
 
 lt_ret_t lt_l2_transfer(lt_handle_t *h)

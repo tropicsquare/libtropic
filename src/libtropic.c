@@ -56,25 +56,6 @@ lt_ret_t lt_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-/** @brief Block index for data bytes 0-511 of the object */
-//typedef enum {
-//LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127,
-//LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255,
-//LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383,
-//LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511,
-//} block_index_t;
-//
-///** @brief The X.509 device certificate read from I-Memory and signed by Tropic Square (max length of 512B) */
-//# define LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0
-///** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B) */
-//# define LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 1
-///** @brief The RISCV current running FW version (4 Bytes) */
-//# define LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION 2
-///** @brief The SPECT FW version (4 Bytes) */
-//# define LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION 4
-///** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode */
-//# define LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 176
-
 lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 {
     if (     max_len < LT_L2_GET_INFO_REQ_CERT_SIZE
@@ -1422,6 +1403,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const u
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_MAC_AND_DESTROY_CMD_SIZE;
     p_l3_cmd->cmd_id = LT_L3_MAC_AND_DESTROY_CMD_ID;
+    p_l3_cmd->slot = slot;
     memcpy(p_l3_cmd->data_in, data_out, MAC_AND_DESTROY_DATA_SIZE);
     lt_ret_t ret = lt_l3_cmd(h);
     if(ret != LT_OK) {
