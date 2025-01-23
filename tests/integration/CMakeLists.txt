@@ -36,9 +36,13 @@ project(libtropic_unix_example
 
 add_executable(integration_tests main.c
                     ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix/lt_port_unix.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/keys.c
                     ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/hw_wallet/TROPIC01_hw_wallet.c
+                    ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/hello_world/TROPIC01_hello_world.c
 )
+target_include_directories(integration_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/)
 target_include_directories(integration_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/hw_wallet/)
+target_include_directories(integration_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/hello_world/)
 
 ###########################################################################
 #                                                                         #
