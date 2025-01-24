@@ -1,5 +1,5 @@
-#ifndef HW_WALLET_EXAMPLE
-#define HW_WALLET_EXAMPLE
+#ifndef HELLO_WORLD_EXAMPLE
+#define HELLO_WORLD_EXAMPLE
 
 /**
  * @file TROPIC01_hw_wallet.h
@@ -30,6 +30,6 @@
  *
  * @return int        Returns 0 if all commands were executed successfuly, otherwise returns 1
  */
-int tropic01_hw_wallet_example(void);
+int tropic01_hello_world_example(void);
 
 #endif
