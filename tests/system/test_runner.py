@@ -4,6 +4,8 @@ import subprocess
 import shutil
 import sys
 import asyncio
+import serial.tools
+import serial.tools.list_ports
 import telnetlib3
 import serial
 from abc import ABC, abstractmethod
@@ -143,9 +145,39 @@ class lt_environment_tools:
                     logger.error("Incorrect config file line format!")
                     return None
                 if line_separated[0] == platform_str:
-                    return lt_environment_tools.lt_adapter_id(vid = line_separated[1], pid = line_separated[2])
+                    try:
+                        return lt_environment_tools.lt_adapter_id(vid = int(line_separated[1], 16), pid = int(line_separated[2], 16))
+                    except ValueError:
+                        logger.error("Config file VID and PID have to be integer!")
+                        return None
             logger.error("Platform not found in config file!")
             return None
+
+    @staticmethod
+    def get_serial_device_from_vidpid(vid: int, pid: int, interface: int = None) -> str | None:
+        found_devices = []
+        for port in serial.tools.list_ports.comports():
+            if port.vid == vid and port.pid == pid:
+                if interface == None: # If no specific interface required, return the first one.
+                    logger.info(f"Found serial USB device with VID={vid:#x} PID={pid:#x}: {port.device}")
+                    return port.device
+                else:
+                    found_devices.append(port)
+
+        if len(found_devices) == 0:
+            logger.error(f"No serial USB devices found with VID={vid:#x} PID={pid:#x}!")
+            return None
+
+        for _ in found_devices:
+            try:
+                if int(port.location.split(".")[-1]) == interface:
+                    logger.info(f"Found serial USB device with VID={vid:#x} PID={pid:#x} INTERFACE={interface}: {port.device}")
+                    return port.device
+            except (ValueError, IndexError):
+                pass
+
+        logger.error(f"The selected USB device does not have INTERFACE={interface}!")
+        return None
 
 async def main():
     print("libtropic SLT start")
@@ -155,15 +187,24 @@ async def main():
 
     platform_string_id = "stm32"
     firmware_path = Path("tests/system/stm32_example.elf")
-    work_dir = Path("tests/system/build")
+    work_dir = Path("tests/system/build") # default should be 'build' in current dir
     adapter_config_path = Path(__file__).parent / "ts11-jtag.cfg"
     platform = lt_platform_factory(platform_string_id)
     adapter_mapping_path = Path("tests/system/adapter_mapping.csv") 
     adapter_id = lt_environment_tools.get_adapter_id_from_mapping(platform_string_id, adapter_mapping_path)
+    adapter_serial = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
+
+    if adapter_id is None:
+        logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {adapter_mapping_path} (or select correct config file) and try again.")
+        return
+
+    if adapter_serial is None:
+        logger.error("Serial adapter not found. Check if adapter is correctly connected to the computer and correct interface is selected.")
+        return
 
     try:
-        logger.info("Launching OpenOCD...")
-        openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid} {adapter_id.pid}"] + platform.get_openocd_launch_params() 
+        openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + platform.get_openocd_launch_params() 
+        logger.info(f"Launching OpenOCD with '{openocd_launch_params}'")
         openocd_proc = subprocess.Popen([shutil.which("openocd")] + openocd_launch_params, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         await asyncio.sleep(2)
@@ -172,7 +213,7 @@ async def main():
             logger.info("Error starting OpenOCD. Check if computer-adapter-platform connection is functional or if OpenOCD is not already running.")
             return
 
-        tr = lt_test_runner(work_dir, platform, "/dev/ttyUSB1")
+        tr = lt_test_runner(work_dir, platform, adapter_serial)
         await tr.run(firmware_path)
     except serial.SerialException as e:
         logger.error(f"Platform serial interface communication error: {str(e)}")
@@ -182,6 +223,8 @@ async def main():
         logger.info("Received unexpected exception or termination request. Shutting down.")
         cleanup(openocd_proc)
         raise
+
+    cleanup(openocd_proc)
 
 if __name__ == "__main__":
     try:
