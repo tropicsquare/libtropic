@@ -10,6 +10,7 @@ import telnetlib3
 import serial
 from abc import ABC, abstractmethod
 from pathlib import Path
+from argparse import ArgumentParser
 
 logger = logging.getLogger(__name__)
 
@@ -77,10 +78,17 @@ class lt_platform_stm32(lt_platform):
         await self.ocd_writer.drain()
         logger.info("Reset issued.")
 
-def lt_platform_factory(platform_string_id: str, *args) -> lt_platform:
-    match platform_string_id:
-        case "stm32":
-            return lt_platform_stm32()
+class lt_platform_factory:
+    LT_PLATFORM_STRING_ID_MAPPING = {
+        "stm32": lt_platform_stm32
+    }
+    
+    @staticmethod
+    def create_from_str_id(platform_string_id: str) -> lt_platform | None:
+        try:
+            return lt_platform_factory.LT_PLATFORM_STRING_ID_MAPPING[platform_string_id]()
+        except KeyError:
+            return None
 
 class lt_test_runner:
     class OpenOCDConnectionError:
@@ -89,7 +97,7 @@ class lt_test_runner:
     def __init__(self, working_dir: Path, platform: lt_platform, serial_port: str):
         self.working_dir = working_dir
         logger.info("Preparing environment...")
-        self.working_dir.mkdir(exist_ok = True)
+        self.working_dir.mkdir(exist_ok = True, parents = True)
         self.platform = platform
         self.serial_port = serial_port
 
@@ -180,22 +188,83 @@ class lt_environment_tools:
         return None
 
 async def main():
-    print("libtropic SLT start")
-    logging.basicConfig(level=logging.INFO)
 
-    # TODO dependency check
+    parser = ArgumentParser(
+        prog = "test_runner.py",
+        description = "This script loads a test firmware to a selected platform and checks the results via serial port.",
+        epilog = "Copyright 2025 Tropic Square s.r.o."
+    )
 
-    platform_string_id = "stm32"
-    firmware_path = Path("tests/system/stm32_example.elf")
-    work_dir = Path("tests/system/build") # default should be 'build' in current dir
-    adapter_config_path = Path(__file__).parent / "ts11-jtag.cfg"
-    platform = lt_platform_factory(platform_string_id)
-    adapter_mapping_path = Path("tests/system/adapter_mapping.csv") 
-    adapter_id = lt_environment_tools.get_adapter_id_from_mapping(platform_string_id, adapter_mapping_path)
-    adapter_serial = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
+    parser.add_argument(
+        "platform_id",
+        help    = "A platform to run the test firmware on.",
+        choices = lt_platform_factory.LT_PLATFORM_STRING_ID_MAPPING.keys(),
+        type    = str
+    )
+
+    parser.add_argument(
+        "firmware",
+        help    = "Firmware binary to load to a selected platform.",
+        type    = Path
+    )
+
+    parser.add_argument(
+        "--work_dir",
+        help    = "Working directory.",
+        type    = Path,
+        default = Path.cwd() / "build" / "system_tests"
+    )
+    
+    parser.add_argument(
+        "--mapping_config",
+        help    = "Path to the platform-adapter mapping config CSV file.",
+        type    = Path,
+        default = Path(__file__).parent / "adapter_mapping.csv"
+    )
+
+    parser.add_argument(
+        "--adapter_config",
+        help    = "Path to the adapter OpenOCD config file.",
+        type    = Path,
+        default = Path(__file__).parent / "ts11-jtag.cfg"
+    )
+
+    parser.add_argument(
+        "-v", "--verbose",
+        help    = "Enable debug logging.",
+        action  = "store_true"
+    )
+
+    args = parser.parse_args()
+
+    if not args.firmware.is_file():
+        logger.error("Please provide correct path to firmware.")
+        return
+    if args.work_dir.is_file():
+        logger.error("Invalid build directory!")
+        return
+    if not args.mapping_config.is_file():
+        logger.error("Invalid path to mapping config!")
+        return
+    if not args.adapter_config.is_file():
+        logger.error("Invalid path to adapter config!")
+        return
+    
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+    platform        = lt_platform_factory.create_from_str_id(args.platform_id)
+    adapter_id      = lt_environment_tools.get_adapter_id_from_mapping(args.platform_id, args.mapping_config)
+    adapter_serial  = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
+
+    if platform is None:
+        logger.error(f"Platform '{platform}' not found!")
+        return
 
     if adapter_id is None:
-        logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {adapter_mapping_path} (or select correct config file) and try again.")
+        logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {args.mapping_config} (or select correct config file) and try again.")
         return
 
     if adapter_serial is None:
@@ -203,7 +272,7 @@ async def main():
         return
 
     try:
-        openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + platform.get_openocd_launch_params() 
+        openocd_launch_params = ["-f", args.adapter_config] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + platform.get_openocd_launch_params() 
         logger.info(f"Launching OpenOCD with '{openocd_launch_params}'")
         openocd_proc = subprocess.Popen([shutil.which("openocd")] + openocd_launch_params, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -213,8 +282,8 @@ async def main():
             logger.info("Error starting OpenOCD. Check if computer-adapter-platform connection is functional or if OpenOCD is not already running.")
             return
 
-        tr = lt_test_runner(work_dir, platform, adapter_serial)
-        await tr.run(firmware_path)
+        tr = lt_test_runner(args.work_dir, platform, adapter_serial)
+        await tr.run(args.firmware)
     except serial.SerialException as e:
         logger.error(f"Platform serial interface communication error: {str(e)}")
         cleanup(openocd_proc)
