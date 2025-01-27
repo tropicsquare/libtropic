@@ -5,7 +5,7 @@
 
 |Supported devices                                       |Description                                              |
 |--------------------------------------------------------|---------------------------------------------------------|
-|[TROPIC01](https://www.tropicsquare.com/TROPIC01)       | First generation TROPIC01                               |
+|[TROPIC01](https://www.tropicsquare.com/product)        | First generation TROPIC01                               |
 
 # Repository overview
 
