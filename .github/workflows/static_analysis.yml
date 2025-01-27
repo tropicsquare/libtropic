@@ -32,8 +32,8 @@ jobs:
         uses: whisperity/codechecker-analysis-action@v1
         id: codechecker
         with:
-          config: ./codechecker_config.json
-          build-command: ./codechecker_build.sh
+          config: ./scripts/codechecker/codechecker_config.json
+          build-command: ./scripts/codechecker/codechecker_build.sh
 
       - name: Upload results artifacts
         uses: actions/upload-artifact@v4
