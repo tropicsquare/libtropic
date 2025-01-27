@@ -76,6 +76,9 @@ typedef struct lt_handle_t {
     uint8_t decrypt[352] __attribute__ ((aligned (16)));
 #elif USE_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
+#else // TODO figure out how to allocate correct space without a need of passing USE_TREZOR_CRYPTO from platform's cmake
+    uint8_t encrypt[352] __attribute__ ((aligned (16)));
+    uint8_t decrypt[352] __attribute__ ((aligned (16)));
 #endif
     uint8_t l2_buff [1 + L2_MAX_FRAME_SIZE];
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];

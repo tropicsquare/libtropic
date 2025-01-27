@@ -12,6 +12,8 @@ option(BUILD_DOCS "Build documentation" OFF)
 option(EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
 option(EXPERIMENTAL_SPI_RASPBERRYPI "Experimental feature for spi slave on rpi 4" OFF)
 
+option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
+
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
@@ -56,6 +58,15 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
 )
+if(LT_ADD_EXAMPLES)
+    set(SDK_SRCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_reversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_ireversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
+    )
+endif()
 
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
@@ -82,6 +93,9 @@ add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 
 target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+if(LT_ADD_EXAMPLES)
+    target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/examples/)
+endif()
 
 target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 
@@ -103,7 +117,7 @@ endif()
 
 if(USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_compile_definitions(trezor_crypto PRIVATE AES_VAR)
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PRIVATE trezor_crypto)
     target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()

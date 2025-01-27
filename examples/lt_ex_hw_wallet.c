@@ -10,8 +10,7 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "TROPIC01_hw_wallet.h"
-#include "keys.h"
+#include "libtropic_examples.h"
 
 /**
  * @name CONCEPT: Generic Hardware Wallet
@@ -319,6 +318,7 @@ static lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *sh
  * @param h           Device's handle
  * @return            LT_OK if success, otherwise returns other error code.
  */
+/*
 static lt_ret_t read_whole_I_config(lt_handle_t *h)
 {
     lt_ret_t ret;
@@ -340,7 +340,7 @@ static lt_ret_t read_whole_I_config(lt_handle_t *h)
 
     return LT_OK;
 }
-
+*/
 /**
  * @brief This function reads config objects and print them out
  *
@@ -675,7 +675,7 @@ static int session_H3(void)
     return LT_OK;
 }
 
-int tropic01_hw_wallet_example(void)
+int lt_ex_hardware_wallet(void)
 {
     LOG_OUT("\r\n");
     LOG_OUT("\t=======================================================================\r\n");
