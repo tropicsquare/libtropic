@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ECC_SLOT1-32 numbering chabged to ECC_SLOT_0-31
 - lt_handshake() function renamed to lt_session_start()
-- TROPIC01 hw wallet example updated - compiles for 32 and 64 bit system
 - Unit tests organization was updated
 - Included lt_l2_api_structs.h and lt_l3_api_structs.h are automatically generated
 
@@ -19,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - L3 commands: MCounter (init, update and get), MAC-and-destroy,
 - L2 commands: Resend, Sleep and Log req
+- Example folder and test folder is reworked
+- option LT_ADD_EXAMPLES controls if example's folder code is a part of compilation
 
 ### Fixed
 
