@@ -13,6 +13,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.7
 
+      - name: Set Ceedling config path
+        run: echo "CEEDLING_MAIN_PROJECT_FILE=scripts/ceedling.yml" >>$GITHUB_ENV
+
       - name: Run Ceedling Unit Tests
         uses: pavelpolach321/action-ceedling-unit-test@2.0.0
         with:
