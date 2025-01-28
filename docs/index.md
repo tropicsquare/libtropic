@@ -105,7 +105,6 @@ Unit tests files are in `tests/unit/` folder. They are written in [Ceedling](htt
 ```
 
 Then make sure that you have correct version:
-
 ```
 $ ceedling version
    Ceedling:: 0.31.1
@@ -114,11 +113,12 @@ $ ceedling version
  CException:: 1.3.3
 
 ```
+For now we support Ceedling version 0.31.1 only.
 
 Once ceedling is installed, run tests and create code coverage report:
 
 ```
-$ ceedling gcov:all utils:gcov
+$ CEEDLING_MAIN_PROJECT_FILE=scripts/ceedling.yml ceedling gcov:all utils:gcov
 ```
 
 ### Randomization
@@ -144,7 +144,7 @@ There are 3 options how to get reports:
 2. Generate HTML report yourself.
     - You need to install CodeChecker (e.g. via pip). After that, run:
     ```sh
-    CodeChecker check -b "./codechecker_build.sh" --config ./codechecker_config.json --output ./.codechecker/reports
+    CodeChecker check -b "./scripts/codechecker/codechecker_build.sh" --config ./scripts/codechecker/codechecker_config.json --output ./.codechecker/reports
     CodeChecker parse -e html ./.codechecker/reports -o ./.codechecker/reports_html
     ```
     - Open `./.codechecker/reports_html/index.html` in your browser.
@@ -152,8 +152,8 @@ There are 3 options how to get reports:
     - Add these lines to your VS Code's workspace settings (`.vscode/settings.json`):
     ```json
     "codechecker.executor.executablePath": <path to CodeChecker>,
-    "codechecker.executor.arguments": "--config codechecker_config.json",
-    "codechecker.executor.logBuildCommand": "./codechecker_build.sh",
+    "codechecker.executor.arguments": "--config scripts/codechecker/codechecker_config.json",
+    "codechecker.executor.logBuildCommand": "./scripts/codechecker/codechecker_build.sh",
     "codechecker.backend.compilationDatabasePath": "${workspaceFolder}/.codechecker/compile_commands.json"
     ```
     - `<path to CodeChecker>` can be replaced with "CodeChecker" if the CodeChecker is available in your `$PATH`. Otherwise, you need to specify full path to the CodeChecker executable.

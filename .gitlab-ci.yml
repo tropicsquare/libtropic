@@ -14,7 +14,7 @@ run_ceedling_tests:
   script:
     - source setup_env
     - rm -rf build/
-    - ceedling gcov:all utils:gcov
+    - CEEDLING_MAIN_PROJECT_FILE=scripts/ceedling.yml ceedling gcov:all utils:gcov
 
   coverage: '/^TOTAL.*\s+(\d+\%)$/'
 
