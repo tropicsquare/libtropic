@@ -105,7 +105,6 @@ Unit tests files are in `tests/unit/` folder. They are written in [Ceedling](htt
 ```
 
 Then make sure that you have correct version:
-
 ```
 $ ceedling version
    Ceedling:: 0.31.1
@@ -114,11 +113,12 @@ $ ceedling version
  CException:: 1.3.3
 
 ```
+For now we support Ceedling version 0.31.1 only.
 
 Once ceedling is installed, run tests and create code coverage report:
 
 ```
-$ ceedling gcov:all utils:gcov
+$ CEEDLING_MAIN_PROJECT_FILE=scripts/ceedling.yml ceedling gcov:all utils:gcov
 ```
 
 ### Randomization
