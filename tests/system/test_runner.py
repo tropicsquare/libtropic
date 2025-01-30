@@ -8,6 +8,7 @@ import serial.tools
 import serial.tools.list_ports
 import telnetlib3
 import serial
+from enum import Enum
 from abc import ABC, abstractmethod
 from pathlib import Path
 from argparse import ArgumentParser
@@ -91,6 +92,10 @@ class lt_platform_factory:
             return None
 
 class lt_test_runner:
+    class lt_test_result(Enum):
+        TEST_FAILED = -1
+        TEST_PASSED = 0
+
     class OpenOCDConnectionError:
         pass
 
@@ -104,7 +109,7 @@ class lt_test_runner:
     def __del__(self):
         pass
 
-    async def run(self, elf_path: Path) -> bool:
+    async def run(self, elf_path: Path) -> lt_test_result:
         await self.platform.openocd_connect()
 
         try:
@@ -160,9 +165,9 @@ class lt_test_runner:
 
         if err_count > 0 or warn_count > 0 or assert_fail_count > 0:
             logger.error("There were errors or warnings, test unsuccessful!")
-            return False
+            return self.lt_test_result.TEST_FAILED
 
-        return True
+        return self.lt_test_result.TEST_PASSED
 
 def cleanup(openocd_proc: subprocess.Popen):
     logger.info("Cleaning up.")
@@ -177,7 +182,7 @@ def cleanup(openocd_proc: subprocess.Popen):
             openocd_proc.kill()
         logger.info("Done. Bye.")
 
-class lt_environment_tools:
+class lt_environment_tools:    
     @dataclass
     class lt_adapter_id:
         vid: int
@@ -302,6 +307,7 @@ async def main():
     platform        = lt_platform_factory.create_from_str_id(args.platform_id)
     adapter_id      = lt_environment_tools.get_adapter_id_from_mapping(args.platform_id, args.mapping_config)
     adapter_serial  = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
+    test_result     = lt_test_runner.lt_test_result.TEST_FAILED # The default is failure in case an exception is thrown.
 
     if platform is None:
         logger.error(f"Platform '{platform}' not found!")
@@ -327,7 +333,7 @@ async def main():
             return
 
         tr = lt_test_runner(args.work_dir, platform, adapter_serial)
-        await tr.run(args.firmware)
+        test_result = await tr.run(args.firmware)
     except serial.SerialException as e:
         logger.error(f"Platform serial interface communication error: {str(e)}")
         cleanup(openocd_proc)
@@ -339,9 +345,14 @@ async def main():
 
     cleanup(openocd_proc)
 
+    if test_result == lt_test_runner.lt_test_result.TEST_PASSED:
+        sys.exit(0) # Test OK
+    else:
+        sys.exit(1) # Test failed
+
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logger.info("Interrupted by SIGINT.")
-    sys.exit()
+    sys.exit(2) # Exception
