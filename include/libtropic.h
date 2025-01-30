@@ -40,6 +40,15 @@ lt_ret_t lt_init(lt_handle_t *h);
  */
 lt_ret_t lt_deinit(lt_handle_t *h);
 
+/**
+ * @brief Get CHIP_STATUS byte from chip, store it into *chip_status and also update this info in handle->chip_status variable.
+ *
+ * @param h           Device's handle
+ * @param chip_status Three bits of CHIP_STATUS byte
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_chip_status(lt_handle_t *h, uint8_t *chip_status);
+
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
 #define LT_L2_GET_INFO_REQ_CERT_SIZE         512

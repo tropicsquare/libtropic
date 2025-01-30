@@ -56,6 +56,33 @@ lt_ret_t lt_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
+lt_ret_t lt_get_chip_status(lt_handle_t *h, uint8_t *chip_status)
+{
+    if (   !h
+         || !chip_status
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Read CHIP_STATUS
+    lt_l1_spi_csn_low(h);
+
+    if (lt_l1_spi_transfer(h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT) != LT_OK) {
+        lt_l1_spi_csn_high(h);
+        return LT_L1_SPI_ERROR;
+    }
+
+    lt_l1_spi_csn_high(h);
+
+    // TODO is this redundancy needed?
+    // Store this info in chip_status and also update it into handle - might be used also from handle
+    // Because we are interested only in three bits in status byte, the rest is undefined
+    h->chip_status = (h->l2_buff[0]) & 0b00000111;
+    *chip_status = h->chip_status;
+
+    return LT_OK;
+}
+
 lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 {
     if (     max_len < LT_L2_GET_INFO_REQ_CERT_SIZE
