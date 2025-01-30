@@ -37,6 +37,8 @@ lt_ret_t lt_l2_transfer(lt_handle_t *h);
  *        command's data into handle's iternal l3 buffer, structures defined in lt_l3_api_structs.h migh help.
  *        Handle's internal l3 buffer will contain result's data when function returns TS_OK.
  *
+ *        Shall be executed only on device which has active secure channel.
+ *
  * @param h           Chip's handle
  * @return            LT_OK if success, otherwise returns other error code.
  */
