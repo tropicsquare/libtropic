@@ -488,6 +488,84 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
         return LT_FAIL;
     }
 
+    lt_l1_delay(h, LT_TROPIC01_REBOOT_DELAY_MS);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, uint8_t bank_id)
+{
+    if (    !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_mutable_fw_erase_req_t* p_l2_req = (struct lt_l2_mutable_fw_erase_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_mutable_fw_erase_rsp_t* p_l2_resp = (struct lt_l2_mutable_fw_erase_rsp_t*)&h->l2_buff;
+
+    p_l2_req->req_id = LT_L2_MUTABLE_FW_ERASE_REQ_ID;
+    p_l2_req->req_len = LT_L2_MUTABLE_FW_ERASE_REQ_LEN;
+    p_l2_req->bank_id = bank_id;
+
+    lt_ret_t ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    if(LT_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, uint8_t *fw_data, uint16_t fw_data_size, uint8_t bank_id)
+{
+    if (    !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_mutable_fw_update_req_t* p_l2_req = (struct lt_l2_mutable_fw_update_req_t*)&h->l2_buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_mutable_fw_update_rsp_t* p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t*)&h->l2_buff;
+
+    uint16_t loops = fw_data_size / 128;
+    uint16_t rest = fw_data_size % 128;
+
+    for (int16_t i = 0; i < loops; i++) {Prijde mi to prehledne
+        p_l2_req->req_len = 128;
+        p_l2_req->bank_id = bank_id;
+        p_l2_req->offset = i;
+        memcpy(p_l2_req->data, fw_data + (i*128), 128);
+
+        lt_ret_t ret = lt_l2_transfer(h);
+        if(ret != LT_OK) {
+            return ret;
+        }
+    }
+
+    if (rest != 0) {
+        printf("There was a rest");
+        p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
+        p_l2_req->req_len = rest;
+        p_l2_req->bank_id = bank_id;
+        p_l2_req->offset = loops;
+        memcpy(p_l2_req->data, fw_data + (loops*128), rest);
+
+        lt_ret_t ret = lt_l2_transfer(h);
+        if(ret != LT_OK) {
+            return ret;
+        }
+    }
+
+    if(LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
     return LT_OK;
 }
 
