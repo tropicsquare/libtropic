@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - 'develop'
-      - 'review-ci-scripts'
 
 jobs:
   build:

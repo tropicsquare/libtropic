@@ -4,7 +4,6 @@ on:
     branches:
       - 'develop'
       - 'master'
-      - 'review-ci-scripts'
   pull_request:
     branches:
       - 'master'
