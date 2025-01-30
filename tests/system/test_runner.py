@@ -104,21 +104,65 @@ class lt_test_runner:
     def __del__(self):
         pass
 
-    async def run(self, elf_path: Path):
+    async def run(self, elf_path: Path) -> bool:
         await self.platform.openocd_connect()
 
-        # try:
-        #     await self.platform.load_elf(elf_path)
-        # except TimeoutError:
-        #     logger.error("Communication with OpenOCD timed out while loading firmware!")
+        try:
+            await self.platform.load_elf(elf_path)
+        except TimeoutError:
+            logger.error("Communication with OpenOCD timed out while loading firmware!")
 
-        with serial.Serial(self.serial_port, baudrate = 115200, timeout=10) as s:
-            await self.platform.reset()
-            # dummy code for now, just copies values from uart
-            for i in range(30):
-                logger.info(f"platform:{s.read_until(expected=b"\r\n")}") # readline, but we use CRLF (EOL), instead of just LF
+        err_count = 0
+        warn_count = 0
+        assert_fail_count = 0
+        try:
+            with serial.Serial(self.serial_port, baudrate = 115200, timeout=10, inter_byte_timeout=10) as s:
+                await self.platform.reset()
             
+                while True:
+                    line = s.read_until(expected=b"\r\n").decode('ascii')
+                    logger.debug(f"Received from serial: {line}")
+                    line = line.split(";")
+                    if (len(line) < 3):
+                        logger.error("Line malformed!")
+                        continue
+                    
+                    code_line_number = line[0].strip()
+                    msg_type = line[1].strip()
+                    msg_content = line[2].strip()
+
+                    if (msg_type == "INFO"):
+                        logger.info(f"[PLATFORM][{code_line_number}] {msg_content}")
+                    elif (msg_type == "WARNING"):
+                        logger.warning(f"[PLATFORM][{code_line_number}] {msg_content}")
+                        warn_count += 1
+                    elif (msg_type == "ERROR"):
+                        logger.error(f"[PLATFORM][{code_line_number}] {msg_content}")
+                        err_count += 1
+                    elif (msg_type == "SYSTEM"):
+                        if msg_content == "ASSERT_OK":
+                            logger.info(f"Assertion at [{code_line_number}] passed!")
+                        elif msg_content == "ASSERT_FAIL":
+                            logger.error(f"Assertion at [{code_line_number}] failed!")
+                            assert_fail_count += 1
+                        elif msg_content == "TEST_FINISH":
+                            logger.info("Received TEST_FINISH, wrapping up.")
+                            break
+        except TimeoutError:
+            logger.error("Serial timeout! Did not receive any message in time. Check if the test output is correct and if TEST_FINISH is issued at the end of the test.")
+
         self.platform.openocd_disconnect()
+
+        logger.info("------ Stats ------")
+        logger.info(f"Errors: {err_count}")
+        logger.info(f"Warnings: {warn_count}")
+        logger.info(f"Failed assertions: {assert_fail_count}")
+
+        if err_count > 0 or warn_count > 0 or assert_fail_count > 0:
+            logger.error("There were errors or warnings, test unsuccessful!")
+            return False
+
+        return True
 
 def cleanup(openocd_proc: subprocess.Popen):
     logger.info("Cleaning up.")
