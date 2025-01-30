@@ -48,9 +48,40 @@ extern uint8_t sh3pub[];
 #define LT_PRINT_RES(func)   \
                     {printf("%d\r\n", func);}
 
+/**
+ * @brief Example function, Hello World
+ *
+ *  Verifies chip's certificate, exstablishes secure channel and executes Ping l3 command.
+ *  TODO explain more
+ * @return int
+ */
 int lt_ex_hello_world(void);
+
+/**
+ * @brief Example function, Hardware Wallet
+ *
+ * WARNING: This example ireversively writes into chip! Pairing keys SH1-3 are set and SH0 is invalidated. TODO explain more
+ *
+ * @return int
+ */
 int lt_ex_hardware_wallet(void);
+
+/**
+ * @brief Example function, shows how to update TROPIC01's internal firmwares
+ * TODO explain more
+ */
+void lt_ex_fw_update(void);
+
+/**
+ * @brief Test function, L3 commands which with ireversible impact
+ * TODO explain more
+ */
 void lt_ex_test_reversible(void);
+
+/**
+ * @brief Test function, L3 commands which ireversibly write in chip
+ * TODO explain more
+ */
 void lt_ex_test_ireversible(void);
 
 #endif

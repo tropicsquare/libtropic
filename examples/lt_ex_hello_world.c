@@ -73,13 +73,6 @@ static lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *sh
         return ret;
     }
 
-    // Command works only when chip is in STARTUP mode
-    //uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-    //ret = lt_get_info_fw_bank(h, header, LT_L2_GET_INFO_FW_HEADER_SIZE);
-    //if (ret != LT_OK) {
-    //    return ret;
-    //}
-
     uint8_t X509_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
     ret = lt_get_info_cert(h, X509_cert, LT_L2_GET_INFO_REQ_CERT_SIZE);
     if (ret != LT_OK) {
@@ -91,8 +84,6 @@ static lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *sh
     if (ret != LT_OK) {
         return ret;
     }
-    // Evaluation data, remove TODO
-    //uint8_t stpub[]  = {0x6d,0x45,0x2c,0x77,0x16,0x36,0xd9,0xef,0xac,0xa9,0x45,0x3f,0x55,0x42,0xa4,0x77,0xdd,0x49,0xa8,0x5e,0x90,0x1a,0x40,0xf2,0x17,0x3b,0x43,0x87,0xd8,0x92,0x80,0x03};
 
     ret = lt_session_start(h, stpub, pkey_index, shipriv, shipub);
     if (ret != LT_OK) {
