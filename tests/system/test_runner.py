@@ -125,7 +125,7 @@ class lt_test_runner:
                 await self.platform.reset()
             
                 while True:
-                    line = s.read_until(expected=b"\r\n").decode('ascii')
+                    line = s.read_until(expected=b"\r\n").decode('ascii', errors="backslashreplace")
                     logger.debug(f"Received from serial: {line}")
                     line = line.split(";")
                     if (len(line) < 3):
