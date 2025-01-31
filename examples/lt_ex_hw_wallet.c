@@ -403,30 +403,30 @@ static int session_initial(void)
     lt_init(&h);
 
     // Establish secure handshake with default H0 pairing keys
-    LOG_OUT_SESSION("%s", "Creating session with initial factory keys H0");
+    LT_LOG_SESSION("%s", "Creating session with initial factory keys H0");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
-    //LOG_OUT_SESSION("%s\r\n", "TODO: show I config values");
-    //LOG_OUT_SESSION("%s\r\n", "R CONFIG read:");
+    //LT_LOG_SESSION("%s\r\n", "TODO: show I config values");
+    //LT_LOG_SESSION("%s\r\n", "R CONFIG read:");
     //LT_ASSERT(LT_OK, read_whole_R_config(h));
-    LOG_OUT_SESSION("%s", "Writing whole R config");
+    LT_LOG_SESSION("%s", "Writing whole R config");
     LT_ASSERT(LT_OK, write_whole_R_config(&h));
-    LOG_OUT_SESSION("%s\r\n", "Reading R CONFIG again");
+    LT_LOG_SESSION("%s\r\n", "Reading R CONFIG again");
     read_whole_R_config(&h);
 
     // Writing pairing keys 1-3
-    LOG_OUT_SESSION("%s", "Writing pairing key H1");
+    LT_LOG_SESSION("%s", "Writing pairing key H1");
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, pkey_index_1));
-    LOG_OUT_SESSION("%s", "Writing pairing key H2");
+    LT_LOG_SESSION("%s", "Writing pairing key H2");
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, pkey_index_2));
-    LOG_OUT_SESSION("%s", "Writing pairing key H3");
+    LT_LOG_SESSION("%s", "Writing pairing key H3");
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, pkey_index_3));
-    LOG_OUT_SESSION("%s", "Invalidating SH0PUB pairing key");
+    LT_LOG_SESSION("%s", "Invalidating SH0PUB pairing key");
     LT_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, pkey_index_0));
 
-    LOG_OUT_SESSION("%s", "Closing session H0");
+    LT_LOG_SESSION("%s", "Closing session H0");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
-    LOG_OUT_SESSION("%s", "Rebooting TROPIC01");
+    LT_LOG_SESSION("%s", "Rebooting TROPIC01");
     LT_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
 
     lt_deinit(&h);
@@ -447,7 +447,7 @@ static int session_H0(void)
     lt_init(&h);
 
     /* Establish secure handshake with default H0 pairing keys should fail, because this key was invalidated during session_initial() */
-    LOG_OUT_SESSION("%s", "Establish session with H0 must fail");
+    LT_LOG_SESSION("%s", "Establish session with H0 must fail");
     LT_ASSERT(LT_L2_HSK_ERR, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
 
     lt_deinit(&h);
@@ -468,40 +468,40 @@ static int session_H1(void)
     lt_init(&h);
 
     /* Establish secure handshake with default H1 pairing keys */
-    LOG_OUT_SESSION("%s", "Creating session with H1 keys");
+    LT_LOG_SESSION("%s", "Creating session with H1 keys");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, pkey_index_1));
 
     uint8_t in[100];
     uint8_t out[100];
-    LOG_OUT_SESSION("%s", "lt_ping() ");
+    LT_LOG_SESSION("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 100));
 
-    //LOG_OUT_SESSION("%s", "Macand: ");
+    //LT_LOG_SESSION("%s", "Macand: ");
     //uint8_t data_in[32] = {0};
     //uint8_t data_out[32] = {0};
     //memset(data_out, 0xab, 32);
     //LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
 
     uint8_t attestation_key[32] = {0x22,0x57,0xa8,0x2f,0x85,0x8f,0x13,0x32,0xfa,0x0f,0xf6,0x0c,0x76,0x29,0x42,0x70,0xa9,0x58,0x9d,0xfd,0x47,0xa5,0x23,0x78,0x18,0x4d,0x2d,0x38,0xf0,0xa7,0xc4,0x01};
-    LOG_OUT_SESSION("%s", "Storing attestation key into slot 0");
+    LT_LOG_SESSION("%s", "Storing attestation key into slot 0");
     LT_ASSERT(LT_OK, lt_ecc_key_store(&h, ECC_SLOT_0, CURVE_ED25519, attestation_key));
 
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
-    LOG_OUT_SESSION("%s","Serial code get must fail");
+    LT_LOG_SESSION("%s","Serial code get must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
 
     uint8_t dummykey[32];
-    LOG_OUT_SESSION("%s","Pairing key write into slot 0 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 0 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_0));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 1 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 1 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_1));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 2 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 2 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_2));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 3 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 3 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_3));
 
 
-    LOG_OUT_SESSION("%s", "Aborting session H1");
+    LT_LOG_SESSION("%s", "Aborting session H1");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     lt_deinit(&h);
@@ -521,49 +521,49 @@ static int session_H2(void)
 
     lt_init(&h);
 
-    LOG_OUT_SESSION("%s", "Creating session with H2 keys");
+    LT_LOG_SESSION("%s", "Creating session with H2 keys");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, pkey_index_2));
 
     uint8_t in[100];
     uint8_t out[100];
-    LOG_OUT_SESSION("%s", "lt_ping() ");
+    LT_LOG_SESSION("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 100));
 
-    //LOG_OUT_SESSION("%s", "Macand: ");
+    //LT_LOG_SESSION("%s", "Macand: ");
     //uint8_t data_in[32] = {0};
     //uint8_t data_out[32] = {0};
     //memset(data_out, 0xab, 32);
     //LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
 
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
-    LOG_OUT_SESSION("%s","Serial code get must fail");
+    LT_LOG_SESSION("%s","Serial code get must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
 
     uint8_t dummykey[32];
-    LOG_OUT_SESSION("%s","ECC key store into slot 1 must fail");
+    LT_LOG_SESSION("%s","ECC key store into slot 1 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_ecc_key_store(&h, ECC_SLOT_0, CURVE_ED25519, dummykey));
 
-    LOG_OUT_SESSION("%s","Pairing key write into slot 0 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 0 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_0));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 1 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 1 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_1));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 2 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 2 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_2));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 3 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 3 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_3));
 
     uint32_t mcounter_value = 0x000000ff;
-    LOG_OUT_SESSION("%s","Initializing mcounter 0 must fail");
+    LT_LOG_SESSION("%s","Initializing mcounter 0 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_mcounter_init(&h,  0, mcounter_value));
-    LOG_OUT_SESSION("%s","Mcounter 0 update must fail");
+    LT_LOG_SESSION("%s","Mcounter 0 update must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_mcounter_update(&h, 0));
-    LOG_OUT_SESSION("%s","Mcounter get must fail");
+    LT_LOG_SESSION("%s","Mcounter get must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_mcounter_get(&h, 0, &mcounter_value));
 
 
     // TODO Unauthorized sign with attestation key
 
-    LOG_OUT_SESSION("%s", "Aborting session H2");
+    LT_LOG_SESSION("%s", "Aborting session H2");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     lt_deinit(&h);
@@ -583,91 +583,91 @@ static int session_H3(void)
 
     lt_init(&h);
 
-    LOG_OUT_SESSION("%s", "Creating session with H3 keys");
+    LT_LOG_SESSION("%s", "Creating session with H3 keys");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, pkey_index_3));
 
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
 
-    LOG_OUT_SESSION("%s", "lt_ping() ");
+    LT_LOG_SESSION("%s", "lt_ping() ");
     uint8_t in[100];
     uint8_t out[100];
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 100));
 
-    //LOG_OUT_SESSION("%s", "Macand: ");
+    //LT_LOG_SESSION("%s", "Macand: ");
     //uint8_t data_in[32] = {0};
     //uint8_t data_out[32] = {0};
     //memset(data_out, 0xab, 32);
     //LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
 
     // Sign with attestation key which was updated through session keys H1
-    LOG_OUT_SESSION("%s", "lt_ecc_eddsa_sign() ");
+    LT_LOG_SESSION("%s", "lt_ecc_eddsa_sign() ");
     uint8_t msg[] = {'a', 'h', 'o', 'j'};
     uint8_t rs[64];
     LT_ASSERT(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_0, msg, 4, rs, 64));
 
-    LOG_OUT_SESSION("%s", "lt_ecc_key_read() ");
+    LT_LOG_SESSION("%s", "lt_ecc_key_read() ");
     uint8_t slot_0_pubkey[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
     LT_ASSERT(LT_OK, lt_ecc_key_read(&h, ECC_SLOT_0, slot_0_pubkey, 64, &curve, &origin));
 
-    LOG_OUT_SESSION("%s", "lt_ecc_eddsa_sig_verify() ");
+    LT_LOG_SESSION("%s", "lt_ecc_eddsa_sig_verify() ");
     LT_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg, 4, slot_0_pubkey, rs));
 
     // TODO generate key
-    LOG_OUT_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_8");
+    LT_LOG_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_8");
     LT_ASSERT(LT_OK, lt_ecc_key_generate(&h, ECC_SLOT_8, CURVE_ED25519));
-    LOG_OUT_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_16");
+    LT_LOG_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_16");
     LT_ASSERT(LT_OK, lt_ecc_key_generate(&h, ECC_SLOT_16, CURVE_ED25519));
-    LOG_OUT_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_24");
+    LT_LOG_SESSION("%s", "lt_ecc_key_generate() in ECC_SLOT_24");
     LT_ASSERT(LT_OK, lt_ecc_key_generate(&h, ECC_SLOT_24, CURVE_ED25519));
 
-    LOG_OUT_SESSION("%s", "lt_random_get() RANDOM_VALUE_GET_LEN_MAX == 255");
+    LT_LOG_SESSION("%s", "lt_random_get() RANDOM_VALUE_GET_LEN_MAX == 255");
     uint8_t buff[RANDOM_VALUE_GET_LEN_MAX];
     LT_ASSERT(LT_OK, lt_random_get(&h, buff, RANDOM_VALUE_GET_LEN_MAX));
 
     // TODO write r mem data
-    LOG_OUT_SESSION("%s", "lt_r_mem_data_erase() slot 0 ");
+    LT_LOG_SESSION("%s", "lt_r_mem_data_erase() slot 0 ");
     LT_ASSERT(LT_OK, lt_r_mem_data_erase(&h, 0));
     // TODO read r mem data
 
     uint32_t mcounter_value = 0x000000ff;
 #if(BITNESS == 64)
-    LOG_OUT_VALUE("mcounter_value %08X\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08X\r\n", mcounter_value);
 #else
-    LOG_OUT_VALUE("mcounter_value %08lX\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08lX\r\n", mcounter_value);
 #endif
-    LOG_OUT_SESSION("%s","Initializing mcounter 0 ");
+    LT_LOG_SESSION("%s","Initializing mcounter 0 ");
     LT_ASSERT(LT_OK, lt_mcounter_init(&h,  0, mcounter_value));
-    LOG_OUT_SESSION("%s","Mcounter 0 update");
+    LT_LOG_SESSION("%s","Mcounter 0 update");
     LT_ASSERT(LT_OK, lt_mcounter_update(&h, 0));
-    LOG_OUT_SESSION("%s","Mcounter get ");
+    LT_LOG_SESSION("%s","Mcounter get ");
     LT_ASSERT(LT_OK, lt_mcounter_get(&h, 0, &mcounter_value));
 #if(BITNESS == 64)
-    LOG_OUT_VALUE("mcounter_value %08X\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08X\r\n", mcounter_value);
 #else
-    LOG_OUT_VALUE("mcounter_value %08lX\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08lX\r\n", mcounter_value);
 #endif
 
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
-    LOG_OUT_SESSION("%s","Serial code get must fail");
+    LT_LOG_SESSION("%s","Serial code get must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
 
     uint8_t dummykey[32];
-    LOG_OUT_SESSION("%s","ECC key store into slot 1 must fail");
+    LT_LOG_SESSION("%s","ECC key store into slot 1 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_ecc_key_store(&h, ECC_SLOT_0, CURVE_ED25519, dummykey));
 
-    LOG_OUT_SESSION("%s","Pairing key write into slot 0 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 0 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_0));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 1 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 1 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_1));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 2 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 2 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_2));
-    LOG_OUT_SESSION("%s","Pairing key write into slot 3 must fail");
+    LT_LOG_SESSION("%s","Pairing key write into slot 3 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_3));
 
-    LOG_OUT_SESSION("%s", "Aborting session H3");
+    LT_LOG_SESSION("%s", "Aborting session H3");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     lt_deinit(&h);
@@ -677,43 +677,43 @@ static int session_H3(void)
 
 int lt_ex_hardware_wallet(void)
 {
-    LOG_OUT("\r\n");
-    LOG_OUT("\t=======================================================================\r\n");
-    LOG_OUT("\t=====  TROPIC01 example 1 - Hardware Wallet                         ===\r\n");
-    LOG_OUT("\t=======================================================================\r\n\n");
+    LT_LOG("\r\n");
+    LT_LOG("\t=======================================================================\r\n");
+    LT_LOG("\t=====  TROPIC01 example 1 - Hardware Wallet                         ===\r\n");
+    LT_LOG("\t=======================================================================\r\n\n");
 
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
     printf("\t Session initial: \r\n\n");
     if(session_initial() == -1) {
         printf("\r\nError during session_initial()\r\n");
         return -1;
     }
 
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
     printf("\t Session H0: \r\n\n");
     if(session_H0() == -1)  {
         printf("\r\nError during session_H0()\r\n");
         return -1;
     }
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
     printf("\t Session H1: \r\n\n");
     if(session_H1() == -1) {
         printf("\r\nError during session_H1()\r\n");
         return -1;
     }
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
     printf("\t Session H2: \r\n\n");
     if(session_H2() == -1) {
         printf("\r\nError during session_H2()\r\n");
         return -1;
     }
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
     printf("\t Session H3: \r\n\n");
     if(session_H3() == -1) {
         printf("\r\nError during session_H3()\r\n");
         return -1;
     }
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
 
     printf("\t End of execution, no errors.\r\n");
 
