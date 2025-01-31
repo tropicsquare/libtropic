@@ -123,7 +123,7 @@ static int session_H0(void)
     memcpy(out, "This is Hello World message from TROPIC01!!", 43);
     LT_LOG_SESSION("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 43));
-    printf("\r\n\t\tMessage: %s\r\n\n", in);
+    LT_LOG("\t\tMessage: %s", in);
 
     lt_deinit(&h);
 
@@ -132,21 +132,21 @@ static int session_H0(void)
 
 int lt_ex_hello_world(void)
 {
-    LT_LOG("\r\n");
-    LT_LOG("\t=======================================================================\r\n");
-    LT_LOG("\t=====  TROPIC01 Hello World                                         ===\r\n");
-    LT_LOG("\t=======================================================================\r\n\n");
+    LT_LOG("");
+    LT_LOG("\t=======================================================================");
+    LT_LOG("\t=====  TROPIC01 Hello World                                         ===");
+    LT_LOG("\t=======================================================================");
 
 
     LT_LOG_LINE();
-    printf("\t Session with H0 keys: \r\n\n");
+    LT_LOG("\t Session with H0 keys:");
     if(session_H0() == -1)  {
-        printf("\r\nError during session_H0()\r\n");
+        LT_LOG("Error during session_H0()");
     }
 
     LT_LOG_LINE();
 
-    printf("\t End of execution, no errors.\r\n");
+    LT_LOG("\t End of execution, no errors.");
 
     return 0;
 }

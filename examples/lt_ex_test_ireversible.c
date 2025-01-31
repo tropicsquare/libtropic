@@ -19,6 +19,6 @@
 void lt_ex_test_ireversible(void)
 {
 
-    LT_LOG("\tireversible features\r\n");
+    LT_LOG("\tireversible features");
 
 }

@@ -16,7 +16,7 @@
 
 void lt_ex_test_reversible(void)
 {
-    LT_LOG("ireversible features\r\n");
+    LT_LOG("ireversible features");
 
     lt_handle_t h = {0};
 

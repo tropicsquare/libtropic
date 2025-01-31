@@ -323,7 +323,7 @@ static lt_ret_t read_whole_I_config(lt_handle_t *h)
 {
     lt_ret_t ret;
 
-    printf("\r\n");
+    LT_LOG("");
     for (int i=0; i<27;i++) {
         uint32_t check = 0;
         ret = lt_i_config_read(h, config_description[i].addr, &check);
@@ -331,12 +331,12 @@ static lt_ret_t read_whole_I_config(lt_handle_t *h)
             return ret;
         }
 #if(BITNESS == 64)
-            printf("\t\t%s  %08X\r\n", config_description[i].desc, check);
+            LT_LOG("\t\t%s  %08X", config_description[i].desc, check);
 #else
-            printf("\t\t%s  %08lX\r\n", config_description[i].desc, check);
+            LT_LOG("\t\t%s  %08lX", config_description[i].desc, check);
 #endif
     }
-    printf("\r\n");
+    LT_LOG("");
 
     return LT_OK;
 }
@@ -351,7 +351,7 @@ static lt_ret_t read_whole_R_config(lt_handle_t *h)
 {
     lt_ret_t ret;
 
-    printf("\r\n");
+    LT_LOG("");
     for (int i=0; i<27;i++) {
         uint32_t check = 0;
         ret = lt_r_config_read(h, config_description[i].addr, &check);
@@ -359,12 +359,12 @@ static lt_ret_t read_whole_R_config(lt_handle_t *h)
             return ret;
         }
 #if(BITNESS == 64)
-            printf("\t\t%s  %08X\r\n", config_description[i].desc, check);
+            LT_LOG("\t\t%s  %08X", config_description[i].desc, check);
 #else
-            printf("\t\t%s  %08lX\r\n", config_description[i].desc, check);
+            LT_LOG("\t\t%s  %08lX", config_description[i].desc, check);
 #endif
     }
-    printf("\r\n");
+    LT_LOG("");
 
     return LT_OK;
 }
@@ -405,12 +405,12 @@ static int session_initial(void)
     // Establish secure handshake with default H0 pairing keys
     LT_LOG_SESSION("%s", "Creating session with initial factory keys H0");
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
-    //LT_LOG_SESSION("%s\r\n", "TODO: show I config values");
-    //LT_LOG_SESSION("%s\r\n", "R CONFIG read:");
+    //LT_LOG_SESSION("%s", "TODO: show I config values");
+    //LT_LOG_SESSION("%s", "R CONFIG read:");
     //LT_ASSERT(LT_OK, read_whole_R_config(h));
     LT_LOG_SESSION("%s", "Writing whole R config");
     LT_ASSERT(LT_OK, write_whole_R_config(&h));
-    LT_LOG_SESSION("%s\r\n", "Reading R CONFIG again");
+    LT_LOG_SESSION("%s", "Reading R CONFIG again");
     read_whole_R_config(&h);
 
     // Writing pairing keys 1-3
@@ -633,9 +633,9 @@ static int session_H3(void)
 
     uint32_t mcounter_value = 0x000000ff;
 #if(BITNESS == 64)
-    LT_LOG_VALUE("mcounter_value %08X\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08X", mcounter_value);
 #else
-    LT_LOG_VALUE("mcounter_value %08lX\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08lX", mcounter_value);
 #endif
     LT_LOG_SESSION("%s","Initializing mcounter 0 ");
     LT_ASSERT(LT_OK, lt_mcounter_init(&h,  0, mcounter_value));
@@ -644,9 +644,9 @@ static int session_H3(void)
     LT_LOG_SESSION("%s","Mcounter get ");
     LT_ASSERT(LT_OK, lt_mcounter_get(&h, 0, &mcounter_value));
 #if(BITNESS == 64)
-    LT_LOG_VALUE("mcounter_value %08X\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08X", mcounter_value);
 #else
-    LT_LOG_VALUE("mcounter_value %08lX\r\n", mcounter_value);
+    LT_LOG_VALUE("mcounter_value %08lX", mcounter_value);
 #endif
 
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
@@ -677,45 +677,45 @@ static int session_H3(void)
 
 int lt_ex_hardware_wallet(void)
 {
-    LT_LOG("\r\n");
-    LT_LOG("\t=======================================================================\r\n");
-    LT_LOG("\t=====  TROPIC01 example 1 - Hardware Wallet                         ===\r\n");
-    LT_LOG("\t=======================================================================\r\n\n");
+    LT_LOG("");
+    LT_LOG("\t=======================================================================");
+    LT_LOG("\t=====  TROPIC01 example 1 - Hardware Wallet                         ===");
+    LT_LOG("\t=======================================================================");
 
     LT_LOG_LINE();
-    printf("\t Session initial: \r\n\n");
+    LT_LOG("\t Session initial:");
     if(session_initial() == -1) {
-        printf("\r\nError during session_initial()\r\n");
+        LT_LOG("Error during session_initial()");
         return -1;
     }
 
     LT_LOG_LINE();
-    printf("\t Session H0: \r\n\n");
+    LT_LOG("\t Session H0:");
     if(session_H0() == -1)  {
-        printf("\r\nError during session_H0()\r\n");
+        LT_LOG("Error during session_H0()");
         return -1;
     }
     LT_LOG_LINE();
-    printf("\t Session H1: \r\n\n");
+    LT_LOG("\t Session H1:");
     if(session_H1() == -1) {
-        printf("\r\nError during session_H1()\r\n");
+        LT_LOG("Error during session_H1()");
         return -1;
     }
     LT_LOG_LINE();
-    printf("\t Session H2: \r\n\n");
+    LT_LOG("\t Session H2:");
     if(session_H2() == -1) {
-        printf("\r\nError during session_H2()\r\n");
+        LT_LOG("Error during session_H2()");
         return -1;
     }
     LT_LOG_LINE();
-    printf("\t Session H3: \r\n\n");
+    LT_LOG("\t Session H3:");
     if(session_H3() == -1) {
-        printf("\r\nError during session_H3()\r\n");
+        LT_LOG("Error during session_H3()");
         return -1;
     }
     LT_LOG_LINE();
 
-    printf("\t End of execution, no errors.\r\n");
+    LT_LOG("\t End of execution, no errors.");
 
     return 0;
 }
