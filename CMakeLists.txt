@@ -95,7 +95,6 @@ if(LT_ADD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_ireversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
@@ -109,7 +108,8 @@ endif()
 # Collect files to be compiled when "fw update" is enabled
 if(LT_ENABLE_FW_UPDATE)
     set(SDK_INCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/ABAB/fw_file_0_1_2.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/ABAB/fw_CPU_0_1_2.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/ABAB/

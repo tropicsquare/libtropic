@@ -248,11 +248,12 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
     return LT_OK;
 }
 
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, const uint16_t max_len)
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len)
 {
     if (    !h
          || !header
          ||  max_len < LT_L2_GET_INFO_FW_HEADER_SIZE
+         ||  ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1) && (bank_id != FW_BANK_SPECT2))
     ) {
         return LT_PARAM_ERR;
     }
@@ -265,7 +266,7 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, const uint16_t max
     p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK;
-    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+    p_l2_req->block_index = bank_id;
 
     lt_ret_t ret = lt_l2_transfer(h);
     if(ret != LT_OK) {
@@ -493,9 +494,10 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     return LT_OK;
 }
 
-lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, uint8_t bank_id)
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
 {
     if (    !h
+         ||  ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1) && (bank_id != FW_BANK_SPECT2))
     ) {
         return LT_PARAM_ERR;
     }
@@ -521,9 +523,12 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, uint8_t bank_id)
     return LT_OK;
 }
 
-lt_ret_t lt_mutable_fw_update(lt_handle_t *h, uint8_t *fw_data, uint16_t fw_data_size, uint8_t bank_id)
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
 {
     if (    !h
+         || !fw_data
+         ||  fw_data_size > 25600
+         ||  ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1) && (bank_id != FW_BANK_SPECT2))
     ) {
         return LT_PARAM_ERR;
     }
@@ -536,34 +541,38 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, uint8_t *fw_data, uint16_t fw_data
     uint16_t loops = fw_data_size / 128;
     uint16_t rest = fw_data_size % 128;
 
-    for (int16_t i = 0; i < loops; i++) {Prijde mi to prehledne
-        p_l2_req->req_len = 128;
+    for (int16_t i = 0; i < loops; i++) {
+        p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
+        p_l2_req->req_len = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN + 128;
         p_l2_req->bank_id = bank_id;
-        p_l2_req->offset = i;
+        p_l2_req->offset = i*128;
         memcpy(p_l2_req->data, fw_data + (i*128), 128);
 
         lt_ret_t ret = lt_l2_transfer(h);
         if(ret != LT_OK) {
             return ret;
         }
+
+        if(LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+            return LT_FAIL;
+        }
     }
 
     if (rest != 0) {
-        printf("There was a rest");
         p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
-        p_l2_req->req_len = rest;
+        p_l2_req->req_len = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN + rest;
         p_l2_req->bank_id = bank_id;
-        p_l2_req->offset = loops;
+        p_l2_req->offset = loops*128;
         memcpy(p_l2_req->data, fw_data + (loops*128), rest);
 
         lt_ret_t ret = lt_l2_transfer(h);
         if(ret != LT_OK) {
             return ret;
         }
-    }
 
-    if(LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        if(LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+            return LT_FAIL;
+        }
     }
 
     return LT_OK;
