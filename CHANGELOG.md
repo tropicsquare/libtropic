@@ -19,9 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - L3 commands: MCounter (init, update and get), MAC-and-destroy,
 - L2 commands: Resend, Sleep and Log req
+- libtropic API: lt_update_mode()
 - Example folder and test folder is reworked
 - option LT_ADD_EXAMPLES controls if example's folder code is a part of compilation
-- libtropic API: lt_get_chip_status()
 
 ### Fixed
 

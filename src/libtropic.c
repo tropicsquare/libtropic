@@ -56,15 +56,14 @@ lt_ret_t lt_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_get_chip_status(lt_handle_t *h, uint8_t *chip_status)
+lt_ret_t lt_update_mode(lt_handle_t *h)
 {
     if (   !h
-         || !chip_status
     ) {
         return LT_PARAM_ERR;
     }
 
-    // Read CHIP_STATUS
+    // Transfer just one byte to read CHIP_STATUS byte
     lt_l1_spi_csn_low(h);
 
     if (lt_l1_spi_transfer(h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT) != LT_OK) {
@@ -74,11 +73,13 @@ lt_ret_t lt_get_chip_status(lt_handle_t *h, uint8_t *chip_status)
 
     lt_l1_spi_csn_high(h);
 
-    // TODO is this redundancy needed?
-    // Store this info in chip_status and also update it into handle - might be used also from handle
-    // Because we are interested only in three bits in status byte, the rest is undefined
-    h->chip_status = (h->l2_buff[0]) & 0b00000111;
-    *chip_status = h->chip_status;
+    // Buffer in handle now contains CHIP_STATUS byte,
+    // Save info about chip mode into 'mode' variable in handle
+    if(h->l2_buff[0] & CHIP_MODE_STARTUP_bit) {
+        h->mode = 1;
+    } else {
+        h->mode = 0;
+    }
 
     return LT_OK;
 }

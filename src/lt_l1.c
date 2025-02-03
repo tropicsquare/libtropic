@@ -27,9 +27,6 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
     }
 #endif
 
-    // Zero it so it can be updated during next lines
-    h->chip_status = 0;
-
 #ifdef EXPERIMENTAL_SPI_UART
     lt_l1_delay(h, 10);
 #endif
@@ -42,7 +39,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
 
         h->l2_buff[0] = GET_INFO_REQ_ID;
 
-        // Try to read CHIP_STATUS
+        // Try to read CHIP_STATUS byte
         lt_l1_spi_csn_low(h);
 #ifdef EXPERIMENTAL_SPI_RASPBERRYPI
         // store the byte which was initally in l2_buff
@@ -62,22 +59,21 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
             return LT_L1_SPI_ERROR;
         }
 
-        // Check ALARM bit of CHIP_STATUS
+        // Check ALARM bit of CHIP_STATUS byte
         if (h->l2_buff[0] & CHIP_MODE_ALARM_bit) {
             lt_l1_spi_csn_high(h);
-            h->chip_status |= CHIP_MODE_ALARM_bit;
             return LT_L1_CHIP_ALARM_MODE;
         }
 
-        // Check and save STARTUP bit of CHIP_STATUS
+        // Check and save STARTUP bit of CHIP_STATUS to signalize whether device operates in bootloader or in application
         if (h->l2_buff[0] & CHIP_MODE_STARTUP_bit) {
-            h->chip_status |= CHIP_MODE_STARTUP_bit;
+            h->mode = 1;
+        } else {
+            h->mode = 0;
         }
 
         // TODO comment
         if (h->l2_buff[0] & (CHIP_MODE_READY_bit)) {
-
-            h->chip_status |= CHIP_MODE_READY_bit;
 
             // receive STATUS byte and length byte
             if (lt_l1_spi_transfer(h, 1, 2, timeout) != LT_OK) { //offset 1

@@ -40,14 +40,16 @@ lt_ret_t lt_init(lt_handle_t *h);
  */
 lt_ret_t lt_deinit(lt_handle_t *h);
 
+//--------------------------------------------------------------------------------------------------------------------//
+#define LT_MODE_STARTUP 1
+#define LT_MODE_APP     0
 /**
- * @brief Get CHIP_STATUS byte from chip, store it into *chip_status and also update this info in handle->chip_status variable.
+ * @brief Update mode variable in handle
  *
  * @param h           Device's handle
- * @param chip_status Three bits of CHIP_STATUS byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_chip_status(lt_handle_t *h, uint8_t *chip_status);
+lt_ret_t lt_update_mode(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
