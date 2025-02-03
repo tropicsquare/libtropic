@@ -48,7 +48,7 @@ void lt_ex_test_reversible(void)
     LT_LOG("%s", "lt_ping() ");
     uint8_t in[100];
     uint8_t out[100];
-    LT_PRINT_RES(lt_ping(&h, out, in, 100));
+    LT_LOG("%d", lt_ping(&h, out, in, 100));
 
     LT_LOG("---------------- Loop through all key slots, ed25519, stored key ----------------");
 
