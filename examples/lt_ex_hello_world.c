@@ -18,27 +18,6 @@
  * @par
  */
 
-#if defined(_MSC_VER) || (defined(__INTEL_COMPILER) && defined(_WIN32))
-   #if defined(_M_X64)
-      #define BITNESS 64
-      #define LONG_SIZE 4
-   #else
-      #define BITNESS 32
-      #define LONG_SIZE 4
-   #endif
-#elif defined(__clang__) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-   #if defined(__x86_64)
-      #define BITNESS 64
-   #else
-      #define BITNESS 32
-   #endif
-   #if __LONG_MAX__ == 2147483647L
-      #define LONG_SIZE 4
-   #else
-      #define LONG_SIZE 8
-   #endif
-#endif
-
 /**
  * @brief This function establish a secure channel between host MCU and TROPIC01 chip
  *

@@ -7,6 +7,7 @@
  */
 
 #include "string.h"
+#include "inttypes.h"
 
 #include "libtropic.h"
 #include "libtropic_common.h"
@@ -28,28 +29,6 @@
 
     Example shows how content of config objects might be used to set different access rights and how chip behaves during the device's lifecycle.
  */
-
-#if defined(_MSC_VER) || (defined(__INTEL_COMPILER) && defined(_WIN32))
-   #if defined(_M_X64)
-      #define BITNESS 64
-      #define LONG_SIZE 4
-   #else
-      #define BITNESS 32
-      #define LONG_SIZE 4
-   #endif
-#elif defined(__clang__) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-   #if defined(__x86_64)
-      #define BITNESS 64
-   #else
-      #define BITNESS 32
-   #endif
-   #if __LONG_MAX__ == 2147483647L
-      #define LONG_SIZE 4
-   #else
-      #define LONG_SIZE 8
-   #endif
-#endif
-
 
 //-----------------------------------------------------------
 #define TO_PAIRING_KEY_SH0PUB(x)     ((x) << 0)
@@ -330,11 +309,7 @@ static lt_ret_t read_whole_I_config(lt_handle_t *h)
         if(ret != LT_OK) {
             return ret;
         }
-#if(BITNESS == 64)
-            LT_LOG("\t\t%s  %08X", config_description[i].desc, check);
-#else
-            LT_LOG("\t\t%s  %08lX", config_description[i].desc, check);
-#endif
+        LT_LOG("\t\t%s  %08" PRIX32, config_description[i].desc, check);
     }
     LT_LOG("");
 
@@ -358,11 +333,7 @@ static lt_ret_t read_whole_R_config(lt_handle_t *h)
         if(ret != LT_OK) {
             return ret;
         }
-#if(BITNESS == 64)
-            LT_LOG("\t\t%s  %08X", config_description[i].desc, check);
-#else
-            LT_LOG("\t\t%s  %08lX", config_description[i].desc, check);
-#endif
+        LT_LOG("\t\t%s  %08" PRIX32, config_description[i].desc, check);
     }
     LT_LOG("");
 
@@ -632,22 +603,14 @@ static int session_H3(void)
     // TODO read r mem data
 
     uint32_t mcounter_value = 0x000000ff;
-#if(BITNESS == 64)
-    LT_LOG_VALUE("mcounter_value %08X", mcounter_value);
-#else
-    LT_LOG_VALUE("mcounter_value %08lX", mcounter_value);
-#endif
+    LT_LOG_VALUE("mcounter_value %08" PRIX32, mcounter_value);
     LT_LOG("%s","Initializing mcounter 0 ");
     LT_ASSERT(LT_OK, lt_mcounter_init(&h,  0, mcounter_value));
     LT_LOG("%s","Mcounter 0 update");
     LT_ASSERT(LT_OK, lt_mcounter_update(&h, 0));
     LT_LOG("%s","Mcounter get ");
     LT_ASSERT(LT_OK, lt_mcounter_get(&h, 0, &mcounter_value));
-#if(BITNESS == 64)
-    LT_LOG_VALUE("mcounter_value %08X", mcounter_value);
-#else
-    LT_LOG_VALUE("mcounter_value %08lX", mcounter_value);
-#endif
+    LT_LOG_VALUE("mcounter_value %08" PRIX32, mcounter_value);
 
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
     uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
