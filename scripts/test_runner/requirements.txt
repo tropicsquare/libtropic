@@ -1,0 +1,2 @@
+pyserial==3.5
+telnetlib3==2.0.4
