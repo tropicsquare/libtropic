@@ -70,6 +70,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
 typedef struct lt_handle_t {
     void *device;
     uint32_t session;
+    uint8_t mode;
     uint8_t IV[12];
 #if USE_TREZOR_CRYPTO
     uint8_t encrypt[352] __attribute__ ((aligned (16))); // Because sizeof(lt_aes_gcm_ctx_t) == 352;
@@ -161,5 +162,7 @@ typedef enum {
     LT_L2_DATA_LEN_ERROR,
 
 } lt_ret_t;
+
+#define LT_TROPIC01_REBOOT_DELAY_MS  75
 
 #endif
