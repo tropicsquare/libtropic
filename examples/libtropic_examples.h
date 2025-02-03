@@ -37,8 +37,6 @@ extern uint8_t sh3pub[];
 #define LT_LOG_LINE(f_, ...) LT_LOG_INFO("\t-------------------------------------------------------------------------------------------------------------"f_, ##__VA_ARGS__)
 #define LT_PRINT_RES(func) {LT_LOG_INFO("%d", func);}
 
-#define LT_LOG_SESSION(f_, ...) LT_LOG_INFO(f_, ##__VA_ARGS__)
-
 // Loggers with selectable message type.
 #define LT_LOG_INFO(f_, ...) printf("%d\t;INFO;"f_"\r\n", __LINE__, ##__VA_ARGS__)
 #define LT_LOG_WARN(f_, ...) printf("%d\t;WARNING;"f_"\r\n", __LINE__, ##__VA_ARGS__)

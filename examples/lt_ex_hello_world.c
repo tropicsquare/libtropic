@@ -114,14 +114,14 @@ static int session_H0(void)
 
     lt_init(&h);
 
-    LT_LOG_SESSION("%s", "Establish session with H0");
+    LT_LOG("%s", "Establish session with H0");
 
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
 
     uint8_t in[100] = {0};
     uint8_t out[100] = {0};
     memcpy(out, "This is Hello World message from TROPIC01!!", 43);
-    LT_LOG_SESSION("%s", "lt_ping() ");
+    LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 43));
     LT_LOG("\t\tMessage: %s", in);
 
