@@ -29,24 +29,37 @@ extern uint8_t pkey_index_3;
 extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
 
-#define LOG_OUT(f_, ...) printf(f_, ##__VA_ARGS__)
-#define LOG_OUT_RESULT(f_, ...) printf("  result: "f_, ##__VA_ARGS__)
+// Only info-level loggers and decorators.
+// This has no effect, test runner just simply copies these lines to the log.
+#define LT_LOG(f_, ...) LT_LOG_INFO(f_, ##__VA_ARGS__)
+#define LT_LOG_RESULT(f_, ...) LT_LOG_INFO("  result: "f_, ##__VA_ARGS__)
+#define LT_LOG_VALUE(f_, ...) LT_LOG_INFO("\t\t- "f_, ##__VA_ARGS__)
+#define LT_LOG_LINE(f_, ...) LT_LOG_INFO("\t-------------------------------------------------------------------------------------------------------------"f_, ##__VA_ARGS__)
 
+// Loggers with selectable message type.
+#define LT_LOG_INFO(f_, ...) printf("%d\t;INFO;"f_"\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) printf("%d\t;WARNING;"f_"\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) printf("%d\t;ERROR;"f_"\r\n", __LINE__, ##__VA_ARGS__)
+// Logger for system messages -- e.g. finishing a test.
+#define LT_LOG_SYSTEM(f_, ...) printf("%d\t;SYSTEM;"f_"\r\n", __LINE__, ##__VA_ARGS__)
 
-#define LOG_OUT_INFO(f_, ...) printf("\t[INFO] "f_, ##__VA_ARGS__)
-#define LOG_OUT_VALUE(f_, ...) printf("\t\t- "f_, ##__VA_ARGS__)
-#define LOG_OUT_LINE(f_, ...) printf("\t-------------------------------------------------------------------------------------------------------------\r\n"f_, ##__VA_ARGS__)
+// Assertions. Will log as a system message.
+#define LT_ASSERT(value, expected)                              \
+                    if(value == expected)                       \
+                    {                                           \
+                        LT_LOG_SYSTEM("ASSERT_OK");             \
+                    } else {                                    \
+                        LT_LOG_SYSTEM("ASSERT_FAIL");           \
+                    };
 
-#define LOG_OUT_SESSION(f_, ...) printf(f_, ##__VA_ARGS__)
-
-#define LT_ASSERT(func, expected)   \
-                    if(func!=expected) \
-                    { \
-                        printf("\t\t\tERROR\r\n"); return -1; \
-                    } else {printf(" %s\r\n", "(ok)");};
-
-#define LT_PRINT_RES(func)   \
-                    {printf("%d\r\n", func);}
+#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)                      \
+                    if (value == (condition ? expected_if_true : expected_if_false)) {             \
+                        LT_LOG_SYSTEM("ASSERT_OK");                                                \
+                    } else {                                                                       \
+                        LT_LOG_SYSTEM("ASSERT_FAIL");                                              \
+                    }
+// Used to stop the test. Will log as a system message.
+#define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
 
 /**
  * @brief Example function, Hello World

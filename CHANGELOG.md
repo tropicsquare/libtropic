@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests organization was updated
 - Included lt_l2_api_structs.h and lt_l3_api_structs.h are automatically generated
 - SH0 pairing keypair now reflects first batch of TROPIC01 devices
+- Changed logging format in examples.
 
 ### Added
 
