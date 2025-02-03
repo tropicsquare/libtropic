@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - lt_handshake() function renamed to lt_session_start()
 - Unit tests organization was updated
 - Included lt_l2_api_structs.h and lt_l3_api_structs.h are automatically generated
+- Changed logging format in examples.
 
 ### Added
 

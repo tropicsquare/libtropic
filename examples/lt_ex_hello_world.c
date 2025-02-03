@@ -114,16 +114,16 @@ static int session_H0(void)
 
     lt_init(&h);
 
-    LOG_OUT_SESSION("%s", "Establish session with H0");
+    LT_LOG("%s", "Establish session with H0");
 
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
 
     uint8_t in[100] = {0};
     uint8_t out[100] = {0};
     memcpy(out, "This is Hello World message from TROPIC01!!", 43);
-    LOG_OUT_SESSION("%s", "lt_ping() ");
+    LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 43));
-    printf("\r\n\t\tMessage: %s\r\n\n", in);
+    LT_LOG("\t\tMessage: %s", in);
 
     lt_deinit(&h);
 
@@ -132,21 +132,21 @@ static int session_H0(void)
 
 int lt_ex_hello_world(void)
 {
-    LOG_OUT("\r\n");
-    LOG_OUT("\t=======================================================================\r\n");
-    LOG_OUT("\t=====  TROPIC01 Hello World                                         ===\r\n");
-    LOG_OUT("\t=======================================================================\r\n\n");
+    LT_LOG("");
+    LT_LOG("\t=======================================================================");
+    LT_LOG("\t=====  TROPIC01 Hello World                                         ===");
+    LT_LOG("\t=======================================================================");
 
 
-    LOG_OUT_LINE();
-    printf("\t Session with H0 keys: \r\n\n");
+    LT_LOG_LINE();
+    LT_LOG("\t Session with H0 keys:");
     if(session_H0() == -1)  {
-        printf("\r\nError during session_H0()\r\n");
+        LT_LOG("Error during session_H0()");
     }
 
-    LOG_OUT_LINE();
+    LT_LOG_LINE();
 
-    printf("\t End of execution, no errors.\r\n");
+    LT_LOG("\t End of execution, no errors.");
 
     return 0;
 }
