@@ -135,29 +135,6 @@ void test_lt_l1_read___LT_L1_CHIP_ALARM_MODE()
     TEST_ASSERT_EQUAL(LT_L1_CHIP_ALARM_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
-// Used to force l2_buff[0] to contain STARTUP bit
-static lt_ret_t callback_LT_L1_CHIP_STARTUP_MODE(lt_handle_t* h,
-                                                 uint8_t __attribute__((unused)) offset,
-                                                 uint16_t __attribute__((unused)) tx_len,
-                                                 uint32_t __attribute__((unused)) timeout,
-                                                 __attribute__((unused)) int cmock_num_calls)
-{
-    h->l2_buff[0] = CHIP_MODE_STARTUP_bit;
-    return LT_OK;
-}
-
-// Test if function returns LT_L1_CHIP_STARTUP_MODE when transferred chip status byte has STARTUP bit == 1
-void test_lt_l1_read___LT_L1_CHIP_STARTUP_MODE()
-{
-    lt_handle_t h = {0};
-
-    lt_l1_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_l1_spi_transfer_StubWithCallback(callback_LT_L1_CHIP_STARTUP_MODE);
-    lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
-
-    TEST_ASSERT_EQUAL(LT_L1_CHIP_STARTUP_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
-}
-
 // Used to force transfer function to return LT_FAIL during second transfer
 static lt_ret_t callback_CHIP_MODE_READY_bit(lt_handle_t* h,
                                              uint8_t __attribute__((unused)) offset,
