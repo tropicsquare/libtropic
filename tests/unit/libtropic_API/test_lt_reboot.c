@@ -121,7 +121,9 @@ void test__correct()
 
     size_inject_value = LT_L2_GET_LOG_RSP_LEN_MIN;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
-
+    lt_l1_delay_ExpectAndReturn(&h, LT_TROPIC01_REBOOT_DELAY_MS, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+
+    lt_l1_delay_ExpectAndReturn(&h, LT_TROPIC01_REBOOT_DELAY_MS, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
 }
