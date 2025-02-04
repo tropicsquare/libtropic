@@ -55,7 +55,7 @@ void tearDown(void)
 void test__invalid_handle()
 {
     uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(NULL, fw_bank, LT_L2_GET_INFO_FW_HEADER_SIZE));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(NULL, FW_BANK_FW1, fw_bank, LT_L2_GET_INFO_FW_HEADER_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -65,7 +65,7 @@ void test__invalid_header()
 {
     lt_handle_t h = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, NULL, LT_L2_GET_INFO_FW_HEADER_SIZE));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, FW_BANK_FW1, NULL, LT_L2_GET_INFO_FW_HEADER_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -76,7 +76,7 @@ void test__invalid_max_len()
     lt_handle_t h = {0};
     uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, fw_bank, LT_L2_GET_INFO_FW_HEADER_SIZE - 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, LT_L2_GET_INFO_FW_HEADER_SIZE - 1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -93,7 +93,7 @@ void test__lt_l2_transfer_fail()
 
     for(unsigned int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_get_info_fw_bank(&h, fw_bank, sizeof(fw_bank)));
+        TEST_ASSERT_EQUAL(rets[i], lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
     }
 }
 
@@ -116,7 +116,7 @@ void test__resp_size_mismatch()
 
     inject_rsp_len = 20+1;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_fw_bank(&h, fw_bank, sizeof(fw_bank)));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
 
 }
 
@@ -131,5 +131,5 @@ void test__correct()
 
     inject_rsp_len = 20;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_fw_bank(&h, fw_bank, sizeof(fw_bank)));
+    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
 }
