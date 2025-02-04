@@ -39,7 +39,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
 
         h->l2_buff[0] = GET_INFO_REQ_ID;
 
-        // Try to read CHIP_STATUS
+        // Try to read CHIP_STATUS byte
         lt_l1_spi_csn_low(h);
 #ifdef EXPERIMENTAL_SPI_RASPBERRYPI
         // store the byte which was initally in l2_buff
@@ -47,38 +47,40 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
         // put raspberry command byte there
         h->l2_buff[0] = 0x00;
         // do transmit of that one command
-        if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK)
-        {
+        if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK) {
             lt_l1_spi_csn_high(h);
             return LT_L1_SPI_ERROR;
         }
         // put previous byte back to buffer and continue as usually
         h->l2_buff[0] = store_byte;
 #endif
-        if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK)
-        {
+        if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK) {
             lt_l1_spi_csn_high(h);
             return LT_L1_SPI_ERROR;
         }
 
-        // Check ALARM bit of CHIP_STATUS
+        // Check ALARM bit of CHIP_STATUS byte
         if (h->l2_buff[0] & CHIP_MODE_ALARM_bit) {
             lt_l1_spi_csn_high(h);
             return LT_L1_CHIP_ALARM_MODE;
         }
-        // Check STARTUP bit of CHIP_STATUS
-        else if (h->l2_buff[0] & CHIP_MODE_STARTUP_bit) {
-            lt_l1_spi_csn_high(h);
-            return LT_L1_CHIP_STARTUP_MODE;
+
+        // Check and save STARTUP bit of CHIP_STATUS to signalize whether device operates in bootloader or in application
+        if (h->l2_buff[0] & CHIP_MODE_STARTUP_bit) {
+            h->mode = 1;
+        } else {
+            h->mode = 0;
         }
-        // Check READY bit of CHIP_STATUS
-        else if (h->l2_buff[0] & CHIP_MODE_READY_bit) {
+
+        // TODO comment
+        if (h->l2_buff[0] & (CHIP_MODE_READY_bit)) {
+
             // receive STATUS byte and length byte
-            if (lt_l1_spi_transfer(h, 1, 2, timeout) != LT_OK) //offset 1
-            {
+            if (lt_l1_spi_transfer(h, 1, 2, timeout) != LT_OK) { //offset 1
                 lt_l1_spi_csn_high(h);
                 return LT_L1_SPI_ERROR;
             }
+
             // TODO Better to read two bytes, not one. Then length.
             // This function as it is now will return chip in alarm mode when
             // spi wires are not connected (and therefore reading 0xff), but I want to get chip busy instead.
@@ -96,8 +98,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
                 return LT_L1_DATA_LEN_ERROR;
             }
             // Receive the rest of incomming bytes, including crc
-            if (lt_l1_spi_transfer(h, 3, length, timeout) != LT_OK) // offset 3
-            {
+            if (lt_l1_spi_transfer(h, 3, length, timeout) != LT_OK) { // offset 3
                 lt_l1_spi_csn_high(h);
                 return LT_L1_SPI_ERROR;
             }
@@ -140,16 +141,14 @@ lt_ret_t lt_l1_write(lt_handle_t *h, const uint16_t len, const uint32_t timeout)
     // put raspberry command byte there
     h->l2_buff[0] = 0x01;
     // do transmit of that one command
-    if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK)
-    {
+    if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK) {
         lt_l1_spi_csn_high(h);
         return LT_L1_SPI_ERROR;
     }
     // put previous byte back to buffer and continue as usually
     h->l2_buff[0] = store_byte;
 #endif
-    if (lt_l1_spi_transfer(h, 0, len, timeout) != LT_OK)
-    {
+    if (lt_l1_spi_transfer(h, 0, len, timeout) != LT_OK) {
         lt_l1_spi_csn_high(h);
         return LT_L1_SPI_ERROR;
     }

@@ -10,11 +10,8 @@ cmake_minimum_required(VERSION 3.21.0)
 #set(CMAKE_BUILD_TYPE Debug)
 
 set(PATH_TREZOR_CRYPTO "../../vendor/trezor_crypto/")
-set(PATH_LIBTROPIC "../../")
+set(PATH_LIBTROPIC "../../../")
 
-# Libtropic related setup
-# Use trezor crypto as a source of backend cryptography code
-set(USE_TREZOR_CRYPTO ON)
 
 ###########################################################################
 #                                                                         #
@@ -30,32 +27,52 @@ project(libtropic_unix_example
 
 ###########################################################################
 #                                                                         #
-#   Sources                                                               #
+#   Sources defined by this project                                       #
 #                                                                         #
 ###########################################################################
 
 add_executable(integration_tests main.c
-                    ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix/lt_port_unix.c
-                    ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/hw_wallet/TROPIC01_hw_wallet.c
+            ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix/lt_port_unix.c
 )
-target_include_directories(integration_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}examples/hw_wallet/)
+
 
 ###########################################################################
 #                                                                         #
-#   Add executable and set definitions                                    #
+#   Define what examples will be compiled into main().                    #
+#   If any of examples is enabled, libtropic is compiled with             #
+#   examples exposed.                                                     #
 #                                                                         #
 ###########################################################################
 
-if(USE_TREZOR_CRYPTO)
-    target_compile_definitions(integration_tests PRIVATE USE_TREZOR_CRYPTO)
+# -DLT_EX_HW_WALLET=1
+if(LT_EX_HW_WALLET)
+    set(LT_ADD_EXAMPLES ON)
+    target_compile_definitions(integration_tests PRIVATE LT_EX_HW_WALLET)
+endif()
+# -DLT_EX_HELLO_WORLD=1
+if(LT_EX_HELLO_WORLD)
+    set(LT_ADD_EXAMPLES ON)
+    target_compile_definitions(integration_tests PRIVATE LT_EX_HELLO_WORLD)
+endif()
+# -DLT_EX_TEST_REVERSIBLE=1
+if(LT_EX_TEST_REVERSIBLE)
+    set(LT_ADD_EXAMPLES ON)
+    target_compile_definitions(integration_tests PRIVATE LT_EX_TEST_REVERSIBLE)
+endif()
+# --DLT_EX_TEST_IREVERSIBLE=1
+if(LT_EX_TEST_IREVERSIBLE)
+    set(LT_ADD_EXAMPLES ON)
+    target_compile_definitions(integration_tests PRIVATE LT_EX_TEST_IREVERSIBLE)
 endif()
 
+###########################################################################
+#                                                                         #
+#   Add libtropic and set it up                                           #
+#                                                                         #
+###########################################################################
 
-###########################################################################
-#                                                                         #
-#   Add libtropic                                                         #
-#                                                                         #
-###########################################################################
+# Use trezor crypto as a source of backend cryptography code
+set(USE_TREZOR_CRYPTO ON)
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
@@ -65,8 +82,12 @@ target_compile_options(tropic PRIVATE -Wall)
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 
-# Customize trezor_crypto library compilation:
-target_compile_definitions(trezor_crypto PRIVATE USE_INSECURE_PRNG)
+
+###########################################################################
+#                                                                         #
+#   Link executable                                                       #
+#                                                                         #
+###########################################################################
 
 target_link_options(integration_tests PRIVATE -Wl,--gc-sections)
 target_link_libraries(integration_tests PRIVATE tropic)

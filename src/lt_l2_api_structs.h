@@ -21,16 +21,9 @@
 #define LT_L2_GET_INFO_REQ_ID 0x01
 /** @brief Request length */
 #define LT_L2_GET_INFO_REQ_LEN 2u
+//------- Certificate -------------------------------------------------------------------------------------//
 /** @brief The X.509 chip certificate read from I-Memory and signed by Tropic Square (max length of 512B). */
 #define LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0x00
-/** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B). */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 0x01
-/** @brief The RISCV current running FW version (4 Bytes) */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION 0x02
-/** @brief The SPECT FW version (4 Bytes) */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION 0x04
-/** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode. */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 0xb0
 /** @brief Request for data bytes 0-127 of the object. */
 #define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127 0x00
 /** @brief Request for data bytes 128-255 of the object (only needed for the X.509 certificate). */
@@ -39,6 +32,15 @@
 #define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383 0x02
 /** @brief Request for data bytes 384-511 of object (only needed for the X.509 certificate). */
 #define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511 0x03
+/** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B). */
+#define LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 0x01
+/** @brief The RISCV current running FW version (4 Bytes) */
+#define LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION 0x02
+/** @brief The SPECT FW version (4 Bytes) */
+#define LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION 0x04
+//------- FW Bank -----------------------------------------------------------------------------------------//
+/** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode. */
+#define LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 0xb0
 
 
 /** @brief Response length */
@@ -329,8 +331,8 @@ struct lt_l2_startup_rsp_t {
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
-/** @brief Request length */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN 7u
+/** @brief Request min length */
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN 3u
 /** Minimal length of field data */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MIN 4u
 /** Maximal length of field data */

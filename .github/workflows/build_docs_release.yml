@@ -1,4 +1,4 @@
-name: Build docs and release (master)
+name: Build docs and release to GitHub Pages from master
 on:
   push:
     branches:
@@ -27,21 +27,22 @@ jobs:
             BUILD_DOCS=ON
             USE_TREZOR_CRYPTO=ON
 
-      - name: Archive HTML docs
-        uses: thedoctor0/zip-release@0.7.6
+      - name: Upload built html as artifact
+        id: html_artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          type: 'zip'
-          filename: 'libtropic-html-docs.zip'
-          directory: 'build/docs/doxygen/html/'
+          path: build/docs/doxygen/html
 
-      - name: Upload HTML docs release
-        uses: ncipollo/release-action@v1.14.0
-        with:
-          allowUpdates: true
-          artifactErrorsFailBuild: true
-          artifacts: 'build/docs/doxygen/html/libtropic-html-docs.zip'
-          makeLatest: true
-          name: 'HTML Documentation'
-          prerelease: false
-          replacesArtifacts: true
-          tag: 'latest'
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.html_artifact.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    steps:
+      - name: Deploy to GitHub Pages
+        id: pages_deployment
+        uses: actions/deploy-pages@v4

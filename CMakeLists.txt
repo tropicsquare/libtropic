@@ -11,7 +11,8 @@ option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 option(EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
 option(EXPERIMENTAL_SPI_RASPBERRYPI "Experimental feature for spi slave on rpi 4" OFF)
-
+option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
+option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
@@ -35,7 +36,12 @@ endif()
 
 ###########################################################################
 #                                                                         #
-#   Collect files                                                         #
+#   Collect files:                                                        #
+#                                                                         #
+#   SDK_SRCS:       source files                                          #
+#   SDK_INCS:       header files                                          #
+#   SDK_DIRS_PRIV:  private directories                                   #
+#   SDK_DIRS_PUB:   public directories                                    #
 #                                                                         #
 ###########################################################################
 
@@ -45,6 +51,7 @@ project(libtropic_SDK
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
 
+# Collect source files which are always compiled
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
@@ -56,7 +63,12 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
 )
-
+set(SDK_SRCS ${SDK_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
+)
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
@@ -70,18 +82,45 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
 )
-
-set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
+set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
+set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+
+# Collect files to be compiled when "examples" are enabled
+if(LT_ADD_EXAMPLES)
+    set(SDK_SRCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_reversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_ireversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
+    )
+    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/
+    )
+endif()
+
+
+# Collect files to be compiled when "fw update" is enabled
+if(LT_ENABLE_FW_UPDATE)
+    set(SDK_INCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v1.0.1/fw_CPU_0_1_2.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
+    )
+    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v1.0.1/
+    )
+endif()
+
 
 add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 
-target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
-target_include_directories(tropic PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
+target_include_directories(tropic PUBLIC ${SDK_DIRS_PUB})
 
 target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 
@@ -103,7 +142,7 @@ endif()
 
 if(USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_compile_definitions(trezor_crypto PRIVATE AES_VAR)
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PRIVATE trezor_crypto)
     target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()

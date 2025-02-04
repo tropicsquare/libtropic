@@ -70,12 +70,16 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
 typedef struct lt_handle_t {
     void *device;
     uint32_t session;
+    uint8_t mode;
     uint8_t IV[12];
 #if USE_TREZOR_CRYPTO
     uint8_t encrypt[352] __attribute__ ((aligned (16))); // Because sizeof(lt_aes_gcm_ctx_t) == 352;
     uint8_t decrypt[352] __attribute__ ((aligned (16)));
 #elif USE_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
+#else // TODO figure out how to allocate correct space without a need of passing USE_TREZOR_CRYPTO from platform's cmake
+    uint8_t encrypt[352] __attribute__ ((aligned (16)));
+    uint8_t decrypt[352] __attribute__ ((aligned (16)));
 #endif
     uint8_t l2_buff [1 + L2_MAX_FRAME_SIZE];
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
@@ -158,5 +162,7 @@ typedef enum {
     LT_L2_DATA_LEN_ERROR,
 
 } lt_ret_t;
+
+#define LT_TROPIC01_REBOOT_DELAY_MS  75
 
 #endif

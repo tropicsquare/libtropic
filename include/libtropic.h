@@ -41,6 +41,17 @@ lt_ret_t lt_init(lt_handle_t *h);
 lt_ret_t lt_deinit(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
+#define LT_MODE_STARTUP 1
+#define LT_MODE_APP     0
+/**
+ * @brief Update mode variable in handle
+ *
+ * @param h           Device's handle
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_update_mode(lt_handle_t *h);
+
+//--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
 #define LT_L2_GET_INFO_REQ_CERT_SIZE         512
 
@@ -105,20 +116,28 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
+typedef enum {
+    FW_BANK_FW1 = 1, // Firmware bank 1.
+    FW_BANK_FW2 = 2, // Firmware bank 2
+    FW_BANK_SPECT1 = 17, // SPECT bank 1.
+    FW_BANK_SPECT2 = 18, // SPECT bank 2
+} bank_id_t;
+
 /** @brief Maximal size of returned fw header */
 #define LT_L2_GET_INFO_FW_HEADER_SIZE       20
 /**
  * @brief Read TROPIC01's fw bank info
  *
  * @param h           Device's handle
+ * @param bank_id     ID of firmware bank (one from enum bank_id_t)
  * @param header      Buffer to store fw header bytes into
  * @param max_len     Length of a buffer
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, uint8_t *header, const uint16_t max_len);
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief PAiring key indexes corresponds to S_HiPub */
+/** @brief Pairing key indexes corresponds to S_HiPub */
 typedef enum {
     PAIRING_KEY_SLOT_INDEX_0,
     PAIRING_KEY_SLOT_INDEX_1,
@@ -176,6 +195,26 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
+
+/**
+ * @brief Erase mutable firmware in one of banks
+ *
+ * @param h           Device's handle
+ * @param bank_id     enum bank_id_t
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id);
+
+/**
+ * @brief Update mutable firmware in one of banks
+ *
+ * @param h           Device's handle
+ * @param fw_data     Array with firmware bytes
+ * @param fw_data_size  Number of firmware's bytes in passed array
+ * @param bank_id     enum bank_id_t
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of TROPIC01's log message */
