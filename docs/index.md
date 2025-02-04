@@ -70,22 +70,19 @@ $ make
 ```
 
 ## Build documentation
-
-We use Doxygen (1.9.1) and LaTeX (pdfTeX 3.141592653-2.6-1.40.24 (TeX Live 2022))
-
-Build html docs:
-```
+To build html documentation, you need Doxygen. The documentation is built using these commands:
+```sh
 $ mkdir build/
 $ cd build/
 $ cmake -DBUILD_DOCS=1 ..
 $ make doc_doxygen
 ```
 
-Build pdf documentation:
-```
-$ cd docs/doxygen/latex
-$ make
-```
+The documentation will be built to: `build/docs/doxygen/html`. Open `index.html` in any recent web browser.
+
+Notes:
+- We tested Doxygen 1.9.1 and 1.9.8.
+- PDF (LaTeX) output is not supported.
 
 # Testing
 
