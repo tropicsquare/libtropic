@@ -33,9 +33,9 @@ This library was designed to be compiled during the build of a parent project.
 It provides following options to be defined during building:
 
 ```
-option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
+option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider"       OFF)
-option(BUILD_DOCS        "Build documentation"                          OFF)
+option(LT_BUILD_DOCS        "Build documentation"                          OFF)
 ```
 
 Options could be passed as a command line argument, or they could be defined in main project's cmake files when this library is added to its build tree.
@@ -56,7 +56,7 @@ Compile `libtropic` as a static archive under Unix:
 ```
 $ mkdir build
 $ cd build
-$ cmake -DUSE_TREZOR_CRYPTO=1 ..
+$ cmake -DLT_USE_TREZOR_CRYPTO=1 ..
 $ make
 ```
 
@@ -65,7 +65,7 @@ Cross-compile `libtropic` as a static archive:
 ```
 $ mkdir build
 $ cd build
-$ cmake -DUSE_TREZOR_CRYPTO=1 -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
+$ cmake -DLT_USE_TREZOR_CRYPTO=1 -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
 $ make
 ```
 
@@ -74,7 +74,7 @@ To build html documentation, you need Doxygen. The documentation is built using 
 ```sh
 $ mkdir build/
 $ cd build/
-$ cmake -DBUILD_DOCS=1 ..
+$ cmake -DLT_BUILD_DOCS=1 ..
 $ make doc_doxygen
 ```
 

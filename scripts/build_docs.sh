@@ -1,7 +1,7 @@
 rm -rf build
 mkdir build
 cd build
-cmake -DBUILD_DOCS=1 -DUSE_TREZOR_CRYPTO=1 ..
+cmake -DLT_BUILD_DOCS=1 -DLT_USE_TREZOR_CRYPTO=1 ..
 make doc_doxygen
 mkdir packed
 cd docs/doxygen/latex/

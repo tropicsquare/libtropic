@@ -38,7 +38,7 @@ build_library:
     - rm -rf build/
     - mkdir build
     - cd build
-    - cmake -DUSE_TREZOR_CRYPTO=1 ..
+    - cmake -DLT_USE_TREZOR_CRYPTO=1 ..
     - make
 
 build_integration_tests:
@@ -50,10 +50,10 @@ build_integration_tests:
     - cd tests/integration/
     - mkdir build
     - cd build
-    - cmake -DUSE_TREZOR_CRYPTO=1 ..
+    - cmake -DLT_USE_TREZOR_CRYPTO=1 ..
     - make
 
-build_docs:
+LT_BUILD_DOCS:
   stage: docs
   tags:
     - shell
@@ -62,7 +62,7 @@ build_docs:
     - rm -rf build/
     - mkdir build
     - cd build
-    - cmake -DBUILD_DOCS=1 ..
+    - cmake -DLT_BUILD_DOCS=1 ..
     - make doc_doxygen
     - cd docs/doxygen/latex
     - make
