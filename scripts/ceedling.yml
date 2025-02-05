@@ -36,7 +36,7 @@
   :test:
     - *common_defines
     - TEST
-    - USE_TREZOR_CRYPTO
+    - LT_USE_TREZOR_CRYPTO
   :test_preprocess:
     - *common_defines
     - TEST
