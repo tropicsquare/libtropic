@@ -10,9 +10,13 @@ option(USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(BUILD_DOCS "Build documentation" OFF)
 option(EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
-option(EXPERIMENTAL_SPI_RASPBERRYPI "Experimental feature for spi slave on rpi 4" OFF)
 option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
+# This switch controls if helper utilities are compiled in. In most cases this should be ON,
+# examples and tests need to have helpers utilities compiled.
+# Switch it off to compile only basic libtropic API.
+option(LT_UTILS "Compile helper function" ON)
+
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
@@ -136,13 +140,14 @@ if(EXPERIMENTAL_SPI_UART)
     target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_UART=1)
 endif()
 
-if(EXPERIMENTAL_SPI_RASPBERRYPI)
-    target_compile_definitions(tropic PRIVATE EXPERIMENTAL_SPI_RASPBERRYPI=1)
-endif()
-
 if(USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PRIVATE trezor_crypto)
     target_compile_definitions(tropic PRIVATE USE_TREZOR_CRYPTO)
 endif()
+
+if(LT_UTILS)
+    target_compile_definitions(tropic PRIVATE LT_UTILS)
+endif()
+
