@@ -24,8 +24,8 @@ jobs:
           source-dir: ./
           build-dir: build
           options: |
-            BUILD_DOCS=ON
-            USE_TREZOR_CRYPTO=ON
+            LT_BUILD_DOCS=ON
+            LT_USE_TREZOR_CRYPTO=ON
 
       - name: Upload HTML docs artifact
         uses: actions/upload-artifact@v4.4.0

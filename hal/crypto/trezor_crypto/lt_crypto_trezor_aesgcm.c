@@ -5,7 +5,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#ifdef USE_TREZOR_CRYPTO
+#ifdef LT_USE_TREZOR_CRYPTO
 #include "aes/aes.h"
 #include "aes/aesgcm.h"
 #include "lt_aesgcm.h"

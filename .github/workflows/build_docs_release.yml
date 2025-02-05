@@ -24,8 +24,8 @@ jobs:
           source-dir: ./
           build-dir: build
           options: |
-            BUILD_DOCS=ON
-            USE_TREZOR_CRYPTO=ON
+            LT_BUILD_DOCS=ON
+            LT_USE_TREZOR_CRYPTO=ON
 
       - name: Upload built html as artifact
         id: html_artifact

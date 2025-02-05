@@ -9,7 +9,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#if USE_TREZOR_CRYPTO
+#if LT_USE_TREZOR_CRYPTO
 #include "aes/aes.h"
 #include "aes/aesgcm.h"
 #endif
@@ -17,7 +17,7 @@
 /** AES-GCM context structure */
 typedef struct lt_crypto_aes_gcm_ctx
 {
-#if USE_TREZOR_CRYPTO
+#if LT_USE_TREZOR_CRYPTO
     gcm_ctx ctx;
 #elif USE_MBEDTLS
 
