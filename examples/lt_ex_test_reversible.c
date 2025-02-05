@@ -46,9 +46,10 @@ void lt_ex_test_reversible(void)
     LT_LOG_RESULT("%d", lt_session_start(&h, stpub, pkey_index_0, sh0priv, sh0pub));
 
     LT_LOG("%s", "lt_ping() ");
-    uint8_t in[100];
-    uint8_t out[100];
-    LT_LOG("%d", lt_ping(&h, out, in, 100));
+    uint8_t in[PING_LEN_MAX];
+    uint8_t out[PING_LEN_MAX];
+    memset(out, 0xaa, PING_LEN_MAX);
+    LT_LOG("%d", lt_ping(&h, out, in, PING_LEN_MAX));
 
     LT_LOG("---------------- Loop through all key slots, ed25519, stored key ----------------");
 
