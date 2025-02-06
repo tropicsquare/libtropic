@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v2
+        uses: tropicsquare/github-actions/actions-setup-cmake-2.0.2@main
 
       - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
+        uses: tropicsquare/github-actions/setup-gcc-1.3@main
         with:
           version: 13
 
@@ -28,17 +28,17 @@ jobs:
             sudo apt-get install cppcheck
 
       - name: Checkout Repository
-        uses: actions/checkout@v4.1.7
+        uses: tropicsquare/github-actions/checkout-4.2.2@main
       
       - name: Run CodeChecker analysis
-        uses: whisperity/codechecker-analysis-action@v1
+        uses: tropicsquare/github-actions/CodeChecker-Action-1.0.4@main
         id: codechecker
         with:
           config: ./scripts/codechecker/codechecker_config.json
           build-command: ./scripts/codechecker/codechecker_build.sh
 
       - name: Upload results artifacts
-        uses: actions/upload-artifact@v4
+        uses: tropicsquare/github-actions/upload-artifact-4.6.0@main
         with:
           name: "CodeChecker Bug Reports"
           path: ${{ steps.codechecker.outputs.result-html-dir }}

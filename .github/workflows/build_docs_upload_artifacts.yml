@@ -10,16 +10,16 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.1.7
+        uses: tropicsquare/github-actions/checkout-4.2.2@main
 
       - name: Install Doxygen and Graphviz
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: tropicsquare/github-actions/cache-apt-pkgs-action-1.4.3@main
         with:
           packages: doxygen graphviz
           version: 1.0  # Version of cache to load. Each version will have its own cache.
 
       - name: Build docs
-        uses: threeal/cmake-action@v2.0.0
+        uses: tropicsquare/github-actions/cmake-action-2.1.0@main
         with:
           source-dir: ./
           build-dir: build
@@ -28,7 +28,7 @@ jobs:
             LT_USE_TREZOR_CRYPTO=ON
 
       - name: Upload HTML docs artifact
-        uses: actions/upload-artifact@v4.4.0
+        uses: tropicsquare/github-actions/upload-artifact-4.6.0@main
         with:
           # Name of the artifact to upload.
           # Optional. Default is 'artifact'

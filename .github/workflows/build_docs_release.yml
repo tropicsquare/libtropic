@@ -10,16 +10,16 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.1.7
+        uses: tropicsquare/github-actions/checkout-4.2.2@main
 
       - name: Install Doxygen and Graphviz
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: tropicsquare/github-actions/cache-apt-pkgs-action-1.4.3@main
         with:
           packages: doxygen graphviz
           version: 1.0  # Version of cache to load. Each version will have its own cache.
 
       - name: Build docs
-        uses: threeal/cmake-action@v2.0.0
+        uses: tropicsquare/github-actions/cmake-action-2.1.0@main
         with:
           source-dir: ./
           build-dir: build
@@ -29,7 +29,7 @@ jobs:
 
       - name: Upload built html as artifact
         id: html_artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: tropicsquare/github-actions/upload-pages-artifact-3.0.1@main
         with:
           path: build/docs/doxygen/html
 
@@ -45,4 +45,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: pages_deployment
-        uses: actions/deploy-pages@v4
+        uses: tropicsquare/github-actions/deploy-pages-4.0.5@main

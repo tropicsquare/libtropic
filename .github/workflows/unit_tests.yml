@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4.1.7
+        uses: tropicsquare/github-actions/checkout-4.2.2@main
 
       - name: Set Ceedling config path
         run: echo "CEEDLING_MAIN_PROJECT_FILE=scripts/ceedling.yml" >>$GITHUB_ENV
