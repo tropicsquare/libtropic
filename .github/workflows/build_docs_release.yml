@@ -12,22 +12,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.7
 
-      - name: Install Doxygen and Graphviz
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: doxygen graphviz
-          version: 1.0  # Version of cache to load. Each version will have its own cache.
+      - name: Install dependencies
+        run: |
+            sudo apt-get install doxygen graphviz cmake
 
-      - name: Build docs
-        uses: threeal/cmake-action@v2.0.0
-        with:
-          source-dir: ./
-          build-dir: build
-          options: |
-            LT_BUILD_DOCS=ON
-            LT_USE_TREZOR_CRYPTO=ON
+      - name: Generate Doxygen HTML documentation
+        run: |
+            cmake ./ -B build -DLT_BUILD_DOCS=ON
+            pushd build/
+            make doc_doxygen
+            popd
 
-      - name: Upload built html as artifact
+      - name: Upload built HTML as artifact
         id: html_artifact
         uses: actions/upload-pages-artifact@v3
         with:
