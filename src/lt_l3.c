@@ -84,6 +84,12 @@ lt_ret_t lt_l3_cmd(lt_handle_t *h)
         case L3_RESULT_OK:
             lt_l3_nonce_increase(h);
             return LT_OK;
+        case L3_PAIRING_KEY_EMPTY:
+            lt_l3_nonce_increase(h);
+            return LT_L3_PAIRING_KEY_EMPTY;
+        case L3_PAIRING_KEY_INVALID:
+            lt_l3_nonce_increase(h);
+            return LT_L3_PAIRING_KEY_INVALID;
         default:
             return LT_FAIL;
     }

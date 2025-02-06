@@ -28,6 +28,12 @@
 /** @brief L3 RESULT ﬁeld Value */
 #define L3_RESULT_INVALID_CMD               0x02u
 
+/** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
+#define L3_PAIRING_KEY_EMPTY                0x15u
+/** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
+#define L3_PAIRING_KEY_INVALID              0x16u
+
+
 /**
  * @details  Initializes nonce in handle to 0. This function is used during secure handshake.
  *
