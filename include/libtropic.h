@@ -631,27 +631,7 @@ lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t
  */
 const char *lt_ret_verbose(lt_ret_t ret);
 
-#ifdef LT_UTILS
-/**
- * @brief Get the conf desc object from config description table
- *
- * @param i           Index in an array of objects
- * @return uint16_t   String with name of object on a given index
- */
-const char *get_conf_desc(uint8_t i);
-
-/**
- * @brief Get the address of a specific config object from config description table
- *
- * @param i           Index in an array of objects
- * @return uint16_t   Address of object on a given index
- */
-uint16_t get_conf_addr(uint8_t i);
-
-/** @brief Structure to hold all configuration objects */
-struct lt_config_t {
-    uint32_t obj[27];
-};
+//---------------------------------------------------------------------------------------------------------------------//
 
 /** @brief Macro to controll which session can access command targeting content of pairing key SH0 */
 #define TO_PAIRING_KEY_SH0(x)     ((x) << 0)
@@ -695,6 +675,28 @@ struct lt_config_obj_desc_t {
     char desc[60];
     enum CONFIGURATION_OBJECTS_REGS addr;
 };
+
+/** @brief Structure to hold all configuration objects */
+struct lt_config_t {
+    uint32_t obj[27];
+};
+
+#ifdef LT_UTILS
+/**
+ * @brief Get the conf desc object from config description table
+ *
+ * @param i           Index in an array of objects
+ * @return uint16_t   String with name of object on a given index
+ */
+const char *get_conf_desc(uint8_t i);
+
+/**
+ * @brief Get the address of a specific config object from config description table
+ *
+ * @param i           Index in an array of objects
+ * @return uint16_t   Address of object on a given index
+ */
+uint16_t get_conf_addr(uint8_t i);
 
 /**
  * @brief This function reads config objects from TROPIC01 and prints them out
