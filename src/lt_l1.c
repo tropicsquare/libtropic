@@ -31,7 +31,6 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
     lt_l1_delay(h, 10);
 #endif
 
-h->last_transfer = 0;
     int max_tries = LT_L1_READ_MAX_TRIES;
 
     while(max_tries > 0) {
@@ -99,7 +98,6 @@ h->last_transfer = 0;
                 return LT_L1_DATA_LEN_ERROR;
             }
             // Receive the rest of incomming bytes, including crc
-            h->last_transfer = 1;
             if (lt_l1_spi_transfer(h, 3, length, timeout) != LT_OK) { // offset 3
                 lt_l1_spi_csn_high(h);
                 return LT_L1_SPI_ERROR;
@@ -150,7 +148,6 @@ lt_ret_t lt_l1_write(lt_handle_t *h, const uint16_t len, const uint32_t timeout)
     // put previous byte back to buffer and continue as usually
     h->l2_buff[0] = store_byte;
 #endif
-    h->last_transfer = 1;
     if (lt_l1_spi_transfer(h, 0, len, timeout) != LT_OK) {
         lt_l1_spi_csn_high(h);
         return LT_L1_SPI_ERROR;

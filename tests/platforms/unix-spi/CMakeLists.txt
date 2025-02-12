@@ -19,7 +19,7 @@ set(PATH_LIBTROPIC "../../../")
 #                                                                         #
 ###########################################################################
 
-project(libtropic_raspberrypi_example
+project(libtropic_unix_spi_example
         VERSION 0.1.0
         DESCRIPTION "Example of libtropic's usage in Unix environment"
         LANGUAGES C)
@@ -32,7 +32,7 @@ project(libtropic_raspberrypi_example
 ###########################################################################
 
 add_executable(integration_tests main.c
-            ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/raspberrypi/lt_port_raspberrypi.c
+            ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix-spi/lt_port_unix_spi.c
 )
 
 
@@ -90,4 +90,4 @@ target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 ###########################################################################
 
 target_link_options(integration_tests PRIVATE -Wl,--gc-sections)
-target_link_libraries(integration_tests PRIVATE tropic)
+target_link_libraries(integration_tests PRIVATE tropic pigpio)
