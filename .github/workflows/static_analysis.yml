@@ -15,23 +15,15 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Setup cmake
-        uses: jwlawson/actions-setup-cmake@v2
-
-      - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: 13
-
       - name: Install dependencies
         run: |
-            sudo apt-get install cppcheck
+            sudo apt-get install cmake build-essential cppcheck
 
       - name: Checkout Repository
         uses: actions/checkout@v4.1.7
       
       - name: Run CodeChecker analysis
-        uses: whisperity/codechecker-analysis-action@v1
+        uses: tropicsquare/github-actions/CodeChecker-Action-1.0.4@main
         id: codechecker
         with:
           config: ./scripts/codechecker/codechecker_config.json
