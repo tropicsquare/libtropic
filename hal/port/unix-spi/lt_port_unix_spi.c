@@ -8,20 +8,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <fcntl.h>
 #include <string.h>
-#include <linux/spi/spidev.h>
-#include <linux/types.h>
-#include <sys/ioctl.h>
-#include <linux/ioctl.h>
-#include <time.h>
-
-//sleep
 #include <unistd.h>
+#include <time.h>
+#include <wiringPi.h>       /// for GPIO control
+#include <wiringPiSPI.h>    /// For SPI control
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
-#include <pigpio.h> 
+
+// CS is controlled separately
+#define GPIO_CS           14
+#define SPI_SPEED_HZ 5000000
+
+// File descriptor, used in init and deinit
+int fd = 0;
 
 //#define NDEBUG
 #ifdef NDEBUG
@@ -39,69 +40,6 @@
 #    define LOG_U8_ARRAY(...)
 #endif
 
-int spi_handle = 0;
-#define GPIO_CS 14
-
-lt_ret_t lt_port_init(lt_handle_t *h)
-{
-    UNUSED(h);
-    memset(h, 0, sizeof(lt_handle_t));
-
-    // Pseudo RNG init
-    srand (time(NULL));
-
-    int status = gpioInitialise();
-    LOG_OUT("gpioInitialise(): %d\r\n", status);
-
-    int spi_handle = spiOpen(0, 500000, SPI_MODE_0);
-    LOG_OUT("spi open: %d\r\n", spi_handle);
-
-    gpioSetMode(GPIO_CS, PI_OUTPUT);
-
-    return LT_OK;
-}
-
-lt_ret_t lt_port_deinit(lt_handle_t *h)
-{
-    UNUSED(h);
-
-    int ret = spiClose(spi_handle);
-    LOG_OUT("spi close: %d\r\n", ret);
-
-    gpioTerminate();
-
-    return LT_OK;
-}
-
-lt_ret_t lt_port_spi_csn_low (lt_handle_t *h)
-{
-    UNUSED(h);
-    LOG_OUT("-- Driving Chip Select to Low.\n");
-
-    gpioWrite(GPIO_CS, PI_LOW);
-
-    return LT_OK;
-}
-
-lt_ret_t lt_port_spi_csn_high (lt_handle_t *h)
-{
-    UNUSED(h);
-    LOG_OUT("-- Driving Chip Select to High.\n");
-
-    gpioWrite(GPIO_CS, PI_HIGH);
-    return LT_OK;
-}
-
-lt_ret_t lt_port_spi_transfer (lt_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
-{
-    UNUSED(h);
-    UNUSED(timeout);
-
-    int ret = spiXfer(spi_handle, h->l2_buff + offset, h->l2_buff + offset, tx_data_length);
-
-    return LT_OK;
-}
-
 lt_ret_t lt_port_delay (lt_handle_t *h, uint32_t wait_time_msecs)
 {
     UNUSED(h);
@@ -117,6 +55,67 @@ lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len) {
     for(int i=0; i<len; i++) {
         buff[i] = (uint16_t)rand();
     }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_port_init(lt_handle_t *h)
+{
+    UNUSED(h);
+    memset(h, 0, sizeof(lt_handle_t));
+
+    // Pseudo RNG init
+    srand(time(NULL));
+
+    // Setup CS pin
+    wiringPiSetupGpio();
+    pinMode(14, OUTPUT);
+    digitalWrite(GPIO_CS, HIGH);
+
+    // Setup SPI, returns fd, error if -1 is returned
+    fd = wiringPiSPISetup(0, SPI_SPEED_HZ);
+    if(fd < 0) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_port_deinit(lt_handle_t *h)
+{
+    UNUSED(h);
+
+    close(fd);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_port_spi_transfer (lt_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+{
+    UNUSED(timeout);
+    LOG_OUT("-- Transfer of %d B\n", tx_data_length);
+
+    int ret = wiringPiSPIxDataRW (0, 0, h->l2_buff + offset, tx_data_length);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_port_spi_csn_low (lt_handle_t *h)
+{
+    UNUSED(h);
+    LOG_OUT("-- Driving Chip Select to Low.\n");
+
+    digitalWrite(GPIO_CS, LOW);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_port_spi_csn_high (lt_handle_t *h)
+{
+    UNUSED(h);
+    LOG_OUT("-- Driving Chip Select to High.\n");
+
+    digitalWrite(GPIO_CS, HIGH);
 
     return LT_OK;
 }
