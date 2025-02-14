@@ -1,7 +1,8 @@
 /**
- * @file lt_port_unix.c
+ * @file lt_port_raspberrypi_spi.c
  * @author Tropic Square s.r.o.
- * @brief  C TCP client for communicating with the TROPIC01 Model
+ * @brief  L1 implementation for raspberrypi. Expects wiringPi library to be
+ * installed on Raspberry Pi, for more info about this library check https://github.com/WiringPi/WiringPi/tree/master
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -45,7 +46,7 @@ lt_ret_t lt_port_delay (lt_handle_t *h, uint32_t wait_time_msecs)
     UNUSED(h);
     LOG_OUT("-- Waiting for the target.\n");
 
-    usleep(wait_time_msecs*1000);		//uS (unsigned int)
+    usleep(wait_time_msecs*1000);
 
     return LT_OK;
 }
