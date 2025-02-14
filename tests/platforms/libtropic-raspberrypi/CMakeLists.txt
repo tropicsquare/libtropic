@@ -72,7 +72,7 @@ endif()
 ###########################################################################
 
 # Use trezor crypto as a source of backend cryptography code
-set(USE_TREZOR_CRYPTO ON)
+set(LT_USE_TREZOR_CRYPTO ON)
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
