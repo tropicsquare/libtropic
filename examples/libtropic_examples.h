@@ -44,12 +44,12 @@ extern uint8_t sh3pub[];
 #define LT_LOG_SYSTEM(f_, ...) printf("%d\t;SYSTEM;"f_"\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message.
-#define LT_ASSERT(value, expected)                              \
+#define LT_ASSERT(expected, value)                              \
                     if(value == expected)                       \
                     {                                           \
                         LT_LOG_SYSTEM("ASSERT_OK");             \
                     } else {                                    \
-                        LT_LOG_SYSTEM("ASSERT_FAIL");           \
+                        LT_LOG_SYSTEM("ASSERT_FAIL %d", value);           \
                     };
 
 #define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)                      \

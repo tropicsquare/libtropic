@@ -5,7 +5,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#ifdef USE_TREZOR_CRYPTO
+#ifdef LT_USE_TREZOR_CRYPTO
 #include <stdint.h>
 
 #include "ed25519-donna/ed25519-donna.h"
