@@ -32,12 +32,17 @@ jobs:
     if: ${{ needs.check_tag_branch.outputs.do_release == 'true' }}  # Skip release if tag is not on master
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0  # Ensure full history is available
+
       - name: Get tag 
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Parse changelog for tag version  # Run script creates new file with parsed changelog
         run: |
-            python3 scripts/parse_changelog.py $TAG_NAME
+            python3 scripts/parse_changelog.py --version $TAG_NAME
 
       - name: Create release
         uses: actions/create-release@v1.1.4
