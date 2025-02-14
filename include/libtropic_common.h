@@ -83,8 +83,6 @@ typedef struct lt_handle_t {
 #endif
     uint8_t l2_buff [1 + L2_MAX_FRAME_SIZE];
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
-    /** Used to control chip select on raspberry pi */
-    uint8_t transfer_completed;
 } lt_handle_t;
 
 /** Enum return type */
