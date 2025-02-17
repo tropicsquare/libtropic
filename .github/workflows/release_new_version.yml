@@ -1,0 +1,56 @@
+name: Release new libtropic version on tag creation
+on:
+  push:
+    tags:
+      - 'v[0-9]+\.[0-9]+\.[0-9]+'
+
+jobs:
+  check_tag_branch:
+    runs-on: ubuntu-22.04
+    outputs:
+      do_release: ${{ steps.check_tag_is_on_master.outputs.DO_RELEASE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0  # Ensure full history is available
+
+      - name: Check tag is on master
+        id: check_tag_is_on_master
+        run: |
+            TAG_COMMIT=$(git rev-list -n 1 ${{ github.ref_name }})
+            if git branch -r --contains "$TAG_COMMIT" | grep -q "origin/master"; then
+              echo "DO_RELEASE=true" >> $GITHUB_OUTPUT
+            else
+              echo "DO_RELEASE=false" >> $GITHUB_OUTPUT
+            fi
+
+  create_release:
+    needs: check_tag_branch
+    runs-on: ubuntu-22.04
+    if: ${{ needs.check_tag_branch.outputs.do_release == 'true' }}  # Skip release if tag is not on master
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0  # Ensure full history is available
+
+      - name: Get tag 
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Parse changelog for tag version  # Run script creates new file with parsed changelog
+        run: |
+            python3 scripts/parse_changelog.py --version $TAG_NAME
+
+      - name: Create release
+        uses: actions/create-release@v1.1.4
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: "libtropic-${{ env.TAG_NAME }}"
+          body_path: CHANGELOG_parsed.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
