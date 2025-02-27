@@ -2,3 +2,4 @@ build/
 .vscode/
 .codechecker/
 .venv/
+venv/
