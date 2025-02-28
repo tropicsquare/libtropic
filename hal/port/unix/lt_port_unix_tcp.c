@@ -271,13 +271,13 @@ static int lt_communicate (int *tx_payload_length_ptr, int *rx_payload_length_pt
 //    tx_buffer.TAG = TAG_E_POWER_OFF;
 //    return lt_communicate(NULL, NULL);
 //}
-static int lt_reset_target(void)
-{
-    LOG_OUT("-- Resetting TROPIC01 target.\n");
-    tx_buffer.TAG = TAG_E_RESET_TARGET;
-
-    return lt_communicate(NULL, NULL);
-}
+//static int lt_reset_target(void)
+//{
+//    LOG_OUT("-- Resetting TROPIC01 target.\n");
+//    tx_buffer.TAG = TAG_E_RESET_TARGET;
+//
+//    return lt_communicate(NULL, NULL);
+//}
 
 static int server_connect(void)
 {
