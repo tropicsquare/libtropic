@@ -4,9 +4,8 @@
 
 TROPIC01's SDK written in C.
 
-Content of this repository is licensed under "Apache 2.0 License”, the copy of the license can be obtained here: https://www.apache.org/licenses/LICENSE-2.0.txt.
 
-For more info about TROPIC01 check datasheet and API pdf.
+For more info about TROPIC01 chip check out developers resources in [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
 
 
 # Repository structure
@@ -34,3 +33,8 @@ Instructions differ based on whether you have physical chip on hand or not:
 # Documentation
 
 More info can be found here: `docs/index.md`
+
+# License 
+
+See the [LICENSE.md](LICENSE.md) file in the root of this repository or consult license information at [Tropic Square website](http:/tropicsquare.com/license).
+
