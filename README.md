@@ -32,9 +32,10 @@ Instructions differ based on whether you have physical chip on hand or not:
 
 # Documentation
 
-More info can be found here: `docs/index.md`
+Doxygen html documentation is [here](https://tropicsquare.github.io/libtropic/)
+More info might be found here: `docs/index.md`
 
-# License 
+# License
 
 See the [LICENSE.md](LICENSE.md) file in the root of this repository or consult license information at [Tropic Square website](http:/tropicsquare.com/license).
 
