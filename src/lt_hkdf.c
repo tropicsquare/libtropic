@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#if USE_TREZOR_CRYPTO
+#if LT_USE_TREZOR_CRYPTO
 #include "lt_hmac_sha256.h"
 #include "hasher.h"
 #include "blake256.h"

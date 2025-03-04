@@ -235,12 +235,12 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 
 /**
  * @brief Test secure session by exchanging a message with chip
- *
+ *  msg_out of length 'len' is echoed through secure channel.
  *
  * @param h           Device's handle
  * @param msg_out     Ping message going out
  * @param msg_in      Ping message going in
- * @param len         Length of ping message
+ * @param len         Length of both messages (msg_out and msg_in)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len);
@@ -630,6 +630,104 @@ lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t
  * @return const char* description of return value.
  */
 const char *lt_ret_verbose(lt_ret_t ret);
+
+//---------------------------------------------------------------------------------------------------------------------//
+
+/** @brief Macro to controll which session can access command targeting content of pairing key SH0 */
+#define TO_PAIRING_KEY_SH0(x)     ((x) << 0)
+/** @brief Macro to controll which session can access command targeting content of pairing key SH1 */
+#define TO_PAIRING_KEY_SH1(x)     ((x) << 8)
+/** @brief Macro to controll which session can access command targeting content of pairing key SH2 */
+#define TO_PAIRING_KEY_SH2(x)     ((x) << 16)
+/** @brief Macro to controll which session can access command targeting content of pairing key SH3 */
+#define TO_PAIRING_KEY_SH3(x)     ((x) << 24)
+
+/** @brief Macro to controll which session can access command targeting counter 0-3 */
+#define TO_LT_MCOUNTER_0_3(x)    ((x) << 0)
+/** @brief Macro to controll which session can access command targeting counter 4-7 */
+#define TO_LT_MCOUNTER_4_7(x)    ((x) << 8)
+/** @brief Macro to controll which session can access command targeting counter 8-11 */
+#define TO_LT_MCOUNTER_8_11(x)   ((x) << 16)
+/** @brief Macro to controll which session can access command targeting counter 12-15 */
+#define TO_LT_MCOUNTER_12_15(x)  ((x) << 24)
+
+/** @brief Macro to controll which session can access command targeting ECC_SLOT 0-7 */
+#define TO_ECC_KEY_SLOT_0_7(x)   ((x) << 0)
+/** @brief Macro to controll which session can access command targeting ECC_SLOT 8-15 */
+#define TO_ECC_KEY_SLOT_8_15(x)  ((x) << 8)
+/** @brief Macro to controll which session can access command targeting ECC_SLOT 16-23 */
+#define TO_ECC_KEY_SLOT_16_23(x) ((x) << 16)
+/** @brief Macro to controll which session can access command targeting ECC_SLOT 24-31 */
+#define TO_ECC_KEY_SLOT_24_31(x) ((x) << 24)
+
+/** @brief Macro to controll if session SH0 has access to a specific command */
+#define SESSION_SH0_HAS_ACCESS    (uint8_t)0x01
+/** @brief Macro to controll if session SH1 has access to a specific command */
+#define SESSION_SH1_HAS_ACCESS    (uint8_t)0x02
+/** @brief Macro to controll if session SH2 has access to a specific command */
+#define SESSION_SH2_HAS_ACCESS    (uint8_t)0x04
+/** @brief Macro to controll if session SH3 has access to a specific command */
+#define SESSION_SH3_HAS_ACCESS    (uint8_t)0x08
+
+/** @brief This structure is used in this example to simplify looping
+ *         through all config addresses and printing out them into debug */
+struct lt_config_obj_desc_t {
+    char desc[60];
+    enum CONFIGURATION_OBJECTS_REGS addr;
+};
+
+/** @brief Structure to hold all configuration objects */
+struct lt_config_t {
+    uint32_t obj[27];
+};
+
+#ifdef LT_UTILS
+/**
+ * @brief Get the conf desc object from config description table
+ *
+ * @param i           Index in an array of objects
+ * @return uint16_t   String with name of object on a given index
+ */
+const char *get_conf_desc(uint8_t i);
+
+/**
+ * @brief Get the address of a specific config object from config description table
+ *
+ * @param i           Index in an array of objects
+ * @return uint16_t   Address of object on a given index
+ */
+uint16_t get_conf_addr(uint8_t i);
+
+/**
+ * @brief This function reads config objects from TROPIC01 and prints them out
+ *
+ * @param h           Device's handle
+ * @param config      Array into which objects are read
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
+
+/**
+ * @brief This function writes config objecs into TROPIC01
+ *
+ * @param h           Device's handle
+ * @param config      Array from which objects are taken and written into TROPIC01
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
+
+/**
+ * @brief This function establish a secure channel between host MCU and TROPIC01 chip
+ *
+ * @param h           Device's handle
+ * @param shipriv     Host's private pairing key (SHiPUB)
+ * @param shipub      Host's public pairing key  (SHiPUB)
+ * @param pkey_index  Pairing key's index
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
+
+#endif
 
 /** @} */ // end of group_libtropic_API
 

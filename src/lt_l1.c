@@ -27,7 +27,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
     }
 #endif
 
-#ifdef EXPERIMENTAL_SPI_UART
+#ifdef LT_EXPERIMENTAL_SPI_UART
     lt_l1_delay(h, 10);
 #endif
 
@@ -41,19 +41,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
 
         // Try to read CHIP_STATUS byte
         lt_l1_spi_csn_low(h);
-#ifdef EXPERIMENTAL_SPI_RASPBERRYPI
-        // store the byte which was initally in l2_buff
-        uint8_t store_byte = h->l2_buff[0];
-        // put raspberry command byte there
-        h->l2_buff[0] = 0x00;
-        // do transmit of that one command
-        if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK) {
-            lt_l1_spi_csn_high(h);
-            return LT_L1_SPI_ERROR;
-        }
-        // put previous byte back to buffer and continue as usually
-        h->l2_buff[0] = store_byte;
-#endif
+
         if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK) {
             lt_l1_spi_csn_high(h);
             return LT_L1_SPI_ERROR;
@@ -130,24 +118,12 @@ lt_ret_t lt_l1_write(lt_handle_t *h, const uint16_t len, const uint32_t timeout)
     }
 #endif
 
-#ifdef EXPERIMENTAL_SPI_UART
+#ifdef LT_EXPERIMENTAL_SPI_UART
     lt_l1_delay(h, 10);
 #endif
 
     lt_l1_spi_csn_low(h);
-#ifdef EXPERIMENTAL_SPI_RASPBERRYPI
-    // store the byte which was initally in l2_buff
-    uint8_t store_byte = h->l2_buff[0];
-    // put raspberry command byte there
-    h->l2_buff[0] = 0x01;
-    // do transmit of that one command
-    if (lt_l1_spi_transfer(h, 0, 1, timeout) != LT_OK) {
-        lt_l1_spi_csn_high(h);
-        return LT_L1_SPI_ERROR;
-    }
-    // put previous byte back to buffer and continue as usually
-    h->l2_buff[0] = store_byte;
-#endif
+
     if (lt_l1_spi_transfer(h, 0, len, timeout) != LT_OK) {
         lt_l1_spi_csn_high(h);
         return LT_L1_SPI_ERROR;
