@@ -36,5 +36,5 @@ More info can be found here: `docs/index.md`
 
 # License 
 
-See the LICENSE.md file in the root of this repository or consult license information at [Tropic Square website](http:/tropicsquare.com/license).
+See the[LICENSE.md](LICENSE.md) file in the root of this repository or consult license information at [Tropic Square website](http:/tropicsquare.com/license).
 
