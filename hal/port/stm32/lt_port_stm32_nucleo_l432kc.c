@@ -77,7 +77,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     HAL_GPIO_Init(LT_SPI_CS_BANK, &GPIO_InitStruct);
     // SPI hardware
     SpiHandle.Instance               = LT_SPI_INSTANCE;
-    SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+    SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     SpiHandle.Init.Direction         = SPI_DIRECTION_2LINES;
     SpiHandle.Init.CLKPhase          = SPI_PHASE_1EDGE;
     SpiHandle.Init.CLKPolarity       = SPI_POLARITY_LOW;
