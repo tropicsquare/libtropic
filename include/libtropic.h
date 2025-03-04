@@ -235,12 +235,12 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 
 /**
  * @brief Test secure session by exchanging a message with chip
- *
+ *  msg_out of length 'len' is echoed through secure channel.
  *
  * @param h           Device's handle
  * @param msg_out     Ping message going out
  * @param msg_in      Ping message going in
- * @param len         Length of ping message
+ * @param len         Length of both messages (msg_out and msg_in)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len);
