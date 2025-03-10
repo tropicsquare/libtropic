@@ -16,6 +16,7 @@ from argparse import ArgumentParser
 from .lt_environment_tools import lt_environment_tools
 from .lt_test_runner import lt_test_runner
 from .lt_platform_factory import lt_platform_factory
+from .lt_openocd_launcher import lt_openocd_launcher
 
 logger = logging.getLogger(__name__)
 
@@ -106,27 +107,26 @@ async def main():
 
     try:
         openocd_launch_params = ["-f", args.adapter_config] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + platform.get_openocd_launch_params() 
-        logger.info(f"Launching OpenOCD with '{openocd_launch_params}'")
-        openocd_proc = subprocess.Popen([shutil.which("openocd")] + openocd_launch_params, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        try:
+            openocd_launcher = lt_openocd_launcher(openocd_launch_params)
+        except FileNotFoundError:
+            logger.error("Couldn't find OpenOCD!")
+            return
 
         await asyncio.sleep(2)
-
-        if openocd_proc.poll() is not None:
-            logger.info("Error starting OpenOCD. Check if computer-adapter-platform connection is functional or if OpenOCD is not already running.")
+        if not openocd_launcher.is_running():
+            logger.error("Couldn't launch OpenOCD. Check parameters.")
             return
 
         tr = lt_test_runner(args.work_dir, platform, adapter_serial)
         test_result = await tr.run(args.firmware)
     except serial.SerialException as e:
         logger.error(f"Platform serial interface communication error: {str(e)}")
-        lt_environment_tools.shutdown_openocd(openocd_proc)
         return
     except:
         logger.info("Received unexpected exception or termination request. Shutting down.")
-        lt_environment_tools.shutdown_openocd(openocd_proc)
         raise
-
-    lt_environment_tools.shutdown_openocd(openocd_proc)
 
     if test_result == lt_test_runner.lt_test_result.TEST_PASSED:
         sys.exit(0) # Test OK
