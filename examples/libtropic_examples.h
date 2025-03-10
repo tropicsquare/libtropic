@@ -86,6 +86,12 @@ int lt_ex_hardware_wallet(void);
 void lt_ex_fw_update(void);
 
 /**
+ * @brief Example usage of 'Mac And Destroy' pin verification scheme
+ *
+ */
+int lt_ex_macandd(void);
+
+/**
  * @brief Test function, L3 commands which with ireversible impact
  * TODO explain more
  */

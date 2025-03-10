@@ -394,3 +394,40 @@ lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len) {
 
     return LT_OK;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////
+///////////////    NVM    /////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+
+uint32_t persistent_area[9+8*MACANDD_ROUNDS];
+
+// Deletes flash area for new initialization of nvm variable
+uint32_t nvm_data_init(struct lt_macandd_NVM *nvm) {
+    // zero out cache
+    memset(nvm, 0x00, sizeof(struct lt_macandd_NVM));
+
+    // Prepare flash by erasing it, return error if this operation fails
+    memset(persistent_area, 0xff, sizeof(persistent_area));
+    // If all is ok, return OK
+    return 0;
+    // else return NOT OK;
+}
+
+// Stores modified nvm variable into flash area
+uint32_t nvm_data_store(struct lt_macandd_NVM *nvm) {
+    int sz = sizeof(struct lt_macandd_NVM);
+    memcpy(persistent_area, nvm, sz);
+    // If all is ok, return OK
+    return 0;
+    // else return NOT OK;
+}
+
+// Reads flash area and copies its content data into nvm variable so macandd functions can use it
+uint32_t nvm_data_get(struct lt_macandd_NVM *nvm) {
+    // Read data from flash into nvm structure
+    int sz = sizeof(struct lt_macandd_NVM);
+    memcpy(nvm, persistent_area, sz);
+    // If all is ok, return OK
+    return 0;
+    // else return NOT OK;
+}

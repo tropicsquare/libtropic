@@ -54,6 +54,11 @@ if(LT_EX_HELLO_WORLD)
     set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD)
 endif()
+# -DLT_EX_MACANDD=1
+if(LT_EX_MACANDD)
+    set(LT_ADD_EXAMPLES ON)
+    target_compile_definitions(run PRIVATE LT_EX_MACANDD)
+endif()
 # -DLT_EX_TEST_REVERSIBLE=1
 if(LT_EX_TEST_REVERSIBLE)
     set(LT_ADD_EXAMPLES ON)
