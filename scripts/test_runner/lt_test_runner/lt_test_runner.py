@@ -29,7 +29,6 @@ class lt_test_runner:
         await self.platform.openocd_connect()
 
         await self.platform.initialize()
-        await self.platform.set_platform_power(True)
 
         if not await self.platform.is_spi_bus_free():
             logger.error("SPI bus is already occupied! Check if all other platform boards disabled SPI access!")
@@ -37,6 +36,7 @@ class lt_test_runner:
             return self.lt_test_result.TEST_FAILED
 
         await self.platform.set_spi_en(True)
+        await self.platform.set_platform_power(True)
 
         await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
         await self.platform.set_disco_led(lt_platform.lt_led_color.WHITE)
@@ -45,6 +45,7 @@ class lt_test_runner:
             await self.platform.load_elf(elf_path)
         except TimeoutError:
             logger.error("Communication with OpenOCD timed out while loading firmware!")
+            await self.platform.set_platform_power(False)
             self.platform.openocd_disconnect()
             return self.lt_test_result.TEST_FAILED
 
@@ -99,9 +100,11 @@ class lt_test_runner:
         if err_count > 0 or warn_count > 0 or assert_fail_count > 0:
             logger.error("There were errors or warnings, test unsuccessful!")
             await self.platform.set_disco_led(lt_platform.lt_led_color.RED)
+            await self.platform.set_platform_power(False)
             self.platform.openocd_disconnect()
             return self.lt_test_result.TEST_FAILED
 
         await self.platform.set_disco_led(lt_platform.lt_led_color.GREEN)
+        await self.platform.set_platform_power(False)
         self.platform.openocd_disconnect()
         return self.lt_test_result.TEST_PASSED
