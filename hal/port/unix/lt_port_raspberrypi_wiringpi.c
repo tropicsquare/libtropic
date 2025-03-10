@@ -19,7 +19,7 @@
 #include "libtropic_port.h"
 
 // CS is controlled separately
-#define GPIO_CS           14
+#define GPIO_CS           25
 #define SPI_SPEED_HZ 5000000
 
 // File descriptor, used in init and deinit
@@ -70,7 +70,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
 
     // Setup CS pin
     wiringPiSetupGpio();
-    pinMode(14, OUTPUT);
+    pinMode(GPIO_CS, OUTPUT);
     digitalWrite(GPIO_CS, HIGH);
 
     // Setup SPI, returns fd, error if -1 is returned
