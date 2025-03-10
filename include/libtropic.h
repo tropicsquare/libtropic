@@ -731,6 +731,37 @@ typedef enum {
  */
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
 
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned MAC-and-Destroy data */
+#define MAC_AND_DESTROY_DATA_SIZE 32u
+
+/* Maybe we introduce more KDF functions? */
+#define KDF(a,b,c,d,e)   lt_hmac_sha256(a,b,c,d,e)
+
+/**
+ * @brief Set pin with Mac And Destroy, TODO work in progress
+ *
+ * @param h           Device's handle
+ * @param pin         Array of bytes representing pin and possibly also other bytes
+ * @param pin_size    Length of pin field
+ * @param secret      Secret key which will be returned during pin verify when correct pin is entered
+ * @param nvm         Structure containing persistent data
+ * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
+ */
+lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *pin, const uint8_t pin_size, uint8_t *secret);
+
+/**
+ * @brief Check pin with Mac And Destroy, TODO work in progress
+ *
+ * @param h           Device's handle
+ * @param pin         Array of bytes representing pin and possibly also other bytes
+ * @param pin_size    Length of the pin field
+ * @param secret      Buffer ito which secret will be saved
+ * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
+ */
+lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *pin, const uint8_t pin_size, uint8_t *secret);
+
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned serial code */
 #define SERIAL_CODE_SIZE 32u
