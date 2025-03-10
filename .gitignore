@@ -3,3 +3,4 @@ build/
 .codechecker/
 .venv/
 venv/
+__pycache__
