@@ -37,7 +37,7 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
 
         max_tries--;
 
-        h->l2_buff[0] = GET_INFO_REQ_ID;
+        h->l2_buff[0] = GET_RESPONSE_REQ_ID;
 
         // Try to read CHIP_STATUS byte
         lt_l1_spi_csn_low(h);

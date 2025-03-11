@@ -90,6 +90,9 @@ lt_ret_t lt_l3_cmd(lt_handle_t *h)
         case L3_PAIRING_KEY_INVALID:
             lt_l3_nonce_increase(h);
             return LT_L3_PAIRING_KEY_INVALID;
+        case L3_ECC_INVALID_KEY:
+            lt_l3_nonce_increase(h);
+            return LT_L3_ECC_INVALID_KEY;
         default:
             return LT_FAIL;
     }

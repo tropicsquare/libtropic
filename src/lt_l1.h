@@ -41,8 +41,8 @@
 /** Maximal delay in ms which can be used in delay funtion */
 #define LT_L1_DELAY_MS_MAX 500
 
-/** Get info request's ID */
-#define GET_INFO_REQ_ID 0xAA
+/** Get response request's ID */
+#define GET_RESPONSE_REQ_ID 0xAA
 
 /**
  * @brief Read data from Tropic chip into host platform
