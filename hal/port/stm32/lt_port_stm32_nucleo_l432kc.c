@@ -62,6 +62,13 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     UNUSED(h);
 
     // RNG
+    rng.Instance = RNG;
+    
+    if (HAL_RNG_DeInit(&rng) != HAL_OK)
+    {
+        return LT_FAIL;
+    }
+
     if (HAL_RNG_Init(&rng) != HAL_OK) {
         return LT_FAIL;
     }
