@@ -113,9 +113,14 @@ class lt_test_runner:
                         err_count += 1
                     elif (msg_type == "SYSTEM"):
                         if msg_content == "ASSERT_OK":
-                            logger.info(f"Assertion at [{code_line_number}] passed!")
+                            logger.debug(f"Assertion at [{code_line_number}] passed!")
                         elif msg_content == "ASSERT_FAIL":
-                            logger.error(f"Assertion at [{code_line_number}] failed!")
+                            if (len(line) < 5):
+                                logger.error("Line malformed!")
+                                continue
+                            msg_expected = line[4].strip()
+                            msg_got = line[3].strip()
+                            logger.error(f"Assertion at [{code_line_number}] failed! Expected '{msg_expected}', got '{msg_got}'.")
                             assert_fail_count += 1
                         elif msg_content == "TEST_FINISH":
                             logger.info("Received TEST_FINISH, wrapping up.")
