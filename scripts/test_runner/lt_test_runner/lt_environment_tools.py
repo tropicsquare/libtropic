@@ -3,6 +3,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 import serial
+import serial.tools.list_ports
 
 logger = logging.getLogger(__name__)
 
