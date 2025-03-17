@@ -63,6 +63,7 @@ int lt_ex_hello_world(void)
     LT_LOG_LINE();
 
     LT_LOG("\t End of execution, no errors.");
+    LT_FINISH_TEST();
 
     return 0;
 }
