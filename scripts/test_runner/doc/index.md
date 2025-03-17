@@ -7,6 +7,15 @@ the serial line.
 
 
 ## Usage
+Dependencies:
+- pyserial
+- telnetlib3
+
+Dependencies can be installed using the `requirements.txt` in the test runner directory by:
+```sh
+pip install -r requirements.txt
+```
+
 There are two interfaces:
 - Native Python interface
 - CLI wrapper over Python interface
