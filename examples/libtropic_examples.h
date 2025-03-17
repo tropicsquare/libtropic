@@ -44,19 +44,19 @@ extern uint8_t sh3pub[];
 #define LT_LOG_SYSTEM(f_, ...) printf("%d\t;SYSTEM;"f_"\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message.
-#define LT_ASSERT(expected, value)                              \
-                    if(value == expected)                       \
-                    {                                           \
-                        LT_LOG_SYSTEM("ASSERT_OK");             \
-                    } else {                                    \
-                        LT_LOG_SYSTEM("ASSERT_FAIL %d", value);           \
+#define LT_ASSERT(expected, value)                                              \
+                    if(value == expected)                                       \
+                    {                                                           \
+                        LT_LOG_SYSTEM("ASSERT_OK");                             \
+                    } else {                                                    \
+                        LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", value, expected);    \
                     };
 
-#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)                      \
-                    if (value == (condition ? expected_if_true : expected_if_false)) {             \
-                        LT_LOG_SYSTEM("ASSERT_OK");                                                \
-                    } else {                                                                       \
-                        LT_LOG_SYSTEM("ASSERT_FAIL");                                              \
+#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)                                        \
+                    if (value == (condition ? expected_if_true : expected_if_false)) {                               \
+                        LT_LOG_SYSTEM("ASSERT_OK");                                                                  \
+                    } else {                                                                                         \
+                        LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", value, condition ? expected_if_true : expected_if_false); \
                     }
 // Used to stop the test. Will log as a system message.
 #define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
