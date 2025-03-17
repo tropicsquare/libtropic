@@ -8,9 +8,6 @@ class lt_platform_stm32(lt_platform):
     def __init__(self):
         super().__init__()
 
-    def get_openocd_launch_params(self):
-        return ["-f", "target/stm32f4x.cfg"]
-
     async def load_elf(self, elf_path: Path):
         logger.info("Programming...")
         await self.openocd_send(f"program {elf_path.absolute()} verify\n")
@@ -21,3 +18,11 @@ class lt_platform_stm32(lt_platform):
         self.ocd_writer.write(f"reset\n")
         await self.ocd_writer.drain()
         logger.info("Reset issued.")
+
+class lt_platform_stm32_f4(lt_platform_stm32):
+    def get_openocd_launch_params(self):
+        return ["-f", "target/stm32f4x.cfg"]
+    
+class lt_platform_stm32_l4(lt_platform_stm32):
+    def get_openocd_launch_params(self):
+        return ["-f", "target/stm32l4x.cfg", "-c", "transport select swd"]
