@@ -2,8 +2,12 @@ import logging
 from enum import Enum
 from pathlib import Path
 import serial
+import time
 
+from .lt_platform_factory import lt_platform_factory
 from .lt_platform import lt_platform
+from .lt_environment_tools import lt_environment_tools
+from .lt_openocd_launcher import lt_openocd_launcher
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +19,39 @@ class lt_test_runner:
     class OpenOCDConnectionError:
         pass
 
-    def __init__(self, working_dir: Path, platform: lt_platform, serial_port: str):
+    def __init__(self, working_dir: Path, platform_id: str, mapping_config_path: Path, adapter_config_path: Path):
         self.working_dir = working_dir
         logger.info("Preparing environment...")
         self.working_dir.mkdir(exist_ok = True, parents = True)
-        self.platform = platform
-        self.serial_port = serial_port
+
+
+        self.platform = lt_platform_factory.create_from_str_id(platform_id)
+        if self.platform is None:
+            logger.error(f"Platform '{self.platform}' not found!")
+            raise ValueError
+        
+        adapter_id = lt_environment_tools.get_adapter_id_from_mapping(platform_id, mapping_config_path)
+        if adapter_id is None:
+            logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {mapping_config_path} (or select correct config file) and try again.")
+            raise ValueError
+    
+        self.serial_port  = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
+        if self.serial_port is None:
+            logger.error("Serial adapter not found. Check if adapter is correctly connected to the computer and correct interface is selected.")
+            raise ValueError
+        
+        openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
+
+        try:
+            self.openocd_launcher = lt_openocd_launcher(openocd_launch_params)
+        except FileNotFoundError:
+            logger.error("Couldn't find OpenOCD!")
+            raise
+
+        time.sleep(2)
+        if not self.openocd_launcher.is_running():
+            logger.error("Couldn't launch OpenOCD. Check parameters.")
+            return
 
     def __del__(self):
         pass

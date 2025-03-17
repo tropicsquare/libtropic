@@ -13,10 +13,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from argparse import ArgumentParser
 
-from .lt_environment_tools import lt_environment_tools
 from .lt_test_runner import lt_test_runner
 from .lt_platform_factory import lt_platform_factory
-from .lt_openocd_launcher import lt_openocd_launcher
 
 logger = logging.getLogger(__name__)
 
@@ -88,38 +86,15 @@ async def main():
     else:
         logging.basicConfig(level=logging.INFO)
 
-    platform        = lt_platform_factory.create_from_str_id(args.platform_id)
-    adapter_id      = lt_environment_tools.get_adapter_id_from_mapping(args.platform_id, args.mapping_config)
-    adapter_serial  = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
-    test_result     = lt_test_runner.lt_test_result.TEST_FAILED # The default is failure in case an exception is thrown.
-
-    if platform is None:
-        logger.error(f"Platform '{platform}' not found!")
-        return
-
-    if adapter_id is None:
-        logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {args.mapping_config} (or select correct config file) and try again.")
-        return
-
-    if adapter_serial is None:
-        logger.error("Serial adapter not found. Check if adapter is correctly connected to the computer and correct interface is selected.")
-        return
+    test_result = lt_test_runner.lt_test_result.TEST_FAILED # The default is failure in case an exception is thrown.
 
     try:
-        openocd_launch_params = ["-f", args.adapter_config] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + platform.get_openocd_launch_params() 
-        
-        try:
-            openocd_launcher = lt_openocd_launcher(openocd_launch_params)
-        except FileNotFoundError:
-            logger.error("Couldn't find OpenOCD!")
-            return
+        tr = lt_test_runner(args.work_dir, args.platform_id, args.mapping_config, args.adapter_config)
+    except (ValueError, FileNotFoundError):
+        logger.error("Failed to initialize test runner.")
+        sys.exit(1)
 
-        await asyncio.sleep(2)
-        if not openocd_launcher.is_running():
-            logger.error("Couldn't launch OpenOCD. Check parameters.")
-            return
-
-        tr = lt_test_runner(args.work_dir, platform, adapter_serial)
+    try:
         test_result = await tr.run(args.firmware)
     except serial.SerialException as e:
         logger.error(f"Platform serial interface communication error: {str(e)}")
