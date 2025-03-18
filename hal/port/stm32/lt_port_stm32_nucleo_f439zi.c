@@ -243,12 +243,6 @@ lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms)
    vendor/STM32CubeF4/Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
 */
 
-#define LT_SPI_CS_BANK   GPIOE
-#define LT_SPI_CS_PIN    GPIO_PIN_4
-#define LT_SPI_INSTANCE  SPI4
-// Use 1 here to handle FPGA's SPI enable with stm32's gpio
-#define FPGA_REMOTE 1
-
 /* SPI handle declaration */
 SPI_HandleTypeDef SpiHandle;
 
@@ -305,24 +299,13 @@ lt_ret_t lt_port_init(lt_handle_t *h)
 
     // GPIO for chip select:
     GPIO_InitTypeDef  GPIO_InitStruct = {0};
-    __HAL_RCC_GPIOE_CLK_ENABLE();
+    LT_SPI_CS_CLK_ENABLE();
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
     GPIO_InitStruct.Pin = LT_SPI_CS_PIN;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
     HAL_GPIO_Init(LT_SPI_CS_BANK, &GPIO_InitStruct);
-
-    #ifdef FPGA_REMOTE
-    // Pin for controlling SPI access
-    GPIO_InitStruct.Pin = GPIO_PIN_3;
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
-    HAL_Delay(100);
-    #endif
 
     // TODO this is probably crap, this function should be called by HAL
     // internally. But lt_init didnt work properly if it is not here.
@@ -338,18 +321,6 @@ lt_ret_t lt_port_deinit(lt_handle_t *h)
     if (HAL_RNG_DeInit(&rng) != HAL_OK) {
         return LT_FAIL;
     }
-
-    #ifdef FPGA_REMOTE
-    // Clear pin for controlling SPI access
-    GPIO_InitTypeDef  GPIO_InitStruct = {0};
-    GPIO_InitStruct.Pin = GPIO_PIN_3;
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
-    HAL_Delay(100);
-    #endif
 
     HAL_SPI_MspDeInit(&SpiHandle);
 
