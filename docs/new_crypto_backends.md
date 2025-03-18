@@ -4,9 +4,14 @@ for cryptographic operations.
 
 The new backend has to support operations with:
 - AES (GCM)
+    - encryption
+    - decryption
 - ED25519
+    - signing
 - SHA256
+    - hashing
 - Curve25519
+    - multiplication on both arbitrary and base point
 
 ## Guide
 
