@@ -20,20 +20,17 @@ For more info about TROPIC01 chip check out developers resources in [TROPIC01](h
 
 # Get started!
 
-Instructions differ based on whether you have physical chip on hand or not:
+For engineering samples please go [here](https://tropicsquare.com/tropic01).
 
-### Physical TROPIC01
+Example projects:
 
-[This](https://github.com/tropicsquare/libtropic-stm32) link leads to an example embedded project, featuring `STM32` devboard and `real TROPIC01` chip.
+* [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32) - example project featuring `STM32 NUCLEO_F439ZI` or `STM32 NUCLEO_L432K`
+* [libtropic-util](https://github.com/tropicsquare/libtropic-stm32) - example project featuring `USB Dongle with TROPIC01` or `Raspberry Pi`
 
-### Emulated TROPIC01
-
-[This](tests/integration/integration_tests.md) link leads to an example project, featuring `Unix` environment and `emulated TROPIC01` chip.
 
 # Documentation
 
 Doxygen html documentation is [here](https://tropicsquare.github.io/libtropic/)
-More info might be found here: `docs/index.md`
 
 # License
 
