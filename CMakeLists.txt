@@ -148,6 +148,6 @@ if(LT_USE_TREZOR_CRYPTO)
 endif()
 
 if(LT_UTILS)
-    target_compile_definitions(tropic PRIVATE LT_UTILS)
+    target_compile_definitions(tropic PUBLIC LT_UTILS)
 endif()
 
