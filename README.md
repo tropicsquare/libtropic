@@ -25,7 +25,7 @@ For engineering samples please go [here](https://tropicsquare.com/tropic01).
 Example projects:
 
 * [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32) - example project featuring `STM32 NUCLEO_F439ZI` or `STM32 NUCLEO_L432K`
-* [libtropic-util](https://github.com/tropicsquare/libtropic-stm32) - example project featuring `USB Dongle with TROPIC01` or `Raspberry Pi`
+* [libtropic-util](https://github.com/tropicsquare/libtropic-util) - example project featuring `USB Dongle with TROPIC01` or `Raspberry Pi`
 
 
 # Documentation
