@@ -19,8 +19,8 @@ option(LT_UTILS "Compile helper function" ON)
 
 # Check if cryptography provider is defined
 if(
-    (NOT BUILD_DOCS)        AND
-    (NOT USE_TREZOR_CRYPTO) AND
+    (NOT LT_BUILD_DOCS)        AND
+    (NOT LT_USE_TREZOR_CRYPTO) AND
     (NOT LT_CRYPTO_MBEDTLS)
 )
     message(FATAL_ERROR "No cryptography provider is defined.")
