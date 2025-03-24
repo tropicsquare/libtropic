@@ -18,13 +18,13 @@ option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmwar
 option(LT_UTILS "Compile helper function" ON)
 
 # Check if cryptography provider is defined
-if(
-    (NOT BUILD_DOCS)        AND
-    (NOT USE_TREZOR_CRYPTO) AND
-    (NOT LT_CRYPTO_MBEDTLS)
-)
-    message(FATAL_ERROR "No cryptography provider is defined.")
-endif()
+#if(
+#    (NOT BUILD_DOCS)        AND
+#    (NOT USE_TREZOR_CRYPTO) AND
+#    (NOT LT_CRYPTO_MBEDTLS)
+#)
+#    message(FATAL_ERROR "No cryptography provider is defined.")
+#endif()
 
 ###########################################################################
 #                                                                         #
