@@ -1,156 +1,144 @@
-# Introduction
+# Hello World!
 
-`libtropic` is a C library, which implements functionalities for interfacing applications with TROPIC01 device. It comes without any security claims and shall be used for evaluation purpose only.
+Welcome to the documentation page for **libtropic**, the official C library for TROPIC01 chip. This guide will help you get started with building applications using **TROPIC01** and **libtropic**.
 
+For detailed information about the libtropic library architecture and development, please refer to the contributors section.
 
-|Supported devices                                       |Description                                              |
-|--------------------------------------------------------|---------------------------------------------------------|
-|[TROPIC01](https://www.tropicsquare.com/tropic01)       | First generation TROPIC01                               |
+- [Getting TROPIC01](#getting-tropic01)
+- [Integration examples](#integration-examples)
+- [Adding libtropic](#adding-libtropic)
+- [Using CMAKE switches](#using-cmake-switches)
+- [More examples](#more-examples)
 
-# Repository overview
+## Getting TROPIC01 {#getting-tropic01}
 
-Codebase consists of:
-* `examples`: C code concepts to show how libtropic might be used on host system
-* `hal`: Contains `crypto` and `port` interfaces. Files in these folders allows libtropic to be used with various cryptography libraries and on different hardware platforms. Both `crypto` and `port` folders are meant to be compiled within a main project (the one which consumes libtropic library). They provide a way for libtropic core to interact with host's cryptography primitives and hardware layer.
-* `src`: Libtropic's core source files, facilitating data handling between host's application and TROPIC01 chip
-* `tests`: Unit and integration tests
-* `vendor`: External libraries and tools
+TROPIC01 is currently available in three forms:
 
-# Library usage
+- QFN32 4x4mm IC package for direct PCB integration
+- Development board with pre-soldered TROPIC01 for easy evaluation
+- USB dongle version for systems without SPI bus
 
-## Dependencies
-
-Used build system is **cmake 3.21**:
-
-```
-$ sudo apt install cmake
-```
-
-## Options
-
-This library was designed to be compiled during the build of a parent project.
-
-It provides following options to be defined during building:
-
-```
-option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
-option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider"       OFF)
-option(LT_BUILD_DOCS        "Build documentation"                          OFF)
-```
-
-Options could be passed as a command line argument, or they could be defined in main project's cmake files when this library is added to its build tree.
+#### QFN32 Samples
 
 
-## Examples
+<img src="QFN32.jpg" alt="Secure Tropic Click" width="20%"/>
 
-List of projects which uses `libtropic`:
-* `tests/integration/integration_tests.md`: Unix program to test API calls against model of TROPIC01
-* `STM32 example`: Firmware for STM32f429 discovery board which implements libropic's API calls against TROPIC01 chip (or model)
+Samples can be requested through our website. Visit [tropicsquare.com/tropic01-samples](https://tropicsquare.com/tropic01-samples) for more info.
 
-## Static archive
 
-*Note: When compiling the library standalone as a static archive, a cryptography provider must be defined through cmake -D arguments*
+#### Breakout PCB with TROPIC01
 
-Compile `libtropic` as a static archive under Unix:
+PCB modules are available as **Secure Tropic Click** through our external partner **MIKROE**'s webshop.
 
-```
-$ mkdir build
-$ cd build
-$ cmake -DLT_USE_TREZOR_CRYPTO=1 ..
-$ make
-```
+To order, visit [mikroe.com](https://www.mikroe.com/secure-tropic-click).
 
-Cross-compile `libtropic` as a static archive:
+<img src="secure-tropic-click.png" alt="Secure Tropic Click" width="20%"/>
 
-```
-$ mkdir build
-$ cd build
-$ cmake -DLT_USE_TREZOR_CRYPTO=1 -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
-$ make
-```
+You can interface **Secure Tropic Click** with your platform over SPI bus using a breadboard or wires. Additional conversion PCBs are available on the MIKROE website, including an [arduino](https://www.mikroe.com/arduino-uno-click-shield) form factor extension board.
 
-## Build documentation
-To build html documentation, you need Doxygen. The documentation is built using these commands:
-```sh
-$ mkdir build/
-$ cd build/
-$ cmake -DLT_BUILD_DOCS=1 ..
-$ make doc_doxygen
-```
+#### USB dongle with TROPIC01
 
-The documentation will be built to: `build/docs/doxygen/html`. Open `index.html` in any recent web browser.
+Designed for evaluation on systems where SPI is not available.
 
-Notes:
-- We tested Doxygen 1.9.1 and 1.9.8.
-- PDF (LaTeX) output is not supported.
+<img src="ts1301_top_assembled.png" alt="Secure Tropic Click" width="30%"/>
 
-# Testing
 
-## Unit tests
+Please visit [tropicsquare.com](https://tropicsquare.com/tropic01-samples), sign-up and check availability.
 
-Unit tests files are in `tests/unit/` folder. They are written in [Ceedling](https://www.throwtheswitch.com) framework, install it like this:
+
+## Integration examples {#integration-examples}
+
+We provide standalone compilable example projects for platforms of our choice:
+
+#### STM32
+
+Integration example for STM32 is available through [this](https://github.com/tropicsquare/libtropic-stm32) repository and contains code for:
+- Nucleo-f439zi
+- Nucleo-l432kc
+
+#### Unix
+
+For unix based examples we have `cmd line utility` called [libtropic-util](https://github.com/tropicsquare/libtropic-util).
+
+This is Unix program to test API calls against TROPIC01, works for:
+- TROPIC01 connected over SPI - tested on Raspberrypi 3 and 4
+- USB dongle with TROPIC01
+
+## Adding libtropic {#adding-libtropic}
+
+How can you add libtropic to your existing project?
+
+We recommend to add libtropic as a submodule. Libtropic uses CMAKE build system, therefore it could be added to compilation of existing cmake projects in a following way:
 
 ```
-    # Install Ruby
-    $ sudo apt-get install ruby-full
+# CMakeLists.txt file
 
-    # Ceedling install
-    $ gem install ceedling
+# Set path of libtropic submodule
+set(PATH_LIBTROPIC "libtropic/")
 
-    # Code coverage tool used by Ceedling
-    $ pip install gcovr
+# This switch will expose not only core library functions, but also helper functions
+set(LT_UTILS ON)
+
+# This switch exposes also functions containing example of usage.
+# Might be a good starting point.
+#set(LT_ADD_EXAMPLES ON)
+
+# It is necessary to set provider of cryptography functions
+# Use trezor crypto as a source of backend cryptography code
+set(LT_USE_TREZOR_CRYPTO ON)
+
+# Add path to libtropic's repository root folder
+add_subdirectory(${PATH_LIBTROPIC} "libtropic")
+
+### Linking
+
+target_link_options(lt-util PRIVATE -Wl,--gc-sections)
+
 ```
 
-Then make sure that you have correct version:
-```
-$ ceedling version
-   Ceedling:: 0.31.1
-      Unity:: 2.5.4
-      CMock:: 2.5.4
- CException:: 1.3.3
+Please note that exact cmake calls depend on configuration of a project into which libtropic is being added. For more inspiration have a look into integration examples.
+
+## Using CMAKE switches {#using-cmake-switches}
+
+Libtropic is configurable with cmake options. They are either passed from parent project's CMakeLists.txt, or over prompt when building is invoked.
 
 ```
-For now we support Ceedling version 0.31.1 only.
+# Set trezor_crypto as a cryptography provider
+-DLT_USE_TREZOR_CRYPTO=1
 
-Once ceedling is installed, run tests and create code coverage report:
+# Compile libtropic also with functions containing example usage - good for initial evaluation
+-DLT_ADD_EXAMPLES=1
+
+# Enable firmware update functions and compile firmware update in a form of byte array
+# For more info have a look into examples/fw_update.c
+-DLT_ENABLE_FW_UPDATE=1
+
+# This switch controls if helper utilities are compiled in. In most cases this should be ON,
+# examples and tests need to have helpers utilities compiled.
+# Switch it off to compile only libtropic's core
+-DLT_UTILS=1
+
+# Build libtropic documentation
+-DLT_BUILD_DOCS=1
+```
+
+## More examples {#more-examples}
+
+We provide following examples:
+
+1. `hello world`: Demonstrates basic usage of libtropic.
+2. `fw update`: Shows how to update TROPIC01's internal firmware
+3. `hw wallet`: Example of how a generic hw wallet project might integrate TROPIC01
+4. `Mac and Destroy`: Example of usage of Mac and Destroy pin verification engine
+
+In order to have examples exposed in your parent project, libtropic must be compiled with following CMake switches:
 
 ```
-$ CEEDLING_MAIN_PROJECT_FILE=scripts/ceedling.yml ceedling gcov:all utils:gcov
+# This switch controls if helper utilities are compiled in. In most cases this should be ON,
+# examples and tests need to have helpers utilities compiled.
+# Switch it off to compile only libtropic's core
+-DLT_UTILS=1
+
+# Compile libtropic also with functions containing example usage - good for initial evaluation
+-DLT_ADD_EXAMPLES=1
 ```
-
-### Randomization
-Some tests use a rudimentary randomization mechanism using standard C functions. The PRNG is normally
-seeded with current time. Used seed is always printed to stdout. You can find the seed in logs
-(`build/gcov/results/...`).
-
-To run tests with fixed seed, set `RNG_SEED` parameter to your
-desired seed (either directly in the file, or in the project.yml section `:defines:`). This is
-useful mainly to replicate a failed test run -- just find out what seed was used and then
-set `RNG_SEED` to this.
-
-## Integration tests
-
-For more info check `tests/integration/integration_tests.md`
-
-## Static code analysis
-The CodeChecker tool is used to do static code analysis and generate reports.
-
-There are 3 options how to get reports:
-1. Download pre-generated HTML report artifact from GitHub Actions.
-    This is the simplest way. Reports are generated on every push to develop branch for now.
-2. Generate HTML report yourself.
-    - You need to install CodeChecker (e.g. via pip). After that, run:
-    ```sh
-    CodeChecker check -b "./scripts/codechecker/codechecker_build.sh" --config ./scripts/codechecker/codechecker_config.json --output ./.codechecker/reports
-    CodeChecker parse -e html ./.codechecker/reports -o ./.codechecker/reports_html
-    ```
-    - Open `./.codechecker/reports_html/index.html` in your browser.
-3. Use CodeChecker add-on.
-    - Add these lines to your VS Code's workspace settings (`.vscode/settings.json`):
-    ```json
-    "codechecker.executor.executablePath": <path to CodeChecker>,
-    "codechecker.executor.arguments": "--config scripts/codechecker/codechecker_config.json",
-    "codechecker.executor.logBuildCommand": "./scripts/codechecker/codechecker_build.sh",
-    "codechecker.backend.compilationDatabasePath": "${workspaceFolder}/.codechecker/compile_commands.json"
-    ```
-    - `<path to CodeChecker>` can be replaced with "CodeChecker" if the CodeChecker is available in your `$PATH`. Otherwise, you need to specify full path to the CodeChecker executable.
