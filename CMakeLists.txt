@@ -17,6 +17,15 @@ option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmwar
 # Switch it off to compile only basic libtropic API.
 option(LT_UTILS "Compile helper function" ON)
 
+# Check if cryptography provider is defined
+if(
+    (NOT LT_BUILD_DOCS)        AND
+    (NOT LT_USE_TREZOR_CRYPTO) AND
+    (NOT LT_CRYPTO_MBEDTLS)
+)
+    message(FATAL_ERROR "No cryptography provider is defined.")
+endif()
+
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
@@ -31,11 +40,6 @@ if(LT_BUILD_DOCS)
     else()
         message(STATUS "Doxygen not found, not building docs")
     endif()
-endif()
-
-# Check if cryptography provider is defined
-if((NOT LT_USE_TREZOR_CRYPTO) AND (NOT LT_CRYPTO_MBEDTLS) AND (NOT LT_BUILD_DOCS))
-    message(FATAL_ERROR "Mbed TLS or trezor_crypto must be enabled!")
 endif()
 
 ###########################################################################
@@ -55,7 +59,21 @@ project(libtropic_SDK
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
 
-# Collect source files which are always compiled
+##########
+# CRYPTO #
+##########
+set(SDK_SRCS ${SDK_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
+)
+
+# --- add new crypto sources above this line ---
+
+############################
+# LIBTROPIC IMPLEMENTATION #
+############################
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
@@ -67,12 +85,7 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
 )
-set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
-)
+
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
