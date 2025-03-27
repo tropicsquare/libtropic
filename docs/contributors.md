@@ -16,7 +16,9 @@ Library architecture explained: core, examples, helpers, layers, hal, …
 
 “Libtropic is standalone library expected to be used within a parent project”
 
-TBD add picture
+<a href="libtropic_arch.drawio.png" target="_blank">
+    <img src="libtropic_arch.drawio.png" alt="Secure Tropic Click" width="50%"/>
+</a>
 
 ## How to: Adding new embedded platform {#adding-new-embedded-platform}
 

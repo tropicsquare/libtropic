@@ -1653,7 +1653,7 @@ const char *lt_ret_verbose(lt_ret_t ret) {
 }
 
 //--------------------------------------------------------------------------------------------------------//
-#ifdef LT_UTILS
+#ifdef LT_HELPERS
 /** @brief This helper structure together with two get* interfaces is meant to be used to simplify looping
  *         through all config addresses and printing them out into log */
 struct lt_config_obj_desc_t config_description_table[27] = {
