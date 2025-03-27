@@ -46,7 +46,7 @@ void print_headers(lt_handle_t *h)
 {
         LOG_OUT("  Chip contains following headers:\r\n");
         uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_FW1        %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_FW1        %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
         LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
                                                                                                                      header[4], header[5], header[6], header[7],
                                                                                                                  header[8], header[9]);
@@ -54,7 +54,7 @@ void print_headers(lt_handle_t *h)
                                                                                                                  header[14], header[15], header[16], header[17],
                                                                                                                  header[18], header[19]);
 
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_FW2        %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_FW2        %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
         LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
                                                                                                                  header[4], header[5], header[6], header[7],
                                                                                                                  header[8], header[9]);
@@ -62,7 +62,7 @@ void print_headers(lt_handle_t *h)
                                                                                                                  header[14], header[15], header[16], header[17],
                                                                                                                  header[18], header[19]);
 
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
         LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
                                                                                                                  header[4], header[5], header[6], header[7],
                                                                                                                  header[8], header[9]);
@@ -70,7 +70,7 @@ void print_headers(lt_handle_t *h)
                                                                                                                  header[14], header[15], header[16], header[17],
                                                                                                                  header[18], header[19]);
 
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
         LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
                                                                                                                  header[4], header[5], header[6], header[7],
                                                                                                                  header[8], header[9]);
