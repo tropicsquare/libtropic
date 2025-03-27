@@ -1,5 +1,5 @@
-#ifndef HELLO_WORLD_EXAMPLE
-#define HELLO_WORLD_EXAMPLE
+#ifndef LT_LIBTROPIC_EXAMPLES_H
+#define LT_LIBTROPIC_EXAMPLES_H
 
 /**
  * @file TROPIC01_hw_wallet.h

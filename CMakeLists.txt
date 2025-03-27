@@ -15,7 +15,7 @@ option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmwar
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
 # Switch it off to compile only basic libtropic API.
-option(LT_UTILS "Compile helper function" ON)
+option(LT_HELPERS "Compile helper function" ON)
 
 # Check if cryptography provider is defined
 if(
@@ -160,7 +160,7 @@ if(LT_USE_TREZOR_CRYPTO)
     target_compile_definitions(tropic PRIVATE LT_USE_TREZOR_CRYPTO)
 endif()
 
-if(LT_UTILS)
-    target_compile_definitions(tropic PUBLIC LT_UTILS)
+if(LT_HELPERS)
+    target_compile_definitions(tropic PUBLIC LT_HELPERS)
 endif()
 

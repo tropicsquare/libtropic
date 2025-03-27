@@ -77,7 +77,7 @@ We recommend to add libtropic as a submodule. Libtropic uses CMAKE build system,
 set(PATH_LIBTROPIC "libtropic/")
 
 # This switch will expose not only core library functions, but also helper functions
-set(LT_UTILS ON)
+set(LT_HELPERS ON)
 
 # This switch exposes also functions containing example of usage.
 # Might be a good starting point.
@@ -116,7 +116,7 @@ Libtropic is configurable with cmake options. They are either passed from parent
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
 # Switch it off to compile only libtropic's core
--DLT_UTILS=1
+-DLT_HELPERS=1
 
 # Build libtropic documentation
 -DLT_BUILD_DOCS=1
@@ -137,7 +137,7 @@ In order to have examples exposed in your parent project, libtropic must be comp
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
 # Switch it off to compile only libtropic's core
--DLT_UTILS=1
+-DLT_HELPERS=1
 
 # Compile libtropic also with functions containing example usage - good for initial evaluation
 -DLT_ADD_EXAMPLES=1
