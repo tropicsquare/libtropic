@@ -681,7 +681,7 @@ struct lt_config_t {
     uint32_t obj[27];
 };
 
-#ifdef LT_UTILS
+#ifdef LT_HELPERS
 /**
  * @brief Get the conf desc object from config description table
  *
