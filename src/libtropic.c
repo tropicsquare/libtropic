@@ -1724,11 +1724,25 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
     return LT_OK;
 }
 
+lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
+{
+    lt_ret_t ret;
+
+    for (uint8_t i=0; i<27;i++) {
+        ret = lt_i_config_read(h, get_conf_addr(i), &config->obj[i]);
+        if(ret != LT_OK) {
+            return ret;
+        }
+    }
+
+    return LT_OK;
+}
+
 lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
 {
     lt_ret_t ret = LT_FAIL;
 
-    // This is not used in this example, but let's read it anyway
+    // This is not used here, but let's read it anyway
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE] = {0};
     ret = lt_get_info_chip_id(h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE);
     if (ret != LT_OK) {

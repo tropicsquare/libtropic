@@ -708,13 +708,22 @@ uint16_t get_conf_addr(uint8_t i);
 lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
 
 /**
- * @brief This function writes config objecs into TROPIC01
+ * @brief This function reads R config objects into structure
  *
  * @param h           Device's handle
- * @param config      Array from which objects are taken and written into TROPIC01
+ * @param config      Struct into which objects are readed
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
+
+/**
+ * @brief This function reads I config objects into structure
+ *
+ * @param h           Device's handle
+ * @param config      Struct into which objects are readed
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
 
 /**
  * @brief This function establish a secure channel between host MCU and TROPIC01 chip
