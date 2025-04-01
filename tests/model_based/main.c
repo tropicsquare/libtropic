@@ -29,5 +29,7 @@ int main(void)
 #ifdef LT_EX_HW_WALLET
     /*int*/ lt_ex_hardware_wallet();
 #endif
-
+#ifdef LT_TEST_SAMPLES_1
+    /*int*/ lt_test_samples_1();
+#endif
 }

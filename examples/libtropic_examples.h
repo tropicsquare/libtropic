@@ -97,4 +97,10 @@ void lt_ex_test_reversible(void);
  */
 void lt_ex_test_ireversible(void);
 
+/**
+ * @brief Test function, verifies if samples are correctly provisioned
+ * TODO explain more
+ */
+int lt_test_samples_1(void);
+
 #endif

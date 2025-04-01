@@ -114,6 +114,7 @@ if(LT_ADD_EXAMPLES)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_ireversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_samples_1.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}

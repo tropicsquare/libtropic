@@ -63,6 +63,11 @@ if(LT_EX_TEST_IREVERSIBLE)
     set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_EX_TEST_IREVERSIBLE)
 endif()
+# --DLT_TEST_SAMPLES_1=1
+if(LT_TEST_SAMPLES_1)
+    set(LT_ADD_EXAMPLES ON)
+    target_compile_definitions(run PRIVATE LT_TEST_SAMPLES_1)
+endif()
 
 ###########################################################################
 #                                                                         #
