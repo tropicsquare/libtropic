@@ -89,13 +89,13 @@ void lt_ex_fw_update(void);
  * @brief Test function, L3 commands which with ireversible impact
  * TODO explain more
  */
-void lt_ex_test_reversible(void);
+void lt_test_reversible(void);
 
 /**
  * @brief Test function, L3 commands which ireversibly write in chip
  * TODO explain more
  */
-void lt_ex_test_ireversible(void);
+void lt_test_ireversible(void);
 
 /**
  * @brief Test function, verifies if samples are correctly provisioned

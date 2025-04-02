@@ -112,8 +112,8 @@ if(LT_ADD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_test_ireversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_reversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_ireversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_samples_1.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
     )

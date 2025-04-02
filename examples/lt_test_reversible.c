@@ -1,7 +1,7 @@
 
 
 /**
- * @file lt_ex_test_reversible.c
+ * @file lt_test_reversible.c
  * @brief This function executes all reversible l3 commands. Its purpose is to run during platform's test, must not brick the chip.
  * @author Tropic Square s.r.o.
  *
@@ -155,7 +155,7 @@ struct lt_config_t config = {.obj={
     }
 };
 
-void lt_ex_test_reversible(void)
+void lt_test_reversible(void)
 {
     LT_LOG("reversible features");
 

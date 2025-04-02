@@ -11,23 +11,20 @@
 
 int main(void)
 {
-    // Test routines
-#ifdef LT_EX_TEST_REVERSIBLE
-    lt_ex_test_reversible();
-#endif
-#ifdef LT_EX_TEST_IREVERSIBLE
-    lt_ex_test_ireversible();
-#endif
-
     // Full examples
-#ifdef LT_FEATURES_FWUPDATE
-    lt_ex_fwupdate();
-#endif
 #ifdef LT_EX_HELLO_WORLD
     /*int*/ lt_ex_hello_world();
 #endif
 #ifdef LT_EX_HW_WALLET
     /*int*/ lt_ex_hardware_wallet();
+#endif
+
+// Test routines
+#ifdef LT_TEST_REVERSIBLE
+    /*int*/ lt_test_reversible();
+#endif
+#ifdef LT_TEST_IREVERSIBLE
+    /*int*/ lt_test_ireversible();
 #endif
 #ifdef LT_TEST_SAMPLES_1
     /*int*/ lt_test_samples_1();

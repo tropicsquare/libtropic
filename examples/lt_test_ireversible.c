@@ -16,7 +16,7 @@
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 
-void lt_ex_test_ireversible(void)
+void lt_test_ireversible(void)
 {
 
     LT_LOG("\tireversible features");

@@ -53,15 +53,15 @@ if(LT_EX_HELLO_WORLD)
     set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD)
 endif()
-# -DLT_EX_TEST_REVERSIBLE=1
-if(LT_EX_TEST_REVERSIBLE)
+# -DLT_TEST_REVERSIBLE=1
+if(LT_TEST_REVERSIBLE)
     set(LT_ADD_EXAMPLES ON)
-    target_compile_definitions(run PRIVATE LT_EX_TEST_REVERSIBLE)
+    target_compile_definitions(run PRIVATE LT_TEST_REVERSIBLE)
 endif()
-# --DLT_EX_TEST_IREVERSIBLE=1
-if(LT_EX_TEST_IREVERSIBLE)
+# --DLT_TEST_IREVERSIBLE=1
+if(LT_TEST_IREVERSIBLE)
     set(LT_ADD_EXAMPLES ON)
-    target_compile_definitions(run PRIVATE LT_EX_TEST_IREVERSIBLE)
+    target_compile_definitions(run PRIVATE LT_TEST_IREVERSIBLE)
 endif()
 # --DLT_TEST_SAMPLES_1=1
 if(LT_TEST_SAMPLES_1)
