@@ -98,7 +98,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
 
-    for(int8_t i=0; i<4; i++) {
+    for(int8_t i=0; i<(LT_L2_GET_INFO_REQ_CERT_SIZE/128); i++) {
         // Fill l2 request buffer
         p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
         p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
@@ -115,7 +115,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
         }
 
         // Check incomming l3 length
-        if((LT_L2_GET_INFO_REQ_CERT_SIZE/4) != (p_l2_resp->rsp_len)) {
+        if((LT_L2_GET_INFO_REQ_CERT_SIZE/30) != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
         }
 

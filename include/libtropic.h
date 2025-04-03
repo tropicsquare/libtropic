@@ -53,7 +53,7 @@ lt_ret_t lt_update_mode(lt_handle_t *h);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
-#define LT_L2_GET_INFO_REQ_CERT_SIZE         512
+#define LT_L2_GET_INFO_REQ_CERT_SIZE         3840
 
 /**
  * @brief Get device's certificate
