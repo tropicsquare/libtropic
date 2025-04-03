@@ -67,7 +67,7 @@ For example to flash binary built in previous step, use:
 
 ```
 $ cd libtropic-stm32/libtropic/scripts/test_runner/
-user$ ./openocd_test_F439ZI.sh "/home/xxx/Desktop/libtropic-stm32/NUCLEO_F439ZI/build/stm32_example.elf" 3
+user$ ./openocd_test_F439ZI.sh "/home/xxx/Desktop/libtropic-stm32/NUCLEO_F439ZI/build/stm32_example.elf" 35
 ```
 
 Executing this script will result into target board being flashed, reset and results will be sent over UART.
