@@ -45,6 +45,10 @@ lt_ret_t lt_deinit(lt_handle_t *h);
 #define LT_MODE_APP     0
 /**
  * @brief Update mode variable in handle
+ * Read one byte from spi, check CHIP_MODE_STARTUP_bit and update this information in handle.alignas
+ *
+ * Info from this bit is updated in handle on every l1 transaction anyway.
+ * This function can be used to actualize it whenever user wants.
  *
  * @param h           Device's handle
  * @return            LT_OK if success, otherwise returns other error code.

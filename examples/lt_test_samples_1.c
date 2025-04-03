@@ -85,51 +85,6 @@ static void print_config(uint8_t config_type, struct lt_config_t config) {
     }
 }
 
-/**
- * @brief Local helper, print firmware headers, used in startup mode
- *
- * @param h   handle
- */
-static void print_headers(lt_handle_t *h)
-{
-        LT_LOG("  Chip contains following headers:");
-        uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[0], header[1], header[2], header[3],
-                                                                                                                     header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LT_LOG("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[10], header[11], header[12], header[13],
-                                                                                                                 header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
-        print_bytes(header, 10);
-        print_bytes(header+10, 10);
-
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[0], header[1], header[2], header[3],
-                                                                                                                 header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LT_LOG("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[10], header[11], header[12], header[13],
-                                                                                                                 header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
-
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[0], header[1], header[2], header[3],
-                                                                                                                 header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LT_LOG("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[10], header[11], header[12], header[13],
-                                                                                                                 header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
-
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[0], header[1], header[2], header[3],
-                                                                                                                 header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LT_LOG("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X", header[10], header[11], header[12], header[13],
-                                                                                                                  header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
-}
-
-
 /***********************************************************************************/
 /*************       START OF TEST FUNCTIONS       *********************************/
 /***********************************************************************************/
@@ -322,19 +277,37 @@ static int test_get_chip_info(void)
         LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
         LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
         // Now reboot into STARTUP
-        LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
+        LT_LOG("lt_reboot() reboot into MAINTENANCE               %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
     }
 
     // Check again mode
     LT_LOG_LINE();
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
     if(h.mode == LT_MODE_STARTUP) {
-        LT_LOG("  Chip is executing bootloader");
+        LT_LOG("  Chip is executing bootloader - MAINTENANCE MODE");
         // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:
-        LT_LOG("  lt_get_info_riscv_fw_ver()                  %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+        LT_LOG("  lt_get_info_riscv_fw_ver() now returns bootloader version                 %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
         LT_LOG("  Bootloader version: %d.%d.%d    (+ unused %d)", fw_ver[3] & 0x7f,fw_ver[2],fw_ver[1],fw_ver[0]);
-        print_headers(&h);
+        LT_LOG("  Chip contains following headers:");
+
+        // Print all fw headers
+        uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        print_bytes(header, 10);
+        print_bytes(header+10, 10);
+
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        print_bytes(header, 10);
+        print_bytes(header+10, 10);
+
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        print_bytes(header, 10);
+        print_bytes(header+10, 10);
+
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s", lt_ret_verbose(lt_get_info_fw_bank(&h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        print_bytes(header, 10);
+        print_bytes(header+10, 10);
     } else {
         LT_LOG("     ERROR device couldn't get into STARTUP mode");
     }
@@ -346,7 +319,8 @@ static int test_get_chip_info(void)
     LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
     LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
     LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
-
+    LT_LOG_LINE();
+    
     // Abort session
     LT_LOG("%s", "lt_session_abort()");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
@@ -430,19 +404,19 @@ int lt_test_samples_1(void)
     setup_test_data();
 
     // WARNING!! Ireversible operations.
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    LT_LOG("  -------- [1] TEST WRITE PAIRING KEYS ------------------------------------------------------------------------");
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    if (test_write_pairing_keys() == -1) {
-        LT_LOG("Error during TEST WRITE PAIRING KEYS");
-    }
+    //LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    //LT_LOG("  -------- [1] TEST WRITE PAIRING KEYS ------------------------------------------------------------------------");
+    //LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    //if (test_write_pairing_keys() == -1) {
+    //    LT_LOG("Error during TEST WRITE PAIRING KEYS");
+    //}
 
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    LT_LOG("  -------- [2] TEST CHANNELS ----------------------------------------------------------------------------------");
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    if (test_channels() == -1) {
-        LT_LOG("Error during TEST CHANNELS");
-    }
+    //LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    //LT_LOG("  -------- [2] TEST CHANNELS ----------------------------------------------------------------------------------");
+    //LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    //if (test_channels() == -1) {
+    //    LT_LOG("Error during TEST CHANNELS");
+    //}
 
     LT_LOG("  -------------------------------------------------------------------------------------------------------------");
     LT_LOG("  -------- [3] TEST GET CHIP INFO -----------------------------------------------------------------------------");
