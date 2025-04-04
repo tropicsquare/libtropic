@@ -192,14 +192,73 @@ static int test_write_pairing_keys(void)
     LT_LOG("%s", "lt_reboot() reboot into Application");
     LT_ASSERT(LT_OK,  lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
 
+    // Deinit handle
+    LT_LOG("%s", "lt_deinit()");
+    LT_ASSERT(LT_OK, lt_deinit(&h));
+
+    LT_LOG_LINE();
+
+    return 0;
+}
+
+static int test_channels(void)
+{
+    lt_handle_t h = {0};
+    uint8_t in[PING_LEN_MAX] = {0};
+
+    LT_LOG("%s", "Initialize handle");
+    LT_ASSERT(LT_OK, lt_init(&h));
+
+    // Ping with SH0
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_0);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_LOG("%s", "lt_ping() ");
+    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
+    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
+    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
+    LT_LOG_LINE();
+    LT_LOG("%s", "lt_session_abort()");
+    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    memset(in, 0x00, PING_LEN_MAX);
+
+    // Ping with SH1
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_1);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, pkey_index_1));
+    LT_LOG("%s", "lt_ping() ");
+    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
+    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
+    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
+    LT_LOG_LINE();
+    LT_LOG("%s", "lt_session_abort()");
+    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    memset(in, 0x00, PING_LEN_MAX);
+
+    // Ping with SH2
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_2);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, pkey_index_2));
+    LT_LOG("%s", "lt_ping() ");
+    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
+    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
+    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
+    LT_LOG_LINE();
+    LT_LOG("%s", "lt_session_abort()");
+    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    memset(in, 0x00, PING_LEN_MAX);
+
+    // Ping with SH3
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_3);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, pkey_index_3));
+    LT_LOG("%s", "lt_ping() ");
+    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
+    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
+    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
+    LT_LOG_LINE();
     LT_LOG("%s", "lt_session_abort()");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
     LT_ASSERT(LT_OK, lt_deinit(&h));
-
-    LT_LOG_LINE();
 
     return 0;
 }
@@ -265,7 +324,7 @@ static int test_get_chip_info(void)
 
     // Reading info from firmware banks:
 
-    // Reboot into maintenance, read fw banks info and print it out
+    // Chip should be in application, so let's try to read fw versions
     uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
@@ -280,12 +339,11 @@ static int test_get_chip_info(void)
         LT_LOG("lt_reboot() reboot into MAINTENANCE               %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
     }
 
-    // Check again mode
     LT_LOG_LINE();
+    // Now chip should be in maintenance, update mode and check mode again
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
     if(h.mode == LT_MODE_STARTUP) {
         LT_LOG("  Chip is executing bootloader - MAINTENANCE MODE");
-        // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:
         LT_LOG("  lt_get_info_riscv_fw_ver() now returns bootloader version                 %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
         LT_LOG("  Bootloader version: %d.%d.%d    (+ unused %d)", fw_ver[3] & 0x7f,fw_ver[2],fw_ver[1],fw_ver[0]);
@@ -314,7 +372,7 @@ static int test_get_chip_info(void)
     LT_LOG_LINE();
 
     // Reboot into application
-    LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT)));
+    LT_LOG("lt_reboot() reboot into APP                          %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT)));
     LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
     LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
     LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
@@ -331,69 +389,11 @@ static int test_get_chip_info(void)
     return 0;
 }
 
-
-static int test_channels(void)
-{
-    lt_handle_t h = {0};
-    uint8_t in[PING_LEN_MAX] = {0};
-
-    LT_LOG("%s", "Initialize handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
-
-    // Ping with SH0
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
-    LT_LOG("%s", "lt_ping() ");
-    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
-    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
-    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
-    LT_LOG_LINE();
-    LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
-    memset(in, 0x00, PING_LEN_MAX);
-
-    // Ping with SH1
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_1);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, pkey_index_1));
-    LT_LOG("%s", "lt_ping() ");
-    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
-    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
-    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
-    LT_LOG_LINE();
-    LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
-    memset(in, 0x00, PING_LEN_MAX);
-
-    // Ping with SH2
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_2);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, pkey_index_2));
-    LT_LOG("%s", "lt_ping() ");
-    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
-    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
-    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
-    LT_LOG_LINE();
-    LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
-    memset(in, 0x00, PING_LEN_MAX);
-
-    // Ping with SH3
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_3);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, pkey_index_3));
-    LT_LOG("%s", "lt_ping() ");
-    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN_MAX));
-    LT_LOG("Asserting %d B of Ping message", PING_LEN_MAX);
-    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN_MAX));
-    LT_LOG_LINE();
-    LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
-
-    // Deinit handle
-    LT_LOG("%s", "lt_deinit()");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
-
-    return 0;
-}
-
+/**
+ * @brief Main function for test samples 1
+ *
+ * @return int
+ */
 int lt_test_samples_1(void)
 {
     LT_LOG("");
@@ -429,18 +429,3 @@ int lt_test_samples_1(void)
 
     return 0;
 }
-
-
-/*
-Sepsat jak by mel log vypadat
-Updatnout uklidit LOG makra
-Pridat SECTION makro
-Pridat makro pro vypisovani bytu
-Pridat makro pro vypisovani konfigurace
-Pridat makro pro vypisovani certifikatu
-Pridat makro pro vypisovani hlavicek
-Pridat makro pro vypisovani verze
-Pridat vlastni session funkce
-
-
-*/
