@@ -163,6 +163,6 @@ typedef enum {
 
 } lt_ret_t;
 
-#define LT_TROPIC01_REBOOT_DELAY_MS  75
+#define LT_TROPIC01_REBOOT_DELAY_MS  100
 
 #endif

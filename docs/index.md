@@ -57,9 +57,10 @@ We provide following examples:
 - `lt_ex_fw_update.c`: Shows how to update TROPIC01's internal firmware
 - `lt_ex_hw_wallet.c`: Example of how a generic hw wallet project might integrate TROPIC01
 
-Code used internally for testing:
-- `lt_ex_test_reversible`: This routine causes changes which can be reverted
-- `lt_ex_test_ireversible.c`: This routine cauees changes which cannot be reversed
+There is also code used internally for testing, so you can get some inspiration:
+- `lt_test_reversible`: This routine causes changes which can be reverted
+- `lt_test_ireversible.c`: This routine causes changes which cannot be reversed
+- `lt_test_samples_1.c`: This routine cauees changes which cannot be reversed. Used for testing samples.
 
 
 **Functions from `examples/` are not compiled into libtropic library by default. In order to have access to all examples functions from parent project, special switch must be passed to compilation.**

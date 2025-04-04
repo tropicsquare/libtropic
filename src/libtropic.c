@@ -98,7 +98,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
 
-    for(int8_t i=0; i<4; i++) {
+    for(int8_t i=0; i<(LT_L2_GET_INFO_REQ_CERT_SIZE/128); i++) {
         // Fill l2 request buffer
         p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
         p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
@@ -115,7 +115,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
         }
 
         // Check incomming l3 length
-        if((LT_L2_GET_INFO_REQ_CERT_SIZE/4) != (p_l2_resp->rsp_len)) {
+        if((LT_L2_GET_INFO_REQ_CERT_SIZE/30) != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
         }
 
@@ -1724,11 +1724,25 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
     return LT_OK;
 }
 
+lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
+{
+    lt_ret_t ret;
+
+    for (uint8_t i=0; i<27;i++) {
+        ret = lt_i_config_read(h, get_conf_addr(i), &config->obj[i]);
+        if(ret != LT_OK) {
+            return ret;
+        }
+    }
+
+    return LT_OK;
+}
+
 lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
 {
     lt_ret_t ret = LT_FAIL;
 
-    // This is not used in this example, but let's read it anyway
+    // This is not used here, but let's read it anyway
     uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE] = {0};
     ret = lt_get_info_chip_id(h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE);
     if (ret != LT_OK) {

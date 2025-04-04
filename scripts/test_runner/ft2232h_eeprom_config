@@ -1,0 +1,13 @@
+# How to:
+# [1] install ftdi-eeprom utility
+# [2] flash eeprom: $ ftdi_eeprom --device i:0x0403:0x6010 --flash-eeprom ft2232h_eeprom_config
+
+vendor_id=0x0403        # Vendor ID
+product_id=0x6011       # Product ID
+#max_power=0             # Max. power consumption: value * 2 mA. Use 0 if self_powered = true.
+
+manufacturer="TROPIC SQUARE"            # Manufacturer
+product="TS11"                          # Product
+serial="08-15"                          # Serial
+
+filename="eeprom.bin"
