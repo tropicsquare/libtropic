@@ -164,8 +164,8 @@ void lt_test_reversible(void)
     lt_init(&h);
 
     LT_LOG("%s", "lt_get_info_chip_id() ");
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE] = {0};
-    LT_LOG_RESULT("%s", lt_ret_verbose(lt_get_info_chip_id(&h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE)));
+    struct lt_chip_id_t chip_id = {0};
+    LT_LOG_RESULT("%s", lt_ret_verbose(lt_get_info_chip_id(&h, &chip_id)));
 
     LT_LOG("%s", "lt_get_info_riscv_fw_ver() ");
     uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};

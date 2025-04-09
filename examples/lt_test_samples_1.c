@@ -310,10 +310,10 @@ static int test_get_chip_info(void)
 
     // Read chip ID
     LT_LOG("lt_get_info_chip_id()");
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE] = {0};
-    LT_ASSERT(LT_OK, lt_get_info_chip_id(&h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE));
+    struct lt_chip_id_t chip_id = {0};
+    LT_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
     LT_LOG("Print chip_id()");
-    print_bytes(chip_id, 128);
+    print_bytes((uint8_t*)&chip_id, 128);
     LT_LOG_LINE();
 
     // Read cert field and print it out
