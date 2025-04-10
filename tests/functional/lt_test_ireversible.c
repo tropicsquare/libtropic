@@ -14,7 +14,7 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_examples.h"
+#include "libtropic_functional_tests.h"
 
 void lt_test_ireversible(void)
 {

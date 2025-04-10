@@ -26,7 +26,8 @@ project(libtropic_unix_example
 
 ###########################################################################
 #                                                                         #
-#   Sources defined by this project                                       #
+#   Sources defined by this project + definition of transport layer       #
+#   from hal/port/ folder                                                 #
 #                                                                         #
 ###########################################################################
 
@@ -37,41 +38,44 @@ add_executable(run main.c
 
 ###########################################################################
 #                                                                         #
-#   Define what examples will be compiled into main().                    #
-#   If any of examples is enabled, libtropic is compiled with             #
-#   examples exposed.                                                     #
+#   Define what examples (or tests) will be compiled into main().         #
+#   In this example libtropic library is compiled with examples           #
+#   and tests functions exposed. In production it is recommended to       #
+#   compile only core part of libtropic to save some code space.          #
+#                                                                         #
+#   This is controlled by options LT_ADD_EXAMPLES and LT_ADD_FUNC_TESTS   #
 #                                                                         #
 ###########################################################################
 
+# Following two lines should be placed in next section,
+# but let's keep them here for clarity:
+set(LT_ADD_EXAMPLES ON)
+set(LT_ADD_FUNC_TESTS ON)
+
 # -DLT_EX_HW_WALLET=1
 if(LT_EX_HW_WALLET)
-    set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_EX_HW_WALLET)
 endif()
 # -DLT_EX_HELLO_WORLD=1
 if(LT_EX_HELLO_WORLD)
-    set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD)
 endif()
 # -DLT_TEST_REVERSIBLE=1
 if(LT_TEST_REVERSIBLE)
-    set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_TEST_REVERSIBLE)
 endif()
 # --DLT_TEST_IREVERSIBLE=1
 if(LT_TEST_IREVERSIBLE)
-    set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_TEST_IREVERSIBLE)
 endif()
 # --DLT_TEST_SAMPLES_1=1
 if(LT_TEST_SAMPLES_1)
-    set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_TEST_SAMPLES_1)
 endif()
 
 ###########################################################################
 #                                                                         #
-#   Add libtropic and set it up                                           #
+#   Add libtropic library and set it up                                   #
 #                                                                         #
 ###########################################################################
 
