@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "string.h"
 #include "libtropic_examples.h"
+#include "libtropic_functional_tests.h"
 
 int main(void)
 {

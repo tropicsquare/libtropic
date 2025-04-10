@@ -13,7 +13,7 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_examples.h"
+#include "libtropic_functional_tests.h"
 
 
 /** @brief  User Conﬁguration Objects - values defined here affect configuration of chip */
