@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - libtropic API: lt_update_mode()
 - Example folder and test folder is reworked
 - option LT_ADD_EXAMPLES controls if example's folder code is a part of compilation
+- option LT_ADD_FUNC_TESTS controls if code from tests/functional/ folder will be compiled-in
 - port/ support and tests/platform/ example for Raspberry Pi
 
 ### Fixed

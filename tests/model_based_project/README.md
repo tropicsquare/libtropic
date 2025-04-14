@@ -10,15 +10,15 @@ Don't forget to provide model with config file, keys and chip's certificate as i
 
 
 
-## Compile integration tests
+## Compile model_based_project
 
-Keep the model running in its own terminal, open a new terminal and compile integration tests:
+Keep the model running in its own terminal, open a new terminal and compile model_based_project containing "Hello World" example:
 
 ```
-$ cd tests/integration_tests/
+$ cd tests/model_based_project/
 $ mkdir build
 $ cd build
-$ cmake ..
+$ cmake -DLT_EX_HELLO_WORLD=1 ..
 $ make
 ```
 
@@ -30,7 +30,7 @@ Compilation shouldn't take long, for compiling in debug mode replace `cmake ..` 
 While model is still running in first terminal, execute integration tests:
 
 ```
-./build/integration_test
+./build/run
 ```
 
 ## How it works?

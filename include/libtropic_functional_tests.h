@@ -1,9 +1,9 @@
-#ifndef LT_LIBTROPIC_EXAMPLES_H
-#define LT_LIBTROPIC_EXAMPLES_H
+#ifndef LT_LIBTROPIC_FUNC_TESTS_H
+#define LT_LIBTROPIC_FUNC_TESTS_H
 
 /**
- * @file TROPIC01_hw_wallet.h
- * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
+ * @file libtropic_functional_tests.h
+ * @brief Functions with functional tests used internally for testing behaviour of TROPIC01 chip
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -62,45 +62,59 @@ extern uint8_t sh3pub[];
 #define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
 
 /**
- * @brief Example function, Hello World
- *
- *  Verifies chip's certificate, exstablishes secure channel and executes Ping l3 command.
- *  TODO explain more
- * @return int
- */
-int lt_ex_hello_world(void);
-
-/**
- * @brief Example function, Hardware Wallet
- *
- * WARNING: This example ireversively writes into chip! Pairing keys SH1-3 are set and SH0 is invalidated. TODO explain more
+ * @brief Test function which writes pairing keys 1 2 and 3
  *
  * @return int
  */
-int lt_ex_hardware_wallet(void);
+int lt_test_write_pairing_keys(void);
 
 /**
- * @brief Example function, shows how to update TROPIC01's internal firmwares
- * TODO explain more
+ * @brief Test function which reads and prints out CHIP ID
+ *
+ * @return int
  */
-void lt_ex_fw_update(void);
+int lt_test_chip_id(void);
 
 /**
- * @brief Test function, L3 commands which with ireversible impact
- * TODO explain more
+ * @brief Test function which does Ping command with all pairing keys
+ *
+ * @return int
  */
-void lt_test_reversible(void);
+int lt_test_ping(void);
 
 /**
- * @brief Test function, L3 commands which ireversibly write in chip
- * TODO explain more
+ * @brief Test function which writes r config
+ *
+ * @return int
  */
-void lt_test_ireversible(void);
+int lt_test_write_r_config(void);
 
 /**
- * @brief Test function, verifies if samples are correctly provisioned
- * TODO explain more
+ * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
+ *
+ * @return int
  */
-int lt_test_samples_1(void);
+int lt_test_ecc_eddsa(void);
+
+/**
+ * @brief Test function which tests all ecc ECDSA commands on all ecc keys lots
+ *
+ * @return int
+ */
+int lt_test_ecc_ecdsa(void);
+
+/**
+ * @brief Test function which tests reading,writing and erasing of all r mem slots
+ *
+ * @return int
+ */
+int lt_test_r_mem(void);
+
+/**
+ * @brief Test function which erases R config
+ *
+ * @return int
+ */
+int lt_test_erase_r_config(void);
 
 #endif

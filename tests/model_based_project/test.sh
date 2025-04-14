@@ -1,0 +1,9 @@
+rm -r build/ && mkdir build &&  cd build && 
+cmake -DCMAKE_BUILD_TYPE=Debug \
+-DLT_TEST_CHIP_ID=1 \
+-DLT_TEST_WRITE_PAIRING_KEYS=1 \
+-DLT_TEST_WRITE_R_CONFIG=1 \
+-DLT_TEST_PING=1 \
+-DLT_TEST_ECC_EDDSA=1 \
+-DLT_TEST_R_MEM=0 \
+-DLT_TEST_ERASE_R_CONFIG=1 .. && make && cd ../

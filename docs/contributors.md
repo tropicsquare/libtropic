@@ -112,6 +112,10 @@ if(LT_CRYPTO_MYCRYPTO)
 endif()
 ```
 
+## How to: Debug
+
+For compiling in debug mode replace `cmake ..` with `cmake -DCMAKE_BUILD_TYPE=Debug ..` (this will allow to step through with a debugger).
+
 ## How to: Compile as static archive {#compile-as-static-archive}
 
 *Note: When compiling the library standalone as a static archive, a cryptography provider must be defined through cmake -D arguments*

@@ -11,6 +11,7 @@ option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
 option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
+option(LT_ADD_FUNC_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
@@ -54,7 +55,7 @@ endif()
 ###########################################################################
 
 project(libtropic_SDK
-        VERSION 0.0.1
+#        VERSION unreleased
         DESCRIPTION "TROPIC01 software development kit"
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
@@ -71,9 +72,9 @@ set(SDK_SRCS ${SDK_SRCS}
 
 # --- add new crypto sources above this line ---
 
-############################
-# LIBTROPIC IMPLEMENTATION #
-############################
+###########################################################################
+# Libtropic core functions                                                #
+###########################################################################
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
@@ -105,16 +106,14 @@ set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-
-
-# Collect files to be compiled when "examples" are enabled
+###########################################################################
+# Libtropic examples:                                                     #
+# Collect files to be compiled when "examples" are enabled                #
+###########################################################################
 if(LT_ADD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_ireversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_test_samples_1.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
@@ -122,8 +121,31 @@ if(LT_ADD_EXAMPLES)
     )
 endif()
 
+###########################################################################
+# Libtropic functional tests:                                             #
+# Collect files to be compiled when "functional tests" are enabled        #
+###########################################################################
+if(LT_ADD_FUNC_TESTS)
+    set(SDK_SRCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/keys.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_pairing_keys.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ping.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
+    )
+    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
+    )
+endif()
 
-# Collect files to be compiled when "fw update" is enabled
+###########################################################################
+# Libtropic fw update:                                                    #
+# Collect files to be compiled when "fw update" is enabled                #
+###########################################################################
+
 if(LT_ENABLE_FW_UPDATE)
     set(SDK_INCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v1.0.1/fw_CPU_0_1_2.h
