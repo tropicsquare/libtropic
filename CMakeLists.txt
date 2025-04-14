@@ -55,7 +55,7 @@ endif()
 ###########################################################################
 
 project(libtropic_SDK
-        VERSION unreleased
+#        VERSION unreleased
         DESCRIPTION "TROPIC01 software development kit"
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
@@ -128,9 +128,13 @@ endif()
 if(LT_ADD_FUNC_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/keys.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ireversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_samples_1.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_pairing_keys.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ping.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/

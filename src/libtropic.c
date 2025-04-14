@@ -149,11 +149,10 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
     return LT_FAIL;
 }
 
-lt_ret_t lt_get_info_chip_id(lt_handle_t *h, uint8_t *chip_id, const uint16_t max_len)
+lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id)
 {
     if (    !h
-         || !chip_id
-         ||  max_len < LT_L2_GET_INFO_CHIP_ID_SIZE) {
+         || !chip_id) {
         return LT_PARAM_ERR;
     }
 
@@ -1036,7 +1035,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
     }
 
     // Check incomming l3 length
-    if(LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN + size != (p_l3_res->res_size)) {
+    if(LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN + size < (p_l3_res->res_size)) {
         return LT_FAIL;
     }
     memcpy(data, p_l3_res->data, size);
@@ -1743,8 +1742,8 @@ lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, 
     lt_ret_t ret = LT_FAIL;
 
     // This is not used here, but let's read it anyway
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE] = {0};
-    ret = lt_get_info_chip_id(h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE);
+    struct lt_chip_id_t chip_id = {0};
+    ret = lt_get_info_chip_id(h, &chip_id);
     if (ret != LT_OK) {
         return ret;
     }

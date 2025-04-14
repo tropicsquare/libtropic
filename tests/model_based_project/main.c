@@ -21,13 +21,25 @@ int main(void)
 #endif
 
 // Test routines
-#ifdef LT_TEST_REVERSIBLE
-    /*int*/ lt_test_reversible();
+#ifdef LT_TEST_CHIP_ID
+    /*int*/ lt_test_chip_id();
 #endif
-#ifdef LT_TEST_IREVERSIBLE
-    /*int*/ lt_test_ireversible();
+#ifdef LT_TEST_WRITE_PAIRING_KEYS
+    /*int*/ lt_test_write_pairing_keys();
 #endif
-#ifdef LT_TEST_SAMPLES_1
-    /*int*/ lt_test_samples_1();
+#ifdef LT_TEST_WRITE_R_CONFIG
+    /*int*/ lt_test_write_r_config();
+#endif
+#ifdef LT_TEST_PING
+    /*int*/ lt_test_ping();
+#endif
+#ifdef LT_TEST_ECC_EDDSA
+    /*int*/ lt_test_ecc_eddsa();
+#endif
+#ifdef LT_TEST_R_MEM
+    /*int*/ lt_test_r_mem();
+#endif
+#ifdef LT_TEST_ERASE_R_CONFIG
+    /*int*/ lt_test_erase_r_config();
 #endif
 }

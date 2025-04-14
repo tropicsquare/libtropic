@@ -62,21 +62,59 @@ extern uint8_t sh3pub[];
 #define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
 
 /**
- * @brief Test function, L3 commands which with ireversible impact
- * TODO explain more
+ * @brief Test function which writes pairing keys 1 2 and 3
+ *
+ * @return int
  */
-void lt_test_reversible(void);
+int lt_test_write_pairing_keys(void);
 
 /**
- * @brief Test function, L3 commands which ireversibly write in chip
- * TODO explain more
+ * @brief Test function which reads and prints out CHIP ID
+ *
+ * @return int
  */
-void lt_test_ireversible(void);
+int lt_test_chip_id(void);
 
 /**
- * @brief Test function, verifies if samples are correctly provisioned
- * TODO explain more
+ * @brief Test function which does Ping command with all pairing keys
+ *
+ * @return int
  */
-int lt_test_samples_1(void);
+int lt_test_ping(void);
+
+/**
+ * @brief Test function which writes r config
+ *
+ * @return int
+ */
+int lt_test_write_r_config(void);
+
+/**
+ * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
+ *
+ * @return int
+ */
+int lt_test_ecc_eddsa(void);
+
+/**
+ * @brief Test function which tests all ecc ECDSA commands on all ecc keys lots
+ *
+ * @return int
+ */
+int lt_test_ecc_ecdsa(void);
+
+/**
+ * @brief Test function which tests reading,writing and erasing of all r mem slots
+ *
+ * @return int
+ */
+int lt_test_r_mem(void);
+
+/**
+ * @brief Test function which erases R config
+ *
+ * @return int
+ */
+int lt_test_erase_r_config(void);
 
 #endif

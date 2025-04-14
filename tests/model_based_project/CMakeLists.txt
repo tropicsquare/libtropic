@@ -60,17 +60,35 @@ endif()
 if(LT_EX_HELLO_WORLD)
     target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD)
 endif()
-# -DLT_TEST_REVERSIBLE=1
-if(LT_TEST_REVERSIBLE)
-    target_compile_definitions(run PRIVATE LT_TEST_REVERSIBLE)
+
+
+# -DLT_TEST_CHIP_ID=1
+if(LT_TEST_CHIP_ID)
+    target_compile_definitions(run PRIVATE LT_TEST_CHIP_ID)
 endif()
-# --DLT_TEST_IREVERSIBLE=1
-if(LT_TEST_IREVERSIBLE)
-    target_compile_definitions(run PRIVATE LT_TEST_IREVERSIBLE)
+# -DLT_TEST_WRITE_PAIRING_KEYS=1
+if(LT_TEST_WRITE_PAIRING_KEYS)
+    target_compile_definitions(run PRIVATE LT_TEST_WRITE_PAIRING_KEYS)
 endif()
-# --DLT_TEST_SAMPLES_1=1
-if(LT_TEST_SAMPLES_1)
-    target_compile_definitions(run PRIVATE LT_TEST_SAMPLES_1)
+# -DLT_TEST_WRITE_R_CONFIG=1
+if(LT_TEST_WRITE_R_CONFIG)
+    target_compile_definitions(run PRIVATE LT_TEST_WRITE_R_CONFIG)
+endif()
+# --DLT_TEST_PING=1
+if(LT_TEST_PING)
+    target_compile_definitions(run PRIVATE LT_TEST_PING)
+endif()
+# --DLT_TEST_ECC_EDDSA=1
+if(LT_TEST_ECC_EDDSA)
+    target_compile_definitions(run PRIVATE LT_TEST_ECC_EDDSA)
+endif()
+# --DLT_TEST_R_MEM=1
+if(LT_TEST_R_MEM)
+    target_compile_definitions(run PRIVATE LT_TEST_R_MEM)
+endif()
+# --DLT_TEST_ERASE_R_CONFIG=1
+if(LT_TEST_ERASE_R_CONFIG)
+    target_compile_definitions(run PRIVATE LT_TEST_ERASE_R_CONFIG)
 endif()
 
 ###########################################################################

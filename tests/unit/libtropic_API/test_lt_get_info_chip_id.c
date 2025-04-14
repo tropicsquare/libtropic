@@ -54,8 +54,8 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERROR when invalid handle is passed
 void test__invalid_handle()
 {
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(NULL, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE));
+    struct lt_chip_id_t chip_id;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(NULL, &chip_id));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -65,19 +65,9 @@ void test__invalid_chip_id()
 {
     lt_handle_t h = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(&h, NULL, LT_L2_GET_INFO_CHIP_ID_SIZE));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(&h, NULL));
 }
 
-//---------------------------------------------------------------------------------------------------------//
-
-// Test if function returns LT_PARAM_ERROR when invalid max_len is passed
-void test__invalid_max_len()
-{
-    lt_handle_t h = {0};
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
-
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_chip_id(&h, chip_id, LT_L2_GET_INFO_CHIP_ID_SIZE - 1));
-}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
@@ -87,13 +77,13 @@ void test__invalid_max_len()
 void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
+    struct lt_chip_id_t chip_id;
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
 
     for(unsigned int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_get_info_chip_id(&h, chip_id, sizeof(chip_id)));
+        TEST_ASSERT_EQUAL(rets[i], lt_get_info_chip_id(&h, &chip_id));
     }
 }
 
@@ -112,11 +102,11 @@ lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int __attribute__((unused)) cm
 void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE];
+    struct lt_chip_id_t chip_id;
 
     inject_rsp_len = 128+1;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_chip_id(&h, chip_id, sizeof(chip_id)));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_chip_id(&h, &chip_id));
 
 }
 
@@ -126,9 +116,9 @@ void test__resp_size_mismatch()
 void test__correct()
 {
     lt_handle_t h = {0};
-    uint8_t chip_id[LT_L2_GET_INFO_CHIP_ID_SIZE+1];
+    struct lt_chip_id_t chip_id;
 
     inject_rsp_len = 128;
     lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_chip_id(&h, chip_id, sizeof(chip_id)));
+    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_chip_id(&h, &chip_id));
 }
