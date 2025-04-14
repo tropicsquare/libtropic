@@ -97,8 +97,8 @@ struct lt_ser_num_t {
     uint8_t wafer_id;         /**< 8 bits for wafer ID */
     uint16_t x_coord;         /**< 16 bits for x-coordinate */
     uint16_t y_coord;         /**< 16 bits for y-coordinate */
-    uint8_t padding[4];
-};
+ } __attribute__((__packed__));
+
 /**
  * @brief Data in this struct comes from BP yml - batch package. CHIP_INFO is read into this struct.
  */
@@ -107,10 +107,10 @@ struct lt_chip_id_t {
      * @brief CHIP_ID structure versioning (32 bits), defined by Tropic Square in BP.
      * @details Example encoding: v1.2.3.4 = 0x01,0x02,0x03,0x04
      */
-    uint32_t chip_id_ver;
+    uint8_t chip_id_ver[4];
 
     /**
-     * @brief Factory level test info (128 bits), structure retrieved from silicon provider. 
+     * @brief Factory level test info (128 bits), structure retrieved from silicon provider.
      * @details The exact copy of FL_PROD_DATA structure. If missing, it is filled with 0x00.
      */
     uint8_t fl_chip_info[16];
@@ -135,7 +135,7 @@ struct lt_chip_id_t {
     /**
      * @brief Reserved field 1 (16 bits).
      */
-    uint16_t reserved1;
+    uint8_t rfu_1[2];
 
     /**
      * @brief Provisioning info (128 bits), filled by the provisioning station.
@@ -144,12 +144,12 @@ struct lt_chip_id_t {
      * - 12 bits: Fabrication ID.
      * - 12 bits: Part Number ID.
      */
-    uint32_t prov_ver_fab_id_pn;
+    uint8_t prov_ver_fab_id_pn[4];
 
     /**
      * @brief Provisioning date (16 bits).
      */
-    uint16_t provisioning_date;
+    uint8_t provisioning_date[2];
 
     /**
      * @brief HSM version (32 bits).
@@ -160,12 +160,12 @@ struct lt_chip_id_t {
     /**
      * @brief Program version (32 bits).
      */
-    uint32_t prog_ver;
+    uint8_t prog_ver[4];
 
     /**
      * @brief Reserved field 2 (16 bits).
      */
-    uint16_t reserved2;
+    uint8_t rfu_2[2];
 
     /**
      * @brief Serial Number (128 bits).
@@ -181,10 +181,10 @@ struct lt_chip_id_t {
     /**
      * @brief Provisioning Data version (160 bits), defined by Tropic Square for each batch in BP.
      */
-    uint16_t prov_templ_ver; /**< Provisioning template version. */
-    uint32_t prov_templ_tag; /**< Provisioning template tag. */
-    uint16_t prov_spec_ver; /**< Provisioning specification version. */
-    uint32_t prov_spec_tag; /**< Provisioning specification tag. */
+    uint8_t prov_templ_ver[2]; /**< Provisioning template version. */
+    uint8_t prov_templ_tag[4]; /**< Provisioning template tag. */
+    uint8_t prov_spec_ver[2]; /**< Provisioning specification version. */
+    uint8_t prov_spec_tag[4]; /**< Provisioning specification tag. */
 
     /**
      * @brief Batch ID (40 bits).
@@ -194,13 +194,13 @@ struct lt_chip_id_t {
     /**
      * @brief Reserved field 3 (24 bits).
      */
-    uint8_t reserved3[3];
+    uint8_t rfu_3[3];
 
     /**
      * @brief Padding (192 bits).
      */
-    uint8_t padding[24];
-};
+    uint8_t rfu_4[24];
+} __attribute__((__packed__));
 /**
  * @brief Read TROPIC01's CHIP ID
  *
