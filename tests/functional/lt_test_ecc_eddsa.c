@@ -34,6 +34,12 @@ int lt_test_ecc_eddsa(void)
     LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_0);
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
 
+    // Erase all keys, used in case previous run failed in the middle
+    //for(uint16_t i=0; i<32; i++) {
+    //    LT_LOG("lt_ecc_key_erase() slot        n.%d  ", i);
+    //    LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_key_erase(&h, i)));
+    //}
+
     LT_LOG("---------------- Loop through all key slots, ed25519, stored key ----------------");
 
     for(uint16_t i=0; i<32; i++) {

@@ -19,7 +19,7 @@ static char* print_bytes(uint8_t *data, uint16_t len) {
         memcpy(bytes_buffer, "error_str_decoding", 20);
         return bytes_buffer;
     }
-
+    bytes_buffer[0] = '\0';
     for (uint16_t i = 0; i < len; i++) {
         char byte_str[4];
         snprintf(byte_str, sizeof(byte_str), "%02X", data[i]);
@@ -40,6 +40,7 @@ static char* interpret_chip_id_ver(uint8_t *ver) {
         memcpy(buffer_chip_id_ver, "error_ver_str_decoding", 24);
         return buffer_chip_id_ver;
     }
+    buffer_chip_id_ver[0] = '\0';
     snprintf(buffer_chip_id_ver, sizeof(buffer_chip_id_ver), "(v%d.%d.%d.%d)", ver[0], ver[1], ver[2], ver[3]);
 
     return buffer_chip_id_ver;
