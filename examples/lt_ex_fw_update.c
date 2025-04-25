@@ -12,132 +12,119 @@
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 // Include here a particular firmware (in a form of header file)
-#include "fw_CPU_0_1_2.h"
+#include "fw_v0.2.0-19-gb222ec5_signed.h"
 
 /**
  * @name Firmware update
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  * @par
  */
+#define BUFF_SIZE 196
 
-#if defined(_MSC_VER) || (defined(__INTEL_COMPILER) && defined(_WIN32))
-    #if defined(_M_X64)
-        #define BITNESS 64
-        #define LONG_SIZE 4
-    #else
-        #define BITNESS 32
-        #define LONG_SIZE 4
-    #endif
-#elif defined(__clang__) || defined(__INTEL_COMPILER) || defined(__GNUC__)
-    #if defined(__x86_64)
-        #define BITNESS 64
-    #else
-       #define BITNESS 32
-    #endif
-    #if __LONG_MAX__ == 2147483647L
-        #define LONG_SIZE 4
-    #else
-        #define LONG_SIZE 8
-    #endif
-#endif
+// Buffer for storing string with bytes
+static char bytes_buffer[BUFF_SIZE];
+static char* print_bytes(uint8_t *data, uint16_t len) {
+    if((len > BUFF_SIZE) || (!data)) {
+        memcpy(bytes_buffer, "error_str_decoding", 20);
+        return bytes_buffer;
+    }
+    bytes_buffer[0] = '\0';
+    for (uint16_t i = 0; i < len; i++) {
+        char byte_str[4];
+        snprintf(byte_str, sizeof(byte_str), "%02X", data[i]);
+        // Check if appending the byte would exceed the buffer size
+        if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
+            break; // Stop if the buffer is full
+        }
+        strncat(bytes_buffer, byte_str, sizeof(bytes_buffer) - strlen(bytes_buffer) - 1);
+    }
+
+    return bytes_buffer;
+}
+
 
 
 void print_headers(lt_handle_t *h)
 {
-        LOG_OUT("  Chip contains following headers:\r\n");
+        LT_LOG("  Chip contains following headers:");
         uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_FW1        %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
-                                                                                                                     header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LOG_OUT("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[10], header[11], header[12], header[13],
-                                                                                                                 header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+        LT_LOG("                                              %s", print_bytes(header+10, 10));
 
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_FW2        %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
-                                                                                                                 header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LOG_OUT("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[10], header[11], header[12], header[13],
-                                                                                                                 header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+        LT_LOG("                                              %s", print_bytes(header+10, 10));
 
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
-                                                                                                                 header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LOG_OUT("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[10], header[11], header[12], header[13],
-                                                                                                                 header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
-
-        LOG_OUT("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s\r\n", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LOG_OUT("    Header:                                   %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[0], header[1], header[2], header[3],
-                                                                                                                 header[4], header[5], header[6], header[7],
-                                                                                                                 header[8], header[9]);
-        LOG_OUT("                                              %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", header[10], header[11], header[12], header[13],
-                                                                                                                  header[14], header[15], header[16], header[17],
-                                                                                                                 header[18], header[19]);
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+        LT_LOG("                                              %s", print_bytes(header+10, 10));
+       
+        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+        LT_LOG("                                              %s", print_bytes(header+10, 10));
 }
 
 void lt_ex_fw_update(void)
 {
-    // Reused variable
-    uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
-
-    LOG_OUT("\r\n\n\n---------------------------------------------------------------------------\r\n");
-    LOG_OUT("------------------------- FW UPDATE ---------------------------------------\r\n");
-    LOG_OUT("---------------------------------------------------------------------------\r\n");
+    LT_LOG("\t=======================================================================");
+    LT_LOG("\t=====  TROPIC01 FW update                                           ===");
+    LT_LOG("\t=======================================================================");
 
     lt_handle_t h = {0};
 
     lt_init(&h);
 
-    LOG_OUT("lt_update_mode()                              %s\r\n", lt_ret_verbose(lt_update_mode(&h)));
+    // Reused variable
+    uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+
+    // First check in which mode chip operates, bootloader or application
+    LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
     if(h.mode == LT_MODE_APP) {
-        LOG_OUT("  Chip is executing CPU firmware\r\n");
+        LT_LOG("  Chip is executing application firmware");
         // App runs so we can see what firmwares are running
-        LOG_OUT("lt_get_info_riscv_fw_ver()                    %s\r\n", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
-        LOG_OUT("  riscv_fw_ver: %d.%d.%d    (+ unused %d)\r\n", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
-        LOG_OUT("lt_get_info_spect_fw_ver()                    %s\r\n", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
-        LOG_OUT("  spect_fw_ver: %d.%d.%d    (+ unused %d)\r\n", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
-        // Now reboot into STARTUP
-        LOG_OUT("lt_reboot() reboot into STARTUP               %s\r\n", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
+        LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+        LT_LOG("  riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+        LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
+        LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+        // Now reboot into STARTUP (bootloader)
+        LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
     }
 
     // Check again mode
-    LOG_OUT("---------------------------------------------------------------------------\r\n");
-    LOG_OUT("\r\nlt_update_mode()                              %s\r\n", lt_ret_verbose(lt_update_mode(&h)));
+    LT_LOG_LINE();
+    LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
     if(h.mode == LT_MODE_STARTUP) {
-        LOG_OUT("  Chip is executing bootloader\r\n");
+        LT_LOG("  Chip is executing bootloader");
         // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:
-        LOG_OUT("\r\n  lt_get_info_riscv_fw_ver()                  %s\r\n", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
-        LOG_OUT("  Bootloader version: %d.%d.%d    (+ unused %d)\r\n", fw_ver[3] & 0x7f,fw_ver[2],fw_ver[1],fw_ver[0]);
+        LT_LOG("  lt_get_info_riscv_fw_ver()                  %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+        LT_LOG("  Bootloader version: %d.%d.%d    (+ unused %d)", fw_ver[3] & 0x7f,fw_ver[2],fw_ver[1],fw_ver[0]);
 
         print_headers(&h);
 
-        if(0) {
+        if(1) {
             // Erase firmware bank
-            LOG_OUT("lt_mutable_fw_erase()                    %s\r\n", lt_ret_verbose(lt_mutable_fw_erase(&h, FW_BANK_FW1)));
+            LT_LOG("lt_mutable_fw_erase()                    %s", lt_ret_verbose(lt_mutable_fw_erase(&h, FW_BANK_FW1)));
             // Update firmware bank
-            LOG_OUT("lt_mutable_fw_update()                   %s\r\n", lt_ret_verbose(lt_mutable_fw_update(&h, fw_CPU_0_1_2, fw_CPU_0_1_2_len, FW_BANK_FW1)));
+            LT_LOG("lt_mutable_fw_update()                   %s", lt_ret_verbose(lt_mutable_fw_update(&h, fw_CPU_0_2_0, fw_CPU_0_2_0_len, FW_BANK_FW2)));
 
             print_headers(&h);
 
         } else {
-            LOG_OUT("Update disabled\r\n");
+            LT_LOG("Update disabled");
         }
 
     } else {
-        LOG_OUT("     ERROR device couldn't get into STARTUP mode\r\n");
+        LT_LOG("     ERROR device couldn't get into STARTUP mode");
         return;
     }
-    LOG_OUT("---------------------------------------------------------------------------\r\n");
-    LOG_OUT("\r\nlt_reboot() reboot                            %s\r\n", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT)));
-    LOG_OUT("lt_get_info_riscv_fw_ver()                    %s\r\n", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
-    LOG_OUT("riscv_fw_ver: %d.%d.%d    (+ unused %d)\r\n", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
-    LOG_OUT("lt_get_info_spect_fw_ver()                    %s\r\n", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
-    LOG_OUT("spect_fw_ver: %d.%d.%d    (+ unused %d)\r\n", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+    LT_LOG_LINE();
+    LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT)));
+    LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+    LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+    LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
+    LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
 
     return;
 }
