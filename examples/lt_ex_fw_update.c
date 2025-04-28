@@ -7,12 +7,14 @@
  */
 
 #include "string.h"
+#include "inttypes.h"
 
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 // Include here a particular firmware (in a form of header file)
-#include "fw_v0.2.0-19-gb222ec5_signed.h"
+#include "fw_CPU_0_1_2.h"
+#include "fw_CPU_0_2_0.h"
 
 /**
  * @name Firmware update
@@ -42,9 +44,7 @@ static char* print_bytes(uint8_t *data, uint16_t len) {
     return bytes_buffer;
 }
 
-
-
-void print_headers(lt_handle_t *h)
+static void print_headers(lt_handle_t *h)
 {
         LT_LOG("  Chip contains following headers:");
         uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
@@ -59,7 +59,7 @@ void print_headers(lt_handle_t *h)
         LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
         LT_LOG("    Header:                                   %s", print_bytes(header, 10));
         LT_LOG("                                              %s", print_bytes(header+10, 10));
-       
+
         LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
         LT_LOG("    Header:                                   %s", print_bytes(header, 10));
         LT_LOG("                                              %s", print_bytes(header+10, 10));
@@ -72,6 +72,7 @@ void lt_ex_fw_update(void)
     LT_LOG("\t=======================================================================");
 
     lt_handle_t h = {0};
+    lt_ret_t ret = LT_FAIL;
 
     lt_init(&h);
 
@@ -83,10 +84,23 @@ void lt_ex_fw_update(void)
     if(h.mode == LT_MODE_APP) {
         LT_LOG("  Chip is executing application firmware");
         // App runs so we can see what firmwares are running
-        LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
-        LT_LOG("  riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
-        LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
-        LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+        // RISCV app firmware version
+        ret = lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+        if(ret != LT_OK) {
+            LT_LOG("     lt_get_info_riscv_fw_ver()               %s", lt_ret_verbose(ret));
+        } else {
+            LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(ret));
+            LT_LOG("  riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+        }
+
+        // SPECT firmware version
+        ret = lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        if(ret != LT_OK) {
+            LT_LOG("     lt_get_info_spect_fw_ver()               %s", lt_ret_verbose(ret));
+        } else {
+            LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(ret));
+            LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+        }
         // Now reboot into STARTUP (bootloader)
         LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
     }
@@ -105,7 +119,7 @@ void lt_ex_fw_update(void)
 
         if(1) {
             // Erase firmware bank
-            LT_LOG("lt_mutable_fw_erase()                    %s", lt_ret_verbose(lt_mutable_fw_erase(&h, FW_BANK_FW1)));
+            LT_LOG("lt_mutable_fw_erase()                    %s", lt_ret_verbose(lt_mutable_fw_erase(&h, FW_BANK_FW2)));
             // Update firmware bank
             LT_LOG("lt_mutable_fw_update()                   %s", lt_ret_verbose(lt_mutable_fw_update(&h, fw_CPU_0_2_0, fw_CPU_0_2_0_len, FW_BANK_FW2)));
 
