@@ -15,6 +15,7 @@
 // Include here a particular firmware (in a form of header file)
 #include "fw_CPU_0_1_2.h"
 #include "fw_CPU_0_2_0.h"
+#include "fw_CPU_0_2_0_plus.h"
 
 /**
  * @name Firmware update
@@ -121,7 +122,7 @@ void lt_ex_fw_update(void)
             // Erase firmware bank
             LT_LOG("lt_mutable_fw_erase()                    %s", lt_ret_verbose(lt_mutable_fw_erase(&h, FW_BANK_FW2)));
             // Update firmware bank
-            LT_LOG("lt_mutable_fw_update()                   %s", lt_ret_verbose(lt_mutable_fw_update(&h, fw_CPU_0_2_0, fw_CPU_0_2_0_len, FW_BANK_FW2)));
+            LT_LOG("lt_mutable_fw_update()                   %s", lt_ret_verbose(lt_mutable_fw_update(&h, fw_CPU_0_2_0_plus, fw_CPU_0_2_0_plus_len, FW_BANK_FW1)));
 
             print_headers(&h);
 

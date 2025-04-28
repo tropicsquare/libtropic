@@ -154,10 +154,12 @@ if(LT_ENABLE_FW_UPDATE)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
         ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_1_2/fw_CPU_0_1_2.h
         ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_2_0/fw_CPU_0_2_0.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_2_0_plus/fw_CPU_0_2_0_plus.h
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_1_2/
         ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_2_0/
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_2_0_plus/
     )
 endif()
 
