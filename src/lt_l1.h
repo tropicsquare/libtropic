@@ -38,9 +38,6 @@
 /** Maximal timeout when waiting for activity on SPI bus */
 #define LT_L1_TIMEOUT_MS_MAX 150
 
-/** Maximal delay in ms which can be used in delay funtion */
-#define LT_L1_DELAY_MS_MAX 500
-
 /** Get response request's ID */
 #define GET_RESPONSE_REQ_ID 0xAA
 

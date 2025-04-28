@@ -72,3 +72,16 @@ lt_ret_t lt_l1_delay(lt_handle_t *h, uint32_t ms)
 #endif
     return lt_port_delay(h, ms);
 }
+
+#if LT_USE_INT_PIN
+
+lt_ret_t lt_l1_delay_on_int(lt_handle_t *h, uint32_t ms)
+{
+#ifdef LIBT_DEBUG
+    if(!h) {
+        return LT_PARAM_ERR;
+    }
+#endif
+    return lt_port_delay_on_int(h, ms);
+}
+#endif

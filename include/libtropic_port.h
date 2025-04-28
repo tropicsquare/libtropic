@@ -71,6 +71,16 @@ lt_ret_t lt_port_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_len, u
  */
 lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms);
 
+#if LT_USE_INT_PIN
+/**
+ * @brief Platform definde function used to specify reading of int pin, used as a signal that chip has a response
+ *
+ * @param h           Chip's handle
+ * @param ms          Max time to wait in miliseconds
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_port_delay_on_int(lt_handle_t *h, uint32_t ms);
+#endif
 /**
  * @brief Fill buffer with random bytes, platform defined function.
  *
