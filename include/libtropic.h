@@ -175,7 +175,7 @@ struct lt_chip_id_t {
     /**
      * @brief Part Number (128 bits), defined by Tropic Square in BP.
      */
-    uint8_t part_num_len; /**< Length of the part number. */
+    uint8_t part_num_data_len; /**< Length of the part number. */
     uint8_t part_num_data[15]; /**< Part number data. */
 
     /**
