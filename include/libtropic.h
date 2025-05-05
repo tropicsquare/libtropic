@@ -804,6 +804,15 @@ struct lt_config_t {
 };
 
 #ifdef LT_HELPERS
+
+/**
+ * @brief Get the string representing the error code
+ *
+ * @param ret           Return value
+ * @return const char * String representation of the return value
+ */
+const char *get_ret_desc(lt_ret_t ret);
+
 /**
  * @brief Get the conf desc object from config description table
  *

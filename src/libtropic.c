@@ -1653,6 +1653,54 @@ const char *lt_ret_verbose(lt_ret_t ret) {
 
 //--------------------------------------------------------------------------------------------------------//
 #ifdef LT_HELPERS
+
+static const char *lt_ret_strs[] = {
+    "LT_OK",
+    "LT_FAIL",
+    "LT_HOST_NO_SESSION",
+    "LT_PARAM_ERR",
+    "LT_CRYPTO_ERR",
+    "LT_L1_SPI_ERROR",
+    "LT_L1_DATA_LEN_ERROR",
+    "LT_L1_CHIP_STARTUP_MODE",
+    "LT_L1_CHIP_ALARM_MODE",
+    "LT_L1_CHIP_BUSY",
+    "LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL",
+    "LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED",
+    "LT_L3_ECC_INVALID_KEY",
+    "LT_L3_MCOUNTER_UPDATE_UPDATE_ERR",
+    "LT_L3_COUNTER_INVALID",
+    "LT_L3_PAIRING_KEY_EMPTY",
+    "LT_L3_PAIRING_KEY_INVALID",
+    "LT_L3_OK",
+    "LT_L3_FAIL",
+    "LT_L3_UNAUTHORIZED",
+    "LT_L3_INVALID_CMD",
+    "LT_L3_DATA_LEN_ERROR",
+    "LT_L2_IN_CRC_ERR",
+    "LT_L2_REQ_CONT",
+    "LT_L2_RES_CONT",
+    "LT_L2_HSK_ERR",
+    "LT_L2_NO_SESSION",
+    "LT_L2_TAG_ERR",
+    "LT_L2_CRC_ERR",
+    "LT_L2_GEN_ERR",
+    "LT_L2_NO_RESP",
+    "LT_L2_UNKNOWN_REQ",
+    "LT_L2_STATUS_NOT_RECOGNIZED",
+    "LT_L2_DATA_LEN_ERROR",
+
+    "LT_L2_LAST_RET"
+};
+
+const char *get_ret_desc(lt_ret_t ret)
+{
+    if (ret < LT_L2_LAST_RET)
+        return lt_ret_strs[ret];
+
+    return NULL;
+}
+
 /** @brief This helper structure together with two get* interfaces is meant to be used to simplify looping
  *         through all config addresses and printing them out into log */
 struct lt_config_obj_desc_t config_description_table[27] = {
