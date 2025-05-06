@@ -76,6 +76,27 @@ int lt_test_write_pairing_keys(void);
 int lt_test_chip_id(void);
 
 /**
+ * @brief Test function which reads and prints out R-Config
+ *
+ * @return int
+ */
+int lt_test_dump_r_config(void);
+
+/**
+ * @brief Test function which reads and prints out I-Config
+ *
+ * @return int
+ */
+int lt_test_dump_i_config(void);
+
+/**
+ * @brief Test function which reads and prints whole certificate store
+ *
+ * @return int
+ */
+int lt_test_dump_cert_store(void);
+
+/**
  * @brief Test function which does Ping command with all pairing keys
  *
  * @return int
