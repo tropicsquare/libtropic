@@ -26,6 +26,11 @@
 #include "libtropic.h"
 #include "libtropic_examples.h"
 
+// Needed to access to lt_port_random_bytes()
+#include "libtropic_port.h"
+// Needed to access HMAC_SHA256
+#include "lt_hmac_sha256.h"
+
 /**
  * @brief This function is used for debug print of bytes as hexadecimal string
  *
@@ -137,7 +142,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memcpy(kdf_input_buff, PIN, PIN_size);
     memcpy(kdf_input_buff+PIN_size, add, add_size);
 
-    lt_ret_t ret = lt_random_bytes((uint32_t*)s, 8);
+    lt_ret_t ret = lt_port_random_bytes((uint32_t*)s, 8);
     if(ret != LT_OK) {
         goto exit;
     }
