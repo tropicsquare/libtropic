@@ -486,10 +486,13 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
 lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief Maximal size of one data slot */
+/** @brief Maximal size of one data slot in bytes */
 #define R_MEM_DATA_SIZE_MAX                    (444)
-/** @brief Index of last data slot */
-#define R_MEM_DATA_SLOT_MAX                    (511)
+/** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511, but the last one is used for M&D data. Example code
+ *         can be found in examples/lt_ex_macandd.c, for more info about Mac And Destroy functionality read app note */
+#define R_MEM_DATA_SLOT_MAX                    (510)
+/** @brief Memory slot used for storing of M&D related data in Mac And Destroy example code. For more info see examples/lt_ex_macandd.c */
+#define R_MEM_DATA_SLOT_MACANDD                (511)
 /**
  * @brief Write bytes into a given slot of R MEMORY
  *
@@ -683,6 +686,8 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounte
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned MAC-and-Destroy data */
 #define MAC_AND_DESTROY_DATA_SIZE 32u
+/** Maximal number of Mac And Destroy tries possible with TROPIC01 */
+#define MACANDD_ROUNDS_MAX 128
 
 /** @brief Mac-and-Destroy slot indexes */
 typedef enum {
@@ -722,11 +727,13 @@ typedef enum {
 
 /**
  * @brief Execute the MAC-and-Destroy sequence.
+ * @details This command is just a part of MAc And Destroy sequence, which takes place between the host and TROPIC01.
+ *          Example code can be found in examples/lt_ex_macandd.c, for more info about Mac And Destroy functionality read app note.
  *
  * @param h           Device's handle
  * @param slot        Mac-and-Destroy slot index, valid values are 0-127
- * @param data_out    Data to be sent into chip
- * @param data_in     Mac and destroy returned data
+ * @param data_out    Data to be sent from host to TROPIC01
+ * @param data_in     Data returned from TROPIC01 to host
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);

@@ -974,7 +974,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
      if(   !h
         || !data
         ||  size > R_MEM_DATA_SIZE_MAX
-        || (udata_slot > R_MEM_DATA_SLOT_MAX)
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
     ) {
         return LT_PARAM_ERR;
     }
@@ -1010,8 +1010,8 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 {
     if(    !h
         || !data
-        ||  size > 444
-        || (udata_slot > 511)
+        ||  size > R_MEM_DATA_SIZE_MAX
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
     ) {
         return LT_PARAM_ERR;
     }
@@ -1046,7 +1046,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
 {
     if(    !h
-        || (udata_slot > 511)
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
     ) {
         return LT_PARAM_ERR;
     }

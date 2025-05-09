@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "time.h"
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
@@ -258,27 +259,6 @@ static int lt_communicate (int *tx_payload_length_ptr, int *rx_payload_length_pt
     return 0;
 }
 
-//static int lt_tropic01_power_on(void)
-//{
-//    LOG_OUT("-- Powering on the TROPIC01 chip.\n");
-//    tx_buffer.TAG = TAG_E_POWER_ON;
-//    return lt_communicate(NULL, NULL);
-//}
-//
-//static int lt_tropic01_power_off(void)
-//{
-//    LOG_OUT("-- Powering off the TROPIC01 chip.\n");
-//    tx_buffer.TAG = TAG_E_POWER_OFF;
-//    return lt_communicate(NULL, NULL);
-//}
-//static int lt_reset_target(void)
-//{
-//    LOG_OUT("-- Resetting TROPIC01 target.\n");
-//    tx_buffer.TAG = TAG_E_RESET_TARGET;
-//
-//    return lt_communicate(NULL, NULL);
-//}
-
 static int server_connect(void)
 {
     bzero(tx_buffer.BUFFER, MAX_BUFFER_LEN);
@@ -307,6 +287,8 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     if(ret != 0) {
         return LT_FAIL;
     }
+
+    srand(time(0));
 
     //lt_reset_target();
 
@@ -389,7 +371,7 @@ lt_ret_t lt_port_delay (lt_handle_t *h, uint32_t wait_time_usecs)
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len) {
 
     for(int i=0; i<len; i++) {
-        buff[i] = 0xabcdabcd;
+        buff[i] = (uint32_t)rand();
     }
 
     return LT_OK;
