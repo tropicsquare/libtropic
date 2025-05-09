@@ -62,7 +62,6 @@ if(LT_EX_HELLO_WORLD)
 endif()
 # -DLT_EX_MACANDD=1
 if(LT_EX_MACANDD)
-    set(LT_ADD_EXAMPLES ON)
     target_compile_definitions(run PRIVATE LT_EX_MACANDD)
 endif()
 

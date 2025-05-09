@@ -80,15 +80,6 @@ lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms);
  */
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len);
 
-// Deletes flash area for new initialization of nvm variable
-uint32_t nvm_data_init(struct lt_macandd_NVM *nvm);
-
-// Stores modified nvm variable into flash area
-uint32_t nvm_data_store(struct lt_macandd_NVM *nvm);
-
-// Reads flash area and copies its content data into nvm variable so macandd functions can use it
-uint32_t nvm_data_get(struct lt_macandd_NVM *nvm);
-
 /** @} */ // end of group_port_functions
 
 #endif

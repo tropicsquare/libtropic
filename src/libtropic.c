@@ -974,7 +974,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
      if(   !h
         || !data
         ||  size > R_MEM_DATA_SIZE_MAX
-        || (udata_slot > R_MEM_DATA_SLOT_MAX)
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
     ) {
         return LT_PARAM_ERR;
     }
@@ -1010,8 +1010,8 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 {
     if(    !h
         || !data
-        ||  size > 444
-        || (udata_slot > 511)
+        ||  size > R_MEM_DATA_SIZE_MAX
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
     ) {
         return LT_PARAM_ERR;
     }
@@ -1046,7 +1046,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
 {
     if(    !h
-        || (udata_slot > 511)
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
     ) {
         return LT_PARAM_ERR;
     }
@@ -1530,147 +1530,6 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const u
     }
 
     memcpy(data_in, p_l3_res->data_out, MAC_AND_DESTROY_DATA_SIZE);
-
-    return LT_OK;
-}
-
-lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *pin, const uint8_t pin_size, uint8_t *secret) {
-    uint8_t s[32] = {0};
-    uint8_t u[32] = {0};
-    uint8_t v[32] = {0};
-
-    // 1. Generate a random 32 byte secret s.
-    lt_ret_t ret = lt_random_bytes((uint32_t*)s, 8);
-    if(ret != LT_OK) {
-        return ret;
-    }
-
-    struct lt_macandd_NVM nvm = {0};
-    nvm_data_init(&nvm);
-
-    // Let i = n and store it to nvm - storage will happen in a few more lines, together with tag
-    nvm.i = MACANDD_ROUNDS;
-    // Compute tag t = KDF(s, "0") and store to NVM
-    KDF(s, 32, "0", 1, nvm.t);
-    if(nvm_data_store(&nvm) != 0) {
-        return LT_FAIL;
-    }
-
-    // Compute u = KDF(s, "1")
-    KDF(s, 32, "1", 1, u);
-
-    // Compute v = KDF(0, PIN||A) where 0 is all zeroes key
-    KDF("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 32, pin, pin_size, v);
-
-    // Initialize TROPIC01's M&D slots
-    for(int i=0; i < nvm.i; i++) {
-        uint8_t k_i[32] = {0};
-        uint8_t w[32] = {0};
-        uint8_t garbage[32] = {0};
-
-        ret = lt_mac_and_destroy(h, i, u, garbage);
-        if(ret != LT_OK) {
-            return ret;
-        }
-
-        ret = lt_mac_and_destroy(h, i, v, w);
-        if(ret != LT_OK) {
-            return ret;
-        }
-
-        ret = lt_mac_and_destroy(h, i, u, garbage);
-        if(ret != LT_OK) {
-            return ret;
-        }
-
-        KDF(w, 32, pin, pin_size, k_i);
-
-        // Encrypt s using k_i as a key and ..
-        // TODO figure out if XOR can be used here?
-        for (int j=0; j<32; j++) {
-            *(nvm.ci+(i*32 + j)) = k_i[j] ^ s[j];
-        }
-
-        // store resulting ciphertext c_i in NVM
-        if(nvm_data_store(&nvm) != 0) {
-            return LT_FAIL;
-        }
-
-        // purge k_i
-        memset(k_i, 0x00, 32);
-    }
-
-    KDF(s, 32, "2", 1, secret);
-
-    return LT_OK;
-}
-
-lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *pin, const uint8_t pin_size, uint8_t *secret) {
-
-    struct lt_macandd_NVM nvm = {0};
-    nvm_data_get(&nvm);
-
-    // Load i from nvm, if i == 0: FAIL (no attempts remaining)
-    if (nvm.i == 0) {
-        return LT_FAIL;
-    }
-
-    // Let i = i - 1 and store it back to NVM
-    nvm.i--;
-    nvm_data_store(&nvm);
-
-    // Compute v’ = KDF(0, PIN’||A).
-    uint8_t v_[32] = {0};
-    KDF("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 32, pin, pin_size, v_);
-
-    // Execute w’ = MACANDD(i, v’)
-    uint8_t w_[32] = {0};
-    lt_ret_t ret = lt_mac_and_destroy(h, nvm.i, v_, w_);
-    if(ret != LT_OK) {
-        return ret;
-    }
-
-    // Compute k’_i = KDF(w’, PIN’||A)
-    uint8_t k_i[32] = {0};
-    KDF(w_, 32, pin, pin_size, k_i);
-
-    // Read the ciphertext c_i and tag t from NVM, decrypt c_i with k’_i as the key and obtain s_
-    uint8_t s_[32] = {0};
-    // TODO figure out if XOR can be used here?
-    for (int j=0; j<32; j++) {
-        s_[j] = *(nvm.ci+(nvm.i*32 + j)) ^ k_i[j];
-    }
-
-    // Compute tag t = KDF(s, "0x00")
-    uint8_t t_[32] = {0};
-    KDF(s_, 32, "0", 1, t_);
-
-    // If t’ != t: FAIL
-    if(memcmp(nvm.t, t_, 32) != 0) {
-        return LT_FAIL;
-    }
-
-    // Pin is correct, now initialize macandd slots again:
-    // Compute u = KDF(s’, "0x01")
-    uint8_t u[32] = {0};
-    KDF(s_, 32, "1", 1, u);
-
-    for(int x=nvm.i; x < MACANDD_ROUNDS-1; x++) {
-        //uint8_t w[32] = {0};
-        uint8_t garbage[32] = {0};
-
-        ret = lt_mac_and_destroy(h, x, u, garbage);
-        if(ret != LT_OK) {
-            return ret;
-        }
-    }
-
-    // Reset counter
-    nvm.i = MACANDD_ROUNDS;
-
-    nvm_data_store(&nvm);
-
-    KDF(s_, 32, "2", 2, secret);
 
     return LT_OK;
 }

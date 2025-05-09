@@ -85,23 +85,6 @@ typedef struct lt_handle_t {
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
 } lt_handle_t;
 
-// This affects size of nvm struct, also it represents number of possible wrong pin guesses
-#ifndef MACANDD_ROUNDS
-#define MACANDD_ROUNDS 3
-#endif
-
-/* Structure of data used */
-struct lt_macandd_NVM {
-    // TODO replace with crc
-    uint8_t data_valid; // 1 valid otherwise not valid
-    uint8_t padding;
-
-    int8_t i;
-    uint8_t ci[MACANDD_ROUNDS*32];
-    uint8_t ci_num;
-    uint8_t t[32];
-}__attribute__((__packed__));
-
 /** Enum return type */
 typedef enum {
     /** Operation was successful */
