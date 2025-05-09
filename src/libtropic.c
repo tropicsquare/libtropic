@@ -1612,7 +1612,7 @@ const char *lt_ret_verbose(lt_ret_t ret)
     if (ret < LT_L2_LAST_RET)
         return lt_ret_strs[ret];
 
-    return "FATAL Error: Unknown Error code";
+    return "FATAL ERROR, unknown return value";
 }
 
 //--------------------------------------------------------------------------------------------------------//
