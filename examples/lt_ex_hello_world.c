@@ -7,6 +7,7 @@
  */
 
 #include "string.h"
+#include "inttypes.h"
 
 #include "libtropic.h"
 #include "libtropic_common.h"

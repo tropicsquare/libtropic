@@ -97,7 +97,21 @@ lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeo
         // try it again (until max_tries runs out)
         } else {
             lt_l1_spi_csn_high(h);
-            lt_l1_delay(h, LT_L1_READ_RETRY_DELAY);
+            if (h->mode == 1) {
+                // Chip is in bootloader mode and INT pin is not implemented in bootloader mode
+                // So we wait a bit before we poll again for CHIP_STATUS
+                //printf("x\n");
+                lt_l1_delay(h, LT_L1_READ_RETRY_DELAY);
+            } else {
+                // We are in application. IF INT pin is enabled, wait for it to go low
+#if LT_USE_INT_PIN
+                if(lt_l1_delay_on_int(h, LT_L1_TIMEOUT_MS_MAX)  != LT_OK) {
+                    return LT_L1_INT_TIMEOUT;
+                }
+#else
+                lt_l1_delay(h, LT_L1_READ_RETRY_DELAY);
+#endif
+            }
         }
     }
 

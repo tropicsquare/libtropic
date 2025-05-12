@@ -36,13 +36,13 @@ For more info have a look into `main()` function of one of supported platforms.
 If test is being executed on libtropic testing rig, use also following switch to route USART data:
 
 ```
--DLT_TESTING_RIG=1
+-DUART_TESTING_RIG=1
 ```
 
 So, for example when you want to run `Hello world` example and execute it on testing rig, compile like this:
 ```
 $ cd libtropic-stm32/NUCLEO_F439ZI/
-$ mkdir build &&  cd build && cmake -DLT_TESTING_RIG=1 -DLT_EX_HELLO_WORLD=1 .. && make && cd ../
+$ mkdir build &&  cd build && cmake -DUART_TESTING_RIG=1 -DLT_EX_HELLO_WORLD=1 .. && make && cd ../
 ```
 
 That should result in flashable elf file in build/ folder, containing `hello world example and senoutput no

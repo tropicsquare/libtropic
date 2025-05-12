@@ -73,6 +73,17 @@ lt_ret_t lt_l1_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_len, uin
  */
 lt_ret_t lt_l1_delay(lt_handle_t *h, uint32_t ms);
 
+#if LT_USE_INT_PIN
+/**
+ * @brief Specify what platform should do when waiting for signal from INT pin
+ *
+ * @param h           Chip's handle
+ * @param ms          Maximal time to wait in miliseconds
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_l1_delay_on_int(lt_handle_t *h, uint32_t ms);
+#endif
+
 /** @} */ // end of group_l1_functions
 
 #endif

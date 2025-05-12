@@ -307,6 +307,15 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
     HAL_GPIO_Init(LT_SPI_CS_BANK, &GPIO_InitStruct);
 
+#if LT_USE_INT_PIN
+    /* GPIO for INT pin */
+    LT_INT_CLK_ENABLE();
+    GPIO_InitStruct.Pin = LT_INT_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(LT_INT_BANK, &GPIO_InitStruct);
+#endif
     // TODO this is probably crap, this function should be called by HAL
     // internally. But lt_init didnt work properly if it is not here.
     HAL_SPI_MspInit(&SpiHandle);
@@ -349,4 +358,21 @@ lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms)
     return LT_OK;
 }
 
+#if LT_USE_INT_PIN
+lt_ret_t lt_port_delay_on_int(lt_handle_t *h, uint32_t ms)
+{
+    UNUSED(h);
+    uint32_t time_initial = HAL_GetTick();
+    uint32_t time_actual;
+    while((HAL_GPIO_ReadPin(LT_INT_BANK, LT_INT_PIN) == 0)) {
+        time_actual = HAL_GetTick();
+        if ((time_actual - time_initial) > ms ) {
+            return LT_L1_INT_TIMEOUT;
+        }
+        //HAL_Delay(ms);
+    }
+
+    return LT_OK;
+}
+#endif
 #endif

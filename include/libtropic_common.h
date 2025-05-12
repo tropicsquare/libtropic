@@ -107,7 +107,9 @@ typedef enum {
     /** Chip is in ALARM mode */
     LT_L1_CHIP_ALARM_MODE                   = 8,
     /** Chip is BUSY - typically chip is still booting */
-    LT_L1_CHIP_BUSY                         = 9,
+    LT_L1_CHIP_BUSY,
+    /** Interrupt pin did not fire as expected */
+    LT_L1_INT_TIMEOUT,
 
     /** Return values based on RESULT field */
     /** L3 result [API r_mem_data_write]: write failed, because slot is already written in */
