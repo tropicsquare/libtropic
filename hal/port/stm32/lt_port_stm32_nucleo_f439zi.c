@@ -307,7 +307,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
     HAL_GPIO_Init(LT_SPI_CS_BANK, &GPIO_InitStruct);
 
-#if USE_INT_PIN
+#if LT_USE_INT_PIN
     /* GPIO for INT pin */
     LT_INT_CLK_ENABLE();
     GPIO_InitStruct.Pin = LT_INT_PIN;
@@ -358,7 +358,7 @@ lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms)
     return LT_OK;
 }
 
-#if USE_INT_PIN
+#if LT_USE_INT_PIN
 lt_ret_t lt_port_delay_on_int(lt_handle_t *h, uint32_t ms)
 {
     UNUSED(h);

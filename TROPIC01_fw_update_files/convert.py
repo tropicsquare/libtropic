@@ -27,7 +27,7 @@ def binary_to_c_array(path_to_fw_folder, filename, version_name):
             if (i + 1) % 16 == 0:
                 header.write("\n")
         header.write("\n};")
-        header.write(f"\nconst uint16_t {version_name}_len = {len(data)};")
+        #header.write(f"\nconst uint16_t {version_name}_len = {len(data)};")
 
 def list_files_in_directory(path):
     try:
