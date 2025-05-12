@@ -30,6 +30,8 @@
 #include "libtropic.h"
 #include "TROPIC01_configuration_objects.h"
 
+#define TS_GET_INFO_BLOCK_LEN 128
+
 lt_ret_t lt_init(lt_handle_t *h)
 {
     // When compiling libtropic with l3 buffer embedded into handle, 
@@ -92,6 +94,7 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     return LT_OK;
 }
 
+
 lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
 {
     if (     max_len < LT_L2_GET_INFO_REQ_CERT_SIZE
@@ -148,9 +151,9 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
 
     // TODO Verify
 
-    /* TODO Improve this
-    Currently DER certificate is searched for "OBJECT IDENTIFIER curveX25519 (1 3 101 110)",
-    which is represented by four bytes: 0x65, 0x6e, 0x03 and 0x21 */
+    // TODO Improve this
+    // Currently DER certificate is searched for "OBJECT IDENTIFIER curveX25519 (1 3 101 110)",
+    // which is represented by four bytes: 0x65, 0x6e, 0x03 and 0x21
     for(int i = 0; i<(476); i++) {
         if(cert[i] == 0x65 && cert[i+1] == 0x6e && cert[i+2] == 0x03 && cert[i+3] == 0x21) {
             memcpy(stpub, cert + i + 4 + 1, 32); // +1 because pubkey starts one byte after object identifier
@@ -159,6 +162,105 @@ lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, u
     }
 
     return LT_FAIL;
+}
+
+
+lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
+{
+    if (   ! h
+        || ! store
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Setup a request pointer to l2 buffer with request data
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+
+    // Max cert-store length not read out -> Optimized as being read to read out only needed part!
+    int curr_cert = LT_CERT_KIND_DEVICE;
+    uint8_t *cert_head = store->certs[curr_cert];
+
+    // Worst case full ceert-store is read out
+    for (int i = 0; i < LT_L2_GET_INFO_REQ_CERT_SIZE; i++) {
+        p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
+        p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
+        p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
+        p_l2_req->block_index = i;
+
+        lt_ret_t ret = lt_l2_transfer(h);
+        if (ret != LT_OK) {
+            return ret;
+        }
+
+        if (TS_GET_INFO_BLOCK_LEN != (p_l2_resp->rsp_len)) {
+            return LT_FAIL;
+        }
+
+        uint8_t *head = ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object;
+        uint8_t *tail = head + TS_GET_INFO_BLOCK_LEN;
+
+        // Parse the header - Gets lengths and checks buffers are large enough
+        if (i == 0) {
+            if (*head != LT_CERT_STORE_VERSION) {
+                return LT_CERT_STORE_INVALID;
+            }
+            head++;
+            if (*head != LT_NUM_CERTIFICATES) {
+                return LT_CERT_STORE_INVALID;
+            }
+            head++;
+
+            for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
+                uint16_t curr_len = *head;
+                curr_len <<= 8;
+                head++;
+                curr_len |= *head;
+                head++;
+
+                if (curr_len > store->buf_len[j]) {
+                    return LT_PARAM_ERR;
+                }
+                store->cert_len[j] = curr_len;
+            }
+        }
+
+        // Read out and copy certificate chunk. Assumes that:
+        //  - A single certificate is always larger than 128 bytes -> There is at most one "trailing chunk"!
+        //    No need to handle this case explicitly since it is very likely to be like that, but worth mentioning.
+
+        // Copy certificate chunk
+        int available = tail - head;
+        int till_now = cert_head - store->certs[curr_cert];
+        int till_end = store->cert_len[curr_cert] - till_now;
+
+        int to_copy = (till_end > available) ? available : till_end;
+
+        memcpy(cert_head, head, to_copy);
+        cert_head += to_copy;
+        head += to_copy;
+
+        // Move to the next certificate or finish upon last chunk of last certificate
+        if ((cert_head - store->certs[curr_cert]) >= store->cert_len[curr_cert]) {
+            if (curr_cert >= LT_NUM_CERTIFICATES - 1) {
+                break;
+            } else {
+                curr_cert++;
+                cert_head = store->certs[curr_cert];
+            }
+        }
+
+        // Handle trailing rest of the next certificate
+        if (available > to_copy) {
+            int trailer_len = TS_GET_INFO_BLOCK_LEN - to_copy;
+            memcpy(cert_head, head, trailer_len);
+            cert_head += trailer_len;
+        }
+    }
+
+    return LT_OK;
 }
 
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id)
@@ -1532,7 +1634,8 @@ static const char *lt_ret_strs[] = {
     "LT_L2_NO_RESP",
     "LT_L2_UNKNOWN_REQ",
     "LT_L2_STATUS_NOT_RECOGNIZED",
-    "LT_L2_DATA_LEN_ERROR"
+    "LT_L2_DATA_LEN_ERROR",
+    "LT_CERT_STORE_INVALID"
 };
 
 const char *lt_ret_verbose(lt_ret_t ret)

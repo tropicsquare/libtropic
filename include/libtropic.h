@@ -70,6 +70,154 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
  */
 lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
 
+typedef enum {
+    LT_CERT_KIND_DEVICE        = 0,
+    LT_CERT_KIND_XXXX          = 1,
+    LT_CERT_KIND_TROPIC01      = 2,
+    LT_CERT_KIND_TROPIC_ROOT   = 3,
+} lt_cert_kind_t;
+
+#define LT_CERT_STORE_VERSION 1
+#define LT_NUM_CERTIFICATES 4
+
+struct lt_cert_store_t {
+    uint8_t  *certs[LT_NUM_CERTIFICATES];
+    uint16_t  buf_len[LT_NUM_CERTIFICATES];
+    uint16_t  cert_len[LT_NUM_CERTIFICATES];
+};
+
+/**
+ * @brief Read out PKI chain from Tropic01 certificate store
+ *
+ * @param h           Device's handle
+ * @param max_len     Len of certificate buffer
+ * @param stpub       TROPIC01 STPUB, unique for each device
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
+
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned CHIP ID */
+#define LT_L2_GET_INFO_CHIP_ID_SIZE         128
+
+/**
+ * @brief Structure used to parse content of CHIP_ID field
+ *
+ * @details This structure contains fields for parsing the chip's serial number data.
+ */
+struct lt_ser_num_t {
+    uint8_t sn;               /**< 8 bits for serial number */
+    uint8_t fab_data[3];      /**< 12 bits fab ID, 12 bits part number ID */
+    uint16_t fab_date;        /**< 16 bits for fabrication date */
+    uint8_t lot_id[5];        /**< 40 bits for lot ID */
+    uint8_t wafer_id;         /**< 8 bits for wafer ID */
+    uint16_t x_coord;         /**< 16 bits for x-coordinate */
+    uint16_t y_coord;         /**< 16 bits for y-coordinate */
+ } __attribute__((__packed__));
+
+/**
+ * @brief Data in this struct comes from BP (batch package) yml file. CHIP_INFO is read into this struct.
+ */
+struct lt_chip_id_t {
+    /**
+     * @brief CHIP_ID structure versioning (32 bits), defined by Tropic Square in BP.
+     * @details Example encoding: v1.2.3.4 = 0x01,0x02,0x03,0x04
+     */
+    uint8_t chip_id_ver[4];
+
+    /**
+     * @brief Factory level test info (128 bits), structure retrieved from silicon provider.
+     * @details The exact copy of FL_PROD_DATA structure. If missing, it is filled with 0x00.
+     */
+    uint8_t fl_chip_info[16];
+
+    /**
+     * @brief Manufacturing level test info (128 bits), structure retrieved from test line and BP.
+     * @details The exact copy of ﬁrst two words of MAN_FUNC_TEST structure. In case of missing, it is filled with 0x00
+     */
+    uint8_t func_test_info[8];
+
+    /**
+     * @brief Silicon revision (32 bits).
+     * @details ASCII encoded string value deﬁned by Tropic Square. Example: ’ACAB’ = 0x41434142
+     */
+    uint8_t silicon_rev[4];
+
+    /**
+     * @brief Package Type ID deﬁned by Tropic Square
+     */
+    uint8_t packg_type_id[2];
+
+    /**
+     * @brief Reserved field 1 (16 bits).
+     */
+    uint8_t rfu_1[2];
+
+    /**
+     * @brief Provisioning info (128 bits), filled by the provisioning station.
+     * @details
+     * - 8 bits: Provisioning info version.
+     * - 12 bits: Fabrication ID.
+     * - 12 bits: Part Number ID.
+     */
+    uint8_t prov_ver_fab_id_pn[4];
+
+    /**
+     * @brief Provisioning date (16 bits).
+     */
+    uint8_t provisioning_date[2];
+
+    /**
+     * @brief HSM version (32 bits).
+     * @details Byte 0: RFU, Byte 1: Major version, Byte 2: Minor version, Byte 3: Patch version
+     */
+    uint8_t hsm_ver[4];
+
+    /**
+     * @brief Program version (32 bits).
+     */
+    uint8_t prog_ver[4];
+
+    /**
+     * @brief Reserved field 2 (16 bits).
+     */
+    uint8_t rfu_2[2];
+
+    /**
+     * @brief Serial Number (128 bits).
+     */
+    struct lt_ser_num_t ser_num;
+
+    /**
+     * @brief Part Number (128 bits), defined by Tropic Square in BP.
+     */
+    uint8_t part_num_data[16]; /**< Part number data. */
+
+    /**
+     * @brief Provisioning Data version (160 bits), defined by Tropic Square for each batch in BP.
+     */
+    uint8_t prov_templ_ver[2]; /**< Provisioning template version. */
+    uint8_t prov_templ_tag[4]; /**< Provisioning template tag. */
+    uint8_t prov_spec_ver[2]; /**< Provisioning specification version. */
+    uint8_t prov_spec_tag[4]; /**< Provisioning specification tag. */
+
+    /**
+     * @brief Batch ID (40 bits).
+     */
+    uint8_t batch_id[5];
+
+    /**
+     * @brief Reserved field 3 (24 bits).
+     */
+    uint8_t rfu_3[3];
+
+    /**
+     * @brief Padding (192 bits).
+     */
+    uint8_t rfu_4[24];
+} __attribute__((__packed__));
+
 /**
  * @brief Read TROPIC01's CHIP ID
  *
