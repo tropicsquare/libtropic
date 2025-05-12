@@ -88,24 +88,24 @@ typedef struct lt_handle_t {
 /** Enum return type */
 typedef enum {
     /** Operation was successful */
-    LT_OK,
+    LT_OK                                   = 0,
     /** Operation was not succesfull */
-    LT_FAIL,
+    LT_FAIL                                 = 1,
     /* Host no session */
-    LT_HOST_NO_SESSION,
+    LT_HOST_NO_SESSION                      = 2,
     /** Some parameter was not accepted by function */
-    LT_PARAM_ERR,
+    LT_PARAM_ERR                            = 3,
     /** Error detected during cryptographic operation */
-    LT_CRYPTO_ERR,
+    LT_CRYPTO_ERR                           = 4,
 
     /** Spi transfer returned error */
-    LT_L1_SPI_ERROR,
+    LT_L1_SPI_ERROR                         = 5,
     /** Data does not have an expected length */
-    LT_L1_DATA_LEN_ERROR,
+    LT_L1_DATA_LEN_ERROR                    = 6,
     /** Chip is in STARTUP mode */
-    LT_L1_CHIP_STARTUP_MODE,
+    LT_L1_CHIP_STARTUP_MODE                 = 7,
     /** Chip is in ALARM mode */
-    LT_L1_CHIP_ALARM_MODE,
+    LT_L1_CHIP_ALARM_MODE                   = 8,
     /** Chip is BUSY - typically chip is still booting */
     LT_L1_CHIP_BUSY,
     /** Interrupt pin did not fire as expected */
@@ -113,56 +113,57 @@ typedef enum {
 
     /** Return values based on RESULT field */
     /** L3 result [API r_mem_data_write]: write failed, because slot is already written in */
-    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL,
+    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL       = 10,
     /** L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
-    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED,
+    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED     = 11,
     /** L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is invalid. */
-    LT_L3_ECC_INVALID_KEY,
+    LT_L3_ECC_INVALID_KEY                   = 12,
     /** L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter is already at 0. */
-    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR,
+    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR        = 13,
     /** L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
-    LT_L3_COUNTER_INVALID,
+    LT_L3_COUNTER_INVALID                   = 14,
     /** L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been written to it yet */
-    LT_L3_PAIRING_KEY_EMPTY,
+    LT_L3_PAIRING_KEY_EMPTY                 = 15,
     /** L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has been invalidated */
-    LT_L3_PAIRING_KEY_INVALID,
+    LT_L3_PAIRING_KEY_INVALID               = 16,
     /** L3 command was received correctly*/
-    LT_L3_OK,
+    LT_L3_OK                                = 17,
     /** L3 command was not received correctly */
-    LT_L3_FAIL,
+    LT_L3_FAIL                              = 18,
     /** Current pairing keys are not authorized for execution of the last command */
-    LT_L3_UNAUTHORIZED,
+    LT_L3_UNAUTHORIZED                      = 19,
     /** Received L3 command is invalid */
-    LT_L3_INVALID_CMD,
+    LT_L3_INVALID_CMD                       = 20,
     /** L3 data does not have an expected length */
-    LT_L3_DATA_LEN_ERROR,
+    LT_L3_DATA_LEN_ERROR                    = 21,
 
     /** Return values based on STATUS field */
     /** l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR,
+    LT_L2_IN_CRC_ERR                        = 22,
     /** There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT,
+    LT_L2_REQ_CONT                          = 23,
     /** There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT,
+    LT_L2_RES_CONT                          = 24,
     /** There were an error during handshake establishing */
-    LT_L2_HSK_ERR,
+    LT_L2_HSK_ERR                           = 25,
     /** There is no secure session */
-    LT_L2_NO_SESSION,
+    LT_L2_NO_SESSION                        = 26,
     /** There were error during checking message authenticity */
-    LT_L2_TAG_ERR,
+    LT_L2_TAG_ERR                           = 27,
     /** l2 request contained crc error */
-    LT_L2_CRC_ERR,
+    LT_L2_CRC_ERR                           = 28,
     /** There were some other error */
-    LT_L2_GEN_ERR,
+    LT_L2_GEN_ERR                           = 29,
     /** Chip has no response to be transmitted */
-    LT_L2_NO_RESP,
+    LT_L2_NO_RESP                           = 30,
     /** ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ,
+    LT_L2_UNKNOWN_REQ                       = 31,
     /** Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED,
+    LT_L2_STATUS_NOT_RECOGNIZED             = 32,
     /** L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR,
+    LT_L2_DATA_LEN_ERROR                    = 33,
 
+    LT_L2_LAST_RET                          = 34
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS  100

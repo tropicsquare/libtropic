@@ -60,7 +60,10 @@ endif()
 if(LT_EX_HELLO_WORLD)
     target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD)
 endif()
-
+# -DLT_EX_MACANDD=1
+if(LT_EX_MACANDD)
+    target_compile_definitions(run PRIVATE LT_EX_MACANDD)
+endif()
 
 # -DLT_TEST_CHIP_ID=1
 if(LT_TEST_CHIP_ID)

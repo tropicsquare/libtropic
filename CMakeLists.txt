@@ -117,6 +117,7 @@ if(LT_ADD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
