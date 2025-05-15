@@ -45,15 +45,6 @@
 lt_ret_t lt_l3_nonce_init(lt_handle_t *h);
 
 /**
- * @details Increases by one nonce stored in handle. This function is called after successfull 
- *          reception of L3 response.
- *
- * @param h           Chip's handle
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_l3_nonce_increase(lt_handle_t *h);
-
-/**
  * @details Perform l3 encrypted command operation. It takes handle's l3 buffer containing l3 command
  *          and after successfull execution handle's l3 buffer contains l3 result.
  *
@@ -61,6 +52,12 @@ lt_ret_t lt_l3_nonce_increase(lt_handle_t *h);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l3_cmd(lt_handle_t *h);
+
+
+lt_ret_t lt_l3_encrypt_request(lt_handle_t *h);
+
+
+lt_ret_t lt_l3_decrypt_response(lt_handle_t *h);
 
 /** @} */ // end of group_l3_functions
 
