@@ -173,7 +173,7 @@ static char* interpret_prov_info_ver(uint8_t *ver) {
 /* Fab ID of Tropic Square Lab */
 #define FAB_ID_TROPIC_SQUARE_LAB 0xF00
 /* Fab ID of Production line #1 */
-#define FAB_ID_PROD_LINE_1 0x001
+#define FAB_ID_EPS_BRNO 0x001
 /**
  * @brief Function to interpret fabrication ID
  *
@@ -184,8 +184,8 @@ static char* interpret_fab_id(uint16_t fab_id_value) {
 
     if((fab_id_value == FAB_ID_TROPIC_SQUARE_LAB)) {
         memcpy(buff_interpreted, "(\"Tropic Square Lab\")", 22);
-    } else if((fab_id_value == FAB_ID_PROD_LINE_1)) {
-        memcpy(buff_interpreted, "(\"Production line #1\")", 23);
+    } else if((fab_id_value == FAB_ID_EPS_BRNO)) {
+        memcpy(buff_interpreted, "(\"EPS Global - Brno\")", 23);
     } else {
         memcpy(buff_interpreted, "Unknown facility ID", 20);
     }
