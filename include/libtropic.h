@@ -50,6 +50,11 @@ lt_ret_t lt_deinit(lt_handle_t *h);
  */
 lt_ret_t lt_update_mode(lt_handle_t *h);
 
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of TROPIC01's certificate */
+#define LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL         3840
+#define LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE        700
+
 /**
  * @brief Get device's certificate
  *
@@ -90,11 +95,20 @@ struct lt_cert_store_t {
  * @brief Read out PKI chain from Tropic01 certificate store
  *
  * @param h           Device's handle
- * @param max_len     Len of certificate buffer
- * @param stpub       TROPIC01 STPUB, unique for each device
+ * @param store       Certificate store handle to be filled
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
+
+/**
+ * @brief Extract ST_Pub from certificate store
+ *
+ * @param store       Certificate store handle
+ * @param stpub       TROPIC01 STPUB to be filled, unique for each device
+ * @param stpub_len   Length of buffer for STPub
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len);
 
 
 //--------------------------------------------------------------------------------------------------------------------//

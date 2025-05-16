@@ -26,7 +26,7 @@
 #include "lt_hkdf.h"
 #include "lt_sha256.h"
 #include "lt_aesgcm.h"
-
+#include "lt_asn1_der.h"
 #include "libtropic.h"
 #include "TROPIC01_configuration_objects.h"
 
@@ -34,7 +34,7 @@
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
-    // When compiling libtropic with l3 buffer embedded into handle, 
+    // When compiling libtropic with l3 buffer embedded into handle,
     // define buffer's length here (later used to prevent overflow during communication).
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF; // Size of l3 buffer is defined in libtropic_common.h
@@ -94,77 +94,6 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     return LT_OK;
 }
 
-
-lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
-{
-    if (     max_len < LT_L2_GET_INFO_REQ_CERT_SIZE
-         || !h
-         || !cert
-    ) {
-        return LT_PARAM_ERR;
-    }
-
-    // Setup a request pointer to l2 buffer with request data
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
-    // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
-
-    for(int8_t i=0; i<(LT_L2_GET_INFO_REQ_CERT_SIZE/128); i++) {
-        // Fill l2 request buffer
-        p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
-        p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
-        p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
-
-        // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127    = 0, "i" is used
-        // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255  = 1, "i" is used
-        // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383  = 2, "i" is used
-        // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511  = 3, "i" is used
-        p_l2_req->block_index = i;
-        lt_ret_t ret = lt_l2_send(&h->l2);
-        if(ret != LT_OK) {
-            return ret;
-        }
-        ret = lt_l2_receive(&h->l2);
-        if(ret != LT_OK) {
-            return ret;
-        }
-
-        // Check incomming l3 length
-        if((LT_L2_GET_INFO_REQ_CERT_SIZE/30) != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
-        }
-
-        memcpy(cert + i*128, ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object, 128);
-    }
-
-    return LT_OK;
-}
-
-lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub)
-{
-    if(    !cert
-        || !stpub
-        || (max_len < LT_L2_GET_INFO_REQ_CERT_SIZE)
-    ) {
-        return LT_PARAM_ERR;
-    }
-
-    // TODO Verify
-
-    // TODO Improve this
-    // Currently DER certificate is searched for "OBJECT IDENTIFIER curveX25519 (1 3 101 110)",
-    // which is represented by four bytes: 0x65, 0x6e, 0x03 and 0x21
-    for(int i = 0; i<(476); i++) {
-        if(cert[i] == 0x65 && cert[i+1] == 0x6e && cert[i+2] == 0x03 && cert[i+3] == 0x21) {
-            memcpy(stpub, cert + i + 4 + 1, 32); // +1 because pubkey starts one byte after object identifier
-            return LT_OK;
-        }
-    }
-
-    return LT_FAIL;
-}
-
-
 lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
 {
     if (   ! h
@@ -184,7 +113,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     uint8_t *cert_head = store->certs[curr_cert];
 
     // Worst case full ceert-store is read out
-    for (int i = 0; i < LT_L2_GET_INFO_REQ_CERT_SIZE; i++) {
+    for (int i = 0; i < LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL; i++) {
         p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
         p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
         p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
@@ -261,6 +190,20 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     }
 
     return LT_OK;
+}
+
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len)
+{
+    if (    !store
+         || !stpub) {
+        return LT_PARAM_ERR;
+    }
+
+    uint8_t *head = store->certs[LT_CERT_KIND_DEVICE];
+    uint16_t len = store->cert_len[LT_CERT_KIND_DEVICE];
+
+    return asn1der_find_object(head, len, OBJ_ID_CURVEX25519, stpub, stpub_len,
+                               ASN1DER_CROP_PREFIX);
 }
 
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id)
@@ -1758,14 +1701,27 @@ lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, 
         return ret;
     }
 
-    uint8_t X509_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
-    ret = lt_get_info_cert(h, X509_cert, LT_L2_GET_INFO_REQ_CERT_SIZE);
+    // Read certificate store
+    uint8_t cert_ese[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE]  = {0};
+    uint8_t cert_xxxx[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+    uint8_t cert_tr01[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+    uint8_t cert_root[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+
+    struct lt_cert_store_t cert_store = {
+        .cert_len   = {0, 0, 0, 0},
+        .buf_len    = {LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
+                       LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE},
+        .certs      = {cert_ese, cert_xxxx, cert_tr01, cert_root}
+    };
+
+    ret = lt_get_info_cert_store(h, &cert_store);
     if (ret != LT_OK) {
         return ret;
     }
 
+    // Extract STPub
     uint8_t stpub[32] = {0};
-    ret = lt_cert_verify_and_parse(X509_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub);
+    ret = lt_get_st_pub(&cert_store, stpub, 32);
     if (ret != LT_OK) {
         return ret;
     }
