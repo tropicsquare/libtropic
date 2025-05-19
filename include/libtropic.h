@@ -266,6 +266,19 @@ typedef enum {
     PAIRING_KEY_SLOT_INDEX_3,
 } pkey_index_t;
 
+
+
+struct session_state_t {
+    uint8_t ehpriv[32];
+    uint8_t ehpub[32];
+    uint8_t e_tpub[32];
+};
+
+lt_ret_t lt_session_start_init(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index,
+                      const uint8_t *shipriv, const uint8_t *shipub, struct session_state_t *state);
+
+
+
 /**
  * @brief Establish encrypted session between TROPIC01 and host MCU
  *
@@ -353,6 +366,17 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
 #define PING_LEN_MAX                     (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
+
+typedef struct ping_state_t {
+    uint16_t len;
+} ping_state_t;
+
+
+
+lt_ret_t lt__enc_ping(lt_handle_t *h, ping_state_t *state, const uint8_t *msg_out, const uint16_t len);
+
+lt_ret_t lt__dec_ping(lt_handle_t *h, ping_state_t *state, uint8_t *msg_in);
+
 
 /**
  * @brief Test secure session by exchanging a message with chip
@@ -567,9 +591,9 @@ typedef enum {
 typedef struct ecc_key_generate_state_t {
 } ecc_key_generate_state_t;
 
-lt_ret_t lt_create_ecc_key_generate_request(lt_handle_t *h, ecc_key_generate_state_t *state, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
+lt_ret_t lt__enc_ecc_key_generate(lt_handle_t *h, ecc_key_generate_state_t *state, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
-lt_ret_t lt_handle_ecc_key_generate_response(lt_handle_t *h, ecc_key_generate_state_t *state);
+lt_ret_t lt__dec_ecc_key_generate(lt_handle_t *h, ecc_key_generate_state_t *state);
 
 /**
  * @brief Generate ECC key in the device's ECC key slot

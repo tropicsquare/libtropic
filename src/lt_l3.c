@@ -31,7 +31,7 @@ lt_ret_t lt_l3_nonce_init(lt_handle_t *h)
 lt_ret_t lt_l3_nonce_increase(uint8_t nonce[12])
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if(!nonce) {
         return LT_PARAM_ERR;
     }
 #endif

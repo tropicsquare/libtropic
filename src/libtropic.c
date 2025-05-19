@@ -283,6 +283,146 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
     return LT_OK;
 }
 
+lt_ret_t lt_session_start_init(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index,
+                      const uint8_t *shipriv, const uint8_t *shipub, struct session_state_t *state)
+{
+    /* Check input params */
+
+    memset(h, 0, sizeof(lt_handle_t));
+    // Create ephemeral host keys
+    //uint8_t ehpriv[32];
+    //uint8_t ehpub[32];
+    lt_ret_t ret = lt_random_bytes((uint32_t*)state->ehpriv, 8);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    lt_X25519_scalarmult(state->ehpriv, state->ehpub);
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_handshake_req_t* p_req = (struct lt_l2_handshake_req_t*)h->l2_buff;
+
+    p_req->req_id = LT_L2_HANDSHAKE_REQ_ID;
+    p_req->req_len = LT_L2_HANDSHAKE_REQ_LEN;
+    memcpy(p_req->e_hpub, state->ehpub, 32);
+    p_req->pkey_index = pkey_index;
+
+    return LT_OK;
+
+    // Send l2 separately //
+}
+
+
+lt_ret_t lt_session_start_finalize(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub, struct session_state_t *state)
+{
+    /* Check input params */
+
+    // Setup a response pointer to l2 buffer, which is placed in handle
+    struct lt_l2_handshake_rsp_t* p_rsp = (struct lt_l2_handshake_rsp_t*)h->l2_buff;
+
+    //TODO check length here
+
+    // Noise_KK1_25519_AESGCM_SHA256\x00\x00\x00
+    uint8_t protocol_name[32] = {'N','o','i','s','e','_','K','K','1','_','2','5','5','1','9','_','A','E','S','G','C','M','_','S','H','A','2','5','6',0x00,0x00,0x00};
+    uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
+    // h = SHA_256(protocol_name)
+     lt_crypto_sha256_ctx_t hctx = {0};
+    lt_sha256_init(&hctx);
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, protocol_name, 32);
+    lt_sha256_finish(&hctx, hash);
+
+    // h = SHA256(h||SHiPUB)
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, hash, 32);
+    lt_sha256_update(&hctx, shipub, 32);
+    lt_sha256_finish(&hctx, hash);
+
+    // h = SHA256(h||STPUB)
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, hash, 32);
+    lt_sha256_update(&hctx, stpub, 32);
+    lt_sha256_finish(&hctx, hash);
+
+    // h = SHA256(h||EHPUB)
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, hash, 32);
+    lt_sha256_update(&hctx, state->ehpub, 32);
+    lt_sha256_finish(&hctx, hash);
+
+    // h = SHA256(h||PKEY_INDEX)
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, hash, 32);
+    lt_sha256_update(&hctx, (uint8_t*)&pkey_index, 1);
+    lt_sha256_finish(&hctx, hash);
+
+    // h = SHA256(h||ETPUB)
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, hash, 32);
+    lt_sha256_update(&hctx, p_rsp->e_tpub, 32);
+    lt_sha256_finish(&hctx, hash);
+
+    // ck = protocol_name
+    uint8_t output_1[33] = {0};
+    uint8_t output_2[32] = {0};
+    // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
+    uint8_t shared_secret[32] = {0};
+    lt_X25519(state->ehpriv, p_rsp->e_tpub, shared_secret);
+    lt_hkdf(protocol_name, 32, shared_secret, 32, 1, output_1, output_2);
+    // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
+    lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
+    lt_hkdf(output_1, 32, shared_secret, 32, 1, output_1, output_2);
+    // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
+    lt_X25519(state->ehpriv, stpub, shared_secret);
+    uint8_t kauth[32] = {0};
+    lt_hkdf(output_1, 32, shared_secret, 32, 2, output_1, kauth);
+    // kCMD, kRES = HKDF (ck, emptystring, 2)
+    uint8_t kcmd[32] = {0};
+    uint8_t kres[32] = {0};
+    lt_hkdf(output_1, 32, (uint8_t*)"", 0, 2, kcmd, kres);
+
+    lt_ret_t ret = lt_aesgcm_init_and_key(&h->decrypt, kauth, 32);
+    if(ret != LT_OK) {
+        return LT_CRYPTO_ERR;
+    }
+
+    ret = lt_aesgcm_decrypt(&h->decrypt, h->decryption_IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_tauth, 16u);
+    if(ret != LT_OK) {
+        return LT_CRYPTO_ERR;
+    }
+
+    ret = lt_aesgcm_init_and_key(&h->encrypt, kcmd, 32);
+    if(ret != LT_OK) {
+        return LT_CRYPTO_ERR;
+    }
+
+    ret = lt_aesgcm_init_and_key(&h->decrypt, kres, 32);
+    if(ret != LT_OK) {
+        return LT_CRYPTO_ERR;
+    }
+
+    h->session = SESSION_ON;
+    //lt_l3_nonce_init(h);
+    // TODO create goto and clean keys here before leaving if something fails?
+    return LT_OK;
+}
+
+lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub)
+{
+    struct session_state_t state;
+
+    lt_ret_t ret = lt_session_start_init(h, stpub, pkey_index, shipriv, shipub, &state);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_session_start_finalize(h, stpub, pkey_index, shipriv, shipub, &state);
+}
+/*
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub)
 {
     if (    !h
@@ -403,6 +543,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
     // TODO create goto and clean keys here before leaving if something fails?
     return LT_OK;
 }
+    */
 
 lt_ret_t lt_session_abort(lt_handle_t *h)
 {
@@ -608,11 +749,42 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
     return LT_OK;
 }
 
-lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
+
+lt_ret_t lt__enc_ping(lt_handle_t *h, ping_state_t *state, const uint8_t *msg_out, const uint16_t len)
 {
-    if(    (len > PING_LEN_MAX)
-        || !h
+    if(    !h
+        || !state
         || !msg_out
+        || (len > PING_LEN_MAX)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Save len into a state structure, so it can be used in decode function
+    state->len = len;
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = len + LT_L3_PING_CMD_SIZE_MIN;
+    p_l3_cmd->cmd_id = LT_L3_PING_CMD_ID;
+    memcpy(p_l3_cmd->data_in, msg_out, len);
+
+    lt_ret_t ret = lt_l3_encrypt_request(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    return LT_OK;
+}
+lt_ret_t lt__dec_ping(lt_handle_t *h, ping_state_t *state, uint8_t *msg_in)
+{
+    if(    !h
+        || !state
         || !msg_in
     ) {
         return LT_PARAM_ERR;
@@ -621,28 +793,42 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
     // Pointer to access l3 buffer with result's data
     struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
 
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = len + LT_L3_PING_CMD_SIZE_MIN;
-    p_l3_cmd->cmd_id = LT_L3_PING_CMD_ID;
-    memcpy(p_l3_cmd->data_in, msg_out, len);
-
-    lt_ret_t ret = lt_l3_cmd(h);
+    lt_ret_t ret = lt_l3_decrypt_response(h);
     if(ret != LT_OK) {
         return ret;
     }
 
     // Check incomming l3 length
-    if(len != (p_l3_res->res_size - LT_L3_PING_CMD_SIZE_MIN))
-    {
+    if((LT_L3_PING_CMD_SIZE_MIN + state->len) != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
-    memcpy(msg_in, p_l3_res->data_out, len);
+    memcpy(msg_in, p_l3_res->data_out, state->len);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
+{
+    ping_state_t state;
+
+    lt_ret_t ret = lt__enc_ping(h, &state, msg_out, len);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_l2_encrypted_cmd(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt__dec_ping(h, &state, msg_in);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     return LT_OK;
 }
@@ -1114,7 +1300,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     return LT_OK;
 }
 
-lt_ret_t lt_create_ecc_key_generate_request(lt_handle_t *h, ecc_key_generate_state_t *state, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
+lt_ret_t lt__enc_ecc_key_generate(lt_handle_t *h, ecc_key_generate_state_t *state, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
     if(    !h
         || !state
@@ -1145,7 +1331,7 @@ lt_ret_t lt_create_ecc_key_generate_request(lt_handle_t *h, ecc_key_generate_sta
     return LT_OK;
 }
 
-lt_ret_t lt_handle_ecc_key_generate_response(lt_handle_t *h, ecc_key_generate_state_t *state)
+lt_ret_t lt__dec_ecc_key_generate(lt_handle_t *h, ecc_key_generate_state_t *state)
 {
     if (    !h
         || !state
@@ -1780,11 +1966,35 @@ lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, 
         return ret;
     }
 
-    ret = lt_session_start(h, stpub, pkey_index, shipriv, shipub);
-    if (ret != LT_OK) {
+    // Commented here so we can show how separated API calls works
+    //ret = lt_session_start(h, stpub, pkey_index, shipriv, shipub);
+    //if (ret != LT_OK) {
+    //    return ret;
+    //}
+
+    // --------------------------------------------------------------------------------------//
+    // Separated API calls for starting a secure session:
+    struct session_state_t state;
+
+    // Inicialize session from a server side  by creating state->ehpriv and state->ehpub,
+    // l2 request is prepared into handle's buffer (h->l2_buff)
+    ret = lt_session_start_init(h, stpub, pkey_index, shipriv, shipub, &state);
+    if(ret != LT_OK) {
         return ret;
     }
 
-    return LT_OK;
+    // handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel to TROPIC01
+
+    // Following l2 function is called on remote host
+    ret = lt_l2_transfer(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    // Handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel back to the server
+
+    // Once data are back on server's side, bytes are copied into h->l2_buff
+    // Then following l2 function is called on server side
+    // This function establishes gcm contexts for a session
+    return lt_session_start_finalize(h, stpub, pkey_index, shipriv, shipub, &state);
 }
 #endif
