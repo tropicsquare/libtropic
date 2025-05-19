@@ -564,6 +564,13 @@ typedef enum {
     CURVE_STORED
 } ecc_key_origin_t;
 
+typedef struct ecc_key_generate_state_t {
+} ecc_key_generate_state_t;
+
+lt_ret_t lt_create_ecc_key_generate_request(lt_handle_t *h, ecc_key_generate_state_t *state, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
+
+lt_ret_t lt_handle_ecc_key_generate_response(lt_handle_t *h, ecc_key_generate_state_t *state);
+
 /**
  * @brief Generate ECC key in the device's ECC key slot
  *

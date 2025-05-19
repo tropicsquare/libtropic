@@ -383,7 +383,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
         return LT_CRYPTO_ERR;
     }
 
-    ret = lt_aesgcm_decrypt(&h->decrypt, h->IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_tauth, 16u);
+    ret = lt_aesgcm_decrypt(&h->decrypt, h->decryption_IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_tauth, 16u);
     if(ret != LT_OK) {
         return LT_CRYPTO_ERR;
     }
@@ -1114,9 +1114,10 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     return LT_OK;
 }
 
-lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
+lt_ret_t lt_create_ecc_key_generate_request(lt_handle_t *h, ecc_key_generate_state_t *state, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
     if(    !h
+        || !state
         || slot < ECC_SLOT_0
         || slot > ECC_SLOT_31
         || ((curve != CURVE_P256) && (curve != CURVE_ED25519))
@@ -1129,8 +1130,6 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_ECC_KEY_GENERATE_CMD_SIZE;
@@ -1138,7 +1137,26 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
     p_l3_cmd->slot = (uint8_t)slot;
     p_l3_cmd->curve = (uint8_t)curve;
 
-    lt_ret_t ret = lt_l3_cmd(h);
+    lt_ret_t ret = lt_l3_encrypt_request(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_handle_ecc_key_generate_response(lt_handle_t *h, ecc_key_generate_state_t *state)
+{
+    if (    !h
+        || !state
+    ) {
+        return LT_PARAM_ERR;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(h);
     if(ret != LT_OK) {
         return ret;
     }
@@ -1150,6 +1168,29 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
 
     return LT_OK;
 }
+
+lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
+{
+    ecc_key_generate_state_t state;
+
+    lt_ret_t ret = lt_create_ecc_key_generate_request(h, &state, slot, curve);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_l2_encrypted_cmd(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_handle_ecc_key_generate_response(h, &state);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return LT_OK;
+}
+
 
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
 {
