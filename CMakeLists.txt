@@ -80,6 +80,7 @@ set(SDK_SRCS ${SDK_SRCS}
 ###########################################################################
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_separated_API.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
@@ -92,6 +93,7 @@ set(SDK_SRCS ${SDK_SRCS}
 
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_separated_API.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
@@ -116,6 +118,7 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
 if(LT_ADD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c

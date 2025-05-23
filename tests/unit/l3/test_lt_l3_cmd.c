@@ -58,7 +58,7 @@ void test__lt_aesgcm_encrypt__LT_FAIL()
     h.session = SESSION_ON;
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)&h.l3_buff;
-    lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_FAIL);
+    lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_FAIL);
     int ret = lt_l3_cmd(&h);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
 }
@@ -70,7 +70,7 @@ void test__lt_l2_encrypted_cmd__LT_FAIL()
     h.session = SESSION_ON;
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)&h.l3_buff;
-    lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
+    lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
     lt_l2_encrypted_cmd_ExpectAndReturn(&h, LT_FAIL);
     int ret = lt_l3_cmd(&h);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
@@ -83,14 +83,14 @@ void test__lt_aesgcm_decrypt__LT_FAIL()
     h.session = SESSION_ON;
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)&h.l3_buff;
-    lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
+    lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
     lt_l2_encrypted_cmd_ExpectAndReturn(&h, LT_OK);
-    lt_aesgcm_decrypt_ExpectAndReturn(&h.decrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_FAIL);
+    lt_aesgcm_decrypt_ExpectAndReturn(&h.decrypt, h.decryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_FAIL);
     int ret = lt_l3_cmd(&h);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
 }
 
-// Test that all possible L3_IDs are correctly parsed in lt_l3cmd() function and that they are propagated to upper layers
+// Test that all possible L3_IDs are correctly parsed in lt_l3_cmd() function and that they are propagated to upper layers
 void test__test_all_l3_results()
 {
     // Note: correct execution is tested at the end
@@ -102,13 +102,11 @@ void test__test_all_l3_results()
         h.session = SESSION_ON;
 
         struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)&h.l3_buff;
-        lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
+        lt_aesgcm_encrypt_ExpectAndReturn(&h.encrypt, h.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
         lt_l2_encrypted_cmd_ExpectAndReturn(&h, LT_OK);
-        lt_aesgcm_decrypt_ExpectAndReturn(&h.decrypt, h.IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
+        lt_aesgcm_decrypt_ExpectAndReturn(&h.decrypt, h.decryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
         p_frame->data[0] = results[i];
-        if(i == 4) {
-            lt_l3_nonce_increase(&h);
-        }
+
         int ret = lt_l3_cmd(&h);
         TEST_ASSERT_EQUAL(returned[i], ret);
     }

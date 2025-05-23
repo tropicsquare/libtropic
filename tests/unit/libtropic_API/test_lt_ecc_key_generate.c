@@ -13,6 +13,7 @@
 #include "libtropic.h"
 #include "lt_l3_api_structs.h"
 
+#include "mock_libtropic_separated_API.h"
 #include "mock_lt_random.h"
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
@@ -109,7 +110,9 @@ void test_lt_ecc_key_generate__l3_fail()
 
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < 4; i++) {
-        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
+        lt_out__ecc_key_generate_ExpectAndReturn(&h, ECC_SLOT_1, CURVE_ED25519, LT_OK);
+        lt_l2_encrypted_cmd_ExpectAndReturn(&h, LT_OK);
+        //lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
     }
 }

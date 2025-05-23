@@ -60,6 +60,10 @@ endif()
 if(LT_EX_HELLO_WORLD)
     target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD)
 endif()
+# -DLT_EX_HELLO_WORLD_SEPARATE_API=1
+if(LT_EX_HELLO_WORLD_SEPARATE_API)
+    target_compile_definitions(run PRIVATE LT_EX_HELLO_WORLD_SEPARATE_API)
+endif()
 # -DLT_EX_MACANDD=1
 if(LT_EX_MACANDD)
     target_compile_definitions(run PRIVATE LT_EX_MACANDD)

@@ -71,6 +71,15 @@ extern uint8_t sh3pub[];
 int lt_ex_hello_world(void);
 
 /**
+ * @brief Example function, Hello World with separate API
+ *
+ *  Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
+ *  TODO explain more
+ * @return int
+ */
+int lt_ex_hello_world_separate_API(void);
+
+/**
  * @brief Example function, Hardware Wallet
  * @details Pairing keys SH1-3 are set and SH0 is invalidated. TODO explain more
  * WARNING: This example ireversively writes into chip!

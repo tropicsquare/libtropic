@@ -1,5 +1,5 @@
 /**
- * @file TROPIC01_hw_wallet.c
+ * @file lt_ex_hello_world.c
  * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
  * @author Tropic Square s.r.o.
  *
@@ -38,27 +38,9 @@ static int session_H0(void)
     uint8_t in[100] = {0};
     uint8_t out[100] = {0};
     memcpy(out, "This is Hello World message from TROPIC01!!", 43);
-
-    LT_LOG("%s", "lt_ping() with old-style API");
+    LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, out, in, 43));
     LT_LOG("\t\tMessage: %s", in);
-    memset(in, 0, sizeof(in));
-
-    // This is the same process as above, but using separated API
-    LT_LOG("%s", "lt_ping() with separated API");
-    ping_state_t ping_state = {0};
-
-    LT_LOG("%s", "t__enc_ping() ");
-    LT_ASSERT(LT_OK, lt__enc_ping(&h, &ping_state, out, 43));
-
-    LT_LOG("%s", "lt_l2_encrypted_cmd() ");
-    LT_ASSERT(LT_OK, lt_l2_encrypted_cmd(&h));
-
-    LT_LOG("%s", "lt__dec_ping() ");
-    LT_ASSERT(LT_OK, lt__dec_ping(&h, &ping_state, in));
-
-    LT_LOG("\t\tMessage: %s", in);
-
 
     lt_deinit(&h);
 

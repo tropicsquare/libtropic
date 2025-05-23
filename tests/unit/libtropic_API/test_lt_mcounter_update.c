@@ -13,6 +13,7 @@
 #include "libtropic.h"
 #include "lt_l3_api_structs.h"
 
+#include "mock_libtropic_separated_API.h"
 #include "mock_lt_random.h"
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
