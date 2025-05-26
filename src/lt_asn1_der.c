@@ -18,35 +18,25 @@
 // Uncomment to enable parser logging
 //#define ASNDER_LOG_EN
 
-typedef struct {
-    // Next byte to be processed
-    uint8_t             *head;
-
-    // Length of the byte stream
-    uint16_t             len;
-
-    // Index of last processed byte
-    uint16_t            past;
-
-    // Target OBJECT_IDENTIFIER (3-byte) to be searched
-    uint32_t            obj_id;
-
-    // Buffer (and its length) where to copy data after OBJECT_IDENTIFIER match
-    uint8_t            *sbuf;
-    int                 sbuf_len;
-
-    // How to treat found objects larger than provided buffer
-    asn1der_crop_kind_t crop_kind;
-
-    // Internal context -> Nex ASN1 object is the one to be sampled
-    bool                sample_next;
-
-    // Flag that the searched OBJECT_IDENTIFIER has been found
-    bool                found;
-
-    // Falg that the searched object was cropped
-    bool                cropped;
-} parse_ctx_t;
+/**
+ * @brief ASN1 DER parsing context
+ *
+ * @details Holds state of the parser and parsing results
+ */
+struct parse_ctx_t {
+    uint8_t                 *head;          /** Next byte to be parse */
+    uint16_t                 len;           /** Length of the byte stream */
+    uint16_t                 past;          /** Index of last processed byte */
+    uint32_t                 obj_id;        /** Target OBJECT_IDENTIFIER (3-byte) to be searched */
+    uint8_t                 *sbuf;          /** Buffer (and its length) where to copy data after
+                                                OBJECT_IDENTIFIER match */
+    int                      sbuf_len;      /** Length of Buffer pointed to by sbuf. */
+    enum asn1der_crop_kind_t crop_kind;     /** How to treat objects larger than provided buffer */
+    bool                     sample_next;   /** Internal context ->
+                                                Next ASN1 object is the one to be sampled */
+    bool                     found;         /** Searched OBJECT_IDENTIFIER was found */
+    bool                     cropped;       /** Searched object was cropped */
+};
 
 #ifdef ASNDER_LOG_EN
 #define PARSE_ERR(ctx, msg, ...)                                                        \
@@ -61,7 +51,17 @@ typedef struct {
 #define PARSE_ERR(ctx, msg, ...)
 #endif // ASNDER_LOG_EN
 
-static lt_ret_t consume_bytes(parse_ctx_t *ctx, uint8_t *buf, uint16_t n, bool copy)
+/**
+ * @brief Process bytes from byte stream being parsed
+ *
+ * @param ctx       Parsing context
+ * @param buf       Result buffer
+ * @param n         Number of bytes to copy
+ * @param copy      If true, copy the consumed bytes to "buf"
+ *
+ * @returns LT_OK if sucessfully, error code otherwise
+ */
+static lt_ret_t consume_bytes(struct parse_ctx_t *ctx, uint8_t *buf, uint16_t n, bool copy)
 {
     if (ctx->past + n > ctx->len) {
         PARSE_ERR(ctx, "Incomplete byte stream. Past: %d, n: %d, len: %d", ctx->past, n, ctx->len);
@@ -98,8 +98,15 @@ static lt_ret_t consume_bytes(parse_ctx_t *ctx, uint8_t *buf, uint16_t n, bool c
                 return rv;                                                      \
         } while (0);                                                            \
 
-
-static lt_ret_t parse_length(parse_ctx_t *ctx, uint16_t *len)
+/**
+ * @brief Parse ASN1 DER length encoding
+ *
+ * @param ctx       Parsing context
+ * @param len       Pointer to integer where length is returned
+ *
+ * @returns LT_OK if sucessfully, error code otherwise
+ */
+static lt_ret_t parse_length(struct parse_ctx_t *ctx, uint16_t *len)
 {
     uint8_t b;
     GET_NEXT_BYTE(ctx, &b);
@@ -126,25 +133,32 @@ static lt_ret_t parse_length(parse_ctx_t *ctx, uint16_t *len)
 }
 
 /**
- * Recursively parses the ASN1/DER stream and searches for Object with
- * ctx->obj_id 3 byte identifier. If found, samples the follow-up item
- * in the sequence that shall be of primitive type into ctx.
+ * @brief Parse ASN1 object.
+ *
+ * @details Recursively parses the ASN1/DER stream and searches for Object with
+ *          ctx->obj_id 3 byte identifier. If found, samples the follow-up item
+ *          in the sequence that shall be of primitive type into ctx.
+ *
+ * @param   ctx     Parsing context
+ * @returns LT_OK if succesfull, false otherwise
  */
-static lt_ret_t parse_object(parse_ctx_t *ctx)
+static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 {
     uint8_t b = 0;
     uint16_t len = 0;
     lt_ret_t rv = LT_OK;
 
     GET_NEXT_BYTE(ctx, &b);
-    parse_length(ctx, &len);
+
+    rv = parse_length(ctx, &len);
+    if (rv != LT_OK)
+        return rv;
 
     uint16_t start = ctx->past;
 
 #ifdef ASNDER_LOG_EN
     LT_LOG("parse_object:");
     LT_LOG("    Start: %d", start);
-    LT_LOG("    Curr:  %d", ctx->past);
     LT_LOG("    Object type: 0x%x", b);
     LT_LOG("    Object len: %d", len);
 #endif
@@ -209,9 +223,11 @@ static lt_ret_t parse_object(parse_ctx_t *ctx)
                 bool crop_prefix = ctx->crop_kind == ASN1DER_CROP_PREFIX;
                 ctx->cropped = true;
 
+#ifdef ASNDER_LOG_EN
                 LT_LOG("Sample buffer (%d) is smaller than size of the object to be sampled (%d). "
                        "Cropping %d bytes from %s of the searched object",
                         ctx->sbuf_len, sample_len, n_crop_bytes, crop_prefix ? "prefix" : "suffix");
+#endif
 
                 if (crop_prefix) {
                     DROP_BYTES(ctx, n_crop_bytes)
@@ -248,9 +264,9 @@ static lt_ret_t parse_object(parse_ctx_t *ctx)
  *******************************************************************************/
 
 lt_ret_t asn1der_find_object(const uint8_t *stream, uint16_t len, int32_t obj_id,
-                             uint8_t *buf, int buf_len, asn1der_crop_kind_t crop_kind)
+                             uint8_t *buf, int buf_len, enum asn1der_crop_kind_t crop_kind)
 {
-    parse_ctx_t ctx = {
+    struct parse_ctx_t ctx = {
         .head           = (uint8_t*)stream,
         .len            = len,
         .past           = 0,

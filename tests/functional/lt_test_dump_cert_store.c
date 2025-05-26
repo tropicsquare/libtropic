@@ -1,6 +1,6 @@
 /**
  * @file lt_test_dump_cert_store.c
- * @brief Dumps content of Tropic01 Certificate store
+ * @brief Dumps content of TROPIC01 Certificate store
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.

@@ -85,10 +85,13 @@ typedef enum {
 #define LT_CERT_STORE_VERSION 1
 #define LT_NUM_CERTIFICATES 4
 
+/**
+ * @brief Certificate store contents
+ */
 struct lt_cert_store_t {
-    uint8_t  *certs[LT_NUM_CERTIFICATES];
-    uint16_t  buf_len[LT_NUM_CERTIFICATES];
-    uint16_t  cert_len[LT_NUM_CERTIFICATES];
+    uint8_t  *certs[LT_NUM_CERTIFICATES];       /** Certificates */
+    uint16_t  buf_len[LT_NUM_CERTIFICATES];     /** Length of buffers for certificates */
+    uint16_t  cert_len[LT_NUM_CERTIFICATES];    /** Lenght of certificates (from Cert store header) */
 };
 
 /**
