@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "libtropic_common.h"
-#include "libtropic_separated_API.h"
 #include "libtropic_port.h"
 #include "lt_random.h"
 #include "lt_l1_port_wrap.h"
@@ -20,12 +19,14 @@
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l3.h"
+#include "lt_l3_transfer.h"
 #include "lt_l3_api_structs.h"
 #include "lt_x25519.h"
 #include "lt_ed25519.h"
 #include "lt_hkdf.h"
 #include "lt_sha256.h"
 #include "lt_aesgcm.h"
+
 #include "libtropic.h"
 #include "TROPIC01_configuration_objects.h"
 
@@ -110,7 +111,11 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383  = 2, "i" is used
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511  = 3, "i" is used
         p_l2_req->block_index = i;
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(h);
+        if(ret != LT_OK) {
+            return ret;
+        }
+        ret = lt_l2_receive(h);
         if(ret != LT_OK) {
             return ret;
         }
@@ -167,10 +172,15 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id)
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID;
     p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
@@ -201,10 +211,15 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION;
     p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
@@ -234,10 +249,15 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION;
     p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
@@ -269,10 +289,15 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK;
     p_l2_req->block_index = bank_id;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_GET_INFO_FW_HEADER_SIZE != (p_l2_resp->rsp_len)) {
@@ -303,10 +328,15 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
         return ret;
     }
 
-    ret = lt_l2_transfer(h);
+    ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &state);
     memset(&state, 0, sizeof(session_state_t));
@@ -329,10 +359,15 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
     p_l2_req->req_id = LT_L2_ENCRYPTED_SESSION_ABT_ID;
     p_l2_req->req_len = LT_L2_ENCRYPTED_SESSION_ABT_LEN;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_ENCRYPTED_SESSION_ABT_RSP_LEN != (p_l2_resp->rsp_len)) {
@@ -359,10 +394,15 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
     p_l2_req->req_len = LT_L2_SLEEP_REQ_LEN;
     p_l2_req->startup_id = sleep_kind;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_SLEEP_RSP_LEN != (p_l2_resp->rsp_len)) {
@@ -389,10 +429,15 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     p_l2_req->req_len = LT_L2_STARTUP_REQ_LEN;
     p_l2_req->startup_id = startup_id;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // Check incomming l3 length
     if(LT_L2_STARTUP_RSP_LEN != (p_l2_resp->rsp_len)) {
@@ -421,10 +466,15 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
     p_l2_req->req_len = LT_L2_MUTABLE_FW_ERASE_REQ_LEN;
     p_l2_req->bank_id = bank_id;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     if(LT_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
@@ -458,10 +508,15 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         p_l2_req->offset = i*128;
         memcpy(p_l2_req->data, fw_data + (i*128), 128);
 
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(h);
         if(ret != LT_OK) {
             return ret;
         }
+        ret = lt_l2_receive(h);
+        if(ret != LT_OK) {
+            return ret;
+        }
+
 
         if(LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
@@ -475,10 +530,15 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         p_l2_req->offset = loops*128;
         memcpy(p_l2_req->data, fw_data + (loops*128), rest);
 
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(h);
         if(ret != LT_OK) {
             return ret;
         }
+        ret = lt_l2_receive(h);
+        if(ret != LT_OK) {
+            return ret;
+        }
+
 
         if(LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
@@ -505,10 +565,15 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
     p_l2_req->req_id = LT_L2_GET_LOG_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_LOG_REQ_LEN;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(h);
     if(ret != LT_OK) {
         return ret;
     }
+    ret = lt_l2_receive(h);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
 
     // No check for incomming l3 length because we don't know in advance how big message will be,
     // the max possible length is 255 (uint8_t) and that fits the safe size GET_LOG_MAX_MSG_LEN of log_msg buffer
@@ -533,24 +598,22 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return LT_HOST_NO_SESSION;
     }
 
-    ping_state_t state;
-
-    lt_ret_t ret = lt_out__ping(h, &state, msg_out, len);
+    lt_ret_t ret = lt_out__ping(h, msg_out, len);
     if (ret != LT_OK) {
         return ret;
     }
 
-    ret = lt_l2_encrypted_cmd(h);
+    ret = lt_l2_send_encrypted_cmd(h);
     if (ret != LT_OK) {
         return ret;
     }
 
-    ret = lt_in__ping(h, &state, msg_in);
+    ret = lt_l2_recv_encrypted_res(h);
     if (ret != LT_OK) {
         return ret;
     }
 
-    return LT_OK;
+    return lt_in__ping(h, msg_in, len);
 }
 
 lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8_t slot)
@@ -1039,19 +1102,18 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
         return ret;
     }
 
-    ret = lt_l2_encrypted_cmd(h);
+    ret = lt_l2_send_encrypted_cmd(h);
     if (ret != LT_OK) {
         return ret;
     }
 
-    ret = lt_in__ecc_key_generate(h);
+    ret = lt_l2_recv_encrypted_res(h);
     if (ret != LT_OK) {
         return ret;
     }
 
-    return LT_OK;
+    return lt_in__ecc_key_generate(h);
 }
-
 
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
 {
@@ -1066,30 +1128,22 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
     if(h->session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
-
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_store_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_store_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_store_res_t* p_l3_res = (struct lt_l3_ecc_key_store_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_STORE_CMD_SIZE;
-    p_l3_cmd->cmd_id= LT_L3_ECC_KEY_STORE_CMD_ID;
-    p_l3_cmd->slot = slot;
-    p_l3_cmd->curve = curve;
-    memcpy(p_l3_cmd->k, key, 32);
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_store(h, slot, curve, key);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if(LT_L3_ECC_KEY_STORE_RES_SIZE != (p_l3_res->res_size)) {
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(h);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    return LT_OK;
+    ret = lt_l2_recv_encrypted_res(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_in__ecc_key_store(h);
 }
 
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
@@ -1110,46 +1164,28 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
         return LT_PARAM_ERR;
     }
 
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_READ_CMD_SIZE;
-    p_l3_cmd->cmd_id= LT_L3_ECC_KEY_READ_CMD_ID;
-    p_l3_cmd->slot = slot;
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_read(h, slot);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if((p_l3_res->curve == (uint8_t)CURVE_ED25519) && ((p_l3_res->res_size -1-1-1-13) != 32)) {  // TODO make it nicer
-        return LT_FAIL;
-    }
-    if((p_l3_res->curve == (uint8_t)CURVE_P256) && ((p_l3_res->res_size -1-1-1-13) != 64)) {     // TODO make it nicer
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(h);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    *curve = p_l3_res->curve;
-    *origin = p_l3_res->origin;
+    ret = lt_l2_recv_encrypted_res(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
-    if((p_l3_res->curve == (uint8_t)CURVE_ED25519)) {
-        memcpy(key, p_l3_res->pub_key, 32);
-    }
-    if((p_l3_res->curve == (uint8_t)CURVE_P256)) {
-        memcpy(key, p_l3_res->pub_key, 64);
-    }
-    // TODO I think that we are not checking exactly curve type in this function?
-    // Function should return fail if curve is neither ED25519 or P256
-    return LT_OK;
+
+    return lt_in__ecc_key_read(h, key, keylen, curve, origin);
 }
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 {
-    if( !h
+    if(    !h
         || slot < ECC_SLOT_0
         || slot > ECC_SLOT_31
     ) {
@@ -1159,27 +1195,22 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
         return LT_HOST_NO_SESSION;
     }
 
-    // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_ecc_key_erase_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
-    p_l3_cmd->cmd_id = LT_L3_ECC_KEY_ERASE_CMD_ID;
-    p_l3_cmd->slot = slot;
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_erase(h, slot);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if(LT_L3_ECC_KEY_ERASE_RES_SIZE != (p_l3_res->res_size)) {
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(h);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    return LT_OK;
+    ret = lt_l2_recv_encrypted_res(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_in__ecc_key_erase(h);
 }
 
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len)

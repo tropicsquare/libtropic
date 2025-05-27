@@ -13,11 +13,11 @@
 #include "libtropic.h"
 #include "lt_l2_api_structs.h"
 
-#include "mock_libtropic_separated_API.h"
 #include "mock_lt_random.h"
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
+#include "mock_lt_l3_transfer.h"
 #include "mock_lt_l3.h"
 #include "mock_lt_x25519.h"
 #include "mock_lt_ed25519.h"
@@ -81,9 +81,11 @@ void test__lt_l2_transfer_fail()
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
 
     for(uint32_t i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
-        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        lt_l2_send_ExpectAndReturn(&h, LT_OK);
+        lt_l2_receive_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
-        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        lt_l2_send_ExpectAndReturn(&h, LT_OK);
+        lt_l2_receive_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
     }
 }
@@ -106,9 +108,12 @@ void test__len_mismatch()
     h.session     = SESSION_ON;
 
     size_inject_value = LT_L2_GET_LOG_RSP_LEN_MIN + 1;
-    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
-
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
 }
 
@@ -121,10 +126,13 @@ void test__correct()
     h.session     = SESSION_ON;
 
     size_inject_value = LT_L2_GET_LOG_RSP_LEN_MIN;
-    lt_l2_transfer_StubWithCallback(callback__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     lt_l1_delay_ExpectAndReturn(&h, LT_TROPIC01_REBOOT_DELAY_MS, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
 
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     lt_l1_delay_ExpectAndReturn(&h, LT_TROPIC01_REBOOT_DELAY_MS, LT_OK);
     TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
 }

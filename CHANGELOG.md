@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed logging format in examples.
 - Renamed cmake switches: LT_USE_TREZOR_CRYPTO, LT_BUILD_DOCS, LT_EXPERIMENTAL_SPI_UART
 - Platform examples are removed - now they are standalone repositories
+- Separated libtropic API calls introduced:
+  - lt_l3.* contain interfaces for encoding l3 data going out and decoding l3 data going in
+  - libtropic.* then wraps l3 functions and does the whole l3 exchange in one round
+  - This change allows user to send data through a tunnel between host and target MCU,
+    which then behaves as a relay
+- Separated l2 API calls introduced
+  - Now user can use separate function for sending and receiving data
+
 
 ### Added
 

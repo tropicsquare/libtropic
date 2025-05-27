@@ -165,7 +165,7 @@ struct lt_l2_handshake_rsp_t {
  * @brief
  * Request to execute an L3 Command.
  */
-struct lt_l2_encrypted_cmd_req_t {
+struct lt_l2_send_encrypted_cmd_req_t {
     u8 req_id; /**< Request ID byte */
     u8 req_len; /**< Length byte */
     /** Contains a chunk of encrypted command */
@@ -177,7 +177,7 @@ struct lt_l2_encrypted_cmd_req_t {
  * @brief
  * Request to execute an L3 Command.
  */
-struct lt_l2_encrypted_cmd_rsp_t {
+struct lt_l2_send_encrypted_cmd_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
     u8 status; /**< L2 status byte */
     u8 rsp_len; /**< Length of incoming data */

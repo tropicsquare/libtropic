@@ -1,6 +1,6 @@
 
 /**
- * @file test_lt_l3.c
+ * @file test_lt_l3_transfer.c
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -10,7 +10,7 @@
 #include "string.h"
 
 #include "libtropic_common.h"
-#include "lt_l3.h"
+#include "lt_l3_transfer.h"
 
 #include "mock_lt_l2.h"
 #include "mock_lt_aesgcm.h"

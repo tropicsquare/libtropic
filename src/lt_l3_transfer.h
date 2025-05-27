@@ -1,8 +1,8 @@
-#ifndef LT_L3_H
-#define LT_L3_H
+#ifndef LT_L3_TRANSFER_H
+#define LT_L3_TRANSFER_H
 
 /**
- * @defgroup group_l3_functions Layer 3 functions
+ * @defgroup group_l3_functions Layer 3 transfer functions
  * @brief Used internally
  * @details Function used during l3 operation.
  *
@@ -10,8 +10,8 @@
  */
 
 /**
- * @file lt_l3.h
- * @brief Layer 3 functions declarations
+ * @file lt_l3_transfer.h
+ * @brief Layer 3 transfer functions declarations
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.

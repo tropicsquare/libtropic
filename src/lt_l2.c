@@ -22,32 +22,37 @@
  */
 #define MAX_LOOPS 42
 
-lt_ret_t lt_l2_transfer(lt_handle_t *h)
+lt_ret_t lt_l2_send(lt_handle_t *h)
 {
-#ifdef LIBT_DEBUG
     if(!h) {
         return LT_PARAM_ERR;
     }
-#endif
+
     add_crc(h->l2_buff);
 
     uint8_t len = h->l2_buff[1];
 
-    int ret = lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
-    if(ret != LT_OK) {
-        return ret;
+    return lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
+}
+
+
+lt_ret_t lt_l2_receive(lt_handle_t *h)
+{
+    if(!h) {
+        return LT_PARAM_ERR;
     }
 
-    ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+    lt_ret_t ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
     if(ret != LT_OK) {
         return ret;
     }
 
     ret = lt_l2_frame_check(h->l2_buff);
-    // We can ask TROPIC01 to resend the last response. It makes sense to do it if
-    // lt_l2_frame_check() returned CRC error or some generic error.
+
     if((ret == LT_L2_CRC_ERR) || (ret == LT_L2_GEN_ERR)) {
-        // Payload's CRC is not OK, let's try to resend it three times
+        // There was an error when checking received data.
+        // Let's consider that length byte is correct, but CRC is not.
+        // We try three times to resend the last response.
         for(int i=0; i<3; i++) {
 
             // Setup a request pointer to l2 buffer, which is placed in handle
@@ -55,7 +60,7 @@ lt_ret_t lt_l2_transfer(lt_handle_t *h)
             p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
             p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
 
-            int ret = lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
+            int ret = lt_l1_write(h, sizeof(struct lt_l2_resend_req_t), LT_L1_TIMEOUT_MS_DEFAULT);
             if(ret != LT_OK) {
                 return ret;
             }
@@ -77,21 +82,22 @@ lt_ret_t lt_l2_transfer(lt_handle_t *h)
     return ret;
 }
 
-lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
+
+lt_ret_t lt_l2_send_encrypted_cmd(lt_handle_t *h)
 {
-#ifdef LIBT_DEBUG
     if(!h) {
         return LT_PARAM_ERR;
     }
-#endif
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
     int ret = LT_FAIL;
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_encrypted_cmd_req_t *req = (struct lt_l2_encrypted_cmd_req_t*)h->l2_buff;
+    struct lt_l2_send_encrypted_cmd_req_t *req = (struct lt_l2_send_encrypted_cmd_req_t*)h->l2_buff;
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct lt_l2_encrypted_cmd_rsp_t *resp = (struct lt_l2_encrypted_cmd_rsp_t*)h->l2_buff;
-
-    // SENDING PART
+    struct lt_l2_send_encrypted_cmd_rsp_t *resp = (struct lt_l2_send_encrypted_cmd_rsp_t*)h->l2_buff;
 
     struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h->l3_buff;
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
@@ -132,7 +138,21 @@ lt_ret_t lt_l2_encrypted_cmd(lt_handle_t *h)
         }
     }
 
-    // RECEIVING PART
+    return LT_OK;
+}
+
+lt_ret_t lt_l2_recv_encrypted_res(lt_handle_t *h)
+{
+    if(!h) {
+        return LT_PARAM_ERR;
+    }
+    if(h->session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    int ret = LT_FAIL;
+    // Setup a response pointer to l2 buffer, which is placed in handle
+    struct lt_l2_send_encrypted_cmd_rsp_t *resp = (struct lt_l2_send_encrypted_cmd_rsp_t*)h->l2_buff;
 
     // Position into l3 buffer where processed l2 chunk will be copied into
     uint16_t offset = 0;

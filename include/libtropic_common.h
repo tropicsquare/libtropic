@@ -22,44 +22,44 @@ typedef uint32_t u32;
 #define UNUSED(x) (void)(x)
 #endif
 
-/** This particular value means that secure session was succesfully established and it is currently ON */
+/** @brief This particular value means that secure session was succesfully established and it is currently ON */
 #define SESSION_ON   0xA5A55A5A
 
-/** Size of l3 ID field */
+/** @brief Size of l3 ID field */
 #define L3_ID_SIZE 1u
-/** Size of l3 TAG field */
+/** @brief Size of l3 TAG field */
 #define L3_TAG_SIZE 16u
-/** Size of IV */
+/** @brief Size of IV */
 #define L3_IV_SIZE 12u
 
-/** Size of RES_SIZE field */
+/** @brief Size of RES_SIZE field */
 #define L3_RES_SIZE_SIZE sizeof(uint16_t)
-/** Size of CMD_SIZE field */
+/** @brief Size of CMD_SIZE field */
 #define L3_CMD_SIZE_SIZE sizeof(uint16_t)
-/** Size of l3 CMD_ID field */
+/** @brief Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
-/** Maximal size of l3 RES/RSP DATA field */
+/** @brief Maximal size of l3 RES/RSP DATA field */
 #define L3_CMD_DATA_SIZE_MAX (4097)
 
-/** TODO Maximal size of data field in one L2 transfer */
+/** @brief TODO Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
-/** Maximal size of one l2 frame */
+/** @brief Maximal size of one l2 frame */
 #define L2_MAX_FRAME_SIZE (1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
-/** Maximal number of data bytes in one L1 transfer */
+/** @brief Maximal number of data bytes in one L1 transfer */
 #define LT_L1_LEN_MIN 1
-/** Maximal number of data bytes in one L1 transfer */
+/** @brief Maximal number of data bytes in one L1 transfer */
 #define LT_L1_LEN_MAX (1 + 1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
 
-/** Maximum size of l3 ciphertext (or decrypted l3 packet) */
+/** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define L3_PACKET_MAX_SIZE         (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
-/** Max size of one unit of transport on l3 layer */
+/** @brief Max size of one unit of transport on l3 layer */
 #define L3_FRAME_MAX_SIZE         (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
 
-/** Generic L3 command and result frame */
+/** @brief Generic L3 command and result frame */
 struct __attribute__((packed)) lt_l3_gen_frame_t {
-    /** RES_SIZE or CMD_SIZE value */
+    /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
-    /** Command or result data including ID and TAG */
+    /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
@@ -86,82 +86,82 @@ typedef struct lt_handle_t {
     uint8_t l3_buff[L3_FRAME_MAX_SIZE];
 } lt_handle_t;
 
-/** Enum return type */
+/** @brief Enum return type */
 typedef enum {
-    /** Operation was successful */
+    /** @brief Operation was successful */
     LT_OK                                   = 0,
-    /** Operation was not succesfull */
+    /** @brief Operation was not succesfull */
     LT_FAIL                                 = 1,
     /* Host no session */
     LT_HOST_NO_SESSION                      = 2,
-    /** Some parameter was not accepted by function */
+    /** @brief Some parameter was not accepted by function */
     LT_PARAM_ERR                            = 3,
-    /** Error detected during cryptographic operation */
+    /** @brief Error detected during cryptographic operation */
     LT_CRYPTO_ERR                           = 4,
 
-    /** Spi transfer returned error */
+    /** @brief Spi transfer returned error */
     LT_L1_SPI_ERROR                         = 5,
-    /** Data does not have an expected length */
+    /** @brief Data does not have an expected length */
     LT_L1_DATA_LEN_ERROR                    = 6,
-    /** Chip is in STARTUP mode */
+    /** @brief Chip is in STARTUP mode */
     LT_L1_CHIP_STARTUP_MODE                 = 7,
-    /** Chip is in ALARM mode */
+    /** @brief Chip is in ALARM mode */
     LT_L1_CHIP_ALARM_MODE                   = 8,
-    /** Chip is BUSY - typically chip is still booting */
+    /** @brief Chip is BUSY - typically chip is still booting */
     LT_L1_CHIP_BUSY,
-    /** Interrupt pin did not fire as expected */
+    /** @brief Interrupt pin did not fire as expected */
     LT_L1_INT_TIMEOUT,
 
     /** Return values based on RESULT field */
-    /** L3 result [API r_mem_data_write]: write failed, because slot is already written in */
+    /** @brief L3 result [API r_mem_data_write]: write failed, because slot is already written in */
     LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL       = 10,
-    /** L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
+    /** @brief L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
     LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED     = 11,
-    /** L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is invalid. */
+    /** @brief L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is invalid. */
     LT_L3_ECC_INVALID_KEY                   = 12,
-    /** L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter is already at 0. */
+    /** @brief L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter is already at 0. */
     LT_L3_MCOUNTER_UPDATE_UPDATE_ERR        = 13,
-    /** L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
+    /** @brief L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
     LT_L3_COUNTER_INVALID                   = 14,
-    /** L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been written to it yet */
+    /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been written to it yet */
     LT_L3_PAIRING_KEY_EMPTY                 = 15,
-    /** L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has been invalidated */
+    /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has been invalidated */
     LT_L3_PAIRING_KEY_INVALID               = 16,
-    /** L3 command was received correctly*/
+    /** @brief L3 command was received correctly*/
     LT_L3_OK                                = 17,
-    /** L3 command was not received correctly */
+    /** @brief L3 command was not received correctly */
     LT_L3_FAIL                              = 18,
-    /** Current pairing keys are not authorized for execution of the last command */
+    /** @brief Current pairing keys are not authorized for execution of the last command */
     LT_L3_UNAUTHORIZED                      = 19,
-    /** Received L3 command is invalid */
+    /** @brief Received L3 command is invalid */
     LT_L3_INVALID_CMD                       = 20,
-    /** L3 data does not have an expected length */
+    /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR                    = 21,
 
     /** Return values based on STATUS field */
-    /** l2 response frame contains CRC error */
+    /** @brief l2 response frame contains CRC error */
     LT_L2_IN_CRC_ERR                        = 22,
-    /** There is more than one chunk to be expected for a current request */
+    /** @brief There is more than one chunk to be expected for a current request */
     LT_L2_REQ_CONT                          = 23,
-    /** There is more than one chunk to be received for a current response */
+    /** @brief There is more than one chunk to be received for a current response */
     LT_L2_RES_CONT                          = 24,
-    /** There were an error during handshake establishing */
+    /** @brief There were an error during handshake establishing */
     LT_L2_HSK_ERR                           = 25,
-    /** There is no secure session */
+    /** @brief There is no secure session */
     LT_L2_NO_SESSION                        = 26,
-    /** There were error during checking message authenticity */
+    /** @brief There were error during checking message authenticity */
     LT_L2_TAG_ERR                           = 27,
-    /** l2 request contained crc error */
+    /** @brief l2 request contained crc error */
     LT_L2_CRC_ERR                           = 28,
-    /** There were some other error */
+    /** @brief There were some other error */
     LT_L2_GEN_ERR                           = 29,
-    /** Chip has no response to be transmitted */
+    /** @brief Chip has no response to be transmitted */
     LT_L2_NO_RESP                           = 30,
-    /** ID of last request is not known to TROPIC01 */
+    /** @brief ID of last request is not known to TROPIC01 */
     LT_L2_UNKNOWN_REQ                       = 31,
-    /** Returned status byte is not recognized at all */
+    /** @brief Returned status byte is not recognized at all */
     LT_L2_STATUS_NOT_RECOGNIZED             = 32,
-    /** L2 data does not have an expected length */
+    /** @brief L2 data does not have an expected length */
     LT_L2_DATA_LEN_ERROR                    = 33,
 
     LT_L2_LAST_RET                          = 34
@@ -170,9 +170,8 @@ typedef enum {
 #define LT_TROPIC01_REBOOT_DELAY_MS  100
 
 
-////////////////////////////////////////
-
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Mode of operation - whether chip operates in bootloader or in application  */
 #define LT_MODE_STARTUP 1
 #define LT_MODE_APP     0
 
@@ -308,6 +307,7 @@ struct lt_chip_id_t {
 #define LT_L2_GET_INFO_SPECT_FW_SIZE        4
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief BANK ID */
 typedef enum {
     FW_BANK_FW1 = 1, // Firmware bank 1.
     FW_BANK_FW2 = 2, // Firmware bank 2
@@ -326,6 +326,7 @@ typedef enum {
     PAIRING_KEY_SLOT_INDEX_3,
 } pkey_index_t;
 
+/** @brief Structure used to store variables used during establishment of a secure session */
 typedef struct {
     uint8_t ehpriv[32];
     uint8_t ehpub[32];
@@ -334,20 +335,17 @@ typedef struct {
 }session_state_t;
 
 
-
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
 #define LT_L2_SLEEP_KIND_SLEEP 0x05
 /** @brief Deep sleep mode */
 #define LT_L2_SLEEP_KIND_DEEP_SLEEP 0x0a
 
-
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Reboot TROPIC01 chip */
 #define LT_L2_STARTUP_ID_REBOOT 0x01
 /** @brief Reboot TROPIC01 chip and stay in maintenance mode */
 #define LT_L2_STARTUP_ID_MAINTENANCE 0x03
-
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of TROPIC01's log message */
@@ -356,10 +354,6 @@ typedef struct {
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
 #define PING_LEN_MAX                     (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
-
-typedef struct ping_state_t {
-    uint16_t len;
-} ping_state_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
@@ -398,7 +392,6 @@ enum CONFIGURATION_OBJECTS_REGS {
     CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = 0X160,
     CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR = 0X170
   };
-
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of one data slot in bytes */
@@ -439,7 +432,7 @@ typedef enum {
 } ecc_key_origin_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
-
+/** @brief Use to choose one from 16 counters */
 enum lt_mcounter_index_t {
     MCOUNTER_INDEX_0 = 0, MCOUNTER_INDEX_1 = 1, MCOUNTER_INDEX_2 = 2, MCOUNTER_INDEX_3 = 3,
     MCOUNTER_INDEX_4 = 4, MCOUNTER_INDEX_5 = 5, MCOUNTER_INDEX_6 = 6, MCOUNTER_INDEX_7 = 7,
@@ -447,12 +440,10 @@ enum lt_mcounter_index_t {
     MCOUNTER_INDEX_12 = 12, MCOUNTER_INDEX_13 = 13, MCOUNTER_INDEX_14 = 14, MCOUNTER_INDEX_15 = 15
 };
 
-
-
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned MAC-and-Destroy data */
 #define MAC_AND_DESTROY_DATA_SIZE 32u
-/** Maximal number of Mac And Destroy tries possible with TROPIC01 */
+/** @brief Maximal number of Mac And Destroy tries possible with TROPIC01 */
 #define MACANDD_ROUNDS_MAX 128
 
 /** @brief Mac-and-Destroy slot indexes */
@@ -491,16 +482,11 @@ typedef enum {
     MAC_AND_DESTROY_SLOT_124, MAC_AND_DESTROY_SLOT_125, MAC_AND_DESTROY_SLOT_126, MAC_AND_DESTROY_SLOT_127
 } mac_and_destroy_slot_t;
 
-
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned serial code */
 #define SERIAL_CODE_SIZE 32u
 
-
-
-
 //---------------------------------------------------------------------------------------------------------------------//
-
 /** @brief Macro to controll which session can access command targeting content of pairing key SH0 */
 #define TO_PAIRING_KEY_SH0(x)     ((x) << 0)
 /** @brief Macro to controll which session can access command targeting content of pairing key SH1 */
@@ -548,44 +534,5 @@ struct lt_config_obj_desc_t {
 struct lt_config_t {
     uint32_t obj[27];
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif

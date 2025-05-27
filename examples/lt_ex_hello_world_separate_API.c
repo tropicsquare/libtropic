@@ -9,7 +9,7 @@
 #include "string.h"
 #include "inttypes.h"
 
-#include "libtropic_separated_API.h"
+#include "lt_l3.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 
@@ -64,9 +64,11 @@ static int session_H0(void)
 
     // handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel to TROPIC01
 
-    // Following l2 function is called on remote host
-    LT_LOG("%s", "lt_l2_transfer() ");
-    LT_ASSERT(LT_OK, lt_l2_transfer(&h));
+    // Following l2 functions are called on remote host
+    LT_LOG("%s", "lt_l2_send() ");
+    LT_ASSERT(LT_OK, lt_l2_send(&h));
+    LT_LOG("%s", "lt_l2_receive() ");
+    LT_ASSERT(LT_OK, lt_l2_receive(&h));
 
     // Handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel back to the server
 
@@ -81,16 +83,16 @@ static int session_H0(void)
     uint8_t out[100] = {0};
     memcpy(out, "This is Hello World message from TROPIC01!!", 43);
 
-    ping_state_t ping_state = {0};
-
     LT_LOG("%s", "lt_out__ping() ");
-    LT_ASSERT(LT_OK, lt_out__ping(&h, &ping_state, out, 43));
+    LT_ASSERT(LT_OK, lt_out__ping(&h, out, 43));
 
-    LT_LOG("%s", "lt_l2_encrypted_cmd() ");
-    LT_ASSERT(LT_OK, lt_l2_encrypted_cmd(&h));
+    LT_LOG("%s", "lt_l2_send_encrypted_cmd() ");
+    LT_ASSERT(LT_OK, lt_l2_send_encrypted_cmd(&h));
+    LT_LOG("%s", "lt_l2_recv_encrypted_res() ");
+    LT_ASSERT(LT_OK, lt_l2_recv_encrypted_res(&h));
 
     LT_LOG("%s", "lt_in__ping() ");
-    LT_ASSERT(LT_OK, lt_in__ping(&h, &ping_state, in));
+    LT_ASSERT(LT_OK, lt_in__ping(&h, in, 43));
 
     LT_LOG("\t\tMessage: %s", in);
 

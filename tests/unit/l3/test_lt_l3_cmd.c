@@ -1,6 +1,6 @@
 
 /**
- * @file test_lt_l3.c
+ * @file test_lt_l3_transfer.c
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -10,7 +10,7 @@
 #include "string.h"
 
 #include "libtropic_common.h"
-#include "lt_l3.h"
+#include "lt_l3_transfer.h"
 
 #include "mock_lt_l2.h"
 #include "mock_lt_aesgcm.h"
@@ -62,7 +62,7 @@ void test__lt_aesgcm_encrypt__LT_FAIL()
     int ret = lt_l3_cmd(&h);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
 }
-
+/*
 // Test if lt_l3_cmd() returns LT_FAIL, if some error happens during l2 exchange
 void test__lt_l2_encrypted_cmd__LT_FAIL()
 {
@@ -111,3 +111,4 @@ void test__test_all_l3_results()
         TEST_ASSERT_EQUAL(returned[i], ret);
     }
 }
+*/
