@@ -41,7 +41,6 @@
     #define LOG_ERR(...)
     #define LOG_U8_ARRAY(...)
 #endif
-        
 
 typedef struct
 {
@@ -137,6 +136,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
 lt_ret_t lt_port_deinit(lt_handle_t *h)
 {
     UNUSED(h);
+    close(s.gpiofd);
     close(s.fd);
     return LT_OK;
 }
