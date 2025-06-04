@@ -78,6 +78,12 @@ void lt_ex_fw_update(void)
     LT_LOG("\t=======================================================================");
 
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
+
     lt_ret_t ret = LT_FAIL;
 
     lt_init(&h);
@@ -87,7 +93,7 @@ void lt_ex_fw_update(void)
 
     // First check in which mode chip operates, bootloader or application
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if(h.mode == LT_MODE_APP) {
+    if(h.l2.mode == LT_MODE_APP) {
         LT_LOG("  Chip is executing application firmware");
         // App runs so we can see what firmwares are running
         // RISCV app firmware version
@@ -114,7 +120,7 @@ void lt_ex_fw_update(void)
     // Check again mode
     LT_LOG_LINE();
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if(h.mode == LT_MODE_STARTUP) {
+    if(h.l2.mode == LT_MODE_STARTUP) {
         LT_LOG("  Chip is executing bootloader");
         // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:

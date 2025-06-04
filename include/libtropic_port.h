@@ -22,64 +22,64 @@
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise LT_FAIL.
  */
-lt_ret_t lt_port_init(lt_handle_t *h);
+lt_ret_t lt_port_init(lt_l2_state_t *s2);
 
 /**
  * @brief Platform defined deinit function. Deinit resources and clear pins as needed.
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_deinit(lt_handle_t *h);
+lt_ret_t lt_port_deinit(lt_l2_state_t *s2);
 
 /**
  * @brief Set chip select pin low, platform defined function.
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_spi_csn_low(lt_handle_t *h);
+lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2);
 
 /**
  * @brief Set chip select pin high, platform defined function.
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_spi_csn_high(lt_handle_t *h);
+lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2);
 
 /**
  * @brief Do l1 transfer, platform defined function.
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @param tx_len      The length of data to be transferred
  * @param offset      Offset in handle's internal buffer where incomming bytes should be stored into
  * @param timeout     Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout);
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout);
 
 /**
  * @brief Platform defined function for delay, specifies what host platform should do when libtropic's functions need some delay
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @param ms          Time to wait in miliseconds
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms);
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms);
 
 #if LT_USE_INT_PIN
 /**
  * @brief Platform definde function used to specify reading of int pin, used as a signal that chip has a response
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @param ms          Max time to wait in miliseconds
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_delay_on_int(lt_handle_t *h, uint32_t ms);
+lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
 #endif
 /**
  * @brief Fill buffer with random bytes, platform defined function.

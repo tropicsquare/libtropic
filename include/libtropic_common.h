@@ -63,14 +63,19 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
-/**
- * @details This structure holds data related to one physical chip.
- * Contains AESGCM contexts for encrypting and decrypting L3 commands, nonce and device void pointer, which can be used for passing arbitrary data.
- */
-typedef struct lt_handle_t {
+typedef struct  {
     void *device;
-    uint32_t session;
     uint8_t mode;
+    uint8_t buff [1 + L2_MAX_FRAME_SIZE];
+} lt_l2_state_t;
+
+//#define LT_SIZE_OF_L3_BUFF (1000)
+#ifndef LT_SIZE_OF_L3_BUFF
+#define LT_SIZE_OF_L3_BUFF L3_FRAME_MAX_SIZE
+#endif
+
+typedef struct  {
+    uint32_t session;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
 #if LT_USE_TREZOR_CRYPTO
@@ -82,8 +87,24 @@ typedef struct lt_handle_t {
     uint8_t encrypt[352] __attribute__ ((aligned (16)));
     uint8_t decrypt[352] __attribute__ ((aligned (16)));
 #endif
-    uint8_t l2_buff [1 + L2_MAX_FRAME_SIZE];
-    uint8_t l3_buff[L3_FRAME_MAX_SIZE];
+#if LT_SEPARATE_L3_BUFF
+    /** User shall define buffer's array and store its pointer into handle */
+    uint8_t *buff __attribute__ ((aligned (16)));
+#else
+    /** Buffer for L3 commands and results */
+    uint8_t buff[LT_SIZE_OF_L3_BUFF] __attribute__ ((aligned (16)));
+#endif
+    uint16_t buff_len; /**< Length of the buffer */
+} lt_l3_state_t;
+
+
+/**
+ * @details This structure holds data related to one physical chip.
+ * Contains AESGCM contexts for encrypting and decrypting L3 commands, nonce and device void pointer, which can be used for passing arbitrary data.
+ */
+typedef struct lt_handle_t {
+    lt_l2_state_t l2;
+    lt_l3_state_t l3;
 } lt_handle_t;
 
 /** @brief Enum return type */
@@ -175,10 +196,11 @@ typedef enum {
 #define LT_MODE_STARTUP 1
 #define LT_MODE_APP     0
 
+//--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
 #define LT_L2_GET_INFO_REQ_CERT_SIZE         3840
 
-
+//--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
 #define LT_L2_GET_INFO_CHIP_ID_SIZE         128
 
@@ -299,6 +321,7 @@ struct lt_chip_id_t {
     uint8_t rfu_4[24];
 } __attribute__((__packed__));
 
+//--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned RISCV fw version */
 #define LT_L2_GET_INFO_RISCV_FW_SIZE         4
 
@@ -307,6 +330,9 @@ struct lt_chip_id_t {
 #define LT_L2_GET_INFO_SPECT_FW_SIZE        4
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned fw header */
+#define LT_L2_GET_INFO_FW_HEADER_SIZE       20
+
 /** @brief BANK ID */
 typedef enum {
     FW_BANK_FW1 = 1, // Firmware bank 1.
@@ -315,9 +341,7 @@ typedef enum {
     FW_BANK_SPECT2 = 18, // SPECT bank 2
 } bank_id_t;
 
-/** @brief Maximal size of returned fw header */
-#define LT_L2_GET_INFO_FW_HEADER_SIZE       20
-
+//--------------------------------------------------------------------------------------------------------------------//
 /** @brief Pairing key indexes corresponds to S_HiPub */
 typedef enum {
     PAIRING_KEY_SLOT_INDEX_0,
@@ -330,10 +354,8 @@ typedef enum {
 typedef struct {
     uint8_t ehpriv[32];
     uint8_t ehpub[32];
-    uint8_t e_tpub[32];
-    pkey_index_t pkey_index;
+    //pkey_index_t pkey_index;
 }session_state_t;
-
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
@@ -353,7 +375,7 @@ typedef struct {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
-#define PING_LEN_MAX                     (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
+#define PING_LEN_MAX   (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */

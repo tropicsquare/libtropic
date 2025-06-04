@@ -9,6 +9,7 @@
 #include "string.h"
 #include "inttypes.h"
 
+#include "lt_l2.h"
 #include "lt_l3.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
@@ -38,6 +39,11 @@
 static int session_H0(void)
 {
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
 
     lt_init(&h);
 
@@ -66,9 +72,9 @@ static int session_H0(void)
 
     // Following l2 functions are called on remote host
     LT_LOG("%s", "lt_l2_send() ");
-    LT_ASSERT(LT_OK, lt_l2_send(&h));
+    LT_ASSERT(LT_OK, lt_l2_send(&h.l2));
     LT_LOG("%s", "lt_l2_receive() ");
-    LT_ASSERT(LT_OK, lt_l2_receive(&h));
+    LT_ASSERT(LT_OK, lt_l2_receive(&h.l2));
 
     // Handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel back to the server
 
@@ -87,9 +93,9 @@ static int session_H0(void)
     LT_ASSERT(LT_OK, lt_out__ping(&h, out, 43));
 
     LT_LOG("%s", "lt_l2_send_encrypted_cmd() ");
-    LT_ASSERT(LT_OK, lt_l2_send_encrypted_cmd(&h));
+    LT_ASSERT(LT_OK, lt_l2_send_encrypted_cmd(&h.l2, h.l3.buff, 4000));
     LT_LOG("%s", "lt_l2_recv_encrypted_res() ");
-    LT_ASSERT(LT_OK, lt_l2_recv_encrypted_res(&h));
+    LT_ASSERT(LT_OK, lt_l2_recv_encrypted_res(&h.l2, h.l3.buff, 4000));
 
     LT_LOG("%s", "lt_in__ping() ");
     LT_ASSERT(LT_OK, lt_in__ping(&h, in, 43));

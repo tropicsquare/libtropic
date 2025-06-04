@@ -278,11 +278,9 @@ static int server_disconnect(void)
     return close(socket_fd);
 }
 
-lt_ret_t lt_port_init(lt_handle_t *h)
+lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    UNUSED(h);
-    memset(h, 0, sizeof(lt_handle_t));
-
+    UNUSED(s2);
     int ret = server_connect();
     if(ret != 0) {
         return LT_FAIL;
@@ -295,9 +293,9 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_deinit(lt_handle_t *h)
+lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     if(server_disconnect() != 0) {
         return LT_FAIL;
     }
@@ -305,25 +303,24 @@ lt_ret_t lt_port_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_low (lt_handle_t *h)
+lt_ret_t lt_port_spi_csn_low (lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     LOG_OUT("-- Driving Chip Select to Low.\n");
     tx_buffer.TAG = TAG_E_SPI_DRIVE_CSN_LOW;
     return lt_communicate(NULL, NULL);
 }
 
-lt_ret_t lt_port_spi_csn_high (lt_handle_t *h)
+lt_ret_t lt_port_spi_csn_high (lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     LOG_OUT("-- Driving Chip Select to High.\n");
     tx_buffer.TAG = TAG_E_SPI_DRIVE_CSN_HIGH;
     return lt_communicate(NULL, NULL);
 }
 
-lt_ret_t lt_port_spi_transfer (lt_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer (lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
-    UNUSED(h);
     UNUSED(timeout);
 
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
@@ -339,7 +336,7 @@ lt_ret_t lt_port_spi_transfer (lt_handle_t *h, uint8_t offset, uint16_t tx_data_
     tx_buffer.LENGTH = (uint16_t)tx_payload_length;
 
     // copy tx_data to tx payload
-    memcpy(&tx_buffer.PAYLOAD, h->l2_buff, tx_payload_length);
+    memcpy(&tx_buffer.PAYLOAD, s2->buff, tx_payload_length);
 
     int status = lt_communicate(&tx_payload_length, &rx_payload_length);
     if (status != 0)
@@ -347,14 +344,14 @@ lt_ret_t lt_port_spi_transfer (lt_handle_t *h, uint8_t offset, uint16_t tx_data_
         return LT_FAIL;
     }
 
-    memcpy(h->l2_buff + offset, &rx_buffer.PAYLOAD, rx_payload_length);
+    memcpy(s2->buff + offset, &rx_buffer.PAYLOAD, rx_payload_length);
 
     return LT_OK;
 }
 
-lt_ret_t lt_port_delay (lt_handle_t *h, uint32_t wait_time_usecs)
+lt_ret_t lt_port_delay (lt_l2_state_t *s2, uint32_t wait_time_usecs)
 {
-    UNUSED(h);
+    UNUSED(s2);
     LOG_OUT("-- Waiting for the target.\n");
 
     tx_buffer.TAG                     = TAG_E_WAIT;

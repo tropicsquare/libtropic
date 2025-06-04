@@ -22,32 +22,32 @@
  */
 #define MAX_LOOPS 42
 
-lt_ret_t lt_l2_send(lt_handle_t *h)
+lt_ret_t lt_l2_send(lt_l2_state_t *s2)
 {
-    if(!h) {
+    if(!s2) {
         return LT_PARAM_ERR;
     }
 
-    add_crc(h->l2_buff);
+    add_crc(s2->buff);
 
-    uint8_t len = h->l2_buff[1];
+    uint8_t len = s2->buff[1];
 
-    return lt_l1_write(h, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
+    return lt_l1_write(s2, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
 }
 
 
-lt_ret_t lt_l2_receive(lt_handle_t *h)
+lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
 {
-    if(!h) {
+    if(!s2) {
         return LT_PARAM_ERR;
     }
 
-    lt_ret_t ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+    lt_ret_t ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
     if(ret != LT_OK) {
         return ret;
     }
 
-    ret = lt_l2_frame_check(h->l2_buff);
+    ret = lt_l2_frame_check(s2->buff);
 
     if((ret == LT_L2_CRC_ERR) || (ret == LT_L2_GEN_ERR)) {
         // There was an error when checking received data.
@@ -56,21 +56,21 @@ lt_ret_t lt_l2_receive(lt_handle_t *h)
         for(int i=0; i<3; i++) {
 
             // Setup a request pointer to l2 buffer, which is placed in handle
-            struct lt_l2_resend_req_t* p_l2_req = (struct lt_l2_resend_req_t*)&h->l2_buff;
+            struct lt_l2_resend_req_t* p_l2_req = (struct lt_l2_resend_req_t*)s2->buff;
             p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
             p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
 
-            int ret = lt_l1_write(h, sizeof(struct lt_l2_resend_req_t), LT_L1_TIMEOUT_MS_DEFAULT);
+            int ret = lt_l1_write(s2, sizeof(struct lt_l2_resend_req_t), LT_L1_TIMEOUT_MS_DEFAULT);
             if(ret != LT_OK) {
                 return ret;
             }
 
-            ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+            ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
             if(ret != LT_OK) {
                 return ret;
             }
 
-            ret = lt_l2_frame_check(h->l2_buff);
+            ret = lt_l2_frame_check(s2->buff);
             if(ret == LT_OK) {
                  // Payload is ok, returning
                 return LT_OK;
@@ -83,23 +83,29 @@ lt_ret_t lt_l2_receive(lt_handle_t *h)
 }
 
 
-lt_ret_t lt_l2_send_encrypted_cmd(lt_handle_t *h)
+lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len)
 {
-    if(!h) {
-        return LT_PARAM_ERR;
-    }
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
-    }
+    if(!s2
+        // Max len must be definitively smaller than size of l3 buffer
+        || max_len > L3_FRAME_MAX_SIZE
+        || !buff) {
+            return LT_PARAM_ERR;
+        }
 
     int ret = LT_FAIL;
 
-    // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_send_encrypted_cmd_req_t *req = (struct lt_l2_send_encrypted_cmd_req_t*)h->l2_buff;
-    // Setup a response pointer to l2 buffer, which is placed in handle
-    struct lt_l2_send_encrypted_cmd_rsp_t *resp = (struct lt_l2_send_encrypted_cmd_rsp_t*)h->l2_buff;
+    // There is l3 payload in passed buffer.
+    // First check how much data are to be send and if it actually fits into that buffer,
+    // there must be a space for 2B of size value, ?B of command (ID + data) and 16B of TAG.
+    struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)buff;
+    // Prevent sending more data then is the size of compiled l3 buffer
+    if((L3_CMD_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) > max_len) {
+        return LT_L3_DATA_LEN_ERROR;
+    }
 
-    struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)h->l3_buff;
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_send_encrypted_cmd_req_t *req = (struct lt_l2_send_encrypted_cmd_req_t*)s2->buff;
+
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
     uint16_t chunk_num      = ((L3_CMD_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
     // Calculate the length of the last
@@ -115,24 +121,24 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_handle_t *h)
         } else {
             req->req_len = L2_CHUNK_MAX_DATA_SIZE;
         }
-        memcpy(req->l3_chunk, (uint8_t*)&h->l3_buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
+        memcpy(req->l3_chunk, buff + i*L2_CHUNK_MAX_DATA_SIZE, req->req_len);
 
         add_crc(req);
 
         // Send l2 request cointaining a chunk from l3 buff
-        ret = lt_l1_write(h, 2 + req->req_len + 2, LT_L1_TIMEOUT_MS_DEFAULT);
+        ret = lt_l1_write(s2, 2 + req->req_len + 2, LT_L1_TIMEOUT_MS_DEFAULT);
         if(ret != LT_OK) {
             return ret;
         }
 
         // Read a response on this l2 request
-        ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+        ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
         if(ret != LT_OK) {
             return ret;
         }
 
         // Check status byte of this frame
-        ret = lt_l2_frame_check((uint8_t*)resp);
+        ret = lt_l2_frame_check(s2->buff);
         if(ret != LT_OK && ret != LT_L2_REQ_CONT) {
             return ret;
         }
@@ -141,18 +147,18 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_l2_recv_encrypted_res(lt_handle_t *h)
+lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len)
 {
-    if(!h) {
-        return LT_PARAM_ERR;
-    }
-    if(h->session != SESSION_ON) {
-        return LT_HOST_NO_SESSION;
+    if(!s2
+        // Max len must be definitively smaller than size of l3 buffer
+        || max_len > L3_FRAME_MAX_SIZE
+        || !buff) {
+            return LT_PARAM_ERR;
     }
 
     int ret = LT_FAIL;
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct lt_l2_send_encrypted_cmd_rsp_t *resp = (struct lt_l2_send_encrypted_cmd_rsp_t*)h->l2_buff;
+    struct lt_l2_send_encrypted_cmd_rsp_t *resp = (struct lt_l2_send_encrypted_cmd_rsp_t*)s2->buff;
 
     // Position into l3 buffer where processed l2 chunk will be copied into
     uint16_t offset = 0;
@@ -161,27 +167,28 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_handle_t *h)
 
     do {
         /* Get one l2 frame of a device's response */
-        ret = lt_l1_read(h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+        ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
         if(ret != LT_OK) {
             return ret;
         }
-        // Prevent overflow of l3 buffer
-        if (offset + resp->rsp_len > L3_FRAME_MAX_SIZE) {
+
+        // Prevent receiving more data then is compiled size of l3 buffer
+        if (offset + resp->rsp_len > max_len) {
             return LT_L3_DATA_LEN_ERROR;
         }
 
         // Check status byte of this frame
-        ret = lt_l2_frame_check((uint8_t*)resp);
+        ret = lt_l2_frame_check(s2->buff);
         switch (ret) {
             case LT_L2_RES_CONT:
                 // Copy content of l2 into certain offset of l3 buffer
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
+                memcpy(buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
                 offset += resp->rsp_len;
                 loops++;
                 break;
             case LT_OK:
                 // This was last l2 frame of l3 packet, copy it and return
-                memcpy((uint8_t*)&h->l3_buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
+                memcpy(buff + offset, (struct l2_encrypted_rsp_t*)resp->l3_chunk, resp->rsp_len);
                 return LT_OK;
             default:
                 // Any other L2 packet's status is not expected

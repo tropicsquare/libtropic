@@ -33,7 +33,7 @@ lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_low(lt_handle_t *h)
+lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
 {
     UNUSED(h);
 
@@ -45,7 +45,7 @@ lt_ret_t lt_port_spi_csn_low(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_high(lt_handle_t *h)
+lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
 {
     UNUSED(h);
 
@@ -57,7 +57,7 @@ lt_ret_t lt_port_spi_csn_high(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_init(lt_handle_t *h)
+lt_ret_t lt_port_init(lt_l2_state_t *h)
 {
     UNUSED(h);
 
@@ -103,7 +103,7 @@ lt_ret_t lt_port_init(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_deinit(lt_handle_t *h)
+lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 {
     UNUSED(h);
 
@@ -116,12 +116,12 @@ lt_ret_t lt_port_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->l2_buff + offset, h->l2_buff + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout);
     if(ret != HAL_OK) {
         return LT_FAIL;
     }
@@ -129,7 +129,7 @@ lt_ret_t lt_port_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_data_l
     return LT_OK;
 }
 
-lt_ret_t lt_port_delay(lt_handle_t *h, uint32_t ms)
+lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t ms)
 {
     UNUSED(h);
 

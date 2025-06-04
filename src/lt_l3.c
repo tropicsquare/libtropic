@@ -11,7 +11,7 @@
 #include "lt_l1.h"
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"
-#include "lt_l3_transfer.h"
+#include "lt_l3_process.h"
 #include "lt_l3.h"
 #include "lt_l3_api_structs.h"
 #include "lt_x25519.h"
@@ -31,7 +31,11 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
         return LT_PARAM_ERR;
     }
 
-    memset(h, 0, sizeof(lt_handle_t));
+    // In case we reuse handle and use separate l3 buffer, we need to ensure that IV's are zeroed,
+    // because on session start we expect IV's to be 0. It does not hurt to zero them anyway on session start.
+    memset(h->l3.encryption_IV, 0, sizeof(h->l3.encryption_IV));
+    memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
+
     // Create ephemeral host keys
     lt_ret_t ret = lt_random_bytes((uint32_t*)state->ehpriv, 8);
     if(ret != LT_OK) {
@@ -40,7 +44,7 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
     lt_X25519_scalarmult(state->ehpriv, state->ehpub);
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_handshake_req_t* p_req = (struct lt_l2_handshake_req_t*)h->l2_buff;
+    struct lt_l2_handshake_req_t* p_req = (struct lt_l2_handshake_req_t*)h->l2.buff;
 
     p_req->req_id = LT_L2_HANDSHAKE_REQ_ID;
     p_req->req_len = LT_L2_HANDSHAKE_REQ_LEN;
@@ -63,7 +67,7 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_i
     }
 
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct lt_l2_handshake_rsp_t* p_rsp = (struct lt_l2_handshake_rsp_t*)h->l2_buff;
+    struct lt_l2_handshake_rsp_t* p_rsp = (struct lt_l2_handshake_rsp_t*)h->l2.buff;
 
     // Noise_KK1_25519_AESGCM_SHA256\x00\x00\x00
     uint8_t protocol_name[32] = {'N','o','i','s','e','_','K','K','1','_','2','5','5','1','9','_','A','E','S','G','C','M','_','S','H','A','2','5','6',0x00,0x00,0x00};
@@ -124,33 +128,34 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_i
     uint8_t kres[32] = {0};
     lt_hkdf(output_1, 32, (uint8_t*)"", 0, 2, kcmd, kres);
 
-    lt_ret_t ret = lt_aesgcm_init_and_key(&h->decrypt, kauth, 32);
+    lt_ret_t ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kauth, 32);
     if(ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_decrypt(&h->decrypt, h->decryption_IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_tauth, 16u);
+    ret = lt_aesgcm_decrypt(&h->l3.decrypt, h->l3.decryption_IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_tauth, 16u);
     if(ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->encrypt, kcmd, 32);
+    ret = lt_aesgcm_init_and_key(&h->l3.encrypt, kcmd, 32);
     if(ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->decrypt, kres, 32);
+    ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kres, 32);
     if(ret != LT_OK) {
         goto exit;
     }
 
-    h->session = SESSION_ON;
+    h->l3.session = SESSION_ON;
 
     return LT_OK;
 
-// If something went wrong during session keys establishment, better clean up the handle
+// If something went wrong during session keys establishment, better clean up AES GCM contexts
 exit:
-    memset(h, 0, sizeof(lt_handle_t));
+    memset(h->l3.encrypt, 0, 352);
+    memset(h->l3.decrypt, 0, 352);
 
     return ret;
 }
@@ -163,19 +168,19 @@ lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
+    struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = len + LT_L3_PING_CMD_SIZE_MIN;
     p_l3_cmd->cmd_id = LT_L3_PING_CMD_ID;
     memcpy(p_l3_cmd->data_in, msg_out, len);
 
-    return lt_l3_encrypt_request(h);
+    return lt_l3_encrypt_request(&h->l3);
 }
 
 lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len)
@@ -186,17 +191,17 @@ lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_l3_decrypt_response(h);
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
     if(ret != LT_OK) {
         return ret;
     }
 
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
+    struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)h->l3.buff;
 
     // Check incomming l3 length
     if((LT_L3_PING_CMD_SIZE_MIN + len) != (p_l3_res->res_size)) {
@@ -217,12 +222,12 @@ lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const l
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_ECC_KEY_GENERATE_CMD_SIZE;
@@ -230,7 +235,7 @@ lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const l
     p_l3_cmd->slot = (uint8_t)slot;
     p_l3_cmd->curve = (uint8_t)curve;
 
-    return lt_l3_encrypt_request(h);
+    return lt_l3_encrypt_request(&h->l3);
 }
 
 lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h)
@@ -240,13 +245,13 @@ lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
-    lt_ret_t ret = lt_l3_decrypt_response(h);
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
     if(ret != LT_OK) {
         return ret;
     }
 
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)h->l3.buff;
 
     // Check incomming l3 length
     if(LT_L3_ECC_KEY_GENERATE_RES_SIZE != (p_l3_res->res_size)) {
@@ -268,12 +273,12 @@ lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_e
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_store_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_store_cmd_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_store_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_store_cmd_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_ECC_KEY_STORE_CMD_SIZE;
@@ -282,7 +287,7 @@ lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_e
     p_l3_cmd->curve = curve;
     memcpy(p_l3_cmd->k, key, 32);
 
-    return lt_l3_encrypt_request(h);
+    return lt_l3_encrypt_request(&h->l3);
 }
 
 
@@ -292,17 +297,17 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_l3_decrypt_response(h);
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
     if(ret != LT_OK) {
         return ret;
     }
 
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_store_res_t* p_l3_res = (struct lt_l3_ecc_key_store_res_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_store_res_t* p_l3_res = (struct lt_l3_ecc_key_store_res_t*)h->l3.buff;
 
     // Check incomming l3 length
     if(LT_L3_ECC_KEY_STORE_RES_SIZE != (p_l3_res->res_size)) {
@@ -322,19 +327,19 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_ECC_KEY_READ_CMD_SIZE;
     p_l3_cmd->cmd_id= LT_L3_ECC_KEY_READ_CMD_ID;
     p_l3_cmd->slot = slot;
 
-    return lt_l3_encrypt_request(h);
+    return lt_l3_encrypt_request(&h->l3);
 }
 
 lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
@@ -347,17 +352,17 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen,
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_l3_decrypt_response(h);
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
     if(ret != LT_OK) {
         return ret;
     }
 
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)h->l3.buff;
 
     *curve = p_l3_res->curve;
     *origin = p_l3_res->origin;
@@ -394,19 +399,19 @@ lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_ecc_key_erase_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_erase_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_erase_cmd_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
     p_l3_cmd->cmd_id = LT_L3_ECC_KEY_ERASE_CMD_ID;
     p_l3_cmd->slot = slot;
 
-    return lt_l3_encrypt_request(h);
+    return lt_l3_encrypt_request(&h->l3);
 }
 
 lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h)
@@ -414,17 +419,17 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h)
     if( !h
     ) {    return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_l3_decrypt_response(h);
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
     if(ret != LT_OK) {
         return ret;
     }
 
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
+    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)h->l3.buff;
 
     // Check incomming l3 length
     if(LT_L3_ECC_KEY_ERASE_RES_SIZE != (p_l3_res->res_size)) {

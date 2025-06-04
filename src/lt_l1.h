@@ -44,22 +44,22 @@
 /**
  * @brief Read data from Tropic chip into host platform
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @param max_len     Max len of receive buffer
  * @param timeout     Timeout - how long function will wait for response
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_read(lt_handle_t *h, const uint32_t max_len, const uint32_t timeout);
+lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout);
 
 /**
  * @brief Write data from host platform into Tropic chip
  *
- * @param h           Chip's handle
+ * @param s2          Structure holding l2 state
  * @param len         Length of data to send
  * @param timeout     Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_write(lt_handle_t *h, const uint16_t len, const uint32_t timeout);
+lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout);
 
 /** @} */ // end of group_l1_functions
 

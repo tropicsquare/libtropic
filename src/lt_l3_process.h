@@ -35,14 +35,23 @@
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
 #define L3_PAIRING_KEY_INVALID              0x16u
 
-
 /**
- * @details  Initializes nonce in handle to 0. This function is used during secure handshake.
- *
- * @param h           Chip's handle
+ * @brief 
+ * 
+ * @param s3          Structure holding l3 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l3_nonce_init(lt_handle_t *h);
+lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3);
+
+/**
+ * @brief 
+ * 
+ * @param s3          Structure holding l3 state
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
+
+//-----------------
 
 /**
  * @details Perform l3 encrypted command operation. It takes handle's l3 buffer containing l3 command
@@ -52,12 +61,6 @@ lt_ret_t lt_l3_nonce_init(lt_handle_t *h);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l3_cmd(lt_handle_t *h);
-
-
-lt_ret_t lt_l3_encrypt_request(lt_handle_t *h);
-
-
-lt_ret_t lt_l3_decrypt_response(lt_handle_t *h);
 
 /** @} */ // end of group_l3_functions
 
