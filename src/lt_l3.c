@@ -49,7 +49,7 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
     p_req->req_id = LT_L2_HANDSHAKE_REQ_ID;
     p_req->req_len = LT_L2_HANDSHAKE_REQ_LEN;
     memcpy(p_req->e_hpub, state->ehpub, 32);
-    p_req->pkey_index = pkey_index;
+    p_req->pkey_index = (uint8_t)pkey_index;
 
     return LT_OK;
 }

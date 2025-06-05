@@ -104,7 +104,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_send_encrypted_cmd_req_t *req = (struct lt_l2_send_encrypted_cmd_req_t*)s2->buff;
+    struct lt_l2_encrypted_cmd_req_t *req = (struct lt_l2_encrypted_cmd_req_t*)s2->buff;
 
     // Calculate number of chunks to send. At least one chunk needs to be sent, therefore + 1
     uint16_t chunk_num      = ((L3_CMD_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE) / L2_CHUNK_MAX_DATA_SIZE) + 1;
@@ -158,7 +158,7 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
     int ret = LT_FAIL;
     // Setup a response pointer to l2 buffer, which is placed in handle
-    struct lt_l2_send_encrypted_cmd_rsp_t *resp = (struct lt_l2_send_encrypted_cmd_rsp_t*)s2->buff;
+    struct lt_l2_encrypted_cmd_rsp_t *resp = (struct lt_l2_encrypted_cmd_rsp_t*)s2->buff;
 
     // Position into l3 buffer where processed l2 chunk will be copied into
     uint16_t offset = 0;

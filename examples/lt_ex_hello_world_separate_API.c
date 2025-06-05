@@ -114,7 +114,6 @@ int lt_ex_hello_world_separate_API(void)
     LT_LOG("\t=====  TROPIC01 Hello World with separate API                       ===");
     LT_LOG("\t=======================================================================");
 
-
     LT_LOG_LINE();
     LT_LOG("\t Session with H0 keys:");
     if(session_H0() == -1)  {

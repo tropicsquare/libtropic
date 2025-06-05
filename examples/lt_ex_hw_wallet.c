@@ -224,7 +224,7 @@ static int session_initial(void)
     LT_LOG("%s", "Writing pairing key H3");
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, pkey_index_3));
     LT_LOG("%s", "Invalidating SH0PUB pairing key");
-    //LT_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, pkey_index_0));8
+    LT_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, pkey_index_0));
 
     LT_LOG("%s", "Closing session H0");
     LT_ASSERT(LT_OK, lt_session_abort(&h));

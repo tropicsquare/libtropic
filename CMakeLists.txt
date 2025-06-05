@@ -19,7 +19,7 @@ option(LT_HELPERS "Compile helper function" ON)
 # Enable usage of INT pin during communication. Instead of polling for response,
 # host will be notified by INT pin when response is ready.
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
-option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately" OFF)
+option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 
 # Check if cryptography provider is defined
 if(
