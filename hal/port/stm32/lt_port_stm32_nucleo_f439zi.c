@@ -163,4 +163,3 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *h, uint32_t ms)
     return LT_OK;
 }
 #endif
-#endif

@@ -11,7 +11,7 @@
 
 #include "lt_l2.h"
 #include "lt_l3.h"
-#include "libtropic_common.h"
+#include "libtropic.h"
 #include "libtropic_examples.h"
 
 /**
