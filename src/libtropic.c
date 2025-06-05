@@ -103,10 +103,10 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     }
 
     // Setup a request pointer to l2 buffer with request data
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
 
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
 
     // Max cert-store length not read out -> Optimized as being read to read out only needed part!
     int curr_cert = LT_CERT_KIND_DEVICE;
@@ -119,7 +119,12 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
         p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
         p_l2_req->block_index = i;
 
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(&h->l2);
+        if (ret != LT_OK) {
+            return ret;
+        }
+
+        ret = lt_l2_receive(&h->l2);
         if (ret != LT_OK) {
             return ret;
         }
@@ -128,7 +133,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
             return LT_FAIL;
         }
 
-        uint8_t *head = ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object;
+        uint8_t *head = ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object;
         uint8_t *tail = head + TS_GET_INFO_BLOCK_LEN;
 
         // Parse the header - Gets lengths and checks buffers are large enough
@@ -1579,6 +1584,8 @@ static const char *lt_ret_strs[] = {
     "LT_L2_STATUS_NOT_RECOGNIZED",
     "LT_L2_DATA_LEN_ERROR",
     "LT_CERT_STORE_INVALID"
+    "LT_CERT_UNSUPPORTED",
+    "LT_CERT_ITEM_NOT_FOUND"
 };
 
 const char *lt_ret_verbose(lt_ret_t ret)
