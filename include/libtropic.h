@@ -65,16 +65,6 @@ lt_ret_t lt_update_mode(lt_handle_t *h);
  */
 lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len);
 
-/**
- * @brief Verify certificate chain and parse STPUB
- *
- * @param cert        Certificate in DER format
- * @param max_len     Len of certificate buffer
- * @param stpub       TROPIC01 STPUB, unique for each device
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
-
 typedef enum {
     LT_CERT_KIND_DEVICE        = 0,
     LT_CERT_KIND_XXXX          = 1,
