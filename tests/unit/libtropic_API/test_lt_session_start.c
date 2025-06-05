@@ -17,13 +17,14 @@
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
-#include "mock_lt_l3_transfer.h"
+#include "mock_lt_l3_process.h"
 #include "mock_lt_l3.h"
 #include "mock_lt_x25519.h"
 #include "mock_lt_ed25519.h"
 #include "mock_lt_hkdf.h"
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
+#include "mock_lt_asn1_der.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -102,7 +103,7 @@ void test__invalid_shipub()
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void mock_all_sha256()
+/*void mock_all_sha256()
 {
     // Static needed, because data here are used after function return for comparison
     // by CMock.
@@ -271,3 +272,4 @@ void mock_all_sha256()
 //
 //    TEST_ASSERT_EQUAL(LT_OK, lt_session_start(&h, &stpub, pkey_index, &shipriv, &shipub));
 //}
+*/

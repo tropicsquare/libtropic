@@ -50,30 +50,6 @@ lt_ret_t lt_deinit(lt_handle_t *h);
  */
 lt_ret_t lt_update_mode(lt_handle_t *h);
 
-//--------------------------------------------------------------------------------------------------------------------//
-/** @brief Maximal size of TROPIC01's certificate */
-#define LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL         3840
-#define LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE        700
-
-typedef enum {
-    LT_CERT_KIND_DEVICE        = 0,
-    LT_CERT_KIND_XXXX          = 1,
-    LT_CERT_KIND_TROPIC01      = 2,
-    LT_CERT_KIND_TROPIC_ROOT   = 3,
-} lt_cert_kind_t;
-
-#define LT_CERT_STORE_VERSION 1
-#define LT_NUM_CERTIFICATES 4
-
-/**
- * @brief Certificate store contents
- */
-struct lt_cert_store_t {
-    uint8_t  *certs[LT_NUM_CERTIFICATES];       /** Certificates */
-    uint16_t  buf_len[LT_NUM_CERTIFICATES];     /** Length of buffers for certificates */
-    uint16_t  cert_len[LT_NUM_CERTIFICATES];    /** Lenght of certificates (from Cert store header) */
-};
-
 /**
  * @brief Read out PKI chain from Tropic01 certificate store
  *
@@ -221,21 +197,21 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
  * @brief Write pairing public key into TROPIC01's pairing key slot 0-3
  *
  * @param h           Device's handle
- * @param pubkey      32B of pubkey
+ * @param pairing_pub 32B of pubkey
  * @param slot        Pairing key lot SH0PUB - SH3PUB
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8_t slot);
+lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const uint8_t slot);
 
 /**
  * @brief Read pairing public key from TROPIC01's pairing key slot 0-3
  *
  * @param h           Device's handle
- * @param pubkey      32B of pubkey
+ * @param pairing_pub 32B of pubkey
  * @param slot        Pairing key lot SH0PUB - SH3PUB
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot);
+lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t slot);
 
 /**
  * @brief Invalidate pairing key in slo 0-3

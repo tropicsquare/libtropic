@@ -1,6 +1,5 @@
-
 /**
- * @file test_lt_l3_transfer.c
+ * @file test_libtropic__lt_get_info.c
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -8,12 +7,10 @@
 
 #include "unity.h"
 #include "string.h"
+#include "time.h"
+#include <stdlib.h>
 
-#include "libtropic_common.h"
-#include "lt_l3_transfer.h"
-
-#include "mock_lt_l2.h"
-#include "mock_lt_aesgcm.h"
+#include "lt_asn1_der.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -21,6 +18,17 @@
 
 void setUp(void)
 {
+    char buffer[100] = {0};
+    #ifdef RNG_SEED
+        srand(RNG_SEED);
+    #else
+        time_t seed = time(NULL);
+        // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
+        // Also, raw printf is worse solution (without additional debug msgs, such as line).
+        snprintf(buffer, sizeof(buffer), "Using random seed: %ld\n", seed);
+        TEST_MESSAGE(buffer);
+        srand((unsigned int)seed);
+    #endif
 }
 
 void tearDown(void)
@@ -31,32 +39,8 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test__invalid_handle()
-{
-    lt_ret_t ret = lt_l3_nonce_init(NULL);
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, ret);
-}
+
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
-
-// Test correct nonce initialization
-void test_lt_l3_nonce_init___correct()
-{
-    lt_handle_t handle = {0};
-    memset(handle.encryption_IV, 0xff, 12);
-    memset(handle.decryption_IV, 0xff, 12);
-
-    uint8_t expected_1[12] = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
-    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_1, handle.encryption_IV, 12);
-    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_1, handle.decryption_IV, 12);
-
-    int ret = lt_l3_nonce_init(&handle);
-    TEST_ASSERT_EQUAL(LT_OK, ret);
-
-    uint8_t expected_2[12] = {0};
-    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_2, handle.encryption_IV, 12);
-    TEST_ASSERT_EQUAL_UINT8_ARRAY(expected_2, handle.decryption_IV, 12);
-}

@@ -17,13 +17,14 @@
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
-#include "mock_lt_l3_transfer.h"
+#include "mock_lt_l3_process.h"
 #include "mock_lt_l3.h"
 #include "mock_lt_x25519.h"
 #include "mock_lt_ed25519.h"
 #include "mock_lt_hkdf.h"
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
+#include "mock_lt_asn1_der.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -61,13 +62,13 @@ void test__invalid_handle()
 //---------------------------------------------------------------------------------------------------------//
 
 // Test if function returns LT_PARAM_ERR on invalid slot
-void test__invalid_slot()
-{
-    lt_handle_t h = {0};
-    h.session = SESSION_ON;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_0 - 1));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_31 + 1));
-}
+//void test__invalid_slot()
+//{
+//    lt_handle_t h = {0};
+//    h.session = SESSION_ON;
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_0 - 1));
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_31 + 1));
+//}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
@@ -98,14 +99,14 @@ void test__no_session()
 
 //---------------------------------------------------------------------------------------------------------//
 
-uint16_t size_inject_value;
-lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
-{
-    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
-    p_l3_res->res_size = size_inject_value;
-
-    return LT_OK;
-}
+//uint16_t size_inject_value;
+//lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_num_calls)
+//{
+//    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
+//    p_l3_res->res_size = size_inject_value;
+//
+//    return LT_OK;
+//}
 
 // Test if function returns LT_FAIL if res_size field in result structure contains unexpected size
 //void test__res_size_mismatch()

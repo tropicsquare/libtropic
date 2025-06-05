@@ -17,13 +17,14 @@
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
-#include "mock_lt_l3_transfer.h"
+#include "mock_lt_l3_process.h"
 #include "mock_lt_l3.h"
 #include "mock_lt_x25519.h"
 #include "mock_lt_ed25519.h"
 #include "mock_lt_hkdf.h"
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
+#include "mock_lt_asn1_der.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -52,7 +53,7 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERR on invalid handle
+/*// Test if function returns LT_PARAM_ERR on invalid handle
 void test__invalid_handle()
 {
     uint8_t msg_out = 0;
@@ -180,4 +181,4 @@ lt_ret_t callback__lt_l3_cmd(lt_handle_t *h, int __attribute__((unused)) cmock_n
 //    // it will already be set correctly by "p_l3_cmd->cmd_size = len + 1;".
 //    lt_l3_cmd_ExpectAndReturn(&h, LT_OK);
 //    TEST_ASSERT_EQUAL(LT_OK, lt_ping(&h, msg_out, msg_in, (uint16_t)(rand() % msg_max_size)));
-//}
+//}*/

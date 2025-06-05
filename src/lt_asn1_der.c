@@ -13,7 +13,6 @@
 #include <stdio.h>
 
 #include <lt_asn1_der.h>
-#include <libtropic_examples.h>
 
 // Uncomment to enable parser logging
 //#define ASNDER_LOG_EN

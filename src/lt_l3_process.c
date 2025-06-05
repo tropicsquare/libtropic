@@ -1,5 +1,5 @@
 /**
- * @file lt_l3_transfer.c
+ * @file lt_l3_process.c
  * @brief Layer 3 functions definitions
  * @author Tropic Square s.r.o.
  *
@@ -100,7 +100,6 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
     }
 
 }
-//-------------
 
 lt_ret_t lt_l3_cmd(lt_handle_t *h)
 {

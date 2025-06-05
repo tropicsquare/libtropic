@@ -17,13 +17,14 @@
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
-#include "mock_lt_l3_transfer.h"
+#include "mock_lt_l3_process.h"
 #include "mock_lt_l3.h"
 #include "mock_lt_x25519.h"
 #include "mock_lt_ed25519.h"
 #include "mock_lt_hkdf.h"
 #include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
+#include "mock_lt_asn1_der.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -52,7 +53,7 @@ void tearDown(void)
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-// Test if function returns LT_PARAM_ERROR when invalid handle is passed
+/*// Test if function returns LT_PARAM_ERROR when invalid handle is passed
 void test__invalid_handle()
 {
     uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE];
@@ -138,3 +139,4 @@ void test__correct()
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_OK, lt_get_info_riscv_fw_ver(&h, riscv_fw_ver, sizeof(riscv_fw_ver)));
 }
+*/

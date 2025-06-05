@@ -44,8 +44,8 @@ void test__lt_port_init_LT_FAIL()
 {
     lt_handle_t h = {0};
 
-    lt_port_deinit_ExpectAndReturn(&h, LT_FAIL);
-    lt_ret_t ret = lt_l1_deinit(&h);
+    lt_port_deinit_ExpectAndReturn(&h.l2, LT_FAIL);
+    lt_ret_t ret = lt_l1_deinit(&h.l2);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
 }
 
@@ -54,7 +54,7 @@ void test__correct()
 {
     lt_handle_t h = {0};
 
-    lt_port_deinit_ExpectAndReturn(&h, LT_OK);
-    lt_ret_t ret = lt_l1_deinit(&h);
+    lt_port_deinit_ExpectAndReturn(&h.l2, LT_OK);
+    lt_ret_t ret = lt_l1_deinit(&h.l2);
     TEST_ASSERT_EQUAL(LT_OK, ret);
 }

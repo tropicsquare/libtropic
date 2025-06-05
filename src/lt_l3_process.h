@@ -10,7 +10,7 @@
  */
 
 /**
- * @file lt_l3_transfer.h
+ * @file lt_l3_process.h
  * @brief Layer 3 transfer functions declarations
  * @author Tropic Square s.r.o.
  *

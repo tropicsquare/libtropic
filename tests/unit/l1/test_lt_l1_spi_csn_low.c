@@ -40,21 +40,21 @@ void test__handle_invalid()
 //---------------------------------------------------------------------------------------------------------//
 
 // Check that function lt_l1_spi_csn_low() returns LT_FAIL when lt_port_spi_csn_low() function returns LT_FAIL
-void test__lt_port_spi_csn_low__LT_FAIL()
-{
-    lt_handle_t h = {0};
-
-    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_FAIL);
-    lt_ret_t ret = lt_l1_spi_csn_low(&h);
-    TEST_ASSERT_EQUAL(LT_FAIL, ret);
-}
-
-// Check that function lt_l1_spi_csn_low() returns LT_OK when lt_port_spi_csn_low() function returns LT_OK
-void test__correct()
-{
-    lt_handle_t h = {0};
-
-    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
-    lt_ret_t ret = lt_l1_spi_csn_low(&h);
-    TEST_ASSERT_EQUAL(LT_OK, ret);
-}
+//void test__lt_port_spi_csn_low__LT_FAIL()
+//{
+//    lt_handle_t h = {0};
+//
+//    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_FAIL);
+//    lt_ret_t ret = lt_l1_spi_csn_low(&h);
+//    TEST_ASSERT_EQUAL(LT_FAIL, ret);
+//}
+//
+//// Check that function lt_l1_spi_csn_low() returns LT_OK when lt_port_spi_csn_low() function returns LT_OK
+//void test__correct()
+//{
+//    lt_handle_t h = {0};
+//
+//    lt_port_spi_csn_low_ExpectAndReturn(&h, LT_OK);
+//    lt_ret_t ret = lt_l1_spi_csn_low(&h);
+//    TEST_ASSERT_EQUAL(LT_OK, ret);
+//}

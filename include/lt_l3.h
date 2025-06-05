@@ -74,6 +74,31 @@ lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len
  */
 lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len);
 
+lt_ret_t lt_out__pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const uint8_t slot);
+lt_ret_t lt_in__pairing_key_write(lt_handle_t *h);
+
+lt_ret_t lt_out__pairing_key_read(lt_handle_t *h, const uint8_t slot);
+lt_ret_t lt_in__pairing_key_read(lt_handle_t *h, uint8_t *pubkey);
+
+lt_ret_t lt_out__pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
+lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
+
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
+lt_ret_t lt_in__r_config_write(lt_handle_t *h);
+
+lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
+lt_ret_t lt_in__r_config_read(lt_handle_t *h, uint32_t *obj);
+
+lt_ret_t lt_out__r_config_erase(lt_handle_t *h);
+lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
+
+lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
+lt_ret_t lt_in__i_config_write(lt_handle_t *h);
+
+lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
+lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
+
+
 /**
  * @brief Prepares ECC key generation command payload. Used for separate l3 communication, for more information read info at the top of this file.
  *

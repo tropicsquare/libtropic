@@ -1,17 +1,30 @@
 /**
- * @file test_lt_l1_port_wrap.c
+ * @file test_libtropic__lt_get_info.c
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "unity.h"
+#include "string.h"
+#include "time.h"
 
 #include "libtropic_common.h"
-#include "lt_l1_port_wrap.h"
-#include "lt_l1.h"
+#include "libtropic.h"
+#include "lt_l2_api_structs.h"
 
-#include "mock_libtropic_port.h"
+#include "mock_lt_random.h"
+#include "mock_lt_l1_port_wrap.h"
+#include "mock_lt_l1.h"
+#include "mock_lt_l2.h"
+#include "mock_lt_l3_process.h"
+#include "mock_lt_l3.h"
+#include "mock_lt_x25519.h"
+#include "mock_lt_ed25519.h"
+#include "mock_lt_hkdf.h"
+#include "mock_lt_sha256.h"
+#include "mock_lt_aesgcm.h"
+#include "mock_lt_asn1_der.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -19,6 +32,17 @@
 
 void setUp(void)
 {
+    char buffer[100] = {0};
+    #ifdef RNG_SEED
+        srand(RNG_SEED);
+    #else
+        time_t seed = time(NULL);
+        // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
+        // Also, raw printf is worse solution (without additional debug msgs, such as line).
+        snprintf(buffer, sizeof(buffer), "Using random seed: %ld\n", seed);
+        TEST_MESSAGE(buffer);
+        srand((unsigned int)seed);
+    #endif
 }
 
 void tearDown(void)
@@ -30,32 +54,7 @@ void tearDown(void)
 //---------------------------------------------------------------------------------------------------------//
 
 
-// Test if function returns LT_PARAM_ERR on non valid input parameter
-void test_lt_l1_init__invalid_handle()
-{
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_init(NULL));
-}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
-
-// Check that function lt_l1_init() returns LT_FAIL when lt_port_init() function returns LT_FAIL
-//void test__lt_port_init_LT_FAIL()
-//{
-//    lt_handle_t h = {0};
-//
-//    lt_port_init_ExpectAndReturn(&h, LT_FAIL);
-//    lt_ret_t ret = lt_l1_init(&h);
-//    TEST_ASSERT_EQUAL(LT_FAIL, ret);
-//}
-//
-//// Check that function lt_l1_init() returns LT_OK when lt_port_init() function returns LT_OK
-//void test__correct()
-//{
-//    lt_handle_t h = {0};
-//
-//    lt_port_init_ExpectAndReturn(&h, LT_OK);
-//    lt_ret_t ret = lt_l1_init(&h);
-//    TEST_ASSERT_EQUAL(LT_OK, ret);
-//}

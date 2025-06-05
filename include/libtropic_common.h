@@ -206,7 +206,27 @@ typedef enum {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
-#define LT_L2_GET_INFO_REQ_CERT_SIZE         3840
+#define LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL   3840
+#define LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE  700
+
+typedef enum {
+    LT_CERT_KIND_DEVICE        = 0,
+    LT_CERT_KIND_XXXX          = 1,
+    LT_CERT_KIND_TROPIC01      = 2,
+    LT_CERT_KIND_TROPIC_ROOT   = 3,
+} lt_cert_kind_t;
+
+#define LT_CERT_STORE_VERSION 1
+#define LT_NUM_CERTIFICATES 4
+
+/**
+ * @brief Certificate store contents
+ */
+struct lt_cert_store_t {
+    uint8_t  *certs[LT_NUM_CERTIFICATES];       /** Certificates */
+    uint16_t  buf_len[LT_NUM_CERTIFICATES];     /** Length of buffers for certificates */
+    uint16_t  cert_len[LT_NUM_CERTIFICATES];    /** Lenght of certificates (from Cert store header) */
+};
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
