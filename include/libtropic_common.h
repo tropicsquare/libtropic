@@ -185,7 +185,15 @@ typedef enum {
     /** @brief L2 data does not have an expected length */
     LT_L2_DATA_LEN_ERROR                    = 33,
 
-    LT_L2_LAST_RET                          = 34
+    /** Certificate store related errors */
+    /** Certificate store likely does not contain valid data */
+    LT_CERT_STORE_INVALID                   = 34,
+    /** Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
+    LT_CERT_UNSUPPORTED                     = 35,
+    /** Certificate does not contain requested item */
+    LT_CERT_ITEM_NOT_FOUND                  = 36,
+
+    LT_L2_LAST_RET                          = 37
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS  100

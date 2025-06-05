@@ -90,6 +90,7 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
 )
 
 set(SDK_INCS ${SDK_INCS}
@@ -105,6 +106,7 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3_process.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.h
 )
 set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
@@ -141,6 +143,9 @@ if(LT_ADD_FUNC_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_i_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/

@@ -49,15 +49,27 @@ static int session_H0(void)
 
     LT_LOG("%s", "Establish session with H0");
 
-    // First we need to get certificate from TROPIC01
-    LT_LOG("%s", "lt_get_info_cert() ");
-    uint8_t X509_cert[LT_L2_GET_INFO_REQ_CERT_SIZE] = {0};
-    LT_ASSERT(LT_OK, lt_get_info_cert(&h, X509_cert, LT_L2_GET_INFO_REQ_CERT_SIZE));
+    // First we need to get certificate store from TROPIC01
+    LT_LOG("%s", "lt_get_info_cert_store()");
 
-    // Then we need to verify the certificate and parse stpub out of it
-    LT_LOG("%s", "lt_cert_verify_and_parse() ");
+    uint8_t cert1[700] = {0};
+    uint8_t cert2[700] = {0};
+    uint8_t cert3[700] = {0};
+    uint8_t cert4[700] = {0};
+
+    struct lt_cert_store_t store = {
+        .cert_len   = {0, 0, 0, 0},
+        .buf_len    = {700, 700, 700, 700},
+        .certs      = {cert1, cert2, cert3, cert4}
+    };
+
+    LT_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
+
+    // Then we need to get stpub out of it
+    // We don't verify certificate chain here. This is intended in separate example
+    LT_LOG("%s", "lt_get_st_pub() ");
     uint8_t stpub[32] = {0};
-    LT_ASSERT(LT_OK, lt_cert_verify_and_parse(X509_cert, LT_L2_GET_INFO_REQ_CERT_SIZE, stpub));
+    LT_ASSERT(LT_OK, lt_get_st_pub(&store, stpub, 32));
 
     //---------------------------------------------------------------------------------------//
     // Separated API calls for starting a secure session:

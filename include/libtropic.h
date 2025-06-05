@@ -50,25 +50,52 @@ lt_ret_t lt_deinit(lt_handle_t *h);
  */
 lt_ret_t lt_update_mode(lt_handle_t *h);
 
-/**
- * @brief Get device's certificate
- *
- * @param h           Device's handle
- * @param cert        Certificate's buffer
- * @param max_len     Length of certificate's buffer
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len);
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of TROPIC01's certificate */
+#define LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL         3840
+#define LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE        700
+
+typedef enum {
+    LT_CERT_KIND_DEVICE        = 0,
+    LT_CERT_KIND_XXXX          = 1,
+    LT_CERT_KIND_TROPIC01      = 2,
+    LT_CERT_KIND_TROPIC_ROOT   = 3,
+} lt_cert_kind_t;
+
+#define LT_CERT_STORE_VERSION 1
+#define LT_NUM_CERTIFICATES 4
 
 /**
- * @brief Verify certificate chain and parse STPUB
+ * @brief Certificate store contents
+ */
+struct lt_cert_store_t {
+    uint8_t  *certs[LT_NUM_CERTIFICATES];       /** Certificates */
+    uint16_t  buf_len[LT_NUM_CERTIFICATES];     /** Length of buffers for certificates */
+    uint16_t  cert_len[LT_NUM_CERTIFICATES];    /** Lenght of certificates (from Cert store header) */
+};
+
+/**
+ * @brief Read out PKI chain from Tropic01 certificate store
  *
- * @param cert        Certificate in DER format
- * @param max_len     Len of certificate buffer
- * @param stpub       TROPIC01 STPUB, unique for each device
+ * @param h           Device's handle
+ * @param store       Certificate store handle to be filled
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_cert_verify_and_parse(const uint8_t *cert, const uint16_t max_len, uint8_t *stpub);
+lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
+
+/**
+ * @brief Extract ST_Pub from certificate store
+ *
+ * @param store       Certificate store handle
+ * @param stpub       TROPIC01 STPUB to be filled, unique for each device
+ * @param stpub_len   Length of buffer for STPub
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len);
+
+//--------------------------------------------------------------------------------------------------------------------//
+/** @brief Maximal size of returned CHIP ID */
+#define LT_L2_GET_INFO_CHIP_ID_SIZE         128
 
 /**
  * @brief Read TROPIC01's CHIP ID
