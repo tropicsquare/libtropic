@@ -38,7 +38,7 @@ int lt_test_dump_i_config(void)
 
     LT_LOG("%s", "I Config");
     for (int i=0; i < (sizeof(struct lt_config_t)/sizeof(uint32_t)); i++) {
-        LT_LOG("%d: 0x%08x", i * 4, i_config.obj[i]);
+        LT_LOG("%d: 0x%08x", i * 4, (unsigned int)i_config.obj[i]);
     }
 
     // Deinit handle

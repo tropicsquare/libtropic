@@ -38,7 +38,7 @@ int lt_test_dump_r_config(void)
 
     LT_LOG("%s", "R Config");
     for (int i=0; i < (sizeof(struct lt_config_t)/sizeof(uint32_t)); i++) {
-        LT_LOG("%d: 0x%08x", i * 4, r_config.obj[i]);
+        LT_LOG("%d: 0x%08x", i * 4, (unsigned int)r_config.obj[i]);
     }
 
     // Deinit handle
