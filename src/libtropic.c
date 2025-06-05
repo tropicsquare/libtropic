@@ -19,22 +19,30 @@
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l3.h"
+#include "lt_l3_process.h"  // TODO remove
 #include "lt_l3_api_structs.h"
 #include "lt_x25519.h"
 #include "lt_ed25519.h"
 #include "lt_hkdf.h"
 #include "lt_sha256.h"
 #include "lt_aesgcm.h"
+
 #include "libtropic.h"
 #include "TROPIC01_configuration_objects.h"
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
+    // When compiling libtropic with l3 buffer embedded into handle, 
+    // define buffer's length here (later used to prevent overflow during communication).
+#if !LT_SEPARATE_L3_BUFF
+    h->l3.buff_len = LT_SIZE_OF_L3_BUFF; // Size of l3 buffer is defined in libtropic_common.h
+#endif
+
     if(!h) {
         return LT_PARAM_ERR;
     }
 
-    lt_ret_t ret = lt_l1_init(h);
+    lt_ret_t ret = lt_l1_init(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -48,7 +56,7 @@ lt_ret_t lt_deinit(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
-    lt_ret_t ret = lt_l1_deinit(h);
+    lt_ret_t ret = lt_l1_deinit(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -64,21 +72,21 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     }
 
     // Transfer just one byte to read CHIP_STATUS byte
-    lt_l1_spi_csn_low(h);
+    lt_l1_spi_csn_low(&h->l2);
 
-    if (lt_l1_spi_transfer(h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT) != LT_OK) {
-        lt_l1_spi_csn_high(h);
+    if (lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT) != LT_OK) {
+        lt_l1_spi_csn_high(&h->l2);
         return LT_L1_SPI_ERROR;
     }
 
-    lt_l1_spi_csn_high(h);
+    lt_l1_spi_csn_high(&h->l2);
 
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
-    if(h->l2_buff[0] & CHIP_MODE_STARTUP_bit) {
-        h->mode = 1;
+    if(h->l2.buff[0] & CHIP_MODE_STARTUP_bit) {
+        h->l2.mode = 1;
     } else {
-        h->mode = 0;
+        h->l2.mode = 0;
     }
 
     return LT_OK;
@@ -94,9 +102,9 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
     }
 
     // Setup a request pointer to l2 buffer with request data
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
 
     for(int8_t i=0; i<(LT_L2_GET_INFO_REQ_CERT_SIZE/128); i++) {
         // Fill l2 request buffer
@@ -109,7 +117,11 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383  = 2, "i" is used
         // LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511  = 3, "i" is used
         p_l2_req->block_index = i;
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(&h->l2);
+        if(ret != LT_OK) {
+            return ret;
+        }
+        ret = lt_l2_receive(&h->l2);
         if(ret != LT_OK) {
             return ret;
         }
@@ -119,7 +131,7 @@ lt_ret_t lt_get_info_cert(lt_handle_t *h, uint8_t *cert, const uint16_t max_len)
             return LT_FAIL;
         }
 
-        memcpy(cert + i*128, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object, 128);
+        memcpy(cert + i*128, ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object, 128);
     }
 
     return LT_OK;
@@ -157,16 +169,20 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID;
     p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -176,7 +192,7 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id)
         return LT_FAIL;
     }
 
-    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object, LT_L2_GET_INFO_CHIP_ID_SIZE);
+    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object, LT_L2_GET_INFO_CHIP_ID_SIZE);
 
     return LT_OK;
 }
@@ -191,16 +207,20 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION;
     p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -210,7 +230,7 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
         return LT_FAIL;
     }
 
-    memcpy(ver, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object, LT_L2_GET_INFO_RISCV_FW_SIZE);
+    memcpy(ver, ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object, LT_L2_GET_INFO_RISCV_FW_SIZE);
 
     return LT_OK;
 }
@@ -224,16 +244,20 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION;
     p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -243,7 +267,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
         return LT_FAIL;
     }
 
-    memcpy(ver, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object, LT_L2_GET_INFO_SPECT_FW_SIZE);
+    memcpy(ver, ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object, LT_L2_GET_INFO_SPECT_FW_SIZE);
 
     return LT_OK;
 }
@@ -259,16 +283,20 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)&h->l2_buff;
+    struct lt_l2_get_info_req_t* p_l2_req = (struct lt_l2_get_info_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
     p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK;
     p_l2_req->block_index = bank_id;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -278,130 +306,47 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
         return LT_FAIL;
     }
 
-    memcpy(header, ((struct lt_l2_get_info_rsp_t*)h->l2_buff)->object, LT_L2_GET_INFO_FW_HEADER_SIZE); //TODO specify and fix size of header
+    memcpy(header, ((struct lt_l2_get_info_rsp_t*)h->l2.buff)->object, LT_L2_GET_INFO_FW_HEADER_SIZE); //TODO specify and fix size of header
 
     return LT_OK;
 }
 
+
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub)
 {
-    if (    !h
-         || !shipriv
-         || !shipub
-         || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)
+    if (   !h
+        || !stpub
+        || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)
+        || !shipriv
+        || !shipub
     ) {
         return LT_PARAM_ERR;
     }
-    memset(h, 0, sizeof(lt_handle_t));
-    // Create ephemeral host keys
-    uint8_t ehpriv[32];
-    uint8_t ehpub[32];
-    lt_ret_t ret = lt_random_bytes((uint32_t*)ehpriv, 8);
-    if(ret != LT_OK) {
-        return ret;
-    }
-    lt_X25519_scalarmult(ehpriv, ehpub);
 
-    // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_handshake_req_t* p_req = (struct lt_l2_handshake_req_t*)h->l2_buff;
-    // Setup a response pointer to l2 buffer, which is placed in handle
-    struct lt_l2_handshake_rsp_t* p_rsp = (struct lt_l2_handshake_rsp_t*)h->l2_buff;
+    session_state_t state;
 
-    p_req->req_id = LT_L2_HANDSHAKE_REQ_ID;
-    p_req->req_len = LT_L2_HANDSHAKE_REQ_LEN;
-    memcpy(p_req->e_hpub, ehpub, 32);
-    p_req->pkey_index = pkey_index;
-
-    ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_out__session_start(h, pkey_index, &state);
     if(ret != LT_OK) {
         return ret;
     }
 
-    //TODO check length here
+    struct lt_l2_handshake_req_t* p_req = (struct lt_l2_handshake_req_t*)h->l2.buff;
+    uint8_t dbg[32];
+    memcpy(dbg, p_req->e_hpub, 32);
 
-    // Noise_KK1_25519_AESGCM_SHA256\x00\x00\x00
-    uint8_t protocol_name[32] = {'N','o','i','s','e','_','K','K','1','_','2','5','5','1','9','_','A','E','S','G','C','M','_','S','H','A','2','5','6',0x00,0x00,0x00};
-    uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
-    // h = SHA_256(protocol_name)
-     lt_crypto_sha256_ctx_t hctx = {0};
-    lt_sha256_init(&hctx);
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, protocol_name, 32);
-    lt_sha256_finish(&hctx, hash);
-
-    // h = SHA256(h||SHiPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, shipub, 32);
-    lt_sha256_finish(&hctx, hash);
-
-    // h = SHA256(h||STPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, stpub, 32);
-    lt_sha256_finish(&hctx, hash);
-
-    // h = SHA256(h||EHPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, ehpub, 32);
-    lt_sha256_finish(&hctx, hash);
-
-    // h = SHA256(h||PKEY_INDEX)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, (uint8_t*)&pkey_index, 1);
-    lt_sha256_finish(&hctx, hash);
-
-    // h = SHA256(h||ETPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, p_rsp->e_tpub, 32);
-    lt_sha256_finish(&hctx, hash);
-
-    // ck = protocol_name
-    uint8_t output_1[33] = {0};
-    uint8_t output_2[32] = {0};
-    // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
-    uint8_t shared_secret[32] = {0};
-    lt_X25519(ehpriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(protocol_name, 32, shared_secret, 32, 1, output_1, output_2);
-    // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
-    lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(output_1, 32, shared_secret, 32, 1, output_1, output_2);
-    // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
-    lt_X25519(ehpriv, stpub, shared_secret);
-    uint8_t kauth[32] = {0};
-    lt_hkdf(output_1, 32, shared_secret, 32, 2, output_1, kauth);
-    // kCMD, kRES = HKDF (ck, emptystring, 2)
-    uint8_t kcmd[32] = {0};
-    uint8_t kres[32] = {0};
-    lt_hkdf(output_1, 32, (uint8_t*)"", 0, 2, kcmd, kres);
-
-    ret = lt_aesgcm_init_and_key(&h->decrypt, kauth, 32);
+    ret = lt_l2_send(&h->l2);
     if(ret != LT_OK) {
-        return LT_CRYPTO_ERR;
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
     }
 
-    ret = lt_aesgcm_decrypt(&h->decrypt, h->IV, 12u, hash, 32, (uint8_t*)"", 0, p_rsp->t_tauth, 16u);
-    if(ret != LT_OK) {
-        return LT_CRYPTO_ERR;
-    }
+    ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &state);
+    memset(&state, 0, sizeof(session_state_t));
 
-    ret = lt_aesgcm_init_and_key(&h->encrypt, kcmd, 32);
-    if(ret != LT_OK) {
-        return LT_CRYPTO_ERR;
-    }
-
-    ret = lt_aesgcm_init_and_key(&h->decrypt, kres, 32);
-    if(ret != LT_OK) {
-        return LT_CRYPTO_ERR;
-    }
-
-    h->session = SESSION_ON;
-    //lt_l3_nonce_init(h);
-    // TODO create goto and clean keys here before leaving if something fails?
-    return LT_OK;
+    return ret;
 }
 
 lt_ret_t lt_session_abort(lt_handle_t *h)
@@ -412,14 +357,18 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_encrypted_session_abt_req_t* p_l2_req = (struct lt_l2_encrypted_session_abt_req_t*)&h->l2_buff;
+    struct lt_l2_encrypted_session_abt_req_t* p_l2_req = (struct lt_l2_encrypted_session_abt_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_encrypted_session_abt_rsp_t* p_l2_resp = (struct lt_l2_encrypted_session_abt_rsp_t*)&h->l2_buff;
+    struct lt_l2_encrypted_session_abt_rsp_t* p_l2_resp = (struct lt_l2_encrypted_session_abt_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_ENCRYPTED_SESSION_ABT_ID;
     p_l2_req->req_len = LT_L2_ENCRYPTED_SESSION_ABT_LEN;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -441,15 +390,19 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_startup_req_t* p_l2_req = (struct lt_l2_startup_req_t*)&h->l2_buff;
+    struct lt_l2_startup_req_t* p_l2_req = (struct lt_l2_startup_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_startup_rsp_t* p_l2_resp = (struct lt_l2_startup_rsp_t*)&h->l2_buff;
+    struct lt_l2_startup_rsp_t* p_l2_resp = (struct lt_l2_startup_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_SLEEP_REQ_ID;
     p_l2_req->req_len = LT_L2_SLEEP_REQ_LEN;
     p_l2_req->startup_id = sleep_kind;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -471,15 +424,19 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_startup_req_t* p_l2_req = (struct lt_l2_startup_req_t*)&h->l2_buff;
+    struct lt_l2_startup_req_t* p_l2_req = (struct lt_l2_startup_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_startup_rsp_t* p_l2_resp = (struct lt_l2_startup_rsp_t*)&h->l2_buff;
+    struct lt_l2_startup_rsp_t* p_l2_resp = (struct lt_l2_startup_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_STARTUP_REQ_ID;
     p_l2_req->req_len = LT_L2_STARTUP_REQ_LEN;
     p_l2_req->startup_id = startup_id;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -489,7 +446,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
         return LT_FAIL;
     }
 
-    lt_l1_delay(h, LT_TROPIC01_REBOOT_DELAY_MS);
+    lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
 
     return LT_OK;
 }
@@ -503,15 +460,19 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_mutable_fw_erase_req_t* p_l2_req = (struct lt_l2_mutable_fw_erase_req_t*)&h->l2_buff;
+    struct lt_l2_mutable_fw_erase_req_t* p_l2_req = (struct lt_l2_mutable_fw_erase_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_mutable_fw_erase_rsp_t* p_l2_resp = (struct lt_l2_mutable_fw_erase_rsp_t*)&h->l2_buff;
+    struct lt_l2_mutable_fw_erase_rsp_t* p_l2_resp = (struct lt_l2_mutable_fw_erase_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_MUTABLE_FW_ERASE_REQ_ID;
     p_l2_req->req_len = LT_L2_MUTABLE_FW_ERASE_REQ_LEN;
     p_l2_req->bank_id = bank_id;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -534,9 +495,9 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_mutable_fw_update_req_t* p_l2_req = (struct lt_l2_mutable_fw_update_req_t*)&h->l2_buff;
+    struct lt_l2_mutable_fw_update_req_t* p_l2_req = (struct lt_l2_mutable_fw_update_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_mutable_fw_update_rsp_t* p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t*)&h->l2_buff;
+    struct lt_l2_mutable_fw_update_rsp_t* p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t*)h->l2.buff;
 
     uint16_t loops = fw_data_size / 128;
     uint16_t rest = fw_data_size % 128;
@@ -548,7 +509,11 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         p_l2_req->offset = i*128;
         memcpy(p_l2_req->data, fw_data + (i*128), 128);
 
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(&h->l2);
+        if(ret != LT_OK) {
+            return ret;
+        }
+        ret = lt_l2_receive(&h->l2);
         if(ret != LT_OK) {
             return ret;
         }
@@ -565,7 +530,11 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         p_l2_req->offset = loops*128;
         memcpy(p_l2_req->data, fw_data + (loops*128), rest);
 
-        lt_ret_t ret = lt_l2_transfer(h);
+        lt_ret_t ret = lt_l2_send(&h->l2);
+        if(ret != LT_OK) {
+            return ret;
+        }
+        ret = lt_l2_receive(&h->l2);
         if(ret != LT_OK) {
             return ret;
         }
@@ -588,14 +557,18 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_get_log_req_t* p_l2_req = (struct lt_l2_get_log_req_t*)&h->l2_buff;
+    struct lt_l2_get_log_req_t* p_l2_req = (struct lt_l2_get_log_req_t*)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_log_rsp_t* p_l2_resp = (struct lt_l2_get_log_rsp_t*)&h->l2_buff;
+    struct lt_l2_get_log_rsp_t* p_l2_resp = (struct lt_l2_get_log_rsp_t*)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_GET_LOG_REQ_ID;
     p_l2_req->req_len = LT_L2_GET_LOG_REQ_LEN;
 
-    lt_ret_t ret = lt_l2_transfer(h);
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
     if(ret != LT_OK) {
         return ret;
     }
@@ -610,41 +583,33 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
 
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
 {
-    if(    (len > PING_LEN_MAX)
-        || !h
+    if(    !h
         || !msg_out
         || !msg_in
+        || (len > PING_LEN_MAX)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ping_cmd_t* p_l3_cmd = (struct lt_l3_ping_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ping_res_t* p_l3_res = (struct lt_l3_ping_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = len + LT_L3_PING_CMD_SIZE_MIN;
-    p_l3_cmd->cmd_id = LT_L3_PING_CMD_ID;
-    memcpy(p_l3_cmd->data_in, msg_out, len);
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ping(h, msg_out, len);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if(len != (p_l3_res->res_size - LT_L3_PING_CMD_SIZE_MIN))
-    {
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    memcpy(msg_in, p_l3_res->data_out, len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
-    return LT_OK;
+    return lt_in__ping(h, msg_in, len);
 }
 
 lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8_t slot)
@@ -655,14 +620,14 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pubkey, const uint8
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_pairing_key_write_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_write_cmd_t*)&h->l3_buff;
+    struct lt_l3_pairing_key_write_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_write_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)&h->l3_buff;
+    struct lt_l3_pairing_key_write_res_t* p_l3_res = (struct lt_l3_pairing_key_write_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_PAIRING_KEY_WRITE_CMD_SIZE;
@@ -691,14 +656,14 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pubkey, const uint8_t slot
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_pairing_key_read_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_read_cmd_t*)&h->l3_buff;
+    struct lt_l3_pairing_key_read_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_read_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)&h->l3_buff;
+    struct lt_l3_pairing_key_read_res_t* p_l3_res = (struct lt_l3_pairing_key_read_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_PAIRING_KEY_READ_CMD_SIZE;
@@ -727,14 +692,14 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_pairing_key_invalidate_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_invalidate_cmd_t*)&h->l3_buff;
+    struct lt_l3_pairing_key_invalidate_cmd_t * p_l3_cmd = (struct lt_l3_pairing_key_invalidate_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_pairing_key_invalidate_res_t* p_l3_res = (struct lt_l3_pairing_key_invalidate_res_t*)&h->l3_buff;
+    struct lt_l3_pairing_key_invalidate_res_t* p_l3_res = (struct lt_l3_pairing_key_invalidate_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_PAIRING_KEY_INVALIDATE_CMD_SIZE;
@@ -800,14 +765,14 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
         ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_r_config_write_cmd_t* p_l3_cmd = (struct lt_l3_r_config_write_cmd_t*)&h->l3_buff;
+    struct lt_l3_r_config_write_cmd_t* p_l3_cmd = (struct lt_l3_r_config_write_cmd_t*)h->l3.buff;
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_r_config_write_res_t* p_l3_res = (struct lt_l3_r_config_write_res_t*)&h->l3_buff;
+    struct lt_l3_r_config_write_res_t* p_l3_res = (struct lt_l3_r_config_write_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_R_CONFIG_WRITE_CMD_SIZE;
@@ -836,14 +801,14 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
         ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_r_config_read_cmd_t* p_l3_cmd = (struct lt_l3_r_config_read_cmd_t*)&h->l3_buff;
+    struct lt_l3_r_config_read_cmd_t* p_l3_cmd = (struct lt_l3_r_config_read_cmd_t*)h->l3.buff;
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_r_config_read_res_t* p_l3_res = (struct lt_l3_r_config_read_res_t*)&h->l3_buff;
+    struct lt_l3_r_config_read_res_t* p_l3_res = (struct lt_l3_r_config_read_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_R_CONFIG_READ_CMD_SIZE;
@@ -870,14 +835,14 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
     if(!h) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_r_config_erase_cmd_t* p_l3_cmd = (struct lt_l3_r_config_erase_cmd_t*)&h->l3_buff;
+    struct lt_l3_r_config_erase_cmd_t* p_l3_cmd = (struct lt_l3_r_config_erase_cmd_t*)h->l3.buff;
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_r_config_erase_res_t* p_l3_res = (struct lt_l3_r_config_erase_res_t*)&h->l3_buff;
+    struct lt_l3_r_config_erase_res_t* p_l3_res = (struct lt_l3_r_config_erase_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_R_CONFIG_ERASE_CMD_SIZE;
@@ -904,14 +869,14 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_i_config_write_cmd_t* p_l3_cmd = (struct lt_l3_i_config_write_cmd_t*)&h->l3_buff;
+    struct lt_l3_i_config_write_cmd_t* p_l3_cmd = (struct lt_l3_i_config_write_cmd_t*)h->l3.buff;
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_i_config_write_res_t* p_l3_res = (struct lt_l3_i_config_write_res_t*)&h->l3_buff;
+    struct lt_l3_i_config_write_res_t* p_l3_res = (struct lt_l3_i_config_write_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_I_CONFIG_WRITE_CMD_SIZE;
@@ -940,14 +905,14 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_i_config_read_cmd_t* p_l3_cmd = (struct lt_l3_i_config_read_cmd_t*)&h->l3_buff;
+    struct lt_l3_i_config_read_cmd_t* p_l3_cmd = (struct lt_l3_i_config_read_cmd_t*)h->l3.buff;
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_i_config_read_res_t* p_l3_res = (struct lt_l3_i_config_read_res_t*)&h->l3_buff;
+    struct lt_l3_i_config_read_res_t* p_l3_res = (struct lt_l3_i_config_read_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_I_CONFIG_READ_CMD_SIZE;
@@ -978,14 +943,14 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_r_mem_data_write_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t*)&h->l3_buff;
+    struct lt_l3_r_mem_data_write_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_r_mem_data_write_res_t* p_l3_res = (struct lt_l3_r_mem_data_write_res_t*)&h->l3_buff;
+    struct lt_l3_r_mem_data_write_res_t* p_l3_res = (struct lt_l3_r_mem_data_write_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = size + 4;
@@ -1015,14 +980,14 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_r_mem_data_read_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_read_cmd_t*)&h->l3_buff;
+    struct lt_l3_r_mem_data_read_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_read_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_r_mem_data_read_res_t* p_l3_res = (struct lt_l3_r_mem_data_read_res_t*)&h->l3_buff;
+    struct lt_l3_r_mem_data_read_res_t* p_l3_res = (struct lt_l3_r_mem_data_read_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_R_MEM_DATA_READ_CMD_SIZE;
@@ -1050,14 +1015,14 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_r_mem_data_erase_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_erase_cmd_t*)&h->l3_buff;
+    struct lt_l3_r_mem_data_erase_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_erase_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_r_mem_data_erase_res_t* p_l3_res = (struct lt_l3_r_mem_data_erase_res_t*)&h->l3_buff;
+    struct lt_l3_r_mem_data_erase_res_t* p_l3_res = (struct lt_l3_r_mem_data_erase_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_R_MEM_DATA_ERASE_CMD_SIZE;
@@ -1085,14 +1050,14 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_random_value_get_cmd_t* p_l3_cmd = (struct lt_l3_random_value_get_cmd_t*)&h->l3_buff;
+    struct lt_l3_random_value_get_cmd_t* p_l3_cmd = (struct lt_l3_random_value_get_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)&h->l3_buff;
+    struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_RANDOM_VALUE_GET_CMD_SIZE;
@@ -1114,6 +1079,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
     return LT_OK;
 }
 
+
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
     if(    !h
@@ -1123,32 +1089,26 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_generate_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_generate_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_generate_res_t* p_l3_res = (struct lt_l3_ecc_key_generate_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_GENERATE_CMD_SIZE;
-    p_l3_cmd->cmd_id = LT_L3_ECC_KEY_GENERATE_CMD_ID;
-    p_l3_cmd->slot = (uint8_t)slot;
-    p_l3_cmd->curve = (uint8_t)curve;
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_generate(h, slot, curve);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if(LT_L3_ECC_KEY_GENERATE_RES_SIZE != (p_l3_res->res_size)) {
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    return LT_OK;
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_in__ecc_key_generate(h);
 }
 
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
@@ -1161,33 +1121,25 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
-
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_store_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_store_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_store_res_t* p_l3_res = (struct lt_l3_ecc_key_store_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_STORE_CMD_SIZE;
-    p_l3_cmd->cmd_id= LT_L3_ECC_KEY_STORE_CMD_ID;
-    p_l3_cmd->slot = slot;
-    p_l3_cmd->curve = curve;
-    memcpy(p_l3_cmd->k, key, 32);
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_store(h, slot, curve, key);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if(LT_L3_ECC_KEY_STORE_RES_SIZE != (p_l3_res->res_size)) {
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    return LT_OK;
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_in__ecc_key_store(h);
 }
 
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
@@ -1201,83 +1153,59 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, co
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
     if(keylen < 64) {
         return LT_PARAM_ERR;
     }
 
-    // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecc_key_read_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_read_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_read_res_t* p_l3_res = (struct lt_l3_ecc_key_read_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_READ_CMD_SIZE;
-    p_l3_cmd->cmd_id= LT_L3_ECC_KEY_READ_CMD_ID;
-    p_l3_cmd->slot = slot;
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_read(h, slot);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if((p_l3_res->curve == (uint8_t)CURVE_ED25519) && ((p_l3_res->res_size -1-1-1-13) != 32)) {  // TODO make it nicer
-        return LT_FAIL;
-    }
-    if((p_l3_res->curve == (uint8_t)CURVE_P256) && ((p_l3_res->res_size -1-1-1-13) != 64)) {     // TODO make it nicer
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    *curve = p_l3_res->curve;
-    *origin = p_l3_res->origin;
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
-    if((p_l3_res->curve == (uint8_t)CURVE_ED25519)) {
-        memcpy(key, p_l3_res->pub_key, 32);
-    }
-    if((p_l3_res->curve == (uint8_t)CURVE_P256)) {
-        memcpy(key, p_l3_res->pub_key, 64);
-    }
-    // TODO I think that we are not checking exactly curve type in this function?
-    // Function should return fail if curve is neither ED25519 or P256
-    return LT_OK;
+    return lt_in__ecc_key_read(h, key, keylen, curve, origin);
 }
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 {
-    if( !h
+    if(    !h
         || slot < ECC_SLOT_0
         || slot > ECC_SLOT_31
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_ecc_key_erase_cmd_t* p_l3_cmd = (struct lt_l3_ecc_key_erase_cmd_t*)&h->l3_buff;
-    // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecc_key_erase_res_t* p_l3_res = (struct lt_l3_ecc_key_erase_res_t*)&h->l3_buff;
-
-    // Fill l3 buffer
-    p_l3_cmd->cmd_size = LT_L3_ECC_KEY_ERASE_CMD_SIZE;
-    p_l3_cmd->cmd_id = LT_L3_ECC_KEY_ERASE_CMD_ID;
-    p_l3_cmd->slot = slot;
-
-    lt_ret_t ret = lt_l3_cmd(h);
-    if(ret != LT_OK) {
+    lt_ret_t ret = lt_out__ecc_key_erase(h, slot);
+    if (ret != LT_OK) {
         return ret;
     }
 
-    // Check incomming l3 length
-    if(LT_L3_ECC_KEY_ERASE_RES_SIZE != (p_l3_res->res_size)) {
-        return LT_FAIL;
+    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    return LT_OK;
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_in__ecc_key_erase(h);
 }
 
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len)
@@ -1291,7 +1219,7 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1304,9 +1232,9 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     lt_sha256_finish(&hctx, msg_hash);
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t*)&h->l3_buff;
+    struct lt_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_ecdsa_sign_res_t* p_l3_res = (struct lt_l3_ecdsa_sign_res_t*)&h->l3_buff;
+    struct lt_l3_ecdsa_sign_res_t* p_l3_res = (struct lt_l3_ecdsa_sign_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_ECDSA_SIGN_CMD_SIZE;
@@ -1342,14 +1270,14 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t 
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Pointer to access l3 buffer when it contains command data
-    struct lt_l3_eddsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t*)&h->l3_buff;
+    struct lt_l3_eddsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)&h->l3_buff;
+    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_EDDSA_SIGN_CMD_SIZE_MIN + msg_len - 1;   // -1 Because the LT_L3_EDDSA_SIGN_CMD_SIZE_MIN already includes minimal message size 1B
@@ -1398,14 +1326,14 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcount
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_mcounter_init_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_init_cmd_t*)&h->l3_buff;
+    struct lt_l3_mcounter_init_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_init_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_mcounter_init_res_t* p_l3_res = (struct lt_l3_mcounter_init_res_t*)&h->l3_buff;
+    struct lt_l3_mcounter_init_res_t* p_l3_res = (struct lt_l3_mcounter_init_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_MCOUNTER_INIT_CMD_SIZE;
@@ -1432,14 +1360,14 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcou
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_mcounter_update_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_update_cmd_t*)&h->l3_buff;
+    struct lt_l3_mcounter_update_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_update_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_mcounter_update_res_t* p_l3_res = (struct lt_l3_mcounter_update_res_t*)&h->l3_buff;
+    struct lt_l3_mcounter_update_res_t* p_l3_res = (struct lt_l3_mcounter_update_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_MCOUNTER_UPDATE_CMD_SIZE;
@@ -1467,14 +1395,14 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounte
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_mcounter_get_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_get_cmd_t*)&h->l3_buff;
+    struct lt_l3_mcounter_get_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_get_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_mcounter_get_res_t* p_l3_res = (struct lt_l3_mcounter_get_res_t*)&h->l3_buff;
+    struct lt_l3_mcounter_get_res_t* p_l3_res = (struct lt_l3_mcounter_get_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_MCOUNTER_GET_CMD_SIZE;
@@ -1505,14 +1433,14 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const u
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_mac_and_destroy_cmd_t * p_l3_cmd = (struct lt_l3_mac_and_destroy_cmd_t*)&h->l3_buff;
+    struct lt_l3_mac_and_destroy_cmd_t * p_l3_cmd = (struct lt_l3_mac_and_destroy_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_mac_and_destroy_res_t* p_l3_res = (struct lt_l3_mac_and_destroy_res_t*)&h->l3_buff;
+    struct lt_l3_mac_and_destroy_res_t* p_l3_res = (struct lt_l3_mac_and_destroy_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_MAC_AND_DESTROY_CMD_SIZE;
@@ -1542,14 +1470,14 @@ lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
     // Setup a pointer to l3 buffer, which is placed in handle
-    struct lt_l3_serial_code_get_cmd_t* p_l3_cmd = (struct lt_l3_serial_code_get_cmd_t*)&h->l3_buff;
+    struct lt_l3_serial_code_get_cmd_t* p_l3_cmd = (struct lt_l3_serial_code_get_cmd_t*)h->l3.buff;
     // Pointer to access l3 buffer with result's data
-    struct lt_l3_serial_code_get_res_t* p_l3_res = (struct lt_l3_serial_code_get_res_t*)&h->l3_buff;
+    struct lt_l3_serial_code_get_res_t* p_l3_res = (struct lt_l3_serial_code_get_res_t*)h->l3.buff;
 
     // Fill l3 buffer
     p_l3_cmd->cmd_size = LT_L3_SERIAL_CODE_GET_CMD_SIZE;

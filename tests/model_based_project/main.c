@@ -13,8 +13,11 @@
 int main(void)
 {
     // Full examples
-#ifdef LT_EX_HELLO_WORLD
+    #ifdef LT_EX_HELLO_WORLD
     /*int*/ lt_ex_hello_world();
+#endif
+#ifdef LT_EX_HELLO_WORLD_SEPARATE_API
+    /*int*/ lt_ex_hello_world_separate_API();
 #endif
 #ifdef LT_EX_HW_WALLET
     /*int*/ lt_ex_hardware_wallet();

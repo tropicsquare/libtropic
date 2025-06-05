@@ -169,7 +169,6 @@ Libtropic is configurable with CMake options. They are either passed from parent
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
-option(LT_EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
 option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_ADD_FUNC_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)

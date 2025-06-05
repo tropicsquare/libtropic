@@ -1,5 +1,5 @@
 /**
- * @file TROPIC01_hw_wallet.c
+ * @file lt_ex_hello_world.c
  * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
  * @author Tropic Square s.r.o.
  *
@@ -28,6 +28,11 @@
 static int session_H0(void)
 {
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
 
     lt_init(&h);
 

@@ -9,14 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- ECC_SLOT1-32 numbering chabged to ECC_SLOT_0-31
-- lt_handshake() function renamed to lt_session_start()
+- `ECC_SLOT1-32` numbering changed to `ECC_SLOT_0-31`
+- `lt_handshake()` function renamed to `lt_session_start()`
 - Unit tests and platform tests organization was updated
-- Included lt_l2_api_structs.h and lt_l3_api_structs.h are automatically generated
-- SH0 pairing keypair now reflects first batch of TROPIC01 devices
-- Changed logging format in examples.
-- Renamed cmake switches: LT_USE_TREZOR_CRYPTO, LT_BUILD_DOCS, LT_EXPERIMENTAL_SPI_UART
+- Included `lt_l2_api_structs.h` and `lt_l3_api_structs.h` are automatically generated
+- `SH0` pairing keypair in `keys/keys.c` now reflects engineering samples of TROPIC01 devices
+- Changed logging format in examples
+- Renamed cmake switches: `LT_USE_TREZOR_CRYPTO`, LT_BUILD_DOCS
 - Platform examples are removed - now they are standalone repositories
+- Separated libtropic API calls introduced (session_start and ECC_ECDSA functions):
+  - lt_l3.* contain interfaces for encoding l3 data going out and decoding l3 data going in
+  - libtropic.* then wraps l3 functions and does the whole l3 exchange in one round
+  - This change allows user to send data through a tunnel between host and target MCU,
+    which then behaves as a relay
+- Separated l2 API calls introduced
+  - Now user can use separate function for sending and receiving data
+- Refactoring of `lt_handle_t` struct:
+  - contains separate structs for l2 and l3
+  - allows to split all l2 and l3 calls into separate actions
+- Option to define l3 buffer introduced (`LT_SEPARATE_L3_BUFF`)
+- Introduced a new folder `keys/` where user might specify SH0-SH3 keys
+
 
 ### Added
 

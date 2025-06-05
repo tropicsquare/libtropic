@@ -115,7 +115,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -247,7 +247,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     ) {
         return LT_PARAM_ERR;
     }
-    if(h->session != SESSION_ON) {
+    if(h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -378,6 +378,11 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
 static int session_H0(void)
 {
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
 
     lt_init(&h);
 

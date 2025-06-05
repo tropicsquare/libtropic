@@ -47,6 +47,11 @@ int lt_test_write_pairing_keys(void)
     LT_LOG("  -------------------------------------------------------------------------------------------------------------");
 
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
 
     LT_LOG("%s", "Initialize handle");
     LT_ASSERT(LT_OK, lt_init(&h));
@@ -79,7 +84,8 @@ int lt_test_write_pairing_keys(void)
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, pkey_index_2));
     LT_LOG("%s", "Writing pairing key H3");
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, pkey_index_3));
-
+    LT_LOG_LINE();
+    
     // Read 1,2 and 3 pairing keys and print them out
     LT_LOG("%s", "Reading pairing key H0 - should proceed");
     uint8_t readed_pubkey[32] = {0};
@@ -87,7 +93,6 @@ int lt_test_write_pairing_keys(void)
     LT_LOG("%s", "Compare content of readed key with uploaded key, print pubkey");
     LT_ASSERT(0, memcmp(sh0pub, readed_pubkey, 32));
     print_bytes(readed_pubkey, 32);
-    LT_LOG_LINE();
 
     LT_LOG("%s", "Reading pairing key H1 - should proceed");
     LT_ASSERT(LT_OK, lt_pairing_key_read(&h, readed_pubkey, PAIRING_KEY_SLOT_INDEX_1));

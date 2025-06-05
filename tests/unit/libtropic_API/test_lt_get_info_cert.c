@@ -17,6 +17,7 @@
 #include "mock_lt_l1_port_wrap.h"
 #include "mock_lt_l1.h"
 #include "mock_lt_l2.h"
+#include "mock_lt_l3_transfer.h"
 #include "mock_lt_l3.h"
 #include "mock_lt_x25519.h"
 #include "mock_lt_ed25519.h"
@@ -130,26 +131,37 @@ void test__l2_fail()
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE, LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
     for(unsigned int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
-        lt_l2_transfer_ExpectAndReturn(&h, rets[i]);
+        lt_l2_send_ExpectAndReturn(&h, LT_OK);
+        lt_l2_receive_ExpectAndReturn(&h, rets[i]);
         TEST_ASSERT_EQUAL(rets[i], lt_get_info_cert(&h, cert, sizeof(cert)));
     }
 
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
-    lt_l2_transfer_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_1__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_get_info_cert(&h, cert, sizeof(cert)));
 }
 
@@ -170,7 +182,8 @@ void test__resp_size_mismatch()
     h.session = SESSION_ON;
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
-    lt_l2_transfer_StubWithCallback(callback_2__lt_l2_transfer);
+    lt_l2_send_ExpectAndReturn(&h, LT_OK);
+    lt_l2_receive_StubWithCallback(callback_2__lt_l2_transfer);
     TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_cert(&h, cert, sizeof(cert)));
 
 }
@@ -256,7 +269,8 @@ void test__l2_correct()
     uint8_t cert[LT_L2_GET_INFO_REQ_CERT_SIZE];
 
     for (int i = 0; i < (LT_L2_GET_INFO_REQ_CERT_SIZE/128); i++) {
-        lt_l2_transfer_StubWithCallback(callback_3__lt_l2_transfer);
+        lt_l2_send_ExpectAndReturn(&h, LT_OK);
+        lt_l2_receive_StubWithCallback(callback_3__lt_l2_transfer);
     }
     TEST_ASSERT_EQUAL(LT_OK, lt_get_info_cert(&h, cert, sizeof(cert)));
 }

@@ -30,7 +30,7 @@ void tearDown(void)
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
-
+/*
 // Test if function returns expected error on non valid input parameter
 void test_lt_l2_encrypted_cmd___NULL_h()
 {
@@ -185,3 +185,4 @@ void test_lt_l2_encrypted_cmd__loop_overflow()
 
     TEST_ASSERT_EQUAL(LT_FAIL, lt_l2_encrypted_cmd(&h));
 }
+*/

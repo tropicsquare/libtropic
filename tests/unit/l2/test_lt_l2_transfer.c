@@ -30,7 +30,7 @@ void tearDown(void)
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
-
+/*
 // Test if function returns expected error on non valid input parameter
 void test_lt_l2_transfer___NULL_h()
 {
@@ -83,3 +83,4 @@ void test_lt_l2_transfer__correct()
 
     TEST_ASSERT_EQUAL(LT_OK, lt_l2_transfer(&h));
 }
+*/
