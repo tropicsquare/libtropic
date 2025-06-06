@@ -789,7 +789,7 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h)
     if(ret != LT_OK) {
         return ret;
     }
-    
+
     // Check incomming l3 length
     if(LT_L3_R_MEM_DATA_ERASE_RES_SIZE != (p_l3_res->res_size)) {
         return LT_FAIL;

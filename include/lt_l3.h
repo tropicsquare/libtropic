@@ -226,7 +226,6 @@ lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uin
  */
 lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
 
-
 /**
  * @brief Encodes 'r mem data read' command payload. Used for separate l3 communication, for more information read info at the top of this file.
  *
@@ -263,6 +262,100 @@ lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
+
+/**
+ * @brief Encodes 'random get' command payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param len         Length of random data to get
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_out__random_get(lt_handle_t *h, const uint16_t len);
+
+/**
+ * @brief Decodes 'random get' result payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param buff        Buffer to receive random data
+ * @param len         Length of random data to get, must be the same as sent in lt_out__random_get()
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_in__random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
+
+/**
+ * @brief Encodes 'ECC key generation' command payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param slot        ECC key slot to generate key in
+ * @param curve       ECC curve type to use for key generation
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
+
+/**
+ * @brief Decodes 'ECC key generation' result payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
+
+/**
+ * @brief Encodes 'ECC key store' command payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param slot        ECC key slot to store key in
+ * @param curve       ECC curve type to use for key storage
+ * @param key         Ecc key to store, 32B length
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
+
+/**
+ * @brief Decodes 'ECC key store' result payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
+
+/**
+ * @brief Encodes 'ECC key read' command payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param slot        ECC key slot to read key from
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
+
+/**
+ * @brief Decodes 'ECC key read' result payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param key         Buffer to receive ECC public key
+ * @param keylen      Length of the key's buffer, must be at least 64 bytes
+ * @param curve       Will be filled by curve type
+ * @param origin      Will be filled by origin type
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+
+/**
+ * @brief Encodes 'ECC key erase' command payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param slot        ECC key slot to erase key from
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
+
+/**
+ * @brief Decodes 'ECC key erase' result payload. Used for separate l3 communication, for more information read info at the top of this file.
+ *
+ * @param h           Device's handle
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
 
 /**
  * @brief Encodes 'ECC ECDSA sign' command payload. Used for separate l3 communication, for more information read info at the top of this file.
@@ -380,81 +473,6 @@ lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, co
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__mac_and_destroy(lt_handle_t *h, uint8_t *data_in);
-
-/**
- * @brief Encodes 'ECC key generation' command payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @param slot        ECC key slot to generate key in
- * @param curve       ECC curve type to use for key generation
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
-
-/**
- * @brief Decodes 'ECC key generation' result payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
-
-/**
- * @brief Encodes 'ECC key store' command payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @param slot        ECC key slot to store key in
- * @param curve       ECC curve type to use for key storage
- * @param key         Ecc key to store, 32B length
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
-
-/**
- * @brief Decodes 'ECC key store' result payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
-
-/**
- * @brief Encodes 'ECC key read' command payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @param slot        ECC key slot to read key from
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
-
-/**
- * @brief Decodes 'ECC key read' result payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @param key         Buffer to receive ECC public key
- * @param keylen      Length of the key's buffer, must be at least 64 bytes
- * @param curve       Will be filled by curve type
- * @param origin      Will be filled by origin type
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
-
-/**
- * @brief Encodes 'ECC key erase' command payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @param slot        ECC key slot to erase key from
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
-
-/**
- * @brief Decodes 'ECC key erase' result payload. Used for separate l3 communication, for more information read info at the top of this file.
- *
- * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
 
 /** @} */ // end of group_libtropic_l3
 
