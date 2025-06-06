@@ -51,9 +51,9 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
 
         // Check and save STARTUP bit of CHIP_STATUS to signalize whether device operates in bootloader or in application
         if (s2->buff[0] & CHIP_MODE_STARTUP_bit) {
-            s2->mode = 1;
+            s2->mode = LT_MODE_MAINTENANCE;
         } else {
-            s2->mode = 0;
+            s2->mode = LT_MODE_APP;
         }
 
         // TODO comment
@@ -93,7 +93,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
         // try it again (until max_tries runs out)
         } else {
             lt_l1_spi_csn_high(s2);
-            if (s2->mode == 1) {
+            if (s2->mode == LT_MODE_MAINTENANCE) {
                 // Chip is in bootloader mode and INT pin is not implemented in bootloader mode
                 // So we wait a bit before we poll again for CHIP_STATUS
                 //printf("x\n");

@@ -56,7 +56,7 @@ void tearDown(void)
 // Test if function returns LT_PARAM_ERR on invalid handle
 /*void test__invalid_handle()
 {
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_reboot(NULL, LT_L2_STARTUP_ID_REBOOT));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_reboot(NULL, LT_MODE_APP));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -66,8 +66,8 @@ void test__invalid_startup_id()
 {
     lt_handle_t h = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT-1));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE+1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_reboot(&h, LT_MODE_APP-1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_reboot(&h, LT_MODE_MAINTENANCE+1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -84,10 +84,10 @@ void test__lt_l2_transfer_fail()
     for(uint32_t i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l2_send_ExpectAndReturn(&h, LT_OK);
         lt_l2_receive_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+        TEST_ASSERT_EQUAL(rets[i], lt_reboot(&h, LT_MODE_APP));
         lt_l2_send_ExpectAndReturn(&h, LT_OK);
         lt_l2_receive_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
+        TEST_ASSERT_EQUAL(rets[i], lt_reboot(&h, LT_MODE_MAINTENANCE));
     }
 }
 
@@ -111,11 +111,11 @@ void test__len_mismatch()
     size_inject_value = LT_L2_GET_LOG_RSP_LEN_MIN + 1;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_reboot(&h, LT_MODE_APP));
 
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_reboot(&h, LT_MODE_MAINTENANCE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -130,11 +130,11 @@ void test__correct()
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     lt_l1_delay_ExpectAndReturn(&h, LT_TROPIC01_REBOOT_DELAY_MS, LT_OK);
-    TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_MODE_APP));
 
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
     lt_l1_delay_ExpectAndReturn(&h, LT_TROPIC01_REBOOT_DELAY_MS, LT_OK);
-    TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE));
+    TEST_ASSERT_EQUAL(LT_OK, lt_reboot(&h, LT_MODE_MAINTENANCE));
 }
 */

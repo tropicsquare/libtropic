@@ -230,7 +230,7 @@ static int session_initial(void)
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     LT_LOG("%s", "Rebooting TROPIC01");
-    LT_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    LT_ASSERT(LT_OK, lt_reboot(&h, LT_MODE_APP));
 
     lt_deinit(&h);
 

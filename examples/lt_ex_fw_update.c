@@ -114,13 +114,13 @@ void lt_ex_fw_update(void)
             LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
         }
         // Now reboot into STARTUP (bootloader)
-        LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_MAINTENANCE)));
+        LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_MAINTENANCE)));
     }
 
     // Check again mode
     LT_LOG_LINE();
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if(h.l2.mode == LT_MODE_STARTUP) {
+    if(h.l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
         // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:
@@ -146,7 +146,7 @@ void lt_ex_fw_update(void)
         return;
     }
     LT_LOG_LINE();
-    LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT)));
+    LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_APP)));
     LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
     LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
     LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));

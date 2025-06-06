@@ -647,6 +647,209 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj)
     return LT_OK;
 }
 
+lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size)
+{
+     if(   !h
+        || !data
+        ||  size > R_MEM_DATA_SIZE_MAX
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_r_mem_data_write_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = size + 4;
+    p_l3_cmd->cmd_id = LT_L3_R_MEM_DATA_WRITE_CMD_ID;
+    p_l3_cmd->udata_slot = udata_slot;
+    memcpy(p_l3_cmd->data, data, size);
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h)
+{
+     if(   !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_r_mem_data_write_res_t* p_l3_res = (struct lt_l3_r_mem_data_write_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_R_MEM_DATA_WRITE_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, const uint16_t size)
+{
+    if(    !h
+        ||  size > R_MEM_DATA_SIZE_MAX
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_r_mem_data_read_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_read_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_MEM_DATA_READ_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_R_MEM_DATA_READ_CMD_ID;
+    p_l3_cmd->udata_slot = udata_slot;
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t size)
+{
+    if(    !h
+        || !data
+        ||  size > R_MEM_DATA_SIZE_MAX
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_r_mem_data_read_res_t* p_l3_res = (struct lt_l3_r_mem_data_read_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN + size < (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+    memcpy(data, p_l3_res->data, size);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
+{
+    if(    !h
+        || (udata_slot > R_MEM_DATA_SLOT_MACANDD)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_r_mem_data_erase_cmd_t * p_l3_cmd = (struct lt_l3_r_mem_data_erase_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_R_MEM_DATA_ERASE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_R_MEM_DATA_ERASE_CMD_ID;
+    p_l3_cmd->udata_slot = udata_slot;
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h)
+{
+    if(    !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_r_mem_data_erase_res_t* p_l3_res = (struct lt_l3_r_mem_data_erase_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+    
+    // Check incomming l3 length
+    if(LT_L3_R_MEM_DATA_ERASE_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__random_get(lt_handle_t *h, const uint16_t len)
+{
+    if(    (len > RANDOM_VALUE_GET_LEN_MAX)
+        || !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_random_value_get_cmd_t* p_l3_cmd = (struct lt_l3_random_value_get_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_RANDOM_VALUE_GET_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_RANDOM_VALUE_GET_CMD_ID;
+    p_l3_cmd->n_bytes = len;
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
+{
+    if(    (len > RANDOM_VALUE_GET_LEN_MAX)
+        || !h
+        || !buff
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_random_value_get_res_t* p_l3_res = (struct lt_l3_random_value_get_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    memcpy(buff, p_l3_res->random_data, p_l3_res->res_size);
+
+    return LT_OK;
+}
+
 lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
     if(    !h
@@ -869,6 +1072,330 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h)
     if(LT_L3_ECC_KEY_ERASE_RES_SIZE != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len)
+{
+    if(    !h
+        || slot < ECC_SLOT_0
+        || slot > ECC_SLOT_31
+        || !msg
+        || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Prepare hash of a message
+    uint8_t msg_hash[32] = {0};
+     lt_crypto_sha256_ctx_t hctx = {0};
+    lt_sha256_init(&hctx);
+    lt_sha256_start(&hctx);
+    lt_sha256_update(&hctx, (uint8_t*)msg, msg_len);
+    lt_sha256_finish(&hctx, msg_hash);
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_ecdsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_ECDSA_SIGN_CMD_SIZE;
+    p_l3_cmd->cmd_id= LT_L3_ECDSA_SIGN_CMD_ID;
+    p_l3_cmd->slot = slot;
+    memcpy(p_l3_cmd->msg_hash, msg_hash, 32);
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs, const uint8_t rs_len)
+{
+    if(    !h
+        || !rs
+        || (rs_len < 64)
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_ecdsa_sign_res_t* p_l3_res = (struct lt_l3_ecdsa_sign_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_ECDSA_SIGN_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    memcpy(rs, p_l3_res->r, 32);
+    memcpy(rs + 32, p_l3_res->s, 32);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len)
+{
+    if(    !h
+        || !msg
+        || ((msg_len < LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN) | (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX))
+        || ecc_slot < ECC_SLOT_0
+        || ecc_slot > ECC_SLOT_31
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer when it contains command data
+    struct lt_l3_eddsa_sign_cmd_t* p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_EDDSA_SIGN_CMD_SIZE_MIN + msg_len - 1;   // -1 Because the LT_L3_EDDSA_SIGN_CMD_SIZE_MIN already includes minimal message size 1B
+    p_l3_cmd->cmd_id = LT_L3_EDDSA_SIGN_CMD_ID;
+    p_l3_cmd->slot = ecc_slot;
+    memcpy(p_l3_cmd->msg, msg, msg_len);
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs, const uint8_t rs_len)
+{
+    if(    !h
+        || !rs
+        || rs_len < 64
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_eddsa_sign_res_t* p_l3_res = (struct lt_l3_eddsa_sign_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_EDDSA_SIGN_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    memcpy(rs, p_l3_res->r, 32);
+    memcpy(rs + 32, p_l3_res->s, 32);
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
+{
+    if( !h
+        || ((mcounter_index < 0) | (mcounter_index > 15))
+        || mcounter_value == 0
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mcounter_init_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_init_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MCOUNTER_INIT_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MCOUNTER_INIT_CMD_ID;
+    p_l3_cmd->mcounter_index = mcounter_index;
+    p_l3_cmd->mcounter_val = mcounter_value;
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__mcounter_init(lt_handle_t *h)
+{
+    if( !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_mcounter_init_res_t* p_l3_res = (struct lt_l3_mcounter_init_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_MCOUNTER_INIT_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index)
+{
+    if( !h
+        || ((mcounter_index < 0) | (mcounter_index > 15))
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mcounter_update_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_update_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MCOUNTER_UPDATE_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MCOUNTER_UPDATE_CMD_ID;
+    p_l3_cmd->mcounter_index = mcounter_index;
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__mcounter_update(lt_handle_t *h)
+{
+    if( !h
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_mcounter_update_res_t* p_l3_res = (struct lt_l3_mcounter_update_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_MCOUNTER_UPDATE_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index)
+{
+    if( !h
+        || ((mcounter_index < 0) | (mcounter_index > 15))
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mcounter_get_cmd_t* p_l3_cmd = (struct lt_l3_mcounter_get_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MCOUNTER_GET_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MCOUNTER_GET_CMD_ID;
+    p_l3_cmd->mcounter_index = mcounter_index;
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value)
+{
+    if( !h
+        || !mcounter_value
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_mcounter_get_res_t* p_l3_res = (struct lt_l3_mcounter_get_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_MCOUNTER_GET_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    *mcounter_value = p_l3_res->mcounter_val;
+
+    return LT_OK;
+}
+
+lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out)
+{
+    if( !h
+        || !data_out
+        || slot > MAC_AND_DESTROY_SLOT_127
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Setup a pointer to l3 buffer, which is placed in handle
+    struct lt_l3_mac_and_destroy_cmd_t * p_l3_cmd = (struct lt_l3_mac_and_destroy_cmd_t*)h->l3.buff;
+
+    // Fill l3 buffer
+    p_l3_cmd->cmd_size = LT_L3_MAC_AND_DESTROY_CMD_SIZE;
+    p_l3_cmd->cmd_id = LT_L3_MAC_AND_DESTROY_CMD_ID;
+    p_l3_cmd->slot = slot;
+    memcpy(p_l3_cmd->data_in, data_out, MAC_AND_DESTROY_DATA_SIZE);
+
+    return lt_l3_encrypt_request(&h->l3);
+}
+
+lt_ret_t lt_in__mac_and_destroy(lt_handle_t *h, uint8_t *data_in)
+{
+    if( !h
+        || !data_in
+    ) {
+        return LT_PARAM_ERR;
+    }
+    if(h->l3.session != SESSION_ON) {
+        return LT_HOST_NO_SESSION;
+    }
+
+    // Pointer to access l3 buffer with result's data
+    struct lt_l3_mac_and_destroy_res_t* p_l3_res = (struct lt_l3_mac_and_destroy_res_t*)h->l3.buff;
+
+    lt_ret_t ret = lt_l3_decrypt_response(&h->l3);
+    if(ret != LT_OK) {
+        return ret;
+    }
+
+    // Check incomming l3 length
+    if(LT_L3_MAC_AND_DESTROY_RES_SIZE != (p_l3_res->res_size)) {
+        return LT_FAIL;
+    }
+
+    memcpy(data_in, p_l3_res->data_out, MAC_AND_DESTROY_DATA_SIZE);
 
     return LT_OK;
 }

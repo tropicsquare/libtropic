@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - allows to split all l2 and l3 calls into separate actions
 - Option to define l3 buffer introduced (`LT_SEPARATE_L3_BUFF`)
 - Introduced a new folder `keys/` where user might specify SH0-SH3 keys
+- remove `lt_serial_code_get()`
+- rename `LT_L2_STARTUP_ID_MAINTENANCE` to `LT_MODE_MAINTENANCE`
+- rename `LT_L2_STARTUP_ID_REBOOT` to `LT_MODE_APP`
 
 
 ### Added

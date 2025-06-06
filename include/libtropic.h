@@ -337,51 +337,51 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
  * @brief Read ECC public key corresponding to a private key in device's slot
  *
  * @param h           Device's handle
- * @param slot        Slot number ECC_SLOT_1 - ECC_SLOT_32
+ * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
  * @param key         Buffer for retrieving a key
  * @param keylen      Length of the key's buffer
  * @param curve       Will be filled by curve byte
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief Erase ECC key from device's slot
  *
  * @param h           Device's handle
- * @param slot        Slot number ECC_SLOT_1 - ECC_SLOT_32
+ * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
+lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
 
 /**
  * @brief ECDSA sign message with a private key stored in TROPIC01 device
  *
  * @param h           Device's handle
- * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
+ * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
  * @param msg         Buffer containing a message
  * @param msg_len     Length of msg's buffer
  * @param rs          Buffer for storing a signature in a form of R and S bytes
  * @param rs_len      Length of rs buffer should be 64B
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
  *
  * @param h           Device's handle
- * @param slot        Slot containing a private key, ECC_SLOT_1 - ECC_SLOT_32
+ * @param slot        Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
  * @param rs          Buffer for storing a silt_r_mem_data_erasewise returns other error code. TODO info about other ret values
  *
  */
-lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
 
 /**
- * @brief EdDSA signature verify
+ * @brief EdDSA signature verify, HOST SIDE ONLY, does not require TROPIC01 device
  *
  * @param msg         Message
  * @param msg_len     Length of message. Max length is 4095
@@ -433,16 +433,6 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounte
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
-
-/**
- * @brief Get serial code field
- *
- * @param h           Device's handle
- * @param serial_code Serial code bytes
- * @param size        Size of buffer to read into
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_serial_code_get(lt_handle_t *h, uint8_t *serial_code, const uint16_t size);
 
 /**
  * @details Helper function for printing out name of returned value

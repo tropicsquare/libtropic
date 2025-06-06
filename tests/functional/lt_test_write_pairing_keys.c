@@ -58,7 +58,7 @@ int lt_test_write_pairing_keys(void)
     LT_LOG("%s with key H%d", "verify_chip_and_start_secure_session()", pkey_index_0);
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
     LT_LOG("%s", "lt_ping() ");
-    uint8_t ping_msg[33] = {'>','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j','!','<','\0'};
+    uint8_t ping_msg[33] = {'>','A','h','o','y',' ','A','h','o','y',' ','A','h','o','y',' ','A','h','o','y',' ','A','h','o','y',' ','A','h','o','y','!','<','\0'};
     uint8_t in[33] = {0};
     LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, 33));
     LT_LOG("Received Ping message: %s", in);
@@ -113,7 +113,7 @@ int lt_test_write_pairing_keys(void)
     print_bytes(readed_pubkey, 32);
 
     LT_LOG("%s", "lt_reboot() reboot into Application");
-    LT_ASSERT(LT_OK,  lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    LT_ASSERT(LT_OK,  lt_reboot(&h, LT_MODE_APP));
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");

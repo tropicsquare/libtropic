@@ -198,12 +198,6 @@ typedef enum {
 
 #define LT_TROPIC01_REBOOT_DELAY_MS  100
 
-
-//--------------------------------------------------------------------------------------------------------------------//
-/** @brief Mode of operation - whether chip operates in bootloader or in application  */
-#define LT_MODE_STARTUP 1
-#define LT_MODE_APP     0
-
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
 #define LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL   3840
@@ -393,9 +387,9 @@ typedef struct {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Reboot TROPIC01 chip */
-#define LT_L2_STARTUP_ID_REBOOT 0x01
+#define LT_MODE_APP 0x01
 /** @brief Reboot TROPIC01 chip and stay in maintenance mode */
-#define LT_L2_STARTUP_ID_MAINTENANCE 0x03
+#define LT_MODE_MAINTENANCE 0x03
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of TROPIC01's log message */

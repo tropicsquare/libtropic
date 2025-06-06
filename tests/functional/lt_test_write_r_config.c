@@ -193,8 +193,8 @@ int lt_test_write_r_config(void)
         LT_LOG("    %s,  %08" PRIX32, get_conf_desc(i), r_config_read.obj[i]);
     }
 
-    LT_LOG("%s", "lt_reboot(LT_L2_STARTUP_ID_REBOOT)");
-    LT_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    LT_LOG("%s", "lt_reboot(LT_MODE_APP)");
+    LT_ASSERT(LT_OK, lt_reboot(&h, LT_MODE_APP));
 
     LT_LOG("%s", "lt_deinit()");
     LT_ASSERT(LT_OK, lt_deinit(&h));
