@@ -17,6 +17,14 @@ typedef uint16_t u16;
 /** Alias for unsigned 32 bit integer */
 typedef uint32_t u32;
 
+// This macro is used to change static functions into exported one, when compiling unit tests.
+// It allows to unit test static functions.
+#ifndef TEST
+#define STATIC static
+#else
+#define STATIC
+#endif
+
 /** Macro to sanitize compiler warnings */
 #ifndef UNUSED
 #define UNUSED(x) (void)(x)

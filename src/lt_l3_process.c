@@ -16,7 +16,7 @@
 #include "lt_l3_process.h"
 #include "lt_aesgcm.h"
 
-lt_ret_t lt_l3_nonce_increase(uint8_t nonce[12])
+STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 {
 #ifdef LIBT_DEBUG
     if(!nonce) {
@@ -34,7 +34,7 @@ lt_ret_t lt_l3_nonce_increase(uint8_t nonce[12])
     return LT_OK;
 }
 
-lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)//, uint8_t buff, uint16_t len)
+lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
 {
 #ifdef LIBT_DEBUG
     if(!s3) {
@@ -95,34 +95,14 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
         case L3_ECC_INVALID_KEY:
             lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_ECC_INVALID_KEY;
+        case L3_R_MEM_DATA_WRITE_WRITE_FAIL:
+            lt_l3_nonce_increase(s3->decryption_IV);
+            return LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL;
+        case L3_R_MEM_DATA_WRITE_SLOT_EXPIRED:
+            lt_l3_nonce_increase(s3->decryption_IV);
+            return LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED;
         default:
             return LT_FAIL;
     }
 
-}
-
-lt_ret_t lt_l3_cmd(lt_handle_t *h)
-{
-    lt_ret_t ret = LT_OK;
-    ret = lt_l3_encrypt_request(&h->l3);
-    if (ret != LT_OK) {
-        return ret;
-    }
-
-    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, 4000);
-    if (ret != LT_OK) {
-        return ret;
-    }
-
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, 4000);
-    if (ret != LT_OK) {
-        return ret;
-    }
-
-    ret = lt_l3_decrypt_response(&h->l3);
-    if (ret != LT_OK) {
-        return ret;
-    }
-
-    return LT_OK;
 }

@@ -34,34 +34,41 @@
 #define L3_PAIRING_KEY_EMPTY                0x15u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
 #define L3_PAIRING_KEY_INVALID              0x16u
+/** @brief The slot is already written in */
+#define L3_R_MEM_DATA_WRITE_WRITE_FAIL      0x10
+/** @brief The writing operation limit is reached for the slot. */
+#define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED      0x11
+
+
 
 /**
- * @brief 
- * 
+ * @brief Encrypt content of l3 buffer and fill it with cyphertext ready to be sent to TROPIC01.
+ *
+ * This function expects that l3 buffer is already filled with data to be sent.
+ *
  * @param s3          Structure holding l3 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3);
 
 /**
- * @brief 
- * 
+ * @brief Decrypt response from TROPIC01 and fill l3 buffer with decrypted data.
+ *
+ * This function is used after encrypted l3 payload was received from TROPIC01.
+ *
  * @param s3          Structure holding l3 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
 
-//-----------------
-
+#ifdef TEST
 /**
- * @details Perform l3 encrypted command operation. It takes handle's l3 buffer containing l3 command
- *          and after successfull execution handle's l3 buffer contains l3 result.
+ * @brief Used to increase nonce
  *
- * @param h           Chip's handle
+ * @param nonce       TODO elaborate more
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l3_cmd(lt_handle_t *h);
-
-/** @} */ // end of group_l3_functions
+STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
+#endif
 
 #endif
