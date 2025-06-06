@@ -364,7 +364,7 @@ lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h)
     return LT_OK;
 }
 
-static bool conf_obj_valid(enum CONFIGURATION_OBJECTS_REGS addr)
+static bool conf_addr_valid(enum CONFIGURATION_OBJECTS_REGS addr)
 {
     bool valid = false;
 
@@ -404,8 +404,7 @@ static bool conf_obj_valid(enum CONFIGURATION_OBJECTS_REGS addr)
 lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj)
 {
     if(    !h
-        || !conf_obj_valid(addr)
-        // TODO how to check object?
+        || !conf_addr_valid(addr)
         ) {
         return LT_PARAM_ERR;
     }
@@ -454,7 +453,7 @@ lt_ret_t lt_in__r_config_write(lt_handle_t *h)
 lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr)
 {
     if(    !h
-        || !conf_obj_valid(addr)
+        || !conf_addr_valid(addr)
         ) {
         return LT_PARAM_ERR;
     }
@@ -549,7 +548,7 @@ lt_ret_t lt_in__r_config_erase(lt_handle_t *h)
 lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index)
 {
     if(    !h
-        || !conf_obj_valid(addr)
+        || !conf_addr_valid(addr)
         || (bit_index > 31)
     ) {
         return LT_PARAM_ERR;
@@ -599,7 +598,7 @@ lt_ret_t lt_in__i_config_write(lt_handle_t *h)
 lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr)
 {
     if(    !h
-        || !conf_obj_valid(addr)
+        || !conf_addr_valid(addr)
     ) {
         return LT_PARAM_ERR;
     }
@@ -1020,8 +1019,7 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen,
         // Unknown curve type
         return LT_FAIL;
     }
-    // TODO I think that we are not checking exactly curve type in this function?
-    // Function should return fail if curve is neither ED25519 or P256
+
     return LT_OK;
 }
 

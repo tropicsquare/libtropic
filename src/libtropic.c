@@ -751,48 +751,9 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     return lt_in__pairing_key_invalidate(h);
 }
 
-static bool conf_obj_valid(enum CONFIGURATION_OBJECTS_REGS addr)
-{
-    bool valid = false;
-
-    switch(addr) {
-        case CONFIGURATION_OBJECTS_CFG_START_UP_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR:
-            valid = true;
-        }
-    return valid;
-}
-
 lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj)
 {
     if(    !h
-        || !conf_obj_valid(addr)
-        // TODO how to check object?
         ) {
         return LT_PARAM_ERR;
     }
@@ -821,7 +782,6 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
 lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj)
 {
     if(    !h
-        || !conf_obj_valid(addr)
         || !obj
         ) {
         return LT_PARAM_ERR;
@@ -878,7 +838,6 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
 lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index)
 {
     if(    !h
-        || !conf_obj_valid(addr)
         || (bit_index > 31)
     ) {
         return LT_PARAM_ERR;
@@ -908,7 +867,6 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
 lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj)
 {
     if(    !h
-        || !conf_obj_valid(addr)
         || !obj
     ) {
         return LT_PARAM_ERR;
