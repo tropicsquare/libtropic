@@ -4,7 +4,7 @@ We love contributions! To make contributing simple for both sides, please:
 
 - Open an issue
 - Describe how you would like to contribute and discuss details with us
-- Make sure your code is properly formatted
+- Make sure your code is properly formatted - more info in docs/contributors.md
 - Make sure your commit messages follow [Conventional Commits guidelines](https://www.conventionalcommits.org/en/v1.0.0/#specification)
 - Create pull request
 

@@ -1,0 +1,16 @@
+# Tested with Ubuntu clang-format version 14.0.0-1ubuntu1.1
+
+BreakBeforeBinaryOperators: All
+
+ColumnLimit: 120
+
+BasedOnStyle: Google
+
+BreakBeforeBraces: Stroustrup
+
+IndentWidth: 4
+
+# # Insert New line at EOF if missing
+#InsertNewlineAtEOF: true
+# # Set EOL to LF unconditionally
+#LineEnding: LF
