@@ -49,6 +49,38 @@ void tearDown(void) {}
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
+// Test if function returns LT_PARAM_ERROR when invalid handle is passed
+void test__invalid_handle()
+{
+    struct lt_cert_store_t store;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert_store(NULL, &store));
+
+    struct lt_handle_t h;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert_store(&h, NULL));
+}
+
+
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
+
+// Test if function returns LT_PARAM_ERROR when invalid handle is passed
+void test__l2_error_handling()
+{
+    struct lt_cert_store_t store = {0};
+    struct lt_handle_t h = {0};
+
+    lt_l2_send_IgnoreAndReturn(LT_PARAM_ERR);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert_store(&h, &store));
+
+    lt_l2_send_IgnoreAndReturn(LT_OK);
+    lt_l2_receive_IgnoreAndReturn(LT_PARAM_ERR);
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert_store(&h, &store));
+
+    lt_l2_send_IgnoreAndReturn(LT_OK);
+    lt_l2_receive_IgnoreAndReturn(LT_OK);
+    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h.l2.buff;
+    p_l2_resp->rsp_len = (uint8_t)260;
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_cert_store(&h, &store));
+
+}
