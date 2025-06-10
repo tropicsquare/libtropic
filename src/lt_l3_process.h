@@ -20,26 +20,24 @@
 #include "libtropic_common.h"
 
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_OK                        0xC3u
+#define L3_RESULT_OK 0xC3u
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_FAIL                      0x3Cu
+#define L3_RESULT_FAIL 0x3Cu
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_UNAUTHORIZED              0x01u
+#define L3_RESULT_UNAUTHORIZED 0x01u
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_INVALID_CMD               0x02u
+#define L3_RESULT_INVALID_CMD 0x02u
 
 /** @brief L3 RESULT ﬁeld Value returned from ecc_key_read */
-#define L3_ECC_INVALID_KEY                  0x12u
+#define L3_ECC_INVALID_KEY 0x12u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define L3_PAIRING_KEY_EMPTY                0x15u
+#define L3_PAIRING_KEY_EMPTY 0x15u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define L3_PAIRING_KEY_INVALID              0x16u
+#define L3_PAIRING_KEY_INVALID 0x16u
 /** @brief The slot is already written in */
-#define L3_R_MEM_DATA_WRITE_WRITE_FAIL      0x10
+#define L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
 /** @brief The writing operation limit is reached for the slot. */
-#define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED      0x11
-
-
+#define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
 
 /**
  * @brief Encrypt content of l3 buffer and fill it with cyphertext ready to be sent to TROPIC01.

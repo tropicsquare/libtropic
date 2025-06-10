@@ -27,7 +27,8 @@
 #define CHIP_MODE_STARTUP_bit 0x04
 
 /** Max number of GET_INFO requests when chip is not answering */
-#define LT_L1_READ_MAX_TRIES 50  // Increasing from 10 to 50 to cover SPI slave convertor behaviour. TODO put back to 10 in the future
+#define LT_L1_READ_MAX_TRIES \
+    50  // Increasing from 10 to 50 to cover SPI slave convertor behaviour. TODO put back to 10 in the future
 /** Number of ms to wait between each GET_INFO request */
 #define LT_L1_READ_RETRY_DELAY 25
 
@@ -61,6 +62,6 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
  */
 lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout);
 
-/** @} */ // end of group_l1_functions
+/** @} */  // end of group_l1_functions
 
 #endif

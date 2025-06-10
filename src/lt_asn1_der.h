@@ -12,24 +12,21 @@
 #include "libtropic_common.h"
 
 enum asn1der_obj_kind_t {
-    ASN1DER_BOOLEAN                 = 0x01,
-    ASN1DER_INTEGER                 = 0x02,
-    ASN1DER_STRING_BIT              = 0x03,
-    ASN1DER_STRING_OCTET            = 0x04,
-    ASN1DER_STRING_NULL             = 0x05,
-    ASN1DER_OBJECT_IDENTIFIER       = 0x06,
-    ASN1DER_STRING_UTF8             = 0x0C,
-    ASN1DER_STRING_PRINTABLE        = 0x13,
-    ASN1DER_UTC_TIME                = 0x17,
-    ASN1DER_SEQUENCE                = 0x30,
+    ASN1DER_BOOLEAN = 0x01,
+    ASN1DER_INTEGER = 0x02,
+    ASN1DER_STRING_BIT = 0x03,
+    ASN1DER_STRING_OCTET = 0x04,
+    ASN1DER_STRING_NULL = 0x05,
+    ASN1DER_OBJECT_IDENTIFIER = 0x06,
+    ASN1DER_STRING_UTF8 = 0x0C,
+    ASN1DER_STRING_PRINTABLE = 0x13,
+    ASN1DER_UTC_TIME = 0x17,
+    ASN1DER_SEQUENCE = 0x30,
 };
 
-enum asn1der_crop_kind_t {
-    ASN1DER_CROP_SUFFIX,
-    ASN1DER_CROP_PREFIX
-};
+enum asn1der_crop_kind_t { ASN1DER_CROP_SUFFIX, ASN1DER_CROP_PREFIX };
 
-#define OBJ_ID_CURVEX25519            0x2B656E
+#define OBJ_ID_CURVEX25519 0x2B656E
 
 /**
  * @brief Parse ASN1 DER encoded stream and find certain OBJECT. Return data from primitve type
@@ -51,7 +48,7 @@ enum asn1der_crop_kind_t {
  *                      LT_CERT_UNSUPPORTED if the ASN1 stream contains features unsupported by this parser
  *                      LT_CERT_ITEM_NOT_FOUND if OBJECT_IDENTIFIER with "obj_id" value was not found!
  */
-lt_ret_t asn1der_find_object(const uint8_t *stream, uint16_t len, int32_t obj_id,
-                             uint8_t *buf, int buf_len, enum asn1der_crop_kind_t crop_kind);
+lt_ret_t asn1der_find_object(const uint8_t *stream, uint16_t len, int32_t obj_id, uint8_t *buf, int buf_len,
+                             enum asn1der_crop_kind_t crop_kind);
 
 #endif

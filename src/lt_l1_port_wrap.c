@@ -6,9 +6,9 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
@@ -16,7 +16,7 @@
 lt_ret_t lt_l1_init(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
@@ -26,7 +26,7 @@ lt_ret_t lt_l1_init(lt_l2_state_t *s)
 lt_ret_t lt_l1_deinit(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
@@ -36,7 +36,7 @@ lt_ret_t lt_l1_deinit(lt_l2_state_t *s)
 lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
@@ -46,7 +46,7 @@ lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s)
 lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
@@ -56,7 +56,7 @@ lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s)
 lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s, uint8_t offset, uint16_t tx_len, uint32_t timeout)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
@@ -66,7 +66,7 @@ lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s, uint8_t offset, uint16_t tx_len, u
 lt_ret_t lt_l1_delay(lt_l2_state_t *s, uint32_t ms)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
@@ -78,7 +78,7 @@ lt_ret_t lt_l1_delay(lt_l2_state_t *s, uint32_t ms)
 lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s, uint32_t ms)
 {
 #ifdef LIBT_DEBUG
-    if(!s) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif

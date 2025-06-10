@@ -228,6 +228,11 @@ $ clang-format --version
 clang-format version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
 ```
 
-For usage within VSCode, install `clang-format` extension for VSCode and restart IDE.
+For usage within VSCode, install `clang-format` extension for VSCode and restart IDE. You can then run formatter by right clicking on the code and choosing `Format document->Clang Format`.
 
-You can then run formatter by right clicking on the code and choosing `Format document->Clang Format`
+To format particular folder use following prompt:
+
+```
+clang-format -i -- src/*.c src/*.h
+```
+

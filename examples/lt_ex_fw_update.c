@@ -1,7 +1,8 @@
 /**
  * @file lt_ex_fw_update.c
  * @name Firmware update
- * @brief This code performs firmware update of TROPIC01 chip. Use defines at the beginning of this file to specify firmware version and slot.
+ * @brief This code performs firmware update of TROPIC01 chip. Use defines at the beginning of this file to specify
+ * firmware version and slot.
  *
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
@@ -10,12 +11,11 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "string.h"
 #include "inttypes.h"
-
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
+#include "string.h"
 // Include here a particular firmware from TROPIC01_fw_update_files (in a form of header file)
 #include "fw_CPU_0_3_1.h"
 
@@ -27,12 +27,12 @@
 /** @brief Firmware bank */
 #define FW_UPDATE_BANK FW_BANK_FW2
 
-
 // Buffer for storing string with bytes
 #define BUFF_SIZE 196
 static char bytes_buffer[BUFF_SIZE];
-static char* print_bytes(uint8_t *data, uint16_t len) {
-    if((len > BUFF_SIZE) || (!data)) {
+static char *print_bytes(uint8_t *data, uint16_t len)
+{
+    if ((len > BUFF_SIZE) || (!data)) {
         memcpy(bytes_buffer, "error_str_decoding", 20);
         return bytes_buffer;
     }
@@ -42,7 +42,7 @@ static char* print_bytes(uint8_t *data, uint16_t len) {
         snprintf(byte_str, sizeof(byte_str), "%02X", data[i]);
         // Check if appending the byte would exceed the buffer size
         if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
-            break; // Stop if the buffer is full
+            break;  // Stop if the buffer is full
         }
         strncat(bytes_buffer, byte_str, sizeof(bytes_buffer) - strlen(bytes_buffer) - 1);
     }
@@ -52,23 +52,27 @@ static char* print_bytes(uint8_t *data, uint16_t len) {
 
 static void print_headers(lt_handle_t *h)
 {
-        LT_LOG("  Chip contains following headers:");
-        uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
-        LT_LOG("                                              %s", print_bytes(header+10, 10));
+    LT_LOG("  Chip contains following headers:");
+    uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s",
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+    LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+    LT_LOG("                                              %s", print_bytes(header + 10, 10));
 
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
-        LT_LOG("                                              %s", print_bytes(header+10, 10));
+    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s",
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+    LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+    LT_LOG("                                              %s", print_bytes(header + 10, 10));
 
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
-        LT_LOG("                                              %s", print_bytes(header+10, 10));
+    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s",
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+    LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+    LT_LOG("                                              %s", print_bytes(header + 10, 10));
 
-        LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s", lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-        LT_LOG("    Header:                                   %s", print_bytes(header, 10));
-        LT_LOG("                                              %s", print_bytes(header+10, 10));
+    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s",
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+    LT_LOG("    Header:                                   %s", print_bytes(header, 10));
+    LT_LOG("                                              %s", print_bytes(header + 10, 10));
 }
 
 void lt_ex_fw_update(void)
@@ -79,7 +83,7 @@ void lt_ex_fw_update(void)
 
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -93,25 +97,27 @@ void lt_ex_fw_update(void)
 
     // First check in which mode chip operates, bootloader or application
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if(h.l2.mode == LT_MODE_APP) {
+    if (h.l2.mode == LT_MODE_APP) {
         LT_LOG("  Chip is executing application firmware");
         // App runs so we can see what firmwares are running
         // RISCV app firmware version
         ret = lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
-        if(ret != LT_OK) {
+        if (ret != LT_OK) {
             LT_LOG("     lt_get_info_riscv_fw_ver()               %s", lt_ret_verbose(ret));
-        } else {
+        }
+        else {
             LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(ret));
-            LT_LOG("  riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+            LT_LOG("  riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
         }
 
         // SPECT firmware version
         ret = lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
-        if(ret != LT_OK) {
+        if (ret != LT_OK) {
             LT_LOG("     lt_get_info_spect_fw_ver()               %s", lt_ret_verbose(ret));
-        } else {
+        }
+        else {
             LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(ret));
-            LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+            LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
         }
         // Now reboot into STARTUP (bootloader)
         LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_MAINTENANCE)));
@@ -120,37 +126,42 @@ void lt_ex_fw_update(void)
     // Check again mode
     LT_LOG_LINE();
     LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if(h.l2.mode == LT_MODE_MAINTENANCE) {
+    if (h.l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
         // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:
-        LT_LOG("  lt_get_info_riscv_fw_ver()                  %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
-        LT_LOG("  Bootloader version: %d.%d.%d    (+ unused %d)", fw_ver[3] & 0x7f,fw_ver[2],fw_ver[1],fw_ver[0]);
+        LT_LOG("  lt_get_info_riscv_fw_ver()                  %s",
+               lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+        LT_LOG("  Bootloader version: %d.%d.%d    (+ unused %d)", fw_ver[3] & 0x7f, fw_ver[2], fw_ver[1], fw_ver[0]);
 
         print_headers(&h);
 
-        if(1) {
+        if (1) {
             // Erase firmware bank
-            LT_LOG("lt_mutable_fw_erase()                    %s", lt_ret_verbose(lt_mutable_fw_erase(&h, FW_UPDATE_BANK)));
+            LT_LOG("lt_mutable_fw_erase()                    %s",
+                   lt_ret_verbose(lt_mutable_fw_erase(&h, FW_UPDATE_BANK)));
             // Update firmware bank
-            LT_LOG("lt_mutable_fw_update()                   %s", lt_ret_verbose(lt_mutable_fw_update(&h, FW_UPDATE_DATA, sizeof(fw_CPU_0_3_1), FW_UPDATE_BANK)));
+            LT_LOG("lt_mutable_fw_update()                   %s",
+                   lt_ret_verbose(lt_mutable_fw_update(&h, FW_UPDATE_DATA, sizeof(fw_CPU_0_3_1), FW_UPDATE_BANK)));
 
             print_headers(&h);
-
-        } else {
+        }
+        else {
             LT_LOG("Update disabled");
         }
-
-    } else {
+    }
+    else {
         LT_LOG("     ERROR device couldn't get into STARTUP mode");
         return;
     }
     LT_LOG_LINE();
     LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_APP)));
-    LT_LOG("lt_get_info_riscv_fw_ver()                    %s", lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
-    LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
-    LT_LOG("lt_get_info_spect_fw_ver()                    %s", lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
-    LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3],fw_ver[2],fw_ver[1],fw_ver[0]);
+    LT_LOG("lt_get_info_riscv_fw_ver()                    %s",
+           lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+    LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
+    LT_LOG("lt_get_info_spect_fw_ver()                    %s",
+           lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
+    LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
 
     return;
 }

@@ -21,7 +21,8 @@
 
 /**
  * @brief This function sends l2 request. Prior calling this function, place
- *        request's data into handle's iternal l2 buffer, structures defined in lt_l2_api_structs.h migh help with encoding data.
+ *        request's data into handle's iternal l2 buffer, structures defined in lt_l2_api_structs.h migh help with
+ * encoding data.
  *
  * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
@@ -38,8 +39,8 @@ lt_ret_t lt_l2_send(lt_l2_state_t *s2);
 lt_ret_t lt_l2_receive(lt_l2_state_t *s2);
 
 /**
- * @brief This function sends content of encrypted l3 command's buffer over l2 layer. Data are sent from handle's l3_buff.
- *  Use only after secure session was established with lt_session_start()
+ * @brief This function sends content of encrypted l3 command's buffer over l2 layer. Data are sent from handle's
+ * l3_buff. Use only after secure session was established with lt_session_start()
  *
  * @param s2          Structure holding l2 state
  * @param buff        Buffer containing encrypted l3 command
@@ -47,7 +48,6 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len);
-
 
 /**
  * @brief This function receives encrypted l3 response over l2 layer. Data are received into handle's l3_buff.
@@ -59,6 +59,6 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len);
-/** @} */ // end of group_l2_functions
+/** @} */  // end of group_l2_functions
 
 #endif

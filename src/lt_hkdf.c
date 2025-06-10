@@ -10,23 +10,24 @@
 #include <string.h>
 
 #if LT_USE_TREZOR_CRYPTO
-#include "lt_hmac_sha256.h"
-#include "hasher.h"
 #include "blake256.h"
 #include "blake2b.h"
 #include "groestl.h"
+#include "hasher.h"
+#include "hmac.h"
+#include "lt_hmac_sha256.h"
+#include "memzero.h"
+#include "ripemd160.h"
 #include "sha2.h"
 #include "sha3.h"
-#include "ripemd160.h"
-#include "memzero.h"
-#include "hmac.h"
 #elif USE_MBEDTLS
 // TBD
 #endif
 
 #define UNUSED(x) (void)(x)
 
-void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1, uint8_t *output_2)
+void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1,
+             uint8_t *output_2)
 {
     // TODO remove nouts parameter from function's signature
     UNUSED(nouts);

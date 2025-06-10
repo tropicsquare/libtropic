@@ -19,8 +19,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "libtropic_common.h"
 #include "TROPIC01_configuration_objects.h"
+#include "libtropic_common.h"
 
 /**
  * @brief Initialize handle and transport layer
@@ -71,7 +71,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
-#define LT_L2_GET_INFO_CHIP_ID_SIZE         128
+#define LT_L2_GET_INFO_CHIP_ID_SIZE 128
 
 /**
  * @brief Read TROPIC01's CHIP ID
@@ -80,7 +80,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
  * @param chip_id     Structure which holds all fields of CHIP ID
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t* chip_id);
+lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
 
 /**
  * @brief Read TROPIC01's RISCV firmware version
@@ -123,7 +123,8 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
  * @param shipub      Secure host public key
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv, const uint8_t *shipub);
+lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv,
+                          const uint8_t *shipub);
 
 /**
  * @brief Abort encrypted session between TROPIC01 and host MCU
@@ -344,7 +345,8 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, const uint8_t keylen,
+                         lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief Erase ECC key from device's slot
@@ -366,7 +368,8 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
  * @param rs_len      Length of rs buffer should be 64B
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
+                           uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
@@ -375,10 +378,12 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
  * @param slot        Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
- * @param rs          Buffer for storing a silt_r_mem_data_erasewise returns other error code. TODO info about other ret values
+ * @param rs          Buffer for storing a silt_r_mem_data_erasewise returns other error code. TODO info about other ret
+ * values
  *
  */
-lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
+                           uint8_t *rs, const uint8_t rs_len);
 
 /**
  * @brief EdDSA signature verify, HOST SIDE ONLY, does not require TROPIC01 device
@@ -400,7 +405,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
  * @param mcounter_value  Value to set as an initial value
  * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
  */
-lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
+lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
 
 /**
  * @brief Update monotonic counter of a given index
@@ -409,7 +414,7 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h,  const enum lt_mcounter_index_t mcount
  * @param mcounter_index  Index of monotonic counter
  * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
  */
-lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index);
+lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index);
 
 /**
  * @brief Get a value of a monotonic counter of a given index
@@ -419,12 +424,13 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h,  const enum lt_mcounter_index_t mcou
  * @param mcounter_value  Value of monotonic counter
  * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
  */
-lt_ret_t lt_mcounter_get(lt_handle_t *h,  const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
+lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
 
 /**
  * @brief Execute the MAC-and-Destroy sequence.
  * @details This command is just a part of MAc And Destroy sequence, which takes place between the host and TROPIC01.
- *          Example code can be found in examples/lt_ex_macandd.c, for more info about Mac And Destroy functionality read app note.
+ *          Example code can be found in examples/lt_ex_macandd.c, for more info about Mac And Destroy functionality
+ * read app note.
  *
  * @param h           Device's handle
  * @param slot        Mac-and-Destroy slot index, valid values are 0-127
@@ -499,6 +505,6 @@ lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, 
 
 #endif
 
-/** @} */ // end of group_libtropic_API
+/** @} */  // end of group_libtropic_API
 
 #endif

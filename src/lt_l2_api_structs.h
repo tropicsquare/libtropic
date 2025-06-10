@@ -16,7 +16,6 @@
 
 #include "libtropic_common.h"
 
-
 /** @brief Request ID */
 #define LT_L2_GET_INFO_REQ_ID 0x01
 /** @brief Request length */
@@ -42,7 +41,6 @@
 /** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode. */
 #define LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 0xb0
 
-
 /** @brief Response length */
 #define LT_L2_GET_INFO_RSP_LEN_MIN 1u
 
@@ -50,11 +48,12 @@
  * @brief
  * Request to obtain information about TROPIC01. The type of information obtained is distinguished by OBJECT_ID.
  *
- * NOTE: If Start-up mode is active, TROPIC01 executes the immutable FW. Any version identification then has the highest bit set to 1.
- * SPECT_FW_VERSION then returns a dummy value of 0x80000000 because the SPECT FW is part of the immutable FW.
+ * NOTE: If Start-up mode is active, TROPIC01 executes the immutable FW. Any version identification then has the highest
+ * bit set to 1. SPECT_FW_VERSION then returns a dummy value of 0x80000000 because the SPECT FW is part of the immutable
+ * FW.
  */
 struct lt_l2_get_info_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     /**
      * @brief
@@ -73,13 +72,14 @@ struct lt_l2_get_info_req_t {
  * @brief
  * Request to obtain information about TROPIC01. The type of information obtained is distinguished by OBJECT_ID.
  *
- * NOTE: If Start-up mode is active, TROPIC01 executes the immutable FW. Any version identification then has the highest bit set to 1.
- * SPECT_FW_VERSION then returns a dummy value of 0x80000000 because the SPECT FW is part of the immutable FW.
+ * NOTE: If Start-up mode is active, TROPIC01 executes the immutable FW. Any version identification then has the highest
+ * bit set to 1. SPECT_FW_VERSION then returns a dummy value of 0x80000000 because the SPECT FW is part of the immutable
+ * FW.
  */
 struct lt_l2_get_info_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
     /**
      * @brief
      * The data content of the requested object block.
@@ -87,7 +87,6 @@ struct lt_l2_get_info_rsp_t {
     u8 object[128];
     u8 crc[2]; /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_HANDSHAKE_REQ_ID 0x02
@@ -102,38 +101,41 @@ struct lt_l2_get_info_rsp_t {
 /** @brief Corresponds to $S_{H3Pub}$. */
 #define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_3 0x03
 
-
 /** @brief Response length */
 #define LT_L2_HANDSHAKE_RSP_LEN 48u
 
 /**
  * @brief
- * Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure Channel Mode).
+ * Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure
+ * Channel Mode).
  */
 struct lt_l2_handshake_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     /**
      * @brief
-     * The Host MCU's Ephemeral X25519 public key. A little endian encoding of the x-coordinate from the public Curve25519 point.
+     * The Host MCU's Ephemeral X25519 public key. A little endian encoding of the x-coordinate from the public
+     * Curve25519 point.
      */
     u8 e_hpub[32]; /**< Ephemeral Key of Host MCU. */
     /**
      * @brief
-     * The index of the Pairing Key slot to establish a Secure Channel Session with (TROPIC01 fetches $S_{HiPub}$ from the Pairing Key slot specified in this field).
+     * The index of the Pairing Key slot to establish a Secure Channel Session with (TROPIC01 fetches $S_{HiPub}$ from
+     * the Pairing Key slot specified in this field).
      */
     u8 pkey_index; /**< Pairing Key slot */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];     /**< Checksum */
 } __attribute__((__packed__));
 
 /**
  * @brief
- * Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure Channel Mode).
+ * Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure
+ * Channel Mode).
  */
 struct lt_l2_handshake_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
     /**
      * @brief
      * TROPIC01's X25519 Ephemeral key.
@@ -144,9 +146,8 @@ struct lt_l2_handshake_rsp_t {
      * The Secure Channel Handshake Authentication Tag.
      */
     u8 t_tauth[16]; /**< Authentication Tag */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_CMD_REQ_ID 0x04
@@ -157,7 +158,6 @@ struct lt_l2_handshake_rsp_t {
 /** Maximal length of field cmd_ciphertext */
 #define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MAX 4096u
 
-
 /** @brief Response length */
 #define LT_L2_ENCRYPTED_CMD_RSP_LEN_MIN 19u
 
@@ -166,7 +166,7 @@ struct lt_l2_handshake_rsp_t {
  * Request to execute an L3 Command.
  */
 struct lt_l2_encrypted_cmd_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     /** Contains a chunk of encrypted command */
     uint8_t l3_chunk[255];
@@ -179,8 +179,8 @@ struct lt_l2_encrypted_cmd_req_t {
  */
 struct lt_l2_encrypted_cmd_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
     /**
      * @brief
      * The size of the RES_CIPHERTEXT L3 Field in bytes.
@@ -190,12 +190,10 @@ struct lt_l2_encrypted_cmd_rsp_t {
     u8 crc[2]; /**< Checksum */
 } __attribute__((__packed__));
 
-
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_SESSION_ABT_ID 0x08
 /** @brief Request length */
 #define LT_L2_ENCRYPTED_SESSION_ABT_LEN 0u
-
 
 /** @brief Response length */
 #define LT_L2_ENCRYPTED_SESSION_ABT_RSP_LEN 0u
@@ -205,9 +203,9 @@ struct lt_l2_encrypted_cmd_rsp_t {
  * Request to abort current Secure Channel Session and execution of L3 command (TROPIC01 moves to Idle Mode).
  */
 struct lt_l2_encrypted_session_abt_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];  /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -216,17 +214,15 @@ struct lt_l2_encrypted_session_abt_req_t {
  */
 struct lt_l2_encrypted_session_abt_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
-    u8 crc[2]; /**< Checksum */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_RESEND_REQ_ID 0x10
 /** @brief Request length */
 #define LT_L2_RESEND_REQ_LEN 0u
-
 
 /** @brief Response length */
 #define LT_L2_RESEND_RSP_LEN 0u
@@ -236,9 +232,9 @@ struct lt_l2_encrypted_session_abt_rsp_t {
  * Request for TROPIC01 to resend the last L2 Response.
  */
 struct lt_l2_resend_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];  /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -247,11 +243,10 @@ struct lt_l2_resend_req_t {
  */
 struct lt_l2_resend_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
-    u8 crc[2]; /**< Checksum */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_SLEEP_REQ_ID 0x20
@@ -262,7 +257,6 @@ struct lt_l2_resend_rsp_t {
 /** @brief Deep Sleep Mode */
 #define LT_L2_SLEEP_REQ_SLEEP_KIND_DEEP_SLEEP_MODE 0x0a
 
-
 /** @brief Response length */
 #define LT_L2_SLEEP_RSP_LEN 0u
 
@@ -271,14 +265,14 @@ struct lt_l2_resend_rsp_t {
  * Request for TROPIC01 to go to Sleep Mode or Deep Sleep Mode.
  */
 struct lt_l2_sleep_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     /**
      * @brief
      * The type of Sleep mode TROPIC01 moves to.
      */
     u8 sleep_kind; /**< Sleep Kind */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];     /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -287,11 +281,10 @@ struct lt_l2_sleep_req_t {
  */
 struct lt_l2_sleep_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
-    u8 crc[2]; /**< Checksum */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_STARTUP_REQ_ID 0xb3
@@ -302,7 +295,6 @@ struct lt_l2_sleep_rsp_t {
 /** @brief Restart, then initialize. Stay in Start-up mode and do not load the mutable FW from R-Memory. */
 #define LT_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT 0x03
 
-
 /** @brief Response length */
 #define LT_L2_STARTUP_RSP_LEN 0u
 
@@ -311,10 +303,10 @@ struct lt_l2_sleep_rsp_t {
  * Request for TROPIC01 to reset.
  */
 struct lt_l2_startup_req_t {
-    u8 req_id; /**< Request ID byte */
-    u8 req_len; /**< Length byte */
+    u8 req_id;     /**< Request ID byte */
+    u8 req_len;    /**< Length byte */
     u8 startup_id; /**< The request ID */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];     /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -323,11 +315,10 @@ struct lt_l2_startup_req_t {
  */
 struct lt_l2_startup_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
-    u8 crc[2]; /**< Checksum */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
@@ -346,7 +337,6 @@ struct lt_l2_startup_rsp_t {
 /** @brief SPECT bank 2 */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT2 0x12
 
-
 /** @brief Response length */
 #define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
 
@@ -358,12 +348,12 @@ struct lt_l2_startup_rsp_t {
  * NOTE: Write only to the correctly erased bank (see Mutable_FW_Erase_Req).
  */
 struct lt_l2_mutable_fw_update_req_t {
-    u8 req_id; /**< Request ID byte */
-    u8 req_len; /**< Length byte */
-    u8 bank_id; /**< The Identifier of the bank to write in. */
-    u16 offset; /**< The offset of the specific bank to write the chunk */
+    u8 req_id;    /**< Request ID byte */
+    u8 req_len;   /**< Length byte */
+    u8 bank_id;   /**< The Identifier of the bank to write in. */
+    u16 offset;   /**< The offset of the specific bank to write the chunk */
     u8 data[248]; /**< The binary data to write. Data size should be a multiple of 4. */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];    /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -375,11 +365,10 @@ struct lt_l2_mutable_fw_update_req_t {
  */
 struct lt_l2_mutable_fw_update_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
-    u8 crc[2]; /**< Checksum */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
@@ -394,7 +383,6 @@ struct lt_l2_mutable_fw_update_rsp_t {
 /** @brief SPECT bank 2 */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT2 0x12
 
-
 /** @brief Response length */
 #define LT_L2_MUTABLE_FW_ERASE_RSP_LEN 0u
 
@@ -404,10 +392,10 @@ struct lt_l2_mutable_fw_update_rsp_t {
  * Supported only in Start-up mode (i.e. after Startup_Req with MAINTENANCE_REBOOT).
  */
 struct lt_l2_mutable_fw_erase_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     u8 bank_id; /**< The Identifier of the bank to erase. The same choices as above. */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];  /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -417,17 +405,15 @@ struct lt_l2_mutable_fw_erase_req_t {
  */
 struct lt_l2_mutable_fw_erase_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
-    u8 crc[2]; /**< Checksum */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
+    u8 crc[2];      /**< Checksum */
 } __attribute__((__packed__));
-
 
 /** @brief Request ID */
 #define LT_L2_GET_LOG_REQ_ID 0xa2
 /** @brief Request length */
 #define LT_L2_GET_LOG_REQ_LEN 0u
-
 
 /** @brief Response length */
 #define LT_L2_GET_LOG_RSP_LEN_MIN 0u
@@ -437,9 +423,9 @@ struct lt_l2_mutable_fw_erase_rsp_t {
  * Get log from FW running on RISCV CPU.
  */
 struct lt_l2_get_log_req_t {
-    u8 req_id; /**< Request ID byte */
+    u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];  /**< Checksum */
 } __attribute__((__packed__));
 
 /**
@@ -448,15 +434,14 @@ struct lt_l2_get_log_req_t {
  */
 struct lt_l2_get_log_rsp_t {
     u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status; /**< L2 status byte */
-    u8 rsp_len; /**< Length of incoming data */
+    u8 status;      /**< L2 status byte */
+    u8 rsp_len;     /**< Length of incoming data */
     /**
      * @brief
      * Log message of RISCV FW.
      */
     u8 log_msg[255]; /**< Log message */
-    u8 crc[2]; /**< Checksum */
+    u8 crc[2];       /**< Checksum */
 } __attribute__((__packed__));
 
-
-#endif // !LT_L2_API_STRUCTS_H
+#endif  // !LT_L2_API_STRUCTS_H
