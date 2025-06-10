@@ -10,4 +10,4 @@ jobs:
       uses: jidicula/clang-format-action@v4.15.0
       with:
         clang-format-version: '16'
-        check-path: 'src include examples tests'
+        check-path: 'examples hal/port/unix/ src include examples tests/functional tests/model_based_project'
