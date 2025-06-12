@@ -124,6 +124,7 @@ if(LT_ADD_EXAMPLES)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd_pin_demo.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/

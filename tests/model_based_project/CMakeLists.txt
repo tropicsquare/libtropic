@@ -68,6 +68,10 @@ endif()
 if(LT_EX_MACANDD)
     target_compile_definitions(run PRIVATE LT_EX_MACANDD)
 endif()
+# -DLT_EX_MACANDD_PIN_DEMO=1
+if(LT_EX_MACANDD_PIN_DEMO)
+    target_compile_definitions(run PRIVATE LT_EX_MACANDD_PIN_DEMO)
+endif()
 
 # -DLT_TEST_CHIP_ID=1
 if(LT_TEST_CHIP_ID)

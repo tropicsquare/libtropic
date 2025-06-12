@@ -99,4 +99,10 @@ void lt_ex_fw_update(void);
  */
 int lt_ex_macandd(void);
 
+/**
+ * @brief Demo project of 'Mac And Destroy' pin verification scheme
+ *
+*/
+int lt_ex_macandd_pin_demo(void);
+
 #endif

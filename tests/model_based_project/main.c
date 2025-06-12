@@ -12,8 +12,8 @@
 
 int main(void)
 {
-    // Full examples
-    #ifdef LT_EX_HELLO_WORLD
+// Full examples
+#ifdef LT_EX_HELLO_WORLD
     /*int*/ lt_ex_hello_world();
 #endif
 #ifdef LT_EX_HELLO_WORLD_SEPARATE_API
@@ -24,6 +24,9 @@ int main(void)
 #endif
 #ifdef LT_EX_MACANDD
     /*int*/ lt_ex_macandd();
+#endif
+#ifdef LT_EX_MACANDD_PIN_DEMO
+    /*int*/ lt_ex_macandd_pin_demo();
 #endif
 
 // Test routines
