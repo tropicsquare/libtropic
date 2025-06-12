@@ -22,6 +22,7 @@
 
 #include "string.h"
 #include "inttypes.h"
+#include "stdio.h"
 
 #include "libtropic.h"
 #include "libtropic_examples.h"
@@ -74,6 +75,7 @@ static char* print_bytes(uint8_t *data, uint16_t len) {
 #define MAC_AND_DESTROY_PIN_SIZE_MIN  4u
 /** @brief Maximal size of MAC-and-Destroy PIN input */
 #define MAC_AND_DESTROY_PIN_SIZE_MAX  8u
+
 
 /**
  * @brief This structure holds data used by host during MAC and Destroy sequence
@@ -368,6 +370,30 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     return ret;
 }
 
+/**
+ * @brief Input function
+ *
+ * @param pin_wrong    Function for pin input
+ * @return            pin_wrong if success, otherwise -1
+ */
+
+
+// Function to input and validate a 4-digit PIN
+int get_valid_pin(uint8_t pin[4]) {
+    LT_LOG("Enter a 4-digit PIN (no Enter key, just digits): ");
+
+    for (int i = 0; i < 4; ++i) {
+        int ch = getchar();
+
+        if (ch == EOF) return 0;           // Input error
+        if (!isdigit(ch)) return 0;        // Non-digit -> invalid
+
+        pin[i] = ch - '0';
+    }
+    return 1;
+}
+
+
 
 /**
  * @brief Session with H0 pairing keys
@@ -399,10 +425,12 @@ static int session_H0(void)
 
     // User's PIN
     uint8_t pin[]       = {1,2,3,4};
-    uint8_t pin_wrong[] = {2,2,3,4};
+    uint8_t pin_wrong[] = {0,0,0,0};
+    int attemps = 3;
 
     LT_LOG_LINE();
 
+    /*
     // Set the PIN and log out the secret
     LT_LOG("Number of Mac And Destroy tries is set to %d", MACANDD_ROUNDS);
     LT_LOG("%s", "lt_PIN_set(): user sets the PIN");
@@ -421,7 +449,42 @@ static int session_H0(void)
     LT_ASSERT(LT_OK, lt_PIN_check(&h, pin, 4, additional_data, additional_data_size, secret));
     LT_LOG("Exported secret: %s", print_bytes(secret, 32));
     LT_LOG_LINE();
+    */
 
+    
+    // Set the PIN and log out the secret
+    LT_LOG("Number of Mac And Destroy tries is set to %d", MACANDD_ROUNDS);
+    LT_LOG("%s", "lt_PIN_set(): user sets the PIN");
+    LT_ASSERT(LT_OK, lt_PIN_set(&h, pin, 4, additional_data, additional_data_size, secret));
+    LT_LOG("Initialized secret: %s", print_bytes(secret, 32));
+    LT_LOG_LINE();
+
+    LT_LOG("%s", "////////////////////////////////////////////////////////////////////////////////////////\n");    
+    LT_LOG("%s", "Try to guess secret 4-digit pin, good luck!!!!\n");
+
+    for (int i = 0; i < attemps; i++)
+    {
+        
+        LT_LOG("Attemp number %d", i+1);
+        // Keep asking until the user enters a valid PIN
+        while (!get_valid_pin(pin_wrong)) {
+            LT_LOG("%s", "Invalid PIN! Please try again.\n");
+            memset(pin_wrong, 0, sizeof(pin_wrong));
+        }
+
+        // Use the valid PIN
+        LT_LOG("Valid PIN stored: [%u, %u, %u, %u]\n",
+            pin_wrong[0], pin_wrong[1], pin_wrong[2], pin_wrong[3]);
+
+        //Test
+        LT_LOG("%s", "Attemp with user pin, slots are reinitialized again - lt_PIN_check() with correct PIN");
+        if((lt_PIN_check(&h, pin_wrong, 4, additional_data, additional_data_size, secret)) == LT_OK){
+            LT_LOG("Exported secret: %s", print_bytes(secret, 32));
+            LT_LOG_LINE();
+            return 1;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////
     LT_LOG("%s", "Aborting session H0");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
