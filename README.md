@@ -5,16 +5,16 @@
 TROPIC01's SDK written in C. Contributors, please follow [guidelines](https://github.com/tropicsquare/libtropic/blob/master/CONTRIBUTING.md).
 
 
-For more info about TROPIC01 chip check out developers resources in [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
+For more info about TROPIC01 chip check our developer resources in [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
 
 
 # Repository structure
 * `docs/` Documentation
-* `examples/` A few examples how libtropic might be used
+* `examples/` Examples of liptropic use
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
 * `include/` Public API header files
 * `scripts/` Build and config scripts
-* `src/` Library's source files
+* `src/` Library source files
 * `tests/` Unit tests and integration tests
 * `vendor/` Third party libraries and tools
 
