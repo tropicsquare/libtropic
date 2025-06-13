@@ -59,7 +59,6 @@ void test__invalid_handle()
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_cert_store(&h, NULL));
 }
 
-
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
@@ -79,7 +78,7 @@ void test__l2_error_handling(void)
 
     lt_l2_send_ExpectAndReturn(&h.l2, LT_OK);
     lt_l2_receive_ExpectAndReturn(&h.l2, LT_OK);
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)h.l2.buff;
+    struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h.l2.buff;
     p_l2_resp->rsp_len = (uint8_t)260;
     TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_cert_store(&h, &store));
 }
@@ -87,9 +86,9 @@ void test__l2_error_handling(void)
 lt_ret_t cb_1(lt_l2_state_t *s2, int __attribute__((unused)) cmock_num_calls)
 {
     // Fake valid get_info response
-    ((struct lt_l2_get_info_rsp_t*)s2->buff)->rsp_len = 128;
+    ((struct lt_l2_get_info_rsp_t *)s2->buff)->rsp_len = 128;
 
-    uint8_t *head = ((struct lt_l2_get_info_rsp_t*)s2->buff)->object;
+    uint8_t *head = ((struct lt_l2_get_info_rsp_t *)s2->buff)->object;
 
     // Invalid cert-store header version
     head[0] = 0x23;
@@ -112,9 +111,9 @@ void test__invalid_cert_store_1()
 lt_ret_t cb_2(lt_l2_state_t *s2, int __attribute__((unused)) cmock_num_calls)
 {
     // Fake valid get_info response
-    ((struct lt_l2_get_info_rsp_t*)s2->buff)->rsp_len = 128;
+    ((struct lt_l2_get_info_rsp_t *)s2->buff)->rsp_len = 128;
 
-    uint8_t *head = ((struct lt_l2_get_info_rsp_t*)s2->buff)->object;
+    uint8_t *head = ((struct lt_l2_get_info_rsp_t *)s2->buff)->object;
 
     // Valid cert-store header version
     head[0] = 0x1;
@@ -139,10 +138,10 @@ void test__invalid_cert_store_2()
 
 lt_ret_t cb_3(lt_l2_state_t *s2, int cmock_num_calls)
 {
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)s2->buff;
-    p_l2_resp->rsp_len = (uint8_t)128; // Fake correct RSP length
+    struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)s2->buff;
+    p_l2_resp->rsp_len = (uint8_t)128;  // Fake correct RSP length
 
-    uint8_t *head = ((struct lt_l2_get_info_rsp_t*)s2->buff)->object;
+    uint8_t *head = ((struct lt_l2_get_info_rsp_t *)s2->buff)->object;
 
     // Fake valid cert store header
     head[0] = 0x1;
@@ -150,11 +149,11 @@ lt_ret_t cb_3(lt_l2_state_t *s2, int cmock_num_calls)
 
     for (int j = 0; j < cmock_num_calls; j++) {
         head[2 + j * 2] = 0;
-        head[2 + j * 2 + 1] = 10; // Fake certificate smaller -> To offset to next certificate
+        head[2 + j * 2 + 1] = 10;  // Fake certificate smaller -> To offset to next certificate
     }
 
     head[2 + cmock_num_calls * 2] = 0;
-    head[2 + cmock_num_calls * 2 + 1] = 155; // Fake the i-th to be larger than the provided buffer
+    head[2 + cmock_num_calls * 2 + 1] = 155;  // Fake the i-th to be larger than the provided buffer
 
     return LT_OK;
 }
@@ -163,15 +162,14 @@ lt_ret_t cb_3(lt_l2_state_t *s2, int cmock_num_calls)
 void test__invalid_buf_len()
 {
     for (int i = 0; i < 4; i++) {
-
         struct lt_cert_store_t store = {0};
         struct lt_handle_t h = {0};
 
         // Fake some buf-lens
-        store.buf_len[0] = (uint16_t) 95;
-        store.buf_len[1] = (uint16_t) 96;
-        store.buf_len[2] = (uint16_t) 97;
-        store.buf_len[3] = (uint16_t) 98;
+        store.buf_len[0] = (uint16_t)95;
+        store.buf_len[1] = (uint16_t)96;
+        store.buf_len[2] = (uint16_t)97;
+        store.buf_len[3] = (uint16_t)98;
 
         lt_l2_send_ExpectAndReturn(&h.l2, LT_OK);
         lt_l2_receive_StubWithCallback(cb_3);
@@ -180,6 +178,7 @@ void test__invalid_buf_len()
     }
 }
 
+// clang-format off
 const uint8_t cert_stream[] = {
     // Cert Store Header
     0x01, 0x04, 0x01, 0xD2, 0x02, 0x62, 0x02, 0x8F, 0x02, 0x5C
@@ -366,13 +365,14 @@ const uint8_t cert_stream[] = {
     , 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     , 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
+// clang-format on
 
 lt_ret_t cb_4(lt_l2_state_t *s2, int cmock_num_calls)
 {
-    struct lt_l2_get_info_rsp_t* p_l2_resp = (struct lt_l2_get_info_rsp_t*)s2->buff;
-    p_l2_resp->rsp_len = (uint8_t)128; // Fake correct RSP length
+    struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)s2->buff;
+    p_l2_resp->rsp_len = (uint8_t)128;  // Fake correct RSP length
 
-    uint8_t *head = ((struct lt_l2_get_info_rsp_t*)s2->buff)->object;
+    uint8_t *head = ((struct lt_l2_get_info_rsp_t *)s2->buff)->object;
 
     memcpy(head, cert_stream + cmock_num_calls * 128, 128);
 
@@ -384,23 +384,23 @@ void test__valid_cert()
     struct lt_cert_store_t store = {0};
     struct lt_handle_t h = {0};
 
-    uint8_t cert_ese[700]       = {0};
-    uint8_t cert_xxxx[700]      = {0};
-    uint8_t cert_tropic01[700]  = {0};
-    uint8_t cert_root[700]      = {0};
+    uint8_t cert_ese[700] = {0};
+    uint8_t cert_xxxx[700] = {0};
+    uint8_t cert_tropic01[700] = {0};
+    uint8_t cert_root[700] = {0};
 
     // Provide buf-lens
-    store.buf_len[0] = (uint16_t) 700;
-    store.buf_len[1] = (uint16_t) 700;
-    store.buf_len[2] = (uint16_t) 700;
-    store.buf_len[3] = (uint16_t) 700;
+    store.buf_len[0] = (uint16_t)700;
+    store.buf_len[1] = (uint16_t)700;
+    store.buf_len[2] = (uint16_t)700;
+    store.buf_len[3] = (uint16_t)700;
 
     store.certs[0] = cert_ese;
     store.certs[1] = cert_xxxx;
     store.certs[2] = cert_tropic01;
     store.certs[3] = cert_root;
 
-    for (int i = 0; i < 19; i++ ) {
+    for (int i = 0; i < 19; i++) {
         lt_l2_send_ExpectAndReturn(&h.l2, LT_OK);
         lt_l2_receive_StubWithCallback(cb_4);
     }
@@ -416,6 +416,4 @@ void test__valid_cert()
     TEST_ASSERT_EQUAL_HEX8_ARRAY(store.certs[1], cert_stream + 10 + 466, 610);
     TEST_ASSERT_EQUAL_HEX8_ARRAY(store.certs[2], cert_stream + 10 + 466 + 610, 655);
     TEST_ASSERT_EQUAL_HEX8_ARRAY(store.certs[3], cert_stream + 10 + 466 + 610 + 655, 604);
-
 }
-
