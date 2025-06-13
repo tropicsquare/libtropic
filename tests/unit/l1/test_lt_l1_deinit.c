@@ -5,35 +5,26 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "unity.h"
-
 #include "libtropic_common.h"
-#include "lt_l1_port_wrap.h"
 #include "lt_l1.h"
-
+#include "lt_l1_port_wrap.h"
 #include "mock_libtropic_port.h"
+#include "unity.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void setUp(void)
-{
-}
+void setUp(void) {}
 
-void tearDown(void)
-{
-}
+void tearDown(void) {}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
 // Test if function returns LT_PARAM_ERR on invalid handle
-void test__invalid_handle()
-{
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_deinit(NULL));
-}
+void test__invalid_handle() { TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_deinit(NULL)); }
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- EXECUTION ------------------------------------------------------------//

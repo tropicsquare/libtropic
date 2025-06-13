@@ -6,12 +6,11 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "string.h"
 #include "inttypes.h"
-
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
+#include "string.h"
 
 /**
  * @brief
@@ -20,9 +19,17 @@
  */
 int lt_test_dump_i_config(void)
 {
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    LT_LOG("  -------- lt_test_dump_i_config() ----------------------------------------------------------------------------");
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    LT_LOG(
+        "  "
+        "------------------------------------------------------------------------------------------------------------"
+        "-");
+    LT_LOG(
+        "  -------- lt_test_dump_i_config() "
+        "----------------------------------------------------------------------------");
+    LT_LOG(
+        "  "
+        "------------------------------------------------------------------------------------------------------------"
+        "-");
 
     lt_handle_t h = {0};
     struct lt_config_t i_config;
@@ -37,7 +44,7 @@ int lt_test_dump_i_config(void)
     LT_ASSERT(LT_OK, read_whole_I_config(&h, &i_config));
 
     LT_LOG("%s", "I Config");
-    for (int i=0; i < (sizeof(struct lt_config_t)/sizeof(uint32_t)); i++) {
+    for (int i = 0; i < (sizeof(struct lt_config_t) / sizeof(uint32_t)); i++) {
         LT_LOG("%d: 0x%08x", i * 4, (unsigned int)i_config.obj[i]);
     }
 
@@ -47,5 +54,3 @@ int lt_test_dump_i_config(void)
 
     return 0;
 }
-
-

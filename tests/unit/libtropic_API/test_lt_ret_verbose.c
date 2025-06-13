@@ -5,26 +5,24 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "unity.h"
-#include "string.h"
-#include "time.h"
-
-#include "libtropic_common.h"
 #include "libtropic.h"
+#include "libtropic_common.h"
 #include "lt_l2_api_structs.h"
-
-#include "mock_lt_random.h"
-#include "mock_lt_l1_port_wrap.h"
-#include "mock_lt_l1.h"
-#include "mock_lt_l2.h"
-#include "mock_lt_l3_process.h"
-#include "mock_lt_l3.h"
-#include "mock_lt_x25519.h"
-#include "mock_lt_ed25519.h"
-#include "mock_lt_hkdf.h"
-#include "mock_lt_sha256.h"
 #include "mock_lt_aesgcm.h"
 #include "mock_lt_asn1_der.h"
+#include "mock_lt_ed25519.h"
+#include "mock_lt_hkdf.h"
+#include "mock_lt_l1.h"
+#include "mock_lt_l1_port_wrap.h"
+#include "mock_lt_l2.h"
+#include "mock_lt_l3.h"
+#include "mock_lt_l3_process.h"
+#include "mock_lt_random.h"
+#include "mock_lt_sha256.h"
+#include "mock_lt_x25519.h"
+#include "string.h"
+#include "time.h"
+#include "unity.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
@@ -33,21 +31,19 @@
 void setUp(void)
 {
     char buffer[100] = {0};
-    #ifdef RNG_SEED
-        srand(RNG_SEED);
-    #else
-        time_t seed = time(NULL);
-        // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
-        // Also, raw printf is worse solution (without additional debug msgs, such as line).
-        snprintf(buffer, sizeof(buffer), "Using random seed: %ld\n", seed);
-        TEST_MESSAGE(buffer);
-        srand((unsigned int)seed);
-    #endif
+#ifdef RNG_SEED
+    srand(RNG_SEED);
+#else
+    time_t seed = time(NULL);
+    // Using this approach, because in our version of Unity there's no TEST_PRINTF yet.
+    // Also, raw printf is worse solution (without additional debug msgs, such as line).
+    snprintf(buffer, sizeof(buffer), "Using random seed: %ld\n", seed);
+    TEST_MESSAGE(buffer);
+    srand((unsigned int)seed);
+#endif
 }
 
-void tearDown(void)
-{
-}
+void tearDown(void) {}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
@@ -75,7 +71,8 @@ void test__correct()
     TEST_ASSERT_EQUAL_STRING("LT_L1_CHIP_BUSY", lt_ret_verbose(LT_L1_CHIP_BUSY));
 
     TEST_ASSERT_EQUAL_STRING("LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL", lt_ret_verbose(LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL));
-    TEST_ASSERT_EQUAL_STRING("LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED", lt_ret_verbose(LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED));
+    TEST_ASSERT_EQUAL_STRING("LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED",
+                             lt_ret_verbose(LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED));
     TEST_ASSERT_EQUAL_STRING("LT_L3_ECC_INVALID_KEY", lt_ret_verbose(LT_L3_ECC_INVALID_KEY));
     TEST_ASSERT_EQUAL_STRING("LT_L3_MCOUNTER_UPDATE_UPDATE_ERR", lt_ret_verbose(LT_L3_MCOUNTER_UPDATE_UPDATE_ERR));
     TEST_ASSERT_EQUAL_STRING("LT_L3_COUNTER_INVALID", lt_ret_verbose(LT_L3_COUNTER_INVALID));

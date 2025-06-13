@@ -6,26 +6,20 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "unity.h"
-#include "string.h"
-
 #include "libtropic_common.h"
 #include "lt_l3_process.h"
-
-#include "mock_lt_l2.h"
 #include "mock_lt_aesgcm.h"
+#include "mock_lt_l2.h"
+#include "string.h"
+#include "unity.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void setUp(void)
-{
-}
+void setUp(void) {}
 
-void tearDown(void)
-{
-}
+void tearDown(void) {}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//

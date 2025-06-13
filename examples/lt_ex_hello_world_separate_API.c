@@ -6,26 +6,27 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "string.h"
 #include "inttypes.h"
-
-#include "lt_l2.h"
-#include "lt_l3.h"
 #include "libtropic.h"
 #include "libtropic_examples.h"
+#include "lt_l2.h"
+#include "lt_l3.h"
+#include "string.h"
 
 /**
  * @name Hello World with separate calls
  *
- * @details This example shows how to use separated API calls with TROPIC01. Separate calls are named lt_out__* and lt_in__*and they provide splitting of the
- * commands/results, which might be used for example for communication over a tunnel.
- * Let's say we want to speak with TROPIC01 from a server, then lt_out__* part is done on the server, then encrypted payload is transferred
- * over tunnel to the point where SPI is wired to TROPIC01. L2 communication is executed, encrypted result is transferred back to the server, where
- * lt_in__* function is used to decrypt the response.
+ * @details This example shows how to use separated API calls with TROPIC01. Separate calls are named lt_out__* and
+ * lt_in__*and they provide splitting of the commands/results, which might be used for example for communication over a
+ * tunnel. Let's say we want to speak with TROPIC01 from a server, then lt_out__* part is done on the server, then
+ * encrypted payload is transferred over tunnel to the point where SPI is wired to TROPIC01. L2 communication is
+ * executed, encrypted result is transferred back to the server, where lt_in__* function is used to decrypt the
+ * response.
  *
  * To have a better understanding have a look into lt_ex_hello_world.c, both examples shows similar procedure.
  *
- * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on PCB.
+ * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on
+ * PCB.
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  * @par
  */
@@ -40,7 +41,7 @@ static int session_H0(void)
 {
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__ ((aligned (16))) = {0};
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -57,11 +58,8 @@ static int session_H0(void)
     uint8_t cert3[700] = {0};
     uint8_t cert4[700] = {0};
 
-    struct lt_cert_store_t store = {
-        .cert_len   = {0, 0, 0, 0},
-        .buf_len    = {700, 700, 700, 700},
-        .certs      = {cert1, cert2, cert3, cert4}
-    };
+    struct lt_cert_store_t store
+        = {.cert_len = {0, 0, 0, 0}, .buf_len = {700, 700, 700, 700}, .certs = {cert1, cert2, cert3, cert4}};
 
     LT_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
 
@@ -96,7 +94,8 @@ static int session_H0(void)
     LT_LOG("%s", "lt_in__session_start() ");
     LT_ASSERT(LT_OK, lt_in__session_start(&h, stpub, pkey_index_0, sh0priv, sh0pub, &state));
 
-    // Now we can use lt_ping() to send a message to TROPIC01 and receive a response, this is done with separate API calls
+    // Now we can use lt_ping() to send a message to TROPIC01 and receive a response, this is done with separate API
+    // calls
     uint8_t in[100] = {0};
     uint8_t out[100] = {0};
     memcpy(out, "This is Hello World message from TROPIC01!!", 43);
@@ -128,7 +127,7 @@ int lt_ex_hello_world_separate_API(void)
 
     LT_LOG_LINE();
     LT_LOG("\t Session with H0 keys:");
-    if(session_H0() == -1)  {
+    if (session_H0() == -1) {
         LT_LOG("Error during session_H0()");
     }
 

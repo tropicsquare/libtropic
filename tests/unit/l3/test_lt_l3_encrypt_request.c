@@ -6,26 +6,20 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "unity.h"
-#include "string.h"
-
 #include "libtropic_common.h"
 #include "lt_l3_process.h"
-
-#include "mock_lt_l2.h"
 #include "mock_lt_aesgcm.h"
+#include "mock_lt_l2.h"
+#include "string.h"
+#include "unity.h"
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- SETUP AND TEARDOWN ---------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------//
 
-void setUp(void)
-{
-}
+void setUp(void) {}
 
-void tearDown(void)
-{
-}
+void tearDown(void) {}
 
 //---------------------------------------------------------------------------------------------------------//
 //---------------------------------- INPUT PARAMETERS   ---------------------------------------------------//
@@ -57,8 +51,9 @@ void test__lt_aesgcm_encrypt__LT_FAIL()
     lt_handle_t h = {0};
     h.l3.session = SESSION_ON;
 
-    struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)&h.l3.buff;
-    lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_FAIL);
+    struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)&h.l3.buff;
+    lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
+                                      p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE, LT_FAIL);
 
     int ret = lt_l3_encrypt_request(&h.l3);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
@@ -67,12 +62,14 @@ void test__lt_aesgcm_encrypt__LT_FAIL()
 // Test if function returns LT_OK when executed correctly
 void test__correct()
 {
-    for (int i=0; i<5;i++) {
+    for (int i = 0; i < 5; i++) {
         lt_handle_t h = {0};
         h.l3.session = SESSION_ON;
 
-        struct lt_l3_gen_frame_t * p_frame = (struct lt_l3_gen_frame_t*)&h.l3.buff;
-        lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE,LT_OK);
+        struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)&h.l3.buff;
+        lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0,
+                                          p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size,
+                                          L3_TAG_SIZE, LT_OK);
 
         int ret = lt_l3_encrypt_request(&h.l3);
         TEST_ASSERT_EQUAL(LT_OK, ret);

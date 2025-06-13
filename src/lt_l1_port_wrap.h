@@ -84,6 +84,6 @@ lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms);
 lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
 #endif
 
-/** @} */ // end of group_l1_functions
+/** @} */  // end of group_l1_functions
 
 #endif

@@ -4,7 +4,7 @@
 /**
  * @defgroup group_port_functions Layer 1 port specific functions
  * @brief Defined for each supported platform
- * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported. 
+ * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported.
  *
  * @{
  */
@@ -63,7 +63,8 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2);
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout);
 
 /**
- * @brief Platform defined function for delay, specifies what host platform should do when libtropic's functions need some delay
+ * @brief Platform defined function for delay, specifies what host platform should do when libtropic's functions need
+ * some delay
  *
  * @param s2          Structure holding l2 state
  * @param ms          Time to wait in miliseconds
@@ -90,6 +91,6 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
  */
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len);
 
-/** @} */ // end of group_port_functions
+/** @} */  // end of group_port_functions
 
 #endif
