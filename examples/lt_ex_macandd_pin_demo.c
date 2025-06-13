@@ -401,6 +401,105 @@ void print_palms(int cnt){
     printf("\n");
 }
 
+// Beginning of TCP stuff
+#include <stdio.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <errno.h>
+
+#define PORT 12345
+#define TCP_ADDR "127.0.0.1"
+#define TX_ATTEMPTS 3
+
+static int send_response (int socket, uint8_t *buffer, size_t length)
+{
+    int nb_bytes_sent;
+    int nb_bytes_sent_total = 0;
+    int nb_bytes_to_send = length;
+    uint8_t *ptr = buffer;
+
+    // attempt several times to send the data
+    for (int i = 0; i < TX_ATTEMPTS; i++) {
+        //printf("Attempting to send data: attempt #%d.\n", i);
+        nb_bytes_sent = send(socket, ptr, nb_bytes_to_send, 0);
+        if (nb_bytes_sent <= 0) {
+            //printf("Send failed: %s (%d).\n", strerror(errno), errno);
+            return 1;
+        }
+
+        nb_bytes_to_send -= nb_bytes_sent;
+        if (nb_bytes_to_send == 0)
+        {
+            //printf("All %ld bytes sent successfully.\n", length);
+            return 0;
+        }
+
+        ptr += nb_bytes_sent;
+        nb_bytes_sent_total += nb_bytes_sent;
+    }
+
+    // could not send all the data after several attempts
+    //printf("%d bytes sent instead of expected %lu ", nb_bytes_sent_total, length);
+    //printf("after %d attempts.\n", TX_ATTEMPTS);
+
+    return 1;
+}
+
+int server_test()
+{
+	int sockfd;
+	struct sockaddr_in servaddr;
+
+	// socket create and varification
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd == -1) {
+		printf("socket creation failed...\n");
+		exit(0);
+	}
+
+	bzero(&servaddr, sizeof(servaddr));
+	servaddr.sin_family = AF_INET;
+	servaddr.sin_addr.s_addr = inet_addr(TCP_ADDR);
+	servaddr.sin_port = htons(PORT);
+
+	// connect the client socket to server socket
+	if (connect(sockfd, (struct sockaddr*)(&servaddr), sizeof(servaddr)) != 0) {
+		printf("Connecting failed\n");
+		exit(0);
+	} else{
+		printf("Connected!\n");
+	}
+
+    int exit_this_function = 3;
+    while(exit_this_function > 0) {
+        // Read data from the server
+        uint8_t pin_buff[3] = {0};
+	    int len = read(sockfd,pin_buff,3);
+	    printf("read %d PIN from socket: %d %d %d\n",len, pin_buff[0]-48, pin_buff[1]-48, pin_buff[2]-48);
+
+        /////////////////////////////////////////
+        // do macandd things here
+        // and reply status to server
+        /////////////////////////////////////////
+
+        /*some libtropic call(s)*/ lt_ret_t status = LT_OK;
+        send_response(sockfd, (uint8_t*)&status, 1);
+        //printf("Sending status byte: %s\n", lt_ret_verbose(status));
+
+       exit_this_function--;
+    }
+    printf("Exiting server test function\n");
+	close(sockfd);
+
+    return 0;
+}
+// End of TCP stuff
+
+
 /**
  * @brief Session with H0 pairing keys
  *
@@ -466,6 +565,13 @@ static int session_H0(void)
     LT_ASSERT(LT_OK, lt_PIN_set(&h, pin, 4, additional_data, additional_data_size, secret));
     LT_LOG("Initialized secret: %s", print_bytes(secret, 32));
     LT_LOG("\t=======================================================================");
+
+
+
+    // This will try to connect to the server and get the PIN three times,
+    // then demo continues as before
+    server_test();
+
 
     LT_LOG("\t=======================================================================");
     LT_LOG("\t============ Try to guess secret 4-digit pin, good luck!!!! ===========");
