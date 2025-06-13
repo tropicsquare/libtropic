@@ -76,7 +76,7 @@ static char* print_bytes(uint8_t *data, uint16_t len) {
 /** @brief Maximal size of MAC-and-Destroy PIN input */
 #define MAC_AND_DESTROY_PIN_SIZE_MAX  8u
 
-
+#define PALM_TREE "\U0001F334"
 /**
  * @brief This structure holds data used by host during MAC and Destroy sequence
  * Content of this struct must be stored in non-volatile memory, because it is used
@@ -373,8 +373,8 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
 /**
  * @brief Input function
  *
- * @param pin_wrong    Function for pin input
- * @return            pin_wrong if success, otherwise -1
+ * @param pin_attemp    Function for pin input
+ * @return            pin_attemp if success, otherwise -1
  */
 
 
@@ -393,7 +393,13 @@ int get_valid_pin(uint8_t pin[4]) {
     return 1;
 }
 
-
+void print_palms(int cnt){
+    for (size_t i = 0; i < cnt; i++)
+    {
+        printf(PALM_TREE);
+    }
+    printf("\n");
+}
 
 /**
  * @brief Session with H0 pairing keys
@@ -425,7 +431,7 @@ static int session_H0(void)
 
     // User's PIN
     uint8_t pin[]       = {1,2,3,4};
-    uint8_t pin_wrong[] = {0,0,0,0};
+    uint8_t pin_attemp[] = {0,0,0,0};
     int attemps = 3;
 
     LT_LOG_LINE();
@@ -441,7 +447,7 @@ static int session_H0(void)
     LT_LOG("%s", "  \"i<MACANDD_ROUNDS-1\"  PIN check attempts with wrong PIN");
     for (int i = 0; i<MACANDD_ROUNDS-1; i++) {
         LT_LOG("lt_PIN_check() user inputs wrong PIN - slot %d destroyed", i);
-        LT_ASSERT(LT_FAIL, lt_PIN_check(&h, pin_wrong, 4, additional_data, additional_data_size, secret));
+        LT_ASSERT(LT_FAIL, lt_PIN_check(&h, pin_attemp, 4, additional_data, additional_data_size, secret));
         LT_LOG("secret: %s", print_bytes(secret, 32));
     }
 
@@ -455,30 +461,38 @@ static int session_H0(void)
     // Set the PIN and log out the secret
     LT_LOG("Number of Mac And Destroy tries is set to %d", MACANDD_ROUNDS);
     LT_LOG("%s", "lt_PIN_set(): user sets the PIN");
+    
+    LT_LOG("\t=======================================================================");
     LT_ASSERT(LT_OK, lt_PIN_set(&h, pin, 4, additional_data, additional_data_size, secret));
     LT_LOG("Initialized secret: %s", print_bytes(secret, 32));
-    LT_LOG_LINE();
+    LT_LOG("\t=======================================================================");
 
-    LT_LOG("%s", "////////////////////////////////////////////////////////////////////////////////////////\n");    
-    LT_LOG("%s", "Try to guess secret 4-digit pin, good luck!!!!\n");
+    LT_LOG("\t=======================================================================");
+    LT_LOG("\t============ Try to guess secret 4-digit pin, good luck!!!! ===========");
+    LT_LOG("\t=======================================================================");
 
     for (int i = 0; i < attemps; i++)
     {
-        
-        LT_LOG("Attemp number %d", i+1);
+        LT_LOG("\t=======================================================================");
+        LT_LOG("\t======================== Attemp number %d ==============================", i+1);
+        LT_LOG("\t=======================================================================");
         // Keep asking until the user enters a valid PIN
-        while (!get_valid_pin(pin_wrong)) {
+        while (!get_valid_pin(pin_attemp)) {
             LT_LOG("%s", "Invalid PIN! Please try again.\n");
-            memset(pin_wrong, 0, sizeof(pin_wrong));
+            memset(pin_attemp, 0, sizeof(pin_attemp));
         }
 
         // Use the valid PIN
+        LT_LOG("\t=======================================================================");
         LT_LOG("Valid PIN stored: [%u, %u, %u, %u]\n",
-            pin_wrong[0], pin_wrong[1], pin_wrong[2], pin_wrong[3]);
+            pin_attemp[0], pin_attemp[1], pin_attemp[2], pin_attemp[3]);
+        LT_LOG("\t=======================================================================");
 
         //Test
+        LT_LOG("\t=======================================================================");    
         LT_LOG("%s", "Attemp with user pin, slots are reinitialized again - lt_PIN_check() with correct PIN");
-        if((lt_PIN_check(&h, pin_wrong, 4, additional_data, additional_data_size, secret)) == LT_OK){
+        LT_LOG("\t=======================================================================");
+        if((lt_PIN_check(&h, pin_attemp, 4, additional_data, additional_data_size, secret)) == LT_OK){
             LT_LOG("Exported secret: %s", print_bytes(secret, 32));
             LT_LOG_LINE();
             return 1;
@@ -495,11 +509,9 @@ static int session_H0(void)
 
 int lt_ex_macandd_pin_demo(void)
 {
-    LT_LOG("");
-    LT_LOG("\t=======================================================================");
+    print_palms(60);
     LT_LOG("\t=====  TROPIC01 Hello World FROM PIN DEMO                           ===");
-    LT_LOG("\t=======================================================================");
-
+    print_palms(60);
     LT_LOG_LINE();
     if(session_H0() == -1) {
         printf("\r\nError during session_H0()\r\n");
