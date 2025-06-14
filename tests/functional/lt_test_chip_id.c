@@ -194,9 +194,11 @@ static char* interpret_fab_id(uint16_t fab_id_value)
 {
     if ((fab_id_value == FAB_ID_TROPIC_SQUARE_LAB)) {
         memcpy(buff_interpreted, "(\"Tropic Square Lab\")", 22);
-    } else if((fab_id_value == FAB_ID_EPS_BRNO)) {
+    }
+    else if ((fab_id_value == FAB_ID_EPS_BRNO)) {
         memcpy(buff_interpreted, "(\"EPS Global - Brno\")", 23);
-    } else {
+    }
+    else {
         memcpy(buff_interpreted, "Unknown facility ID", 20);
     }
 
