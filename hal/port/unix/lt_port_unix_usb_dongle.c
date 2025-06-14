@@ -57,9 +57,9 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     // memset(h, 0, sizeof(lt_handle_t));
 
     // serialport init
-    fd = open(device, O_RDWR | O_NOCTTY);
+    fd = open(((lt_uart_def_unix_t*)h->device)->device, O_RDWR | O_NOCTTY);
     if (fd == -1) {
-        perror(device);
+        perror(((lt_uart_def_unix_t*)h->device)->device);
         return LT_FAIL;
     }
 
@@ -91,7 +91,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 
     // This code only supports certain standard baud rates. Supporting
     // non-standard baud rates should be possible but takes more work.
-    switch (baud_rate) {
+    switch (((lt_uart_def_unix_t*)h->device)->baud_rate) {
         case 4800:
             cfsetospeed(&options, B4800);
             break;
@@ -108,7 +108,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
             cfsetospeed(&options, B115200);
             break;
         default:
-            fprintf(stderr, "warning: baud rate %u is not supported, using 9600.\n", baud_rate);
+            fprintf(stderr, "warning: baud rate %u is not supported, using 9600.\n", ((lt_uart_def_unix_t*)h->device)->baud_rate);
             cfsetospeed(&options, B9600);
             break;
     }
