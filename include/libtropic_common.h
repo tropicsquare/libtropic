@@ -71,6 +71,12 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
+#define UART_DEV_MAX_LEN 32
+typedef struct {
+    char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
+    uint32_t baud_rate;             // = 115200;
+} lt_uart_def_unix_t;
+
 typedef struct {
     void *device;
     uint8_t mode;
