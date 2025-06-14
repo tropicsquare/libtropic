@@ -6,82 +6,82 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 
-lt_ret_t lt_l1_init(lt_handle_t *h)
+lt_ret_t lt_l1_init(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_init(h);
+    return lt_port_init(s);
 }
 
-lt_ret_t lt_l1_deinit(lt_handle_t *h)
+lt_ret_t lt_l1_deinit(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_deinit(h);
+    return lt_port_deinit(s);
 }
 
-lt_ret_t lt_l1_spi_csn_low(lt_handle_t *h)
+lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_spi_csn_low(h);
+    return lt_port_spi_csn_low(s);
 }
 
-lt_ret_t lt_l1_spi_csn_high(lt_handle_t *h)
+lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_spi_csn_high(h);
+    return lt_port_spi_csn_high(s);
 }
 
-lt_ret_t lt_l1_spi_transfer(lt_handle_t *h, uint8_t offset, uint16_t tx_len, uint32_t timeout)
+lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s, uint8_t offset, uint16_t tx_len, uint32_t timeout)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_spi_transfer(h, offset, tx_len, timeout);
+    return lt_port_spi_transfer(s, offset, tx_len, timeout);
 }
 
-lt_ret_t lt_l1_delay(lt_handle_t *h, uint32_t ms)
+lt_ret_t lt_l1_delay(lt_l2_state_t *s, uint32_t ms)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_delay(h, ms);
+    return lt_port_delay(s, ms);
 }
 
 #if LT_USE_INT_PIN
 
-lt_ret_t lt_l1_delay_on_int(lt_handle_t *h, uint32_t ms)
+lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s, uint32_t ms)
 {
 #ifdef LIBT_DEBUG
-    if(!h) {
+    if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_delay_on_int(h, ms);
+    return lt_port_delay_on_int(s, ms);
 }
 #endif

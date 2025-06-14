@@ -9,15 +9,14 @@
 #include "lt_crc16.h"
 
 /* Generator polynomial value used */
-#define CRC16_POLYNOMIAL      0x8005
+#define CRC16_POLYNOMIAL 0x8005
 
 /* Used to initialize the crc value */
-#define CRC16_INITIAL_VAL     0x0000
+#define CRC16_INITIAL_VAL 0x0000
 
 /* The final XOR value is xored to the final CRC value before being returned.
 This is done after the 'Result reflected' step. */
 #define CRC16_FINAL_XOR_VALUE 0x0000
-
 
 uint16_t crc16_byte(uint8_t data, uint16_t crc)
 {
@@ -37,7 +36,7 @@ uint16_t crc16_byte(uint8_t data, uint16_t crc)
         }
     } while (--i);
 
-    return(crc);
+    return (crc);
 }
 
 uint16_t crc16(const uint8_t *data, int16_t len)
@@ -50,17 +49,17 @@ uint16_t crc16(const uint8_t *data, int16_t len)
 
     crc ^= CRC16_FINAL_XOR_VALUE;
 
-	return (crc << 8 | crc >> 8);
+    return (crc << 8 | crc >> 8);
 }
 
 // TODO test boundaries of passed req
 void add_crc(void *req)
 {
-	uint8_t *p = (uint8_t *)req;
-	uint16_t len = p[1] + 2;
+    uint8_t *p = (uint8_t *)req;
+    uint16_t len = p[1] + 2;
 
-	uint16_t crc = crc16(p, len);
+    uint16_t crc = crc16(p, len);
 
-	p[len] = crc >> 8;
-	p[len+1] = crc & 0x00FF;
+    p[len] = crc >> 8;
+    p[len + 1] = crc & 0x00FF;
 }

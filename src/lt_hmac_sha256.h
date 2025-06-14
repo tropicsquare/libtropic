@@ -21,8 +21,6 @@
  * @param ilen    Length of data in input data buffer
  * @param output  Output buffer
  */
-void lt_hmac_sha256( const uint8_t *key, size_t keylen,
-                          const uint8_t *input, size_t ilen,
-                          uint8_t *output );
+void lt_hmac_sha256(const uint8_t *key, size_t keylen, const uint8_t *input, size_t ilen, uint8_t *output);
 
 #endif

@@ -1,29 +1,41 @@
 /**
-* @file lt_test_erase_r_config.c
-* @brief Test function which erases R config
-* @author Tropic Square s.r.o.
-*
-* @license For the license see file LICENSE.txt file in the root directory of this source tree.
-*/
-#include "string.h"
+ * @file lt_test_erase_r_config.c
+ * @brief Test function which erases R config
+ * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
 #include "inttypes.h"
-
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
+#include "string.h"
 
 /**
- * @brief  
+ * @brief
  *
  * @return int
  */
 int lt_test_erase_r_config(void)
 {
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    LT_LOG("  -------- lt_test_erase_r_config() -------------------------------------------------------------------------------------");
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    LT_LOG(
+        "  "
+        "------------------------------------------------------------------------------------------------------------"
+        "-");
+    LT_LOG(
+        "  -------- lt_test_erase_r_config() "
+        "-------------------------------------------------------------------------------------");
+    LT_LOG(
+        "  "
+        "------------------------------------------------------------------------------------------------------------"
+        "-");
 
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
 
     LT_LOG("%s", "Initialize handle");
     LT_ASSERT(LT_OK, lt_init(&h));
@@ -37,17 +49,15 @@ int lt_test_erase_r_config(void)
     struct lt_config_t r_config_read;
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_read));
     // Print r config
-    for (int i=0; i<27;i++) {
+    for (int i = 0; i < 27; i++) {
         LT_LOG("    %s,  %08" PRIX32, get_conf_desc(i), r_config_read.obj[i]);
     }
 
-    LT_LOG("%s", "lt_reboot(LT_L2_STARTUP_ID_REBOOT)");
-    LT_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    LT_LOG("%s", "lt_reboot(LT_MODE_APP)");
+    LT_ASSERT(LT_OK, lt_reboot(&h, LT_MODE_APP));
 
     LT_LOG("%s", "lt_deinit()");
     LT_ASSERT(LT_OK, lt_deinit(&h));
 
     return 0;
 }
-
-

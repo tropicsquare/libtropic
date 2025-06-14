@@ -6,13 +6,11 @@
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
-#include "string.h"
 #include "inttypes.h"
-
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
-
+#include "string.h"
 
 /**
  * @brief Local helper, print bytes as hexadecimal numbers
@@ -20,7 +18,8 @@
  * @param data  Bytes to be printed
  * @param len    Length of bytes
  */
-static void print_bytes(uint8_t *data, uint16_t len) {
+static void print_bytes(uint8_t *data, uint16_t len)
+{
     char buffer[256] = {0};
     for (uint16_t i = 0; i < len; i++) {
         char byte_str[4];
@@ -30,30 +29,44 @@ static void print_bytes(uint8_t *data, uint16_t len) {
         // Print the buffer every 32 bytes or at the end of the data
         if ((i + 1) % 32 == 0 || i == len - 1) {
             LT_LOG_INFO("%s", buffer);
-            buffer[0] = '\0'; // Clear the buffer for the next line
+            buffer[0] = '\0';  // Clear the buffer for the next line
         }
     }
 }
 
 /**
- * @brief 
- * 
- * @return int 
+ * @brief
+ *
+ * @return int
  */
 int lt_test_write_pairing_keys(void)
 {
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
-    LT_LOG("  -------- lt_test_write_pairing_keys() -----------------------------------------------------------------------");
-    LT_LOG("  -------------------------------------------------------------------------------------------------------------");
+    LT_LOG(
+        "  "
+        "------------------------------------------------------------------------------------------------------------"
+        "-");
+    LT_LOG(
+        "  -------- lt_test_write_pairing_keys() "
+        "-----------------------------------------------------------------------");
+    LT_LOG(
+        "  "
+        "------------------------------------------------------------------------------------------------------------"
+        "-");
 
     lt_handle_t h = {0};
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
 
     LT_LOG("%s", "Initialize handle");
     LT_ASSERT(LT_OK, lt_init(&h));
     LT_LOG("%s with key H%d", "verify_chip_and_start_secure_session()", pkey_index_0);
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
     LT_LOG("%s", "lt_ping() ");
-    uint8_t ping_msg[33] = {'>','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j',' ','A','h','o','j','!','<','\0'};
+    uint8_t ping_msg[33] = {'>', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A',
+                            'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', '!', '<', '\0'};
     uint8_t in[33] = {0};
     LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, 33));
     LT_LOG("Received Ping message: %s", in);
@@ -79,6 +92,7 @@ int lt_test_write_pairing_keys(void)
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, pkey_index_2));
     LT_LOG("%s", "Writing pairing key H3");
     LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, pkey_index_3));
+    LT_LOG_LINE();
 
     // Read 1,2 and 3 pairing keys and print them out
     LT_LOG("%s", "Reading pairing key H0 - should proceed");
@@ -87,7 +101,6 @@ int lt_test_write_pairing_keys(void)
     LT_LOG("%s", "Compare content of readed key with uploaded key, print pubkey");
     LT_ASSERT(0, memcmp(sh0pub, readed_pubkey, 32));
     print_bytes(readed_pubkey, 32);
-    LT_LOG_LINE();
 
     LT_LOG("%s", "Reading pairing key H1 - should proceed");
     LT_ASSERT(LT_OK, lt_pairing_key_read(&h, readed_pubkey, PAIRING_KEY_SLOT_INDEX_1));
@@ -108,7 +121,7 @@ int lt_test_write_pairing_keys(void)
     print_bytes(readed_pubkey, 32);
 
     LT_LOG("%s", "lt_reboot() reboot into Application");
-    LT_ASSERT(LT_OK,  lt_reboot(&h, LT_L2_STARTUP_ID_REBOOT));
+    LT_ASSERT(LT_OK, lt_reboot(&h, LT_MODE_APP));
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");

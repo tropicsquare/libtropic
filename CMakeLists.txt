@@ -9,7 +9,6 @@ cmake_minimum_required(VERSION 3.21.0)
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
-option(LT_EXPERIMENTAL_SPI_UART "Experimental feature for spi slave to serial hw convertor" OFF)
 option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_ADD_FUNC_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
@@ -20,6 +19,7 @@ option(LT_HELPERS "Compile helper function" ON)
 # Enable usage of INT pin during communication. Instead of polling for response,
 # host will be notified by INT pin when response is ready.
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
+option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 
 # Check if cryptography provider is defined
 if(
@@ -79,29 +79,34 @@ set(SDK_SRCS ${SDK_SRCS}
 # Libtropic core functions                                                #
 ###########################################################################
 set(SDK_SRCS ${SDK_SRCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/keys/keys.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3_process.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
 )
 
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/lt_l2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/lt_l3.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3_process.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.h
 )
 set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
@@ -116,9 +121,9 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
 if(LT_ADD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/keys.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/
@@ -131,7 +136,6 @@ endif()
 ###########################################################################
 if(LT_ADD_FUNC_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/keys.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_chip_id.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_pairing_keys.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
@@ -139,6 +143,9 @@ if(LT_ADD_FUNC_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_i_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
@@ -174,12 +181,6 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #                                                                         #
 ###########################################################################
 
-# This options just add 10ms synchronisation delay before read and write functions.
-# Needed for hardware spi slave to uart converter.
-if(LT_EXPERIMENTAL_SPI_UART)
-    target_compile_definitions(tropic PRIVATE LT_EXPERIMENTAL_SPI_UART=1)
-endif()
-
 if(LT_USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
@@ -195,3 +196,6 @@ if(LT_USE_INT_PIN)
     target_compile_definitions(tropic PRIVATE LT_USE_INT_PIN)
 endif()
 
+if(LT_SEPARATE_L3_BUFF)
+    target_compile_definitions(tropic PRIVATE LT_SEPARATE_L3_BUFF)
+endif()

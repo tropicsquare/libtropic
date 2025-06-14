@@ -15,8 +15,7 @@
 #endif
 
 /** AES-GCM context structure */
-typedef struct lt_crypto_aes_gcm_ctx
-{
+typedef struct lt_crypto_aes_gcm_ctx {
 #if LT_USE_TREZOR_CRYPTO
     gcm_ctx ctx;
 #elif USE_MBEDTLS
@@ -32,9 +31,7 @@ typedef struct lt_crypto_aes_gcm_ctx
  * @param key_len     Length of key in bytes
  * @return            LT_OK if success, otherwise returns other error code.
  */
-int lt_aesgcm_init_and_key(void *ctx,
-                           const uint8_t *key,
-                           uint32_t key_len);
+int lt_aesgcm_init_and_key(void *ctx, const uint8_t *key, uint32_t key_len);
 
 /**
  * @details This function decrypts data. It expect initialized context with valid keys.
@@ -50,15 +47,8 @@ int lt_aesgcm_init_and_key(void *ctx,
  * @param tag_len     Length of tag buffer in bytes
  * @return            LT_OK if success, otherwise returns other error code.
  */
-int lt_aesgcm_encrypt(void *ctx,
-                      const uint8_t *iv,
-                      uint32_t iv_len,
-                      const uint8_t *aad,
-                      uint32_t aad_len,
-                      uint8_t *msg,
-                      uint32_t msg_len,
-                      uint8_t *tag,
-                      uint32_t tag_len);
+int lt_aesgcm_encrypt(void *ctx, const uint8_t *iv, uint32_t iv_len, const uint8_t *aad, uint32_t aad_len, uint8_t *msg,
+                      uint32_t msg_len, uint8_t *tag, uint32_t tag_len);
 
 /**
  * @details This function decrypts data. It expect initialized context with valid keys.
@@ -74,15 +64,8 @@ int lt_aesgcm_encrypt(void *ctx,
  * @param tag_len     Length of tag buffer in bytes
  * @return            LT_OK if success, otherwise returns other error code.
  */
-int lt_aesgcm_decrypt(void *ctx,
-                      const uint8_t *iv,
-                      uint32_t iv_len,
-                      const uint8_t *aad,
-                      uint32_t aad_len,
-                      uint8_t *msg,
-                      uint32_t msg_len,
-                      const uint8_t *tag,
-                      uint32_t tag_len);
+int lt_aesgcm_decrypt(void *ctx, const uint8_t *iv, uint32_t iv_len, const uint8_t *aad, uint32_t aad_len, uint8_t *msg,
+                      uint32_t msg_len, const uint8_t *tag, uint32_t tag_len);
 
 /**
  * @details This function clears AES GCM context

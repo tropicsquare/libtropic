@@ -4,7 +4,7 @@ We love contributions! To make contributing simple for both sides, please:
 
 - Open an issue
 - Describe how you would like to contribute and discuss details with us
-- Make sure your code is properly formatted
+- Make sure your code is properly formatted with `clang-format` version 16 - more info in `docs/contributors.md`, or simply install clang-format version 16 run `clang-format -i -- filename_c_or_h`
 - Make sure your commit messages follow [Conventional Commits guidelines](https://www.conventionalcommits.org/en/v1.0.0/#specification)
 - Create pull request
 

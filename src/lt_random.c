@@ -12,7 +12,7 @@
 lt_ret_t lt_random_bytes(uint32_t *buff, uint16_t len)
 {
 #ifdef LIBT_DEBUG
-    if(!buff) {
+    if (!buff) {
         return LT_PARAM_ERR;
     }
 #endif
