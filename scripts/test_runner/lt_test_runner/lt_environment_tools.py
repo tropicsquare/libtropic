@@ -5,6 +5,8 @@ from pathlib import Path
 import serial
 import serial.tools.list_ports
 
+from typing import Union
+
 logger = logging.getLogger(__name__)
 
 class lt_environment_tools:    
@@ -14,7 +16,7 @@ class lt_environment_tools:
         pid: int
     
     @staticmethod
-    def get_adapter_id_from_mapping(platform_str: str, map_file_path: Path) -> lt_adapter_id | None:
+    def get_adapter_id_from_mapping(platform_str: str, map_file_path: Path) -> Union[lt_adapter_id, None]:
         if not map_file_path.exists() or not map_file_path.is_file():
             logger.error("Config file not found!")
             return None
@@ -36,7 +38,7 @@ class lt_environment_tools:
             return None
 
     @staticmethod
-    def get_serial_device_from_vidpid(vid: int, pid: int, interface: int = None) -> str | None:
+    def get_serial_device_from_vidpid(vid: int, pid: int, interface: int = None) -> Union[str, None]:
         found_devices = []
         for port in serial.tools.list_ports.comports():
             if port.vid == vid and port.pid == pid:

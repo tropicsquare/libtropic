@@ -2,12 +2,14 @@ import logging
 import subprocess
 import shutil
 
+from typing import List, Union
+
 logger = logging.getLogger(__name__)
 
 # Handle OpenOCD using RAII pattern, so it is automatically terminated
 # when leaving a scope.
 class lt_openocd_launcher:
-    def __init__(self, openocd_params: list[str]):
+    def __init__(self, openocd_params: List[str]):
         # This has to be list, hence [ ] (Popen accepts lists as arg).
         openocd_path = [shutil.which("openocd")]
         if openocd_path is None:
