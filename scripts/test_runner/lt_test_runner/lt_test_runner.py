@@ -16,7 +16,7 @@ class lt_test_runner:
         TEST_FAILED = -1
         TEST_PASSED = 0
 
-    class OpenOCDConnectionError:
+    class OpenOCDConnectionErrorException(BaseException):
         pass
 
     def __init__(self, working_dir: Path, platform_id: str, mapping_config_path: Path, adapter_config_path: Path):
@@ -50,14 +50,17 @@ class lt_test_runner:
 
         time.sleep(2)
         if not self.openocd_launcher.is_running():
-            logger.error("Couldn't launch OpenOCD. Check parameters.")
+            logger.error("Couldn't launch OpenOCD. Hint: run with higher verbosity (-v) to check OpenOCD output.")
             return
 
     def __del__(self):
         pass
 
     async def run(self, elf_path: Path) -> lt_test_result:
-        await self.platform.openocd_connect()
+        
+        if not await self.platform.openocd_connect():
+            logger.error("Couldn't connect to OpenOCD!")
+            return self.lt_test_result.TEST_FAILED
 
         await self.platform.initialize()
 

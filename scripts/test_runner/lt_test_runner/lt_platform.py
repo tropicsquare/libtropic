@@ -24,12 +24,17 @@ class lt_platform(ABC):
     def __del__(self):
         pass
 
-    async def openocd_connect(self):
+    async def openocd_connect(self) -> bool:
         logger.info("Opening connection to OpenOCD...")
-        self.ocd_reader, self.ocd_writer = await telnetlib3.open_connection('localhost', 4444)
+
+        try:
+            self.ocd_reader, self.ocd_writer = await telnetlib3.open_connection('localhost', 4444)
+        except ConnectionRefusedError:
+            return False
 
         await self.ocd_reader.readuntil(">".encode('ascii'))
         logger.info("OpenOCD ready!")
+        return True
 
     def openocd_disconnect(self):
         logger.info("Disconnecting from OpenOCD...")
