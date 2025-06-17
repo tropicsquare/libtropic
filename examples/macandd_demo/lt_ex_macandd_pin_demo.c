@@ -502,7 +502,7 @@ static int handle_set_pin_command(int socket, const char* new_pin_str, lt_handle
         current_attempts = 0;
         is_locked = false;
         
-        LT_LOG("PIN updated successfully to: %s", new_pin_str);
+        //LT_LOG("PIN updated successfully to: %s", new_pin_str);
         LT_LOG("New secret: %s", print_bytes(secret, 32));
         
         // Send success response
