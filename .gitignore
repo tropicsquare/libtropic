@@ -3,3 +3,4 @@ build/
 .codechecker/
 .venv/
 venv/
+examples/macandd_demo/harvested_pins.txt
