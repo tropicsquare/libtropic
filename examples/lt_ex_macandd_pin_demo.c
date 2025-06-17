@@ -32,6 +32,31 @@
 // Needed to access HMAC_SHA256
 #include "lt_hmac_sha256.h"
 
+
+// Beginning of TCP stuff
+#include <stdio.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <errno.h>
+#include <ctype.h>
+#include <stdbool.h>
+
+#define PORT 12345
+#define TCP_ADDR "127.0.0.1"
+#define TX_ATTEMPTS 3
+#define MAX_PIN_LEN 10
+#define BUFFER_SIZE 256
+
+// Global variables for MAC-and-Destroy state
+static int current_attempts = 0;
+static int max_attempts = 3;  // Default to 3 attempts (matches Python default)
+static uint8_t current_pin[MAX_PIN_LEN] = {1,2,3,4};  // Default PIN
+static int current_pin_len = 4;
+static bool is_locked = false;
 /**
  * @brief This function is used for debug print of bytes as hexadecimal string
  *
@@ -303,19 +328,19 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
         goto exit;
     }
 
-    // Compute v’ = KDF(0, PIN’||A).
+    // Compute v' = KDF(0, PIN'||A).
     lt_hmac_sha256((uint8_t*)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 32, kdf_input_buff, PIN_size + add_size, v_);
 
-    // Execute w’ = MACANDD(i, v’)
+    // Execute w' = MACANDD(i, v')
     ret = lt_mac_and_destroy(h, nvm.i, v_, w_);
     if(ret != LT_OK) {
         goto exit;
     }
 
-    // Compute k’_i = KDF(w’, PIN’||A)
+    // Compute k'_i = KDF(w', PIN'||A)
     lt_hmac_sha256(w_, 32, kdf_input_buff, PIN_size+add_size, k_i);
 
-    // Read the ciphertext c_i and tag t from NVM, decrypt c_i with k’_i as the key and obtain s_
+    // Read the ciphertext c_i and tag t from NVM, decrypt c_i with k'_i as the key and obtain s'
     // TODO figure out if XOR can be used here?
     for (int j=0; j<32; j++) {
         s_[j] = *(nvm.ci+(nvm.i*32 + j)) ^ k_i[j];
@@ -324,14 +349,14 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     // Compute tag t = KDF(s, "0x00")
     lt_hmac_sha256(s_, 32, (uint8_t*)"0", 1, t_);
 
-    // If t’ != t: FAIL
+    // If t' != t: FAIL
     if(memcmp(nvm.t, t_, 32) != 0) {
         ret = LT_FAIL;
         goto exit;
     }
 
     // Pin is correct, now initialize macandd slots again:
-    // Compute u = KDF(s’, "0x01")
+    // Compute u = KDF(s', "0x01")
     lt_hmac_sha256(s_, 32, (uint8_t*)"1", 1, u);
 
     for(int x=nvm.i; x < MACANDD_ROUNDS-1; x++) {
@@ -401,21 +426,8 @@ void print_palms(int cnt){
     printf("\n");
 }
 
-// Beginning of TCP stuff
-#include <stdio.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <errno.h>
 
-#define PORT 12345
-#define TCP_ADDR "127.0.0.1"
-#define TX_ATTEMPTS 3
-
-static int send_response (int socket, uint8_t *buffer, size_t length)
+static int send_response(int socket, uint8_t *buffer, size_t length)
 {
     int nb_bytes_sent;
     int nb_bytes_sent_total = 0;
@@ -424,17 +436,13 @@ static int send_response (int socket, uint8_t *buffer, size_t length)
 
     // attempt several times to send the data
     for (int i = 0; i < TX_ATTEMPTS; i++) {
-        //printf("Attempting to send data: attempt #%d.\n", i);
         nb_bytes_sent = send(socket, ptr, nb_bytes_to_send, 0);
         if (nb_bytes_sent <= 0) {
-            //printf("Send failed: %s (%d).\n", strerror(errno), errno);
             return 1;
         }
 
         nb_bytes_to_send -= nb_bytes_sent;
-        if (nb_bytes_to_send == 0)
-        {
-            //printf("All %ld bytes sent successfully.\n", length);
+        if (nb_bytes_to_send == 0) {
             return 0;
         }
 
@@ -442,63 +450,249 @@ static int send_response (int socket, uint8_t *buffer, size_t length)
         nb_bytes_sent_total += nb_bytes_sent;
     }
 
-    // could not send all the data after several attempts
-    //printf("%d bytes sent instead of expected %lu ", nb_bytes_sent_total, length);
-    //printf("after %d attempts.\n", TX_ATTEMPTS);
-
     return 1;
 }
 
-int server_test()
+static int send_status_update(int socket, const char* status_type, int current, int maximum)
 {
-	int sockfd;
-	struct sockaddr_in servaddr;
+    char status_msg[BUFFER_SIZE];
+    snprintf(status_msg, sizeof(status_msg), "STATUS:%s:%d:%d", status_type, current, maximum);
+    
+    return send_response(socket, (uint8_t*)status_msg, strlen(status_msg));
+}
 
-	// socket create and varification
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd == -1) {
-		printf("socket creation failed...\n");
-		exit(0);
-	}
-
-	bzero(&servaddr, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr = inet_addr(TCP_ADDR);
-	servaddr.sin_port = htons(PORT);
-
-	// connect the client socket to server socket
-	if (connect(sockfd, (struct sockaddr*)(&servaddr), sizeof(servaddr)) != 0) {
-		printf("Connecting failed\n");
-		exit(0);
-	} else{
-		printf("Connected!\n");
-	}
-
-    int exit_this_function = 3;
-    while(exit_this_function > 0) {
-        // Read data from the server
-        uint8_t pin_buff[3] = {0};
-	    int len = read(sockfd,pin_buff,3);
-	    printf("read %d PIN from socket: %d %d %d\n",len, pin_buff[0]-48, pin_buff[1]-48, pin_buff[2]-48);
-
-        /////////////////////////////////////////
-        // do macandd things here
-        // and reply status to server
-        /////////////////////////////////////////
-
-        /*some libtropic call(s)*/ lt_ret_t status = LT_OK;
-        send_response(sockfd, (uint8_t*)&status, 1);
-        //printf("Sending status byte: %s\n", lt_ret_verbose(status));
-
-       exit_this_function--;
+static int parse_pin_from_ascii(const char* ascii_pin, uint8_t* pin_out, int* pin_len_out)
+{
+    int len = strlen(ascii_pin);
+    if (len < MAC_AND_DESTROY_PIN_SIZE_MIN || len > MAC_AND_DESTROY_PIN_SIZE_MAX) {
+        return 0;  // Invalid length
     }
-    printf("Exiting server test function\n");
-	close(sockfd);
+    
+    for (int i = 0; i < len; i++) {
+        if (!isdigit(ascii_pin[i])) {
+            return 0;  // Invalid character
+        }
+        pin_out[i] = ascii_pin[i] - '0';
+    }
+    
+    *pin_len_out = len;
+    return 1;  // Success
+}
 
+static int handle_set_pin_command(int socket, const char* new_pin_str, lt_handle_t *h, uint8_t *additional_data, uint8_t additional_data_size)
+{
+    uint8_t new_pin[MAX_PIN_LEN];
+    int new_pin_len;
+    uint8_t secret[32];
+    
+    // Parse the new PIN
+    if (!parse_pin_from_ascii(new_pin_str, new_pin, &new_pin_len)) {
+        LT_LOG("Invalid PIN format in SET_PIN command: %s", new_pin_str);
+        uint8_t fail_response = LT_FAIL;
+        return send_response(socket, &fail_response, 1);
+    }
+    
+    // Set the new PIN using MAC-and-Destroy
+    lt_ret_t ret = lt_PIN_set(h, new_pin, new_pin_len, additional_data, additional_data_size, secret);
+    
+    if (ret == LT_OK) {
+        // Update global state
+        memcpy(current_pin, new_pin, new_pin_len);
+        current_pin_len = new_pin_len;
+        current_attempts = 0;
+        is_locked = false;
+        
+        //LT_LOG("PIN updated successfully to: %s", new_pin_str);
+        LT_LOG("New secret: %s", print_bytes(secret, 32));
+        
+        // Send success response
+        uint8_t success_response = LT_OK;
+        return send_response(socket, &success_response, 1);
+    } else {
+        LT_LOG("Failed to set new PIN: %s", new_pin_str);
+        uint8_t fail_response = LT_FAIL;
+        return send_response(socket, &fail_response, 1);
+    }
+}
+
+static int handle_set_attempts_command(int socket, const char* attempts_str)
+{
+    int new_attempts = atoi(attempts_str);
+    
+    // Validate attempts value
+    if (new_attempts < 1 || new_attempts > MACANDD_ROUNDS) {
+        LT_LOG("Invalid attempts value: %s (must be 1-%d)", attempts_str, MACANDD_ROUNDS);
+        uint8_t fail_response = LT_FAIL;
+        return send_response(socket, &fail_response, 1);
+    }
+    
+    // Update global state
+    max_attempts = new_attempts;
+    // Reset current attempts and unlock if necessary
+    current_attempts = 0;
+    is_locked = false;
+    
+    LT_LOG("Max attempts updated to: %d", new_attempts);
+    
+    // Send success response
+    uint8_t success_response = LT_OK;
+    if (send_response(socket, &success_response, 1) != 0) {
+        return 1;
+    }
+    
+    // Send status update to confirm the change
+    return send_status_update(socket, "RESET", current_attempts, max_attempts);
+}
+
+static int handle_pin_verification(int socket, const char* pin_str, lt_handle_t *h, uint8_t *additional_data, uint8_t additional_data_size)
+{
+    uint8_t pin_attempt[MAX_PIN_LEN];
+    int pin_len;
+    uint8_t secret[32];
+    
+    // Check if locked
+    if (is_locked) {
+        LT_LOG("PIN verification blocked - system is locked");
+        uint8_t fail_response = LT_FAIL;
+        send_response(socket, &fail_response, 1);
+        send_status_update(socket, "LOCKED", current_attempts, max_attempts);
+        return 0;
+    }
+    
+    // Parse the PIN attempt
+    if (!parse_pin_from_ascii(pin_str, pin_attempt, &pin_len)) {
+        LT_LOG("Invalid PIN format: %s", pin_str);
+        uint8_t fail_response = LT_FAIL;
+        send_response(socket, &fail_response, 1);
+        send_status_update(socket, "ATTEMPTS", current_attempts, max_attempts);
+        return 0;
+    }
+    
+    // Verify PIN using MAC-and-Destroy
+    lt_ret_t ret = lt_PIN_check(h, pin_attempt, pin_len, additional_data, additional_data_size, secret);
+    
+    if (ret == LT_OK) {
+        // PIN correct - reset attempts
+        current_attempts = 0;
+        is_locked = false;
+        
+        LT_LOG("PIN verification successful!");
+        LT_LOG("Released secret: %s", print_bytes(secret, 32));
+        
+        // Send success response
+        uint8_t success_response = LT_OK;
+        return send_response(socket, &success_response, 1);
+    } else {
+        // PIN incorrect - increment attempts
+        current_attempts++;
+        
+        if (current_attempts >= max_attempts) {
+            is_locked = true;
+            LT_LOG("Maximum attempts reached - system locked");
+            uint8_t fail_response = LT_FAIL;
+            send_response(socket, &fail_response, 1);
+            send_status_update(socket, "LOCKED", current_attempts, max_attempts);
+        } else {
+            LT_LOG("PIN verification failed - attempts: %d/%d", current_attempts, max_attempts);
+            uint8_t fail_response = LT_FAIL;
+            send_response(socket, &fail_response, 1);
+            send_status_update(socket, "ATTEMPTS", current_attempts, max_attempts);
+        }
+        
+        return 0;
+    }
+}
+
+int tcp_server_main(lt_handle_t *h, uint8_t *additional_data, uint8_t additional_data_size)
+{
+    int server_fd, client_fd;
+    struct sockaddr_in server_addr, client_addr;
+    socklen_t client_len = sizeof(client_addr);
+    char buffer[BUFFER_SIZE];
+    
+    // Create socket
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_fd == -1) {
+        LT_LOG("Socket creation failed");
+        return -1;
+    }
+    
+    // Set socket options to reuse address
+    int opt = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+        LT_LOG("Setsockopt failed");
+        close(server_fd);
+        return -1;
+    }
+    
+    // Configure server address
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons(PORT);
+    
+    // Bind socket
+    if (bind(server_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        LT_LOG("Bind failed");
+        close(server_fd);
+        return -1;
+    }
+    
+    // Listen for connections
+    if (listen(server_fd, 1) < 0) {
+        LT_LOG("Listen failed");
+        close(server_fd);
+        return -1;
+    }
+    
+    LT_LOG("🌴 TCP Server listening on port %d", PORT);
+    //LT_LOG("🌴 Current PIN: %s", print_bytes(current_pin, current_pin_len));
+    LT_LOG("🌴 Waiting for Python client connection...");
+    
+    // Accept client connection
+    client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
+    if (client_fd < 0) {
+        LT_LOG("Accept failed");
+        close(server_fd);
+        return -1;
+    }
+    
+    LT_LOG("🌴 Client connected!");
+    
+    // Handle client communication
+    while (1) {
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
+        
+        if (bytes_received <= 0) {
+            LT_LOG("Client disconnected");
+            break;
+        }
+        
+        buffer[bytes_received] = '\0';  // Null-terminate
+        //LT_LOG("Received: %s", buffer);
+        
+        // Check if it's a SET_PIN command
+        if (strncmp(buffer, "SET_PIN:", 8) == 0) {
+            char* new_pin = buffer + 8;  // Skip "SET_PIN:"
+            handle_set_pin_command(client_fd, new_pin, h, additional_data, additional_data_size);
+        } 
+        // Check if it's a SET_ATTEMPTS command
+        else if (strncmp(buffer, "SET_ATTEMPTS:", 13) == 0) {
+            char* attempts_str = buffer + 13;  // Skip "SET_ATTEMPTS:"
+            handle_set_attempts_command(client_fd, attempts_str);
+        } 
+        else {
+            // Treat as PIN verification attempt
+            handle_pin_verification(client_fd, buffer, h, additional_data, additional_data_size);
+        }
+    }
+    
+    close(client_fd);
+    close(server_fd);
+    
     return 0;
 }
-// End of TCP stuff
-
 
 /**
  * @brief Session with H0 pairing keys
@@ -528,10 +722,8 @@ static int session_H0(void)
                                  0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
     uint8_t additional_data_size = sizeof(additional_data);
 
-    // User's PIN
-    uint8_t pin[]       = {1,2,3,4};
-    uint8_t pin_attemp[] = {0,0,0,0};
-    int attemps = 3;
+    // User's PIN (initial PIN for MAC-and-Destroy setup)
+    uint8_t pin[] = {1,2,3,4};
 
     LT_LOG_LINE();
 
@@ -568,49 +760,20 @@ static int session_H0(void)
 
 
 
-    // This will try to connect to the server and get the PIN three times,
-    // then demo continues as before
-    server_test();
-
-
+    // Start TCP server to handle PIN verification requests from Python client
     LT_LOG("\t=======================================================================");
-    LT_LOG("\t============ Try to guess secret 4-digit pin, good luck!!!! ===========");
+    LT_LOG("\t============ Starting TCP Server for PIN Demo ===============");
     LT_LOG("\t=======================================================================");
-
-    for (int i = 0; i < attemps; i++)
-    {
-        LT_LOG("\t=======================================================================");
-        LT_LOG("\t======================== Attemp number %d ==============================", i+1);
-        LT_LOG("\t=======================================================================");
-        // Keep asking until the user enters a valid PIN
-        while (!get_valid_pin(pin_attemp)) {
-            LT_LOG("%s", "Invalid PIN! Please try again.\n");
-            memset(pin_attemp, 0, sizeof(pin_attemp));
-        }
-
-        // Use the valid PIN
-        LT_LOG("\t=======================================================================");
-        LT_LOG("Valid PIN stored: [%u, %u, %u, %u]\n",
-            pin_attemp[0], pin_attemp[1], pin_attemp[2], pin_attemp[3]);
-        LT_LOG("\t=======================================================================");
-
-        //Test
-        LT_LOG("\t=======================================================================");    
-        LT_LOG("%s", "Attemp with user pin, slots are reinitialized again - lt_PIN_check() with correct PIN");
-        LT_LOG("\t=======================================================================");
-        if((lt_PIN_check(&h, pin_attemp, 4, additional_data, additional_data_size, secret)) == LT_OK){
-            LT_LOG("Exported secret: %s", print_bytes(secret, 32));
-            LT_LOG_LINE();
-            return 1;
-        }
-    }
+    
+    tcp_server_main(&h, additional_data, additional_data_size);
+    
     ////////////////////////////////////////////////////////////////////////////////////////
     LT_LOG("%s", "Aborting session H0");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
     lt_deinit(&h);
 
-    return LT_OK;
+    return 0;
 }
 
 int lt_ex_macandd_pin_demo(void)
