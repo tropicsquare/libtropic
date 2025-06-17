@@ -1,0 +1,281 @@
+Screen {
+    overflow: auto;
+    background: #000000;  /* Black background */
+}
+
+/* Tab bar styling */
+TabbedContent > ContentTabs {
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: #FFFFFF;  /* White text */
+    width: 100%;
+    margin: 0;
+}
+
+TabbedContent > ContentTabs > Tab {
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: #FFFFFF;  /* White text */
+    border: solid #000000;  /* Black border */
+}
+
+TabbedContent > ContentTabs > Tab:hover {
+    background: #FFFFFF;  /* White on hover */
+    color: #000000;  /* Black text on hover */
+}
+
+TabbedContent > ContentTabs > Tab.-active {
+    background: #000000;  /* Black for active tab */
+    color: #FFFFFF;  /* White text */
+}
+
+TabbedContent {
+    width: 100%;
+    margin: 0;
+}
+
+TabPane {
+    padding: 0;
+    height: 100%;
+    min-height: 100vh;
+}
+
+#pin-tab {
+    height: 100%;
+    min-height: 100vh;
+    padding: 2;
+    background: #FFFFFF;  /* White background */
+}
+
+#config-tab {
+    height: 100%;
+}
+
+#macnd-demo {
+    layout: grid;
+    grid-size: 3;
+    grid-gutter: 1 2;
+    grid-columns: 1fr;
+    grid-rows: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    margin: 1 2;
+    min-height: 25;
+    min-width: 20;
+    height: 100%;
+    background: #FFFFFF;  /* White background */
+    border: thick #000000;  /* Black border */
+
+    &:inline {
+        margin: 0 2;
+    }
+}
+
+Button {
+    width: 100%;
+    height: 100%;
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: white;
+    border: solid #000000;  /* Black border */
+    text-style: bold;  /* Bold button text */
+}
+
+Button:hover {
+    background: #000000;  /* Black on hover */
+    color: white;
+}
+
+Button.number {
+    background: rgb(0, 50, 255);  /* Blue for numbers */
+    color: white;
+    text-style: bold;
+}
+
+Button.number:hover {
+    background: #000000;  /* Black on hover */
+    color: white;
+}
+
+#numbers {
+    column-span: 3;
+    padding: 0 1;
+    height: 100%;
+    background: #FFFFFF;  /* White background */
+    color: #000000;  /* Black text */
+    content-align: center middle;
+    text-align: right;
+    border: solid #000000;  /* Black border */
+    text-style: bold;
+}
+
+#enter {
+    column-span: 3;
+    background: rgb(0, 50, 255);  /* Blue for Enter */
+    color: white;
+    text-style: bold;
+}
+
+#enter:hover {
+    background: #000000;  /* Black on hover */
+    color: white;
+}
+
+#reset {
+    background: #000000;  /* Black for Reset */
+    color: white;
+    text-style: bold;
+}
+
+#reset:hover {
+    background: rgb(0, 50, 255);  /* Blue on hover */
+    color: white;
+}
+
+#clear {
+    background: #000000;  /* Black for Clear */
+    color: white;
+    text-style: bold;
+}
+
+#clear:hover {
+    background: rgb(0, 50, 255);  /* Blue on hover */
+    color: white;
+}
+
+#backspace {
+    background: #000000;  /* Black for Backspace */
+    color: white;
+    text-style: bold;
+}
+
+#backspace:hover {
+    background: rgb(0, 50, 255);  /* Blue on hover */
+    color: white;
+}
+
+#pin-label {
+    text-align: center;
+    padding: 1;
+    content-align: center middle;
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: #FFFFFF;  /* White text */
+    border: solid #000000;  /* Black border */
+    text-style: bold;
+}
+
+#attempts-bar {
+    margin: 1 0;
+    height: 3;
+    width: 100%;
+}
+
+/* Base progress bar styling */
+#attempts-bar > .bar--bar {
+    background: rgb(0, 50, 255);  /* Default blue */
+}
+
+#attempts-bar > .bar--complete {
+    background: #000000;  /* Black background for completed portion */
+}
+
+/* Color classes for different attempt levels */
+#attempts-bar.high-attempts > .bar--bar {
+    background: rgb(0, 50, 255);  /* Blue for full attempts */
+}
+
+#attempts-bar.medium-attempts > .bar--bar {
+    background: rgb(0, 50, 255);  /* Blue for medium attempts */
+}
+
+#attempts-bar.low-attempts > .bar--bar {
+    background: #000000;  /* Black for low attempts */
+}
+
+#attempts-bar.no-attempts > .bar--bar {
+    background: #000000;  /* Black for no attempts */
+}
+
+/* Configuration tab styling */
+#config-container {
+    padding: 2;
+    background: #FFFFFF;  /* White background */
+    border: solid #000000;  /* Black border */
+    margin: 1;
+}
+
+#config-title {
+    text-align: center;
+    padding: 1;
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: #FFFFFF;  /* White text */
+    border: solid #000000;  /* Black border */
+    margin-bottom: 1;
+    text-style: bold;
+}
+
+#pin-config-label, #attempts-config-label {
+    color: #000000;  /* Black text */
+    padding: 1 0;
+    text-style: bold;
+}
+
+#pin-input, #attempts-input {
+    margin-bottom: 1;
+    background: #FFFFFF;  /* White background */
+    border: solid #000000;  /* Black border */
+}
+
+#save-config {
+    margin: 1 0;
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: white;
+    height: 3;
+    text-style: bold;
+}
+
+#save-config:hover {
+    background: #000000;  /* Black on hover */
+    color: white;
+}
+
+#start-server {
+    margin: 1 0;
+    background: rgb(0, 50, 255);  /* Blue background */
+    color: white;
+    height: 3;
+    text-style: bold;
+}
+
+#start-server:hover {
+    background: #000000;  /* Black on hover */
+    color: white;
+}
+
+#stop-server {
+    margin: 1 0;
+    background: #000000;  /* Black background */
+    color: white;
+    height: 3;
+    text-style: bold;
+}
+
+#stop-server:hover {
+    background: rgb(0, 50, 255);  /* Blue on hover */
+    color: white;
+}
+
+#new-session {
+    margin: 1 0;
+    background: #000000;  /* Black for new session */
+    color: white;
+    height: 3;
+    text-style: bold;
+}
+
+#new-session:hover {
+    background: rgb(0, 50, 255);  /* Blue on hover */
+    color: white;
+}
+
+#config-status {
+    text-align: center;
+    padding: 1;
+    color: #000000;  /* Black text */
+    text-style: bold;
+} 
