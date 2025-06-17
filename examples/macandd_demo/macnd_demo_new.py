@@ -133,7 +133,7 @@ class MacndDemoApp(App):
 
     async def start_countdown(self, message_prefix: str) -> None:
         """
-        Start a 10-second countdown, then generate new PIN and sync with C emulator.
+        Start a 3-second countdown, then generate new PIN and sync with C emulator.
         
         This function handles both successful PIN entry and lockout scenarios.
         After countdown, it generates a new random PIN and syncs it with the C emulator.
@@ -143,8 +143,8 @@ class MacndDemoApp(App):
         """
         self.countdown_active = True
         
-        # Countdown from 10 to 1 with visual feedback
-        for i in range(10, 0, -1):
+        # Countdown from 3 to 1 with visual feedback
+        for i in range(3, 0, -1):
             self.numbers = f"{message_prefix} - {i}"
             await asyncio.sleep(1)
         
