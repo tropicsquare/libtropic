@@ -169,13 +169,17 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memcpy(kdf_input_buff, PIN, PIN_size);
     memcpy(kdf_input_buff+PIN_size, add, add_size);
 
+    /*
     lt_ret_t ret = lt_port_random_bytes((uint32_t*)s, 8);
     if(ret != LT_OK) {
         goto exit;
     }
+    */
+
+    memcpy(s, (uint8_t[]){0x78,0x64,0x4B,0x7D,0x17,0x64,0x98,0xC8,0x58,0xB1,0xDB,0xA0,0x5E,0xD3,0x94,0x70,0x41,0x0F,0xA9,0x1A,0x82,0x85,0xFE,0x9B,0xEE,0xCA,0xE1,0x87,0x42,0x81,0x98,0x8A}, 32);
 
     // Erase a slot in R memory, which will be used as a storage for NVM data
-    ret = lt_r_mem_data_erase(h, R_MEM_DATA_SLOT_MACANDD);
+    lt_ret_t ret = lt_r_mem_data_erase(h, R_MEM_DATA_SLOT_MACANDD);
     if (ret != LT_OK) {
         goto exit;
     }
