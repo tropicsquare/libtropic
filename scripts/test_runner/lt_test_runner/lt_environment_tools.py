@@ -43,7 +43,7 @@ class lt_environment_tools:
         for port in serial.tools.list_ports.comports():
             if port.vid == vid and port.pid == pid:
                 if interface == None: # If no specific interface required, return the first one.
-                    logger.info(f"Found serial USB device with VID={vid:#x} PID={pid:#x}: {port.device}")
+                    logger.info(f"Found serial USB device with VID={vid:#x} PID={pid:#x}: {port.device}. No interface chosen, defaulting to the first one.")
                     return port.device
                 else:
                     found_devices.append(port)
@@ -51,8 +51,10 @@ class lt_environment_tools:
         if len(found_devices) == 0:
             logger.error(f"No serial USB devices found with VID={vid:#x} PID={pid:#x}!")
             return None
+        else:
+            logger.debug(f"Found {len(found_devices)} device(s) with VID={vid:#x} PID={pid:#x}.")
 
-        for _ in found_devices:
+        for port in found_devices:
             try:
                 if int(port.location.split(".")[-1]) == interface:
                     logger.info(f"Found serial USB device with VID={vid:#x} PID={pid:#x} INTERFACE={interface}: {port.device}")
@@ -60,7 +62,7 @@ class lt_environment_tools:
             except (ValueError, IndexError):
                 pass
 
-        logger.error(f"The selected USB device does not have INTERFACE={interface}!")
+        logger.error(f"The selected USB device with VID={vid:#x} PID={pid:#x} does not have INTERFACE={interface}!")
         return None
     
     @staticmethod
