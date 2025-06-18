@@ -10,6 +10,7 @@
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
+#include "libtropic_logging.h"
 #include "string.h"
 
 /** @brief  User Conﬁguration Objects - values defined here affect configuration of chip */

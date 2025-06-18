@@ -15,6 +15,7 @@
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
+#include "libtropic_logging.h"
 #include "string.h"
 // Include here a particular firmware from TROPIC01_fw_update_files (in a form of header file)
 #include "fw_CPU_0_3_1.h"

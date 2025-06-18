@@ -24,6 +24,7 @@
 #include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_examples.h"
+#include "libtropic_logging.h"
 #include "string.h"
 
 // Needed to access to lt_port_random_bytes()
