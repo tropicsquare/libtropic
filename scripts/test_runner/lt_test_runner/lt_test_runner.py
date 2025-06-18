@@ -35,6 +35,7 @@ class lt_test_runner:
             logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {mapping_config_path} (or select correct config file) and try again.")
             raise ValueError
     
+        logger.info("Finding serial interface...")
         self.serial_port  = lt_environment_tools.get_serial_device_from_vidpid(adapter_id.vid, adapter_id.pid, 1) # TS11 adapter uses second interface for serial port.
         if self.serial_port is None:
             logger.error("Serial adapter not found. Check if adapter is correctly connected to the computer and correct interface is selected.")
@@ -42,6 +43,7 @@ class lt_test_runner:
         
         openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
 
+        logger.info("Launching OpenOCD...")
         try:
             self.openocd_launcher = lt_openocd_launcher(openocd_launch_params)
         except FileNotFoundError:
