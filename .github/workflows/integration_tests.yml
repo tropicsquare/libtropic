@@ -32,7 +32,8 @@ jobs:
             exit 1
           fi
 
-          echo "WHEEL_FILE_NAME=$(basename "$WHEEL_URL")" >> $GITHUB_ENV
+          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
+          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
           curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
 
       - name: Install dependencies
