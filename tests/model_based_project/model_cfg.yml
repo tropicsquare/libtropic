@@ -1,0 +1,8 @@
+chip_id: !!binary |
+  AQ==
+s_t_priv: !!binary |
+  SLkvBQv7gkAi7O97xey8pFLT/Sdw6LVUnpNnKax4xG0=
+s_t_pub: !!binary |
+  B3qtBgu7OEYtOqUunu/o+qeEFpssZzvgbvP+H9HBk0c=
+x509_certificate: !!binary |
+  eDUwOV9jZXJ0aWZpY2F0ZQ==

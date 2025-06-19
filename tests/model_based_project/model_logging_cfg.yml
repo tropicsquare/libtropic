@@ -1,0 +1,18 @@
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+handlers:
+  file:
+    class: logging.FileHandler
+    level: DEBUG
+    formatter: simple
+    filename: model_server.log
+    encoding: utf8
+
+root:
+  level: DEBUG
+  handlers: [file]
+
+disable_existing_loggers: False
