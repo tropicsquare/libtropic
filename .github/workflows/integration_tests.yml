@@ -55,6 +55,7 @@ jobs:
             mv model_server.log run_logs/
       
       - name: Upload run logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: run_logs
