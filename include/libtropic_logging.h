@@ -10,6 +10,9 @@
  */
 
 #include <stdio.h>
+#ifdef LT_USE_ASSERT
+#include <assert.h>
+#endif
 
 // Only info-level loggers and decorators.
 // This has no effect, test runner just simply copies these lines to the log.
@@ -30,6 +33,9 @@
 #define LT_LOG_SYSTEM(f_, ...) printf("%d\t;SYSTEM;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message.
+#ifdef LT_USE_ASSERT
+#define LT_ASSERT(expected, value) assert(expected == value);
+#else
 #define LT_ASSERT(expected, value)                  \
     {                                               \
         int _val_ = (value);                        \
@@ -40,7 +46,12 @@
             LT_LOG_SYSTEM("ASSERT_FAIL %d", _val_); \
         };                                          \
     }
+#endif
 
+#ifdef LT_USE_ASSERT
+#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
+    assert(value == (condition ? expected_if_true : expected_if_false));
+#else
 #define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
     if (value == (condition ? expected_if_true : expected_if_false)) {        \
         LT_LOG_SYSTEM("ASSERT_OK");                                           \
@@ -48,6 +59,8 @@
     else {                                                                    \
         LT_LOG_SYSTEM("ASSERT_FAIL");                                         \
     }
+#endif
+
 // Used to stop the test. Will log as a system message.
 #define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
 
