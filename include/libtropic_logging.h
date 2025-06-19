@@ -31,12 +31,15 @@
 
 // Assertions. Will log as a system message.
 #define LT_ASSERT(expected, value)              \
-    if (value == expected) {                    \
+{                                               \
+    int _val_ = (value);                        \
+    if (_val_ == expected) {                    \
         LT_LOG_SYSTEM("ASSERT_OK");             \
     }                                           \
     else {                                      \
-        LT_LOG_SYSTEM("ASSERT_FAIL %d", value); \
-    };
+        LT_LOG_SYSTEM("ASSERT_FAIL %d", _val_); \
+    };                                          \
+}
 
 #define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
     if (value == (condition ? expected_if_true : expected_if_false)) {        \
