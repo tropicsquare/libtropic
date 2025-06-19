@@ -194,4 +194,7 @@ option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmwar
 
 # Build libtropic documentation
 -DLT_BUILD_DOCS=1
+
+# Use assert() in macros LT_ASSERT and LT_ASSERT_COND (handy for the Unix port)
+-DLT_USE_ASSERT=1
 ```
