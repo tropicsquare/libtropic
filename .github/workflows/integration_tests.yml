@@ -59,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: run_logs
-          path: run_logs/
+          path: tests/model_based_project/run_logs/
