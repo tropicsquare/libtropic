@@ -18,7 +18,7 @@ from .lt_platform_factory import lt_platform_factory
 
 logger = logging.getLogger(__name__)
 
-async def main():
+async def main() -> lt_test_runner.lt_test_result:
 
     parser = ArgumentParser(
         prog = "test_runner.py",
@@ -92,7 +92,7 @@ async def main():
         tr = lt_test_runner(args.work_dir, args.platform_id, args.mapping_config, args.adapter_config)
     except (ValueError, FileNotFoundError):
         logger.error("Failed to initialize test runner.")
-        sys.exit(1)
+        return lt_test_runner.lt_test_result.TEST_FAILED
 
     try:
         test_result = await tr.run(args.firmware)
@@ -103,14 +103,18 @@ async def main():
         logger.info("Received unexpected exception or termination request. Shutting down.")
         raise
 
-    if test_result == lt_test_runner.lt_test_result.TEST_PASSED:
-        sys.exit(0) # Test OK
-    else:
-        sys.exit(1) # Test failed
+    # We have to return here, not terminate (using sys.exit), so destructors are correctly called
+    # and no processes/threads are left hanging.
+    return test_result
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        test_result = asyncio.run(main())
+        if test_result == lt_test_runner.lt_test_result.TEST_PASSED:
+            sys.exit(0) # Test OK
+        else:
+            sys.exit(1) # Test failed
     except KeyboardInterrupt:
         logger.info("Interrupted by SIGINT.")
+
     sys.exit(2) # Exception
