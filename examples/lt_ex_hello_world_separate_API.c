@@ -9,6 +9,7 @@
 #include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_examples.h"
+#include "libtropic_logging.h"
 #include "lt_l2.h"
 #include "lt_l3.h"
 #include "string.h"

@@ -10,6 +10,7 @@
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
+#include "libtropic_logging.h"
 #include "string.h"
 
 // Ping message of max length. For this example LT_SIZE_OF_L3_BUFF must be set to L3_FRAME_MAX_SIZE,
