@@ -465,7 +465,7 @@ int lt_test_chip_id(void)
     LT_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
 
     LT_LOG("print_chip_id()");
-    print_chip_id(&chip_id);
+    LT_ASSERT(LT_OK, print_chip_id(&chip_id));
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
