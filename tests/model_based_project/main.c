@@ -31,11 +31,23 @@ int main(void)
 #ifdef LT_TEST_CHIP_ID
     /*int*/ lt_test_chip_id();
 #endif
-#ifdef LT_TEST_WRITE_PAIRING_KEYS
-    /*int*/ lt_test_write_pairing_keys();
+#ifdef LT_TEST_DUMP_CERT_STORE
+    /*int*/ lt_test_dump_cert_store();
 #endif
-#ifdef LT_TEST_WRITE_R_CONFIG
-    /*int*/ lt_test_write_r_config();
+#ifdef LT_TEST_DUMP_I_CONFIG
+    /*int*/ lt_test_dump_i_config();
+#endif
+#ifdef LT_TEST_DUMP_R_CONFIG
+    /*int*/ lt_test_dump_r_config();
+#endif
+#ifdef LT_TEST_ECC_ECDSA
+    /*int*/ lt_test_ecc_ecdsa();
+#endif
+#ifdef LT_TEST_ECC_EDDSA
+    /*int*/ lt_test_ecc_eddsa();
+#endif
+#ifdef LT_TEST_ERASE_R_CONFIG
+    /*int*/ lt_test_erase_r_config();
 #endif
 #ifdef LT_TEST_PING
     /*int*/ lt_test_ping();
@@ -43,13 +55,13 @@ int main(void)
 #ifdef LT_TEST_ENGINEERING_SAMPLE_01_PING
     /*int*/ lt_test_engineering_sample_01_ping();
 #endif
-#ifdef LT_TEST_ECC_EDDSA
-    /*int*/ lt_test_ecc_eddsa();
-#endif
 #ifdef LT_TEST_R_MEM
     /*int*/ lt_test_r_mem();
 #endif
-#ifdef LT_TEST_ERASE_R_CONFIG
-    /*int*/ lt_test_erase_r_config();
+#ifdef LT_TEST_WRITE_PAIRING_KEYS
+    /*int*/ lt_test_write_pairing_keys();
+#endif
+#ifdef LT_TEST_WRITE_R_CONFIG
+    /*int*/ lt_test_write_r_config();
 #endif
 }
