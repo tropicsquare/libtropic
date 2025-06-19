@@ -51,8 +51,11 @@ jobs:
             cd tests/model_based_project/
             mkdir run_logs/
             model_server tcp -c model_cfg.yml -l model_logging_cfg.yml &
+            set +e  # Disable immediate exit
             build/run > run_logs/tests.log 2>&1
+            TEST_EXIT_CODE=$?
             mv model_server.log run_logs/
+            exit $TEST_EXIT_CODE
       
       - name: Upload run logs
         if: always()
