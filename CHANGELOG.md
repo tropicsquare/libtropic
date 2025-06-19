@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Code formatted with `clang-format` version 16 is now enforced on push to branch
 - Moved logging and assert macros to `libtropic_logging.h` (they were defined twice in
 files `libtropic_examples.h`, `libtropic_functional_tests.h`)
+- Added macro `LT_USE_ASSERT`, based on which `assert()` is inserted into `LT_ASSERT` and `LT_ASSERT_COND`
 
 
 ### Added
