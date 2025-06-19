@@ -44,15 +44,15 @@ jobs:
       - name: Compile libtropic with tests
         run: |
             cd tests/model_based_project/
-            cmake ./ -B build -DLT_TEST_CHIP_ID=1
-            cd build/
-            make
+            ./compile_tests.sh
       
       - name: Execute model and run tests
         run: |
+            cd tests/model_based_project/
             mkdir run_logs/
-            model_server tcp > run_logs/model_server.log 2>&1 &
-            tests/model_based_project/build/run > run_logs/tests.log 2>&1
+            model_server tcp -c model_cfg.yml -l model_logging_cfg.yml &
+            build/run > run_logs/tests.log 2>&1
+            mv model_server.log run_logs/
       
       - name: Upload run logs
         uses: actions/upload-artifact@v4
