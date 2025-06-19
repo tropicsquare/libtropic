@@ -24,6 +24,21 @@ class lt_openocd_launcher:
                 elif log_level == logging.ERROR:
                     logger.error(f"OpenOCD output: {line_text}")
 
+    def cleanup(self):
+        if self.openocd_proc.poll() is None:
+            logger.info("Terminating OpenOCD...")
+            self.openocd_proc.terminate()
+            try:
+                self.openocd_proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                logger.warning("OpenOCD did not terminate in time. Killing.")
+                self.openocd_proc.kill()
+            logger.info("OpenOCD terminated.")
+
+        if self.output_log_thread.is_alive():
+            # Wait for logging thread to terminate.
+            self.output_log_thread.join()
+
     def __init__(self, openocd_params: List[str]):
         # This has to be list, hence [ ] (Popen accepts lists as arg).
         openocd_path = [shutil.which("openocd")]
@@ -40,17 +55,7 @@ class lt_openocd_launcher:
         self.output_log_thread.start()
     
     def __del__(self):
-        if self.openocd_proc.poll() is None:
-            logger.info("Terminating OpenOCD...")
-            self.openocd_proc.terminate()
-            try:
-                self.openocd_proc.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                logger.warning("OpenOCD did not terminate in time. Killing.")
-                self.openocd_proc.kill()
-            logger.info("OpenOCD terminated.")
-        # Wait for logging thread to terminate.
-        self.output_log_thread.join()
+        self.cleanup()
             
     def is_running(self) -> bool:
         return self.openocd_proc.poll() is None

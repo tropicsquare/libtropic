@@ -58,8 +58,12 @@ class lt_test_runner:
     def __del__(self):
         pass
 
-    async def run(self, elf_path: Path) -> lt_test_result:
+    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int) -> lt_test_result:
         
+        if message_timeout == 0:
+            # pyserial expects None for no timeout, 0 sets non-blocking mode
+            message_timeout = None
+
         if not await self.platform.openocd_connect():
             logger.error("Couldn't connect to OpenOCD!")
             return self.lt_test_result.TEST_FAILED
@@ -88,18 +92,34 @@ class lt_test_runner:
         err_count = 0
         warn_count = 0
         assert_fail_count = 0
-        try:
-            with serial.Serial(self.serial_port, baudrate = 115200, timeout=10, inter_byte_timeout=10, exclusive=True) as s:
-                await self.platform.reset()
+
+        start_time = time.time()
+
+        with serial.Serial(self.serial_port, baudrate = 115200, timeout=message_timeout, inter_byte_timeout=None, exclusive=True) as s:
+            await self.platform.reset()
             
-                while True:
+            while True:
+                try:
+                    if total_timeout != 0 and time.time() - start_time > total_timeout:
+                        logger.error("Total test time exceeded! Aborting.")
+                        err_count += 1
+                        break
+
                     if not s.is_open:
                         logger.error("Serial port closed! Check if it is not used by other application (screen, GTKTerm...).")
+                        err_count += 1
                         break
 
                     line = s.read_until(expected=b"\r\n").decode('ascii', errors="backslashreplace")
+
+                    if (len(line) == 0):
+                        logger.error("Did not receive message in time (message_timeout exceeded).")
+                        err_count += 1
+                        break
+
                     logger.debug(f"Received from serial: {line}")
                     line = line.split(";")
+
                     if (len(line) < 3):
                         logger.error("Line malformed!")
                         continue
@@ -130,8 +150,8 @@ class lt_test_runner:
                         elif msg_content == "TEST_FINISH":
                             logger.info("Received TEST_FINISH, wrapping up.")
                             break
-        except TimeoutError:
-            logger.error("Serial timeout! Did not receive any message in time. Check if the test output is correct and if TEST_FINISH is issued at the end of the test.")
+                except TimeoutError:
+                    logger.error("Serial timeout! Did not receive any message in time. Check if the test output is correct and if TEST_FINISH is issued at the end of the test.")
 
         logger.info("------ Stats ------")
         logger.info(f"Errors: {err_count}")

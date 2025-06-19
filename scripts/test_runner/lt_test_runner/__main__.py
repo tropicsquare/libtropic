@@ -66,7 +66,25 @@ async def main() -> lt_test_runner.lt_test_result:
         action  = "store_true"
     )
 
+    parser.add_argument(
+        "--message-timeout",
+        help    = "Max time in seconds to wait between messages before timing out. Must be >=0. Default zero (no timeout).",
+        type    = int,
+        default = 0
+    )
+
+    parser.add_argument(
+        "--total-timeout",
+        help    = "Total max test time regardless of message activity. Ideal to mitigate cases where the platform outputs garbage. Default zero (no timeout). Must be >=0. Note that without message_timeout is this timeout ineffective in case of the platform stops sending messages.",
+        type    = int,
+        default = 0
+    )
+
     args = parser.parse_args()
+    if args.message_timeout < 0:
+        parser.error("Message timeout has to be >= 0.")
+    if args.total_timeout < 0:
+        parser.error("Total timeout has to be >= 0.")
 
     if not args.firmware.is_file():
         logger.error("Please provide correct path to firmware.")
@@ -95,12 +113,13 @@ async def main() -> lt_test_runner.lt_test_result:
         return lt_test_runner.lt_test_result.TEST_FAILED
 
     try:
-        test_result = await tr.run(args.firmware)
+        test_result = await tr.run(args.firmware, args.message_timeout, args.total_timeout)
     except serial.SerialException as e:
         logger.error(f"Platform serial interface communication error: {str(e)}")
         return
     except:
         logger.info("Received unexpected exception or termination request. Shutting down.")
+        tr.openocd_launcher.cleanup() # Destructor is not called on exception.
         raise
 
     # We have to return here, not terminate (using sys.exit), so destructors are correctly called
