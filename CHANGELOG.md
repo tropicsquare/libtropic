@@ -47,6 +47,7 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - option LT_ADD_FUNC_TESTS controls if code from tests/functional/ folder will be compiled-in
 - port/ support and tests/platform/ example for Raspberry Pi
 - Added macro `LT_USE_ASSERT`, based on which `assert()` is inserted into `LT_ASSERT` and `LT_ASSERT_COND`
+- added CTest handling for functional tests
 
 ### Fixed
 
