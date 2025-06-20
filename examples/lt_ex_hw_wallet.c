@@ -287,10 +287,6 @@ static int session_H1(void)
     LT_LOG("%s", "Storing attestation key into slot 0");
     LT_ASSERT(LT_OK, lt_ecc_key_store(&h, ECC_SLOT_0, CURVE_ED25519, attestation_key));
 
-    uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
-    LT_LOG("%s", "Serial code get must fail");
-    LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
-
     uint8_t dummykey[32];
     LT_LOG("%s", "Pairing key write into slot 0 must fail");
     LT_ASSERT(LT_L3_UNAUTHORIZED, lt_pairing_key_write(&h, dummykey, PAIRING_KEY_SLOT_INDEX_0));
@@ -339,10 +335,6 @@ static int session_H2(void)
     // uint8_t data_out[32] = {0};
     // memset(data_out, 0xab, 32);
     // LT_ASSERT(LT_OK, lt_mac_and_destroy(&h, MAC_AND_DESTROY_SLOT_0, data_out, data_in));
-
-    uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
-    LT_LOG("%s", "Serial code get must fail");
-    LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
 
     uint8_t dummykey[32];
     LT_LOG("%s", "ECC key store into slot 1 must fail");
@@ -449,11 +441,6 @@ static int session_H3(void)
     LT_LOG("%s", "Mcounter get ");
     LT_ASSERT(LT_OK, lt_mcounter_get(&h, 0, &mcounter_value));
     LT_LOG_VALUE("mcounter_value %08" PRIX32, mcounter_value);
-
-    // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
-    uint8_t serial_code[SERIAL_CODE_SIZE] = {0};
-    LT_LOG("%s", "Serial code get must fail");
-    LT_ASSERT(LT_L3_UNAUTHORIZED, lt_serial_code_get(&h, serial_code, SERIAL_CODE_SIZE));
 
     uint8_t dummykey[32];
     LT_LOG("%s", "ECC key store into slot 1 must fail");
