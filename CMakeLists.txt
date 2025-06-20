@@ -166,7 +166,6 @@ foreach(test_name ${LIBTROPIC_TEST_LIST})
     # Create a correct macro from test name.
     string(TOUPPER ${test_name} test_macro)
     string(REPLACE " " "_" test_macro ${test_macro})
-    message("Appending ${test_name}")
     string(APPEND LIBTROPIC_TEST_FUNCTIONS_CONTENT
         "#elif defined(${test_macro})\n"
         "  ${test_name}();\n"
