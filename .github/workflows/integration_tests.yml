@@ -54,6 +54,7 @@ jobs:
             set +e  # Disable immediate exit
             stdbuf -o0 -e0 build/run > run_logs/tests.log 2>&1
             TEST_EXIT_CODE=$?
+            sleep 5
             mv model_server.log run_logs/
             exit $TEST_EXIT_CODE
       
