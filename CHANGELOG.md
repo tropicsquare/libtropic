@@ -61,6 +61,7 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - Added function `lt_l3_invalidate_host_session_data()`, which sets all data in `lt_l3_state_t` to zero and `session` to `SESSION_OFF`; it is called in `lt_session_abort` and when ciphering/deciphering of L3 command fails (wrong TAG)
 - Added CMake variable `LT_SH0_PRIV_PATH`, based on which `sh0_keys.c` is generated for examples or tests, so
   sh0priv and sh0pub are defined
+- Added CTest handling for functional tests run against TROPIC01 model
 
 ### Fixed
 
