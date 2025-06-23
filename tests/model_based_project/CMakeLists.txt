@@ -133,7 +133,7 @@ if(LT_BUILD_TESTS)
 
         # Add CTest entry.
         add_test(NAME ${test_name}
-                COMMAND python3 ../test_runner.py -t ${CMAKE_CURRENT_BINARY_DIR}/${exe_name} -o run_logs/
+                COMMAND python3 ../model_test_runner.py -t ${CMAKE_CURRENT_BINARY_DIR}/${exe_name} -o run_logs/
         )
     endforeach()
 endif()
