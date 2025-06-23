@@ -5,8 +5,6 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <stdio.h>
-
 #include "libtropic_examples.h"
 #include "libtropic_functional_tests.h"
 #include "string.h"
