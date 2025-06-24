@@ -116,7 +116,7 @@ async def main() -> lt_test_runner.lt_test_result:
 
     try:
         tr = lt_test_runner(args.work_dir, args.platform_id, args.mapping_config, args.adapter_config)
-    except (ValueError, FileNotFoundError, tr.FTDIBusyException):
+    except (ValueError, FileNotFoundError, lt_test_runner.OpenOCDLaunchError):
         logger.error("Failed to initialize test runner.")
         device_locker.release_lock()
         return lt_test_runner.lt_test_result.TEST_FAILED
