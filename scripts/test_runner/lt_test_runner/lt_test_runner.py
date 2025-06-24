@@ -16,17 +16,10 @@ class lt_test_runner:
         TEST_FAILED = -1
         TEST_PASSED = 0
 
-    class OpenOCDConnectionErrorException(BaseException):
-        pass
-
-    class OpenOCDLaunchError(BaseException):
-        pass
-
     def __init__(self, working_dir: Path, platform_id: str, mapping_config_path: Path, adapter_config_path: Path):
         self.working_dir = working_dir
         logger.info("Preparing environment...")
         self.working_dir.mkdir(exist_ok = True, parents = True)
-
 
         self.platform = lt_platform_factory.create_from_str_id(platform_id)
         if self.platform is None:
@@ -44,54 +37,9 @@ class lt_test_runner:
             logger.error("Serial adapter not found. Check if adapter is correctly connected to the computer and correct interface is selected.")
             raise ValueError
         
-        openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
+        self.openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
 
-        logger.info("Launching OpenOCD...")
-        try:
-            self.openocd_launcher = lt_openocd_launcher(openocd_launch_params)
-        except FileNotFoundError:
-            logger.error("Couldn't find OpenOCD!")
-            raise
-
-        time.sleep(2)
-        if not self.openocd_launcher.is_running():
-            logger.error("Couldn't launch OpenOCD. Hint: run with higher verbosity (-v) to check OpenOCD output.")
-            raise self.OpenOCDLaunchError()
-
-    def __del__(self):
-        pass
-
-    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int) -> lt_test_result:
-        
-        if message_timeout == 0:
-            # pyserial expects None for no timeout, 0 sets non-blocking mode
-            message_timeout = None
-
-        if not await self.platform.openocd_connect():
-            logger.error("Couldn't connect to OpenOCD!")
-            return self.lt_test_result.TEST_FAILED
-
-        await self.platform.initialize()
-
-        if not await self.platform.is_spi_bus_free():
-            logger.error("SPI bus is already occupied! Check if all other platform boards disabled SPI access!")
-            self.platform.openocd_disconnect()
-            return self.lt_test_result.TEST_FAILED
-
-        await self.platform.set_spi_en(True)
-        await self.platform.set_platform_power(True)
-
-        await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
-        await self.platform.set_disco_led(lt_platform.lt_led_color.WHITE)
-
-        try:
-            await self.platform.load_elf(elf_path)
-        except TimeoutError:
-            logger.error("Communication with OpenOCD timed out while loading firmware!")
-            await self.platform.set_platform_power(False)
-            self.platform.openocd_disconnect()
-            return self.lt_test_result.TEST_FAILED
-
+    async def __parse_output(self, message_timeout: int, total_timeout: int) -> lt_test_result:
         err_count = 0
         warn_count = 0
         assert_fail_count = 0
@@ -172,3 +120,43 @@ class lt_test_runner:
         await self.platform.set_platform_power(False)
         self.platform.openocd_disconnect()
         return self.lt_test_result.TEST_PASSED
+
+    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int) -> lt_test_result:
+        
+        if message_timeout == 0:
+            # pyserial expects None for no timeout, 0 sets non-blocking mode
+            message_timeout = None
+
+        with lt_openocd_launcher(self.openocd_launch_params) as oocd:
+            logger.info("Launching OpenOCD...")
+            time.sleep(2)
+            if not oocd.is_running():
+                logger.error("Couldn't launch OpenOCD. Hint: run with higher verbosity (-v) to check OpenOCD output.")
+                return self.lt_test_result.TEST_FAILED
+
+            if not await self.platform.openocd_connect():
+                logger.error("Couldn't connect to OpenOCD!")
+                return self.lt_test_result.TEST_FAILED
+
+            await self.platform.initialize()
+
+            if not await self.platform.is_spi_bus_free():
+                logger.error("SPI bus is already occupied! Check if all other platform boards disabled SPI access!")
+                self.platform.openocd_disconnect()
+                return self.lt_test_result.TEST_FAILED
+
+            await self.platform.set_spi_en(True)
+            await self.platform.set_platform_power(True)
+
+            await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
+            await self.platform.set_disco_led(lt_platform.lt_led_color.WHITE)
+
+            try:
+                await self.platform.load_elf(elf_path)
+            except TimeoutError:
+                logger.error("Communication with OpenOCD timed out while loading firmware!")
+                await self.platform.set_platform_power(False)
+                self.platform.openocd_disconnect()
+                return self.lt_test_result.TEST_FAILED
+
+            return await self.__parse_output(message_timeout, total_timeout)
