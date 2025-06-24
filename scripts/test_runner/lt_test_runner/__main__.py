@@ -109,35 +109,32 @@ async def main() -> lt_test_runner.lt_test_result:
 
     args.work_dir.mkdir(exist_ok = True, parents = True)
 
-    device_locker = lt_lock_device(LOCK_FILE_PATH)
-    if not device_locker.acquire_lock():
-        logger.error(f"Lock couldn't be acquired, the TS11 is used by another user. If you are sure that this is an error and no one is using the device, remove {LOCK_FILE_PATH.absolute()} and try again.")
-        return lt_test_runner.lt_test_result.TEST_FAILED
+    with lt_lock_device(LOCK_FILE_PATH) as locked:
+        if not locked:
+            logger.error(f"Lock couldn't be acquired, the TS11 is used by another user. If you are sure that this is an error and no one is using the device, remove {LOCK_FILE_PATH.absolute()} and try again.")
+            return lt_test_runner.lt_test_result.TEST_FAILED
+        
+        try:
+            tr = lt_test_runner(args.work_dir, args.platform_id, args.mapping_config, args.adapter_config)
+        except (ValueError):
+            logger.error("Failed to initialize test runner.")
+            return lt_test_runner.lt_test_result.TEST_FAILED
 
-    try:
-        tr = lt_test_runner(args.work_dir, args.platform_id, args.mapping_config, args.adapter_config)
-    except (ValueError, FileNotFoundError, lt_test_runner.OpenOCDLaunchError):
-        logger.error("Failed to initialize test runner.")
-        device_locker.release_lock()
-        return lt_test_runner.lt_test_result.TEST_FAILED
+        test_result = lt_test_runner.lt_test_result.TEST_FAILED # The default is failure in case an exception is thrown.
 
-    test_result = lt_test_runner.lt_test_result.TEST_FAILED # The default is failure in case an exception is thrown.
-
-    try:
-        test_result = await tr.run(args.firmware, args.message_timeout, args.total_timeout)
-    except serial.SerialException as e:
-        logger.error(f"Platform serial interface communication error: {str(e)}")
-        return
-    except:
-        logger.info("Received unexpected exception or termination request. Shutting down.")
-        tr.openocd_launcher.cleanup() # Destructor is not called on exception.
-        raise
-    finally:
-        device_locker.release_lock()
-
-    # We have to return here, not terminate (using sys.exit), so destructors are correctly called
-    # and no processes/threads are left hanging.
-    return test_result
+        try:
+            test_result = await tr.run(args.firmware, args.message_timeout, args.total_timeout)
+        except serial.SerialException as e:
+            logger.error(f"Platform serial interface communication error: {str(e)}")
+            return lt_test_runner.lt_test_result.TEST_FAILED
+        except FileNotFoundError:
+            logger.error("Couldn't initialize OpenOCD.")
+            return lt_test_runner.lt_test_result.TEST_FAILED
+        except:
+            logger.info("Received unexpected exception or termination request. Shutting down.")
+            raise
+        else:
+            return test_result
 
 if __name__ == "__main__":
     try:
