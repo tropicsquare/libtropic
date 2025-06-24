@@ -19,6 +19,9 @@ class lt_test_runner:
     class OpenOCDConnectionErrorException(BaseException):
         pass
 
+    class OpenOCDLaunchError(BaseException):
+        pass
+
     def __init__(self, working_dir: Path, platform_id: str, mapping_config_path: Path, adapter_config_path: Path):
         self.working_dir = working_dir
         logger.info("Preparing environment...")
@@ -53,7 +56,7 @@ class lt_test_runner:
         time.sleep(2)
         if not self.openocd_launcher.is_running():
             logger.error("Couldn't launch OpenOCD. Hint: run with higher verbosity (-v) to check OpenOCD output.")
-            return
+            raise self.OpenOCDLaunchError()
 
     def __del__(self):
         pass
