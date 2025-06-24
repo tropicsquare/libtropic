@@ -8,7 +8,6 @@ handlers:
     class: logging.FileHandler
     level: DEBUG
     formatter: simple
-    filename: model_server.log
     encoding: utf8
 
 root:
