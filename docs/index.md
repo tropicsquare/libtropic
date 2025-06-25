@@ -71,9 +71,9 @@ Examples code can be enabled by:
 * pass `-DLT_ADD_EXAMPLES=1` during parent project compilation, or
 * in parent CMake file, switch this option on : `set(LT_ADD_EXAMPLES ON)`
 
-Tests code can be enabled by:
-* pass `-DLT_ADD_FUNC_TESTS=1` during parent project compilation, or
-* in parent CMake file, switch this option on : `set(LT_ADD_FUNC_TESTS ON)`
+Functional tests code can be enabled by:
+* pass `-LT_BUILD_TESTS=1` during parent project compilation, or
+* in parent CMake file, switch this option on : `set(LT_BUILD_TESTS ON)`
 
 When libtropic is compiled like mentioned,  examples(tests) are then available in parent project like this:
 
@@ -137,7 +137,7 @@ set(LT_HELPERS ON)
 # This switch exposes also functions and tests containing example of usage.
 # Might be a good starting point.
 #set(LT_ADD_EXAMPLES ON)
-#set(LT_ADD_FUNC_TESTS ON)
+#set(LT_BUILD_TESTS ON)
 
 # It is necessary to set provider of cryptography functions
 # Use trezor crypto as a source of backend cryptography code
@@ -170,7 +170,7 @@ option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
-option(LT_ADD_FUNC_TESTS "Compile functional tests' code as part of libtropic library" OFF)
+option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
 
 ```
@@ -181,7 +181,7 @@ option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmwar
 -DLT_ADD_EXAMPLES=1
 
 # Compile functional tests' code as part of libtropic library
--DLT_ADD_FUNC_TESTS=1
+-DLT_BUILD_TESTS=1
 
 # Enable firmware update functions and compile firmware update in a form of byte array
 # For more info have a look into examples/fw_update.c
