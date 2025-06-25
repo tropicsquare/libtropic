@@ -32,6 +32,9 @@ if(
     message(FATAL_ERROR "No cryptography provider is defined.")
 endif()
 
+set(LT_SH0_PRIV_PATH "" CACHE FILEPATH "Path to file with SH0 private key in PEM or DER format")
+set(LT_SH0_PUB_PATH "" CACHE FILEPATH "Path to file with SH0 public key in PEM or DER format")
+
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
@@ -198,6 +201,46 @@ if(LT_BUILD_TESTS)
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
     )
+endif()
+
+#####################
+function(key_to_der INPUT_KEY OUTPUT_DER)
+    get_filename_component(KEY_EXT "${INPUT_KEY}" EXT)
+    
+    if (KEY_EXT STREQUAL ".pem")
+        add_custom_command(
+            OUTPUT "${OUTPUT_DER}"
+            COMMAND ${OPENSSL_EXECUTABLE} rsa -in "${INPUT_KEY}" -outform DER -out "${OUTPUT_DER}"
+            DEPENDS "${INPUT_KEY}"
+            COMMENT "Converting key from PEM to DER format: ${INPUT_KEY}"
+            VERBATIM
+        )
+    else()
+        add_custom_command(
+            OUTPUT "${OUTPUT_DER}"
+            COMMAND ${CMAKE_COMMAND} -E copy "${INPUT_KEY}" "${OUTPUT_DER}"
+            DEPENDS "${INPUT_KEY}"
+            COMMENT "Using DER file directly: ${INPUT_KEY}"
+            VERBATIM
+        )
+    endif()
+endfunction()
+
+if (LT_ADD_EXAMPLES OR LT_BUILD_TESTS)#LT_ADD_FUNC_TESTS)
+    find_program(OPENSSL_EXECUTABLE openssl REQUIRED)
+
+    if (LT_SH0_PRIV_PATH STREQUAL "")
+        message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_ADD_EXAMPLES or LT_ADD_FUNC_TESTS is enabled.")
+    endif()
+    if (LT_SH0_PUB_PATH STREQUAL "")
+        message(FATAL_ERROR "LT_SH0_PUB_PATH must be set when LT_ADD_EXAMPLES or LT_ADD_FUNC_TESTS is enabled.")
+    endif()
+
+    set(SH0_PRIV_DER_FILE "${CMAKE_BINARY_DIR}/sh0_priv.der")
+    set(SH0_PUB_DER_FILE "${CMAKE_BINARY_DIR}/sh0_pub.der")
+
+    key_to_der("${LT_SH0_PRIV_PATH}" "${SH0_PRIV_DER_FILE}")
+    key_to_der("${LT_SH0_PUB_PATH}" "${SH0_PUB_DER_FILE}")
 endif()
 
 ###########################################################################
