@@ -35,6 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Code formatted with `clang-format` version 16 is now enforced on push to branch
 - Moved logging and assert macros to `libtropic_logging.h` (they were defined twice in
 files `libtropic_examples.h`, `libtropic_functional_tests.h`)
+- Instead of using `LT_ADD_FUNC_TESTS` and `LT_BUILD_TESTS`, use only `LT_BUILD_TESTS`
+- Rename `LT_ADD_EXAMPLES` to `LT_BUILD_EXAMPLES` to be consistent with `LT_BUILD_TESTS`
+  and `LT_BUILD_DOCS`
 
 
 ### Added
