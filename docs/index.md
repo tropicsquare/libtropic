@@ -68,8 +68,8 @@ There is also folder `tests/functional/` with code used internally for testing, 
 The purpose of this is to control inclusion of code, because example code could occupy some unnecessary space and it is not needed anymore once users get familiar with library - then this code can be switched off.
 
 Examples code can be enabled by:
-* pass `-DLT_ADD_EXAMPLES=1` during parent project compilation, or
-* in parent CMake file, switch this option on : `set(LT_ADD_EXAMPLES ON)`
+* pass `-DLT_BUILD_EXAMPLES=1` during parent project compilation, or
+* in parent CMake file, switch this option on : `set(LT_BUILD_EXAMPLES ON)`
 
 Functional tests code can be enabled by:
 * pass `-LT_BUILD_TESTS=1` during parent project compilation, or
@@ -136,7 +136,7 @@ set(LT_HELPERS ON)
 
 # This switch exposes also functions and tests containing example of usage.
 # Might be a good starting point.
-#set(LT_ADD_EXAMPLES ON)
+#set(LT_BUILD_EXAMPLES ON)
 #set(LT_BUILD_TESTS ON)
 
 # It is necessary to set provider of cryptography functions
@@ -169,7 +169,7 @@ Libtropic is configurable with CMake options. They are either passed from parent
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
-option(LT_ADD_EXAMPLES "Compile example code as part of libtropic library" OFF)
+option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
 
@@ -178,7 +178,7 @@ option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmwar
 -DLT_USE_TREZOR_CRYPTO=1
 
 # Compile libtropic also with functions containing example usage - good for initial evaluation
--DLT_ADD_EXAMPLES=1
+-DLT_BUILD_EXAMPLES=1
 
 # Compile functional tests' code as part of libtropic library
 -DLT_BUILD_TESTS=1

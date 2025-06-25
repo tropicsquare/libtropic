@@ -43,13 +43,13 @@ add_executable(run main.c
 #   and tests functions exposed. In production it is recommended to       #
 #   compile only core part of libtropic to save some code space.          #
 #                                                                         #
-#   This is controlled by options LT_ADD_EXAMPLES and LT_BUILD_TESTS      #
+#   This is controlled by options LT_BUILD_EXAMPLES and LT_BUILD_TESTS    #
 #                                                                         #
 ###########################################################################
 
 # Following two lines should be placed in next section,
 # but let's keep them here for clarity:
-set(LT_ADD_EXAMPLES ON)
+set(LT_BUILD_EXAMPLES ON)
 set(LT_BUILD_TESTS ON)
 
 # -DLT_EX_HW_WALLET=1
