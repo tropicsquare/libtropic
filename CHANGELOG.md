@@ -33,7 +33,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - rename `LT_L2_STARTUP_ID_MAINTENANCE` to `LT_MODE_MAINTENANCE`
 - rename `LT_L2_STARTUP_ID_REBOOT` to `LT_MODE_APP`
 - Code formatted with `clang-format` version 16 is now enforced on push to branch
+<<<<<<< add-switch-for-printing-low-level-spi
 - Add `LT_PRINT_SPI_DATA` - used to debug print low level communication
+=======
+- Moved logging and assert macros to `libtropic_logging.h` (they were defined twice in
+files `libtropic_examples.h`, `libtropic_functional_tests.h`)
+- Instead of using `LT_ADD_FUNC_TESTS` and `LT_BUILD_TESTS`, use only `LT_BUILD_TESTS`
+- Rename `LT_ADD_EXAMPLES` to `LT_BUILD_EXAMPLES` to be consistent with `LT_BUILD_TESTS`
+  and `LT_BUILD_DOCS`
+>>>>>>> develop
 
 
 ### Added
@@ -45,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - option LT_ADD_EXAMPLES controls if example's folder code is a part of compilation
 - option LT_ADD_FUNC_TESTS controls if code from tests/functional/ folder will be compiled-in
 - port/ support and tests/platform/ example for Raspberry Pi
+- Added macro `LT_USE_ASSERT`, based on which `assert()` is inserted into `LT_ASSERT` and `LT_ASSERT_COND`
+- added CTest handling for functional tests
 
 ### Fixed
 
