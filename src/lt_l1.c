@@ -18,11 +18,12 @@
 #include "stdio.h"
 #define SPI_DIR_MISO 0
 #define SPI_DIR_MOSI 1
-void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir) {
+void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir)
+{
     if ((!data) || (len == 0)) {
         return;
     }
-    printf("%s", dir ?  "  >>  TX: " : "  <<  RX: ");
+    printf("%s", dir ? "  >>  TX: " : "  <<  RX: ");
     for (size_t i = 0; i < len; i++) {
         printf("%02X ", data[i]);
         if ((i + 1) % 32 == 0) {
