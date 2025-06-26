@@ -20,6 +20,7 @@ option(LT_HELPERS "Compile helper function" ON)
 # host will be notified by INT pin when response is ready.
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
+option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_USE_ASSERT "Insert assert() into LT_ASSERT/LT_ASSERT_COND" OFF)
 
 # Check if cryptography provider is defined
@@ -227,6 +228,10 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #   Compile and link                                                      #
 #                                                                         #
 ###########################################################################
+
+if(LT_PRINT_SPI_DATA)
+    target_compile_definitions(tropic PRIVATE LT_PRINT_SPI_DATA)
+endif()
 
 if(LT_USE_TREZOR_CRYPTO)
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")

@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - rename `LT_L2_STARTUP_ID_MAINTENANCE` to `LT_MODE_MAINTENANCE`
 - rename `LT_L2_STARTUP_ID_REBOOT` to `LT_MODE_APP`
 - Code formatted with `clang-format` version 16 is now enforced on push to branch
+- Add `LT_PRINT_SPI_DATA` - used to debug print low level communication
 - Moved logging and assert macros to `libtropic_logging.h` (they were defined twice in
 files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - Instead of using `LT_ADD_FUNC_TESTS` and `LT_BUILD_TESTS`, use only `LT_BUILD_TESTS`
