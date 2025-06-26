@@ -108,9 +108,9 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
                 return LT_L1_SPI_ERROR;
             }
             lt_l1_spi_csn_high(s2);
-
+#ifdef LT_PRINT_SPI_DATA
             print_hex_chunks(s2->buff, s2->buff[2] + 4, SPI_DIR_MISO);
-
+#endif
             return LT_OK;
 
             // Chip status does not contain any special mode bit and also is not ready,
@@ -155,9 +155,9 @@ lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeo
 #endif
 
     lt_l1_spi_csn_low(s2);
-
+#ifdef LT_PRINT_SPI_DATA
     print_hex_chunks(s2->buff, len, SPI_DIR_MOSI);
-
+#endif
     if (lt_l1_spi_transfer(s2, 0, len, timeout) != LT_OK) {
         lt_l1_spi_csn_high(s2);
         return LT_L1_SPI_ERROR;
