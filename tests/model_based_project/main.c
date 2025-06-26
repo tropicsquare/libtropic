@@ -25,7 +25,9 @@ int main(void)
     /*int*/ lt_ex_macandd();
 #endif
 
+#ifdef LT_BUILD_TESTS
 #include "lt_test_registry.c.inc"
+#endif
 
     return 0;
 }
