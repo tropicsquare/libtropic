@@ -215,12 +215,12 @@ if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
     set(SH0_PRIV_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_priv.bin")
     set(SH0_PUB_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_pub.bin")
     set(KEYS_C_FILE "${CMAKE_BINARY_DIR}/sh0_keys.c")
-    set(PYTHON_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/extract_x25519_key_data.py")
+    set(EXTRACT_KEY_DATA_PYTHON_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/extract_x25519_key_data.py")
 
     add_custom_command(
         OUTPUT ${SH0_PRIV_RAW_FILE} ${SH0_PUB_RAW_FILE}
-        COMMAND python3 ${PYTHON_SCRIPT} --priv-key ${LT_SH0_PRIV_PATH} --priv-out ${SH0_PRIV_RAW_FILE} --pub-out ${SH0_PUB_RAW_FILE}
-        DEPENDS "${PYTHON_SCRIPT}" "${LT_SH0_PRIV_PATH}"
+        COMMAND python3 ${EXTRACT_KEY_DATA_PYTHON_SCRIPT} --priv-key ${LT_SH0_PRIV_PATH} --priv-out ${SH0_PRIV_RAW_FILE} --pub-out ${SH0_PUB_RAW_FILE}
+        DEPENDS "${EXTRACT_KEY_DATA_PYTHON_SCRIPT}" "${LT_SH0_PRIV_PATH}"
         COMMENT "Extracting raw data from X25519 private key"
         VERBATIM
     )
