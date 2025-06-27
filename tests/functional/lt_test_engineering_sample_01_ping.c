@@ -1,5 +1,5 @@
 /**
- * @file lt_test_ping.c
+ * @file lt_test_engineering_sample_01_ping.c
  * @brief Test function which tries Ping command with max length of message with all 4 pairing slots
  * @author Tropic Square s.r.o.
  *
@@ -22,14 +22,14 @@
  *
  * @return int
  */
-int lt_test_ping(void)
+int lt_test_engineering_sample_01_ping(void)
 {
     LT_LOG(
         "  "
         "------------------------------------------------------------------------------------------------------------"
         "-");
     LT_LOG(
-        "  -------- lt_test_ping() "
+        "  -------- lt_test_engineering_sample_01_ping() "
         "-------------------------------------------------------------------------------------");
     LT_LOG(
         "  "
@@ -52,15 +52,6 @@ int lt_test_ping(void)
 
     LT_LOG("%s", "Initialize handle");
     LT_ASSERT(LT_OK, lt_init(&h));
-
-    // Write pairing keys into slot 1, 2 and 3
-    LT_LOG("%s", "Writing pairing key H1");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, PAIRING_KEY_SLOT_INDEX_1));
-    LT_LOG("%s", "Writing pairing key H2");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, PAIRING_KEY_SLOT_INDEX_2));
-    LT_LOG("%s", "Writing pairing key H3");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, PAIRING_KEY_SLOT_INDEX_3));
-    LT_LOG_LINE();
 
     // Ping with SH0
     LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
