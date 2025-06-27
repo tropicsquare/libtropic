@@ -23,6 +23,8 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_USE_ASSERT "Insert assert() into LT_ASSERT/LT_ASSERT_COND" OFF)
 
+set(LT_SH0_PRIV_PATH "" CACHE FILEPATH "Path to file with SH0 private key in PEM or DER format")
+
 # Check if cryptography provider is defined
 if(
     (NOT LT_BUILD_DOCS)        AND
@@ -203,44 +205,78 @@ if(LT_BUILD_TESTS)
     )
 endif()
 
-#####################
-function(key_to_der INPUT_KEY OUTPUT_DER)
+# Converts private key from PEM to DER and also creates the public key
+function(key_to_der INPUT_KEY PRIV_OUTPUT_DER PUB_OUTPUT_DER)
     get_filename_component(KEY_EXT "${INPUT_KEY}" EXT)
-    
+
     if (KEY_EXT STREQUAL ".pem")
         add_custom_command(
-            OUTPUT "${OUTPUT_DER}"
-            COMMAND ${OPENSSL_EXECUTABLE} rsa -in "${INPUT_KEY}" -outform DER -out "${OUTPUT_DER}"
+            OUTPUT "${PRIV_OUTPUT_DER}"
+            COMMAND ${OPENSSL_EXECUTABLE} pkey -in "${INPUT_KEY}" -outform DER -out "${PRIV_OUTPUT_DER}"
             DEPENDS "${INPUT_KEY}"
-            COMMENT "Converting key from PEM to DER format: ${INPUT_KEY}"
+            COMMENT "Converting key from PEM to DER format."
+            VERBATIM
+        )
+
+        add_custom_command(
+            OUTPUT "${PUB_OUTPUT_DER}"
+            COMMAND ${OPENSSL_EXECUTABLE} pkey -in "${INPUT_KEY}" -pubout -outform DER -out "${PUB_OUTPUT_DER}"
+            DEPENDS "${INPUT_KEY}"
+            COMMENT "Generating public key from PEM."
             VERBATIM
         )
     else()
         add_custom_command(
-            OUTPUT "${OUTPUT_DER}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${INPUT_KEY}" "${OUTPUT_DER}"
+            OUTPUT "${PRIV_OUTPUT_DER}"
+            COMMAND ${CMAKE_COMMAND} -E copy "${INPUT_KEY}" "${PRIV_OUTPUT_DER}"
             DEPENDS "${INPUT_KEY}"
-            COMMENT "Using DER file directly: ${INPUT_KEY}"
+            COMMENT "Copying DER private key."
+            VERBATIM
+        )
+
+        add_custom_command(
+            OUTPUT "${PUB_OUTPUT_DER}"
+            COMMAND ${OPENSSL_EXECUTABLE} pkey -in "${INPUT_KEY}" -inform DER -pubout -outform DER -out "${PUB_OUTPUT_DER}"
+            DEPENDS "${INPUT_KEY}"
+            COMMENT "Generating public key from DER private key."
             VERBATIM
         )
     endif()
+
+    # Return values to the caller
+    set(PRIV_KEY_DER "${PRIV_OUTPUT_DER}" PARENT_SCOPE)
+    set(PUB_KEY_DER  "${PUB_OUTPUT_DER}"  PARENT_SCOPE)
 endfunction()
 
-if (LT_ADD_EXAMPLES OR LT_BUILD_TESTS)#LT_ADD_FUNC_TESTS)
+# Only add key generation logic if examples or tests are being compiled
+if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
     find_program(OPENSSL_EXECUTABLE openssl REQUIRED)
 
     if (LT_SH0_PRIV_PATH STREQUAL "")
-        message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_ADD_EXAMPLES or LT_ADD_FUNC_TESTS is enabled.")
-    endif()
-    if (LT_SH0_PUB_PATH STREQUAL "")
-        message(FATAL_ERROR "LT_SH0_PUB_PATH must be set when LT_ADD_EXAMPLES or LT_ADD_FUNC_TESTS is enabled.")
+        message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_BUILD_EXAMPLES or LT_BUILD_TESTS is enabled.")
     endif()
 
     set(SH0_PRIV_DER_FILE "${CMAKE_BINARY_DIR}/sh0_priv.der")
     set(SH0_PUB_DER_FILE "${CMAKE_BINARY_DIR}/sh0_pub.der")
+    set(KEYS_C_FILE "${CMAKE_BINARY_DIR}/sh0_keys.c")
 
-    key_to_der("${LT_SH0_PRIV_PATH}" "${SH0_PRIV_DER_FILE}")
-    key_to_der("${LT_SH0_PUB_PATH}" "${SH0_PUB_DER_FILE}")
+    key_to_der("${LT_SH0_PRIV_PATH}" "${SH0_PRIV_DER_FILE}" "${SH0_PUB_DER_FILE}")
+
+    add_custom_command(
+        OUTPUT "${KEYS_C_FILE}"
+        COMMAND ${CMAKE_COMMAND}
+                -DPRIV_DER_PATH=${SH0_PRIV_DER_FILE}
+                -DPUB_DER_PATH=${SH0_PUB_DER_FILE}
+                -DOUTPUT_C_FILE=${KEYS_C_FILE}
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/generate_sh0_keys.cmake"
+        DEPENDS "${SH0_PRIV_DER_FILE}" "${SH0_PUB_DER_FILE}"
+        COMMENT "Generating sh0_keys.c from DER files"
+        VERBATIM
+    )
+
+
+    # Ensure the tropic target depends on the generated file
+    list(APPEND SDK_SRCS "${KEYS_C_FILE}")
 endif()
 
 ###########################################################################
