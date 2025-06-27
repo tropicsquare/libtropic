@@ -9,6 +9,7 @@ handlers:
     level: DEBUG
     formatter: simple
     encoding: utf8
+    mode: w
 
 root:
   level: DEBUG
