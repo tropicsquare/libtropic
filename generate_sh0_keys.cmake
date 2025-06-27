@@ -6,13 +6,13 @@ function(generate_c_array FROM_HEX_VAR TO_C_ARRAY_VAR)
 endfunction()
 
 # === Private Key ===
-file(READ "${PRIV_DER_PATH}" PRIV_BINARY HEX)
+file(READ "${SH0_PRIV_RAW_PATH}" PRIV_BINARY HEX)
 generate_c_array(PRIV_BINARY PRIV_C_ARRAY)
 
 file(WRITE "${OUTPUT_C_FILE}" "#include <stdint.h>\n\nuint8_t sh0priv[] = {\n    ${PRIV_C_ARRAY}\n};\n")
 
 # === Public Key ===
-file(READ "${PUB_DER_PATH}" PUB_BINARY HEX)
+file(READ "${SH0_PUB_RAW_PATH}" PUB_BINARY HEX)
 generate_c_array(PUB_BINARY PUB_C_ARRAY)
 
 file(APPEND "${OUTPUT_C_FILE}" "\nuint8_t sh0pub[] = {\n    ${PUB_C_ARRAY}\n};\n")

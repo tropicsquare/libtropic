@@ -205,71 +205,34 @@ if(LT_BUILD_TESTS)
     )
 endif()
 
-# Converts private key from PEM to DER and also creates the public key
-function(key_to_der INPUT_KEY PRIV_OUTPUT_DER PUB_OUTPUT_DER)
-    get_filename_component(KEY_EXT "${INPUT_KEY}" EXT)
-
-    if (KEY_EXT STREQUAL ".pem")
-        add_custom_command(
-            OUTPUT "${PRIV_OUTPUT_DER}"
-            COMMAND ${OPENSSL_EXECUTABLE} pkey -in "${INPUT_KEY}" -outform DER -out "${PRIV_OUTPUT_DER}"
-            DEPENDS "${INPUT_KEY}"
-            COMMENT "Converting key from PEM to DER format."
-            VERBATIM
-        )
-
-        add_custom_command(
-            OUTPUT "${PUB_OUTPUT_DER}"
-            COMMAND ${OPENSSL_EXECUTABLE} pkey -in "${INPUT_KEY}" -pubout -outform DER -out "${PUB_OUTPUT_DER}"
-            DEPENDS "${INPUT_KEY}"
-            COMMENT "Generating public key from PEM."
-            VERBATIM
-        )
-    else()
-        add_custom_command(
-            OUTPUT "${PRIV_OUTPUT_DER}"
-            COMMAND ${CMAKE_COMMAND} -E copy "${INPUT_KEY}" "${PRIV_OUTPUT_DER}"
-            DEPENDS "${INPUT_KEY}"
-            COMMENT "Copying DER private key."
-            VERBATIM
-        )
-
-        add_custom_command(
-            OUTPUT "${PUB_OUTPUT_DER}"
-            COMMAND ${OPENSSL_EXECUTABLE} pkey -in "${INPUT_KEY}" -inform DER -pubout -outform DER -out "${PUB_OUTPUT_DER}"
-            DEPENDS "${INPUT_KEY}"
-            COMMENT "Generating public key from DER private key."
-            VERBATIM
-        )
-    endif()
-
-    # Return values to the caller
-    set(PRIV_KEY_DER "${PRIV_OUTPUT_DER}" PARENT_SCOPE)
-    set(PUB_KEY_DER  "${PUB_OUTPUT_DER}"  PARENT_SCOPE)
-endfunction()
-
 # Only add key generation logic if examples or tests are being compiled
 if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
-    find_program(OPENSSL_EXECUTABLE openssl REQUIRED)
 
     if (LT_SH0_PRIV_PATH STREQUAL "")
         message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_BUILD_EXAMPLES or LT_BUILD_TESTS is enabled.")
     endif()
 
-    set(SH0_PRIV_DER_FILE "${CMAKE_BINARY_DIR}/sh0_priv.der")
-    set(SH0_PUB_DER_FILE "${CMAKE_BINARY_DIR}/sh0_pub.der")
+    set(SH0_PRIV_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_priv.bin")
+    set(SH0_PUB_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_pub.bin")
     set(KEYS_C_FILE "${CMAKE_BINARY_DIR}/sh0_keys.c")
+    set(PYTHON_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/extract_x25519_key_data.py")
 
-    key_to_der("${LT_SH0_PRIV_PATH}" "${SH0_PRIV_DER_FILE}" "${SH0_PUB_DER_FILE}")
+    add_custom_command(
+        OUTPUT ${SH0_PRIV_RAW_FILE} ${SH0_PUB_RAW_FILE}
+        COMMAND python3 ${PYTHON_SCRIPT} --priv-key ${LT_SH0_PRIV_PATH} --priv-out ${SH0_PRIV_RAW_FILE} --pub-out ${SH0_PUB_RAW_FILE}
+        DEPENDS "${PYTHON_SCRIPT}" "${LT_SH0_PRIV_PATH}"
+        COMMENT "Extracting raw data from X25519 private key"
+        VERBATIM
+    )
 
     add_custom_command(
         OUTPUT "${KEYS_C_FILE}"
         COMMAND ${CMAKE_COMMAND}
-                -DPRIV_DER_PATH=${SH0_PRIV_DER_FILE}
-                -DPUB_DER_PATH=${SH0_PUB_DER_FILE}
+                -DSH0_PRIV_RAW_PATH=${SH0_PRIV_RAW_FILE}
+                -DSH0_PUB_RAW_PATH=${SH0_PUB_RAW_FILE}
                 -DOUTPUT_C_FILE=${KEYS_C_FILE}
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/generate_sh0_keys.cmake"
-        DEPENDS "${SH0_PRIV_DER_FILE}" "${SH0_PUB_DER_FILE}"
+        DEPENDS "${SH0_PRIV_RAW_FILE}" "${SH0_PUB_RAW_FILE}"
         COMMENT "Generating sh0_keys.c from DER files"
         VERBATIM
     )
