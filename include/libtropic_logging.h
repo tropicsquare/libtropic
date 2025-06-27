@@ -36,15 +36,16 @@
 #ifdef LT_USE_ASSERT
 #define LT_ASSERT(expected, value) assert(expected == value);
 #else
-#define LT_ASSERT(expected, value)                  \
-    {                                               \
-        int _val_ = (value);                        \
-        if (_val_ == expected) {                    \
-            LT_LOG_SYSTEM("ASSERT_OK");             \
-        }                                           \
-        else {                                      \
-            LT_LOG_SYSTEM("ASSERT_FAIL %d", _val_); \
-        };                                          \
+#define LT_ASSERT(expected, value)                            \
+    {                                                         \
+        int _val_ = (value);                                  \
+        int _exp_ = (expected);                               \
+        if (_val_ == _exp_) {                                 \
+            LT_LOG_SYSTEM("ASSERT_OK");                       \
+        }                                                     \
+        else {                                                \
+            LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", _val_, _exp_); \
+        };                                                    \
     }
 #endif
 
@@ -53,11 +54,13 @@
     assert(value == (condition ? expected_if_true : expected_if_false));
 #else
 #define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
-    if (value == (condition ? expected_if_true : expected_if_false)) {        \
+    int _val_ = (value);                                                      \
+    int _exp_ = (condition ? expected_if_true : expected_if_false);           \
+    if (_val_ == _exp_) {                                                     \
         LT_LOG_SYSTEM("ASSERT_OK");                                           \
     }                                                                         \
     else {                                                                    \
-        LT_LOG_SYSTEM("ASSERT_FAIL");                                         \
+        LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", _val_, _exp_);                     \
     }
 #endif
 
