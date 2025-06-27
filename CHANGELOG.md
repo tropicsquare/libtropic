@@ -41,6 +41,9 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
   and `LT_BUILD_DOCS`
 - Always increment host's nonce in `lt_l3_decrypt_response()`
 - When `LT_BUILD_EXAMPLES` or `LT_BUILD_TESTS` are set, CMake requires to define `LT_SH0_PRIV_PATH`
+- Removed SH0 keys and pkey_index_{0,1,2,3} from `keys/keys.c` and reflected it in examples, tests
+- Added writing of pairing keys to slots 1,2,3 in `lt_test_ping` and created `lt_test_engineering_sample_01_ping`
+  from the old version of `lt_test_ping`
 
 
 ### Added
