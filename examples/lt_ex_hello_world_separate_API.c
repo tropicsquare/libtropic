@@ -77,7 +77,7 @@ static int session_H0(void)
     // Inicialize session from a server side  by creating state->ehpriv and state->ehpub,
     // l2 request is prepared into handle's buffer (h->l2_buff)
     LT_LOG("%s", "lt_out__session_start() ");
-    LT_ASSERT(LT_OK, lt_out__session_start(&h, pkey_index_0, &state));
+    LT_ASSERT(LT_OK, lt_out__session_start(&h, PAIRING_KEY_SLOT_INDEX_0, &state));
 
     // handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel to TROPIC01
 
@@ -93,7 +93,7 @@ static int session_H0(void)
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
     LT_LOG("%s", "lt_in__session_start() ");
-    LT_ASSERT(LT_OK, lt_in__session_start(&h, stpub, pkey_index_0, sh0priv, sh0pub, &state));
+    LT_ASSERT(LT_OK, lt_in__session_start(&h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state));
 
     // Now we can use lt_ping() to send a message to TROPIC01 and receive a response, this is done with separate API
     // calls

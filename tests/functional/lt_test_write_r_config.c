@@ -161,8 +161,8 @@ int lt_test_write_r_config(void)
 
     LT_LOG("%s", "Initialize handle");
     LT_ASSERT(LT_OK, lt_init(&h));
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session() with key H", pkey_index_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session() with key H", PAIRING_KEY_SLOT_INDEX_0);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG("%s", "R CONFIG read:");
     struct lt_config_t r_config_read = {0};

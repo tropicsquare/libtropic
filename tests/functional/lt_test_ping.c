@@ -54,8 +54,8 @@ int lt_test_ping(void)
     LT_ASSERT(LT_OK, lt_init(&h));
 
     // Ping with SH0
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN));
     LT_LOG("Asserting %d B of Ping message", PING_LEN);
@@ -66,8 +66,8 @@ int lt_test_ping(void)
     memset(in, 0x00, PING_LEN);
 
     // Ping with SH1
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, pkey_index_1));
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_1);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, PAIRING_KEY_SLOT_INDEX_1));
     LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN));
     LT_LOG("Asserting %d B of Ping message", PING_LEN);
@@ -78,8 +78,8 @@ int lt_test_ping(void)
     memset(in, 0x00, PING_LEN);
 
     // Ping with SH2
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_2);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, pkey_index_2));
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_2);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, PAIRING_KEY_SLOT_INDEX_2));
     LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN));
     LT_LOG("Asserting %d B of Ping message", PING_LEN);
@@ -90,8 +90,8 @@ int lt_test_ping(void)
     memset(in, 0x00, PING_LEN);
 
     // Ping with SH3
-    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", pkey_index_3);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, pkey_index_3));
+    LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_3);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, PAIRING_KEY_SLOT_INDEX_3));
     LT_LOG("%s", "lt_ping() ");
     LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN));
     LT_LOG("Asserting %d B of Ping message", PING_LEN);
