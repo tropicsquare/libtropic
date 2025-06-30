@@ -40,6 +40,9 @@ int main(void)
 #ifdef LT_TEST_PING
     /*int*/ lt_test_ping();
 #endif
+#ifdef LT_TEST_ENGINEERING_SAMPLE_01_PING
+    /*int*/ lt_test_engineering_sample_01_ping();
+#endif
 #ifdef LT_TEST_ECC_EDDSA
     /*int*/ lt_test_ecc_eddsa();
 #endif

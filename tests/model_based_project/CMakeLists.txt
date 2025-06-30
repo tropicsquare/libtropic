@@ -85,6 +85,10 @@ endif()
 if(LT_TEST_PING)
     target_compile_definitions(run PRIVATE LT_TEST_PING)
 endif()
+# --DLT_TEST_ENGINEERING_SAMPLE_01_PING=1
+if(LT_TEST_ENGINEERING_SAMPLE_01_PING)
+    target_compile_definitions(run PRIVATE LT_TEST_ENGINEERING_SAMPLE_01_PING)
+endif()
 # --DLT_TEST_ECC_EDDSA=1
 if(LT_TEST_ECC_EDDSA)
     target_compile_definitions(run PRIVATE LT_TEST_ECC_EDDSA)
