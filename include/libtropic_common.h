@@ -32,6 +32,8 @@ typedef uint32_t u32;
 
 /** @brief This particular value means that secure session was succesfully established and it is currently ON */
 #define SESSION_ON 0xA5A55A5A
+/** @brief This particular value means that secure session is currently OFF */
+#define SESSION_OFF 0x0
 
 /** @brief Size of l3 ID field */
 #define L3_ID_SIZE 1u
