@@ -73,6 +73,7 @@ class lt_test_runner:
 
                     if (len(line) < 3):
                         logger.error("Line malformed!")
+                        err_count += 1
                         continue
                     
                     code_line_number = line[0].strip()
@@ -93,6 +94,7 @@ class lt_test_runner:
                         elif msg_content == "ASSERT_FAIL":
                             if (len(line) < 5):
                                 logger.error("Line malformed!")
+                                err_count += 1
                                 continue
                             msg_expected = line[4].strip()
                             msg_got = line[3].strip()
