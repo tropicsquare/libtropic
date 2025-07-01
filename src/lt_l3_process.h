@@ -69,4 +69,11 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
 STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
 #endif
 
+/**
+ * @brief Used to invalidate host's session data
+ *
+ * @param s3          Structure holding l3 state
+ */
+void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3);
+
 #endif

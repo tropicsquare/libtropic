@@ -39,6 +39,7 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - Instead of using `LT_ADD_FUNC_TESTS` and `LT_BUILD_TESTS`, use only `LT_BUILD_TESTS`
 - Rename `LT_ADD_EXAMPLES` to `LT_BUILD_EXAMPLES` to be consistent with `LT_BUILD_TESTS`
   and `LT_BUILD_DOCS`
+- Always increment host's nonce in `lt_l3_decrypt_response()`
 
 
 ### Added
@@ -52,6 +53,8 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - port/ support and tests/platform/ example for Raspberry Pi
 - Added macro `LT_USE_ASSERT`, based on which `assert()` is inserted into `LT_ASSERT` and `LT_ASSERT_COND`
 - added CTest handling for functional tests
+- Added `SESSION_OFF` for indicating that secure session is off and assigned it to `lt_l3_state_t.session` flag in `lt_init()`.
+- Added function `lt_l3_invalidate_host_session_data()`, which sets all data in `lt_l3_state_t` to zero and `session` to `SESSION_OFF`; it is called in `lt_session_abort` and when ciphering/deciphering of L3 command fails (wrong TAG)
 
 ### Fixed
 

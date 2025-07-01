@@ -35,6 +35,20 @@ STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
     return LT_OK;
 }
 
+void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
+{
+    s3->session = SESSION_OFF;
+    memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
+    memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
+    memset(s3->encrypt, 0, sizeof(s3->encrypt));
+    memset(s3->decrypt, 0, sizeof(s3->decrypt));
+#if LT_SEPARATE_L3_BUFF
+    memset(s3->buff, 0, s3->buff_len);
+#else
+    memset(s3->buff, 0, sizeof(s3->buff));
+#endif
+}
+
 lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
 {
 #ifdef LIBT_DEBUG
@@ -51,6 +65,7 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
     int ret = lt_aesgcm_encrypt(&s3->encrypt, s3->encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
                                 p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE);
     if (ret != LT_OK) {
+        lt_l3_invalidate_host_session_data(s3);
         return ret;
     }
 
@@ -75,34 +90,30 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
     lt_ret_t ret = lt_aesgcm_decrypt(&s3->decrypt, s3->decryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
                                      p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE);
     if (ret != LT_OK) {
+        lt_l3_invalidate_host_session_data(s3);
         return ret;
     }
+
+    lt_l3_nonce_increase(s3->decryption_IV);
 
     switch (p_frame->data[0]) {
         case L3_RESULT_FAIL:
             return LT_L3_FAIL;
         case L3_RESULT_UNAUTHORIZED:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_UNAUTHORIZED;
         case L3_RESULT_INVALID_CMD:
             return LT_L3_INVALID_CMD;
         case L3_RESULT_OK:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_OK;
         case L3_PAIRING_KEY_EMPTY:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_PAIRING_KEY_EMPTY;
         case L3_PAIRING_KEY_INVALID:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_PAIRING_KEY_INVALID;
         case L3_ECC_INVALID_KEY:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_ECC_INVALID_KEY;
         case L3_R_MEM_DATA_WRITE_WRITE_FAIL:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL;
         case L3_R_MEM_DATA_WRITE_SLOT_EXPIRED:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED;
         default:
             return LT_FAIL;
