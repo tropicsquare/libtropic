@@ -45,6 +45,7 @@ lt_ret_t lt_init(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    h->l3.session = SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     if (ret != LT_OK) {
         return ret;
@@ -390,6 +391,8 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
     if (!h) {
         return LT_PARAM_ERR;
     }
+
+    lt_l3_invalidate_host_session_data(&h->l3);
 
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct lt_l2_encrypted_session_abt_req_t *p_l2_req = (struct lt_l2_encrypted_session_abt_req_t *)h->l2.buff;

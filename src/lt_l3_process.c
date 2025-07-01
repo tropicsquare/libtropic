@@ -65,6 +65,7 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
     int ret = lt_aesgcm_encrypt(&s3->encrypt, s3->encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
                                 p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE);
     if (ret != LT_OK) {
+        lt_l3_invalidate_host_session_data(s3);
         return ret;
     }
 
@@ -89,6 +90,7 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
     lt_ret_t ret = lt_aesgcm_decrypt(&s3->decrypt, s3->decryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
                                      p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE);
     if (ret != LT_OK) {
+        lt_l3_invalidate_host_session_data(s3);
         return ret;
     }
 
