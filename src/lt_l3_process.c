@@ -78,31 +78,26 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
         return ret;
     }
 
+    lt_l3_nonce_increase(s3->decryption_IV);
+
     switch (p_frame->data[0]) {
         case L3_RESULT_FAIL:
             return LT_L3_FAIL;
         case L3_RESULT_UNAUTHORIZED:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_UNAUTHORIZED;
         case L3_RESULT_INVALID_CMD:
             return LT_L3_INVALID_CMD;
         case L3_RESULT_OK:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_OK;
         case L3_PAIRING_KEY_EMPTY:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_PAIRING_KEY_EMPTY;
         case L3_PAIRING_KEY_INVALID:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_PAIRING_KEY_INVALID;
         case L3_ECC_INVALID_KEY:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_ECC_INVALID_KEY;
         case L3_R_MEM_DATA_WRITE_WRITE_FAIL:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL;
         case L3_R_MEM_DATA_WRITE_SLOT_EXPIRED:
-            lt_l3_nonce_increase(s3->decryption_IV);
             return LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED;
         default:
             return LT_FAIL;
