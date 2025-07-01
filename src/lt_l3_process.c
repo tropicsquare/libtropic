@@ -42,11 +42,11 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
     memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
     memset(s3->encrypt, 0, sizeof(s3->encrypt));
     memset(s3->decrypt, 0, sizeof(s3->decrypt));
-    #if LT_SEPARATE_L3_BUFF
-        memset(s3->buff, 0, s3->buff_len);
-    #else
-        memset(s3->buff, 0, sizeof(s3->buff));
-    #endif
+#if LT_SEPARATE_L3_BUFF
+    memset(s3->buff, 0, s3->buff_len);
+#else
+    memset(s3->buff, 0, sizeof(s3->buff));
+#endif
 }
 
 lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
