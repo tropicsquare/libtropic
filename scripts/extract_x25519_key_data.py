@@ -2,11 +2,10 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import x25519
 import pathlib
 import argparse
+from typing import Tuple
 
 def load_x25519_private_key(key_path: pathlib.Path) -> x25519.X25519PrivateKey:
-    with key_path.open('rb') as key_file:
-        key_data = key_file.read()
-
+    key_data = key_path.read_bytes()
     try:
         # Try loading PEM format
         private_key = serialization.load_pem_private_key(key_data, password=None)
@@ -22,7 +21,7 @@ def load_x25519_private_key(key_path: pathlib.Path) -> x25519.X25519PrivateKey:
 
     return private_key
 
-def extract_raw_keys(private_key: x25519.X25519PrivateKey) -> tuple[bytes, bytes]:
+def extract_raw_keys(private_key: x25519.X25519PrivateKey) -> Tuple[bytes, bytes]:
     raw_private = private_key.private_bytes(
         encoding=serialization.Encoding.Raw,
         format=serialization.PrivateFormat.Raw,
