@@ -34,9 +34,6 @@ if(
     message(FATAL_ERROR "No cryptography provider is defined.")
 endif()
 
-set(LT_SH0_PRIV_PATH "" CACHE FILEPATH "Path to file with SH0 private key in PEM or DER format")
-set(LT_SH0_PUB_PATH "" CACHE FILEPATH "Path to file with SH0 public key in PEM or DER format")
-
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
