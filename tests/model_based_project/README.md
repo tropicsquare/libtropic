@@ -7,7 +7,13 @@ Both processes (tests and model) will talk to each other through TCP socket at 1
 ## Model setup
 First, the model has to be installed. For that, follow the readme in the [ts-tvl](github.com/tropicsquare/ts-tvl/) repository.
 
-Next, before running CTest, it is advised to initialize the model with some data, so it can behave like the real provisioned chip. This data can be specified in the file [model_cfg.yml](model_cfg.yml) (see [here](https://github.com/tropicsquare/ts-tvl#model-configuration) for information about the model configuration). Logging from the model can also be configured in the file [model_logging.cfg](model_logging_cfg.yml) (see [documentation](https://docs.python.org/3/library/logging.config.html) of the Python `logging` module).
+Next, before running CTest, it is advised to initialize the model with some data, so it can behave like the real provisioned chip. The model configuration has to be put into the file `model_cfg.yml` (see [here](https://github.com/tropicsquare/ts-tvl#model-configuration) for information about the model configuration). It is advised to use the [create_model_cfg.py](create_model_cfg.py) script - it generates the model configuration based on `lab_batch_package`, containing provisioning data used in the Tropic Square lab for testing purposes. The script is used as:
+```shell
+python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
+```
+lab batch packages are contained in `../provisioning_data/`.
+
+Model logging can also be configured in the file [model_logging.cfg](model_logging_cfg.yml) (see [documentation](https://docs.python.org/3/library/logging.config.html) of the Python `logging` module).
 
 
 ## Compilation
@@ -15,6 +21,7 @@ To compile libtropic and the tests, the script [compile_tests.sh](compile_tests.
 1. removes `build/` directory, if it already exists,
 2. compiles everything using CMake with the following flags:
    - `-DLT_BUILD_TESTS=1`: lets CMake know to compile the functional tests,
+   - `-DLT_SH0_PRIV_PATH=<path_to_sh0priv_file>`: CMake loads raw key and saves it to `sh0priv` C array, defined in [libtropic_functional_tests.h](../../include/libtropic_functional_tests.h) - tests need it to establish secure session (more information about this [here](../../docs/index.md#libtropic-library-examples-and-tests-libtropic-library-examples)),
    - `-DCMAKE_BUILD_TYPE=Debug`: allows to use a debugger,
    - `-DLT_USE_ASSERT=1`: puts calls of `assert()` (from `assert.h`) in the macros `LT_ASSERT` and `LT_ASSERT_COND`. This is usually not used on embedded devices, but here we are using Unix port of libtropic, so it is a way to signalize that something failed in the test.
 3. executes `make` in the `build/` directory.

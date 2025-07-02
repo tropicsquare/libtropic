@@ -4,12 +4,18 @@ Welcome to the documentation page for **libtropic**, the official C library for 
 
 For detailed information about the libtropic library architecture and development, please refer to the `For contributors` section.
 
-- [Getting TROPIC01](#getting-tropic01)
-- [Standalone example projects](#standalone-example-projects)
-- [Libtropic library examples](#libtropic-library-examples)
-- [Adding libtropic to existing project](#adding-libtropic-to-existing-project)
-- [Using CMAKE switches](#using-cmake-switches)
-- [More examples](#more-examples)
+- [Hello World!](#hello-world)
+  - [Getting TROPIC01 {#getting-tropic01}](#getting-tropic01-getting-tropic01)
+      - [QFN32 Samples](#qfn32-samples)
+      - [Breakout PCB with TROPIC01](#breakout-pcb-with-tropic01)
+      - [USB dongle with TROPIC01](#usb-dongle-with-tropic01)
+  - [Libtropic library examples and tests {#libtropic-library-examples}](#libtropic-library-examples-and-tests-libtropic-library-examples)
+  - [Standalone example projects {#standalone-example-projects}](#standalone-example-projects-standalone-example-projects)
+      - [STM32](#stm32)
+      - [Unix](#unix)
+  - [Adding libtropic to existing project {#adding-libtropic-to-existing-project}](#adding-libtropic-to-existing-project-adding-libtropic-to-existing-project)
+      - [Do you use Makefile instead of CMake?](#do-you-use-makefile-instead-of-cmake)
+  - [Using CMAKE switches {#using-cmake-switches}](#using-cmake-switches-using-cmake-switches)
 
 ## Getting TROPIC01 {#getting-tropic01}
 
@@ -47,20 +53,11 @@ Designed for evaluation on systems where SPI is not available.
 Please visit [tropicsquare.com](https://tropicsquare.com/tropic01-samples), sign-up and check availability.
 
 
-## Libtropic library examples {#libtropic-library-examples}
+## Libtropic library examples and tests {#libtropic-library-examples}
 
 Check out `examples/` folder, it contains a few examples of how libtropic functions might be used.
 
-We provide following examples:
-
-- `lt_ex_hello_world.c`: Demonstrates basic usage of libtropic, good starting point
-- `lt_ex_fw_update.c`: Shows how to update TROPIC01's internal firmware
-- `lt_ex_hw_wallet.c`: Example of how a generic hw wallet project might integrate TROPIC01
-
-There is also folder `tests/functional/` with code used internally for testing, so you can get some inspiration:
-- `lt_test_reversible`: This routine causes changes which can be reverted
-- `lt_test_ireversible.c`: This routine causes changes which cannot be reversed
-- `lt_test_samples_1.c`: This routine cauees changes which cannot be reversed. Used for testing samples.
+There is also folder `tests/functional/` with code used internally for testing.
 
 
 **Functions from `examples/` and `tests/functional/` are not compiled into libtropic library by default. In order to have access to all examples functions from parent project, special switch must be passed to compilation.**
@@ -69,29 +66,17 @@ The purpose of this is to control inclusion of code, because example code could 
 
 Examples code can be enabled by:
 * pass `-DLT_BUILD_EXAMPLES=1` during parent project compilation, or
-* in parent CMake file, switch this option on : `set(LT_BUILD_EXAMPLES ON)`
+* in parent CMake file, switch this option on: `set(LT_BUILD_EXAMPLES ON)`
 
 Functional tests code can be enabled by:
-* pass `-LT_BUILD_TESTS=1` during parent project compilation, or
-* in parent CMake file, switch this option on : `set(LT_BUILD_TESTS ON)`
+* pass `-DLT_BUILD_TESTS=1` during parent project compilation, or
+* in parent CMake file, switch this option on: `set(LT_BUILD_TESTS ON)`
 
-When libtropic is compiled like mentioned,  examples(tests) are then available in parent project like this:
+When examples or functional tests are enabled by the mentioned arguments, CMake requires additonal argument `LT_SH0_PRIV_PATH`, that should be set to a file path with SH0 private key in PEM or DER format:
+* pass `-DLT_SH0_PRIV_PATH=<sh0priv_path>` during parent project compilation, or
+* in parent CMake file, switch this option on: `set(LT_SH0_PRIV_PATH <sh0priv_path>)`.
 
-```
-#include "libtropic_examples.h"
-#include "libtropic_functional_tests.h"
-
-int main(void)
-{
-    // This is hello world from example folder
-    lt_ex_hello_world();
-    // This is test function from tests/functional/ folder
-    lt_test_reversible();
-}
-```
-
-This organization allows our examples and test functions to be platform agnostic.
-
+Then, CMake loads the key raw data and saves it to `sh0priv` C array, defined in [libtropic_functional_tests.h](../include/libtropic_functional_tests.h) or [libtropic_examples.h](../include/libtropic_examples.h). The key is needed to establish a secure session with TROPIC01. Naturally, in user applications, the path to the sh0priv key is not necessary, as user is responsible for providing it.
 
 ## Standalone example projects {#standalone-example-projects}
 
@@ -136,6 +121,7 @@ set(LT_HELPERS ON)
 
 # This switch exposes also functions and tests containing example of usage.
 # Might be a good starting point.
+# Note: don't forget the aforementioned LT_SH0_PRIV_PATH
 #set(LT_BUILD_EXAMPLES ON)
 #set(LT_BUILD_TESTS ON)
 
@@ -166,35 +152,21 @@ Then do the same for files used in trezor_crypto.
 
 Libtropic is configurable with CMake options. They are either passed from parent project's CMakeLists.txt, or over prompt when building is invoked.
 
+```
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
-
-```
-# Set trezor_crypto as a cryptography provider
--DLT_USE_TREZOR_CRYPTO=1
-
-# Compile libtropic also with functions containing example usage - good for initial evaluation
--DLT_BUILD_EXAMPLES=1
-
-# Compile functional tests' code as part of libtropic library
--DLT_BUILD_TESTS=1
-
-# Enable firmware update functions and compile firmware update in a form of byte array
-# For more info have a look into examples/fw_update.c
--DLT_ENABLE_FW_UPDATE=1
-
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
-# Switch it off to compile only libtropic's core
--DLT_HELPERS=1
-
-# Build libtropic documentation
--DLT_BUILD_DOCS=1
-
-# Use assert() in macros LT_ASSERT and LT_ASSERT_COND (handy for the Unix port)
--DLT_USE_ASSERT=1
+# Switch it off to compile only basic libtropic API.
+option(LT_HELPERS "Compile helper function" ON)
+# Enable usage of INT pin during communication. Instead of polling for response,
+# host will be notified by INT pin when response is ready.
+option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
+option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
+option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
+option(LT_USE_ASSERT "Insert assert() into LT_ASSERT/LT_ASSERT_COND" OFF)
 ```
