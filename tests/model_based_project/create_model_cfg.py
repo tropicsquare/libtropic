@@ -36,20 +36,6 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--ese-cert",
-        help="Path to the X.509 eSE device certificate file.",
-        type=pathlib.Path,
-        required=True
-    )
-
-    parser.add_argument(
-        "--ese-priv",
-        help="Path to the X25519 eSE device private key file.",
-        type=pathlib.Path,
-        required=True
-    )
-
-    parser.add_argument(
         "--model-cfg",
         help="Path to the file where to put created YAML model configuration.",
         type=pathlib.Path,
@@ -59,15 +45,15 @@ if __name__ == "__main__":
     # Parse and save arguments
     args = parser.parse_args()
     pkg_dir_path: pathlib.Path = args.pkg_dir
-    ese_cert_path: pathlib.Path = args.ese_cert
-    ese_priv_path: pathlib.Path = args.ese_priv
     model_cfg_path: pathlib.Path = args.model_cfg
-
-    model_cfg = {}
 
     # Load batch package YAML
     with pkg_dir_path.joinpath("tropic01_lab_batch_package.yml").open("r") as f:
         pkg_yml = yaml.safe_load(f)
+
+    ese_cert_path = pkg_dir_path.joinpath(pkg_yml["tropic01_ese_certificate"])
+    ese_priv_path = pkg_dir_path.joinpath(pkg_yml["tropic01_ese_private_key"])
+    model_cfg = {}
 
     # Save raw eSE priv key to model configuration
     ese_priv = serialization.load_pem_private_key(
