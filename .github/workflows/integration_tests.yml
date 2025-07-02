@@ -2,12 +2,12 @@ name: Run tests against TROPIC01 model
 on:
   push:
     branches:
-      # - 'develop'
-      # - 'master'
-      - 'integration-tests-action'
+      - 'develop'
+      - 'master'
   pull_request:
     branches:
-      # - 'master'
+      - 'master'
+      - 'develop'
 
 jobs:
   build:
