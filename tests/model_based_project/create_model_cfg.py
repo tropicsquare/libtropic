@@ -108,6 +108,20 @@ if __name__ == "__main__":
         }
     }
 
+    print("Warning: Following variables are not configured (model will set them to default values):")
+    print("\t- r_config")
+    print("\t- r_ecc_keys")
+    print("\t- r_user_data")
+    print("\t- r_mcounters")
+    print("\t- r_macandd_data")
+    print("\t- i_config")
+    print("\t- riscv_fw_version")
+    print("\t- spect_fw_version")
+    print("\t- debug_random_value")
+    print("\t- activate_encryption")
+    print("\t- init_byte")
+    print("\t- busy_iter")
+
     # Generate the model configuration YAML
     with model_cfg_path.open("w") as f:
         yaml.dump(model_cfg, f, default_flow_style=False)
