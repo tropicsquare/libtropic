@@ -45,7 +45,7 @@ jobs:
         run: |
             cd tests/model_based_project/
             python3 create_model_cfg.py \
-            --pkg-dir ../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
+            --pkg-dir ../../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
 
       - name: Compile libtropic with tests
         run: |

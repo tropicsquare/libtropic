@@ -11,7 +11,7 @@ Next, before running CTest, it is advised to initialize the model with some data
 ```shell
 python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
 ```
-lab batch packages are contained in `../provisioning_data/`.
+lab batch packages are contained in `../../provisioning_data/`.
 
 Model logging can also be configured in the file [model_logging.cfg](model_logging_cfg.yml) (see [documentation](https://docs.python.org/3/library/logging.config.html) of the Python `logging` module).
 
