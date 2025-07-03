@@ -1,5 +1,6 @@
 import logging
 import fcntl
+import os
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -10,12 +11,20 @@ class lt_lock_device:
         self.lock_file = lock_file
 
     def __enter__(self) -> bool:
-        self.lock_fd = open(self.lock_file, "w")
+        try:
+            self.lock_fd = open(self.lock_file, "w")
+        except PermissionError:
+            self.lock_fd = None
+            logger.error(f"Can't access {self.lock_file}! Check permissions.")
+            return False
+        
+        os.fchmod(self.lock_fd.fileno(), 0o666)
+
         try:
             fcntl.flock(self.lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             return True
         except BlockingIOError:
-            logging.error("Cannot acquire lock!")
+            logger.error("Cannot acquire lock!")
             self.lock_fd.close()
             self.lock_fd = None
             return False
