@@ -109,27 +109,16 @@ if(LT_BUILD_TESTS)
         string(REPLACE " " "_" test_macro ${test_macro})
 
         set(exe_name ${test_name})
-        # We don't need binary format for now.
-        # set(bin_name ${test_name}.bin)
 
         # Define executable (separate for each test) and link dependencies.
         add_executable(${exe_name} main.c
             ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix/lt_port_unix_tcp.c
         )
-        # add_executable(${exe_name} ${SOURCES} ${HEADERS})
         target_link_libraries(${exe_name} PRIVATE tropic)
 
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
-
-        # We don't need binary format for now.
-        # add_custom_command(TARGET ${exe_name}
-        #     POST_BUILD
-        #     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${exe_name}> ${bin_name}
-        #     BYPRODUCTS ${bin_name}
-        #     COMMENT "Converting ${exe_name} to ${bin_name}"
-        # )
 
         # Add CTest entry.
         add_test(NAME ${test_name}
