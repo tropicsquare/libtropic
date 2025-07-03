@@ -95,6 +95,9 @@ if __name__ == "__main__":
 
     # Clean up
     model_process.terminate()
-    model_process.wait()
+    try:
+        model_process.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        model_process.kill()
     model_logging_cfg_modified_path.unlink()
     sys.exit(ret)
