@@ -23,6 +23,8 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_USE_ASSERT "Insert assert() into LT_ASSERT/LT_ASSERT_COND" OFF)
 
+set(LT_SH0_PRIV_PATH "" CACHE FILEPATH "Path to file with SH0 private key in PEM or DER format")
+
 # Check if cryptography provider is defined
 if(
     (NOT LT_BUILD_DOCS)        AND
@@ -149,6 +151,8 @@ set(LIBTROPIC_TEST_LIST
     lt_test_write_pairing_keys
     lt_test_write_r_config
     lt_test_ping
+    lt_test_engineering_sample_01_ping
+    lt_test_ecc_ecdsa
     lt_test_ecc_eddsa
     lt_test_r_mem
     lt_test_erase_r_config
@@ -185,19 +189,58 @@ configure_file(
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_i_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ping.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_engineering_sample_01_ping.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_pairing_keys.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ping.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_i_config.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
     )
+endif()
+
+# Only add key generation logic if examples or tests are being compiled
+if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
+
+    if (LT_SH0_PRIV_PATH STREQUAL "")
+        message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_BUILD_EXAMPLES or LT_BUILD_TESTS is enabled.")
+    endif()
+
+    set(SH0_PRIV_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_priv.bin")
+    set(SH0_PUB_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_pub.bin")
+    set(KEYS_C_FILE "${CMAKE_BINARY_DIR}/sh0_keys.c")
+    set(EXTRACT_KEY_DATA_PYTHON_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/extract_x25519_key_data.py")
+
+    add_custom_command(
+        OUTPUT ${SH0_PRIV_RAW_FILE} ${SH0_PUB_RAW_FILE}
+        COMMAND python3 ${EXTRACT_KEY_DATA_PYTHON_SCRIPT} --priv-key ${LT_SH0_PRIV_PATH} --priv-out ${SH0_PRIV_RAW_FILE} --pub-out ${SH0_PUB_RAW_FILE}
+        DEPENDS "${EXTRACT_KEY_DATA_PYTHON_SCRIPT}" "${LT_SH0_PRIV_PATH}"
+        COMMENT "Extracting raw data from X25519 private key"
+        VERBATIM
+    )
+
+    add_custom_command(
+        OUTPUT "${KEYS_C_FILE}"
+        COMMAND ${CMAKE_COMMAND}
+                -DSH0_PRIV_RAW_PATH=${SH0_PRIV_RAW_FILE}
+                -DSH0_PUB_RAW_PATH=${SH0_PUB_RAW_FILE}
+                -DOUTPUT_C_FILE=${KEYS_C_FILE}
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/generate_sh0_keys.cmake"
+        DEPENDS "${SH0_PRIV_RAW_FILE}" "${SH0_PUB_RAW_FILE}"
+        COMMENT "Generating sh0_keys.c from DER files"
+        VERBATIM
+    )
+
+
+    # Ensure the tropic target depends on the generated file
+    list(APPEND SDK_SRCS "${KEYS_C_FILE}")
 endif()
 
 ###########################################################################

@@ -179,7 +179,7 @@ static int session_initial(void)
 
     // Establish secure handshake with default H0 pairing keys
     LT_LOG("%s", "Creating session with initial factory keys H0");
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG("%s", "R CONFIG read:");
     struct lt_config_t r_config_read;
@@ -203,13 +203,13 @@ static int session_initial(void)
 
     // Writing pairing keys 1-3
     LT_LOG("%s", "Writing pairing key H1");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, pkey_index_1));
+    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, PAIRING_KEY_SLOT_INDEX_1));
     LT_LOG("%s", "Writing pairing key H2");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, pkey_index_2));
+    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, PAIRING_KEY_SLOT_INDEX_2));
     LT_LOG("%s", "Writing pairing key H3");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, pkey_index_3));
+    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, PAIRING_KEY_SLOT_INDEX_3));
     LT_LOG("%s", "Invalidating SH0PUB pairing key");
-    LT_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, pkey_index_0));
+    LT_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG("%s", "Closing session H0");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
@@ -242,7 +242,7 @@ static int session_H0(void)
     /* Establish secure handshake with default H0 pairing keys should fail, because this key was invalidated during
      * session_initial() */
     LT_LOG("%s", "Establish session with H0 must fail");
-    LT_ASSERT(LT_L2_HSK_ERR, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_ASSERT(LT_L2_HSK_ERR, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
     lt_deinit(&h);
 
@@ -268,7 +268,7 @@ static int session_H1(void)
 
     /* Establish secure handshake with default H1 pairing keys */
     LT_LOG("%s", "Creating session with H1 keys");
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, pkey_index_1));
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh1priv, sh1pub, PAIRING_KEY_SLOT_INDEX_1));
 
     uint8_t in[100];
     uint8_t out[100];
@@ -323,7 +323,7 @@ static int session_H2(void)
     lt_init(&h);
 
     LT_LOG("%s", "Creating session with H2 keys");
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, pkey_index_2));
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh2priv, sh2pub, PAIRING_KEY_SLOT_INDEX_2));
 
     uint8_t in[100];
     uint8_t out[100];
@@ -385,7 +385,7 @@ static int session_H3(void)
     lt_init(&h);
 
     LT_LOG("%s", "Creating session with H3 keys");
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, pkey_index_3));
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh3priv, sh3pub, PAIRING_KEY_SLOT_INDEX_3));
 
     // Following commands must NOT pass, check if they return LT_L3_UNAUTHORIZED
 

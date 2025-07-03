@@ -38,7 +38,7 @@ static int session_H0(void)
 
     LT_LOG("%s", "Establish session with H0");
 
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
     uint8_t in[100] = {0};
     uint8_t out[100] = {0};

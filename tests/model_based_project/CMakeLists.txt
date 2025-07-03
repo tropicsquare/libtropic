@@ -38,19 +38,14 @@ add_executable(run main.c
 
 ###########################################################################
 #                                                                         #
-#   Define what examples (or tests) will be compiled into main().         #
-#   In this example libtropic library is compiled with examples           #
-#   and tests functions exposed. In production it is recommended to       #
-#   compile only core part of libtropic to save some code space.          #
+#   Define what examples will be compiled into main() and if tests        #
+#   should be built. In this example, libtropic library is compiled with  #
+#   examples exposed. In production, it is recommended to compile only    #
+#   core part of libtropic to save some code space.                       #
 #                                                                         #
 #   This is controlled by options LT_BUILD_EXAMPLES and LT_BUILD_TESTS    #
 #                                                                         #
 ###########################################################################
-
-# Following two lines should be placed in next section,
-# but let's keep them here for clarity:
-set(LT_BUILD_EXAMPLES ON)
-set(LT_BUILD_TESTS ON)
 
 # -DLT_EX_HW_WALLET=1
 if(LT_EX_HW_WALLET)
@@ -67,35 +62,6 @@ endif()
 # -DLT_EX_MACANDD=1
 if(LT_EX_MACANDD)
     target_compile_definitions(run PRIVATE LT_EX_MACANDD)
-endif()
-
-# -DLT_TEST_CHIP_ID=1
-if(LT_TEST_CHIP_ID)
-    target_compile_definitions(run PRIVATE LT_TEST_CHIP_ID)
-endif()
-# -DLT_TEST_WRITE_PAIRING_KEYS=1
-if(LT_TEST_WRITE_PAIRING_KEYS)
-    target_compile_definitions(run PRIVATE LT_TEST_WRITE_PAIRING_KEYS)
-endif()
-# -DLT_TEST_WRITE_R_CONFIG=1
-if(LT_TEST_WRITE_R_CONFIG)
-    target_compile_definitions(run PRIVATE LT_TEST_WRITE_R_CONFIG)
-endif()
-# --DLT_TEST_PING=1
-if(LT_TEST_PING)
-    target_compile_definitions(run PRIVATE LT_TEST_PING)
-endif()
-# --DLT_TEST_ECC_EDDSA=1
-if(LT_TEST_ECC_EDDSA)
-    target_compile_definitions(run PRIVATE LT_TEST_ECC_EDDSA)
-endif()
-# --DLT_TEST_R_MEM=1
-if(LT_TEST_R_MEM)
-    target_compile_definitions(run PRIVATE LT_TEST_R_MEM)
-endif()
-# --DLT_TEST_ERASE_R_CONFIG=1
-if(LT_TEST_ERASE_R_CONFIG)
-    target_compile_definitions(run PRIVATE LT_TEST_ERASE_R_CONFIG)
 endif()
 
 ###########################################################################
@@ -115,6 +81,51 @@ target_compile_options(tropic PRIVATE -Wall)
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 
+
+###########################################################################
+#                                                                         #
+# FUNCTIONAL TESTS CONFIGURATION                                          #
+#                                                                         #
+# This section will automatically configure CTest for launching tests     #
+# defined in libtropic. Do NOT hardcode any test definitions here.        #
+# Define them in libtropic.                                               #
+#                                                                         #
+# To build functional tests, use -DLT_BUILD_TESTS=1 in cmake invocation.  #
+#                                                                         #
+###########################################################################
+
+if(LT_BUILD_TESTS)
+    # Enable CTest.
+    enable_testing()
+    
+    # So we can include preprocessed test registry (lt_test_registry.c.inc).
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/libtropic)
+
+    # Loop through tests defined in libtropic and prepare environment.
+    foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
+    
+        # Create a correct macro from test name.
+        string(TOUPPER ${test_name} test_macro)
+        string(REPLACE " " "_" test_macro ${test_macro})
+
+        set(exe_name ${test_name})
+
+        # Define executable (separate for each test) and link dependencies.
+        add_executable(${exe_name} main.c
+            ${CMAKE_CURRENT_SOURCE_DIR}/${PATH_LIBTROPIC}hal/port/unix/lt_port_unix_tcp.c
+        )
+        target_link_libraries(${exe_name} PRIVATE tropic)
+
+        # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
+        target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
+        target_compile_definitions(${exe_name} PRIVATE ${test_macro})
+
+        # Add CTest entry.
+        add_test(NAME ${test_name}
+                COMMAND python3 ../model_test_runner.py -t ${CMAKE_CURRENT_BINARY_DIR}/${exe_name} -o run_logs/
+        )
+    endforeach()
+endif()
 
 ###########################################################################
 #                                                                         #

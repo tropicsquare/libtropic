@@ -63,8 +63,8 @@ int lt_test_write_pairing_keys(void)
 
     LT_LOG("%s", "Initialize handle");
     LT_ASSERT(LT_OK, lt_init(&h));
-    LT_LOG("%s with key H%d", "verify_chip_and_start_secure_session()", pkey_index_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, pkey_index_0));
+    LT_LOG("%s with key H%d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG("%s", "lt_ping() ");
     uint8_t ping_msg[33] = {'>', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A',
                             'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', '!', '<', '\0'};
@@ -88,11 +88,11 @@ int lt_test_write_pairing_keys(void)
 
     // Write pairing keys into slot 1, 2 and 3
     LT_LOG("%s", "Writing pairing key H1");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, pkey_index_1));
+    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, PAIRING_KEY_SLOT_INDEX_1));
     LT_LOG("%s", "Writing pairing key H2");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, pkey_index_2));
+    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, PAIRING_KEY_SLOT_INDEX_2));
     LT_LOG("%s", "Writing pairing key H3");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, pkey_index_3));
+    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, PAIRING_KEY_SLOT_INDEX_3));
     LT_LOG_LINE();
 
     // Read 1,2 and 3 pairing keys and print them out
