@@ -72,11 +72,7 @@ Functional tests code can be enabled by:
 * pass `-DLT_BUILD_TESTS=1` during parent project compilation, or
 * in parent CMake file, switch this option on: `set(LT_BUILD_TESTS ON)`
 
-When examples or functional tests are enabled by the mentioned arguments, CMake requires additonal argument `LT_SH0_PRIV_PATH`, that should be set to a file path with SH0 private key in PEM or DER format:
-* pass `-DLT_SH0_PRIV_PATH=<sh0priv_path>` during parent project compilation, or
-* in parent CMake file, switch this option on: `set(LT_SH0_PRIV_PATH <sh0priv_path>)`.
-
-Then, CMake loads the key raw data and saves it to `sh0priv` C array, defined in [libtropic_functional_tests.h](../include/libtropic_functional_tests.h) or [libtropic_examples.h](../include/libtropic_examples.h). The key is needed to establish a secure session with TROPIC01. Naturally, in user applications, the path to the sh0priv key is not necessary, as user is responsible for providing it.
+Both examples and functional tests require SH0 private key to establish a secure session with TROPIC01. CMake variable `LT_SH0_PRIV_PATH` is used for that and its default value is set to path to the SH0 private key from the currently used `lab_batch_package`, found in `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. Naturally, it can be overridden with another path to SH0 private key. CMake loads the key raw data and saves it to `sh0priv` C array, defined in [libtropic_functional_tests.h](../include/libtropic_functional_tests.h) or [libtropic_examples.h](../include/libtropic_examples.h). The variable `LT_SH0_PRIV_PATH` is not expected to be used in user applications.
 
 ## Standalone example projects {#standalone-example-projects}
 
@@ -121,7 +117,6 @@ set(LT_HELPERS ON)
 
 # This switch exposes also functions and tests containing example of usage.
 # Might be a good starting point.
-# Note: don't forget the aforementioned LT_SH0_PRIV_PATH
 #set(LT_BUILD_EXAMPLES ON)
 #set(LT_BUILD_TESTS ON)
 
