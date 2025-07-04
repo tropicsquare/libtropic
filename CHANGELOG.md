@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+### Added
+
+### Fixed
+
+### Removed
+
+## [0.1.0]
+
+### Changed
+
 - `ECC_SLOT1-32` numbering changed to `ECC_SLOT_0-31`
 - `lt_handshake()` function renamed to `lt_session_start()`
 - Unit tests and platform tests organization was updated
