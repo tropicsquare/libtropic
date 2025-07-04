@@ -44,6 +44,7 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - Removed SH0 keys and pkey_index_{0,1,2,3} from `keys/keys.c` and reflected it in examples, tests
 - Added writing of pairing keys to slots 1,2,3 in `lt_test_ping` and created `lt_test_engineering_sample_01_ping`
   from the old version of `lt_test_ping`
+- Set default value to `LT_SH0_PRIV_PATH`
 
 
 ### Added
@@ -59,8 +60,7 @@ files `libtropic_examples.h`, `libtropic_functional_tests.h`)
 - added CTest handling for functional tests
 - Added `SESSION_OFF` for indicating that secure session is off and assigned it to `lt_l3_state_t.session` flag in `lt_init()`.
 - Added function `lt_l3_invalidate_host_session_data()`, which sets all data in `lt_l3_state_t` to zero and `session` to `SESSION_OFF`; it is called in `lt_session_abort` and when ciphering/deciphering of L3 command fails (wrong TAG)
-- Added CMake variable `LT_SH0_PRIV_PATH`, based on which `sh0_keys.c` is generated for examples or tests, so
-  sh0priv and sh0pub are defined
+- Added CMake variable `LT_SH0_PRIV_PATH`, based on which `sh0_keys.c` is generated for examples or tests, so sh0priv and sh0pub are defined
 - Added CTest handling for functional tests run against TROPIC01 model
 
 ### Fixed
