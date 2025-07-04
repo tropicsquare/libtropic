@@ -23,7 +23,11 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_USE_ASSERT "Insert assert() into LT_ASSERT/LT_ASSERT_COND" OFF)
 
-set(LT_SH0_PRIV_PATH "" CACHE FILEPATH "Path to file with SH0 private key in PEM or DER format")
+set(LT_SH0_PRIV_PATH_DEFAULT "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/sh0_key_pair/sh_x25519_private_key_2025-03-24T09-15-15Z.pem")
+set(LT_SH0_PRIV_PATH
+    "${LT_SH0_PRIV_PATH_DEFAULT}"
+    CACHE FILEPATH
+    "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)")
 
 # Check if cryptography provider is defined
 if(
@@ -211,6 +215,10 @@ if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
 
     if (LT_SH0_PRIV_PATH STREQUAL "")
         message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_BUILD_EXAMPLES or LT_BUILD_TESTS is enabled.")
+    endif()
+
+    if (LT_SH0_PRIV_PATH STREQUAL LT_SH0_PRIV_PATH_DEFAULT)
+        message(STATUS "Using default LT_SH0_PRIV_PATH:\n${LT_SH0_PRIV_PATH}")
     endif()
 
     set(SH0_PRIV_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_priv.bin")
