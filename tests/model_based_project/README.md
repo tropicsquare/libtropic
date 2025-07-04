@@ -11,7 +11,7 @@ Next, before running CTest, it is advised to initialize the model with some data
 ```shell
 python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
 ```
-lab batch packages are contained in `../../provisioning_data/`.
+lab batch packages are contained in `libtropic/provisioning_data/`.
 
 Model logging can also be configured in the file [model_logging.cfg](model_logging_cfg.yml) (see [documentation](https://docs.python.org/3/library/logging.config.html) of the Python `logging` module).
 
@@ -21,10 +21,11 @@ To compile libtropic and the tests, the script [compile_tests.sh](compile_tests.
 1. removes `build/` directory, if it already exists,
 2. compiles everything using CMake with the following flags:
    - `-DLT_BUILD_TESTS=1`: lets CMake know to compile the functional tests,
-   - `-DLT_SH0_PRIV_PATH=<path_to_sh0priv_file>`: CMake loads raw key and saves it to `sh0priv` C array, defined in [libtropic_functional_tests.h](../../include/libtropic_functional_tests.h) - tests need it to establish secure session (more information about this [here](../../docs/index.md#libtropic-library-examples-and-tests-libtropic-library-examples)),
    - `-DCMAKE_BUILD_TYPE=Debug`: allows to use a debugger,
    - `-DLT_USE_ASSERT=1`: puts calls of `assert()` (from `assert.h`) in the macros `LT_ASSERT` and `LT_ASSERT_COND`. This is usually not used on embedded devices, but here we are using Unix port of libtropic, so it is a way to signalize that something failed in the test.
 3. executes `make` in the `build/` directory.
+
+> When `LT_BUILD_TESTS` is set, there has to be a way to define the SH0 private key, as the tests need it to establish a secure session. CMake variable `LT_SH0_PRIV_PATH` is used for that and its default value is set to path to the SH0 private key from the currently used `lab_batch_package`, found in `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`.
 
 ## Running the tests
 The tests are managed by CTest.
