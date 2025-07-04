@@ -1,0 +1,65 @@
+name: Run tests against TROPIC01 model
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
+      - 'develop'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Download ts-tvl wheel
+        run: |
+          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+          
+          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
+          if [ -z "$WHEEL_URL" ]; then
+            echo "No .whl file found in latest release." >&2
+            exit 1
+          fi
+
+          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
+          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
+          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
+
+      - name: Install dependencies
+        run: |
+            sudo apt-get install cmake build-essential
+            pip install ${{ env.WHEEL_FILE_NAME }}
+
+      - name: Create model configuration
+        run: |
+            cd tests/model_based_project/
+            python3 create_model_cfg.py \
+            --pkg-dir ../../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
+
+      - name: Compile libtropic with tests
+        run: |
+            cd tests/model_based_project/
+            ./compile_tests.sh
+      
+      - name: Execute tests with CTest
+        run: |
+            cd tests/model_based_project/build/
+            ctest -V -E "lt_test_engineering_sample_01_ping|lt_test_ecc_ecdsa|lt_test_r_mem"
+      
+      - name: Upload run logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run_logs
+          path: tests/model_based_project/build/run_logs/

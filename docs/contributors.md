@@ -9,6 +9,7 @@ This section is for those who want to do something with the library itself.
 - [How to: Run unit tests](#run-unit-tests)
 - [How to: Run static analysis](#run-static-analysis)
 - [How to build documentation](#build-documentation)
+- [How to run code formatter](#run-code-formatter)
 
 ## Library's architecture {#library-architecture}
 
@@ -112,6 +113,10 @@ if(LT_CRYPTO_MYCRYPTO)
 endif()
 ```
 
+## How to: Debug
+
+For compiling in debug mode replace `cmake ..` with `cmake -DCMAKE_BUILD_TYPE=Debug ..` (this will allow to step through with a debugger).
+
 ## How to: Compile as static archive {#compile-as-static-archive}
 
 *Note: When compiling the library standalone as a static archive, a cryptography provider must be defined through cmake -D arguments*
@@ -197,3 +202,37 @@ The documentation will be built to: `build/docs/doxygen/html`. Open `index.html`
 Notes:
 - We tested Doxygen 1.9.1 and 1.9.8.
 - PDF (LaTeX) output is not supported.
+
+## How to run code formatter {#run-code-formatter}
+
+Following instructions are applicable on linux based machines:
+
+#### Download `clang-format-17.0.6`
+
+Choose version for your OS [here](https://github.com/llvm/llvm-project/releases), download it and extract it.
+Then add its path into your `.bashrc` file:
+
+```
+export PATH="$PATH:/opt/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04/bin"
+```
+Reload `.bashrc` file:
+
+```
+$ source ~/.bashrc
+```
+
+Installed version might be checked like this:
+
+```
+$ clang-format --version
+clang-format version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+```
+
+For usage within VSCode, install `clang-format` extension for VSCode and restart IDE. You can then run formatter by right clicking on the code and choosing `Format document->Clang Format`.
+
+To format particular folder use following prompt:
+
+```
+clang-format -i -- src/*.c src/*.h
+```
+

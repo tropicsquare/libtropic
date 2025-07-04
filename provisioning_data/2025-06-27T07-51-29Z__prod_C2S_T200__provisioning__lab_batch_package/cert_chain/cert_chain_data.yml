@@ -1,0 +1,4 @@
+device_cert_authority_key_identifier: 7BF38C799B7A4B2EBF41057DD5D26AEB5DA040F3
+device_cert_crl_uri: http://pki.tropicsquare.com/l3/t01-Tv1-test.crl
+device_cert_issuer_name: TROPIC01-X TEST CA v1
+device_cert_subject_name: TROPIC01 eSE TEST

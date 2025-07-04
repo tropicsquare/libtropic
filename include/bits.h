@@ -13,11 +13,11 @@
 
 // ## allows token concatenation
 // X = 1 and Y = 10 would return 110
-#define __AC(X,Y)   (X##Y)
-#define _AC(X,Y)    __AC(X,Y)
+#define __AC(X, Y) (X##Y)
+#define _AC(X, Y) __AC(X, Y)
 
-#define _U(x)      (_AC(x, U))
-#define U(x)       (_U(x))
+#define _U(x) (_AC(x, U))
+#define U(x) (_U(x))
 
 #define BIT(nr) (1U << (nr))
 
@@ -31,12 +31,9 @@
 // h is high index, l is low index in a bitfield
 // __GENMASK returns 32 bit number with 1s in the h-to-l field
 // if h = 4 and l = 1, __GENMASK would return 00000000000000000000000000011110
-#define __GENMASK(h, l) \
-    (((~U(0)) - (U(1) << (l)) + 1) & \
-     (~U(0) >> (BITS_PER_LONG - 1 - (h))))
+#define __GENMASK(h, l) (((~U(0)) - (U(1) << (l)) + 1) & (~U(0) >> (BITS_PER_LONG - 1 - (h))))
 
-#define GENMASK(h, l) \
-    (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+#define GENMASK(h, l) (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
 
 #define __bf_shf(x) (__builtin_ffsll(x) - 1)
 
@@ -67,21 +64,14 @@
  *    "({" "})" braces were removed since they are non-ISO C.
  */
 
+#define FIELD_GET(_mask, _reg) ((typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask)))
 
-#define FIELD_GET(_mask, _reg)                                  \
-    (                                                           \
-        (typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask))  \
-    )
+#define FIELD_PREP(_mask, _val) (((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask))
 
-#define FIELD_PREP(_mask, _val)                                 \
-    (                                                           \
-        ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask)    \
-    )
-
-#define FIELD_SET(_reg, _mask, _val)      \
-    {                                     \
-        _reg &= ~_mask;                   \
-        _reg |= FIELD_PREP(_mask, _val);  \
+#define FIELD_SET(_reg, _mask, _val)     \
+    {                                    \
+        _reg &= ~_mask;                  \
+        _reg |= FIELD_PREP(_mask, _val); \
     }
 
-#endif // ! BITS_H
+#endif  // ! BITS_H

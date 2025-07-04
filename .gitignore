@@ -2,3 +2,5 @@ build/
 .vscode/
 .codechecker/
 .venv/
+venv/
+__pycache__/
