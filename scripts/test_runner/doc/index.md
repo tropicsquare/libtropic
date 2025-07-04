@@ -48,8 +48,6 @@ The `lt_test_runner` takes 4 arguments:
 After the test runner is successfully created, you can call `run` method with a path to the firmware
 as an argument. It will return result in a form of enum (`lt_test_runner.lt_test_result`).
 
-An example how to use the native interface is in the `run_tests.py` script.
-
 ## Structure and extensibility
 The test runner consists of several main parts:
 - `lt_platform`: JTAG/SWD platform communication.
