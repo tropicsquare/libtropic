@@ -1303,7 +1303,7 @@ const char *lt_ret_verbose(lt_ret_t ret)
 
 /** @brief This helper structure together with two get* interfaces is meant to be used to simplify looping
  *         through all config addresses and printing them out into log */
-struct lt_config_obj_desc_t config_description_table[27] = {
+struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_START_UP                   ", CONFIGURATION_OBJECTS_CFG_START_UP_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_SLEEP_MODE                 ", CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_SENSORS                    ", CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR},
@@ -1341,7 +1341,7 @@ lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
 {
     lt_ret_t ret;
 
-    for (uint8_t i = 0; i < 27; i++) {
+    for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         ret = lt_r_config_read(h, get_conf_addr(i), &config->obj[i]);
         if (ret != LT_OK) {
             return ret;
@@ -1355,7 +1355,7 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
 {
     lt_ret_t ret;
 
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         ret = lt_r_config_write(h, get_conf_addr(i), config->obj[i]);
         if (ret != LT_OK) {
             return ret;
@@ -1369,7 +1369,7 @@ lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
 {
     lt_ret_t ret;
 
-    for (uint8_t i = 0; i < 27; i++) {
+    for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         ret = lt_i_config_read(h, get_conf_addr(i), &config->obj[i]);
         if (ret != LT_OK) {
             return ret;
