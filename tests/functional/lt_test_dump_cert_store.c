@@ -50,8 +50,9 @@ int lt_test_dump_cert_store(void)
     uint8_t cert3[CERTS_BUF_LEN] = {0};
     uint8_t cert4[CERTS_BUF_LEN] = {0};
 
-    struct lt_cert_store_t store
-        = {.cert_len = {0, 0, 0, 0}, .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}, .certs = {cert1, cert2, cert3, cert4}};
+    struct lt_cert_store_t store = {.cert_len = {0, 0, 0, 0},
+                                    .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN},
+                                    .certs = {cert1, cert2, cert3, cert4}};
 
     LT_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
 
