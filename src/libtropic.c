@@ -15,8 +15,8 @@
 
 #include "TROPIC01_configuration_objects.h"
 #include "libtropic_common.h"
-#include "libtropic_port.h"
 #include "libtropic_logging.h"
+#include "libtropic_port.h"
 #include "lt_aesgcm.h"
 #include "lt_asn1_der.h"
 #include "lt_ed25519.h"
@@ -1334,12 +1334,14 @@ struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET        ", CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR}};
 
-uint16_t get_conf_addr(uint8_t i) {
+uint16_t get_conf_addr(uint8_t i)
+{
     LT_ASSERT(1, i < LT_CONFIG_OBJ_CNT);
     return config_description_table[i].addr;
 }
 
-const char *get_conf_desc(uint8_t i) {
+const char *get_conf_desc(uint8_t i)
+{
     LT_ASSERT(1, i < LT_CONFIG_OBJ_CNT);
     return config_description_table[i].desc;
 }
