@@ -9,9 +9,29 @@ from .lt_platform import lt_platform
 from .lt_environment_tools import lt_environment_tools
 from .lt_openocd_launcher import lt_openocd_launcher
 
-logger           = logging.getLogger(__name__)
-logger_runner    = logging.getLogger("RUNNER  ")
-logger_platform  = logging.getLogger("PLATFORM")
+# Generic logger. Used for all logging outside serial communication.
+logger = logging.getLogger(__name__)
+
+# Used only during serial communication for logging runner messages.
+logger_runner = logging.getLogger("RUNNER  ")
+logger_runner.propagate = False
+logger_runner_console_handler = logging.StreamHandler()
+# Pad prefixes so the output is nicely aligned.
+logger_runner_formatter = logging.Formatter("%(levelname)-7s RUNNER   %(message)s")
+logger_runner_console_handler.setFormatter(logger_runner_formatter)
+if not logger_runner.hasHandlers():
+    logger_runner.addHandler(logger_runner_console_handler)
+
+# Used only during serial communication for logging messages coming from platform via serial port.
+logger_platform = logging.getLogger("PLATFORM")
+logger_platform.propagate = False
+logger_platform_console_handler = logging.StreamHandler()
+# Pad prefixes so the output is nicely aligned.
+logger_platform_formatter = logging.Formatter("%(levelname)-7s PLATFORM %(message)s")
+logger_platform_console_handler.setFormatter(logger_platform_formatter)
+if not logger_platform.hasHandlers():
+    logger_platform.addHandler(logger_platform_console_handler)
+
 
 class lt_test_runner:
     class lt_test_result(Enum):
