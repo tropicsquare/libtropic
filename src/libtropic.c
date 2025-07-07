@@ -1336,13 +1336,13 @@ struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
 
 uint16_t get_conf_addr(uint8_t i)
 {
-    LT_ASSERT(1, i < LT_CONFIG_OBJ_CNT);
+    LT_ASSERT(1, (i < LT_CONFIG_OBJ_CNT));
     return config_description_table[i].addr;
 }
 
 const char *get_conf_desc(uint8_t i)
 {
-    LT_ASSERT(1, i < LT_CONFIG_OBJ_CNT);
+    LT_ASSERT(1, (i < LT_CONFIG_OBJ_CNT));
     return config_description_table[i].desc;
 }
 
