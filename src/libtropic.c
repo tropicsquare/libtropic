@@ -1339,6 +1339,10 @@ const char *get_conf_desc(uint8_t i) { return config_description_table[i].desc; 
 
 lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
 {
+    if (!h || !config) {
+        return LT_PARAM_ERR;
+    }
+
     lt_ret_t ret;
 
     for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
@@ -1353,6 +1357,10 @@ lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
 
 lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
 {
+    if (!h || !config) {
+        return LT_PARAM_ERR;
+    }
+
     lt_ret_t ret;
 
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
@@ -1367,6 +1375,10 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
 
 lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
 {
+    if (!h || !config) {
+        return LT_PARAM_ERR;
+    }
+
     lt_ret_t ret;
 
     for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
@@ -1381,6 +1393,10 @@ lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
 
 lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
 {
+    if (!h || !shipriv || !shipub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)) {
+        return LT_PARAM_ERR;
+    }
+
     lt_ret_t ret = LT_FAIL;
 
     // This is not used here, but let's read it anyway
