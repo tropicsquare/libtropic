@@ -49,9 +49,10 @@ int lt_test_erase_r_config(void)
     LT_LOG("%s", "R CONFIG read:");
     struct lt_config_t r_config_read;
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_read));
-    // Print r config
+    // Print r config and check if it was erased
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG("    %s,  %08" PRIX32, get_conf_desc(i), r_config_read.obj[i]);
+        LT_ASSERT(0xFFFFFFFF, r_config_read.obj[i]);
     }
 
     LT_LOG("%s", "lt_reboot(LT_MODE_APP)");
