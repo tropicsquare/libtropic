@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Enhanced internal test runner logging and error reporting
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure
