@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
+- Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure
+- Parameter checks to LT_HELPERS functions
 
 ### Fixed
 

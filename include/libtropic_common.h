@@ -727,9 +727,12 @@ struct lt_config_obj_desc_t {
     enum CONFIGURATION_OBJECTS_REGS addr;
 };
 
+/** @brief Number of configuration objects in lt_config_t */
+#define LT_CONFIG_OBJ_CNT 27
+
 /** @brief Structure to hold all configuration objects */
 struct lt_config_t {
-    uint32_t obj[27];
+    uint32_t obj[LT_CONFIG_OBJ_CNT];
 };
 
 #endif
