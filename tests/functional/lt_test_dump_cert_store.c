@@ -1,6 +1,6 @@
 /**
  * @file lt_test_dump_cert_store.c
- * @brief Dumps content of TROPIC01 Certificate store
+ * @brief Dumps content of TROPIC01 Certificate store with 4 certificates
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -12,6 +12,9 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "string.h"
+
+/** @brief Length of the buffers for certificates. */
+#define CERTS_BUF_LEN 700
 
 /**
  * @brief
@@ -42,13 +45,14 @@ int lt_test_dump_cert_store(void)
 
     LT_LOG("%s", "lt_get_info_cert_store");
 
-    uint8_t cert1[700] = {0};
-    uint8_t cert2[700] = {0};
-    uint8_t cert3[700] = {0};
-    uint8_t cert4[700] = {0};
+    uint8_t cert1[CERTS_BUF_LEN] = {0};
+    uint8_t cert2[CERTS_BUF_LEN] = {0};
+    uint8_t cert3[CERTS_BUF_LEN] = {0};
+    uint8_t cert4[CERTS_BUF_LEN] = {0};
 
-    struct lt_cert_store_t store
-        = {.cert_len = {0, 0, 0, 0}, .buf_len = {700, 700, 700, 700}, .certs = {cert1, cert2, cert3, cert4}};
+    struct lt_cert_store_t store = {.cert_len = {0, 0, 0, 0},
+                                    .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN},
+                                    .certs = {cert1, cert2, cert3, cert4}};
 
     LT_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
 
