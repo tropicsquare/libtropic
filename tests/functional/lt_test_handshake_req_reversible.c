@@ -7,11 +7,11 @@
  */
 
 #include "libtropic.h"
-#include "libtropic_logging.h"
 #include "libtropic_functional_tests.h"
+#include "libtropic_logging.h"
 
-void lt_test_handshake_req_reversible(void) {
-    
+void lt_test_handshake_req_reversible(void)
+{
     lt_handle_t h;
     LT_LOG_INFO("Preparing handle.");
     LT_ASSERT(LT_OK, lt_init(&h));
@@ -28,7 +28,7 @@ void lt_test_handshake_req_reversible(void) {
         LT_LOG_INFO("Starting Secure Session (attempt %d)...", i);
         LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     }
-    
+
     LT_LOG_INFO("Part 3/3: Abort Secure Session multiple times.");
     for (int i = 0; i < 3; i++) {
         LT_LOG_INFO("Aborting Secure Session using lt_session_abort()...");
