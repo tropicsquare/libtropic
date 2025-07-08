@@ -10,12 +10,6 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
-/**
- * This function verifies that:
- *  1. Secure Session can be estabilished and aborted.
- *  2. Secure Session can be estabilished multiple times without aborting a previous existing Session.
- *  3. Secure Session can be aborted multiple times, even though there is no session.
- */
 void lt_test_handshake_req_reversible(void)
 {
     lt_handle_t h;
