@@ -2,7 +2,7 @@
  * @file lt_test_handshake_reversible.c
  * @brief Test handshake request and Secure Session abortion request.
  * @author Tropic Square s.r.o.
- *
+ * 
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -10,6 +10,12 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
+/**
+ * This function verifies that:
+ *  1. Secure Session can be estabilished and aborted.
+ *  2. Secure Session can be estabilished multiple times without aborting a previous existing Session.
+ *  3. Secure Session can be aborted multiple times, even though there is no session.
+ */
 void lt_test_handshake_req_reversible(void)
 {
     lt_handle_t h;
