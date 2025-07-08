@@ -163,6 +163,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_dump_r_config
     lt_test_dump_i_config
     lt_test_dump_cert_store
+    lt_test_handshake_req_reversible
 )
 
 # Export test list to parent project (usually platform-specific implementation).
@@ -204,6 +205,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_pairing_keys.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_handshake_req_reversible.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
