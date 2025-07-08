@@ -121,12 +121,12 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
  * @param pkey_index  Index of pairing public key
  * @param shipriv     Secure host private key
  * @param shipub      Secure host public key
- * 
+ *
  * @note              To successfully estabilish Secure Session, you need to know Tropic01's X25519 public key.
  *                    (STPUB). The STPUB can be obtained using lt_get_st_pub, or you can use
  *                    verify_chip_and_start_secure_session convenience function, which will obtain the STPUB
  *                    automatically and set up the Secure Session for you.
- * 
+ *
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv,
