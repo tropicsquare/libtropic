@@ -109,4 +109,10 @@ int lt_test_r_mem(void);
  */
 int lt_test_erase_r_config(void);
 
+/**
+ * @brief Test Secure Session initialization using handshake request and abortion of the Session.
+ *
+ */
+void lt_test_handshake_req_reversible(void);
+
 #endif
