@@ -2,7 +2,7 @@
  * @file lt_test_handshake_reversible.c
  * @brief Test handshake request and Secure Session abortion request.
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
