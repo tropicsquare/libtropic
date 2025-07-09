@@ -1,6 +1,6 @@
 /**
  * @file lt_test_write_pairing_keys_irreversible.c
- * @brief Test writing and reading pairing key slots 1,2,3.
+ * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -16,7 +16,7 @@
  * @brief Local helper, print bytes as hexadecimal numbers
  *
  * @param data  Bytes to be printed
- * @param len    Length of bytes
+ * @param len   Length of bytes
  */
 static void print_bytes(uint8_t *data, uint16_t len)
 {
@@ -55,6 +55,8 @@ void lt_test_write_pairing_keys_irreversible(void)
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
     uint8_t * pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
+    uint8_t read_key[32] = {0};
+    uint8_t zeros[32] = {0};
 
     LT_LOG("Initializing handle");
     LT_ASSERT(LT_OK, lt_init(&h));
@@ -65,13 +67,12 @@ void lt_test_write_pairing_keys_irreversible(void)
 
     // Read pairing keys (1,2,3 should be empty)
     LT_LOG("Reading pairing key slot 0:");
-    uint8_t read_key[32] = {0};
     LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
     print_bytes(read_key, 32);
     LT_LOG();
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
     {
-        LT_LOG("Reading pairing key slot %d, asserting LT_L3_PAIRING_KEY_EMPTY because slot should be empty", i);
+        LT_LOG("Reading pairing key slot %d, asserting LT_L3_PAIRING_KEY_EMPTY", i);
         LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
         LT_LOG();
     }
@@ -80,40 +81,38 @@ void lt_test_write_pairing_keys_irreversible(void)
     // Write pairing keys into slot 1,2,3
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
     {
-        LT_LOG("Writing pairing key slot %d:", i);
+        LT_LOG("Writing to pairing key slot %d:", i);
         print_bytes(pub_keys[i], 32);
         LT_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
         LT_LOG();
     }
     LT_LOG_LINE();
 
-    // Read all pairing keys and print them out
-    uint8_t read_pubkey[32] = {0};
+    // Read all pairing keys and check value
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
     {
         LT_LOG("Reading pairing key slot %d:", i);
-        LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_pubkey, i));
-        print_bytes(read_pubkey, 32);
+        LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
+        print_bytes(read_key, 32);
         LT_LOG("Comparing contents of written and read key");
-        LT_ASSERT(0, memcmp(pub_keys[i], read_pubkey, 32));
+        LT_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
         LT_LOG();
     }
     LT_LOG_LINE();
 
     // Write pairing key slots again (should fail)
-    uint8_t zeros[32] = {0};
-    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
     {
-        LT_LOG("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL because write should not succeed", i);
+        LT_LOG("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL", i);
         LT_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
         LT_LOG("Reading pairing key slot %d:", i);
-        LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_pubkey, i));
-        print_bytes(read_pubkey, 32);
+        LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
+        print_bytes(read_key, 32);
         LT_LOG("Comparing contents of expected key and read key");
-        LT_ASSERT(0, memcmp(pub_keys[i], read_pubkey, 32));
+        LT_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
         LT_LOG();
     }
-
+    LT_LOG_LINE();
     
     LT_LOG("Aborting Secure Session");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
