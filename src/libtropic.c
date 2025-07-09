@@ -61,12 +61,12 @@ lt_ret_t lt_deinit(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    lt_l3_invalidate_host_session_data(&h->l3);
+
     lt_ret_t ret = lt_l1_deinit(&h->l2);
     if (ret != LT_OK) {
         return ret;
     }
-
-    lt_l3_invalidate_host_session_data(&h->l3);
 
     return LT_OK;
 }
