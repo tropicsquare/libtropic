@@ -25,9 +25,14 @@ extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
 
 /**
- * @brief Test function which writes pairing keys 1 2 and 3
- *
- * @return int
+ * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
+ * 
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0 and read it.
+ *  2. Read pairing key slots 1,2,3 and check they are empty.
+ *  3. Write pairing key slots 1,2,3.
+ *  4. Read all pairing key slots and check for expected value.
+ *  5. Write zeros to all pairing key slots and check for failure.
  */
 void lt_test_write_pairing_keys_irreversible(void);
 
