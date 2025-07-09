@@ -162,7 +162,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_erase_r_config
     lt_test_dump_r_config
     lt_test_dump_i_config
-    lt_test_dump_cert_store
+    lt_test_read_cert_store_reversible
     lt_test_handshake_req_reversible
 )
 
@@ -194,7 +194,7 @@ configure_file(
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_chip_id.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_cert_store_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c

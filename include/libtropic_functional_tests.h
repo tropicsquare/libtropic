@@ -58,11 +58,13 @@ int lt_test_dump_r_config(void);
 int lt_test_dump_i_config(void);
 
 /**
- * @brief Test function which reads and prints whole certificate store
+ * @brief Test reading Certificate Store with 4 certificates and print it.
  *
- * @return int
+ * Test steps:
+ *  1. Get device Certificate Store.
+ *  2. Print all 4 certificates from the Certificate Store.
  */
-int lt_test_dump_cert_store(void);
+void lt_test_read_cert_store_reversible(void);
 
 /**
  * @brief Test function which does Ping command with all pairing keys
