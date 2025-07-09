@@ -23,6 +23,12 @@ void lt_test_resend_req_reversible(void)
     LT_LOG_INFO("----------------------------------");
 
     lt_handle_t h;
+#if LT_SEPARATE_L3_BUFF
+    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
+    h.l3.buff = l3_buffer;
+    h.l3.buff_len = sizeof(l3_buffer);
+#endif
+
     LT_LOG_INFO("Preparing handle.");
     LT_ASSERT(LT_OK, lt_init(&h));
 
