@@ -1,5 +1,5 @@
 /**
- * @file lt_test_write_pairing_keys_irreversible.c
+ * @file lt_test_read_write_pairing_keys_irreversible.c
  * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
  * @author Tropic Square s.r.o.
  *
@@ -34,14 +34,14 @@ static void print_bytes(uint8_t *data, uint16_t len)
     }
 }
 
-void lt_test_write_pairing_keys_irreversible(void)
+void lt_test_read_write_pairing_keys_irreversible(void)
 {
     LT_LOG(
         "  "
         "------------------------------------------------------------------------------------------------------------"
         "-");
     LT_LOG(
-        "  -------- lt_test_write_pairing_keys_irreversible() "
+        "  -------- lt_test_read_write_pairing_keys_irreversible() "
         "-----------------------------------------------------------------------");
     LT_LOG(
         "  "

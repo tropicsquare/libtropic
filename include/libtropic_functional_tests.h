@@ -34,7 +34,7 @@ extern uint8_t sh3pub[];
  *  4. Read all pairing key slots and check for expected value.
  *  5. Write zeros to all pairing key slots and check for failure.
  */
-void lt_test_write_pairing_keys_irreversible(void);
+void lt_test_read_write_pairing_keys_irreversible(void);
 
 /**
  * @brief Test function which reads and prints out CHIP ID
