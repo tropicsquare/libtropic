@@ -5,7 +5,7 @@ Code in this directory is meant to be compiled under Unix and all tests here are
 Both processes (tests and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
 
 ## Model setup
-First, the model has to be installed. For that, follow the readme in the [ts-tvl](github.com/tropicsquare/ts-tvl/) repository.
+First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
 
 Next, before running CTest, it is advised to initialize the model with some data, so it can behave like the real provisioned chip. The model configuration has to be put into the file `model_cfg.yml` (see [here](https://github.com/tropicsquare/ts-tvl#model-configuration) for information about the model configuration). It is advised to use the [create_model_cfg.py](create_model_cfg.py) script - it generates the model configuration based on `lab_batch_package`, containing provisioning data used in the Tropic Square lab for testing purposes. The script is used as:
 ```shell
