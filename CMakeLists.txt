@@ -151,7 +151,7 @@ endif()
 # this name is also by CTest to identify the test and also used to create a macro (uppercase format)
 # which is used for test selection.
 set(LIBTROPIC_TEST_LIST
-    lt_test_chip_id
+    lt_test_read_chip_id_reversible
     lt_test_write_pairing_keys
     lt_test_write_r_config
     lt_test_ping
@@ -193,7 +193,7 @@ configure_file(
 # a bit of flexibility for a case where one would want to implement more tests in one file etc.
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_chip_id_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c

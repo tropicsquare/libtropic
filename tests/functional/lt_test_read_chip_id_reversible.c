@@ -1,6 +1,6 @@
 /**
- * @file lt_test_chip_id.c
- * @brief Test function which prints out CHIP ID
+ * @file lt_test_read_chip_id_reversible.c
+ * @brief Test reading Chip ID and parse it.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -363,13 +363,13 @@ static char* interpret_prov_spec_ver(uint8_t* prov_spec_ver)
  */
 void test_provisioning_date_decoding(void)
 {
-    LT_LOG("\tTest decode static \"provisioning date\" values:");
+    LT_LOG_INFO("\tTest decode static \"provisioning date\" values:");
     uint8_t testdata[]
         = {0x75, 0x4a, 0x07, 0xda, 0x0b, 0xe0, 0x00, 0x32, 0x0c, 0x0d, 0xb7, 0xe2, 0xbf, 0xcf, 0x23, 0x8f,
            0x33, 0x59, 0x5e, 0x43, 0xa4, 0xb0, 0xe7, 0x28, 0xc0, 0x33, 0xa8, 0xba, 0xc8, 0x1c, 0x0c, 0x8f,
            0xb0, 0xcf, 0x10, 0xac, 0x20, 0x56, 0xc0, 0x98, 0x4f, 0x61, 0x01, 0x38, 0xa9, 0x48, 0x2c, 0x59};
     for (int i = 0; i < 24; i++) {
-        LT_LOG("\tProv date              = %s    %s", print_bytes(&testdata[2 * i], 2),
+        LT_LOG_INFO("\tProv date              = %s    %s", print_bytes(&testdata[2 * i], 2),
                interpret_prov_date(&testdata[2 * i]));
     }
 }
@@ -383,52 +383,52 @@ void test_provisioning_date_decoding(void)
 static lt_ret_t print_chip_id(struct lt_chip_id_t* chip_id)
 {
     if (!chip_id) {
-        LT_LOG("Error: chip_id is NULL");
+        LT_LOG_INFO("Error: chip_id is NULL");
         return LT_PARAM_ERR;
     }
 
     if (chip_id->chip_id_ver[0] != 0x01) {
-        LT_LOG("Error: Unsupported CHIP_ID version");
+        LT_LOG_INFO("Error: Unsupported CHIP_ID version");
         return LT_FAIL;
     }
 
-    LT_LOG("\tCHIP_ID version        = %s\t\t\t\t%s", print_bytes(chip_id->chip_id_ver, sizeof(chip_id->chip_id_ver)),
+    LT_LOG_INFO("\tCHIP_ID version        = %s\t\t\t\t%s", print_bytes(chip_id->chip_id_ver, sizeof(chip_id->chip_id_ver)),
            interpret_chip_id_ver(chip_id->chip_id_ver));
-    LT_LOG("\tFL_PROD_DATA           = %s\t%s", print_bytes(chip_id->fl_chip_info, sizeof(chip_id->fl_chip_info)),
+    LT_LOG_INFO("\tFL_PROD_DATA           = %s\t%s", print_bytes(chip_id->fl_chip_info, sizeof(chip_id->fl_chip_info)),
            interpret_fl_chip_info(chip_id->fl_chip_info));
-    LT_LOG("\tMAN_FUNC_TEST          = %s\t\t\t%s",
+    LT_LOG_INFO("\tMAN_FUNC_TEST          = %s\t\t\t%s",
            print_bytes(chip_id->func_test_info, sizeof(chip_id->func_test_info)),
            interpret_func_test_info(chip_id->func_test_info));
-    LT_LOG("\tSilicon Rev            = %s\t\t\t\t%s", print_bytes(chip_id->silicon_rev, sizeof(chip_id->silicon_rev)),
+    LT_LOG_INFO("\tSilicon Rev            = %s\t\t\t\t%s", print_bytes(chip_id->silicon_rev, sizeof(chip_id->silicon_rev)),
            interpret_silicon_rev(chip_id->silicon_rev));
-    LT_LOG("\tPackage ID             = %s\t\t\t\t\t%s",
+    LT_LOG_INFO("\tPackage ID             = %s\t\t\t\t\t%s",
            print_bytes(chip_id->packg_type_id, sizeof(chip_id->packg_type_id)),
            interpret_packg_id(chip_id->packg_type_id));
     // Reserved 2B RFU
-    LT_LOG("\tProv info version      = %02X\t\t\t\t\t%s", chip_id->prov_ver_fab_id_pn[0],
+    LT_LOG_INFO("\tProv info version      = %02X\t\t\t\t\t%s", chip_id->prov_ver_fab_id_pn[0],
            interpret_prov_info_ver(chip_id->prov_ver_fab_id_pn));
     uint16_t parsed_fab_id = ((chip_id->prov_ver_fab_id_pn[1] << 4) | (chip_id->prov_ver_fab_id_pn[2] >> 4)) & 0xfff;
-    LT_LOG("\tFab ID                 = %03X\t\t\t\t\t%s", parsed_fab_id, interpret_fab_id(parsed_fab_id));
+    LT_LOG_INFO("\tFab ID                 = %03X\t\t\t\t\t%s", parsed_fab_id, interpret_fab_id(parsed_fab_id));
     uint16_t parsed_short_pn = ((chip_id->prov_ver_fab_id_pn[2] << 8) | (chip_id->prov_ver_fab_id_pn[3])) & 0xfff;
-    LT_LOG("\tP/N ID (short P/N)     = %03X", parsed_short_pn);
-    LT_LOG("\tProv date              = %s\t\t\t\t\t%s",
+    LT_LOG_INFO("\tP/N ID (short P/N)     = %03X", parsed_short_pn);
+    LT_LOG_INFO("\tProv date              = %s\t\t\t\t\t%s",
            print_bytes(chip_id->provisioning_date, sizeof(chip_id->provisioning_date)),
            interpret_prov_date(chip_id->provisioning_date));
-    LT_LOG("\tHSM HW/FW/SW version   = %s", print_bytes(chip_id->hsm_ver, sizeof(chip_id->hsm_ver)));
-    LT_LOG("\tProgrammer version     = %s", print_bytes(chip_id->prog_ver, sizeof(chip_id->prog_ver)));
+    LT_LOG_INFO("\tHSM HW/FW/SW version   = %s", print_bytes(chip_id->hsm_ver, sizeof(chip_id->hsm_ver)));
+    LT_LOG_INFO("\tProgrammer version     = %s", print_bytes(chip_id->prog_ver, sizeof(chip_id->prog_ver)));
     // Reserved 2B RFU
-    LT_LOG("\tS/N                    = %s", print_bytes((uint8_t*)&chip_id->ser_num, sizeof(chip_id->ser_num)));
-    LT_LOG("\tP/N (long)             = %s\t%s", print_bytes(chip_id->part_num_data, sizeof(chip_id->part_num_data)),
+    LT_LOG_INFO("\tS/N                    = %s", print_bytes((uint8_t*)&chip_id->ser_num, sizeof(chip_id->ser_num)));
+    LT_LOG_INFO("\tP/N (long)             = %s\t%s", print_bytes(chip_id->part_num_data, sizeof(chip_id->part_num_data)),
            interpret_pn_long(chip_id->part_num_data));
-    LT_LOG("\tProv template version: = %s\t\t\t\t\t%s",
+    LT_LOG_INFO("\tProv template version: = %s\t\t\t\t\t%s",
            print_bytes(chip_id->prov_templ_ver, sizeof(chip_id->prov_templ_ver)),
            interpret_prov_temp_ver(chip_id->prov_templ_ver));
-    LT_LOG("\tProv template tag:     = %s", print_bytes(chip_id->prov_templ_tag, sizeof(chip_id->prov_templ_tag)));
-    LT_LOG("\tProv spec version:     = %s\t\t\t\t\t%s",
+    LT_LOG_INFO("\tProv template tag:     = %s", print_bytes(chip_id->prov_templ_tag, sizeof(chip_id->prov_templ_tag)));
+    LT_LOG_INFO("\tProv spec version:     = %s\t\t\t\t\t%s",
            print_bytes(chip_id->prov_spec_ver, sizeof(chip_id->prov_spec_ver)),
            interpret_prov_spec_ver(chip_id->prov_spec_ver));
-    LT_LOG("\tProv spec tag:         = %s", print_bytes(chip_id->prov_spec_tag, sizeof(chip_id->prov_spec_tag)));
-    LT_LOG("\tBatch ID:              = %s", print_bytes(chip_id->batch_id, sizeof(chip_id->batch_id)));
+    LT_LOG_INFO("\tProv spec tag:         = %s", print_bytes(chip_id->prov_spec_tag, sizeof(chip_id->prov_spec_tag)));
+    LT_LOG_INFO("\tBatch ID:              = %s", print_bytes(chip_id->batch_id, sizeof(chip_id->batch_id)));
     // Reserved 27B RFU
 
     // test_provisioning_date_decoding();
@@ -436,19 +436,11 @@ static lt_ret_t print_chip_id(struct lt_chip_id_t* chip_id)
     return LT_OK;
 }
 
-int lt_test_chip_id(void)
+void lt_test_read_chip_id_reversible(void)
 {
-    LT_LOG(
-        "  "
-        "------------------------------------------------------------------------------------------------------------"
-        "-");
-    LT_LOG(
-        "  -------- lt_test_chip_id() "
-        "----------------------------------------------------------------------------------");
-    LT_LOG(
-        "  "
-        "------------------------------------------------------------------------------------------------------------"
-        "-");
+    LT_LOG_INFO("----------------------------------------------");
+    LT_LOG_INFO("lt_test_read_chip_id_reversible()");
+    LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
@@ -456,20 +448,15 @@ int lt_test_chip_id(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
-
-    lt_init(&h);
-
-    // Read chip ID
-    LT_LOG("lt_get_info_chip_id()");
     struct lt_chip_id_t chip_id = {0};
-    LT_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
 
-    LT_LOG("print_chip_id()");
+    LT_LOG_INFO("Initializing handle");
+    LT_ASSERT(LT_OK, lt_init(&h));
+
+    LT_LOG_INFO("Reading Chip ID:");
+    LT_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
     LT_ASSERT(LT_OK, print_chip_id(&chip_id));
 
-    // Deinit handle
-    LT_LOG("%s", "lt_deinit()");
+    LT_LOG_INFO("Deinitializing handle");
     LT_ASSERT(LT_OK, lt_deinit(&h));
-
-    return 0;
 }

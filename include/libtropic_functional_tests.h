@@ -32,11 +32,13 @@ extern uint8_t sh3pub[];
 int lt_test_write_pairing_keys(void);
 
 /**
- * @brief Test function which reads and prints out CHIP ID
+ * @brief Test reading Chip ID and parse it.
  *
- * @return int
+ * Test steps:
+ *  1. Get device Chip ID.
+ *  2. Parse it and print it.
  */
-int lt_test_chip_id(void);
+void lt_test_read_chip_id_reversible(void);
 
 /**
  * @brief Test function which reads and prints out R-Config
