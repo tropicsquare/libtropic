@@ -29,7 +29,7 @@ extern uint8_t sh3pub[];
  *
  * @return int
  */
-int lt_test_write_pairing_keys(void);
+void lt_test_write_pairing_keys_irreversible(void);
 
 /**
  * @brief Test function which reads and prints out CHIP ID
