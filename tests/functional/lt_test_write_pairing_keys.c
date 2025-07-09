@@ -1,7 +1,6 @@
 /**
  * @file lt_test_write_pairing_keys.c
  * @brief Test function which writes pairing keys 1 2 and 3 into TROPIC01
- * @details: Pairing keys for pairing slots 1, 2 and 3 are written int TROPIC01
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -60,72 +59,56 @@ int lt_test_write_pairing_keys(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
+    uint8_t * pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
 
-    LT_LOG("%s", "Initialize handle");
+    LT_LOG("Initializing handle");
     LT_ASSERT(LT_OK, lt_init(&h));
-    LT_LOG("%s with key H%d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
+
+    LT_LOG("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
-    LT_LOG("%s", "lt_ping() ");
-    uint8_t ping_msg[33] = {'>', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A',
-                            'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', ' ', 'A', 'h', 'o', 'y', '!', '<', '\0'};
-    uint8_t in[33] = {0};
-    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, 33));
-    LT_LOG("Received Ping message: %s", in);
     LT_LOG_LINE();
 
-    // Read all pairing keys, 1 2 and 3 should be empty
-    LT_LOG("%s", "Read pairing key H0");
-    uint8_t public_pairing_key[32] = {0};
-    LT_ASSERT(LT_OK, lt_pairing_key_read(&h, public_pairing_key, PAIRING_KEY_SLOT_INDEX_0));
-    print_bytes(public_pairing_key, 32);
-    LT_LOG("%s", "Read pairing pubkey 1, asserting LT_L3_PAIRING_KEY_EMPTY because key should be empty");
-    LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, public_pairing_key, PAIRING_KEY_SLOT_INDEX_1));
-    LT_LOG("%s", "Read pairing pubkey 2, asserting LT_L3_PAIRING_KEY_EMPTY because key should be empty");
-    LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, public_pairing_key, PAIRING_KEY_SLOT_INDEX_2));
-    LT_LOG("%s", "Read pairing pubkey 3, asserting LT_L3_PAIRING_KEY_EMPTY because key should be empty");
-    LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, public_pairing_key, PAIRING_KEY_SLOT_INDEX_3));
+    // Read pairing keys (1,2,3 should be empty)
+    LT_LOG("Reading pairing key 0:");
+    uint8_t read_key[32] = {0};
+    LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
+    print_bytes(read_key, 32);
+    LT_LOG();
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
+    {
+        LT_LOG("Reading pairing key %d, asserting LT_L3_PAIRING_KEY_EMPTY because key should be empty", i);
+        LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
+        LT_LOG();
+    }
     LT_LOG_LINE();
 
-    // Write pairing keys into slot 1, 2 and 3
-    LT_LOG("%s", "Writing pairing key H1");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh1pub, PAIRING_KEY_SLOT_INDEX_1));
-    LT_LOG("%s", "Writing pairing key H2");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh2pub, PAIRING_KEY_SLOT_INDEX_2));
-    LT_LOG("%s", "Writing pairing key H3");
-    LT_ASSERT(LT_OK, lt_pairing_key_write(&h, sh3pub, PAIRING_KEY_SLOT_INDEX_3));
+    // Write pairing keys into slot 1,2,3
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
+    {
+        LT_LOG("Writing pairing key %d:", i);
+        print_bytes(pub_keys[i], 32);
+        LT_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
+        LT_LOG();
+    }
     LT_LOG_LINE();
 
-    // Read 1,2 and 3 pairing keys and print them out
-    LT_LOG("%s", "Reading pairing key H0 - should proceed");
-    uint8_t readed_pubkey[32] = {0};
-    LT_ASSERT(LT_OK, lt_pairing_key_read(&h, readed_pubkey, PAIRING_KEY_SLOT_INDEX_0));
-    LT_LOG("%s", "Compare content of readed key with uploaded key, print pubkey");
-    LT_ASSERT(0, memcmp(sh0pub, readed_pubkey, 32));
-    print_bytes(readed_pubkey, 32);
+    // Read all pairing keys and print them out
+    uint8_t read_pubkey[32] = {0};
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
+    {
+        LT_LOG("Reading pairing key %d (should succeed):", i);
+        LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_pubkey, i));
+        print_bytes(read_pubkey, 32);
+        LT_LOG("Comparing contents of written and read key");
+        LT_ASSERT(0, memcmp(pub_keys[i], read_pubkey, 32));
+        LT_LOG();
+    }
+    LT_LOG_LINE();
+    
+    LT_LOG("Aborting Secure Session");
+    LT_ASSERT(LT_OK, lt_session_abort(&h));
 
-    LT_LOG("%s", "Reading pairing key H1 - should proceed");
-    LT_ASSERT(LT_OK, lt_pairing_key_read(&h, readed_pubkey, PAIRING_KEY_SLOT_INDEX_1));
-    LT_LOG("%s", "Compare content of readed key with uploaded key, print pubkey");
-    LT_ASSERT(0, memcmp(sh1pub, readed_pubkey, 32));
-    print_bytes(readed_pubkey, 32);
-
-    LT_LOG("%s", "Reading pairing key H2 - should proceed");
-    LT_ASSERT(LT_OK, lt_pairing_key_read(&h, readed_pubkey, PAIRING_KEY_SLOT_INDEX_2));
-    LT_LOG("%s", "Compare content of readed key with uploaded key, print pubkey");
-    LT_ASSERT(0, memcmp(sh2pub, readed_pubkey, 32));
-    print_bytes(readed_pubkey, 32);
-
-    LT_LOG("%s", "Reading pairing key H3 - should proceed");
-    LT_ASSERT(LT_OK, lt_pairing_key_read(&h, readed_pubkey, PAIRING_KEY_SLOT_INDEX_3));
-    LT_LOG("%s", "Compare content of readed key with uploaded key, print pubkey");
-    LT_ASSERT(0, memcmp(sh3pub, readed_pubkey, 32));
-    print_bytes(readed_pubkey, 32);
-
-    LT_LOG("%s", "lt_reboot() reboot into Application");
-    LT_ASSERT(LT_OK, lt_reboot(&h, LT_MODE_APP));
-
-    // Deinit handle
-    LT_LOG("%s", "lt_deinit()");
+    LT_LOG("Calling lt_deinit()");
     LT_ASSERT(LT_OK, lt_deinit(&h));
 
     return 0;
