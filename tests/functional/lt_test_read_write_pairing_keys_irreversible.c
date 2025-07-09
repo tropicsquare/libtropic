@@ -36,17 +36,9 @@ static void print_bytes(uint8_t *data, uint16_t len)
 
 void lt_test_read_write_pairing_keys_irreversible(void)
 {
-    LT_LOG(
-        "  "
-        "------------------------------------------------------------------------------------------------------------"
-        "-");
-    LT_LOG(
-        "  -------- lt_test_read_write_pairing_keys_irreversible() "
-        "-----------------------------------------------------------------------");
-    LT_LOG(
-        "  "
-        "------------------------------------------------------------------------------------------------------------"
-        "-");
+    LT_LOG_INFO("----------------------------------------------");
+    LT_LOG_INFO("lt_test_read_write_pairing_keys_irreversible()");
+    LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
@@ -58,61 +50,61 @@ void lt_test_read_write_pairing_keys_irreversible(void)
     uint8_t read_key[32] = {0};
     uint8_t zeros[32] = {0};
 
-    LT_LOG("Initializing handle");
+    LT_LOG_INFO("Initializing handle");
     LT_ASSERT(LT_OK, lt_init(&h));
 
-    LT_LOG("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     // Read pairing keys (1,2,3 should be empty)
-    LT_LOG("Reading pairing key slot 0:");
+    LT_LOG_INFO("Reading pairing key slot 0:");
     LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
     print_bytes(read_key, 32);
-    LT_LOG();
+    LT_LOG_INFO();
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG("Reading pairing key slot %d, asserting LT_L3_PAIRING_KEY_EMPTY", i);
+        LT_LOG_INFO("Reading pairing key slot %d, asserting LT_L3_PAIRING_KEY_EMPTY", i);
         LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
-        LT_LOG();
+        LT_LOG_INFO();
     }
     LT_LOG_LINE();
 
     // Write pairing keys into slot 1,2,3
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG("Writing to pairing key slot %d:", i);
+        LT_LOG_INFO("Writing to pairing key slot %d:", i);
         print_bytes(pub_keys[i], 32);
         LT_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
-        LT_LOG();
+        LT_LOG_INFO();
     }
     LT_LOG_LINE();
 
     // Read all pairing keys and check value
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG("Reading pairing key slot %d:", i);
+        LT_LOG_INFO("Reading pairing key slot %d:", i);
         LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
-        LT_LOG("Comparing contents of written and read key");
+        LT_LOG_INFO("Comparing contents of written and read key");
         LT_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
-        LT_LOG();
+        LT_LOG_INFO();
     }
     LT_LOG_LINE();
 
     // Write pairing key slots again (should fail)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL", i);
+        LT_LOG_INFO("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL", i);
         LT_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
-        LT_LOG("Reading pairing key slot %d:", i);
+        LT_LOG_INFO("Reading pairing key slot %d:", i);
         LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
-        LT_LOG("Comparing contents of expected key and read key");
+        LT_LOG_INFO("Comparing contents of expected key and read key");
         LT_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
-        LT_LOG();
+        LT_LOG_INFO();
     }
     LT_LOG_LINE();
 
-    LT_LOG("Aborting Secure Session");
+    LT_LOG_INFO("Aborting Secure Session");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 
-    LT_LOG("Deinitializing handle");
+    LT_LOG_INFO("Deinitializing handle");
     LT_ASSERT(LT_OK, lt_deinit(&h));
 }
