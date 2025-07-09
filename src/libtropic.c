@@ -66,6 +66,8 @@ lt_ret_t lt_deinit(lt_handle_t *h)
         return ret;
     }
 
+    lt_l3_invalidate_host_session_data(&h->l3);
+
     return LT_OK;
 }
 
