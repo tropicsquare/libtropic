@@ -140,7 +140,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
  * @note              Data used for the Secure Session are always invalidated regardless
  *                    of the result of the abort request. After calling this function, it will not
  *                    be possible to send L3 commands unless new Secure Session is started.
- * 
+ *
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_session_abort(lt_handle_t *h);
