@@ -6,6 +6,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <string.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
@@ -13,10 +15,9 @@
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
-#include <string.h>
 
-void lt_test_resend_req_reversible(void) {
-
+void lt_test_resend_req_reversible(void)
+{
     LT_LOG_INFO("----------------------------------");
     LT_LOG_INFO("lt_test_resend_req_reversible()");
     LT_LOG_INFO("----------------------------------");

@@ -30,9 +30,9 @@
 lt_ret_t lt_l2_send(lt_l2_state_t *s2);
 
 /**
- * @brief This function sends Resend_Req to request the last frame again. 
+ * @brief This function sends Resend_Req to request the last frame again.
  *        It is used in lt_l2_receive when a problem is detected with the last frame received.
- * 
+ *
  * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */

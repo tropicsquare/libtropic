@@ -121,7 +121,7 @@ void lt_test_handshake_req_reversible(void);
 
 /**
  * @brief Test Resend_Req L2 request.
- * 
+ *
  * This test function:
  * 1. Sends Get_Info_Req, receives response frame and stores it.
  * 2. Requests a resend of the last L2 frame and stores it.
