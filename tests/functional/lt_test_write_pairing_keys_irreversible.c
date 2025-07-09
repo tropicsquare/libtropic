@@ -54,7 +54,7 @@ void lt_test_write_pairing_keys_irreversible(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
-    uint8_t * pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
+    uint8_t *pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
     uint8_t read_key[32] = {0};
     uint8_t zeros[32] = {0};
 
@@ -70,8 +70,7 @@ void lt_test_write_pairing_keys_irreversible(void)
     LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
     print_bytes(read_key, 32);
     LT_LOG();
-    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
-    {
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG("Reading pairing key slot %d, asserting LT_L3_PAIRING_KEY_EMPTY", i);
         LT_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
         LT_LOG();
@@ -79,8 +78,7 @@ void lt_test_write_pairing_keys_irreversible(void)
     LT_LOG_LINE();
 
     // Write pairing keys into slot 1,2,3
-    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
-    {
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG("Writing to pairing key slot %d:", i);
         print_bytes(pub_keys[i], 32);
         LT_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
@@ -89,8 +87,7 @@ void lt_test_write_pairing_keys_irreversible(void)
     LT_LOG_LINE();
 
     // Read all pairing keys and check value
-    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
-    {
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG("Reading pairing key slot %d:", i);
         LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
@@ -101,8 +98,7 @@ void lt_test_write_pairing_keys_irreversible(void)
     LT_LOG_LINE();
 
     // Write pairing key slots again (should fail)
-    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
-    {
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL", i);
         LT_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
         LT_LOG("Reading pairing key slot %d:", i);
@@ -113,7 +109,7 @@ void lt_test_write_pairing_keys_irreversible(void)
         LT_LOG();
     }
     LT_LOG_LINE();
-    
+
     LT_LOG("Aborting Secure Session");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
 

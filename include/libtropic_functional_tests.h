@@ -26,7 +26,7 @@ extern uint8_t sh3pub[];
 
 /**
  * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
- * 
+ *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0 and read it.
  *  2. Read pairing key slots 1,2,3 and check they are empty.
