@@ -37,7 +37,7 @@ lt_ret_t lt_init(lt_handle_t *h);
  *                    of the return value (if you pass correct handle).
  *                    After calling this function, it will not be possible to send L3 commands
  *                    unless new Secure Session is started.
- * 
+ *
  * @param h           Device's handle
  * @return            LT_OK if success, otherwise returns other error code.
  */
