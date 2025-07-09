@@ -99,6 +99,21 @@ void lt_test_write_pairing_keys_irreversible(void)
         LT_LOG();
     }
     LT_LOG_LINE();
+
+    // Write pairing key slots again (should fail)
+    uint8_t zeros[32] = {0};
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++)
+    {
+        LT_LOG("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL because write should not succeed", i);
+        LT_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
+        LT_LOG("Reading pairing key slot %d:", i);
+        LT_ASSERT(LT_OK, lt_pairing_key_read(&h, read_pubkey, i));
+        print_bytes(read_pubkey, 32);
+        LT_LOG("Comparing contents of expected key and read key");
+        LT_ASSERT(0, memcmp(pub_keys[i], read_pubkey, 32));
+        LT_LOG();
+    }
+
     
     LT_LOG("Aborting Secure Session");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
