@@ -1,6 +1,6 @@
 /**
  * @file lt_ex_hello_world.c
- * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
+ * @brief Establishes Secure Session and executes Ping L3 command.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -13,61 +13,66 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-/**
- * @name Hello World
- * @note We recommend reading TROPIC01's datasheet before diving into this example!
- * @par
- */
+#define PING_MSG "This is Hello World message from TROPIC01!!"
+#define PING_MSG_LEN 43
 
-/**
- * @brief Session with H0 pairing keys
- *
- * @param h           Device's handle
- * @return            0 if success, otherwise -1
- */
-static int session_H0(void)
+int lt_ex_hello_world(void)
 {
+    LT_LOG_INFO("======================================");
+    LT_LOG_INFO("==== TROPIC01 Hello World Example ====");
+    LT_LOG_INFO("======================================");
+
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
+    lt_ret_t ret;
 
-    lt_init(&h);
-
-    LT_LOG("%s", "Establish session with H0");
-
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
-
-    uint8_t in[100] = {0};
-    uint8_t out[100] = {0};
-    memcpy(out, "This is Hello World message from TROPIC01!!", 43);
-    LT_LOG("%s", "lt_ping() ");
-    LT_ASSERT(LT_OK, lt_ping(&h, out, in, 43));
-    LT_LOG("\t\tMessage: %s", in);
-
-    lt_deinit(&h);
-
-    return 0;
-}
-
-int lt_ex_hello_world(void)
-{
-    LT_LOG("");
-    LT_LOG("\t=======================================================================");
-    LT_LOG("\t=====  TROPIC01 Hello World                                         ===");
-    LT_LOG("\t=======================================================================");
-
-    LT_LOG_LINE();
-    LT_LOG("\t Session with H0 keys:");
-    if (session_H0() == -1) {
-        LT_LOG("Error during session_H0()");
+    LT_LOG_INFO("Initializing handle");
+    ret = lt_init(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
+        return -1;
     }
 
+    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_0,
+                     lt_ret_verbose(ret));
+        return -1;
+    }
     LT_LOG_LINE();
 
-    LT_LOG("\t End of execution, no errors.");
+    uint8_t recv_buf[PING_MSG_LEN];
+    LT_LOG_INFO("Sending Ping command with message:");
+    LT_LOG_INFO("\t\"%s\"", PING_MSG);
+    ret = lt_ping(&h, (const uint8_t*)PING_MSG, recv_buf, PING_MSG_LEN);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Ping command failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Message received from TROPIC01:");
+    LT_LOG_INFO("\t\"%s\"", recv_buf);
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Aborting Secure Session");
+    ret = lt_session_abort(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+
+    LT_LOG_INFO("Deinitializing handle");
+    ret = lt_deinit(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
 
     return 0;
 }
