@@ -9,6 +9,7 @@
  */
 
 #include "stdint.h"
+#include "tools.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
@@ -73,6 +74,8 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
+STATIC_ASSERT(sizeof(struct lt_l3_gen_frame_t) == (2 + L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE));
+
 #define UART_DEV_MAX_LEN 32
 typedef struct {
     char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
@@ -84,6 +87,9 @@ typedef struct {
     uint8_t mode;
     uint8_t buff[1 + L2_MAX_FRAME_SIZE];
 } lt_l2_state_t;
+
+STATIC_ASSERT(sizeof(lt_l2_state_t) == (sizeof(void*) + 1 + 1 + L2_MAX_FRAME_SIZE));
+char (*__kaboom)[sizeof( lt_l2_state_t )] = 1;
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
 #ifndef LT_SIZE_OF_L3_BUFF
