@@ -36,9 +36,26 @@ int lt_ex_hello_world(void);
 /**
  * @brief Example function, Hello World with separate API
  *
- *  Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
- *  TODO explain more
+ * Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
+ * TODO explain more
  * @return int
+ */
+
+/**
+ * @brief Establishes Secure Session and executes Ping L3 command using separated API.
+ *
+ * This example shows how to use separated API calls with TROPIC01. Separate calls are named lt_out__* and
+ * lt_in__* and they provide splitting of the commands/results, which might be used for example for communication over a
+ * tunnel. Let's say we want to speak with TROPIC01 from a server, then lt_out__* part is done on the server, then
+ * encrypted payload is transferred over tunnel to the point where SPI is wired to TROPIC01. L2 communication is
+ * executed, encrypted result is transferred back to the server, where lt_in__* function is used to decrypt the
+ * response.
+ *
+ * To have a better understanding have a look into lt_ex_hello_world.c, both examples shows similar procedure.
+ *
+ * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on
+ * PCB.
+ * @return -1 on fail, 0 otherwise
  */
 int lt_ex_hello_world_separate_API(void);
 
