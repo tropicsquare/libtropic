@@ -1,140 +1,155 @@
 /**
  * @file lt_ex_hello_world_separate_API.c
- * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
+ * @brief Establishes Secure Session and executes Ping L3 command using separated API.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_examples.h"
 #include "libtropic_logging.h"
 #include "lt_l2.h"
 #include "lt_l3.h"
-#include "string.h"
 
-/**
- * @name Hello World with separate calls
- *
- * @details This example shows how to use separated API calls with TROPIC01. Separate calls are named lt_out__* and
- * lt_in__*and they provide splitting of the commands/results, which might be used for example for communication over a
- * tunnel. Let's say we want to speak with TROPIC01 from a server, then lt_out__* part is done on the server, then
- * encrypted payload is transferred over tunnel to the point where SPI is wired to TROPIC01. L2 communication is
- * executed, encrypted result is transferred back to the server, where lt_in__* function is used to decrypt the
- * response.
- *
- * To have a better understanding have a look into lt_ex_hello_world.c, both examples shows similar procedure.
- *
- * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on
- * PCB.
- * @note We recommend reading TROPIC01's datasheet before diving into this example!
- * @par
- */
+/** @brief Length of the buffers for certificates. */
+#define CERTS_BUF_LEN 700
+/** @brief Message to send with Ping L3 command. */
+#define PING_MSG "This is Hello World message from TROPIC01!!"
+/** @brief Length of the Ping message. */
+#define PING_MSG_LEN 43
 
-/**
- * @brief Session with H0 pairing keys
- *
- * @param h           Device's handle
- * @return            0 if success, otherwise -1
- */
-static int session_H0(void)
+int lt_ex_hello_world_separate_API(void)
 {
+    LT_LOG_INFO("=========================================================");
+    LT_LOG_INFO("====  TROPIC01 Hello World with Separate API Example ====");
+    LT_LOG_INFO("=========================================================");
+
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
+    lt_ret_t ret;
 
-    lt_init(&h);
+    LT_LOG_INFO("Initializing handle");
+    ret = lt_init(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
 
-    LT_LOG("%s", "Establish session with H0");
+    LT_LOG_INFO("Getting Certificate Store from TROPIC01");
+    uint8_t cert1[CERTS_BUF_LEN], cert2[CERTS_BUF_LEN], cert3[CERTS_BUF_LEN], cert4[CERTS_BUF_LEN];
+    struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
+                                    .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
+    ret = lt_get_info_cert_store(&h, &store);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to get Certificate Store, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
 
-    // First we need to get certificate store from TROPIC01
-    LT_LOG("%s", "lt_get_info_cert_store()");
-
-    uint8_t cert1[700] = {0};
-    uint8_t cert2[700] = {0};
-    uint8_t cert3[700] = {0};
-    uint8_t cert4[700] = {0};
-
-    struct lt_cert_store_t store
-        = {.cert_len = {0, 0, 0, 0}, .buf_len = {700, 700, 700, 700}, .certs = {cert1, cert2, cert3, cert4}};
-
-    LT_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
-
-    // Then we need to get stpub out of it
-    // We don't verify certificate chain here. This is intended in separate example
-    LT_LOG("%s", "lt_get_st_pub() ");
-    uint8_t stpub[32] = {0};
-    LT_ASSERT(LT_OK, lt_get_st_pub(&store, stpub, 32));
+    // Get only stpub, we don't verify certificate chain here
+    LT_LOG_INFO("Getting stpub key from Certificate Store");
+    uint8_t stpub[32];
+    ret = lt_get_st_pub(&store, stpub, 32);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to get stpub key, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_LINE();
 
     //---------------------------------------------------------------------------------------//
     // Separated API calls for starting a secure session:
     session_state_t state;
 
-    // Inicialize session from a server side  by creating state->ehpriv and state->ehpub,
+    // Inicialize session from a server side by creating state->ehpriv and state->ehpub,
     // l2 request is prepared into handle's buffer (h->l2_buff)
-    LT_LOG("%s", "lt_out__session_start() ");
-    LT_ASSERT(LT_OK, lt_out__session_start(&h, PAIRING_KEY_SLOT_INDEX_0, &state));
+    LT_LOG_INFO("Executing lt_out__session_start()...");
+    ret = lt_out__session_start(&h, PAIRING_KEY_SLOT_INDEX_0, &state);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_out__session_start() failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
 
     // handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel to TROPIC01
 
     // Following l2 functions are called on remote host
-    LT_LOG("%s", "lt_l2_send() ");
-    LT_ASSERT(LT_OK, lt_l2_send(&h.l2));
-    LT_LOG("%s", "lt_l2_receive() ");
-    LT_ASSERT(LT_OK, lt_l2_receive(&h.l2));
+    LT_LOG_INFO("Executing lt_l2_send()...");
+    ret = lt_l2_send(&h.l2);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_l2_send() failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("Executing lt_l2_receive()...");
+    ret = lt_l2_receive(&h.l2);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_l2_receive() failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
 
     // Handle's buffer (h->l2_buff) now contains data which must be transferred over tunnel back to the server
 
     // Once data are back on server's side, bytes are copied into h->l2_buff
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
-    LT_LOG("%s", "lt_in__session_start() ");
-    LT_ASSERT(LT_OK, lt_in__session_start(&h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state));
+    LT_LOG_INFO("Executing lt_in__session_start()...");
+    ret = lt_in__session_start(&h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_LINE();
 
     // Now we can use lt_ping() to send a message to TROPIC01 and receive a response, this is done with separate API
     // calls
-    uint8_t in[100] = {0};
-    uint8_t out[100] = {0};
-    memcpy(out, "This is Hello World message from TROPIC01!!", 43);
-
-    LT_LOG("%s", "lt_out__ping() ");
-    LT_ASSERT(LT_OK, lt_out__ping(&h, out, 43));
-
-    LT_LOG("%s", "lt_l2_send_encrypted_cmd() ");
-    LT_ASSERT(LT_OK, lt_l2_send_encrypted_cmd(&h.l2, h.l3.buff, 4000));
-    LT_LOG("%s", "lt_l2_recv_encrypted_res() ");
-    LT_ASSERT(LT_OK, lt_l2_recv_encrypted_res(&h.l2, h.l3.buff, 4000));
-
-    LT_LOG("%s", "lt_in__ping() ");
-    LT_ASSERT(LT_OK, lt_in__ping(&h, in, 43));
-
-    LT_LOG("\t\tMessage: %s", in);
-
-    lt_deinit(&h);
-
-    return 0;
-}
-
-int lt_ex_hello_world_separate_API(void)
-{
-    LT_LOG("");
-    LT_LOG("\t=======================================================================");
-    LT_LOG("\t=====  TROPIC01 Hello World with separate API                       ===");
-    LT_LOG("\t=======================================================================");
-
-    LT_LOG_LINE();
-    LT_LOG("\t Session with H0 keys:");
-    if (session_H0() == -1) {
-        LT_LOG("Error during session_H0()");
+    uint8_t recv_buf[PING_MSG_LEN];
+    LT_LOG_INFO("Executing lt_out__ping() with message:");
+    LT_LOG_INFO("\t\"%s\"", PING_MSG);
+    ret = lt_out__ping(&h, (const uint8_t*)PING_MSG, PING_MSG_LEN);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_out__ping failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
     }
 
+    LT_LOG_INFO("Executing lt_l2_send_encrypted_cmd()...");
+    ret = lt_l2_send_encrypted_cmd(&h.l2, h.l3.buff, h.l3.buff_len);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_l2_send_encrypted_cmd failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("Executing lt_l2_recv_encrypted_res()...");
+    ret = lt_l2_recv_encrypted_res(&h.l2, h.l3.buff, h.l3.buff_len);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_l2_recv_encrypted_res failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+
+    LT_LOG_INFO("Executing lt_in__ping()...");
+    ret = lt_in__ping(&h, recv_buf, PING_MSG_LEN);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_in__ping failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+
+    LT_LOG_INFO("Message received from TROPIC01:");
+    LT_LOG_INFO("\t\"%s\"", recv_buf);
     LT_LOG_LINE();
 
-    LT_LOG("\t End of execution, no errors.");
+    LT_LOG_INFO("Aborting Secure Session");
+    ret = lt_session_abort(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+
+    LT_LOG_INFO("Deinitializing handle");
+    ret = lt_deinit(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
 
     return 0;
 }
