@@ -36,6 +36,26 @@ lt_ret_t lt_l2_send(lt_l2_state_t *s2)
     return lt_l1_write(s2, len + 4, LT_L1_TIMEOUT_MS_DEFAULT);
 }
 
+lt_ret_t lt_l2_resend_response(lt_l2_state_t *s2)
+{
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_resend_req_t *p_l2_req = (struct lt_l2_resend_req_t *)s2->buff;
+    p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
+    p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
+
+    lt_ret_t ret = lt_l2_send(s2);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    return lt_l2_frame_check(s2->buff);
+}
+
 lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
 {
     if (!s2) {
@@ -54,25 +74,9 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
         // Let's consider that length byte is correct, but CRC is not.
         // We try three times to resend the last response.
         for (int i = 0; i < 3; i++) {
-            // Setup a request pointer to l2 buffer, which is placed in handle
-            struct lt_l2_resend_req_t *p_l2_req = (struct lt_l2_resend_req_t *)s2->buff;
-            p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
-            p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
-
-            int ret = lt_l1_write(s2, sizeof(struct lt_l2_resend_req_t), LT_L1_TIMEOUT_MS_DEFAULT);
-            if (ret != LT_OK) {
-                return ret;
-            }
-
-            ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
-            if (ret != LT_OK) {
-                return ret;
-            }
-
-            ret = lt_l2_frame_check(s2->buff);
+            ret = lt_l2_resend_response(s2);
             if (ret == LT_OK) {
-                // Payload is ok, returning
-                return LT_OK;
+                break;
             }
         }
     }
