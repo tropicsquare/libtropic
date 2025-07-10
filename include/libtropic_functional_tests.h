@@ -53,8 +53,11 @@ void lt_test_read_chip_id_reversible(void);
 int lt_test_dump_r_config(void);
 
 /**
- * @brief Test function which reads and prints out I-Config
+ * @brief Reads contents of I-Config and prints it to the log.
  *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole I-config.
  */
 void lt_test_read_i_config_reversible(void);
 
