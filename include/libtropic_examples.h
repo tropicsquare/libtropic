@@ -11,25 +11,22 @@
 
 #include <stdint.h>
 
-// Default factory pairing keys
 extern uint8_t sh0priv[];
 extern uint8_t sh0pub[];
-// Keys with acces to write attestation key in slot 1
+
 extern uint8_t sh1priv[];
 extern uint8_t sh1pub[];
-// Keys with access only to read serial number
+
 extern uint8_t sh2priv[];
 extern uint8_t sh2pub[];
-// Keys for application
+
 extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
 
 /**
- * @brief Example function, Hello World
- *
- *  Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
- *  TODO explain more
- * @return int
+ * @brief Establishes Secure Session and executes Ping L3 command.
+ * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ * @return -1 on fail, 0 otherwise
  */
 int lt_ex_hello_world(void);
 
