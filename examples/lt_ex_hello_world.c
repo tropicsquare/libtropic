@@ -13,7 +13,9 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
+/** @brief Message to send with Ping L3 command. */
 #define PING_MSG "This is Hello World message from TROPIC01!!"
+/** @brief Length of the Ping message. */
 #define PING_MSG_LEN 43
 
 int lt_ex_hello_world(void)
