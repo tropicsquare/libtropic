@@ -55,9 +55,8 @@ int lt_test_dump_r_config(void);
 /**
  * @brief Test function which reads and prints out I-Config
  *
- * @return int
  */
-int lt_test_dump_i_config(void);
+void lt_test_read_i_config_reversible(void);
 
 /**
  * @brief Test function which reads and prints whole certificate store
