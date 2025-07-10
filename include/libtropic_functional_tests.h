@@ -58,7 +58,7 @@ int lt_test_dump_r_config(void);
 int lt_test_dump_i_config(void);
 
 /**
- * @brief Test reading Certificate Store with 4 certificates and print it.
+ * @brief Read Certificate Store with 4 certificates and print it to log.
  *
  * Test steps:
  *  1. Get device Certificate Store.

@@ -1,6 +1,6 @@
 /**
  * @file lt_test_read_cert_store_reversible.c
- * @brief Test reading Certificate Store with 4 certificates and print it.
+ * @brief Read Certificate Store with 4 certificates and print it to log.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
