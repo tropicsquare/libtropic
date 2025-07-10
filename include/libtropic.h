@@ -33,6 +33,11 @@ lt_ret_t lt_init(lt_handle_t *h);
 /**
  * @brief Deinitialize handle and transport layer
  *
+ * @note              Data used for the Secure Session are always invalidated regardless
+ *                    of the return value (if you pass correct handle).
+ *                    After calling this function, it will not be possible to send L3 commands
+ *                    unless new Secure Session is started.
+ *
  * @param h           Device's handle
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -116,17 +121,16 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
 /**
  * @brief Establish encrypted session between TROPIC01 and host MCU
  *
- * @param h           Device's handle
- * @param stpub       STPUB from device's certificate
- * @param pkey_index  Index of pairing public key
- * @param shipriv     Secure host private key
- * @param shipub      Secure host public key
- *
  * @note              To successfully estabilish Secure Session, you need to know Tropic01's X25519 public key.
  *                    (STPUB). The STPUB can be obtained using lt_get_st_pub, or you can use
  *                    verify_chip_and_start_secure_session helper function, which will obtain the STPUB
  *                    automatically and set up the Secure Session for you.
  *
+ * @param h           Device's handle
+ * @param stpub       STPUB from device's certificate
+ * @param pkey_index  Index of pairing public key
+ * @param shipriv     Secure host private key
+ * @param shipub      Secure host public key
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv,
@@ -134,6 +138,11 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
 
 /**
  * @brief Abort encrypted session between TROPIC01 and host MCU
+ *
+ * @note              Data used for the Secure Session are always invalidated regardless
+ *                    of the result of the abort request (if you pass correct handle).
+ *                    After calling this function, it will not be possible to send L3 commands
+ *                    unless new Secure Session is started.
  *
  * @param h           Device's handle
  * @return            LT_OK if success, otherwise returns other error code.
