@@ -13,8 +13,8 @@
 
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "This is Hello World message from TROPIC01!!"
-/** @brief Length of the Ping message. */
-#define PING_MSG_LEN 43
+/** @brief Size of the Ping message, including '\0'. */
+#define PING_MSG_SIZE 44
 
 int lt_ex_hello_world(void)
 {
@@ -46,10 +46,10 @@ int lt_ex_hello_world(void)
     }
     LT_LOG_LINE();
 
-    uint8_t recv_buf[PING_MSG_LEN];
+    uint8_t recv_buf[PING_MSG_SIZE];
     LT_LOG_INFO("Sending Ping command with message:");
     LT_LOG_INFO("\t\"%s\"", PING_MSG);
-    ret = lt_ping(&h, (const uint8_t*)PING_MSG, recv_buf, PING_MSG_LEN);
+    ret = lt_ping(&h, (const uint8_t*)PING_MSG, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Ping command failed, ret=%s", lt_ret_verbose(ret));
         return -1;
