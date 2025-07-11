@@ -9,15 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Enhanced internal test runner logging and error reporting
+- Renamed `LT_L2_LAST_RET` to `LT_RET_T_LAST_VALUE` for clarity in `lt_ret_t`.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure
 - Parameter checks to LT_HELPERS functions
+- Added `LT_NONCE_OVERFLOW` to `lt_ret_t`.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`
 - Added missing `LT_L1_INT_TIMEOUT` in `lt_ret_strs`
 - Chip id parsing in `tests/model_based_project/create_model_cfg.py`
+- Fixed nonce overflow vulnerability in lt_l3_nonce_increase, the function now returns `LT_NONCE_OVERFLOW` if the nonce cannot be increased anymore.
 
 ### Removed
 
