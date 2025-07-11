@@ -39,10 +39,12 @@ void lt_test_read_cert_store_reversible(void)
 
     uint8_t *cert;
     for (int i = 0; i < 4; i++) {
+        cert = store.certs[i];
         LT_LOG_INFO("Certificate number: %d", i);
+        LT_LOG_INFO("Checking if size of certificate is not zero");
+        LT_ASSERT(1, (store.cert_len[i] != 0));
         LT_LOG_INFO("Size in bytes: %d", store.cert_len[i]);
 
-        cert = store.certs[i];
         for (int j = 0; j < store.cert_len[i]; j += 16)
             LT_LOG_INFO("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x", cert[j], cert[j + 1],
                         cert[j + 2], cert[j + 3], cert[j + 4], cert[j + 5], cert[j + 6], cert[j + 7], cert[j + 8],
