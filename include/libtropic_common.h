@@ -221,7 +221,7 @@ typedef enum {
     LT_NONCE_OVERFLOW = 38,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_L2_LAST_RET = 39
+    LT_RET_T_LAST_VALUE = 39
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS 100

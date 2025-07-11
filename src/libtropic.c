@@ -1293,11 +1293,12 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_L2_DATA_LEN_ERROR",
                                     "LT_CERT_STORE_INVALID"
                                     "LT_CERT_UNSUPPORTED",
-                                    "LT_CERT_ITEM_NOT_FOUND"};
+                                    "LT_CERT_ITEM_NOT_FOUND",
+                                    "LT_NONCE_OVERFLOW"};
 
 const char *lt_ret_verbose(lt_ret_t ret)
 {
-    if (ret < LT_L2_LAST_RET) return lt_ret_strs[ret];
+    if (ret < LT_RET_T_LAST_VALUE) return lt_ret_strs[ret];
 
     return "FATAL ERROR, unknown return value";
 }
