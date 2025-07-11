@@ -16,8 +16,8 @@
 #define CERTS_BUF_LEN 700
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "This is Hello World message from TROPIC01!!"
-/** @brief Length of the Ping message. */
-#define PING_MSG_LEN 43
+/** @brief Size of the Ping message, including '\0'. */
+#define PING_MSG_SIZE 44
 
 int lt_ex_hello_world_separate_API(void)
 {
@@ -104,10 +104,10 @@ int lt_ex_hello_world_separate_API(void)
 
     // Now we can use lt_ping() to send a message to TROPIC01 and receive a response, this is done with separate API
     // calls
-    uint8_t recv_buf[PING_MSG_LEN];
+    uint8_t recv_buf[PING_MSG_SIZE];
     LT_LOG_INFO("Executing lt_out__ping() with message:");
     LT_LOG_INFO("\t\"%s\"", PING_MSG);
-    ret = lt_out__ping(&h, (const uint8_t*)PING_MSG, PING_MSG_LEN);
+    ret = lt_out__ping(&h, (const uint8_t*)PING_MSG, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__ping failed, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -127,7 +127,7 @@ int lt_ex_hello_world_separate_API(void)
     }
 
     LT_LOG_INFO("Executing lt_in__ping()...");
-    ret = lt_in__ping(&h, recv_buf, PING_MSG_LEN);
+    ret = lt_in__ping(&h, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__ping failed, ret=%s", lt_ret_verbose(ret));
         return -1;
