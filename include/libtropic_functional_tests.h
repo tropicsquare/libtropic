@@ -37,11 +37,13 @@ extern uint8_t sh3pub[];
 void lt_test_read_write_pairing_keys_irreversible(void);
 
 /**
- * @brief Test function which reads and prints out CHIP ID
+ * @brief Test reading Chip ID and parse it.
  *
- * @return int
+ * Test steps:
+ *  1. Get device Chip ID.
+ *  2. Parse it and print it.
  */
-int lt_test_chip_id(void);
+void lt_test_read_chip_id_reversible(void);
 
 /**
  * @brief Test function which reads and prints out R-Config
@@ -51,11 +53,13 @@ int lt_test_chip_id(void);
 int lt_test_dump_r_config(void);
 
 /**
- * @brief Test function which reads and prints out I-Config
+ * @brief Reads contents of I-Config and prints it to the log.
  *
- * @return int
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole I-config.
  */
-int lt_test_dump_i_config(void);
+void lt_test_read_i_config_reversible(void);
 
 /**
  * @brief Read Certificate Store with 4 certificates and print it to log.
@@ -125,5 +129,16 @@ int lt_test_erase_r_config(void);
  *  3. Secure Session can be aborted multiple times, even though there is no session.
  */
 void lt_test_handshake_req_reversible(void);
+
+/**
+ * @brief Test Resend_Req L2 request.
+ *
+ * Test steps:
+ * 1. Send Get_Info_Req and receive response frame, store the frame.
+ * 2. Request a resend of the last L2 frame and store it.
+ * 3. Contents of the original and resended frames are compared. This will check whether
+ *    the resend works as intended.
+ */
+void lt_test_resend_req_reversible(void);
 
 #endif

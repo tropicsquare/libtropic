@@ -61,6 +61,8 @@ lt_ret_t lt_deinit(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    lt_l3_invalidate_host_session_data(&h->l3);
+
     lt_ret_t ret = lt_l1_deinit(&h->l2);
     if (ret != LT_OK) {
         return ret;
@@ -1264,6 +1266,7 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_L1_CHIP_STARTUP_MODE",
                                     "LT_L1_CHIP_ALARM_MODE",
                                     "LT_L1_CHIP_BUSY",
+                                    "LT_L1_INT_TIMEOUT",
                                     "LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL",
                                     "LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED",
                                     "LT_L3_ECC_INVALID_KEY",
@@ -1306,9 +1309,9 @@ const char *lt_ret_verbose(lt_ret_t ret)
  *         through all config addresses and printing them out into log */
 struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_START_UP                   ", CONFIGURATION_OBJECTS_CFG_START_UP_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_SLEEP_MODE                 ", CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_SENSORS                    ", CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_DEBUG                      ", CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR},
+    {"CONFIGURATION_OBJECTS_CFG_SLEEP_MODE                 ", CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE      ", CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ       ", CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE ",
@@ -1331,8 +1334,7 @@ struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT          ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET           ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE        ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET        ", CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR}};
+    {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR}};
 
 uint16_t get_conf_addr(uint8_t i)
 {

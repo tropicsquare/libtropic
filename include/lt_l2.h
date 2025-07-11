@@ -30,6 +30,15 @@
 lt_ret_t lt_l2_send(lt_l2_state_t *s2);
 
 /**
+ * @brief This function sends Resend_Req to request the last frame again.
+ *        It is used in lt_l2_receive when a problem is detected with the last frame received.
+ *
+ * @param s2          Structure holding l2 state
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_l2_resend_response(lt_l2_state_t *s2);
+
+/**
  * @brief This function receives l2 response. After successfull execution, hanlde's l2_buff will contain response.
  *        Structures defined in lt_l2_api_structs.h migh help with decoding.
  *
