@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <limits.h>
 
 #include "libtropic_common.h"
 #include "lt_aesgcm.h"
@@ -26,7 +27,12 @@ STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 #endif
     uint32_t nonce_int = (nonce[3] << 24) | (nonce[2] << 16) | (nonce[1] << 8) | (nonce[0]);
 
+    if (nonce_int == UINT32_MAX) {
+        return LT_NONCE_OVERFLOW;
+    }
+
     nonce_int++;
+
     nonce[3] = nonce_int >> 24;
     nonce[2] = (nonce_int & 0x00FF0000) >> 16;
     nonce[1] = (nonce_int & 0x0000FF00) >> 8;
@@ -69,9 +75,7 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
         return ret;
     }
 
-    lt_l3_nonce_increase(s3->encryption_IV);
-
-    return LT_OK;
+    return lt_l3_nonce_increase(s3->encryption_IV);
 }
 
 lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
@@ -94,7 +98,10 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
         return ret;
     }
 
-    lt_l3_nonce_increase(s3->decryption_IV);
+    ret = lt_l3_nonce_increase(s3->decryption_IV);
+    if (LT_OK != ret) {
+        return ret;
+    }
 
     switch (p_frame->data[0]) {
         case L3_RESULT_FAIL:
