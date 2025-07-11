@@ -217,8 +217,10 @@ typedef enum {
     LT_CERT_UNSUPPORTED = 36,
     /** Certificate does not contain requested item */
     LT_CERT_ITEM_NOT_FOUND = 37,
-
-    LT_L2_LAST_RET = 38
+    /** @brief The nonce has reached its maximum value. */
+    LT_NONCE_OVERFLOW = 38,
+    
+    LT_L2_LAST_RET = 39
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS 100
