@@ -153,7 +153,7 @@ typedef enum {
     /** @brief Interrupt pin did not fire as expected */
     LT_L1_INT_TIMEOUT = 10,
 
-    /** Return values based on RESULT field */
+    // Return values based on RESULT field
     /** @brief L3 result [API r_mem_data_write]: write failed, because slot is already written in */
     LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL = 11,
     /** @brief L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
@@ -184,7 +184,7 @@ typedef enum {
     /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR = 22,
 
-    /** Return values based on STATUS field */
+    // Return values based on STATUS field
     /** @brief l2 response frame contains CRC error */
     LT_L2_IN_CRC_ERR = 23,
     /** @brief There is more than one chunk to be expected for a current request */
@@ -210,16 +210,17 @@ typedef enum {
     /** @brief L2 data does not have an expected length */
     LT_L2_DATA_LEN_ERROR = 34,
 
-    /** Certificate store related errors */
-    /** Certificate store likely does not contain valid data */
+    // Certificate store related errors
+    /** @brief Certificate store likely does not contain valid data */
     LT_CERT_STORE_INVALID = 35,
-    /** Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
+    /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
     LT_CERT_UNSUPPORTED = 36,
-    /** Certificate does not contain requested item */
+    /** @brief Certificate does not contain requested item */
     LT_CERT_ITEM_NOT_FOUND = 37,
     /** @brief The nonce has reached its maximum value. */
     LT_NONCE_OVERFLOW = 38,
-    
+
+    /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
     LT_L2_LAST_RET = 39
 } lt_ret_t;
 
