@@ -8,10 +8,10 @@
 
 #include "lt_l3_process.h"
 
+#include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
-#include <limits.h>
 
 #include "libtropic_common.h"
 #include "lt_aesgcm.h"
