@@ -66,7 +66,7 @@ void lt_test_read_i_config_reversible(void);
  *
  * Test steps:
  *  1. Get device Certificate Store.
- *  2. Print all 4 certificates from the Certificate Store.
+ *  2. For each of the 4 certificates, check if its size is not zero and print it.
  */
 void lt_test_read_cert_store_reversible(void);
 
