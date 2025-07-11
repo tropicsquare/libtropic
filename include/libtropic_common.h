@@ -124,7 +124,10 @@ typedef struct lt_handle_t {
     lt_l3_state_t l3;
 } lt_handle_t;
 
-/** @brief Enum return type */
+/**
+ * @brief Enum return type.
+ * @note Specific values are given for easier lookup of values.
+ */
 typedef enum {
     /** @brief Operation was successful */
     LT_OK = 0,
@@ -146,76 +149,76 @@ typedef enum {
     /** @brief Chip is in ALARM mode */
     LT_L1_CHIP_ALARM_MODE = 8,
     /** @brief Chip is BUSY - typically chip is still booting */
-    LT_L1_CHIP_BUSY,
+    LT_L1_CHIP_BUSY = 9,
     /** @brief Interrupt pin did not fire as expected */
-    LT_L1_INT_TIMEOUT,
+    LT_L1_INT_TIMEOUT = 10,
 
     /** Return values based on RESULT field */
     /** @brief L3 result [API r_mem_data_write]: write failed, because slot is already written in */
-    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL = 10,
+    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL = 11,
     /** @brief L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
-    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED = 11,
+    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED = 12,
     /** @brief L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is
        invalid. */
-    LT_L3_ECC_INVALID_KEY = 12,
+    LT_L3_ECC_INVALID_KEY = 13,
     /** @brief L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter
        is already at 0. */
-    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR = 13,
+    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR = 14,
     /** @brief L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The
        counter must be reinitialized. */
-    LT_L3_COUNTER_INVALID = 14,
+    LT_L3_COUNTER_INVALID = 15,
     /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been
        written to it yet */
-    LT_L3_PAIRING_KEY_EMPTY = 15,
+    LT_L3_PAIRING_KEY_EMPTY = 16,
     /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has
        been invalidated */
-    LT_L3_PAIRING_KEY_INVALID = 16,
+    LT_L3_PAIRING_KEY_INVALID = 17,
     /** @brief L3 command was received correctly*/
-    LT_L3_OK = 17,
+    LT_L3_OK = 18,
     /** @brief L3 command was not received correctly */
-    LT_L3_FAIL = 18,
+    LT_L3_FAIL = 19,
     /** @brief Current pairing keys are not authorized for execution of the last command */
-    LT_L3_UNAUTHORIZED = 19,
+    LT_L3_UNAUTHORIZED = 20,
     /** @brief Received L3 command is invalid */
-    LT_L3_INVALID_CMD = 20,
+    LT_L3_INVALID_CMD = 21,
     /** @brief L3 data does not have an expected length */
-    LT_L3_DATA_LEN_ERROR = 21,
+    LT_L3_DATA_LEN_ERROR = 22,
 
     /** Return values based on STATUS field */
     /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 22,
+    LT_L2_IN_CRC_ERR = 23,
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 23,
+    LT_L2_REQ_CONT = 24,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 24,
+    LT_L2_RES_CONT = 25,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 25,
+    LT_L2_HSK_ERR = 26,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 26,
+    LT_L2_NO_SESSION = 27,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 27,
+    LT_L2_TAG_ERR = 28,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 28,
+    LT_L2_CRC_ERR = 29,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 29,
+    LT_L2_GEN_ERR = 30,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 30,
+    LT_L2_NO_RESP = 31,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 31,
+    LT_L2_UNKNOWN_REQ = 32,
     /** @brief Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED = 32,
+    LT_L2_STATUS_NOT_RECOGNIZED = 33,
     /** @brief L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR = 33,
+    LT_L2_DATA_LEN_ERROR = 34,
 
     /** Certificate store related errors */
     /** Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 34,
+    LT_CERT_STORE_INVALID = 35,
     /** Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 35,
+    LT_CERT_UNSUPPORTED = 36,
     /** Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 36,
+    LT_CERT_ITEM_NOT_FOUND = 37,
 
-    LT_L2_LAST_RET = 37
+    LT_L2_LAST_RET = 38
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS 100
