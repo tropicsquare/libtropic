@@ -20,6 +20,16 @@ def load_cert(cert_path: pathlib.Path) -> bytes:
         return cert_path.read_bytes()
     raise argparse.ArgumentTypeError("Certificate not in DER nor PEM format.")
 
+def parse_and_complete_chip_id(pkg_yml: dict) -> bytes:
+    res = parse_byte_string(pkg_yml["chip_id"]["chip_id_version"])
+    res += 16 * b'\x00'  # Wafer level test info (source: Programmer)
+    res += parse_byte_string(pkg_yml["chip_id"]["manufacturing_test"])
+    res += parse_byte_string(pkg_yml["chip_id"]["provisioning_info"])
+    res += parse_byte_string(pkg_yml["chip_id"]["serial_number_v2"])
+    res += parse_byte_string(pkg_yml["chip_id"]["part_number"])
+    res += parse_byte_string(pkg_yml["chip_id"]["provisioning_data"])
+    res += 24 * b'\xff'  # Padding
+    return res
 
 
 if __name__ == "__main__":
@@ -76,9 +86,8 @@ if __name__ == "__main__":
         format=serialization.PublicFormat.Raw
     )
 
-    # Get chip id from batch package YAML
-    chip_id = b''.join(parse_byte_string(v) for v in pkg_yml["chip_id"].values())
-    model_cfg["chip_id"] = chip_id
+    # Get chip id from batch package YAML, add missing data
+    model_cfg["chip_id"] = parse_and_complete_chip_id(pkg_yml)
 
     # Generate certificate store and save it to model configuration
     cert_store_header = b'\x01'  # Store version
