@@ -1,5 +1,5 @@
 /**
- * @file lt_test_dump_r_config.c
+ * @file lt_test_read_r_config_reversible.c
  * @brief Dumps content of Tropic01 R-Config to the log.
  * @author Tropic Square s.r.o.
  *
@@ -13,19 +13,14 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-/**
- * @brief
- *
- * @return int
- */
-int lt_test_dump_r_config(void)
+void lt_test_read_r_config_reversible(void)
 {
     LT_LOG(
         "  "
         "------------------------------------------------------------------------------------------------------------"
         "-");
     LT_LOG(
-        "  -------- lt_test_dump_r_config() "
+        "  -------- lt_test_read_r_config_reversible() "
         "----------------------------------------------------------------------------");
     LT_LOG(
         "  "
@@ -52,6 +47,4 @@ int lt_test_dump_r_config(void)
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
     LT_ASSERT(LT_OK, lt_deinit(&h));
-
-    return 0;
 }
