@@ -50,7 +50,7 @@ void lt_test_read_chip_id_reversible(void);
  *
  * @return int
  */
-int lt_test_dump_r_config(void);
+void lt_test_read_r_config_reversible(void);
 
 /**
  * @brief Reads contents of I-Config and prints it to the log.
