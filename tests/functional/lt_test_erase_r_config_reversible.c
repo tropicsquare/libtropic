@@ -1,35 +1,21 @@
 /**
  * @file lt_test_erase_r_config_reversible.c
- * @brief Test function which erases R config
+ * @brief Backs up R-Config, erases it and then restores it.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
-#include "inttypes.h"
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "string.h"
 
-/**
- * @brief
- *
- * @return int
- */
 void lt_test_erase_r_config_reversible(void)
 {
-    LT_LOG(
-        "  "
-        "------------------------------------------------------------------------------------------------------------"
-        "-");
-    LT_LOG(
-        "  -------- lt_test_erase_r_config_reversible() "
-        "-------------------------------------------------------------------------------------");
-    LT_LOG(
-        "  "
-        "------------------------------------------------------------------------------------------------------------"
-        "-");
+    LT_LOG_INFO("----------------------------------------------");
+    LT_LOG_INFO("lt_test_erase_r_config_reversible()");
+    LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
@@ -37,29 +23,47 @@ void lt_test_erase_r_config_reversible(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
+    struct lt_config_t r_config, r_config_backup;
 
-    LT_LOG("%s", "Initialize handle");
+    LT_LOG_INFO("Initializing handle");
     LT_ASSERT(LT_OK, lt_init(&h));
-    LT_LOG("%s with SH%d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
-    LT_LOG("lt_r_config_erase()");
+    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Backing up the whole R config:");
+    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_backup));
+    for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
+        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config_backup.obj[i]);
+    }
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Erasing R config");
     LT_ASSERT(LT_OK, lt_r_config_erase(&h));
 
-    LT_LOG("%s", "R CONFIG read:");
-    struct lt_config_t r_config_read;
-    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_read));
-    // Print r config and check if it was erased
+    LT_LOG_INFO("Reading the whole R config and checking if it was erased:");
+    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG("    %s,  %08" PRIX32, get_conf_desc(i), r_config_read.obj[i]);
-        LT_ASSERT(0xFFFFFFFF, r_config_read.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_ASSERT(1, ((uint32_t)0xFFFFFFFF == r_config.obj[i]));
     }
+    LT_LOG_LINE();
 
-    LT_LOG("%s", "lt_reboot(LT_MODE_APP)");
-    LT_ASSERT(LT_OK, lt_reboot(&h, LT_MODE_APP));
+    LT_LOG_INFO("Restoring the whole R config");
+    LT_ASSERT(LT_OK, write_whole_R_config(&h, &r_config_backup));
 
-    LT_LOG("%s", "lt_deinit()");
+    LT_LOG_INFO("Reading the whole R config and checking if it was restored:");
+    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
+    for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
+        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
+    }
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Aborting Secure Session");
+    LT_ASSERT(LT_OK, lt_session_abort(&h));
+
+    LT_LOG_INFO("Deinitializing handle");
     LT_ASSERT(LT_OK, lt_deinit(&h));
-
-    return 0;
 }
