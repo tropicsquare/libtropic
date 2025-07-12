@@ -46,9 +46,11 @@ void lt_test_read_write_pairing_keys_irreversible(void);
 void lt_test_read_chip_id_reversible(void);
 
 /**
- * @brief Test function which reads and prints out R-Config
+ * @brief Reads contents of R-Config and prints it to the log.
  *
- * @return int
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole R-config.
  */
 void lt_test_read_r_config_reversible(void);
 
