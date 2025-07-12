@@ -78,14 +78,6 @@ void lt_test_read_cert_store_reversible(void);
 int lt_test_ping(void);
 
 /**
- * @brief Test function which does Ping command with all pairing keys
- * against engineering sample 01
- *
- * @return int
- */
-int lt_test_engineering_sample_01_ping(void);
-
-/**
  * @brief Test function which writes r config
  *
  * @return int
