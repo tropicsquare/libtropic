@@ -108,9 +108,13 @@ int lt_test_ecc_ecdsa(void);
 int lt_test_r_mem(void);
 
 /**
- * @brief Test function which erases R config
+ * @brief Backs up R-Config, erases it and then restores it.
  *
- * @return int
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole R-Config and save it.
+ *  3. Erase the R-Config and check it.
+ *  4. Restore the R-Config and check it.
  */
 void lt_test_erase_r_config_reversible(void);
 
