@@ -1,5 +1,5 @@
 /**
- * @file lt_test_erase_r_config.c
+ * @file lt_test_erase_r_config_reversible.c
  * @brief Test function which erases R config
  * @author Tropic Square s.r.o.
  *
@@ -17,14 +17,14 @@
  *
  * @return int
  */
-int lt_test_erase_r_config(void)
+void lt_test_erase_r_config_reversible(void)
 {
     LT_LOG(
         "  "
         "------------------------------------------------------------------------------------------------------------"
         "-");
     LT_LOG(
-        "  -------- lt_test_erase_r_config() "
+        "  -------- lt_test_erase_r_config_reversible() "
         "-------------------------------------------------------------------------------------");
     LT_LOG(
         "  "

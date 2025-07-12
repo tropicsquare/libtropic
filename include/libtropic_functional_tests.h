@@ -112,7 +112,7 @@ int lt_test_r_mem(void);
  *
  * @return int
  */
-int lt_test_erase_r_config(void);
+void lt_test_erase_r_config_reversible(void);
 
 /**
  * @brief Test Secure Session initialization using handshake request and abortion of the Session.
