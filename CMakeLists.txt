@@ -160,7 +160,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_ecc_eddsa
     lt_test_r_mem
     lt_test_erase_r_config
-    lt_test_dump_r_config
+    lt_test_read_r_config_reversible
     lt_test_read_cert_store_reversible
     lt_test_read_i_config_reversible
     lt_test_handshake_req_reversible
@@ -197,7 +197,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_cert_store_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_chip_id_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_i_config_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_r_config_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config.c
