@@ -270,7 +270,22 @@ struct lt_wafer_lvl_test_info_t {
     uint16_t fab_y_coord;     /**< Y coordinate (16 bits) */
 } __attribute__((__packed__));
 
-STATIC_ASSERT(sizeof(struct lt_ser_num_t) == 1 + 3 + 2 + 5 + 1 + 2 + 2)
+STATIC_ASSERT(
+    sizeof(struct lt_wafer_lvl_test_info_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_sts) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_year) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_month) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_day) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_lot_id) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_rfu) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_wafer_id) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_x_coord) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_y_coord)
+    )
+);
+
 //--------------------------------------------------------------------------------------------------------------------//
 
 /**
@@ -282,6 +297,18 @@ struct func_test_info_t {
     uint8_t func_test_rfu[3]; /**< Reserved for Future Use (24 bits) */
     uint8_t func_test_id[4];  /**< Test Process ID chars (32 bits) */
 } __attribute__((__packed__));
+
+STATIC_ASSERT(
+    sizeof(struct func_test_info_t)
+    ==
+    (
+        MEMBER_SIZE(struct func_test_info_t, func_test_sts) + 
+        MEMBER_SIZE(struct func_test_info_t, func_test_rfu) + 
+        MEMBER_SIZE(struct func_test_info_t, func_test_id)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Manufacturing level test info (128 bits), structure retrieved from test line and BP.
@@ -295,6 +322,19 @@ struct lt_manuf_lvl_test_info_t {
     uint8_t padding[2];        /**< Padding (16 bits) */
 } __attribute__((__packed__));
 
+STATIC_ASSERT(
+    sizeof(struct lt_manuf_lvl_test_info_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, func_test_info) + 
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, silicon_rev_id) + 
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, pkg_type_id) + 
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, padding)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 /**
  * @brief Provisioning info (128 bits), filled by the provisioning station.
  *
@@ -307,6 +347,21 @@ struct lt_prov_info_t {
     uint8_t programmer_ver[4]; /**< Version describing Programmer HW and SW (32 bits) */
     uint8_t padding[2];        /**< Padding (16 bits) */
 } __attribute__((__packed__));
+
+STATIC_ASSERT(
+    sizeof(struct lt_prov_info_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_prov_info_t, prov_info_ver) + 
+        MEMBER_SIZE(struct lt_prov_info_t, fab_id_pn_id) + 
+        MEMBER_SIZE(struct lt_prov_info_t, prov_date) + 
+        MEMBER_SIZE(struct lt_prov_info_t, hsm_ver) + 
+        MEMBER_SIZE(struct lt_prov_info_t, programmer_ver) + 
+        MEMBER_SIZE(struct lt_prov_info_t, padding)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Serial Number (128 bits).
@@ -322,6 +377,22 @@ struct lt_ser_num_t {
     uint16_t y_coord;        /**< Y Coordinate of the device (16 bits) */
 } __attribute__((__packed__));
 
+STATIC_ASSERT(
+    sizeof(struct lt_ser_num_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_ser_num_t, sn_ver) + 
+        MEMBER_SIZE(struct lt_ser_num_t, fab_id_pn_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, fab_date) + 
+        MEMBER_SIZE(struct lt_ser_num_t, lot_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, wafer_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, x_coord) + 
+        MEMBER_SIZE(struct lt_ser_num_t, y_coord)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 /**
  * @brief Part Number (128 bits), defined by Tropic Square in BP.
  *
@@ -330,6 +401,17 @@ struct lt_part_num_t {
     uint8_t pn_len; /**< Length of subsequent P/N data field, encoded as unsigned integer on single byte (8 bits) */
     uint8_t pn_data[15]; /**< P/N data encoded in ASCII, padded with 0xFF bytes (120 bits) */
 } __attribute__((__packed__));
+
+STATIC_ASSERT(
+    sizeof(struct lt_part_num_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_part_num_t, pn_len) + 
+        MEMBER_SIZE(struct lt_part_num_t, pn_data)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Provisioning Data version (160 bits), defined by Tropic Square for each batch in BP.
@@ -343,6 +425,21 @@ struct lt_prov_data_ver_t {
     uint8_t batch_id[5];          /**< Batch ID corresponding to BP (40 bits) */
     uint8_t padding[3];           /**< Padding (24 bits) */
 } __attribute__((__packed__));
+
+STATIC_ASSERT(
+    sizeof(struct lt_prov_data_ver_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_template_ver) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_template_tag) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_spec_ver) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_spec_tag) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, batch_id) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, padding)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief The CHIP_ID ﬁeld (big endian, 128 bytes) serves as "public manufacturer data" area. The ambition is to encode
@@ -368,29 +465,17 @@ struct lt_chip_id_t {
 } __attribute__((__packed__));
 
 STATIC_ASSERT(
-    ( sizeof(struct lt_chip_id_t) )
+    sizeof(struct lt_chip_id_t)
     ==
     (
-        MEMBER_SIZE(struct lt_chip_id_t, chip_id_ver) + 
-        MEMBER_SIZE(struct lt_chip_id_t, fl_chip_info) + 
-        MEMBER_SIZE(struct lt_chip_id_t, func_test_info) + 
-        MEMBER_SIZE(struct lt_chip_id_t, silicon_rev) + 
-        MEMBER_SIZE(struct lt_chip_id_t, packg_type_id) + 
-        MEMBER_SIZE(struct lt_chip_id_t, rfu_1) + 
-        MEMBER_SIZE(struct lt_chip_id_t, prov_ver_fab_id_pn) + 
-        MEMBER_SIZE(struct lt_chip_id_t, provisioning_date) + 
-        MEMBER_SIZE(struct lt_chip_id_t, hsm_ver) + 
-        MEMBER_SIZE(struct lt_chip_id_t, prog_ver) + 
-        MEMBER_SIZE(struct lt_chip_id_t, rfu_2) + 
+        MEMBER_SIZE(struct lt_chip_id_t, chip_id_ver) +
+        MEMBER_SIZE(struct lt_chip_id_t, wafer_lvl_test_info) +
+        MEMBER_SIZE(struct lt_chip_id_t, manuf_lvl_test_info) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_info) + 
         MEMBER_SIZE(struct lt_chip_id_t, ser_num) + 
-        MEMBER_SIZE(struct lt_chip_id_t, part_num_data) + 
-        MEMBER_SIZE(struct lt_chip_id_t, prov_templ_ver) + 
-        MEMBER_SIZE(struct lt_chip_id_t, prov_templ_tag) + 
-        MEMBER_SIZE(struct lt_chip_id_t, prov_spec_ver) + 
-        MEMBER_SIZE(struct lt_chip_id_t, prov_spec_tag) + 
-        MEMBER_SIZE(struct lt_chip_id_t, batch_id) + 
-        MEMBER_SIZE(struct lt_chip_id_t, rfu_3) + 
-        MEMBER_SIZE(struct lt_chip_id_t, rfu_4)
+        MEMBER_SIZE(struct lt_chip_id_t, part_num) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_data_ver) +
+        MEMBER_SIZE(struct lt_chip_id_t, padding)
     )
 );
 
