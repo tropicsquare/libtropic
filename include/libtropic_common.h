@@ -76,6 +76,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_l3_gen_frame_t)
     ==
@@ -84,6 +85,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
