@@ -37,6 +37,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_init(&h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
@@ -47,6 +48,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_get_info_cert_store(&h, &store);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get Certificate Store, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
@@ -56,6 +58,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_get_st_pub(&store, stpub, 32);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get stpub key, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
     LT_LOG_LINE();
@@ -70,6 +73,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_out__session_start(&h, PAIRING_KEY_SLOT_INDEX_0, &state);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__session_start() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
@@ -80,12 +84,14 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_l2_send(&h.l2);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_send() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
     LT_LOG_INFO("Executing lt_l2_receive()...");
     ret = lt_l2_receive(&h.l2);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_receive() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
@@ -98,6 +104,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_in__session_start(&h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
     LT_LOG_LINE();
@@ -110,6 +117,8 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_out__ping(&h, (const uint8_t*)PING_MSG, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__ping failed, ret=%s", lt_ret_verbose(ret));
+        lt_session_abort(&h);
+        lt_deinit(&h);
         return -1;
     }
 
@@ -117,12 +126,16 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_l2_send_encrypted_cmd(&h.l2, h.l3.buff, h.l3.buff_len);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_send_encrypted_cmd failed, ret=%s", lt_ret_verbose(ret));
+        lt_session_abort(&h);
+        lt_deinit(&h);
         return -1;
     }
     LT_LOG_INFO("Executing lt_l2_recv_encrypted_res()...");
     ret = lt_l2_recv_encrypted_res(&h.l2, h.l3.buff, h.l3.buff_len);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_recv_encrypted_res failed, ret=%s", lt_ret_verbose(ret));
+        lt_session_abort(&h);
+        lt_deinit(&h);
         return -1;
     }
 
@@ -130,6 +143,8 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_in__ping(&h, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__ping failed, ret=%s", lt_ret_verbose(ret));
+        lt_session_abort(&h);
+        lt_deinit(&h);
         return -1;
     }
 
@@ -141,6 +156,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_session_abort(&h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
