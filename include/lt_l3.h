@@ -259,10 +259,9 @@ lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
  *
  * @param h           Device's handle
  * @param udata_slot  Slot to read data from
- * @param size        Size of data to read
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, const uint16_t size);
+lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
 
 /**
  * @brief Decodes 'r mem data read' result payload. Used for separate l3 communication, for more information read info
@@ -270,10 +269,10 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, cons
  *
  * @param h           Device's handle
  * @param data        Buffer to receive data
- * @param size        Size of data to read, must be the same as sent in lt_out__r_mem_data_read()
+ * @param size        Number of read data bytes
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t size);
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size);
 
 /**
  * @brief Encodes 'r mem data erase' command payload. Used for separate l3 communication, for more information read info

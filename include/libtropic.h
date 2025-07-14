@@ -304,10 +304,10 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be read
  * @param data        Buffer to read data into
- * @param size        Size of data to be read
+ * @param size        Number of read data bytes
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size);
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size);
 
 /**
  * @brief Erase bytes from a given slot of R MEMORY

@@ -883,16 +883,16 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
     return lt_in__r_mem_data_write(h);
 }
 
-lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size)
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size)
 {
-    if (!h || !data || size > R_MEM_DATA_SIZE_MAX || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
+    if (!h || !data || !size || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_out__r_mem_data_read(h, udata_slot, size);
+    lt_ret_t ret = lt_out__r_mem_data_read(h, udata_slot);
     if (ret != LT_OK) {
         return ret;
     }

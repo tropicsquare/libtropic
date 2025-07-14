@@ -652,9 +652,9 @@ lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, const uint16_t size)
+lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot)
 {
-    if (!h || size > R_MEM_DATA_SIZE_MAX || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
+    if (!h || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -672,9 +672,9 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, cons
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t size)
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
 {
-    if (!h || !data || size > R_MEM_DATA_SIZE_MAX) {
+    if (!h || !data || !size) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -690,10 +690,20 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t si
     }
 
     // Check incomming l3 length
-    if (LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN + size < (p_l3_res->res_size)) {
+    if ((p_l3_res->res_size < LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN)
+        || p_l3_res->res_size > LT_L3_R_MEM_DATA_READ_RES_SIZE_MAX) {
         return LT_FAIL;
     }
-    memcpy(data, p_l3_res->data, size);
+
+    // Get read data size
+    *size = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->padding);
+
+    // Check if slot is not empty
+    if (*size == 0) {
+        return LT_L3_R_MEM_DATA_READ_SLOT_EMPTY;
+    }
+
+    memcpy(data, p_l3_res->data, *size);
 
     return LT_OK;
 }

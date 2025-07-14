@@ -450,6 +450,7 @@ struct lt_l3_r_mem_data_write_res_t {
 
 /** @brief Result length */
 #define LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN 4u
+#define LT_L3_R_MEM_DATA_READ_RES_SIZE_MAX 448u
 
 /**
  * @brief
