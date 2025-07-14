@@ -76,6 +76,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_l3_gen_frame_t)
     ==
@@ -84,6 +85,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -282,6 +284,7 @@ struct lt_wafer_lvl_test_info_t {
     uint16_t fab_y_coord;     /**< Y coordinate (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_wafer_lvl_test_info_t)
     ==
@@ -297,6 +300,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_y_coord)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -310,6 +314,7 @@ struct func_test_info_t {
     uint8_t func_test_id[4];  /**< Test Process ID chars (32 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct func_test_info_t)
     ==
@@ -319,6 +324,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct func_test_info_t, func_test_id)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -334,6 +340,7 @@ struct lt_manuf_lvl_test_info_t {
     uint8_t padding[2];        /**< Padding (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_manuf_lvl_test_info_t)
     ==
@@ -344,6 +351,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, padding)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -360,6 +368,7 @@ struct lt_prov_info_t {
     uint8_t padding[2];        /**< Padding (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_prov_info_t)
     ==
@@ -372,6 +381,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_prov_info_t, padding)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -389,6 +399,7 @@ struct lt_ser_num_t {
     uint16_t y_coord;        /**< Y Coordinate of the device (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_ser_num_t)
     ==
@@ -402,6 +413,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_ser_num_t, y_coord)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -414,6 +426,7 @@ struct lt_part_num_t {
     uint8_t pn_data[15]; /**< P/N data encoded in ASCII, padded with 0xFF bytes (120 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_part_num_t)
     ==
@@ -422,6 +435,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_part_num_t, pn_data)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -438,6 +452,7 @@ struct lt_prov_data_ver_t {
     uint8_t padding[3];           /**< Padding (24 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_prov_data_ver_t)
     ==
@@ -450,6 +465,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_prov_data_ver_t, padding)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -476,6 +492,7 @@ struct lt_chip_id_t {
     uint8_t padding[24];
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     sizeof(struct lt_chip_id_t)
     ==
@@ -490,6 +507,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_chip_id_t, padding)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned RISCV fw version */
