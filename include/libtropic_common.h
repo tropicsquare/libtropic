@@ -272,6 +272,22 @@ struct lt_ser_num_t {
     uint16_t y_coord;    /**< 16 bits for y-coordinate */
 } __attribute__((__packed__));
 
+STATIC_ASSERT(
+    ( sizeof(struct lt_ser_num_t) )
+    ==
+    (
+        MEMBER_SIZE(struct lt_ser_num_t, sn) + 
+        MEMBER_SIZE(struct lt_ser_num_t, fab_data) + 
+        MEMBER_SIZE(struct lt_ser_num_t, fab_date) + 
+        MEMBER_SIZE(struct lt_ser_num_t, lot_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, wafer_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, x_coord) + 
+        MEMBER_SIZE(struct lt_ser_num_t, y_coord)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 /**
  * @brief Data in this struct comes from BP (batch package) yml file. CHIP_INFO is read into this struct.
  */
