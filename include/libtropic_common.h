@@ -9,6 +9,7 @@
  */
 
 #include "stdint.h"
+#include "tools.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
@@ -65,6 +66,8 @@ typedef uint32_t u32;
 /** @brief Max size of one unit of transport on l3 layer */
 #define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
 
+//--------------------------------------------------------------------------------------------------------------------//
+
 /** @brief Generic L3 command and result frame */
 struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
@@ -72,6 +75,18 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_gen_frame_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_gen_frame_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 #define UART_DEV_MAX_LEN 32
 typedef struct {
@@ -254,6 +269,7 @@ struct lt_cert_store_t {
 /** @brief Maximal size of returned CHIP ID */
 #define LT_L2_GET_INFO_CHIP_ID_SIZE 128
 
+//--------------------------------------------------------------------------------------------------------------------//
 /**
  * @brief Wafer level test info (128 bits), structure retrieved from silicon provider.
  * @details The exact copy of FL_PROD_DATA structure. If missing or invalid, it is filled with 0x00.
@@ -270,6 +286,25 @@ struct lt_wafer_lvl_test_info_t {
     uint16_t fab_y_coord;     /**< Y coordinate (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_wafer_lvl_test_info_t) ==
+    (
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_sts) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_year) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_month) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_day) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_lot_id) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_rfu) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_wafer_id) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_x_coord) + 
+        MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_y_coord)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 /**
  * @brief Copy of first two words of MAN_FUNC_TEST; filled with 0 if missing or invalid.
  *
@@ -279,6 +314,19 @@ struct func_test_info_t {
     uint8_t func_test_rfu[3]; /**< Reserved for Future Use (24 bits) */
     uint8_t func_test_id[4];  /**< Test Process ID chars (32 bits) */
 } __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct func_test_info_t) ==
+    (
+        MEMBER_SIZE(struct func_test_info_t, func_test_sts) + 
+        MEMBER_SIZE(struct func_test_info_t, func_test_rfu) + 
+        MEMBER_SIZE(struct func_test_info_t, func_test_id)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Manufacturing level test info (128 bits), structure retrieved from test line and BP.
@@ -292,6 +340,20 @@ struct lt_manuf_lvl_test_info_t {
     uint8_t padding[2];        /**< Padding (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_manuf_lvl_test_info_t) ==
+    (
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, func_test_info) + 
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, silicon_rev_id) + 
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, pkg_type_id) + 
+        MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, padding)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 /**
  * @brief Provisioning info (128 bits), filled by the provisioning station.
  *
@@ -304,6 +366,22 @@ struct lt_prov_info_t {
     uint8_t programmer_ver[4]; /**< Version describing Programmer HW and SW (32 bits) */
     uint8_t padding[2];        /**< Padding (16 bits) */
 } __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_prov_info_t) ==
+    (
+        MEMBER_SIZE(struct lt_prov_info_t, prov_info_ver) + 
+        MEMBER_SIZE(struct lt_prov_info_t, fab_id_pn_id) + 
+        MEMBER_SIZE(struct lt_prov_info_t, prov_date) + 
+        MEMBER_SIZE(struct lt_prov_info_t, hsm_ver) + 
+        MEMBER_SIZE(struct lt_prov_info_t, programmer_ver) + 
+        MEMBER_SIZE(struct lt_prov_info_t, padding)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Serial Number (128 bits).
@@ -319,6 +397,23 @@ struct lt_ser_num_t {
     uint16_t y_coord;        /**< Y Coordinate of the device (16 bits) */
 } __attribute__((__packed__));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_ser_num_t) ==
+    (
+        MEMBER_SIZE(struct lt_ser_num_t, sn_ver) + 
+        MEMBER_SIZE(struct lt_ser_num_t, fab_id_pn_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, fab_date) + 
+        MEMBER_SIZE(struct lt_ser_num_t, lot_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, wafer_id) + 
+        MEMBER_SIZE(struct lt_ser_num_t, x_coord) + 
+        MEMBER_SIZE(struct lt_ser_num_t, y_coord)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
+
 /**
  * @brief Part Number (128 bits), defined by Tropic Square in BP.
  *
@@ -327,6 +422,18 @@ struct lt_part_num_t {
     uint8_t pn_len; /**< Length of subsequent P/N data field, encoded as unsigned integer on single byte (8 bits) */
     uint8_t pn_data[15]; /**< P/N data encoded in ASCII, padded with 0xFF bytes (120 bits) */
 } __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_part_num_t) ==
+    (
+        MEMBER_SIZE(struct lt_part_num_t, pn_len) + 
+        MEMBER_SIZE(struct lt_part_num_t, pn_data)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Provisioning Data version (160 bits), defined by Tropic Square for each batch in BP.
@@ -340,6 +447,22 @@ struct lt_prov_data_ver_t {
     uint8_t batch_id[5];          /**< Batch ID corresponding to BP (40 bits) */
     uint8_t padding[3];           /**< Padding (24 bits) */
 } __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_prov_data_ver_t) ==
+    (
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_template_ver) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_template_tag) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_spec_ver) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, prov_spec_tag) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, batch_id) + 
+        MEMBER_SIZE(struct lt_prov_data_ver_t, padding)
+    )
+);
+// clang-format on
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief The CHIP_ID ﬁeld (big endian, 128 bytes) serves as "public manufacturer data" area. The ambition is to encode
@@ -363,6 +486,22 @@ struct lt_chip_id_t {
      */
     uint8_t padding[24];
 } __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_chip_id_t) ==
+    (
+        MEMBER_SIZE(struct lt_chip_id_t, chip_id_ver) +
+        MEMBER_SIZE(struct lt_chip_id_t, wafer_lvl_test_info) +
+        MEMBER_SIZE(struct lt_chip_id_t, manuf_lvl_test_info) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_info) + 
+        MEMBER_SIZE(struct lt_chip_id_t, ser_num) + 
+        MEMBER_SIZE(struct lt_chip_id_t, part_num) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_data_ver) +
+        MEMBER_SIZE(struct lt_chip_id_t, padding)
+    )
+);
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned RISCV fw version */
