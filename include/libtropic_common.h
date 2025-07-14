@@ -66,6 +66,8 @@ typedef uint32_t u32;
 /** @brief Max size of one unit of transport on l3 layer */
 #define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
 
+//--------------------------------------------------------------------------------------------------------------------//
+
 /** @brief Generic L3 command and result frame */
 struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
@@ -73,7 +75,17 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
-STATIC_ASSERT(sizeof(struct lt_l3_gen_frame_t) == (2 + L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE));
+
+STATIC_ASSERT(
+    sizeof(struct lt_l3_gen_frame_t)
+    ==
+    (
+        MEMBER_SIZE(struct lt_l3_gen_frame_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
+    )
+);
+
+//--------------------------------------------------------------------------------------------------------------------//
 
 #define UART_DEV_MAX_LEN 32
 typedef struct {
