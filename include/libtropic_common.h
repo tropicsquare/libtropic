@@ -255,22 +255,96 @@ struct lt_cert_store_t {
 #define LT_L2_GET_INFO_CHIP_ID_SIZE 128
 
 /**
- * @brief Structure used to parse content of CHIP_ID field
- *
- * @details This structure contains fields for parsing the chip's serial number data.
+ * @brief Wafer level test info (128 bits), structure retrieved from silicon provider.
+ * @details The exact copy of FL_PROD_DATA structure. If missing or invalid, it is filled with 0x00.
  */
-struct lt_ser_num_t {
-    uint8_t sn;          /**< 8 bits for serial number */
-    uint8_t fab_data[3]; /**< 12 bits fab ID, 12 bits part number ID */
-    uint16_t fab_date;   /**< 16 bits for fabrication date */
-    uint8_t lot_id[5];   /**< 40 bits for lot ID */
-    uint8_t wafer_id;    /**< 8 bits for wafer ID */
-    uint16_t x_coord;    /**< 16 bits for x-coordinate */
-    uint16_t y_coord;    /**< 16 bits for y-coordinate */
+struct lt_wafer_lvl_test_info_t {
+    uint8_t fab_test_sts;     /**< Device test status (8 bits); 0x01 = Device tested */
+    uint8_t fab_test_year[2]; /**< Year of testing decade (8 bits), Year of testing ones (8 bits) */
+    uint8_t fab_test_month;   /**< Month of testing (8 bits) */
+    uint8_t fab_test_day;     /**< Day of testing (8 bits) */
+    uint8_t fab_lot_id[5];    /**< LOT ID ASCII chars (40 bits) */
+    uint8_t fab_rfu;          /**< Reserved for Future Use (8 bits) */
+    uint8_t fab_wafer_id;     /**< Wafer ID number (8 bits) */
+    uint16_t fab_x_coord;     /**< X coordinate (16 bits) */
+    uint16_t fab_y_coord;     /**< Y coordinate (16 bits) */
 } __attribute__((__packed__));
 
 /**
- * @brief Data in this struct comes from BP (batch package) yml file. CHIP_INFO is read into this struct.
+ * @brief Copy of first two words of MAN_FUNC_TEST; filled with 0 if missing or invalid.
+ *
+ */
+struct func_test_info_t {
+    uint8_t func_test_sts;    /**< Functional test status (8 bits); 0x01 = Device tested */
+    uint8_t func_test_rfu[3]; /**< Reserved for Future Use (24 bits) */
+    uint8_t func_test_id[4];  /**< Test Process ID chars (32 bits) */
+} __attribute__((__packed__));
+
+/**
+ * @brief Manufacturing level test info (128 bits), structure retrieved from test line and BP.
+ *
+ */
+struct lt_manuf_lvl_test_info_t {
+    struct func_test_info_t
+        func_test_info;        /**< Copy of first two words of MAN_FUNC_TEST; filled with 0 if missing or invalid */
+    uint8_t silicon_rev_id[4]; /**< ASCII encoded string value defined by Tropic Square, e.g. ACAB (32 bits) */
+    uint8_t pkg_type_id[2];    /**< Package Type ID defined by Tropic Square (16 bits) */
+    uint8_t padding[2];        /**< Padding (16 bits) */
+} __attribute__((__packed__));
+
+/**
+ * @brief Provisioning info (128 bits), filled by the provisioning station.
+ *
+ */
+struct lt_prov_info_t {
+    uint8_t prov_info_ver;   /**< Version of Provisioning Info structure (8 bits) */
+    uint8_t fab_id_pn_id[3]; /**< Fabrication line ID (12 bits), Short Part Number ID (12 bits) */
+    uint8_t prov_date[2];    /**< Provisioning date (16 bits) */
+    uint8_t hsm_ver[4];      /**< Version describing Secure Box HW and SW running on the provisioning line (32 bits) */
+    uint8_t programmer_ver[4]; /**< Version describing Programmer HW and SW (32 bits) */
+    uint8_t padding[2];        /**< Padding (16 bits) */
+} __attribute__((__packed__));
+
+/**
+ * @brief Serial Number (128 bits).
+ *
+ */
+struct lt_ser_num_t {
+    uint8_t sn_ver;          /**< S/N Version (8 bits) */
+    uint8_t fab_id_pn_id[3]; /**< Fabrication line ID (12 bits), Short Part Number ID (12 bits) */
+    uint8_t fab_date[2];     /**< Fabrication date (16 bits) */
+    uint8_t lot_id[5];       /**< 5 ASCII characters (40 bits) */
+    uint8_t wafer_id;        /**< Integer (8 bits), unique within the LOT ID */
+    uint16_t x_coord;        /**< X Coordinate of the device (16 bits) */
+    uint16_t y_coord;        /**< Y Coordinate of the device (16 bits) */
+} __attribute__((__packed__));
+
+/**
+ * @brief Part Number (128 bits), defined by Tropic Square in BP.
+ *
+ */
+struct lt_part_num_t {
+    uint8_t pn_len; /**< Length of subsequent P/N data field, encoded as unsigned integer on single byte (8 bits) */
+    uint8_t pn_data[15]; /**< P/N data encoded in ASCII, padded with 0xFF bytes (120 bits) */
+} __attribute__((__packed__));
+
+/**
+ * @brief Provisioning Data version (160 bits), defined by Tropic Square for each batch in BP.
+ *
+ */
+struct lt_prov_data_ver_t {
+    uint8_t prov_template_ver[2]; /**< Version of Provisioning Data Template (16 bits), encoded as Major.Minor */
+    uint8_t prov_template_tag[4]; /**< Tag corresponding to Provisioning Data Template (32 bits) */
+    uint8_t prov_spec_ver[2];     /**< Version of Provisioning Specification (16 bits), encoded as Major.Minor */
+    uint8_t prov_spec_tag[4];     /**< Tag corresponding to Provisioning Specification (32 bits) */
+    uint8_t batch_id[5];          /**< Batch ID corresponding to BP (40 bits) */
+    uint8_t padding[3];           /**< Padding (24 bits) */
+} __attribute__((__packed__));
+
+/**
+ * @brief The CHIP_ID ﬁeld (big endian, 128 bytes) serves as "public manufacturer data" area. The ambition is to encode
+ * as much public (non-sensitive) data as possible, allowing to track product ﬂow and defects through
+ * its supply chain and complete life cycle.
  */
 struct lt_chip_id_t {
     /**
@@ -278,97 +352,16 @@ struct lt_chip_id_t {
      * @details Example encoding: v1.2.3.4 = 0x01,0x02,0x03,0x04
      */
     uint8_t chip_id_ver[4];
-
-    /**
-     * @brief Factory level test info (128 bits), structure retrieved from silicon provider.
-     * @details The exact copy of FL_PROD_DATA structure. If missing, it is filled with 0x00.
-     */
-    uint8_t fl_chip_info[16];
-
-    /**
-     * @brief Manufacturing level test info (128 bits), structure retrieved from test line and BP.
-     * @details The exact copy of ﬁrst two words of MAN_FUNC_TEST structure. In case of missing, it is filled with 0x00
-     */
-    uint8_t func_test_info[8];
-
-    /**
-     * @brief Silicon revision (32 bits).
-     * @details ASCII encoded string value deﬁned by Tropic Square. Example: ’ACAB’ = 0x41434142
-     */
-    uint8_t silicon_rev[4];
-
-    /**
-     * @brief Package Type ID deﬁned by Tropic Square
-     */
-    uint8_t packg_type_id[2];
-
-    /**
-     * @brief Reserved field 1 (16 bits).
-     */
-    uint8_t rfu_1[2];
-
-    /**
-     * @brief Provisioning info (128 bits), filled by the provisioning station.
-     * @details
-     * - 8 bits: Provisioning info version.
-     * - 12 bits: Fabrication ID.
-     * - 12 bits: Part Number ID.
-     */
-    uint8_t prov_ver_fab_id_pn[4];
-
-    /**
-     * @brief Provisioning date (16 bits).
-     */
-    uint8_t provisioning_date[2];
-
-    /**
-     * @brief HSM version (32 bits).
-     * @details Byte 0: RFU, Byte 1: Major version, Byte 2: Minor version, Byte 3: Patch version
-     */
-    uint8_t hsm_ver[4];
-
-    /**
-     * @brief Program version (32 bits).
-     */
-    uint8_t prog_ver[4];
-
-    /**
-     * @brief Reserved field 2 (16 bits).
-     */
-    uint8_t rfu_2[2];
-
-    /**
-     * @brief Serial Number (128 bits).
-     */
+    struct lt_wafer_lvl_test_info_t wafer_lvl_test_info;
+    struct lt_manuf_lvl_test_info_t manuf_lvl_test_info;
+    struct lt_prov_info_t prov_info;
     struct lt_ser_num_t ser_num;
-
-    /**
-     * @brief Part Number (128 bits), defined by Tropic Square in BP.
-     */
-    uint8_t part_num_data[16]; /**< Part number data. */
-
-    /**
-     * @brief Provisioning Data version (160 bits), defined by Tropic Square for each batch in BP.
-     */
-    uint8_t prov_templ_ver[2]; /**< Provisioning template version. */
-    uint8_t prov_templ_tag[4]; /**< Provisioning template tag. */
-    uint8_t prov_spec_ver[2];  /**< Provisioning specification version. */
-    uint8_t prov_spec_tag[4];  /**< Provisioning specification tag. */
-
-    /**
-     * @brief Batch ID (40 bits).
-     */
-    uint8_t batch_id[5];
-
-    /**
-     * @brief Reserved field 3 (24 bits).
-     */
-    uint8_t rfu_3[3];
-
+    struct lt_part_num_t part_num;
+    struct lt_prov_data_ver_t prov_data_ver;
     /**
      * @brief Padding (192 bits).
      */
-    uint8_t rfu_4[24];
+    uint8_t padding[24];
 } __attribute__((__packed__));
 
 //--------------------------------------------------------------------------------------------------------------------//
