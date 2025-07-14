@@ -58,8 +58,16 @@ void lt_test_ire_read_write_pairing_keys(void);
 int lt_test_rev_ping(void);
 
 /**
- * @brief Test function which tests reading,writing and erasing of all r mem slots
+ * @brief Test R_Mem_Data_* commands on all User Data slots
  *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Check if all slots are empty.
+ *  3. Write 0xAB to all slots. 
+ *  4. Read all slots and check if they were written.
+ *  5. Write 0x00 to all slots and check if it fails.
+ *  6. Read all slots and check they were not written.
+ *  7. Erase all slots and check that reading fails.
  */
 void lt_test_r_mem_reversible(void);
 
