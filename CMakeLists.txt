@@ -161,8 +161,8 @@ set(LIBTROPIC_TEST_LIST
     lt_test_r_mem
     lt_test_erase_r_config
     lt_test_dump_r_config
+    lt_test_read_cert_store_reversible
     lt_test_read_i_config_reversible
-    lt_test_dump_cert_store
     lt_test_handshake_req_reversible
     lt_test_resend_req_reversible
 )
@@ -194,8 +194,8 @@ configure_file(
 # a bit of flexibility for a case where one would want to implement more tests in one file etc.
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_cert_store_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_chip_id_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_cert_store.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_i_config_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_dump_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
