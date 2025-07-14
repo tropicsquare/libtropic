@@ -60,9 +60,8 @@ int lt_test_rev_ping(void);
 /**
  * @brief Test function which tests reading,writing and erasing of all r mem slots
  *
- * @return int
  */
-int lt_test_r_mem(void);
+void lt_test_r_mem_reversible(void);
 
 /**
  * @brief Backs up R-Config, erases it and then restores it.
