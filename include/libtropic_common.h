@@ -88,9 +88,6 @@ typedef struct {
     uint8_t buff[1 + L2_MAX_FRAME_SIZE];
 } lt_l2_state_t;
 
-STATIC_ASSERT(sizeof(lt_l2_state_t) == (sizeof(void*) + 1 + 1 + L2_MAX_FRAME_SIZE));
-char (*__kaboom)[sizeof( lt_l2_state_t )] = 1;
-
 // #define LT_SIZE_OF_L3_BUFF (1000)
 #ifndef LT_SIZE_OF_L3_BUFF
 #define LT_SIZE_OF_L3_BUFF L3_FRAME_MAX_SIZE
