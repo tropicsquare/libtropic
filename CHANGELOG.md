@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `LT_L2_LAST_RET` to `LT_RET_T_LAST_VALUE` for clarity in `lt_ret_t`.
 - Refactored `lt_ex_macandd` example.
 - Refactored `lt_ex_hello_world_separate_API` example.
+- Refactored `lt_ex_hello_world` example.
 - Use `LIBT_DEBUG` instead of `NDEBUG` in `lt_port_{unix_tcp,raspberrypi_wiringpi}.c`.
 - Renamed `config_description_table` to `cfg_desc_table`.
 - Functions `lt_ecc_eddsa_sign()`, `lt_ecc_ecdsa_sign()`, `lt_ecc_eddsa_sig_verify()` and `lt_ecc_ecdsa_sig_verify()` accept zero length of the message to be signed.
