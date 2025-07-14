@@ -34,6 +34,7 @@ int lt_ex_hello_world(void)
     ret = lt_init(&h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
@@ -42,6 +43,7 @@ int lt_ex_hello_world(void)
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
     LT_LOG_LINE();
@@ -52,6 +54,8 @@ int lt_ex_hello_world(void)
     ret = lt_ping(&h, (const uint8_t*)PING_MSG, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Ping command failed, ret=%s", lt_ret_verbose(ret));
+        lt_session_abort(&h);
+        lt_deinit(&h);
         return -1;
     }
     LT_LOG_LINE();
@@ -64,6 +68,7 @@ int lt_ex_hello_world(void)
     ret = lt_session_abort(&h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&h);
         return -1;
     }
 
