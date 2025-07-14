@@ -7,3 +7,6 @@
  */
 
 #define STATIC_ASSERT(x) _Static_assert((x), "Static assertion failed");
+
+// Get struct member size at compile-time.
+#define MEMBER_SIZE(type, member) (sizeof(((type *)0)->member))

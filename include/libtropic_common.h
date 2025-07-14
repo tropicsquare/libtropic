@@ -73,7 +73,6 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
-
 STATIC_ASSERT(sizeof(struct lt_l3_gen_frame_t) == (2 + L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE));
 
 #define UART_DEV_MAX_LEN 32
@@ -254,6 +253,7 @@ struct lt_cert_store_t {
 /** @brief Maximal size of returned CHIP ID */
 #define LT_L2_GET_INFO_CHIP_ID_SIZE 128
 
+//--------------------------------------------------------------------------------------------------------------------//
 /**
  * @brief Wafer level test info (128 bits), structure retrieved from silicon provider.
  * @details The exact copy of FL_PROD_DATA structure. If missing or invalid, it is filled with 0x00.
@@ -269,6 +269,9 @@ struct lt_wafer_lvl_test_info_t {
     uint16_t fab_x_coord;     /**< X coordinate (16 bits) */
     uint16_t fab_y_coord;     /**< Y coordinate (16 bits) */
 } __attribute__((__packed__));
+
+STATIC_ASSERT(sizeof(struct lt_ser_num_t) == 1 + 3 + 2 + 5 + 1 + 2 + 2)
+//--------------------------------------------------------------------------------------------------------------------//
 
 /**
  * @brief Copy of first two words of MAN_FUNC_TEST; filled with 0 if missing or invalid.
@@ -363,6 +366,33 @@ struct lt_chip_id_t {
      */
     uint8_t padding[24];
 } __attribute__((__packed__));
+
+STATIC_ASSERT(
+    ( sizeof(struct lt_chip_id_t) )
+    ==
+    (
+        MEMBER_SIZE(struct lt_chip_id_t, chip_id_ver) + 
+        MEMBER_SIZE(struct lt_chip_id_t, fl_chip_info) + 
+        MEMBER_SIZE(struct lt_chip_id_t, func_test_info) + 
+        MEMBER_SIZE(struct lt_chip_id_t, silicon_rev) + 
+        MEMBER_SIZE(struct lt_chip_id_t, packg_type_id) + 
+        MEMBER_SIZE(struct lt_chip_id_t, rfu_1) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_ver_fab_id_pn) + 
+        MEMBER_SIZE(struct lt_chip_id_t, provisioning_date) + 
+        MEMBER_SIZE(struct lt_chip_id_t, hsm_ver) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prog_ver) + 
+        MEMBER_SIZE(struct lt_chip_id_t, rfu_2) + 
+        MEMBER_SIZE(struct lt_chip_id_t, ser_num) + 
+        MEMBER_SIZE(struct lt_chip_id_t, part_num_data) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_templ_ver) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_templ_tag) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_spec_ver) + 
+        MEMBER_SIZE(struct lt_chip_id_t, prov_spec_tag) + 
+        MEMBER_SIZE(struct lt_chip_id_t, batch_id) + 
+        MEMBER_SIZE(struct lt_chip_id_t, rfu_3) + 
+        MEMBER_SIZE(struct lt_chip_id_t, rfu_4)
+    )
+);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned RISCV fw version */
