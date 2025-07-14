@@ -78,8 +78,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_l3_gen_frame_t)
-    ==
+    sizeof(struct lt_l3_gen_frame_t) ==
     (
         MEMBER_SIZE(struct lt_l3_gen_frame_t, cmd_size) +
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
@@ -286,8 +285,7 @@ struct lt_wafer_lvl_test_info_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_wafer_lvl_test_info_t)
-    ==
+    sizeof(struct lt_wafer_lvl_test_info_t) ==
     (
         MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_sts) + 
         MEMBER_SIZE(struct lt_wafer_lvl_test_info_t, fab_test_year) + 
@@ -316,8 +314,7 @@ struct func_test_info_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct func_test_info_t)
-    ==
+    sizeof(struct func_test_info_t) ==
     (
         MEMBER_SIZE(struct func_test_info_t, func_test_sts) + 
         MEMBER_SIZE(struct func_test_info_t, func_test_rfu) + 
@@ -342,8 +339,7 @@ struct lt_manuf_lvl_test_info_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_manuf_lvl_test_info_t)
-    ==
+    sizeof(struct lt_manuf_lvl_test_info_t) ==
     (
         MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, func_test_info) + 
         MEMBER_SIZE(struct lt_manuf_lvl_test_info_t, silicon_rev_id) + 
@@ -370,8 +366,7 @@ struct lt_prov_info_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_prov_info_t)
-    ==
+    sizeof(struct lt_prov_info_t) ==
     (
         MEMBER_SIZE(struct lt_prov_info_t, prov_info_ver) + 
         MEMBER_SIZE(struct lt_prov_info_t, fab_id_pn_id) + 
@@ -401,8 +396,7 @@ struct lt_ser_num_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_ser_num_t)
-    ==
+    sizeof(struct lt_ser_num_t) ==
     (
         MEMBER_SIZE(struct lt_ser_num_t, sn_ver) + 
         MEMBER_SIZE(struct lt_ser_num_t, fab_id_pn_id) + 
@@ -428,8 +422,7 @@ struct lt_part_num_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_part_num_t)
-    ==
+    sizeof(struct lt_part_num_t) ==
     (
         MEMBER_SIZE(struct lt_part_num_t, pn_len) + 
         MEMBER_SIZE(struct lt_part_num_t, pn_data)
@@ -454,8 +447,7 @@ struct lt_prov_data_ver_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_prov_data_ver_t)
-    ==
+    sizeof(struct lt_prov_data_ver_t) ==
     (
         MEMBER_SIZE(struct lt_prov_data_ver_t, prov_template_ver) + 
         MEMBER_SIZE(struct lt_prov_data_ver_t, prov_template_tag) + 
@@ -494,8 +486,7 @@ struct lt_chip_id_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_chip_id_t)
-    ==
+    sizeof(struct lt_chip_id_t) ==
     (
         MEMBER_SIZE(struct lt_chip_id_t, chip_id_ver) +
         MEMBER_SIZE(struct lt_chip_id_t, wafer_lvl_test_info) +
