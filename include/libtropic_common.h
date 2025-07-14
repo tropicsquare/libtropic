@@ -78,8 +78,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_l3_gen_frame_t)
-    ==
+    sizeof(struct lt_l3_gen_frame_t) ==
     (
         MEMBER_SIZE(struct lt_l3_gen_frame_t, cmd_size) +
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
