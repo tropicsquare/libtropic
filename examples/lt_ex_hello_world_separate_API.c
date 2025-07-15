@@ -12,8 +12,6 @@
 #include "lt_l2.h"
 #include "lt_l3.h"
 
-/** @brief Length of the buffers for certificates. */
-#define CERTS_BUF_LEN 700
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "This is Hello World message from TROPIC01!!"
 /** @brief Size of the Ping message, including '\0'. */
@@ -42,9 +40,12 @@ int lt_ex_hello_world_separate_API(void)
     }
 
     LT_LOG_INFO("Getting Certificate Store from TROPIC01");
-    uint8_t cert1[CERTS_BUF_LEN], cert2[CERTS_BUF_LEN], cert3[CERTS_BUF_LEN], cert4[CERTS_BUF_LEN];
-    struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
-                                    .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
+    uint8_t cert1[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE], cert2[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE],
+        cert3[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE], cert4[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE];
+    struct lt_cert_store_t store
+        = {.certs = {cert1, cert2, cert3, cert4},
+           .buf_len = {LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
+                       LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE}};
     ret = lt_get_info_cert_store(&h, &store);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get Certificate Store, ret=%s", lt_ret_verbose(ret));
