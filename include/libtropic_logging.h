@@ -29,6 +29,11 @@
 #define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message and call native assert function.
+// Note that parameters are stored to _val_ and _exp_ for a case when there
+// are function calls passed to the macros. Without the helper variables
+// the functions will be called mutliple times -- in the first comparison
+// (if statement), LT_LOG_ERROR and finally in the assert(). This can cause
+// unexpected behaviour.
 #define LT_ASSERT(expected, value)                                                 \
     {                                                                              \
         int _val_ = (value);                                                       \
