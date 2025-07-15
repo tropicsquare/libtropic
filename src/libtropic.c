@@ -1375,7 +1375,7 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
 
     lt_ret_t ret;
 
-    for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
+    for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         ret = lt_r_config_write(h, get_conf_addr(i), config->obj[i]);
         if (ret != LT_OK) {
             return ret;
