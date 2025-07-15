@@ -59,8 +59,21 @@ int lt_ex_hardware_wallet(void);
 int lt_ex_fw_update(void);
 
 /**
- * @brief Example usage of 'Mac And Destroy' pin verification scheme
+ * @brief Example usage of TROPIC01 flagship feature - 'Mac And Destroy' PIN verification engine.
  *
+ * Value MACANDD_ROUNDS represents a number of possible PIN gueses, this value also affects size of lt_macandd_nvm_t
+ * struct. Technically TROPIC01 is capable to have this set to 128, therefore provide 128 Mac And Destroy tries, which
+ * would require roughly 128*32 bytes in non volatile memory for storing data related to M&D tries.
+ *
+ * In this example TROPIC01's R memory is used as a storage for data during power cycle.
+ * For a sake of simplicity, only one R memory slot is used as a storage, which means 444B of storage are available.
+ *
+ * Therefore MACANDD_ROUNDS is here limited to 12 -> biggest possible number of tries which fits into 444B one R
+ * memory slot.
+ *
+ * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ * 
+ * @return 0 on success, -1 otherwise
  */
 int lt_ex_macandd(void);
 
