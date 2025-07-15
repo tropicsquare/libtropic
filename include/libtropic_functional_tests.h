@@ -63,7 +63,7 @@ int lt_test_rev_ping(void);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Check if all slots are empty.
- *  3. Write 0xAB to all slots. 
+ *  3. Write 0xAB to all slots.
  *  4. Read all slots and check if they were written.
  *  5. Write 0x00 to all slots and check if it fails.
  *  6. Read all slots and check they were not written.
