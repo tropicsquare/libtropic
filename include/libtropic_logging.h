@@ -29,8 +29,6 @@
 #define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-// Logger for system messages -- e.g. finishing a test.
-#define LT_LOG_SYSTEM(f_, ...) printf("SYSTEM  [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message.
 #ifdef LT_USE_ASSERT
@@ -41,10 +39,10 @@
         int _val_ = (value);                                                        \
         int _exp_ = (expected);                                                     \
         if (_val_ == _exp_) {                                                       \
-            LT_LOG_SYSTEM("ASSERT PASSED!");                                        \
+            LT_LOG_INFO("ASSERT PASSED!");                                        \
         }                                                                           \
         else {                                                                      \
-            LT_LOG_SYSTEM("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
+            LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
         };                                                                          \
     }
 #endif
@@ -57,14 +55,14 @@
     int _val_ = (value);                                                            \
     int _exp_ = (condition ? expected_if_true : expected_if_false);                 \
     if (_val_ == _exp_) {                                                           \
-        LT_LOG_SYSTEM("ASSERT PASSED!");                                            \
+        LT_LOG_INFO("ASSERT PASSED!");                                            \
     }                                                                               \
     else {                                                                          \
-        LT_LOG_SYSTEM("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_);     \
+        LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_);     \
     }
 #endif
 
 // Used to stop the test. Will log as a system message.
-#define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST FINISHED!")
+#define LT_FINISH_TEST() LT_LOG_INFO("TEST FINISHED!")
 
 #endif /* LT_LIBTROPIC_LOGGING_H */
