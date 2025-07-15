@@ -1337,7 +1337,7 @@ struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE        ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR}};
 
-uint16_t get_conf_addr(uint8_t i)
+enum CONFIGURATION_OBJECTS_REGS get_conf_addr(uint8_t i)
 {
     LT_ASSERT(1, (i < LT_CONFIG_OBJ_CNT));
     return config_description_table[i].addr;
