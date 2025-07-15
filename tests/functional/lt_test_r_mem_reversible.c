@@ -24,8 +24,8 @@ void lt_test_r_mem_reversible(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
-    uint8_t r_mem_data1[R_MEM_DATA_SIZE_MAX], r_mem_data2[R_MEM_DATA_SIZE_MAX];
-    uint16_t read_data_size1, read_data_size2;
+    uint8_t r_mem_data[R_MEM_DATA_SIZE_MAX], write_data[R_MEM_DATA_SIZE_MAX], zeros[R_MEM_DATA_SIZE_MAX] = {0};
+    uint16_t read_data_size;
 
     LT_LOG_INFO("Initializing handle");
     LT_ASSERT(LT_OK, lt_init(&h));
@@ -36,41 +36,63 @@ void lt_test_r_mem_reversible(void)
 
     LT_LOG_INFO("Looping through slots 0-%d and checking if empty...", R_MEM_DATA_SLOT_MAX);
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
-        LT_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(&h, i, r_mem_data1, &read_data_size1));
-        LT_ASSERT(1, (read_data_size1 == 0));
+        LT_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT(1, (read_data_size == 0));
     }
     LT_LOG_INFO("All slots are empty");
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Looping through slots 0-%d, writing 0xAB and checking if written...", R_MEM_DATA_SLOT_MAX);
-    uint8_t write_data[R_MEM_DATA_SIZE_MAX];
+    LT_LOG_INFO("Looping through slots 0-%d, writing them entirely with 0xAB and checking if written...",
+                R_MEM_DATA_SLOT_MAX);
     memset(write_data, 0xAB, R_MEM_DATA_SIZE_MAX);
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_ASSERT(LT_OK, lt_r_mem_data_write(&h, i, write_data, R_MEM_DATA_SIZE_MAX));
-        LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data1, &read_data_size1));
-        LT_ASSERT(1, (read_data_size1 == R_MEM_DATA_SIZE_MAX));
-        LT_ASSERT(0, memcmp(r_mem_data1, write_data, R_MEM_DATA_SIZE_MAX));
+        LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT(1, (read_data_size == R_MEM_DATA_SIZE_MAX));
+        LT_ASSERT(0, memcmp(r_mem_data, write_data, R_MEM_DATA_SIZE_MAX));
     }
     LT_LOG_INFO("All slots were successfuly written");
     LT_LOG_LINE();
 
     LT_LOG_INFO("Looping through slots 0-%d, writing 0x00 and checking for fail...", R_MEM_DATA_SLOT_MAX);
-    uint8_t zeros[R_MEM_DATA_SIZE_MAX];
-    memset(zeros, 0, R_MEM_DATA_SIZE_MAX);
+    // Set these two to different values just in case
+    read_data_size = 0;
+    memset(r_mem_data, 0, R_MEM_DATA_SIZE_MAX);
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_ASSERT(LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL, lt_r_mem_data_write(&h, i, zeros, R_MEM_DATA_SIZE_MAX));
-        LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data2, &read_data_size2));
-        LT_ASSERT(1, (read_data_size2 == R_MEM_DATA_SIZE_MAX));
-        LT_ASSERT(0, memcmp(r_mem_data2, write_data, R_MEM_DATA_SIZE_MAX));
+        LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT(1, (read_data_size == R_MEM_DATA_SIZE_MAX));
+        LT_ASSERT(0, memcmp(r_mem_data, write_data, R_MEM_DATA_SIZE_MAX));
     }
     LT_LOG_INFO("No slots were written (correct)");
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Looping through slots 0-%d, erasing them and checking if erased...", R_MEM_DATA_SLOT_MAX);
+    for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
+        LT_ASSERT(LT_OK, lt_r_mem_data_erase(&h, i));
+        LT_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT(1, (read_data_size == 0));
+    }
+    LT_LOG_INFO("All slots were successfuly erased");
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Looping through slots 0-%d, writing them partially with 0xCD and checking if written...",
+                R_MEM_DATA_SLOT_MAX);
+    memset(write_data, 0xCD, 100);
+    for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
+        LT_ASSERT(LT_OK, lt_r_mem_data_write(&h, i, write_data, 100));
+        LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT(1, (read_data_size == 100));
+        LT_ASSERT(0, memcmp(r_mem_data, write_data, 100));
+    }
+    LT_LOG_INFO("All slots were successfuly written");
     LT_LOG_LINE();
 
     LT_LOG_INFO("Loop through slots 0-%d, erasing them and checking if erased...", R_MEM_DATA_SLOT_MAX);
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_ASSERT(LT_OK, lt_r_mem_data_erase(&h, i));
-        LT_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(&h, i, r_mem_data1, &read_data_size1));
-        LT_ASSERT(1, (read_data_size1 == 0));
+        LT_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT(1, (read_data_size == 0));
     }
     LT_LOG_INFO("All slots were successfuly erased");
     LT_LOG_LINE();
