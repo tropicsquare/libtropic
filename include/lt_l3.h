@@ -269,7 +269,7 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
  *
  * @param h           Device's handle
  * @param data        Buffer to receive data
- * @param size        Number of read data bytes
+ * @param size        Number of bytes read into data
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size);
