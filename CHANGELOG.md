@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `lt_ex_macandd` example.
 - Refactored `lt_ex_hello_world_separate_API` example.
 - Refactored `lt_ex_hello_world` example.
+- Refactored `lt_ex_hw_wallet` example.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
