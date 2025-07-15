@@ -57,11 +57,22 @@ int lt_ex_hello_world(void);
 int lt_ex_hello_world_separate_API(void);
 
 /**
- * @brief Example function, Hardware Wallet
- * @details Pairing keys SH1-3 are set and SH0 is invalidated. TODO explain more
- * WARNING: This example ireversively writes into chip!
+ * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
  *
- * @return int
+ * It is not focused on final application's usage, even though there is a few hints in session3() function.
+ * Instead of that, this code mainly walks you through a different stages during a chip's lifecycle:
+ *  - Initial power up during PCB manufacturing
+ *  - Attestation key uploading
+ *  - Final product usage
+
+ * Example shows how content of config objects might be used to set different access rights and how chip behaves during
+ * the device's lifecycle.
+ *
+ * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ * @warning We strongly recommend running this example against the TROPIC01 model only, as it does irreversible
+ operations!
+ *
+ * @return 0 on success, -1 otherwise
  */
 int lt_ex_hardware_wallet(void);
 
