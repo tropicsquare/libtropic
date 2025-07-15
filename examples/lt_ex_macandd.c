@@ -2,7 +2,7 @@
  * @file lt_ex_macandd.c
  * @brief Example usage of TROPIC01 flagship feature - 'Mac And Destroy' PIN verification engine.
  * @author Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -182,7 +182,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
             goto exit;
         }
         LT_LOG_INFO("\tOK");
-        
+
         // Now the slot is initialized again by calling M&D sequence again with 'u'
         LT_LOG_INFO("Doing M&D sequence again to initialize a slot...");
         ret = lt_mac_and_destroy(h, i, u, garbage);
@@ -367,7 +367,8 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     nvm.i = MACANDD_ROUNDS;
 
     // Store NVM data for future use
-    LT_LOG_INFO("Writing M&D data into R_Mem User slot %d for future use (erase, then write)...", R_MEM_DATA_SLOT_MACANDD);
+    LT_LOG_INFO("Writing M&D data into R_Mem User slot %d for future use (erase, then write)...",
+                R_MEM_DATA_SLOT_MACANDD);
     ret = lt_r_mem_data_erase(h, R_MEM_DATA_SLOT_MACANDD);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to erase User slot, ret=%s", lt_ret_verbose(ret));
@@ -468,7 +469,7 @@ int lt_ex_macandd(void)
 
     LT_LOG_INFO("Doing Final PIN attempt with correct PIN, slots are reinitialized again...");
     ret = lt_PIN_check(&h, pin, 4, additional_data, additional_data_size, secret);
-    if(LT_OK != ret) {
+    if (LT_OK != ret) {
         LT_LOG_ERROR("Attempt with correct PIN failed, ret=%s", lt_ret_verbose(ret));
         lt_session_abort(&h);
         lt_deinit(&h);
