@@ -26,26 +26,26 @@
         ##__VA_ARGS__)
 
 // Loggers with selectable message type.
-#define LT_LOG_INFO(f_, ...) printf("%d\t;INFO;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_WARN(f_, ...) printf("%d\t;WARNING;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_ERROR(f_, ...) printf("%d\t;ERROR;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_INFO(f_, ...) printf("[%4d][INFO]    " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) printf("[%4d][WARNING] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) printf("[%4d][ERROR]   " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 // Logger for system messages -- e.g. finishing a test.
-#define LT_LOG_SYSTEM(f_, ...) printf("%d\t;SYSTEM;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_SYSTEM(f_, ...) printf("[%4d][SYSTEM]  " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message.
 #ifdef LT_USE_ASSERT
 #define LT_ASSERT(expected, value) assert(expected == value);
 #else
-#define LT_ASSERT(expected, value)                            \
-    {                                                         \
-        int _val_ = (value);                                  \
-        int _exp_ = (expected);                               \
-        if (_val_ == _exp_) {                                 \
-            LT_LOG_SYSTEM("ASSERT_OK");                       \
-        }                                                     \
-        else {                                                \
-            LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", _val_, _exp_); \
-        };                                                    \
+#define LT_ASSERT(expected, value)                                                  \
+    {                                                                               \
+        int _val_ = (value);                                                        \
+        int _exp_ = (expected);                                                     \
+        if (_val_ == _exp_) {                                                       \
+            LT_LOG_SYSTEM("ASSERT PASSED!");                                        \
+        }                                                                           \
+        else {                                                                      \
+            LT_LOG_SYSTEM("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
+        };                                                                          \
     }
 #endif
 
@@ -53,18 +53,18 @@
 #define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
     assert(value == (condition ? expected_if_true : expected_if_false));
 #else
-#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
-    int _val_ = (value);                                                      \
-    int _exp_ = (condition ? expected_if_true : expected_if_false);           \
-    if (_val_ == _exp_) {                                                     \
-        LT_LOG_SYSTEM("ASSERT_OK");                                           \
-    }                                                                         \
-    else {                                                                    \
-        LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", _val_, _exp_);                     \
+#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)       \
+    int _val_ = (value);                                                            \
+    int _exp_ = (condition ? expected_if_true : expected_if_false);                 \
+    if (_val_ == _exp_) {                                                           \
+        LT_LOG_SYSTEM("ASSERT PASSED!");                                            \
+    }                                                                               \
+    else {                                                                          \
+        LT_LOG_SYSTEM("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_);     \
     }
 #endif
 
 // Used to stop the test. Will log as a system message.
-#define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
+#define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST FINISHED!")
 
 #endif /* LT_LIBTROPIC_LOGGING_H */
