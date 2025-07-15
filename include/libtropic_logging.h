@@ -39,7 +39,7 @@
         else {                                                                     \
             LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
         };                                                                         \
-        assert(expected == value);                                                 \
+        assert(_exp_ == _val_);                                                    \
     }
 
 #define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)      \
@@ -52,7 +52,7 @@
         else {                                                                     \
             LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
         }                                                                          \
-        assert(value == (condition ? expected_if_true : expected_if_false));       \
+        assert(_exp_ == _val_);                                                    \
     }
 
 // Used to stop the test. Will log as a system message.
