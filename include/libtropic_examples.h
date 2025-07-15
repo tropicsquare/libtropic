@@ -70,7 +70,7 @@ void lt_ex_fw_update(void);
  * memory slot.
  *
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
- * 
+ *
  * @return 0 on success, -1 otherwise
  */
 int lt_ex_macandd(void);
