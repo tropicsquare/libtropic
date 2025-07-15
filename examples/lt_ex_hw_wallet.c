@@ -13,24 +13,6 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-/**
- * @name CONCEPT: Generic Hardware Wallet
- * @note We recommend reading TROPIC01's datasheet before diving into this example!
- * @par
-    This code aims to show an example usage of TROPIC01 chip in a generic *hardware wallet* project.
-
-    It is not focused on final application's usage, even though there is a few
-    hints in session3() function.
-
-    Instead of that, this code mainly walks you through a different stages during a chip's lifecycle:
-    - Initial power up during PCB manufacturing
-    - Attestation key uploading
-    - Final product usage
-
-    Example shows how content of config objects might be used to set different access rights and how chip behaves during
- the device's lifecycle.
-*/
-
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "Ping message for TROPIC01"
 /** @brief Size of the Ping message, including '\0'. */
@@ -41,7 +23,7 @@ uint8_t attestation_key[32]
     = {0x22, 0x57, 0xa8, 0x2f, 0x85, 0x8f, 0x13, 0x32, 0xfa, 0x0f, 0xf6, 0x0c, 0x76, 0x29, 0x42, 0x70,
        0xa9, 0x58, 0x9d, 0xfd, 0x47, 0xa5, 0x23, 0x78, 0x18, 0x4d, 0x2d, 0x38, 0xf0, 0xa7, 0xc4, 0x01};
 
-/** @brief  User Conﬁguration Objects - values set here reflect the concept of a generic hardware wallet */
+/** @brief User Conﬁguration Objects - values set here reflect the concept of a generic hardware wallet */
 struct lt_config_t example_config = {
     .obj
     = {//-------CONFIGURATION_OBJECTS_CFG_START_UP------------------------------------
