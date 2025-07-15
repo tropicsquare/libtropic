@@ -17,7 +17,7 @@ logger_runner = logging.getLogger("RUNNER  ")
 logger_runner.propagate = False
 logger_runner_console_handler = logging.StreamHandler()
 # Pad prefixes so the output is nicely aligned.
-logger_runner_formatter = logging.Formatter("%(levelname)-7s RUNNER   %(message)s")
+logger_runner_formatter = logging.Formatter("RUNNER   %(levelname)-7s %(message)s")
 logger_runner_console_handler.setFormatter(logger_runner_formatter)
 if not logger_runner.hasHandlers():
     logger_runner.addHandler(logger_runner_console_handler)
@@ -27,7 +27,7 @@ logger_platform = logging.getLogger("PLATFORM")
 logger_platform.propagate = False
 logger_platform_console_handler = logging.StreamHandler()
 # Pad prefixes so the output is nicely aligned.
-logger_platform_formatter = logging.Formatter("%(levelname)-7s PLATFORM %(message)s")
+logger_platform_formatter = logging.Formatter("PLATFORM %(message)s")
 logger_platform_console_handler.setFormatter(logger_platform_formatter)
 if not logger_platform.hasHandlers():
     logger_platform.addHandler(logger_platform_console_handler)
@@ -102,48 +102,36 @@ class lt_test_runner:
                         comm_error_count += 1
                         break
 
-                    logger_runner.debug(f"Received from serial: {line}")
-                    line = line.split(";")
-
-                    if (len(line) < 3):
-                        logger_runner.error(f"Line malformed!")
-                        comm_error_count += 1
-                        continue
-                    
-                    try:
-                        code_line_number = f"{int(line[0].strip()) : 4d}"
-                    except ValueError:
-                        logger_runner.error(f"Line malformed (line number not an integer)!")
-                        comm_error_count += 1
-
-                    msg_type = line[1].strip()
-                    msg_content = line[2].strip()
-
-                    if (msg_type == "INFO"):
-                        logger_platform.info(f"[{code_line_number}] {msg_content}")
-                    elif (msg_type == "WARNING"):
-                        logger_platform.warning(f"[{code_line_number}] {msg_content}")
-                        warn_count += 1
-                    elif (msg_type == "ERROR"):
-                        logger_platform.error(f"[{code_line_number}] {msg_content}")
-                        err_count += 1
-                    elif (msg_type == "SYSTEM"):
-                        if msg_content == "ASSERT_OK":
-                            logger_runner.info(f"[{code_line_number}] Assertion passed!")
-                            reached_assert_flag = True
-                        elif msg_content == "ASSERT_FAIL":
-                            if (len(line) < 5):
-                                logger_runner.error(f"Line malformed!")
-                                comm_error_count += 1
-                                continue
-                            msg_expected = line[4].strip()
-                            msg_got = line[3].strip()
-                            logger_runner.error(f"[{code_line_number}] Assertion failed! Expected '{msg_expected}', got '{msg_got}'.")
+                    # Remove redundant newlines and whitespaces.
+                    line = line.rstrip("\r\n\t ")
+                   
+                    if "SYSTEM" in line:
+                        if "ASSERT FAILED!" in line:
+                            logger_platform.error(f"{line}")
                             assert_fail_count += 1
+                        elif "ASSERT PASSED!" in line:
+                            logger_platform.info(f"{line}")
                             reached_assert_flag = True
-                        elif msg_content == "TEST_FINISH":
-                            logger_runner.info(f"[{code_line_number}] Received TEST_FINISH, wrapping up.")
+                        elif "TEST FINISHED!" in line:
+                            logger_runner.info("Reached the end of test, wrapping up!")
                             break
+                        else:
+                            logger_platform.info(f"{line}")
+                            logger_runner.error("Received unknown SYSTEM message!")
+                            comm_error_count += 1
+                    elif "INFO" in line:
+                        logger_platform.info(f"{line}")
+                    elif "WARNING" in line:
+                        logger_platform.warning(f"{line}")
+                        warn_count += 1
+                    elif "ERROR" in line:
+                        logger_platform.error(f"{line}")
+                        err_count += 1
+                    else:
+                        logger_platform.info(f"{line}")
+                        logger_runner.error("Received unknown message type!")
+                        comm_error_count += 1
+
                 except TimeoutError:
                     logger_runner.error(f"Serial timeout! Did not receive any message in time. Check if the test output is correct and if TEST_FINISH is issued at the end of the test.")
                     comm_error_count += 1

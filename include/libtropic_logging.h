@@ -26,11 +26,11 @@
         ##__VA_ARGS__)
 
 // Loggers with selectable message type.
-#define LT_LOG_INFO(f_, ...) printf("[%4d][INFO]    " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_WARN(f_, ...) printf("[%4d][WARNING] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_ERROR(f_, ...) printf("[%4d][ERROR]   " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 // Logger for system messages -- e.g. finishing a test.
-#define LT_LOG_SYSTEM(f_, ...) printf("[%4d][SYSTEM]  " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_SYSTEM(f_, ...) printf("SYSTEM  [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message.
 #ifdef LT_USE_ASSERT
