@@ -80,11 +80,16 @@ void lt_test_read_cert_store_reversible(void);
 int lt_test_ping(void);
 
 /**
- * @brief Test function which writes r config
+ * @brief Backs up R-Config, writes it and then restores it.
  *
- * @return int
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole R-Config and save it.
+ *  3. Write the whole R-Config with random data and check it.
+ *  4. Write the whole R-Config again and check for an error.
+ *  4. Restore the R-Config and check it.
  */
-int lt_test_write_r_config(void);
+void lt_test_write_r_config_reversible(void);
 
 /**
  * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
