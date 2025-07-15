@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed nonce overflow vulnerability in lt_l3_nonce_increase, the function now returns `LT_NONCE_OVERFLOW` if the nonce cannot be increased anymore.
 
 ### Removed
+- Macro `LT_USE_ASSERT`, `assert()` is always inserted.
 
 ## [0.1.0]
 
