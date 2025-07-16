@@ -47,10 +47,11 @@ void lt_test_write_r_config_reversible(void)
     LT_LOG_INFO("Writing the whole R config");
     LT_ASSERT(LT_OK, write_whole_R_config(&h, &r_config_random));
 
-    LT_LOG_INFO("Reading the whole R config and checking if it was written:");
+    LT_LOG_INFO("Reading the whole R config");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("Checking if it was written");
         LT_ASSERT(1, (r_config.obj[i] == r_config_random.obj[i]));
     }
     LT_LOG_LINE();
@@ -60,11 +61,12 @@ void lt_test_write_r_config_reversible(void)
         LT_ASSERT(LT_L3_FAIL, lt_r_config_write(&h, get_conf_addr(i), r_config_backup.obj[i]));
     }
 
-    LT_LOG_INFO("Reading the whole R config and checking if it was not rewritten:");
+    LT_LOG_INFO("Reading the whole R config");
     memset(r_config.obj, 0, sizeof(r_config.obj));
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("Checking if it was not rewritten");
         LT_ASSERT(1, (r_config.obj[i] == r_config_random.obj[i]));
     }
     LT_LOG_LINE();
@@ -75,10 +77,11 @@ void lt_test_write_r_config_reversible(void)
     LT_LOG_INFO("Restoring the whole R config");
     LT_ASSERT(LT_OK, write_whole_R_config(&h, &r_config_backup));
 
-    LT_LOG_INFO("Reading the whole R config and checking if it was restored:");
+    LT_LOG_INFO("Reading the whole R config");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("Checking if it was restored");
         LT_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
     }
     LT_LOG_LINE();
