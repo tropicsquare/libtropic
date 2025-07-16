@@ -68,6 +68,19 @@ struct lt_l2_get_info_req_t {
     u8 crc[2]; /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_get_info_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_get_info_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_get_info_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_get_info_req_t, object_id) +
+        MEMBER_SIZE(struct lt_l2_get_info_req_t, block_index) +
+        MEMBER_SIZE(struct lt_l2_get_info_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request to obtain information about TROPIC01. The type of information obtained is distinguished by OBJECT_ID.
@@ -87,6 +100,19 @@ struct lt_l2_get_info_rsp_t {
     u8 object[128];
     u8 crc[2]; /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_get_info_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, object) +
+        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_HANDSHAKE_REQ_ID 0x02
@@ -127,6 +153,19 @@ struct lt_l2_handshake_req_t {
     u8 crc[2];     /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_handshake_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request to execute a Secure Channel Handshake and establish a new Secure Channel Session (TROPIC01 moves to Secure
@@ -148,6 +187,19 @@ struct lt_l2_handshake_rsp_t {
     u8 t_tauth[16]; /**< Authentication Tag */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_handshake_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
+        MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_CMD_REQ_ID 0x04
@@ -173,6 +225,18 @@ struct lt_l2_encrypted_cmd_req_t {
     u8 crc[2]; /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_encrypted_cmd_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, l3_chunk) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request to execute an L3 Command.
@@ -189,6 +253,19 @@ struct lt_l2_encrypted_cmd_rsp_t {
     uint8_t l3_chunk[255];
     u8 crc[2]; /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_encrypted_cmd_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, l3_chunk) +
+        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_SESSION_ABT_ID 0x08
@@ -208,6 +285,17 @@ struct lt_l2_encrypted_session_abt_req_t {
     u8 crc[2];  /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_encrypted_session_abt_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request to abort current Secure Channel Session and execution of L3 command (TROPIC01 moves to Idle Mode).
@@ -218,6 +306,18 @@ struct lt_l2_encrypted_session_abt_rsp_t {
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_encrypted_session_abt_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_RESEND_REQ_ID 0x10
@@ -237,6 +337,17 @@ struct lt_l2_resend_req_t {
     u8 crc[2];  /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_resend_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_resend_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_resend_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_resend_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request for TROPIC01 to resend the last L2 Response.
@@ -247,6 +358,18 @@ struct lt_l2_resend_rsp_t {
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_resend_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_resend_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_resend_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_resend_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_resend_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_SLEEP_REQ_ID 0x20
@@ -275,6 +398,18 @@ struct lt_l2_sleep_req_t {
     u8 crc[2];     /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_sleep_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_sleep_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_sleep_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_sleep_req_t, sleep_kind) +
+        MEMBER_SIZE(struct lt_l2_sleep_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request for TROPIC01 to go to Sleep Mode or Deep Sleep Mode.
@@ -285,6 +420,18 @@ struct lt_l2_sleep_rsp_t {
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_sleep_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_STARTUP_REQ_ID 0xb3
@@ -309,6 +456,18 @@ struct lt_l2_startup_req_t {
     u8 crc[2];     /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_startup_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_startup_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_startup_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_startup_req_t, startup_id) +
+        MEMBER_SIZE(struct lt_l2_startup_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request for TROPIC01 to reset.
@@ -319,6 +478,18 @@ struct lt_l2_startup_rsp_t {
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_startup_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_startup_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_startup_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_startup_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_startup_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
@@ -356,6 +527,20 @@ struct lt_l2_mutable_fw_update_req_t {
     u8 crc[2];    /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, bank_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, offset) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, data) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request to write a chunk of the new mutable FW to a R-Memory bank.
@@ -369,6 +554,18 @@ struct lt_l2_mutable_fw_update_rsp_t {
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
@@ -398,6 +595,18 @@ struct lt_l2_mutable_fw_erase_req_t {
     u8 crc[2];  /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_erase_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, bank_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Request to erase the mutable FW stored in a R-Memory bank.
@@ -409,6 +618,18 @@ struct lt_l2_mutable_fw_erase_rsp_t {
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_erase_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, crc)
+    )
+);
+// clang-format on
 
 /** @brief Request ID */
 #define LT_L2_GET_LOG_REQ_ID 0xa2
@@ -428,6 +649,17 @@ struct lt_l2_get_log_req_t {
     u8 crc[2];  /**< Checksum */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_get_log_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_get_log_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_get_log_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_get_log_req_t, crc)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Get log from FW running on RISCV CPU.
@@ -443,5 +675,18 @@ struct lt_l2_get_log_rsp_t {
     u8 log_msg[255]; /**< Log message */
     u8 crc[2];       /**< Checksum */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_get_log_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, log_msg) +
+        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, crc)
+    )
+);
+// clang-format on
 
 #endif  // !LT_L2_API_STRUCTS_H
