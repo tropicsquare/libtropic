@@ -55,7 +55,7 @@ jobs:
       - name: Execute tests with CTest
         run: |
             cd tests/model_based_project/build/
-            ctest -V -E "lt_test_ecc_ecdsa|lt_test_r_mem"
+            ctest -V -E "lt_test_ecc_ecdsa"
       
       - name: Upload run logs
         if: always()
