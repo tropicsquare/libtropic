@@ -287,8 +287,9 @@ struct lt_l3_pairing_key_invalidate_res_t {
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_l3_pairing_key_invalidate_res_t) ==
+    sizeof(struct lt_l3_pairing_key_invalidate_res_t) == 
     (
         MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, res_size) +
         MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, result) +
@@ -400,7 +401,6 @@ STATIC_ASSERT(
 );
 // clang-format on
 
-
 /**
  * @brief
  * Command to read a single CO from R-Config.
@@ -462,7 +462,6 @@ STATIC_ASSERT(
     )
 );
 // clang-format on
-
 
 /**
  * @brief
@@ -1304,7 +1303,6 @@ STATIC_ASSERT(
 );
 // clang-format on
 
-
 /**
  * @brief
  * Command to sign a message with an EdDSA algorithm.
@@ -1645,7 +1643,6 @@ STATIC_ASSERT(
     )
 );
 // clang-format on
-
 
 /**
  * @brief
