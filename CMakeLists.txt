@@ -150,19 +150,19 @@ endif()
 # this name is also by CTest to identify the test and also used to create a macro (uppercase format)
 # which is used for test selection.
 set(LIBTROPIC_TEST_LIST
-    lt_test_read_chip_id_reversible
-    lt_test_read_write_pairing_keys_irreversible
-    lt_test_write_r_config_reversible
-    lt_test_ping
     lt_test_ecc_ecdsa
     lt_test_ecc_eddsa
+    lt_test_ire_read_write_pairing_keys
+    lt_test_ping
     lt_test_r_mem
-    lt_test_erase_r_config_reversible
-    lt_test_read_r_config_reversible
-    lt_test_read_cert_store_reversible
-    lt_test_read_i_config_reversible
-    lt_test_handshake_req_reversible
-    lt_test_resend_req_reversible
+    lt_test_rev_erase_r_config
+    lt_test_rev_handshake_req
+    lt_test_rev_read_cert_store
+    # lt_test_rev_read_chip_id
+    lt_test_rev_read_i_config
+    lt_test_rev_read_r_config
+    lt_test_rev_resend_req
+    lt_test_rev_write_r_config
 )
 
 # Export test list to parent project (usually platform-specific implementation).
@@ -192,19 +192,19 @@ configure_file(
 # a bit of flexibility for a case where one would want to implement more tests in one file etc.
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_cert_store_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_chip_id_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_i_config_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_r_config_reversible.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config_reversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_read_write_pairing_keys.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ping.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_write_pairing_keys_irreversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_handshake_req_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_resend_req_reversible.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_handshake_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_cert_store.c
+        # ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/

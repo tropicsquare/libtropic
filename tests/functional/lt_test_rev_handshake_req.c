@@ -10,7 +10,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
-void lt_test_handshake_req_reversible(void)
+void lt_test_rev_handshake_req(void)
 {
     lt_handle_t h;
     LT_LOG_INFO("Preparing handle.");

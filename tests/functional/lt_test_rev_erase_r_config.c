@@ -11,7 +11,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
-void lt_test_erase_r_config_reversible(void)
+void lt_test_rev_erase_r_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_erase_r_config_reversible()");

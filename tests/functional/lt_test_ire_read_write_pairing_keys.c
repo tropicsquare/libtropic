@@ -34,7 +34,7 @@ static void print_bytes(uint8_t *data, uint16_t len)
     }
 }
 
-void lt_test_read_write_pairing_keys_irreversible(void)
+void lt_test_ire_read_write_pairing_keys(void)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_read_write_pairing_keys_irreversible()");

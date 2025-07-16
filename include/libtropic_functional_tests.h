@@ -25,73 +25,6 @@ extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
 
 /**
- * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
- *
- * Test steps:
- *  1. Start Secure Session with pairing key slot 0 and read it.
- *  2. Read pairing key slots 1,2,3 and check they are empty.
- *  3. Write pairing key slots 1,2,3.
- *  4. Read all pairing key slots and check for expected value.
- *  5. Write zeros to all pairing key slots and check for failure.
- */
-void lt_test_read_write_pairing_keys_irreversible(void);
-
-/**
- * @brief Test reading Chip ID and parse it.
- *
- * Test steps:
- *  1. Get device Chip ID.
- *  2. Parse it and print it.
- */
-void lt_test_read_chip_id_reversible(void);
-
-/**
- * @brief Reads contents of R-Config and prints it to the log.
- *
- * Test steps:
- *  1. Start Secure Session with pairing key slot 0.
- *  2. Read the whole R-config.
- */
-void lt_test_read_r_config_reversible(void);
-
-/**
- * @brief Reads contents of I-Config and prints it to the log.
- *
- * Test steps:
- *  1. Start Secure Session with pairing key slot 0.
- *  2. Read the whole I-config.
- */
-void lt_test_read_i_config_reversible(void);
-
-/**
- * @brief Read Certificate Store with 4 certificates and print it to log.
- *
- * Test steps:
- *  1. Get device Certificate Store.
- *  2. For each of the 4 certificates, check if its size is not zero and print it.
- */
-void lt_test_read_cert_store_reversible(void);
-
-/**
- * @brief Test function which does Ping command with all pairing keys
- *
- * @return int
- */
-int lt_test_ping(void);
-
-/**
- * @brief Backs up R-Config, writes it and then restores it.
- *
- * Test steps:
- *  1. Start Secure Session with pairing key slot 0.
- *  2. Read the whole R-Config and save it.
- *  3. Write the whole R-Config with random data and check it.
- *  4. Write the whole R-Config again and check for an error.
- *  4. Restore the R-Config and check it.
- */
-void lt_test_write_r_config_reversible(void);
-
-/**
  * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
  *
  * @return int
@@ -104,6 +37,25 @@ int lt_test_ecc_eddsa(void);
  * @return int
  */
 int lt_test_ecc_ecdsa(void);
+
+/**
+ * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
+ *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0 and read it.
+ *  2. Read pairing key slots 1,2,3 and check they are empty.
+ *  3. Write pairing key slots 1,2,3.
+ *  4. Read all pairing key slots and check for expected value.
+ *  5. Write zeros to all pairing key slots and check for failure.
+ */
+void lt_test_ire_read_write_pairing_keys(void);
+
+/**
+ * @brief Test function which does Ping command with all pairing keys
+ *
+ * @return int
+ */
+int lt_test_ping(void);
 
 /**
  * @brief Test function which tests reading,writing and erasing of all r mem slots
@@ -121,7 +73,7 @@ int lt_test_r_mem(void);
  *  3. Erase the R-Config and check it.
  *  4. Restore the R-Config and check it.
  */
-void lt_test_erase_r_config_reversible(void);
+void lt_test_rev_erase_r_config(void);
 
 /**
  * @brief Test Secure Session initialization using handshake request and abortion of the Session.
@@ -131,7 +83,43 @@ void lt_test_erase_r_config_reversible(void);
  *  2. Secure Session can be estabilished multiple times without aborting a previous existing Session.
  *  3. Secure Session can be aborted multiple times, even though there is no session.
  */
-void lt_test_handshake_req_reversible(void);
+void lt_test_rev_handshake_req(void);
+
+/**
+ * @brief Read Certificate Store with 4 certificates and print it to log.
+ *
+ * Test steps:
+ *  1. Get device Certificate Store.
+ *  2. For each of the 4 certificates, check if its size is not zero and print it.
+ */
+void lt_test_rev_read_cert_store(void);
+
+/**
+ * @brief Test reading Chip ID and parse it.
+ *
+ * Test steps:
+ *  1. Get device Chip ID.
+ *  2. Parse it and print it.
+ */
+void lt_test_rev_read_chip_id(void);
+
+/**
+ * @brief Reads contents of I-Config and prints it to the log.
+ *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole I-config.
+ */
+void lt_test_rev_read_i_config(void);
+
+/**
+ * @brief Reads contents of R-Config and prints it to the log.
+ *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Read the whole R-config.
+ */
+void lt_test_rev_read_r_config(void);
 
 /**
  * @brief Test Resend_Req L2 request.
@@ -142,6 +130,13 @@ void lt_test_handshake_req_reversible(void);
  * 3. Contents of the original and resended frames are compared. This will check whether
  *    the resend works as intended.
  */
-void lt_test_resend_req_reversible(void);
+void lt_test_rev_resend_req(void);
+
+/**
+ * @brief Test function which writes r config
+ *
+ * @return int
+ */
+int lt_test_write_r_config(void);
 
 #endif
