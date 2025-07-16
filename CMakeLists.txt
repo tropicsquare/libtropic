@@ -204,7 +204,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_write_r_config.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/

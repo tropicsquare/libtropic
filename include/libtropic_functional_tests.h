@@ -137,6 +137,6 @@ void lt_test_rev_resend_req(void);
  *
  * @return int
  */
-int lt_test_write_r_config(void);
+void lt_test_rev_write_r_config(void);
 
 #endif

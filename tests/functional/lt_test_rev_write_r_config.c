@@ -13,7 +13,7 @@
 #include "libtropic_port.h"
 #include "string.h"
 
-void lt_test_write_r_config_reversible(void)
+void lt_test_rev_write_r_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_write_r_config_reversible()");
