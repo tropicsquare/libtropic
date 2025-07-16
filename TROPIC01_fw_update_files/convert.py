@@ -68,6 +68,7 @@ def parse_version_from_filename(filename):
         return None
 
 if __name__ == "__main__":
+
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} <path_to_fw_folder>")
         print()
@@ -75,17 +76,30 @@ if __name__ == "__main__":
         print("Example: ./convert.py /path/to/firmwares/")
         print("Note: The folder shall contain exactly two bin files with version numbers in their names.")
         sys.exit(1)
-    filename1, filename2 = list_files_in_directory(sys.argv[1])
-    if filename1 and filename2:
-        #print(f"File 1: {filename1}")
-        #print(f"File 2: {filename2}")
-        spect_version = parse_version_from_filename(filename1)
-        if spect_version:
-            #print(f"Parsed version: {version}")
-            binary_to_c_array(sys.argv[1], filename1,  "fw_SPECT_" + spect_version)
 
-        cpu_version = parse_version_from_filename(filename2)
+    filename1, filename2 = list_files_in_directory(sys.argv[1])
+
+    if filename1 and filename2:
+
+        if "spect" in filename1 and "fw" in filename2:
+            spect_fw_filename = filename1
+            cpu_fw_filename = filename2
+        elif "spect" in filename2 and "fw" in filename1:
+            spect_fw_filename = filename2
+            cpu_fw_filename = filename1
+        else:
+            printf("Can't locate SPECT and CPU FWs")
+
+        print(f"Located SPECT FW: {spect_fw_filename}")
+        print(f"Located CPU FW: {cpu_fw_filename}")
+
+        spect_version = parse_version_from_filename(spect_fw_filename)
+        if spect_version:
+            print(f"Parsed SPECT FW version: {version}")
+            binary_to_c_array(sys.argv[1], spect_fw_filename,  "fw_SPECT_" + spect_version)
+
+        cpu_version = parse_version_from_filename(cpu_fw_filename)
         if cpu_version:
-            #print(f"Parsed version: {version}")
-            binary_to_c_array(sys.argv[1], filename2, "fw_CPU_" + cpu_version)
+            print(f"Parsed CPU FW version: {version}")
+            binary_to_c_array(sys.argv[1], cpu_fw_filename, "fw_CPU_" + cpu_version)
 
