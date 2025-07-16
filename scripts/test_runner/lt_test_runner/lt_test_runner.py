@@ -103,23 +103,10 @@ class lt_test_runner:
                         break
 
                     # Remove redundant newlines and whitespaces.
-                    line = line.rstrip("\r\n\t ")
+                    line = line.rstrip("\r\n\t ")                   
                    
-                    if "ASSERT FAILED!" in line:
-                        logger_platform.error(f"{line}")
-                        assert_fail_count += 1
-                        if not ignore_assert_fail:
-                            logger_runner.info("Received assertion failure, terminating the test.")
-                            break
-                        else:
-                            logger_runner.info("ignore_assert_fail set, ignoring assertion failure.")
-                    elif "ASSERT PASSED!" in line:
-                        logger_platform.info(f"{line}")
-                        reached_assert_flag = True
-                    elif "TEST FINISHED!" in line:
-                        logger_runner.info("Reached the end of test, wrapping up!")
-                        break
-                    elif "INFO" in line:
+                    # Passing through output.
+                    if "INFO" in line:
                         logger_platform.info(f"{line}")
                     elif "WARNING" in line:
                         logger_platform.warning(f"{line}")
@@ -131,6 +118,20 @@ class lt_test_runner:
                         logger_platform.info(f"{line}")
                         logger_runner.error("Received unknown message type!")
                         comm_error_count += 1
+
+                    # Identifying special messages.
+                    if "ASSERT FAILED!" in line:
+                        assert_fail_count += 1
+                        if not ignore_assert_fail:
+                            logger_runner.info("Received assertion failure, terminating the test.")
+                            break
+                        else:
+                            logger_runner.info("ignore_assert_fail set, ignoring assertion failure.")
+                    elif "ASSERT PASSED!" in line:
+                        reached_assert_flag = True
+                    elif "TEST FINISHED!" in line:
+                        logger_runner.info("Reached the end of test, wrapping up!")
+                        break
 
                 except TimeoutError:
                     logger_runner.error(f"Serial timeout! Did not receive any message in time. Check if the test output is correct and if TEST_FINISH is issued at the end of the test.")
