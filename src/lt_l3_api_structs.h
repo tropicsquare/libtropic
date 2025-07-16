@@ -1240,14 +1240,14 @@ struct lt_l3_ecdsa_sign_res_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct lt_l3_eddsa_sign_res_t) ==
+    sizeof(struct lt_l3_ecdsa_sign_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, r) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, s) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, tag)
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, r) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, s) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, tag)
     )
 );
 // clang-format on
