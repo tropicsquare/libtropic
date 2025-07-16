@@ -43,6 +43,18 @@ struct lt_l3_ping_cmd_t {
     u8 tag[16];       /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ping_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ping_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_ping_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_ping_cmd_t, data_in) +
+        MEMBER_SIZE(struct lt_l3_ping_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * A dummy command to check the Secure Channel Session communication.
@@ -57,6 +69,18 @@ struct lt_l3_ping_res_t {
     u8 data_out[4096]; /**< Data out */
     u8 tag[16];        /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ping_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ping_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_ping_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_ping_res_t, data_out) +
+        MEMBER_SIZE(struct lt_l3_ping_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_PAIRING_KEY_WRITE_CMD_ID 0x10
@@ -99,6 +123,20 @@ struct lt_l3_pairing_key_write_cmd_t {
     u8 tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_pairing_key_write_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, s_hipub) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to write the X25519 public key to a Pairing Key slot.
@@ -108,6 +146,17 @@ struct lt_l3_pairing_key_write_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_pairing_key_write_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_PAIRING_KEY_READ_CMD_ID 0x11
@@ -140,6 +189,18 @@ struct lt_l3_pairing_key_read_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_pairing_key_read_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to read the X25519 public key from a Pairing Key slot.
@@ -159,6 +220,19 @@ struct lt_l3_pairing_key_read_res_t {
     u8 s_hipub[32]; /**< Public Key */
     u8 tag[16];     /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_pairing_key_read_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, s_hipub) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_PAIRING_KEY_INVALIDATE_CMD_ID 0x12
@@ -191,6 +265,18 @@ struct lt_l3_pairing_key_invalidate_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_pairing_key_invalidate_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to invalidate the X25519 public key in a Pairing Key slot.
@@ -200,6 +286,16 @@ struct lt_l3_pairing_key_invalidate_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+STATIC_ASSERT(
+    sizeof(struct lt_l3_pairing_key_invalidate_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_R_CONFIG_WRITE_CMD_ID 0x20
@@ -234,6 +330,20 @@ struct lt_l3_r_config_write_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_config_write_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, address) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, value) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to write a single CO to R-Config.
@@ -243,6 +353,17 @@ struct lt_l3_r_config_write_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_config_write_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_config_write_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_r_config_write_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_R_CONFIG_READ_CMD_ID 0x21
@@ -267,6 +388,19 @@ struct lt_l3_r_config_read_cmd_t {
     u8 tag[16];  /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_config_read_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, address) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, tag)
+    )
+);
+// clang-format on
+
+
 /**
  * @brief
  * Command to read a single CO from R-Config.
@@ -287,6 +421,19 @@ struct lt_l3_r_config_read_res_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_config_read_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, value) +
+        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, tag)
+    )
+);
+// clang-format on
+
 /** @brief Command ID */
 #define LT_L3_R_CONFIG_ERASE_CMD_ID 0x22
 /** @brief Command length */
@@ -305,6 +452,18 @@ struct lt_l3_r_config_erase_cmd_t {
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_config_erase_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, tag)
+    )
+);
+// clang-format on
+
+
 /**
  * @brief
  * Command to erase the whole R-Config (convert the bits of all CO to 1).
@@ -314,6 +473,17 @@ struct lt_l3_r_config_erase_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_config_erase_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_I_CONFIG_WRITE_CMD_ID 0x30
@@ -343,6 +513,19 @@ struct lt_l3_i_config_write_cmd_t {
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_i_config_write_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, address) + 
+        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, bit_index) + 
+        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to write a single bit of CO (from I-Config) from 1 to 0.
@@ -352,6 +535,17 @@ struct lt_l3_i_config_write_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_i_config_write_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_i_config_write_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_i_config_write_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_i_config_write_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_I_CONFIG_READ_CMD_ID 0x31
@@ -376,6 +570,18 @@ struct lt_l3_i_config_read_cmd_t {
     u8 tag[16];  /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_i_config_read_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, address) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to read a single CO from I-Config.
@@ -395,6 +601,19 @@ struct lt_l3_i_config_read_res_t {
     u32 value;  /**< Configuration object value */
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_i_config_read_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, value) +
+        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_WRITE_CMD_ID 0x40
@@ -433,6 +652,20 @@ struct lt_l3_r_mem_data_write_cmd_t {
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_mem_data_write_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, udata_slot) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, data) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to write general purpose data in a slot from the User Data partition in R-Memory.
@@ -442,6 +675,17 @@ struct lt_l3_r_mem_data_write_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_mem_data_write_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_READ_CMD_ID 0x41
@@ -466,6 +710,18 @@ struct lt_l3_r_mem_data_read_cmd_t {
     u8 tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_mem_data_read_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, udata_slot) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to read the general purpose data from a slot of the User Data partition in R-Memory.
@@ -485,6 +741,19 @@ struct lt_l3_r_mem_data_read_res_t {
     u8 data[444]; /**< Data to read */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_mem_data_read_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, data) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_ERASE_CMD_ID 0x42
@@ -509,6 +778,18 @@ struct lt_l3_r_mem_data_erase_cmd_t {
     u8 tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_mem_data_erase_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, udata_slot) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to erase a slot from the User Data partition in R-Memory.
@@ -518,6 +799,17 @@ struct lt_l3_r_mem_data_erase_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_r_mem_data_erase_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_RANDOM_VALUE_GET_CMD_ID 0x50
@@ -542,6 +834,18 @@ struct lt_l3_random_value_get_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_random_value_get_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, n_bytes) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to get random numbers generated by TRNG2.
@@ -561,6 +865,19 @@ struct lt_l3_random_value_get_res_t {
     u8 random_data[255]; /**< Random data */
     u8 tag[16];          /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_random_value_get_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, random_data) +
+        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_GENERATE_CMD_ID 0x60
@@ -594,6 +911,19 @@ struct lt_l3_ecc_key_generate_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_generate_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, curve) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to generate an ECC Key and store the key in a slot from the ECC Keys partition in R-Memory.
@@ -603,6 +933,17 @@ struct lt_l3_ecc_key_generate_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_generate_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, tag)
+    )
+);
+//clang-format on
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_STORE_CMD_ID 0x61
@@ -646,6 +987,21 @@ struct lt_l3_ecc_key_store_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_store_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, curve) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, k) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to store an ECC Key in a slot from the ECC Keys partition in R-Memory.
@@ -655,6 +1011,17 @@ struct lt_l3_ecc_key_store_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_store_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_READ_CMD_ID 0x62
@@ -687,6 +1054,18 @@ struct lt_l3_ecc_key_read_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_read_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to read the public ECC Key from a slot of the ECC Keys partition in R-Memory.
@@ -717,6 +1096,21 @@ struct lt_l3_ecc_key_read_res_t {
     u8 tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_read_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, curve) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, origin) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, pub_key) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, tag)
+    )
+);
+// clang-format on
+
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_ERASE_CMD_ID 0x63
 /** @brief Command length */
@@ -740,6 +1134,18 @@ struct lt_l3_ecc_key_erase_cmd_t {
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_erase_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to erase an ECC Key from a slot in the ECC Keys partition in R-Memory.
@@ -749,6 +1155,17 @@ struct lt_l3_ecc_key_erase_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecc_key_erase_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_ECDSA_SIGN_CMD_ID 0x70
@@ -783,6 +1200,20 @@ struct lt_l3_ecdsa_sign_cmd_t {
     u8 tag[16];      /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_ecdsa_sign_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, msg_hash) +
+        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to sign a message hash with an ECDSA algorithm.
@@ -807,6 +1238,20 @@ struct lt_l3_ecdsa_sign_res_t {
     u8 s[32];   /**< ECDSA Signature - S part */
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_eddsa_sign_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, r) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, s) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_EDDSA_SIGN_CMD_ID 0x71
@@ -845,6 +1290,21 @@ struct lt_l3_eddsa_sign_cmd_t {
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_eddsa_sign_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, msg) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, tag)
+    )
+);
+// clang-format on
+
+
 /**
  * @brief
  * Command to sign a message with an EdDSA algorithm.
@@ -869,6 +1329,20 @@ struct lt_l3_eddsa_sign_res_t {
     u8 s[32];   /**< EDDSA Signature - S part */
     u8 tag[16]; /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_eddsa_sign_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, r) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, s) +
+        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_MCOUNTER_INIT_CMD_ID 0x80
@@ -903,6 +1377,20 @@ struct lt_l3_mcounter_init_cmd_t {
     u8 tag[16];       /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mcounter_init_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_index) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_val) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to initialize the Monotonic Counter.
@@ -912,6 +1400,17 @@ struct lt_l3_mcounter_init_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mcounter_init_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_MCOUNTER_UPDATE_CMD_ID 0x81
@@ -936,6 +1435,18 @@ struct lt_l3_mcounter_update_cmd_t {
     u8 tag[16];         /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mcounter_update_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, mcounter_index) +
+        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to update the Monotonic Counter (decrement by 1).
@@ -945,6 +1456,17 @@ struct lt_l3_mcounter_update_res_t {
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mcounter_update_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_MCOUNTER_GET_CMD_ID 0x82
@@ -969,6 +1491,18 @@ struct lt_l3_mcounter_get_cmd_t {
     u8 tag[16];         /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mcounter_get_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, mcounter_index) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to get the value of the Monotonic Counter.
@@ -988,6 +1522,19 @@ struct lt_l3_mcounter_get_res_t {
     u32 mcounter_val; /**< Initialization value. */
     u8 tag[16];       /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mcounter_get_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, mcounter_val) +
+        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, tag)
+    )
+);
+// clang-format on
 
 /** @brief Command ID */
 #define LT_L3_MAC_AND_DESTROY_CMD_ID 0x90
@@ -1023,6 +1570,20 @@ struct lt_l3_mac_and_destroy_cmd_t {
     u8 tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mac_and_destroy_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, slot) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, padding) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, data_in) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, tag)
+    )
+);
+// clang-format on
+
 /**
  * @brief
  * Command to execute the MAC-and-Destroy sequence.
@@ -1043,6 +1604,19 @@ struct lt_l3_mac_and_destroy_res_t {
     u8 tag[16];      /**< L3 tag */
 } __attribute__((packed));
 
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_mac_and_destroy_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, data_out) +
+        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, tag)
+    )
+);
+// clang-format on
+
 /** @brief Command ID */
 #define LT_L3_SERIAL_CODE_GET_CMD_ID 0xa0
 /** @brief Command length */
@@ -1060,6 +1634,18 @@ struct lt_l3_serial_code_get_cmd_t {
     u8 cmd_id;    /**< Command Identifier */
     u8 tag[16];   /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_serial_code_get_cmd_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_size) +
+        MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_id) +
+        MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, tag)
+    )
+);
+// clang-format on
+
 
 /**
  * @brief
@@ -1080,5 +1666,18 @@ struct lt_l3_serial_code_get_res_t {
     u8 serial_code[32]; /**< Serial code */
     u8 tag[16];         /**< L3 tag */
 } __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l3_serial_code_get_res_t) ==
+    (
+        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, res_size) +
+        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, result) +
+        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, padding) +
+        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, serial_code) +
+        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, tag)
+    )
+);
+// clang-format on
 
 #endif  // !LT_L3_API_STRUCTS_H
