@@ -55,6 +55,16 @@ if(
     message(FATAL_ERROR "No cryptography provider is defined.")
 endif()
 
+# Silicon revision, allowed values:
+#   ABAB - Silicon revision B - Bootloader 1.0.1
+#   ACAB - Silicon revision C - Bootloader 2.0.1
+set(LT_SILICON_REV "ABAB")
+
+# TROPIC01 FW version compiled into libtropic
+# Always use bundled versions from "TROPIC01_fw_update_files" folder
+set(LT_CPU_FW_VERSION "0_5_0")
+set(LT_SPECT_FW_VERSION "0_3_1")
+
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
