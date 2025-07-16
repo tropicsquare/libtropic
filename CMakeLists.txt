@@ -37,6 +37,16 @@ if(
     message(FATAL_ERROR "No cryptography provider is defined.")
 endif()
 
+# Silicon revision, allowed values:
+#   ABAB - Silicon revision B - Bootloader 1.0.1
+#   ACAB - Silicon revision C - Bootloader 2.0.1
+set(LT_SILICON_REV "ABAB")
+
+# TROPIC01 FW version compiled into libtropic
+# Always use bundled versions from "TROPIC01_fw_update_files" folder
+set(LT_CPU_FW_VERSION "0_5_0")
+set(LT_SPECT_FW_VERSION "0_3_1")
+
 ###########################################################################
 #                                                                         #
 #   Building documentation                                                #
@@ -255,15 +265,30 @@ endif()
 ###########################################################################
 # Libtropic fw update:                                                    #
 # Collect files to be compiled when "fw update" is enabled                #
+# Compile only selected FW version for single silicon version             #
 ###########################################################################
-
 if(LT_ENABLE_FW_UPDATE)
+
+    if (LT_SILICON_REV STREQUAL "ABAB")
+        set(BL_FOLDER boot_v_1_0_1)
+    elseif (LT_SILICON_REV STREQUAL "ACAB")
+        set(BL_FOLDER boot_v_2_0_1)
+    else()
+        message(FATAL_ERROR "Invalid silicon revision (LT_SILICON_REV): ${LT_SILICON_REV}")
+    endif()
+
+    # TODO: Set define here that will contain name of the variable with CPU / SPECT
+    #       FW arrays. This may replace the "FW_UPDATE_DATA" from lt_ex_fw_update.
+    #       Further, there needs to be also a macro for SPECT FW data and header file name
+    #       since each FW version header file is different!
+
     set(SDK_INCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/fw_CPU_0_3_1.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU_${LT_CPU_FW_VERSION}.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT_${LT_SPECT_FW_VERSION}.h
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
     )
 endif()
 
