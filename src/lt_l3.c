@@ -696,6 +696,7 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
     }
 
     // Get read data size
+    // TODO: If FW implements fail error code on R_Mem_Data_Read from empty slot, this can be removed.
     *size = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->padding);
 
     // Check if slot is not empty
