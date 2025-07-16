@@ -283,7 +283,7 @@ struct lt_ser_num_t {
     uint8_t wafer_id;    /**< 8 bits for wafer ID */
     uint16_t x_coord;    /**< 16 bits for x-coordinate */
     uint16_t y_coord;    /**< 16 bits for y-coordinate */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 STATIC_ASSERT(
     ( sizeof(struct lt_ser_num_t) )
@@ -401,7 +401,7 @@ struct lt_chip_id_t {
      * @brief Padding (192 bits).
      */
     uint8_t rfu_4[24];
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 STATIC_ASSERT(
     ( sizeof(struct lt_chip_id_t) )

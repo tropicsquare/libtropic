@@ -66,7 +66,7 @@ struct lt_l2_get_info_req_t {
      */
     u8 block_index;
     u8 crc[2]; /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -86,7 +86,7 @@ struct lt_l2_get_info_rsp_t {
      */
     u8 object[128];
     u8 crc[2]; /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_HANDSHAKE_REQ_ID 0x02
@@ -125,7 +125,7 @@ struct lt_l2_handshake_req_t {
      */
     u8 pkey_index; /**< Pairing Key slot */
     u8 crc[2];     /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -147,7 +147,7 @@ struct lt_l2_handshake_rsp_t {
      */
     u8 t_tauth[16]; /**< Authentication Tag */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_CMD_REQ_ID 0x04
@@ -171,7 +171,7 @@ struct lt_l2_encrypted_cmd_req_t {
     /** Contains a chunk of encrypted command */
     uint8_t l3_chunk[255];
     u8 crc[2]; /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -188,7 +188,7 @@ struct lt_l2_encrypted_cmd_rsp_t {
     /** Contains a chunk of encrypted command */
     uint8_t l3_chunk[255];
     u8 crc[2]; /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_ENCRYPTED_SESSION_ABT_ID 0x08
@@ -206,7 +206,7 @@ struct lt_l2_encrypted_session_abt_req_t {
     u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     u8 crc[2];  /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -217,7 +217,7 @@ struct lt_l2_encrypted_session_abt_rsp_t {
     u8 status;      /**< L2 status byte */
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_RESEND_REQ_ID 0x10
@@ -235,7 +235,7 @@ struct lt_l2_resend_req_t {
     u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     u8 crc[2];  /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -246,7 +246,7 @@ struct lt_l2_resend_rsp_t {
     u8 status;      /**< L2 status byte */
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_SLEEP_REQ_ID 0x20
@@ -273,7 +273,7 @@ struct lt_l2_sleep_req_t {
      */
     u8 sleep_kind; /**< Sleep Kind */
     u8 crc[2];     /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -284,7 +284,7 @@ struct lt_l2_sleep_rsp_t {
     u8 status;      /**< L2 status byte */
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_STARTUP_REQ_ID 0xb3
@@ -307,7 +307,7 @@ struct lt_l2_startup_req_t {
     u8 req_len;    /**< Length byte */
     u8 startup_id; /**< The request ID */
     u8 crc[2];     /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -318,7 +318,7 @@ struct lt_l2_startup_rsp_t {
     u8 status;      /**< L2 status byte */
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
@@ -354,7 +354,7 @@ struct lt_l2_mutable_fw_update_req_t {
     u16 offset;   /**< The offset of the specific bank to write the chunk */
     u8 data[248]; /**< The binary data to write. Data size should be a multiple of 4. */
     u8 crc[2];    /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -368,7 +368,7 @@ struct lt_l2_mutable_fw_update_rsp_t {
     u8 status;      /**< L2 status byte */
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
@@ -396,7 +396,7 @@ struct lt_l2_mutable_fw_erase_req_t {
     u8 req_len; /**< Length byte */
     u8 bank_id; /**< The Identifier of the bank to erase. The same choices as above. */
     u8 crc[2];  /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -408,7 +408,7 @@ struct lt_l2_mutable_fw_erase_rsp_t {
     u8 status;      /**< L2 status byte */
     u8 rsp_len;     /**< Length of incoming data */
     u8 crc[2];      /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Request ID */
 #define LT_L2_GET_LOG_REQ_ID 0xa2
@@ -426,7 +426,7 @@ struct lt_l2_get_log_req_t {
     u8 req_id;  /**< Request ID byte */
     u8 req_len; /**< Length byte */
     u8 crc[2];  /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -442,6 +442,6 @@ struct lt_l2_get_log_rsp_t {
      */
     u8 log_msg[255]; /**< Log message */
     u8 crc[2];       /**< Checksum */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 #endif  // !LT_L2_API_STRUCTS_H

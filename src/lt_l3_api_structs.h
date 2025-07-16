@@ -41,7 +41,7 @@ struct lt_l3_ping_cmd_t {
      */
     u8 data_in[4096]; /**< Data in */
     u8 tag[16];       /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -56,7 +56,7 @@ struct lt_l3_ping_res_t {
      */
     u8 data_out[4096]; /**< Data out */
     u8 tag[16];        /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_PAIRING_KEY_WRITE_CMD_ID 0x10
@@ -97,7 +97,7 @@ struct lt_l3_pairing_key_write_cmd_t {
      */
     u8 s_hipub[32]; /**< Public Key */
     u8 tag[16];     /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -107,7 +107,7 @@ struct lt_l3_pairing_key_write_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_PAIRING_KEY_READ_CMD_ID 0x11
@@ -138,7 +138,7 @@ struct lt_l3_pairing_key_read_cmd_t {
      */
     u16 slot;   /**< Slot to Read */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -158,7 +158,7 @@ struct lt_l3_pairing_key_read_res_t {
      */
     u8 s_hipub[32]; /**< Public Key */
     u8 tag[16];     /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_PAIRING_KEY_INVALIDATE_CMD_ID 0x12
@@ -189,7 +189,7 @@ struct lt_l3_pairing_key_invalidate_cmd_t {
      */
     u16 slot;   /**< Slot to Invalidate */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -199,7 +199,7 @@ struct lt_l3_pairing_key_invalidate_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_R_CONFIG_WRITE_CMD_ID 0x20
@@ -232,7 +232,7 @@ struct lt_l3_r_config_write_cmd_t {
      */
     u32 value;  /**< Configuration object value */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -242,7 +242,7 @@ struct lt_l3_r_config_write_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_R_CONFIG_READ_CMD_ID 0x21
@@ -265,7 +265,7 @@ struct lt_l3_r_config_read_cmd_t {
      */
     u16 address; /**< Configuration object address */
     u8 tag[16];  /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -285,7 +285,7 @@ struct lt_l3_r_config_read_res_t {
      */
     u32 value;  /**< Configuration object value */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_R_CONFIG_ERASE_CMD_ID 0x22
@@ -303,7 +303,7 @@ struct lt_l3_r_config_erase_cmd_t {
     u16 cmd_size; /**< L3 command size */
     u8 cmd_id;    /**< Command Identifier */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -313,7 +313,7 @@ struct lt_l3_r_config_erase_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_I_CONFIG_WRITE_CMD_ID 0x30
@@ -341,7 +341,7 @@ struct lt_l3_i_config_write_cmd_t {
      */
     u8 bit_index; /**< Bit to write. */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -351,7 +351,7 @@ struct lt_l3_i_config_write_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_I_CONFIG_READ_CMD_ID 0x31
@@ -374,7 +374,7 @@ struct lt_l3_i_config_read_cmd_t {
      */
     u16 address; /**< Configuration object address */
     u8 tag[16];  /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -394,7 +394,7 @@ struct lt_l3_i_config_read_res_t {
      */
     u32 value;  /**< Configuration object value */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_WRITE_CMD_ID 0x40
@@ -431,7 +431,7 @@ struct lt_l3_r_mem_data_write_cmd_t {
      */
     u8 data[444]; /**< Data to write */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -441,7 +441,7 @@ struct lt_l3_r_mem_data_write_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_READ_CMD_ID 0x41
@@ -464,7 +464,7 @@ struct lt_l3_r_mem_data_read_cmd_t {
      */
     u16 udata_slot; /**< Slot to read */
     u8 tag[16];     /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -484,7 +484,7 @@ struct lt_l3_r_mem_data_read_res_t {
      */
     u8 data[444]; /**< Data to read */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_R_MEM_DATA_ERASE_CMD_ID 0x42
@@ -507,7 +507,7 @@ struct lt_l3_r_mem_data_erase_cmd_t {
      */
     u16 udata_slot; /**< Slot to erase */
     u8 tag[16];     /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -517,7 +517,7 @@ struct lt_l3_r_mem_data_erase_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_RANDOM_VALUE_GET_CMD_ID 0x50
@@ -540,7 +540,7 @@ struct lt_l3_random_value_get_cmd_t {
      */
     u8 n_bytes; /**< Number of bytes to get. */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -560,7 +560,7 @@ struct lt_l3_random_value_get_res_t {
      */
     u8 random_data[255]; /**< Random data */
     u8 tag[16];          /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_GENERATE_CMD_ID 0x60
@@ -592,7 +592,7 @@ struct lt_l3_ecc_key_generate_cmd_t {
      */
     u8 curve;   /**< Elliptic Curve */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -602,7 +602,7 @@ struct lt_l3_ecc_key_generate_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_STORE_CMD_ID 0x61
@@ -644,7 +644,7 @@ struct lt_l3_ecc_key_store_cmd_t {
      */
     u8 k[32];   /**< Key to store */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -654,7 +654,7 @@ struct lt_l3_ecc_key_store_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_READ_CMD_ID 0x62
@@ -685,7 +685,7 @@ struct lt_l3_ecc_key_read_cmd_t {
      */
     u16 slot;   /**< ECC Key slot */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -715,7 +715,7 @@ struct lt_l3_ecc_key_read_res_t {
      */
     u8 pub_key[64]; /**< Public Key */
     u8 tag[16];     /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_ECC_KEY_ERASE_CMD_ID 0x63
@@ -738,7 +738,7 @@ struct lt_l3_ecc_key_erase_cmd_t {
      */
     u16 slot;   /**< ECC Key slot */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -748,7 +748,7 @@ struct lt_l3_ecc_key_erase_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_ECDSA_SIGN_CMD_ID 0x70
@@ -781,7 +781,7 @@ struct lt_l3_ecdsa_sign_cmd_t {
      */
     u8 msg_hash[32]; /**< Hash of the Message to sign. */
     u8 tag[16];      /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -806,7 +806,7 @@ struct lt_l3_ecdsa_sign_res_t {
      */
     u8 s[32];   /**< ECDSA Signature - S part */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_EDDSA_SIGN_CMD_ID 0x71
@@ -843,7 +843,7 @@ struct lt_l3_eddsa_sign_cmd_t {
      */
     u8 msg[4096]; /**< Message to sign. */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -868,7 +868,7 @@ struct lt_l3_eddsa_sign_res_t {
      */
     u8 s[32];   /**< EDDSA Signature - S part */
     u8 tag[16]; /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_MCOUNTER_INIT_CMD_ID 0x80
@@ -901,7 +901,7 @@ struct lt_l3_mcounter_init_cmd_t {
      */
     u32 mcounter_val; /**< Initialization value. */
     u8 tag[16];       /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -911,7 +911,7 @@ struct lt_l3_mcounter_init_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_MCOUNTER_UPDATE_CMD_ID 0x81
@@ -934,7 +934,7 @@ struct lt_l3_mcounter_update_cmd_t {
      */
     u16 mcounter_index; /**< Index of Monotonic Counter */
     u8 tag[16];         /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -944,7 +944,7 @@ struct lt_l3_mcounter_update_res_t {
     u16 res_size; /**< L3 result size */
     u8 result;    /**< Result status indication */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_MCOUNTER_GET_CMD_ID 0x82
@@ -967,7 +967,7 @@ struct lt_l3_mcounter_get_cmd_t {
      */
     u16 mcounter_index; /**< Index of Monotonic Counter */
     u8 tag[16];         /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -987,7 +987,7 @@ struct lt_l3_mcounter_get_res_t {
      */
     u32 mcounter_val; /**< Initialization value. */
     u8 tag[16];       /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_MAC_AND_DESTROY_CMD_ID 0x90
@@ -1021,7 +1021,7 @@ struct lt_l3_mac_and_destroy_cmd_t {
      */
     u8 data_in[32]; /**< Input data */
     u8 tag[16];     /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -1041,7 +1041,7 @@ struct lt_l3_mac_and_destroy_res_t {
      */
     u8 data_out[32]; /**< Output data */
     u8 tag[16];      /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /** @brief Command ID */
 #define LT_L3_SERIAL_CODE_GET_CMD_ID 0xa0
@@ -1059,7 +1059,7 @@ struct lt_l3_serial_code_get_cmd_t {
     u16 cmd_size; /**< L3 command size */
     u8 cmd_id;    /**< Command Identifier */
     u8 tag[16];   /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 /**
  * @brief
@@ -1079,6 +1079,6 @@ struct lt_l3_serial_code_get_res_t {
      */
     u8 serial_code[32]; /**< Serial code */
     u8 tag[16];         /**< L3 tag */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 #endif  // !LT_L3_API_STRUCTS_H
