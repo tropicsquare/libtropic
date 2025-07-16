@@ -285,6 +285,7 @@ struct lt_ser_num_t {
     uint16_t y_coord;    /**< 16 bits for y-coordinate */
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     ( sizeof(struct lt_ser_num_t) )
     ==
@@ -298,6 +299,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_ser_num_t, y_coord)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -403,6 +405,7 @@ struct lt_chip_id_t {
     uint8_t rfu_4[24];
 } __attribute__((__packed__));
 
+// clang-format off
 STATIC_ASSERT(
     ( sizeof(struct lt_chip_id_t) )
     ==
@@ -429,6 +432,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_chip_id_t, rfu_4)
     )
 );
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned RISCV fw version */
