@@ -9,10 +9,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <stdio.h>
-#ifdef LT_USE_ASSERT
 #include <assert.h>
-#endif
+#include <stdio.h>
 
 // Only info-level loggers and decorators.
 // This has no effect, test runner just simply copies these lines to the log.
@@ -26,45 +24,43 @@
         ##__VA_ARGS__)
 
 // Loggers with selectable message type.
-#define LT_LOG_INFO(f_, ...) printf("%d\t;INFO;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_WARN(f_, ...) printf("%d\t;WARNING;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_ERROR(f_, ...) printf("%d\t;ERROR;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
-// Logger for system messages -- e.g. finishing a test.
-#define LT_LOG_SYSTEM(f_, ...) printf("%d\t;SYSTEM;" f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
-// Assertions. Will log as a system message.
-#ifdef LT_USE_ASSERT
-#define LT_ASSERT(expected, value) assert(expected == value);
-#else
-#define LT_ASSERT(expected, value)                            \
-    {                                                         \
-        int _val_ = (value);                                  \
-        int _exp_ = (expected);                               \
-        if (_val_ == _exp_) {                                 \
-            LT_LOG_SYSTEM("ASSERT_OK");                       \
-        }                                                     \
-        else {                                                \
-            LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", _val_, _exp_); \
-        };                                                    \
+// Assertions. Will log as a system message and call native assert function.
+// Note that parameters are stored to _val_ and _exp_ for a case when there
+// are function calls passed to the macros. Without the helper variables
+// the functions will be called mutliple times -- in the first comparison
+// (if statement), LT_LOG_ERROR and finally in the assert(). This can cause
+// unexpected behaviour.
+#define LT_ASSERT(expected, value)                                                 \
+    {                                                                              \
+        int _val_ = (value);                                                       \
+        int _exp_ = (expected);                                                    \
+        if (_val_ == _exp_) {                                                      \
+            LT_LOG_INFO("ASSERT PASSED!");                                         \
+        }                                                                          \
+        else {                                                                     \
+            LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
+        };                                                                         \
+        assert(_exp_ == _val_);                                                    \
     }
-#endif
 
-#ifdef LT_USE_ASSERT
-#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
-    assert(value == (condition ? expected_if_true : expected_if_false));
-#else
-#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
-    int _val_ = (value);                                                      \
-    int _exp_ = (condition ? expected_if_true : expected_if_false);           \
-    if (_val_ == _exp_) {                                                     \
-        LT_LOG_SYSTEM("ASSERT_OK");                                           \
-    }                                                                         \
-    else {                                                                    \
-        LT_LOG_SYSTEM("ASSERT_FAIL;%d;%d", _val_, _exp_);                     \
+#define LT_ASSERT_COND(value, condition, expected_if_true, expected_if_false)      \
+    {                                                                              \
+        int _val_ = (value);                                                       \
+        int _exp_ = (condition ? expected_if_true : expected_if_false);            \
+        if (_val_ == _exp_) {                                                      \
+            LT_LOG_INFO("ASSERT PASSED!");                                         \
+        }                                                                          \
+        else {                                                                     \
+            LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
+        }                                                                          \
+        assert(_exp_ == _val_);                                                    \
     }
-#endif
 
 // Used to stop the test. Will log as a system message.
-#define LT_FINISH_TEST() LT_LOG_SYSTEM("TEST_FINISH")
+#define LT_FINISH_TEST() LT_LOG_INFO("TEST FINISHED!")
 
 #endif /* LT_LIBTROPIC_LOGGING_H */

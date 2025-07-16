@@ -17,7 +17,7 @@ logger_runner = logging.getLogger("RUNNER  ")
 logger_runner.propagate = False
 logger_runner_console_handler = logging.StreamHandler()
 # Pad prefixes so the output is nicely aligned.
-logger_runner_formatter = logging.Formatter("%(levelname)-7s RUNNER   %(message)s")
+logger_runner_formatter = logging.Formatter("RUNNER   %(levelname)-7s %(message)s")
 logger_runner_console_handler.setFormatter(logger_runner_formatter)
 if not logger_runner.hasHandlers():
     logger_runner.addHandler(logger_runner_console_handler)
@@ -27,7 +27,7 @@ logger_platform = logging.getLogger("PLATFORM")
 logger_platform.propagate = False
 logger_platform_console_handler = logging.StreamHandler()
 # Pad prefixes so the output is nicely aligned.
-logger_platform_formatter = logging.Formatter("%(levelname)-7s PLATFORM %(message)s")
+logger_platform_formatter = logging.Formatter("PLATFORM %(message)s")
 logger_platform_console_handler.setFormatter(logger_platform_formatter)
 if not logger_platform.hasHandlers():
     logger_platform.addHandler(logger_platform_console_handler)
@@ -61,7 +61,7 @@ class lt_test_runner:
         
         self.openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
 
-    async def __parse_output(self, message_timeout: int, total_timeout: int) -> lt_test_result:
+    async def __parse_output(self, message_timeout: int, total_timeout: int, ignore_assert_fail: bool) -> lt_test_result:
         err_count = 0
         warn_count = 0
         assert_fail_count = 0
@@ -102,48 +102,37 @@ class lt_test_runner:
                         comm_error_count += 1
                         break
 
-                    logger_runner.debug(f"Received from serial: {line}")
-                    line = line.split(";")
-
-                    if (len(line) < 3):
-                        logger_runner.error(f"Line malformed!")
-                        comm_error_count += 1
-                        continue
-                    
-                    try:
-                        code_line_number = f"{int(line[0].strip()) : 4d}"
-                    except ValueError:
-                        logger_runner.error(f"Line malformed (line number not an integer)!")
-                        comm_error_count += 1
-
-                    msg_type = line[1].strip()
-                    msg_content = line[2].strip()
-
-                    if (msg_type == "INFO"):
-                        logger_platform.info(f"[{code_line_number}] {msg_content}")
-                    elif (msg_type == "WARNING"):
-                        logger_platform.warning(f"[{code_line_number}] {msg_content}")
+                    # Remove redundant newlines and whitespaces.
+                    line = line.rstrip("\r\n\t ")                   
+                   
+                    # Passing through output.
+                    if "INFO" in line:
+                        logger_platform.info(f"{line}")
+                    elif "WARNING" in line:
+                        logger_platform.warning(f"{line}")
                         warn_count += 1
-                    elif (msg_type == "ERROR"):
-                        logger_platform.error(f"[{code_line_number}] {msg_content}")
+                    elif "ERROR" in line:
+                        logger_platform.error(f"{line}")
                         err_count += 1
-                    elif (msg_type == "SYSTEM"):
-                        if msg_content == "ASSERT_OK":
-                            logger_runner.info(f"[{code_line_number}] Assertion passed!")
-                            reached_assert_flag = True
-                        elif msg_content == "ASSERT_FAIL":
-                            if (len(line) < 5):
-                                logger_runner.error(f"Line malformed!")
-                                comm_error_count += 1
-                                continue
-                            msg_expected = line[4].strip()
-                            msg_got = line[3].strip()
-                            logger_runner.error(f"[{code_line_number}] Assertion failed! Expected '{msg_expected}', got '{msg_got}'.")
-                            assert_fail_count += 1
-                            reached_assert_flag = True
-                        elif msg_content == "TEST_FINISH":
-                            logger_runner.info(f"[{code_line_number}] Received TEST_FINISH, wrapping up.")
+                    else:
+                        logger_platform.info(f"{line}")
+                        logger_runner.error("Received unknown message type!")
+                        comm_error_count += 1
+
+                    # Identifying special messages.
+                    if "ASSERT FAILED!" in line:
+                        assert_fail_count += 1
+                        if not ignore_assert_fail:
+                            logger_runner.info("Received assertion failure, terminating the test.")
                             break
+                        else:
+                            logger_runner.info("ignore_assert_fail set, ignoring assertion failure.")
+                    elif "ASSERT PASSED!" in line:
+                        reached_assert_flag = True
+                    elif "TEST FINISHED!" in line:
+                        logger_runner.info("Reached the end of test, wrapping up!")
+                        break
+
                 except TimeoutError:
                     logger_runner.error(f"Serial timeout! Did not receive any message in time. Check if the test output is correct and if TEST_FINISH is issued at the end of the test.")
                     comm_error_count += 1
@@ -176,7 +165,7 @@ class lt_test_runner:
         self.platform.openocd_disconnect()
         return self.lt_test_result.TEST_PASSED
 
-    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int) -> lt_test_result:
+    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int, ignore_assert_fail: bool) -> lt_test_result:
         
         if message_timeout == 0:
             # pyserial expects None for no timeout, 0 sets non-blocking mode
@@ -214,4 +203,4 @@ class lt_test_runner:
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
-            return await self.__parse_output(message_timeout, total_timeout)
+            return await self.__parse_output(message_timeout, total_timeout, ignore_assert_fail)

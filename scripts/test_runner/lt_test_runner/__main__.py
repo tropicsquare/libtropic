@@ -83,6 +83,12 @@ async def main() -> lt_test_runner.lt_test_result:
         default = 0
     )
 
+    parser.add_argument(
+        "--ignore-assert-fail",
+        help    = "Do not terminate if assertion fails and continue the test.",
+        action  = "store_true"
+    )
+
     args = parser.parse_args()
     if args.message_timeout < 0:
         parser.error("Message timeout has to be >= 0.")
@@ -123,7 +129,7 @@ async def main() -> lt_test_runner.lt_test_result:
         test_result = lt_test_runner.lt_test_result.TEST_FAILED # The default is failure in case an exception is thrown.
 
         try:
-            test_result = await tr.run(args.firmware, args.message_timeout, args.total_timeout)
+            test_result = await tr.run(args.firmware, args.message_timeout, args.total_timeout, args.ignore_assert_fail)
         except serial.SerialException as e:
             logger.error(f"Platform serial interface communication error: {str(e)}")
             return lt_test_runner.lt_test_result.TEST_FAILED

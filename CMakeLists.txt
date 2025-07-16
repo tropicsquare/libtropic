@@ -21,7 +21,6 @@ option(LT_HELPERS "Compile helper function" ON)
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
-option(LT_USE_ASSERT "Insert assert() into LT_ASSERT/LT_ASSERT_COND" OFF)
 
 set(LT_SH0_PRIV_PATH_DEFAULT "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/sh0_key_pair/sh_x25519_private_key_2025-03-24T09-15-15Z.pem")
 set(LT_SH0_PRIV_PATH
@@ -303,8 +302,4 @@ endif()
 
 if(LT_SEPARATE_L3_BUFF)
     target_compile_definitions(tropic PRIVATE LT_SEPARATE_L3_BUFF)
-endif()
-
-if(LT_USE_ASSERT)
-    target_compile_definitions(tropic PUBLIC LT_USE_ASSERT)
 endif()
