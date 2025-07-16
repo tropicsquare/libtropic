@@ -8,8 +8,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "stdint.h"
 #include "libtropic_macros.h"
+#include "stdint.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
