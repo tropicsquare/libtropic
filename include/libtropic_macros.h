@@ -1,5 +1,5 @@
 /**
- * @file tools.h
+ * @file libtropic_macros.h
  * @brief Various helper macros.
  * @author Tropic Square s.r.o.
  *

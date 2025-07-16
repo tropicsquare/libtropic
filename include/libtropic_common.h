@@ -9,7 +9,7 @@
  */
 
 #include "stdint.h"
-#include "tools.h"
+#include "libtropic_macros.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
