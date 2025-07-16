@@ -55,7 +55,7 @@ void lt_test_ire_read_write_pairing_keys(void);
  *
  * @return int
  */
-int lt_test_ping(void);
+int lt_test_rev_ping(void);
 
 /**
  * @brief Test function which tests reading,writing and erasing of all r mem slots

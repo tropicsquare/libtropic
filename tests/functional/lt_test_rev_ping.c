@@ -22,7 +22,7 @@
  *
  * @return int
  */
-int lt_test_ping(void)
+int lt_test_rev_ping(void)
 {
     LT_LOG(
         "  "
