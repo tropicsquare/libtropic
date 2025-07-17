@@ -124,6 +124,17 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
 # Libtropic examples:                                                     #
 # Collect files to be compiled when "examples" are enabled                #
 ###########################################################################
+set(LIBTROPIC_EXAMPLE_LIST)
+    lt_ex_fw_update
+    lt_ex_hello_world_separate_API
+    lt_ex_hello_world
+    lt_ex_hardware_wallet
+    lt_ex_macandd
+endif()
+
+# Export example list to parent project (usually platform-specific implementation).
+set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
@@ -135,6 +146,25 @@ if(LT_BUILD_EXAMPLES)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/
     )
 endif()
+
+# Create an example registry based on the example list above. This example registry is then included
+# in platform-specific main.c.
+set(LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT "")
+foreach(example_name ${LIBTROPIC_EXAMPLE_LIST})
+    # Create a correct macro from example name.
+    string(TOUPPER ${example_name} example_macro)
+    string(REPLACE " " "_" example_macro ${example_macro})
+    string(APPEND LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT
+        "#elif defined(${example_macro})\n"
+        "  ${example_name}();\n"
+    )
+endforeach()
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_registry_template.c.inc
+    ${CMAKE_CURRENT_BINARY_DIR}/lt_ex_registry.c.inc
+    @ONLY
+)
 
 ###########################################################################
 # LIBTROPIC FUNCTIONAL TESTS                                              #
