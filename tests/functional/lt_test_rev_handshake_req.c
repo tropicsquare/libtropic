@@ -12,6 +12,10 @@
 
 void lt_test_rev_handshake_req(void)
 {
+    LT_LOG_INFO("----------------------------------------------");
+    LT_LOG_INFO("lt_test_rev_handshake_req()");
+    LT_LOG_INFO("----------------------------------------------");
+
     lt_handle_t h;
     LT_LOG_INFO("Preparing handle.");
     LT_ASSERT(LT_OK, lt_init(&h));
