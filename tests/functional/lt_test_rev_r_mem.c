@@ -1,5 +1,5 @@
 /**
- * @file lt_test_r_mem_reversible.c
+ * @file lt_test_rev_r_mem.c
  * @brief Test R_Mem_Data_* commands on all User Data slots
  * @author Tropic Square s.r.o.
  *
@@ -12,10 +12,10 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-void lt_test_r_mem_reversible(void)
+void lt_test_rev_r_mem(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_r_mem_reversible()");
+    LT_LOG_INFO("lt_test_rev_r_mem()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
