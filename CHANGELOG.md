@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added missing `LT_L1_INT_TIMEOUT` in `lt_ret_strs`.
 - Chip id parsing in `tests/model_based_project/create_model_cfg.py`
 - Fixed nonce overflow vulnerability in lt_l3_nonce_increase, the function now returns `LT_NONCE_OVERFLOW` if the nonce cannot be increased anymore.
+- Calculation of number of chunks in the function `lt_l2_send_encrypted_cmd()`
 
 ### Removed
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
