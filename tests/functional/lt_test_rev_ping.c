@@ -1,5 +1,5 @@
 /**
- * @file lt_test_ping.c
+ * @file lt_test_rev_ping.c
  * @brief Test function which tries Ping command with max length of message with pairing slot 0
  * @author Tropic Square s.r.o.
  *
@@ -29,7 +29,7 @@ int lt_test_rev_ping(void)
         "------------------------------------------------------------------------------------------------------------"
         "-");
     LT_LOG(
-        "  -------- lt_test_ping() "
+        "  -------- lt_test_rev_ping() "
         "-------------------------------------------------------------------------------------");
     LT_LOG(
         "  "

@@ -1,5 +1,5 @@
 /**
- * @file lt_test_write_r_config_reversible.c
+ * @file lt_test_rev_write_r_config.c
  * @brief Backs up R-Config, writes it and then restores it.
  * @author Tropic Square s.r.o.
  *
@@ -16,7 +16,7 @@
 void lt_test_rev_write_r_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_write_r_config_reversible()");
+    LT_LOG_INFO("lt_test_rev_write_r_config()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};

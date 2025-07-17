@@ -1,5 +1,5 @@
 /**
- * @file lt_test_handshake_reversible.c
+ * @file lt_test_rev_handshake_req.c
  * @brief Test handshake request and Secure Session abortion request.
  * @author Tropic Square s.r.o.
  *

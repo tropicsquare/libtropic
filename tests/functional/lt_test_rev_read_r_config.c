@@ -1,5 +1,5 @@
 /**
- * @file lt_test_read_r_config_reversible.c
+ * @file lt_test_rev_read_r_config.c
  * @brief Reads contents of R-Config and prints it to the log.
  * @author Tropic Square s.r.o.
  *
@@ -14,7 +14,7 @@
 void lt_test_rev_read_r_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_read_r_config_reversible()");
+    LT_LOG_INFO("lt_test_rev_read_r_config()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
