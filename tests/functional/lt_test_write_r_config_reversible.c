@@ -31,7 +31,7 @@ void lt_test_write_r_config_reversible(void)
     LT_ASSERT(LT_OK, lt_init(&h));
 
     LT_LOG_INFO("Creating randomized R config for testing");
-    lt_port_random_bytes(r_config_random.obj, LT_CONFIG_OBJ_CNT);
+    LT_ASSERT(LT_OK, lt_port_random_bytes(r_config_random.obj, LT_CONFIG_OBJ_CNT));
 
     LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
     LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
