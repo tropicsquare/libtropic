@@ -1,5 +1,5 @@
 /**
- * @file lt_test_handshake_reversible.c
+ * @file lt_test_rev_handshake_req.c
  * @brief Test handshake request and Secure Session abortion request.
  * @author Tropic Square s.r.o.
  *
@@ -10,8 +10,12 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
-void lt_test_handshake_req_reversible(void)
+void lt_test_rev_handshake_req(void)
 {
+    LT_LOG_INFO("----------------------------------------------");
+    LT_LOG_INFO("lt_test_rev_handshake_req()");
+    LT_LOG_INFO("----------------------------------------------");
+
     lt_handle_t h;
     LT_LOG_INFO("Preparing handle.");
     LT_ASSERT(LT_OK, lt_init(&h));

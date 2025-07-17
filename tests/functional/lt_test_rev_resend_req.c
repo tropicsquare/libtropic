@@ -1,5 +1,5 @@
 /**
- * @file lt_test_resend_req_reversible.c
+ * @file lt_test_rev_resend_req.c
  * @brief Test L2 Resend Request.
  * @author Tropic Square s.r.o.
  *
@@ -16,10 +16,10 @@
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
 
-void lt_test_resend_req_reversible(void)
+void lt_test_rev_resend_req(void)
 {
     LT_LOG_INFO("----------------------------------");
-    LT_LOG_INFO("lt_test_resend_req_reversible()");
+    LT_LOG_INFO("lt_test_rev_resend_req()");
     LT_LOG_INFO("----------------------------------");
 
     lt_handle_t h;

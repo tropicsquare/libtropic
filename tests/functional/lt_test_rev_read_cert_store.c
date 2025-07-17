@@ -1,5 +1,5 @@
 /**
- * @file lt_test_read_cert_store_reversible.c
+ * @file lt_test_rev_read_cert_store.c
  * @brief Read Certificate Store with 4 certificates and print it to log.
  * @author Tropic Square s.r.o.
  *
@@ -14,10 +14,10 @@
 /** @brief Length of the buffers for certificates. */
 #define CERTS_BUF_LEN 700
 
-void lt_test_read_cert_store_reversible(void)
+void lt_test_rev_read_cert_store(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_read_cert_store_reversible()");
+    LT_LOG_INFO("lt_test_rev_read_cert_store()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};

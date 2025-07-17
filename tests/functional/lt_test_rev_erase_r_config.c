@@ -1,5 +1,5 @@
 /**
- * @file lt_test_erase_r_config_reversible.c
+ * @file lt_test_rev_erase_r_config.c
  * @brief Backs up R-Config, erases it and then restores it.
  * @author Tropic Square s.r.o.
  *
@@ -11,10 +11,10 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
-void lt_test_erase_r_config_reversible(void)
+void lt_test_rev_erase_r_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_erase_r_config_reversible()");
+    LT_LOG_INFO("lt_test_rev_erase_r_config()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};

@@ -1,5 +1,5 @@
 /**
- * @file lt_test_read_chip_id_reversible.c
+ * @file lt_test_rev_read_chip_id.c
  * @brief Test reading Chip ID and parse it.
  * @author Tropic Square s.r.o.
  *
@@ -439,10 +439,10 @@ static lt_ret_t print_chip_id(struct lt_chip_id_t* chip_id)
     return LT_OK;
 }
 
-void lt_test_read_chip_id_reversible(void)
+void lt_test_rev_read_chip_id(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_read_chip_id_reversible()");
+    LT_LOG_INFO("lt_test_rev_read_chip_id()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
