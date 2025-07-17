@@ -158,7 +158,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_erase_r_config
     lt_test_rev_handshake_req
     lt_test_rev_read_cert_store
-    # lt_test_rev_read_chip_id
+    lt_test_rev_read_chip_id
     lt_test_rev_read_i_config
     lt_test_rev_read_r_config
     lt_test_rev_resend_req
@@ -200,7 +200,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_handshake_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_cert_store.c
-        # ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_chip_id.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
