@@ -95,23 +95,22 @@ void lt_test_rev_r_mem(void)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Testing writing all slots partially...");
+    LT_LOG_INFO("Testing writing all slots partially or with zero data size...");
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length < %d...", R_MEM_DATA_SIZE_MAX);
         LT_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= R_MEM_DATA_SIZE_MAX - 1; // range 0-442
-        random_data_size += 1; // range 1-443 (zero size would return fail)
+        random_data_size %= R_MEM_DATA_SIZE_MAX;
 
         LT_LOG_INFO("Generating %d random bytes for slot #%d...", random_data_size, i);
         LT_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
         memcpy(write_data, random_data, random_data_size);
 
         LT_LOG_INFO("Writing to slot #%d...", i);
-        LT_ASSERT(LT_OK, lt_r_mem_data_write(&h, i, write_data, random_data_size));
+        LT_ASSERT_COND(lt_r_mem_data_write(&h, i, write_data, random_data_size), random_data_size != 0, LT_OK, LT_L3_FAIL);
 
         LT_LOG_INFO("Reading slot #%d...", i);
-        LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
+        LT_ASSERT_COND(lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size), random_data_size != 0, LT_OK, LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_ASSERT(1, (read_data_size == random_data_size));
