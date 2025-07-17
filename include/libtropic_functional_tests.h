@@ -72,7 +72,7 @@ int lt_test_rev_ping(void);
  *  9. Read all slots and check if they were written.
  *  10. Erase all slots and check that reading fails.
  */
-void lt_test_r_mem_reversible(void);
+void lt_test_rev_r_mem(void);
 
 /**
  * @brief Backs up R-Config, erases it and then restores it.
