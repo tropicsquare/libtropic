@@ -13,12 +13,17 @@
 
 extern void (*lt_test_cleanup_function)(void);
 
-// Assertions. Will log as a system message and call native assert function.
+// Assertions -- special variant for functional tests.
+// Will log as a system message and call native assert function.
+// On error, they will also call a cleanup function, if not NULL. The pointer
+// is usually assigned at the start of a functional test, if the test requires a cleanup
+// on each error (and exit of course) to be truly reversible.
+//
 // Note that parameters are stored to _val_ and _exp_ for a case when there
 // are function calls passed to the macros. Without the helper variables
 // the functions will be called mutliple times -- in the first comparison
 // (if statement), LT_LOG_ERROR and finally in the assert(). This can cause
-// unexpected behaviour.
+// unexpected behaviour. 
 #define LT_TEST_ASSERT(expected, value)                                            \
     {                                                                              \
         int _val_ = (value);                                                       \
@@ -45,6 +50,13 @@ extern void (*lt_test_cleanup_function)(void);
             if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();      \
         }                                                                          \
         assert(_exp_ == _val_);                                                    \
+    }
+
+// Used to stop the test. Will log as a system message and call cleanup if not NULL.
+#define LT_FINISH_TEST()                                                    \
+    {                                                                       \
+        LT_LOG_INFO("TEST FINISHED!");                                      \
+        if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();   \
     }
 
 // Default factory pairing keys
