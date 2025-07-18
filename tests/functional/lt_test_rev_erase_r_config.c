@@ -35,7 +35,7 @@ void lt_test_rev_erase_r_config(void)
     LT_LOG_INFO("Backing up the whole R config:");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_backup));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config_backup.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config_backup.obj[i]);
     }
     LT_LOG_LINE();
 
@@ -45,7 +45,7 @@ void lt_test_rev_erase_r_config(void)
     LT_LOG_INFO("Reading the whole R config");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was erased");
         LT_ASSERT(1, ((uint32_t)0xFFFFFFFF == r_config.obj[i]));
     }
@@ -57,7 +57,7 @@ void lt_test_rev_erase_r_config(void)
     LT_LOG_INFO("Reading the whole R config");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was restored");
         LT_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
     }

@@ -186,7 +186,7 @@ static int session_initial(void)
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_read));
     // Print r config
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        printf("\r\n%s, %08" PRIX32, get_conf_desc(i), r_config_read.obj[i]);
+        printf("\r\n%s, %08" PRIX32, cfg_desc_table[i].desc, r_config_read.obj[i]);
     }
     printf("\r\n");
 
@@ -197,7 +197,7 @@ static int session_initial(void)
     read_whole_R_config(&h, &r_config_read);
     // Print r config
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        printf("\r\n%s, %08" PRIX32, get_conf_desc(i), r_config_read.obj[i]);
+        printf("\r\n%s, %08" PRIX32, cfg_desc_table[i].desc, r_config_read.obj[i]);
     }
     printf("\r\n");
 

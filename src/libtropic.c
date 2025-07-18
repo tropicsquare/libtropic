@@ -1307,9 +1307,7 @@ const char *lt_ret_verbose(lt_ret_t ret)
 //--------------------------------------------------------------------------------------------------------//
 #ifdef LT_HELPERS
 
-/** @brief This helper structure together with two get* interfaces is meant to be used to simplify looping
- *         through all config addresses and printing them out into log */
-struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
+struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_START_UP                   ", CONFIGURATION_OBJECTS_CFG_START_UP_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_SENSORS                    ", CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_DEBUG                      ", CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR},
@@ -1338,18 +1336,6 @@ struct lt_config_obj_desc_t config_description_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE        ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR}};
 
-enum CONFIGURATION_OBJECTS_REGS get_conf_addr(uint8_t i)
-{
-    LT_ASSERT(1, (i < LT_CONFIG_OBJ_CNT));
-    return config_description_table[i].addr;
-}
-
-const char *get_conf_desc(uint8_t i)
-{
-    LT_ASSERT(1, (i < LT_CONFIG_OBJ_CNT));
-    return config_description_table[i].desc;
-}
-
 lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
 {
     if (!h || !config) {
@@ -1359,7 +1345,7 @@ lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
     lt_ret_t ret;
 
     for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        ret = lt_r_config_read(h, get_conf_addr(i), &config->obj[i]);
+        ret = lt_r_config_read(h, cfg_desc_table[i].addr, &config->obj[i]);
         if (ret != LT_OK) {
             return ret;
         }
@@ -1377,7 +1363,7 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
     lt_ret_t ret;
 
     for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        ret = lt_r_config_write(h, get_conf_addr(i), config->obj[i]);
+        ret = lt_r_config_write(h, cfg_desc_table[i].addr, config->obj[i]);
         if (ret != LT_OK) {
             return ret;
         }
@@ -1395,7 +1381,7 @@ lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
     lt_ret_t ret;
 
     for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        ret = lt_i_config_read(h, get_conf_addr(i), &config->obj[i]);
+        ret = lt_i_config_read(h, cfg_desc_table[i].addr, &config->obj[i]);
         if (ret != LT_OK) {
             return ret;
         }

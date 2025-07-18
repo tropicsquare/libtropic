@@ -40,7 +40,7 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("Backing up the whole R config:");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_backup));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config_backup.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config_backup.obj[i]);
     }
     LT_LOG_LINE();
 
@@ -50,7 +50,7 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("Reading the whole R config");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was written");
         LT_ASSERT(1, (r_config.obj[i] == r_config_random.obj[i]));
     }
@@ -58,14 +58,14 @@ void lt_test_rev_write_r_config(void)
 
     LT_LOG_INFO("Writing the whole R config again (should fail)");
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_ASSERT(LT_L3_FAIL, lt_r_config_write(&h, get_conf_addr(i), r_config_backup.obj[i]));
+        LT_ASSERT(LT_L3_FAIL, lt_r_config_write(&h, cfg_desc_table[i].addr, r_config_backup.obj[i]));
     }
 
     LT_LOG_INFO("Reading the whole R config");
     memset(r_config.obj, 0, sizeof(r_config.obj));
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was not rewritten");
         LT_ASSERT(1, (r_config.obj[i] == r_config_random.obj[i]));
     }
@@ -80,7 +80,7 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("Reading the whole R config");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was restored");
         LT_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
     }

@@ -464,21 +464,9 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const u
 const char *lt_ret_verbose(lt_ret_t ret);
 
 #ifdef LT_HELPERS
-/**
- * @brief Get the conf desc object from config description table
- *
- * @param i           Index in an array of objects
- * @return uint16_t   String with name of object on a given index
- */
-const char *get_conf_desc(uint8_t i);
 
-/**
- * @brief Get the address of a specific config object from config description table
- *
- * @param  i                               Index in an array of objects
- * @return enum CONFIGURATION_OBJECTS_REGS Address of object on a given index
- */
-enum CONFIGURATION_OBJECTS_REGS get_conf_addr(uint8_t i);
+/** @brief Helper structure, holding string name and address for each configuration object. */
+extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
 
 /**
  * @brief This function reads config objects from TROPIC01 and prints them out
