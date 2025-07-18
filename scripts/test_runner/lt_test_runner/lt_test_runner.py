@@ -61,7 +61,7 @@ class lt_test_runner:
         
         self.openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
 
-    async def __parse_output(self, message_timeout: int, total_timeout: int, ignore_assert_fail: bool) -> lt_test_result:
+    async def __parse_output(self, message_timeout: int, total_timeout: int) -> lt_test_result:
         err_count = 0
         warn_count = 0
         assert_fail_count = 0
@@ -121,12 +121,8 @@ class lt_test_runner:
 
                     # Identifying special messages.
                     if "ASSERT FAILED!" in line:
-                        assert_fail_count += 1
-                        if not ignore_assert_fail:
-                            logger_runner.info("Received assertion failure, terminating the test.")
-                            break
-                        else:
-                            logger_runner.info("ignore_assert_fail set, ignoring assertion failure.")
+                        assert_fail_count   += 1
+                        reached_assert_flag  = True
                     elif "ASSERT PASSED!" in line:
                         reached_assert_flag = True
                     elif "TEST FINISHED!" in line:
@@ -165,7 +161,7 @@ class lt_test_runner:
         self.platform.openocd_disconnect()
         return self.lt_test_result.TEST_PASSED
 
-    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int, ignore_assert_fail: bool) -> lt_test_result:
+    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int) -> lt_test_result:
         
         if message_timeout == 0:
             # pyserial expects None for no timeout, 0 sets non-blocking mode
@@ -203,4 +199,4 @@ class lt_test_runner:
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
-            return await self.__parse_output(message_timeout, total_timeout, ignore_assert_fail)
+            return await self.__parse_output(message_timeout, total_timeout)

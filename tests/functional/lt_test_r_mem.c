@@ -45,18 +45,18 @@ int lt_test_r_mem(void)
 #endif
 
     LT_LOG("%s", "Initialize handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     // Ping with SH0
     LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG("---------------- Loop through all mem slots and check if they are empty ----------------");
 
     for (uint16_t i = 0; i < 5; i++) {
         LT_LOG("lt_r_mem_data_read() slot        n.%d  ", i);
         LT_LOG_RESULT("%s", lt_ret_verbose(lt_r_mem_data_read(&h, i, r_mem_buff, R_MEM_DATA_SIZE_MAX)));
-        LT_ASSERT(0, memcmp(r_mem_buff, r_mem_expected_ff, R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(0, memcmp(r_mem_buff, r_mem_expected_ff, R_MEM_DATA_SIZE_MAX));
     }
 
     LT_LOG("---------------- Loop through all mem slots, fill them with 0x00 and check if written   ----------------");
@@ -70,7 +70,7 @@ int lt_test_r_mem(void)
         // Read content
         LT_LOG("lt_r_mem_data_read() slot        n.%d  ", i);
         LT_LOG_RESULT("%s", lt_ret_verbose(lt_r_mem_data_read(&h, i, r_mem_buff, R_MEM_DATA_SIZE_MAX)));
-        LT_ASSERT(0, memcmp(r_mem_buff, zeroes, R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(0, memcmp(r_mem_buff, zeroes, R_MEM_DATA_SIZE_MAX));
     }
 
     LT_LOG("---------------- Loop through all mem slots and erase them   ----------------");
@@ -83,15 +83,15 @@ int lt_test_r_mem(void)
         // Read content
         LT_LOG("lt_r_mem_data_read() slot        n.%d  ", i);
         LT_LOG_RESULT("%s", lt_ret_verbose(lt_r_mem_data_read(&h, i, r_mem_buff, R_MEM_DATA_SIZE_MAX)));
-        LT_ASSERT(0, memcmp(r_mem_buff, r_mem_expected_ff, R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(0, memcmp(r_mem_buff, r_mem_expected_ff, R_MEM_DATA_SIZE_MAX));
     }
 
     LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 
     return 0;
 }
