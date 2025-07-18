@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include "libtropic_functional_tests.h"
+#include "libtropic_logging.h"
 
 void (*lt_test_cleanup_function)(void) = NULL;
 
