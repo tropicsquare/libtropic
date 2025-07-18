@@ -25,7 +25,7 @@ void lt_assert_fail_handler(void);
 // are function calls passed to the macros. Without the helper variables
 // the functions will be called mutliple times -- in the first comparison
 // (if statement), LT_LOG_ERROR and finally in the assert(). This can cause
-// unexpected behaviour. 
+// unexpected behaviour.
 #define LT_TEST_ASSERT(expected, value)                                            \
     {                                                                              \
         int _val_ = (value);                                                       \
@@ -55,9 +55,9 @@ void lt_assert_fail_handler(void);
     }
 
 // Used to instruct the test runner that the test finshed and may disconnect (useful in embedded ports).
-#define LT_FINISH_TEST()                                                    \
-    {                                                                       \
-        LT_LOG_INFO("TEST FINISHED!");                                      \
+#define LT_FINISH_TEST()               \
+    {                                  \
+        LT_LOG_INFO("TEST FINISHED!"); \
     }
 
 // Default factory pairing keys
