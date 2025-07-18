@@ -56,7 +56,6 @@ extern void (*lt_test_cleanup_function)(void);
 #define LT_FINISH_TEST()                                                    \
     {                                                                       \
         LT_LOG_INFO("TEST FINISHED!");                                      \
-        if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();   \
     }
 
 // Default factory pairing keys
