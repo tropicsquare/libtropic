@@ -11,6 +11,42 @@
 
 #include <stdint.h>
 
+extern void (*lt_test_cleanup_function)(void);
+
+// Assertions. Will log as a system message and call native assert function.
+// Note that parameters are stored to _val_ and _exp_ for a case when there
+// are function calls passed to the macros. Without the helper variables
+// the functions will be called mutliple times -- in the first comparison
+// (if statement), LT_LOG_ERROR and finally in the assert(). This can cause
+// unexpected behaviour.
+#define LT_TEST_ASSERT(expected, value)                                            \
+    {                                                                              \
+        int _val_ = (value);                                                       \
+        int _exp_ = (expected);                                                    \
+        if (_val_ == _exp_) {                                                      \
+            LT_LOG_INFO("ASSERT PASSED!");                                         \
+        }                                                                          \
+        else {                                                                     \
+            LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
+            if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();      \
+        };                                                                         \
+        assert(_exp_ == _val_);                                                    \
+    }
+
+#define LT_TEST_ASSERT_COND(value, condition, expected_if_true, expected_if_false) \
+    {                                                                              \
+        int _val_ = (value);                                                       \
+        int _exp_ = (condition ? expected_if_true : expected_if_false);            \
+        if (_val_ == _exp_) {                                                      \
+            LT_LOG_INFO("ASSERT PASSED!");                                         \
+        }                                                                          \
+        else {                                                                     \
+            LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
+            if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();      \
+        }                                                                          \
+        assert(_exp_ == _val_);                                                    \
+    }
+
 // Default factory pairing keys
 extern uint8_t sh0priv[];
 extern uint8_t sh0pub[];
