@@ -52,7 +52,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ping_cmd_t, data_in) +
         MEMBER_SIZE(struct lt_l3_ping_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -79,7 +79,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ping_res_t, data_out) +
         MEMBER_SIZE(struct lt_l3_ping_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -134,7 +134,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, s_hipub) +
         MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -155,7 +155,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, result) +
         MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -198,7 +198,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, slot) +
         MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -231,7 +231,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, s_hipub) +
         MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -274,7 +274,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, slot) +
         MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -295,7 +295,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, result) +
         MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -342,7 +342,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, value) +
         MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -363,7 +363,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_config_write_res_t, result) +
         MEMBER_SIZE(struct lt_l3_r_config_write_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -398,7 +398,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, address) +
         MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -431,7 +431,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_config_read_res_t, value) +
         MEMBER_SIZE(struct lt_l3_r_config_read_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -460,7 +460,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_id) +
         MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -481,7 +481,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, result) +
         MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -522,7 +522,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, bit_index) + 
         MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -543,7 +543,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_i_config_write_res_t, result) +
         MEMBER_SIZE(struct lt_l3_i_config_write_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -578,7 +578,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, address) +
         MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -611,7 +611,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_i_config_read_res_t, value) +
         MEMBER_SIZE(struct lt_l3_i_config_read_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -662,7 +662,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, data) +
         MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -683,7 +683,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, result) +
         MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -718,7 +718,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, udata_slot) +
         MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -751,7 +751,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, data) +
         MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -786,7 +786,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, udata_slot) +
         MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -807,7 +807,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, result) +
         MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -842,7 +842,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, n_bytes) +
         MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -875,7 +875,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_random_value_get_res_t, random_data) +
         MEMBER_SIZE(struct lt_l3_random_value_get_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -920,7 +920,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, curve) +
         MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -941,7 +941,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, result) +
         MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, tag)
     )
-);
+)
 //clang-format on
 
 /** @brief Command ID */
@@ -998,7 +998,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, k) +
         MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1019,7 +1019,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, result) +
         MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1062,7 +1062,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, slot) +
         MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1107,7 +1107,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, pub_key) +
         MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1142,7 +1142,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, slot) +
         MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1163,7 +1163,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, result) +
         MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1210,7 +1210,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, msg_hash) +
         MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1249,7 +1249,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, s) +
         MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1300,7 +1300,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, msg) +
         MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1339,7 +1339,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, s) +
         MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1386,7 +1386,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_val) +
         MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1407,7 +1407,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, result) +
         MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1442,7 +1442,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, mcounter_index) +
         MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1463,7 +1463,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, result) +
         MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1498,7 +1498,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, mcounter_index) +
         MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1531,7 +1531,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, mcounter_val) +
         MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1579,7 +1579,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, data_in) +
         MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1612,7 +1612,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, data_out) +
         MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, tag)
     )
-);
+)
 // clang-format on
 
 /** @brief Command ID */
@@ -1641,7 +1641,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_id) +
         MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, tag)
     )
-);
+)
 // clang-format on
 
 /**
@@ -1674,7 +1674,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, serial_code) +
         MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, tag)
     )
-);
+)
 // clang-format on
 
 #endif  // !LT_L3_API_STRUCTS_H

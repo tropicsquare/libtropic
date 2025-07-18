@@ -83,7 +83,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_gen_frame_t, cmd_size) +
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
     )
-);
+)
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -298,7 +298,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_ser_num_t, x_coord) + 
         MEMBER_SIZE(struct lt_ser_num_t, y_coord)
     )
-);
+)
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -431,7 +431,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_chip_id_t, rfu_3) + 
         MEMBER_SIZE(struct lt_chip_id_t, rfu_4)
     )
-);
+)
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
