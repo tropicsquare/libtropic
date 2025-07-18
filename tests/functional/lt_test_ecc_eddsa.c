@@ -43,11 +43,11 @@ int lt_test_ecc_eddsa(void)
 #endif
 
     LT_LOG("%s", "Initialize handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     // Ping with SH0
     LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
 
     // Erase all keys, used in case previous run failed in the middle
     // for(uint16_t i=0; i<32; i++) {
@@ -65,7 +65,7 @@ int lt_test_ecc_eddsa(void)
         uint8_t slot_0_pubkey[64];
         lt_ecc_curve_type_t curve;
         ecc_key_origin_t origin;
-        LT_ASSERT(lt_ecc_key_read(&h, i, slot_0_pubkey, 64, &curve, &origin), LT_OK);
+        LT_TEST_ASSERT(lt_ecc_key_read(&h, i, slot_0_pubkey, 64, &curve, &origin), LT_OK);
 
         LT_LOG("lt_ecc_eddsa_sign() slot       n.%d  ", i);
         uint8_t msg[] = {'a', 'h', 'o', 'j'};
@@ -108,11 +108,11 @@ int lt_test_ecc_eddsa(void)
     }
 
     LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 
     return 0;
 }

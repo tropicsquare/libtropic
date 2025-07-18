@@ -51,23 +51,23 @@ int lt_test_rev_ping(void)
     uint8_t in[PING_LEN] = {0};
 
     LT_LOG("%s", "Initialize handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     // Ping with SH0
     LT_LOG("%s with %d", "verify_chip_and_start_secure_session()", PAIRING_KEY_SLOT_INDEX_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG("%s", "lt_ping() ");
-    LT_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN));
+    LT_TEST_ASSERT(LT_OK, lt_ping(&h, ping_msg, in, PING_LEN));
     LT_LOG("Asserting %d B of Ping message", PING_LEN);
-    LT_ASSERT(0, memcmp(in, ping_msg, PING_LEN));
+    LT_TEST_ASSERT(0, memcmp(in, ping_msg, PING_LEN));
     LT_LOG_LINE();
     LT_LOG("%s", "lt_session_abort()");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
     memset(in, 0x00, PING_LEN);
 
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 
     return 0;
 }

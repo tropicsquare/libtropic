@@ -26,46 +26,46 @@ void lt_test_rev_erase_r_config(void)
     struct lt_config_t r_config, r_config_backup;
 
     LT_LOG_INFO("Initializing handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Backing up the whole R config:");
-    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_backup));
+    LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_backup));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config_backup.obj[i]);
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Erasing R config");
-    LT_ASSERT(LT_OK, lt_r_config_erase(&h));
+    LT_TEST_ASSERT(LT_OK, lt_r_config_erase(&h));
 
     LT_LOG_INFO("Reading the whole R config");
-    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
+    LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was erased");
-        LT_ASSERT(1, ((uint32_t)0xFFFFFFFF == r_config.obj[i]));
+        LT_TEST_ASSERT(1, ((uint32_t)0xFFFFFFFF == r_config.obj[i]));
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Restoring the whole R config");
-    LT_ASSERT(LT_OK, write_whole_R_config(&h, &r_config_backup));
+    LT_TEST_ASSERT(LT_OK, write_whole_R_config(&h, &r_config_backup));
 
     LT_LOG_INFO("Reading the whole R config");
-    LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
+    LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
         LT_LOG_INFO("Checking if it was restored");
-        LT_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
+        LT_TEST_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 }
