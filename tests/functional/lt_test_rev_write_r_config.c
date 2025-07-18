@@ -15,8 +15,8 @@
 
 struct lt_config_t r_config_backup;
 
-void lt_test_rev_write_r_config_cleanup(void) {
-
+void lt_test_rev_write_r_config_cleanup(void)
+{
     LT_LOG_INFO("Starting cleanup.");
 
     lt_handle_t h = {0};

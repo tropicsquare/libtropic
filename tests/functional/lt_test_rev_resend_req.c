@@ -10,8 +10,8 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_logging.h"
 #include "libtropic_functional_tests.h"
+#include "libtropic_logging.h"
 #include "lt_l1.h"
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"

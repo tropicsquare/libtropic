@@ -7,17 +7,20 @@
  */
 
 #include <stdlib.h>
+
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
 void (*lt_test_cleanup_function)(void) = NULL;
 
-void lt_assert_fail_handler() {
+void lt_assert_fail_handler()
+{
     if (lt_test_cleanup_function != NULL) {
         LT_LOG_INFO("Post-assert cleanup started.");
         lt_test_cleanup_function();
         LT_LOG_INFO("Post-assert cleanup finished.");
-    } else {
+    }
+    else {
         LT_LOG_INFO("Cleanup function not defined -- skipped post-assert cleaning.");
     }
     LT_FINISH_TEST();
