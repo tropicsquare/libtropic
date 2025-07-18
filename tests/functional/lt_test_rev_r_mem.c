@@ -46,7 +46,7 @@ void lt_test_rev_r_mem(void)
         LT_ASSERT(1, (read_data_size == 0));
     }
     LT_LOG_LINE();
-    
+
     LT_LOG_INFO("Testing writing all slots entirely...");
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
@@ -70,7 +70,7 @@ void lt_test_rev_r_mem(void)
         LT_ASSERT(LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL, lt_r_mem_data_write(&h, i, zeros, R_MEM_DATA_SIZE_MAX));
 
         LT_LOG_INFO("Reading slot #%d...", i);
-        read_data_size = 0; // Set different value just in case
+        read_data_size = 0;  // Set different value just in case
         LT_ASSERT(LT_OK, lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
@@ -107,10 +107,12 @@ void lt_test_rev_r_mem(void)
         memcpy(write_data, random_data, random_data_size);
 
         LT_LOG_INFO("Writing to slot #%d...", i);
-        LT_ASSERT_COND(lt_r_mem_data_write(&h, i, write_data, random_data_size), random_data_size != 0, LT_OK, LT_L3_FAIL);
+        LT_ASSERT_COND(lt_r_mem_data_write(&h, i, write_data, random_data_size), random_data_size != 0, LT_OK,
+                       LT_L3_FAIL);
 
         LT_LOG_INFO("Reading slot #%d...", i);
-        LT_ASSERT_COND(lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size), random_data_size != 0, LT_OK, LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
+        LT_ASSERT_COND(lt_r_mem_data_read(&h, i, r_mem_data, &read_data_size), random_data_size != 0, LT_OK,
+                       LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_ASSERT(1, (read_data_size == random_data_size));
@@ -133,7 +135,6 @@ void lt_test_rev_r_mem(void)
         LT_ASSERT(1, (read_data_size == 0));
     }
     LT_LOG_LINE();
-
 
     LT_LOG_INFO("Aborting Secure Session");
     LT_ASSERT(LT_OK, lt_session_abort(&h));
