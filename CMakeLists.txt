@@ -192,6 +192,10 @@ configure_file(
 # a bit of flexibility for a case where one would want to implement more tests in one file etc.
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
+        # Special file with stuff common for testing.
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_common.c
+
+        # Files which include test functions definitions.
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_read_write_pairing_keys.c
