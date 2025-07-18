@@ -121,7 +121,8 @@ class lt_test_runner:
 
                     # Identifying special messages.
                     if "ASSERT FAILED!" in line:
-                        assert_fail_count += 1
+                        assert_fail_count   += 1
+                        reached_assert_flag  = True
                     elif "ASSERT PASSED!" in line:
                         reached_assert_flag = True
                     elif "TEST FINISHED!" in line:
