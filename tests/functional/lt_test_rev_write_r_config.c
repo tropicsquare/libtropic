@@ -13,19 +13,12 @@
 #include "libtropic_port.h"
 #include "string.h"
 
+// Shared with cleanup function.
 struct lt_config_t r_config_backup;
+lt_handle_t h = {0};
 
 void lt_test_rev_write_r_config_cleanup(void)
 {
-    LT_LOG_INFO("Starting cleanup.");
-
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
-
     if (LT_OK != lt_init(&h)) {
         LT_LOG_ERROR("Cleanup failed!");
         return;
