@@ -33,4 +33,6 @@ int lt_test_ecc_ecdsa(void)
 
     LT_LOG("TODO: implement this test");
     LT_TEST_ASSERT(0, 1);
+
+    return -1;
 }
