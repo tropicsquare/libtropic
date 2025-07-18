@@ -63,13 +63,15 @@ int lt_test_rev_ping(void);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Check if all slots are empty.
- *  3. Write all slots entirely with 0xAB.
+ *  3. Write all slots entirely with random data.
  *  4. Read all slots and check if they were written.
  *  5. Write 0x00 to all slots and check if it fails.
  *  6. Read all slots and check they were not written.
  *  7. Erase all slots and check that reading fails.
- *  8. Write all slots partially with 0xCD.
+ *  8. Write all slots partially with random data of random length (0-443).
+ *      - if the random length is 0, check that write fails.
  *  9. Read all slots and check if they were written.
+ *      - if the random length is 0, check that read fails (slot empty).
  *  10. Erase all slots and check that reading fails.
  */
 void lt_test_rev_r_mem(void);
