@@ -60,7 +60,4 @@
         assert(_exp_ == _val_);                                                    \
     }
 
-// Used to stop the test. Will log as a system message.
-#define LT_FINISH_TEST() LT_LOG_INFO("TEST FINISHED!")
-
 #endif /* LT_LIBTROPIC_LOGGING_H */
