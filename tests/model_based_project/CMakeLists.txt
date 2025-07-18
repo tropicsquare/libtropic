@@ -77,9 +77,7 @@ set(LT_USE_TREZOR_CRYPTO ON)
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
-target_compile_options(tropic PRIVATE -Wall)
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
-target_compile_options(tropic PRIVATE -Wno-implicit-function-declaration)
 
 
 ###########################################################################
