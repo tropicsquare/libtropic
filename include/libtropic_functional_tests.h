@@ -13,6 +13,8 @@
 
 extern void (*lt_test_cleanup_function)(void);
 
+void lt_assert_fail_handler(void);
+
 // Assertions -- special variant for functional tests.
 // Will log as a system message and call native assert function.
 // On error, they will also call a cleanup function, if not NULL. The pointer
@@ -33,7 +35,7 @@ extern void (*lt_test_cleanup_function)(void);
         }                                                                          \
         else {                                                                     \
             LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
-            if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();      \
+            lt_assert_fail_handler();                                              \
         };                                                                         \
         assert(_exp_ == _val_);                                                    \
     }
@@ -47,12 +49,12 @@ extern void (*lt_test_cleanup_function)(void);
         }                                                                          \
         else {                                                                     \
             LT_LOG_ERROR("ASSERT FAILED! Got: '%d' Expected: '%d'", _val_, _exp_); \
-            if (lt_test_cleanup_function != NULL) lt_test_cleanup_function();      \
+            lt_assert_fail_handler();                                              \
         }                                                                          \
         assert(_exp_ == _val_);                                                    \
     }
 
-// Used to stop the test. Will log as a system message and call cleanup if not NULL.
+// Used to instruct the test runner that the test finshed and may disconnect (useful in embedded ports).
 #define LT_FINISH_TEST()                                                    \
     {                                                                       \
         LT_LOG_INFO("TEST FINISHED!");                                      \
