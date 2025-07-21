@@ -90,8 +90,9 @@ int lt_ex_fw_update(void);
  * struct. Technically TROPIC01 is capable to have this set to 128, therefore provide 128 Mac And Destroy tries, which
  * would require roughly 128*32 bytes in non volatile memory for storing data related to M&D tries.
  *
- * In this example TROPIC01's R memory is used as a storage for data during power cycle.
- * For a sake of simplicity, only one R memory slot is used as a storage, which means 444B of storage are available.
+ * In this example TROPIC01's R memory is used as a storage for data during power cycle (specifically, the last slot is
+ * used). For a sake of simplicity, only one R memory slot is used as a storage, which means 444B of storage are
+ * available.
  *
  * Therefore MACANDD_ROUNDS is here limited to 12 -> biggest possible number of tries which fits into 444B one R
  * memory slot.
