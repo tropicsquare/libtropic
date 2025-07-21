@@ -53,7 +53,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t wait_time_msecs)
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
 {
     for (int i = 0; i < len; i++) {
-        buff[i] = (uint16_t)rand();
+        buff[i] = (uint32_t)rand();
     }
 
     return LT_OK;
