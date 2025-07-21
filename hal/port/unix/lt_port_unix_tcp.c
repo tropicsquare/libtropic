@@ -22,8 +22,8 @@
 #define TCP_ADDR "127.0.0.1"
 #define TCP_PORT 28992
 
-// #define NDEBUG
-#ifdef NDEBUG
+// #define LIBT_DEBUG
+#ifdef LIBT_DEBUG
 #define LOG_OUT(f_, ...) printf("[TCP] " f_, ##__VA_ARGS__)
 #define LOG_ERR(f_, ...) fprintf(stderr, "ERROR: " f_, ##__VA_ARGS__)
 #define LOG_U8_ARRAY(arr, len)      \
