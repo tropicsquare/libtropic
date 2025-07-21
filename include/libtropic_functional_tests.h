@@ -10,8 +10,9 @@
  */
 
 #include <stdint.h>
+#include "libtropic_common.h"
 
-extern void (*lt_test_cleanup_function)(void);
+extern lt_ret_t (*lt_test_cleanup_function)(void);
 
 void lt_assert_fail_handler(void);
 

@@ -17,27 +17,22 @@
 struct lt_config_t r_config_backup;
 lt_handle_t h = {0};
 
-void lt_test_rev_write_r_config_cleanup(void)
+lt_ret_t lt_test_rev_write_r_config_cleanup(void)
 {
     if (LT_OK != lt_init(&h)) {
-        LT_LOG_ERROR("Cleanup failed!");
-        return;
+        return LT_FAIL;
     }
     if (LT_OK != verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0)) {
-        LT_LOG_ERROR("Cleanup failed!");
-        return;
+        return LT_FAIL;
     }
     if (LT_OK != write_whole_R_config(&h, &r_config_backup)) {
-        LT_LOG_ERROR("Cleanup failed!");
-        return;
+        return LT_FAIL;
     }
     if (LT_OK != lt_session_abort(&h)) {
-        LT_LOG_ERROR("Cleanup failed!");
-        return;
+        return LT_FAIL;
     }
     if (LT_OK != lt_deinit(&h)) {
-        LT_LOG_ERROR("Cleanup failed!");
-        return;
+        return LT_FAIL;
     }
 }
 
