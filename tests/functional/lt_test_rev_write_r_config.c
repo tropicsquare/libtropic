@@ -15,22 +15,62 @@
 
 // Shared with cleanup function.
 struct lt_config_t r_config_backup;
-lt_handle_t h = {0};
+lt_handle_t h;
 
 lt_ret_t lt_test_rev_write_r_config_cleanup(void)
 {
-    if (LT_OK != verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0)) {
-        return LT_FAIL;
+    lt_ret_t ret;
+    struct lt_config_t r_config;
+
+    LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to establish secure session, ret=%s", lt_ret_verbose(ret));
+        return ret;
     }
-    if (LT_OK != write_whole_R_config(&h, &r_config_backup)) {
-        return LT_FAIL;
+
+    LT_LOG_INFO("Erasing R config, so it can be restored");
+    ret = lt_r_config_erase(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to erase R config, ret=%s", lt_ret_verbose(ret));
+        return ret;
     }
-    if (LT_OK != lt_session_abort(&h)) {
-        return LT_FAIL;
+
+    LT_LOG_INFO("Writing R config backup");
+    ret = write_whole_R_config(&h, &r_config_backup);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to write R config, ret=%s", lt_ret_verbose(ret));
+        return ret;
     }
-    if (LT_OK != lt_deinit(&h)) {
-        return LT_FAIL;
+
+    LT_LOG_INFO("Reading R config and checking if restored correctly");
+    ret = read_whole_R_config(&h, &r_config);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to read R config, ret=%s", lt_ret_verbose(ret));
+        return ret;
     }
+    for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
+        if (r_config.obj[i] != r_config_backup.obj[i]) {
+            LT_LOG_ERROR("Slot %d was not correctly restored", i);
+            return LT_FAIL;
+        }
+    }
+
+    LT_LOG_INFO("Aborting secure session");
+    ret = lt_session_abort(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to abort secure session, ret=%s", lt_ret_verbose(ret));
+        return ret;
+    }
+
+    LT_LOG_INFO("Deinitializing handle");
+    ret = lt_deinit(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        return ret;
+    }
+
+    return LT_OK;
 }
 
 void lt_test_rev_write_r_config(void)
@@ -39,7 +79,6 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("lt_test_rev_write_r_config()");
     LT_LOG_INFO("----------------------------------------------");
 
-    lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
@@ -95,26 +134,9 @@ void lt_test_rev_write_r_config(void)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Erasing R config before restoring (needed to be able to write again)");
-    LT_TEST_ASSERT(LT_OK, lt_r_config_erase(&h));
-
-    LT_LOG_INFO("Restoring the whole R config");
-    LT_TEST_ASSERT(LT_OK, write_whole_R_config(&h, &r_config_backup));
-
-    LT_LOG_INFO("Reading the whole R config");
-    LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
-    for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
-        LT_LOG_INFO("Checking if it was restored");
-        LT_TEST_ASSERT(1, (r_config_backup.obj[i] == r_config.obj[i]));
-    }
-    LT_LOG_LINE();
-
-    LT_LOG_INFO("Starting post-test cleanup.");
-    if (LT_OK != lt_test_rev_write_r_config_cleanup()) {
-        LT_LOG_ERROR("Cleanup failed!");
-    }
-    else {
-        LT_LOG_INFO("Cleanup OK!");
-    }
+    // Call cleanup function, but don't call it from LT_TEST_ASSERT anymore.
+    lt_test_cleanup_function = NULL;
+    LT_LOG_INFO("Starting post-test cleanup");
+    LT_TEST_ASSERT(LT_OK, lt_test_rev_write_r_config_cleanup());
+    LT_LOG_INFO("Post-test cleanup was successful");
 }
