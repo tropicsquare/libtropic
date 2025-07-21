@@ -20,7 +20,8 @@ void lt_assert_fail_handler()
         LT_LOG_INFO("Post-assert cleanup started.");
         if (LT_OK == lt_test_cleanup_function()) {
             LT_LOG_INFO("Post-assert cleanup successful!");
-        } else {
+        }
+        else {
             LT_LOG_ERROR("Post-assert cleanup failed!");
         }
     }

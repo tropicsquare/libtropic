@@ -10,6 +10,7 @@
  */
 
 #include <stdint.h>
+
 #include "libtropic_common.h"
 
 extern lt_ret_t (*lt_test_cleanup_function)(void);
