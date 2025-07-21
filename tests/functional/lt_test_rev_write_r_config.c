@@ -113,7 +113,8 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("Starting post-test cleanup.");
     if (LT_OK != lt_test_rev_write_r_config_cleanup()) {
         LT_LOG_ERROR("Cleanup failed!");
-    } else {
+    }
+    else {
         LT_LOG_INFO("Cleanup OK!");
     }
 }

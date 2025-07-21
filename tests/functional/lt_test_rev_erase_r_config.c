@@ -15,7 +15,8 @@
 struct lt_config_t r_config_backup;
 lt_handle_t h = {0};
 
-lt_ret_t lt_test_rev_erase_r_config_cleanup(void) {
+lt_ret_t lt_test_rev_erase_r_config_cleanup(void)
+{
     if (LT_OK != verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0)) {
         return LT_FAIL;
     }
@@ -89,7 +90,8 @@ void lt_test_rev_erase_r_config(void)
     LT_LOG_INFO("Starting post-test cleanup.");
     if (LT_OK != lt_test_rev_erase_r_config_cleanup()) {
         LT_LOG_ERROR("Cleanup failed!");
-    } else {
+    }
+    else {
         LT_LOG_INFO("Cleanup OK!");
     }
 }
