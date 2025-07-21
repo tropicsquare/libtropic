@@ -608,7 +608,7 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj)
 
 lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size)
 {
-    if (!h || !data || size > R_MEM_DATA_SIZE_MAX || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
+    if (!h || !data || size > R_MEM_DATA_SIZE_MAX || (udata_slot > R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -654,7 +654,7 @@ lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h)
 
 lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot)
 {
-    if (!h || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
+    if (!h || (udata_slot > R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -711,7 +711,7 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
 
 lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
 {
-    if (!h || (udata_slot > R_MEM_DATA_SLOT_MACANDD)) {
+    if (!h || (udata_slot > R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {

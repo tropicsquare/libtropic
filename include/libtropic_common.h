@@ -535,13 +535,8 @@ enum CONFIGURATION_OBJECTS_REGS {
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of one data slot in bytes */
 #define R_MEM_DATA_SIZE_MAX (444)
-/** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511, but the last one is used for M&D data.
- * Example code can be found in examples/lt_ex_macandd.c, for more info about Mac And Destroy functionality read app
- * note */
-#define R_MEM_DATA_SLOT_MAX (510)
-/** @brief Memory slot used for storing of M&D related data in Mac And Destroy example code. For more info see
- * examples/lt_ex_macandd.c */
-#define R_MEM_DATA_SLOT_MACANDD (511)
+/** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511. */
+#define R_MEM_DATA_SLOT_MAX (511)
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximum number of random bytes requested at once */
