@@ -35,7 +35,7 @@ void lt_test_rev_read_r_config(void)
     LT_LOG_INFO("Reading the whole R config:");
     LT_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", get_conf_desc(i), (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
     }
     LT_LOG_LINE();
 
