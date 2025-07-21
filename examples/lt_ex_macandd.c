@@ -32,6 +32,9 @@
 // Needed to access HMAC_SHA256
 #include "lt_hmac_sha256.h"
 
+/** @brief Last slot in User memory used for storing of M&D related data (only in this example). */
+#define R_MEM_DATA_SLOT_MACANDD (511)
+
 /**
  * @brief This function is used for debug print of bytes as hexadecimal string
  *
