@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
 - Added missing `LT_L1_INT_TIMEOUT` in `lt_ret_strs`.
 - Fixed nonce overflow vulnerability in lt_l3_nonce_increase, the function now returns `LT_NONCE_OVERFLOW` if the nonce cannot be increased anymore.
+- Calculation of number of chunks in the function `lt_l2_send_encrypted_cmd()`.
 - Chip id parsing in `tests/model_based_project/create_model_cfg.py`.
 - Function `lt_r_mem_data_read` -  change `size` to output parameter and its handling.
 
