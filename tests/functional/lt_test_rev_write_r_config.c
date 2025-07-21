@@ -19,9 +19,6 @@ lt_handle_t h = {0};
 
 lt_ret_t lt_test_rev_write_r_config_cleanup(void)
 {
-    if (LT_OK != lt_init(&h)) {
-        return LT_FAIL;
-    }
     if (LT_OK != verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0)) {
         return LT_FAIL;
     }
@@ -113,9 +110,10 @@ void lt_test_rev_write_r_config(void)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
-
-    LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_LOG_INFO("Starting post-test cleanup.");
+    if (LT_OK != lt_test_rev_write_r_config_cleanup()) {
+        LT_LOG_ERROR("Cleanup failed!");
+    } else {
+        LT_LOG_INFO("Cleanup OK!");
+    }
 }

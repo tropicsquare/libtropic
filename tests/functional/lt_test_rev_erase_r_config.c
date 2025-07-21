@@ -11,6 +11,25 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
+// Shared with cleanup function.
+struct lt_config_t r_config_backup;
+lt_handle_t h = {0};
+
+lt_ret_t lt_test_rev_erase_r_config_cleanup(void) {
+    if (LT_OK != verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0)) {
+        return LT_FAIL;
+    }
+    if (LT_OK != write_whole_R_config(&h, &r_config_backup)) {
+        return LT_FAIL;
+    }
+    if (LT_OK != lt_session_abort(&h)) {
+        return LT_FAIL;
+    }
+    if (LT_OK != lt_deinit(&h)) {
+        return LT_FAIL;
+    }
+}
+
 void lt_test_rev_erase_r_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
@@ -39,6 +58,10 @@ void lt_test_rev_erase_r_config(void)
     }
     LT_LOG_LINE();
 
+    // No we have the R config backed up. From this moment now it makes
+    // sense to call the cleanup function.
+    lt_test_cleanup_function = &lt_test_rev_erase_r_config_cleanup;
+
     LT_LOG_INFO("Erasing R config");
     LT_TEST_ASSERT(LT_OK, lt_r_config_erase(&h));
 
@@ -63,9 +86,10 @@ void lt_test_rev_erase_r_config(void)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
-
-    LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_LOG_INFO("Starting post-test cleanup.");
+    if (LT_OK != lt_test_rev_erase_r_config_cleanup()) {
+        LT_LOG_ERROR("Cleanup failed!");
+    } else {
+        LT_LOG_INFO("Cleanup OK!");
+    }
 }
