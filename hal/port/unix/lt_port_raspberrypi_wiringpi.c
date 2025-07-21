@@ -1,5 +1,5 @@
 /**
- * @file lt_port_raspberrypi_spi.c
+ * @file lt_port_raspberrypi_wiringpi.c
  * @author Tropic Square s.r.o.
  * @brief  L1 implementation for raspberrypi. Expects wiringPi library to be
  * installed on Raspberry Pi, for more info about this library check https://github.com/WiringPi/WiringPi/tree/master
