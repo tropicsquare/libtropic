@@ -339,12 +339,12 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
- * @brief Store ECC key in the device's ECC key slot
+ * @brief Store ECC key in the device's ECC key slot.
  *
  * @param h           Device's handle
  * @param slot        Slot number ecc_slot_t
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
- * @param key         Key to store
+ * @param key         Key to store (only the first 32 bytes are stored)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
