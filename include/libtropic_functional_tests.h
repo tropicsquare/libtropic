@@ -58,11 +58,23 @@ void lt_test_ire_read_write_pairing_keys(void);
 int lt_test_rev_ping(void);
 
 /**
- * @brief Test function which tests reading,writing and erasing of all r mem slots
+ * @brief Test R_Mem_Data_* commands on all User Data slots
  *
- * @return int
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Check if all slots are empty.
+ *  3. Write all slots entirely with random data.
+ *  4. Read all slots and check if they were written.
+ *  5. Write 0x00 to all slots and check if it fails.
+ *  6. Read all slots and check they were not written.
+ *  7. Erase all slots and check that reading fails.
+ *  8. Write all slots partially with random data of random length (0-443).
+ *      - if the random length is 0, check that write fails.
+ *  9. Read all slots and check if they were written.
+ *      - if the random length is 0, check that read fails (slot empty).
+ *  10. Erase all slots and check that reading fails.
  */
-int lt_test_r_mem(void);
+void lt_test_rev_r_mem(void);
 
 /**
  * @brief Backs up R-Config, erases it and then restores it.
