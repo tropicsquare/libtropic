@@ -39,12 +39,11 @@ void lt_test_rev_ping(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Will send %d Ping commands with random data of random length", PING_MAX_LOOPS);
-    for (uint16_t i = 0; i < PING_MAX_LOOPS; i++)
-    {
+    for (uint16_t i = 0; i < PING_MAX_LOOPS; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length <= %d...", PING_LEN_MAX);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= PING_LEN_MAX + 1; // 0-4096
+        random_data_size %= PING_LEN_MAX + 1;  // 0-4096
 
         LT_LOG_INFO("Generating %d random bytes...", random_data_size);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
