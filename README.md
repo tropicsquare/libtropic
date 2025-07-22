@@ -32,7 +32,17 @@ Example projects:
 
 # Documentation
 
-HTML documentation generated using Doxygen is available [here](https://tropicsquare.github.io/libtropic/).
+HTML documentation for the latest master version is available [here](https://tropicsquare.github.io/libtropic/).
+
+The documentation can be built manually as following:
+```sh
+mkdir build
+cmake -DBUILD_DOCS=1 ..
+make doc_doxygen
+```
+
+The documentation will be available in the `docs/doxygen/html`.
+Open [index.html](build/docs/doxygen/html/index.html) with your favorite web browser.
 
 # License
 
