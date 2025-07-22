@@ -8,7 +8,7 @@ TROPIC01's SDK written in C. Contributors, please follow [guidelines](https://gi
 For more info about TROPIC01 chip check out developers resources in [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
 
 
-# Repository structure
+## Repository structure
 * `docs/` Documentation
 * `examples/` A few examples how libtropic might be used
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
@@ -20,7 +20,7 @@ For more info about TROPIC01 chip check out developers resources in [TROPIC01](h
 * `tests/` Functional and unit tests, along with a project for testing against the TROPIC01 model
 * `vendor/` Third party libraries and tools
 
-# Get started!
+## Get started!
 
 For engineering samples please go [here](https://tropicsquare.com/tropic01).
 
@@ -30,7 +30,7 @@ Example projects:
 * [libtropic-util](https://github.com/tropicsquare/libtropic-util) - example project featuring `USB Dongle with TROPIC01` or `Raspberry Pi`
 
 
-# Documentation
+## Documentation
 
 HTML documentation for the latest master version is available [here](https://tropicsquare.github.io/libtropic/).
 
@@ -44,7 +44,7 @@ make doc_doxygen
 The documentation will be available in the `docs/doxygen/html`.
 Open [index.html](build/docs/doxygen/html/index.html) with your favorite web browser.
 
-# License
+## License
 
 See the [LICENSE.md](LICENSE.md) file in the root of this repository or consult license information at [Tropic Square website](http:/tropicsquare.com/license).
 
