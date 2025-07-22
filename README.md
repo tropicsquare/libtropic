@@ -37,6 +37,7 @@ HTML documentation for the latest master version is available [here](https://tro
 The documentation can be built manually as following:
 ```sh
 mkdir build
+cd build
 cmake -DBUILD_DOCS=1 ..
 make doc_doxygen
 ```
