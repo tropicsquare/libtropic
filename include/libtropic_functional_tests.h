@@ -102,11 +102,17 @@ int lt_test_ecc_ecdsa(void);
 void lt_test_ire_read_write_pairing_keys(void);
 
 /**
- * @brief Test function which does Ping command with all pairing keys
+ * @brief Test Ping L3 command with random data of random length <= PING_LEN_MAX.
  *
- * @return int
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Generate random data length from the range 0-4096.
+ *  3. Generate random bytes.
+ *  4. Send Ping command with the random data.
+ *  5. Check if the same data were received.
+ *  6. Repeat steps 2-5 PING_MAX_LOOPS times.
  */
-int lt_test_rev_ping(void);
+void lt_test_rev_ping(void);
 
 /**
  * @brief Test R_Mem_Data_* commands on all User Data slots
