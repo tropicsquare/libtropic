@@ -26,22 +26,22 @@ void lt_test_rev_read_i_config(void)
     struct lt_config_t i_config;
 
     LT_LOG_INFO("Initializing handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
-    LT_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Reading the whole I config:");
-    LT_ASSERT(LT_OK, read_whole_I_config(&h, &i_config));
+    LT_TEST_ASSERT(LT_OK, read_whole_I_config(&h, &i_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)i_config.obj[i]);
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    LT_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 }

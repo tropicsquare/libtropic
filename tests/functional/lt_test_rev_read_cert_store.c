@@ -31,10 +31,10 @@ void lt_test_rev_read_cert_store(void)
                                     .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
 
     LT_LOG_INFO("Initializing handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     LT_LOG_INFO("Reading Certificate store");
-    LT_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
     LT_LOG_INFO();
 
     uint8_t *cert;
@@ -42,7 +42,7 @@ void lt_test_rev_read_cert_store(void)
         cert = store.certs[i];
         LT_LOG_INFO("Certificate number: %d", i);
         LT_LOG_INFO("Checking if size of certificate is not zero");
-        LT_ASSERT(1, (store.cert_len[i] != 0));
+        LT_TEST_ASSERT(1, (store.cert_len[i] != 0));
         LT_LOG_INFO("Size in bytes: %d", store.cert_len[i]);
 
         for (int j = 0; j < store.cert_len[i]; j += 16)
@@ -55,5 +55,5 @@ void lt_test_rev_read_cert_store(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 }

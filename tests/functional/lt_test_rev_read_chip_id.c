@@ -454,12 +454,12 @@ void lt_test_rev_read_chip_id(void)
     struct lt_chip_id_t chip_id = {0};
 
     LT_LOG_INFO("Initializing handle");
-    LT_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
     LT_LOG_INFO("Reading Chip ID:");
-    LT_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
-    LT_ASSERT(LT_OK, print_chip_id(&chip_id));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
+    LT_TEST_ASSERT(LT_OK, print_chip_id(&chip_id));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 }
