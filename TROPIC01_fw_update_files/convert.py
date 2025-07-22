@@ -95,11 +95,11 @@ if __name__ == "__main__":
 
         spect_version = parse_version_from_filename(spect_fw_filename)
         if spect_version:
-            print(f"Parsed SPECT FW version: {version}")
+            print(f"Parsed SPECT FW version: {spect_version}")
             binary_to_c_array(sys.argv[1], spect_fw_filename,  "fw_SPECT_" + spect_version)
 
         cpu_version = parse_version_from_filename(cpu_fw_filename)
         if cpu_version:
-            print(f"Parsed CPU FW version: {version}")
+            print(f"Parsed CPU FW version: {cpu_version}")
             binary_to_c_array(sys.argv[1], cpu_fw_filename, "fw_CPU_" + cpu_version)
 
