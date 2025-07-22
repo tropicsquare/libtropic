@@ -47,7 +47,7 @@ if(LT_BUILD_DOCS)
     find_package(Doxygen REQUIRED)
     if(Doxygen_FOUND)
         add_subdirectory(docs)
-        message(STATUS "Doxygen found, building docs")
+        message(STATUS "Doxygen found, enabled documentation building.")
     endif()
 endif()
 
