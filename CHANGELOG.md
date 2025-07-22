@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
 - Functions `get_conf_addr()`, `get_conf_desc()`, accessing the configuration table directly is advised instead.
+- Removed `keylen` parameter from `lt_ecc_key_read()` and `lt_in__ecc_key_read()`.
 
 ## [0.1.0]
 
