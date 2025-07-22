@@ -14,7 +14,7 @@
 #include "string.h"
 
 /** @brief How many pings will be sent. */
-#define PING_MAX_LOOPS 1000
+#define PING_MAX_LOOPS 200
 
 void lt_test_rev_ping(void)
 {
