@@ -44,12 +44,10 @@ endif()
 ###########################################################################
 
 if(LT_BUILD_DOCS)
-    find_package(Doxygen)
+    find_package(Doxygen REQUIRED)
     if(Doxygen_FOUND)
         add_subdirectory(docs)
         message(STATUS "Doxygen found, building docs")
-    else()
-        message(STATUS "Doxygen not found, not building docs")
     endif()
 endif()
 
