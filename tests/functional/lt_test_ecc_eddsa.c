@@ -65,7 +65,7 @@ int lt_test_ecc_eddsa(void)
         uint8_t slot_0_pubkey[64];
         lt_ecc_curve_type_t curve;
         ecc_key_origin_t origin;
-        LT_TEST_ASSERT(lt_ecc_key_read(&h, i, slot_0_pubkey, 64, &curve, &origin), LT_OK);
+        LT_TEST_ASSERT(lt_ecc_key_read(&h, i, slot_0_pubkey, &curve, &origin), LT_OK);
 
         LT_LOG("lt_ecc_eddsa_sign() slot       n.%d  ", i);
         uint8_t msg[] = {'a', 'h', 'o', 'j'};
@@ -91,7 +91,7 @@ int lt_test_ecc_eddsa(void)
         uint8_t slot_0_pubkey[64];
         lt_ecc_curve_type_t curve;
         ecc_key_origin_t origin;
-        LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_key_read(&h, i, slot_0_pubkey, 64, &curve, &origin)));
+        LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_key_read(&h, i, slot_0_pubkey, &curve, &origin)));
 
         LT_LOG("lt_ecc_eddsa_sign() slot       n.%d  ", i);
         uint8_t msg[] = {'a', 'h', 'o', 'j'};
