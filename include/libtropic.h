@@ -350,18 +350,17 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
 
 /**
- * @brief Read ECC public key corresponding to a private key in device's slot
+ * @brief Read ECC public key corresponding to a private key in device's slot.
  *
  * @param h           Device's handle
  * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
- * @param key         Buffer for retrieving a key
- * @param keylen      Length of the key's buffer
+ * @param key         Buffer for retrieving a key (length of the key is given by *curve*)
  * @param curve       Will be filled by curve byte
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, const uint8_t keylen,
-                         lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
+                         ecc_key_origin_t *origin);
 
 /**
  * @brief Erase ECC key from device's slot

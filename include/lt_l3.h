@@ -371,14 +371,12 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
  * the top of this file.
  *
  * @param h           Device's handle
- * @param key         Buffer to receive ECC public key
- * @param keylen      Length of the key's buffer, must be at least 64 bytes
+ * @param key         Buffer to receive ECC public key (length of the key is given by *curve*)
  * @param curve       Will be filled by curve type
  * @param origin      Will be filled by origin type
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve,
-                             ecc_key_origin_t *origin);
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief Encodes 'ECC key erase' command payload. Used for separate l3 communication, for more information read info at
