@@ -11,13 +11,6 @@
 #include "libtropic_macros.h"
 #include "stdint.h"
 
-/** Alias for unsigned 8 bit integer */
-typedef uint8_t u8;
-/** Alias for unsigned 16 bit integer */
-typedef uint16_t u16;
-/** Alias for unsigned 32 bit integer */
-typedef uint32_t u32;
-
 // This macro is used to change static functions into exported one, when compiling unit tests.
 // It allows to unit test static functions.
 #ifndef TEST
