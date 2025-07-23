@@ -915,10 +915,9 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve,
-                             ecc_key_origin_t *origin)
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
 {
-    if (!h || !key || !curve || !origin || (keylen < 64)) {
+    if (!h || !key || !curve || !origin) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {

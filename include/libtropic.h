@@ -339,29 +339,29 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
- * @brief Store ECC key in the device's ECC key slot
+ * @brief Store ECC key in the device's ECC key slot.
  *
  * @param h           Device's handle
  * @param slot        Slot number ecc_slot_t
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
- * @param key         Key to store
+ * @param key         Key to store (only the first 32 bytes are stored)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
 
 /**
- * @brief Read ECC public key corresponding to a private key in device's slot
+ * @brief Read ECC public key corresponding to a private key in device's slot.
  *
  * @param h           Device's handle
  * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
- * @param key         Buffer for retrieving a key
- * @param keylen      Length of the key's buffer
+ * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
+ * for P256), according to *curve*
  * @param curve       Will be filled by curve byte
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, const uint8_t keylen,
-                         lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
+                         ecc_key_origin_t *origin);
 
 /**
  * @brief Erase ECC key from device's slot
