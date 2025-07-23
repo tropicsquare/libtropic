@@ -371,7 +371,8 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
  * the top of this file.
  *
  * @param h           Device's handle
- * @param key         Buffer to receive ECC public key (length of the key is given by *curve*)
+ * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
+ * for P256), according to *curve*
  * @param curve       Will be filled by curve type
  * @param origin      Will be filled by origin type
  * @return            LT_OK if success, otherwise returns other error code.

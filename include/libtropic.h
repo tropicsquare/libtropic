@@ -354,7 +354,8 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
  *
  * @param h           Device's handle
  * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
- * @param key         Buffer for retrieving a key (length of the key is given by *curve*)
+ * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
+ * for P256), according to *curve*
  * @param curve       Will be filled by curve byte
  * @param origin      Will be filled by origin byte
  * @return            LT_OK if success, otherwise returns other error code.
