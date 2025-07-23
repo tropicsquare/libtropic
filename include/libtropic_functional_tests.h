@@ -76,11 +76,10 @@ extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
 
 /**
- * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
+ * @brief Tests EDDSA_Sign command.
  *
- * @return int
  */
-int lt_test_ecc_eddsa(void);
+void lt_test_rev_eddsa_sign(void);
 
 /**
  * @brief Test function which tests all ecc ECDSA commands on all ecc keys lots

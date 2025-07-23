@@ -1,6 +1,6 @@
 /**
- * @file lt_test_ecc_eddsa.c
- * @brief Test function to test all ECC EdDSA operations on all key slots
+ * @file lt_test_rev_eddsa_sign.c
+ * @brief Tests EDDSA_Sign command.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -16,19 +16,15 @@ uint8_t attestation_key[32]
     = {0x22, 0x57, 0xa8, 0x2f, 0x85, 0x8f, 0x13, 0x32, 0xfa, 0x0f, 0xf6, 0x0c, 0x76, 0x29, 0x42, 0x70,
        0xa9, 0x58, 0x9d, 0xfd, 0x47, 0xa5, 0x23, 0x78, 0x18, 0x4d, 0x2d, 0x38, 0xf0, 0xa7, 0xc4, 0x01};
 
-/**
- * @brief
- *
- * @return int
- */
-int lt_test_ecc_eddsa(void)
+
+void lt_test_rev_eddsa_sign(void)
 {
     LT_LOG(
         "  "
         "------------------------------------------------------------------------------------------------------------"
         "-");
     LT_LOG(
-        "  -------- lt_test_ecc_eddsa() "
+        "  -------- lt_test_rev_eddsa_sign() "
         "--------------------------------------------------------------------------------");
     LT_LOG(
         "  "
@@ -113,6 +109,4 @@ int lt_test_ecc_eddsa(void)
     // Deinit handle
     LT_LOG("%s", "lt_deinit()");
     LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
-
-    return 0;
 }
