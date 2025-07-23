@@ -70,7 +70,7 @@ int lt_test_ecc_eddsa(void)
         LT_LOG("lt_ecc_eddsa_sign() slot       n.%d  ", i);
         uint8_t msg[] = {'a', 'h', 'o', 'j'};
         uint8_t rs[64];
-        LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_eddsa_sign(&h, i, msg, 4, rs, 64)));
+        LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_eddsa_sign(&h, i, msg, 4, rs)));
 
         LT_LOG("lt_ecc_eddsa_sig_verify() slot n.%d  ", i);
         LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_eddsa_sig_verify(msg, 4, slot_0_pubkey, rs)));
@@ -96,7 +96,7 @@ int lt_test_ecc_eddsa(void)
         LT_LOG("lt_ecc_eddsa_sign() slot       n.%d  ", i);
         uint8_t msg[] = {'a', 'h', 'o', 'j'};
         uint8_t rs[64];
-        LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_eddsa_sign(&h, i, msg, 4, rs, 64)));
+        LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_eddsa_sign(&h, i, msg, 4, rs)));
 
         LT_LOG("lt_ecc_eddsa_sig_verify() slot n.%d  ", i);
         LT_LOG_RESULT("%s", lt_ret_verbose(lt_ecc_eddsa_sig_verify(msg, 4, slot_0_pubkey, rs)));

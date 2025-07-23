@@ -404,7 +404,7 @@ static int session_H3(void)
     LT_LOG("%s", "lt_ecc_eddsa_sign() ");
     uint8_t msg[] = {'a', 'h', 'o', 'j'};
     uint8_t rs[64];
-    LT_ASSERT(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_0, msg, 4, rs, 64));
+    LT_ASSERT(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_0, msg, 4, rs));
 
     LT_LOG("%s", "lt_ecc_key_read() ");
     uint8_t slot_0_pubkey[64];
