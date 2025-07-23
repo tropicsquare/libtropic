@@ -84,11 +84,10 @@ extern uint8_t sh3pub[];
 void hexdump_8byte(const uint8_t *data, uint16_t size);
 
 /**
- * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
+ * @brief Tests EDDSA_Sign command.
  *
- * @return int
  */
-int lt_test_ecc_eddsa(void);
+void lt_test_rev_eddsa_sign(void);
 
 /**
  * @brief Tests ECDSA_Sign command.
