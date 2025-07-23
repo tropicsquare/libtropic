@@ -162,6 +162,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_read_r_config
     lt_test_rev_resend_req
     lt_test_rev_write_r_config
+    lt_test_rev_ecc_key_store
     lt_test_rev_random_value_get
 )
 
@@ -209,6 +210,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_write_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecc_key_store.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_random_value_get.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
