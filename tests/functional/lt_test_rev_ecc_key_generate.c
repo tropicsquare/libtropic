@@ -18,7 +18,7 @@ lt_handle_t h;
 lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
 {
     lt_ret_t ret;
-    uint8_t read_key[64];
+    uint8_t read_pub_key[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
@@ -40,7 +40,7 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
         }
 
         LT_LOG_INFO("Reading slot #%d (should fail)", i);
-        ret = lt_ecc_key_read(&h, i, read_key, &curve, &origin);
+        ret = lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY, ret=%s", lt_ret_verbose(ret));
             return ret;
@@ -61,7 +61,7 @@ void lt_test_rev_ecc_key_generate(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
-    uint8_t read_key[64];
+    uint8_t read_pub_key[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
@@ -80,19 +80,19 @@ void lt_test_rev_ecc_key_generate(void)
         LT_LOG_INFO("Testing ECC key slot #%d...", i);
 
         LT_LOG_INFO("Checking if slot is empty...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
-        LT_LOG_INFO("Generating key using P256 curve...");
+        LT_LOG_INFO("Generating private key using P256 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(&h, i, CURVE_P256));
 
-        LT_LOG_INFO("Generating key using P256 curve again (should fail)...");
+        LT_LOG_INFO("Generating private key using P256 curve again (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_generate(&h, i, CURVE_P256));
 
-        LT_LOG_INFO("Generating key using Ed25519 curve (should fail)...");
+        LT_LOG_INFO("Generating private key using Ed25519 curve (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_generate(&h, i, CURVE_ED25519));
 
-        LT_LOG_INFO("Reading the generated key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_LOG_INFO("Reading the generated public key...");
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Checking curve type of the read key...");
         LT_TEST_ASSERT(1, (curve == CURVE_P256));
@@ -111,19 +111,19 @@ void lt_test_rev_ecc_key_generate(void)
         LT_LOG_INFO("Testing ECC key slot #%d...", i);
 
         LT_LOG_INFO("Checking if slot is empty...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
-        LT_LOG_INFO("Generating key using Ed25519 curve...");
+        LT_LOG_INFO("Generating private key using Ed25519 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(&h, i, CURVE_ED25519));
 
-        LT_LOG_INFO("Generating key using Ed25519 curve again (should fail)...");
+        LT_LOG_INFO("Generating private key using Ed25519 curve again (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_generate(&h, i, CURVE_ED25519));
 
-        LT_LOG_INFO("Generating key using P256 curve (should fail)...");
+        LT_LOG_INFO("Generating private key using P256 curve (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_generate(&h, i, CURVE_P256));
 
-        LT_LOG_INFO("Reading the generated key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_LOG_INFO("Reading the generated public key...");
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Checking curve type of the read key...");
         LT_TEST_ASSERT(1, (curve == CURVE_ED25519));
@@ -135,7 +135,7 @@ void lt_test_rev_ecc_key_generate(void)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
 
         LT_LOG_INFO("Trying to read the erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
     }
     LT_LOG_LINE();
 
