@@ -245,9 +245,9 @@ void lt_test_rev_write_r_config(void);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Check if all slots are empty.
- *  3. In each slot, generate keys using P256 curve.
+ *  3. In each slot, generate private keys using P256 curve.
  *  4. Try generating again, also using Ed25519 curve and check for errors.
- *  5. Read the generated key and check curve and origin.
+ *  5. Read the generated public key and check curve and origin.
  *  6. Erase the key slot.
  *  7. Repeat steps 2-6 for the Ed25519 curve.
  */
