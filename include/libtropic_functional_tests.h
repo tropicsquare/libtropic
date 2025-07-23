@@ -245,13 +245,13 @@ void lt_test_rev_write_r_config(void);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Check if all slots are empty.
- *  3. In each slot, store invalid key using P256 curve and check for error.
- *  4. In each slot, store pre-generated key using P256 curve.
+ *  3. In each slot, store invalid private key using P256 curve and check for error.
+ *  4. In each slot, store pre-generated private key using P256 curve.
  *  5. Try storing again, also using Ed25519 curve and check for errors.
- *  6. Read the stored key and check curve and origin.
+ *  6. Read the stored public key and check curve and origin.
  *  7. Erase the key slot.
- *  8. Repeat steps 2-6 for the Ed25519 curve with pre-generated key (without storing invalid key - that cannot be
- * checked in the case of Ed25519).
+ *  8. Repeat steps 2-6 for the Ed25519 curve with pre-generated keys (without storing invalid private key - that cannot
+ * be checked in the case of Ed25519).
  */
 void lt_test_rev_ecc_key_store(void);
 

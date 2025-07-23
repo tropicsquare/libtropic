@@ -39,7 +39,7 @@ lt_handle_t h;
 lt_ret_t lt_test_rev_ecc_key_store_cleanup(void)
 {
     lt_ret_t ret;
-    uint8_t read_key[64];
+    uint8_t read_pub_key[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
@@ -61,7 +61,7 @@ lt_ret_t lt_test_rev_ecc_key_store_cleanup(void)
         }
 
         LT_LOG_INFO("Reading slot #%d (should fail)", i);
-        ret = lt_ecc_key_read(&h, i, read_key, &curve, &origin);
+        ret = lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY, ret=%s", lt_ret_verbose(ret));
             return ret;
@@ -82,7 +82,7 @@ void lt_test_rev_ecc_key_store(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
-    uint8_t read_key[64];
+    uint8_t read_pub_key[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
@@ -101,22 +101,22 @@ void lt_test_rev_ecc_key_store(void)
         LT_LOG_INFO("Testing ECC key slot #%d...", i);
 
         LT_LOG_INFO("Checking if slot is empty...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
-        LT_LOG_INFO("Storing invalid key (should fail)...");
+        LT_LOG_INFO("Storing invalid private key (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_store(&h, i, CURVE_P256, p256_invalid_priv_test_key));
 
-        LT_LOG_INFO("Storing key pre-generated using P256 curve...");
+        LT_LOG_INFO("Storing private key pre-generated using P256 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(&h, i, CURVE_P256, p256_priv_test_key));
 
-        LT_LOG_INFO("Storing key pre-generated using P256 curve again (should fail)...");
+        LT_LOG_INFO("Storing private key pre-generated using P256 curve again (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_store(&h, i, CURVE_P256, p256_priv_test_key));
 
-        LT_LOG_INFO("Storing key pre-generated using Ed25519 curve (should fail)...");
+        LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_store(&h, i, CURVE_ED25519, ed25519_priv_test_key));
 
-        LT_LOG_INFO("Reading the stored key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_LOG_INFO("Reading the stored public key...");
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Checking curve type of the read key...");
         LT_TEST_ASSERT(1, (curve == CURVE_P256));
@@ -124,8 +124,8 @@ void lt_test_rev_ecc_key_store(void)
         LT_LOG_INFO("Checking origin of the read key...");
         LT_TEST_ASSERT(1, (origin == CURVE_STORED));
 
-        LT_LOG_INFO("Comparing the key to the pre-generated one...");
-        LT_TEST_ASSERT(0, memcmp(p256_pub_test_key, read_key, 64));
+        LT_LOG_INFO("Comparing the public key to the pre-generated one...");
+        LT_TEST_ASSERT(0, memcmp(p256_pub_test_key, read_pub_key, 64));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
@@ -138,19 +138,19 @@ void lt_test_rev_ecc_key_store(void)
         LT_LOG_INFO("Testing ECC key slot #%d...", i);
 
         LT_LOG_INFO("Checking if slot is empty...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
-        LT_LOG_INFO("Storing key pre-generated using Ed25519 curve...");
+        LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(&h, i, CURVE_ED25519, ed25519_priv_test_key));
 
-        LT_LOG_INFO("Storing key pre-generated using Ed25519 curve again (should fail)...");
+        LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve again (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_store(&h, i, CURVE_ED25519, ed25519_priv_test_key));
 
-        LT_LOG_INFO("Storing key pre-generated using P256 curve (should fail)...");
+        LT_LOG_INFO("Storing private key pre-generated using P256 curve (should fail)...");
         LT_TEST_ASSERT(LT_L3_FAIL, lt_ecc_key_store(&h, i, CURVE_P256, p256_priv_test_key));
 
-        LT_LOG_INFO("Reading the stored key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_LOG_INFO("Reading the stored public key...");
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Checking curve type of the read key...");
         LT_TEST_ASSERT(1, (curve == CURVE_ED25519));
@@ -158,14 +158,14 @@ void lt_test_rev_ecc_key_store(void)
         LT_LOG_INFO("Checking origin of the read key...");
         LT_TEST_ASSERT(1, (origin == CURVE_STORED));
 
-        LT_LOG_INFO("Comparing the key to the pre-generated one...");
-        LT_TEST_ASSERT(0, memcmp(ed25519_pub_test_key, read_key, 32));
+        LT_LOG_INFO("Comparing the public key to the pre-generated one...");
+        LT_TEST_ASSERT(0, memcmp(ed25519_pub_test_key, read_pub_key, 32));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
 
         LT_LOG_INFO("Trying to read the erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
     }
     LT_LOG_LINE();
 
