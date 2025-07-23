@@ -241,7 +241,7 @@ void lt_test_rev_write_r_config(void);
 
 /**
  * @brief Test ECC_Key_Generate command, along with ECC_Key_Read and ECC_Key_Erase.
- * 
+ *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Check if all slots are empty.
