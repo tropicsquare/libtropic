@@ -415,11 +415,10 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uin
  * the top of this file.
  *
  * @param h           Device's handle
- * @param rs          Buffer to receive signature (r,s)
- * @param rs_len      Length of the signature buffer, must be at least 64 bytes
+ * @param rs          Buffer with a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
 
 /**
  * @brief Encodes 'ECC EdDSA sign' command payload. Used for separate l3 communication, for more information read info
@@ -438,11 +437,10 @@ lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const
  * the top of this file.
  *
  * @param h           Device's handle
- * @param rs          Buffer to receive signature (r,s)
- * @param rs_len      Length of the signature buffer, must be at least 64 bytes
+ * @param rs          Buffer with a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs);
 
 /**
  * @brief Encodes 'ECC verify' command payload. Used for separate l3 communication, for more information read info at

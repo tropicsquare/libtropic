@@ -379,26 +379,24 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
  * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
  * @param msg         Buffer containing a message
  * @param msg_len     Length of msg's buffer
- * @param rs          Buffer for storing a signature in a form of R and S bytes
- * @param rs_len      Length of rs buffer should be 64B
+ * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
-                           uint8_t *rs, const uint8_t rs_len);
+                           uint8_t *rs);
 
 /**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
  *
  * @param h           Device's handle
- * @param slot        Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
- * @param rs          Buffer for storing a silt_r_mem_data_erasewise returns other error code. TODO info about other ret
- * values
- *
+ * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
+ * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
-                           uint8_t *rs, const uint8_t rs_len);
+                           uint8_t *rs);
 
 /**
  * @brief EdDSA signature verify, HOST SIDE ONLY, does not require TROPIC01 device
