@@ -1257,9 +1257,7 @@ STATIC_ASSERT(
 #define LT_L3_EDDSA_SIGN_CMD_ID 0x71
 /** @brief Command length */
 #define LT_L3_EDDSA_SIGN_CMD_SIZE_MIN 17u
-/** Minimal length of field msg */
-#define LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN 1u
-/** Maximal length of field msg */
+/** @brief Maximal length of field msg */
 #define LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX 4096u
 
 /** @brief Result length */

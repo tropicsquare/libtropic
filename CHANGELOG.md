@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `LT_L2_LAST_RET` to `LT_RET_T_LAST_VALUE` for clarity in `lt_ret_t`.
 - Use `LIBT_DEBUG` instead of `NDEBUG` in `lt_port_{unix_tcp,raspberrypi_wiringpi}.c`.
 - Renamed `config_description_table` to `cfg_desc_table`.
+- Functions `lt_ecc_eddsa_sign()`, `lt_ecc_ecdsa_sign()`, `lt_ecc_eddsa_sig_verify()` and `lt_ecc_ecdsa_sig_verify()` accept zero length of the message to be signed.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -31,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
 - Functions `get_conf_addr()`, `get_conf_desc()`, accessing the configuration table directly is advised instead.
 - Removed `keylen` parameter from `lt_ecc_key_read()` and `lt_in__ecc_key_read()`.
+- Removed `rs_len` parameter from `lt_ecc_eddsa_sign()` and `lt_ecc_ecdsa_sign()`.
+- Removed macro `LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN`.
 
 ## [0.1.0]
 
