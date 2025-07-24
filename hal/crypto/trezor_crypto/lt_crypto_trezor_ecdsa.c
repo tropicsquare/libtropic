@@ -6,10 +6,10 @@
  */
 
 #ifdef LT_USE_TREZOR_CRYPTO
-#include <stdint.h>
 #include <ecdsa.h>
-#include <nist256p1.h>
 #include <hasher.h>
+#include <nist256p1.h>
+#include <stdint.h>
 #include <string.h>
 
 int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
