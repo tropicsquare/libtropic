@@ -20,6 +20,7 @@
 #include "lt_aesgcm.h"
 #include "lt_asn1_der.h"
 #include "lt_ed25519.h"
+#include "lt_ecdsa.h"
 #include "lt_hkdf.h"
 #include "lt_l1.h"
 #include "lt_l1_port_wrap.h"
@@ -1098,6 +1099,19 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
     }
 
     return lt_in__ecc_ecdsa_sign(h, rs);
+}
+
+lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+{
+    if (!msg || !pubkey || !rs) {
+        return LT_PARAM_ERR;
+    }
+
+    if (lt_ecdsa_verify(msg, msg_len, pubkey, rs) != 0) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
 }
 
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,

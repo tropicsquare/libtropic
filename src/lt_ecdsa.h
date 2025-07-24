@@ -1,0 +1,25 @@
+#ifndef LT_ECDSA_H
+#define LT_ECDSA_H
+
+/**
+ * @file lt_ecdsa.h
+ * @brief ECDSA function declarations.
+ * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
+
+#include "stdint.h"
+
+/**
+ * @brief  Checks if ECDSA signature is correct
+ *
+ * @param msg        Message to be checked
+ * @param msg_len    Length of the message
+ * @param pubkey     Signer's public key
+ * @param rs         R and S part of the message's signature
+ * @return int       0 if signature is valid, otherwise 1
+ */
+int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
+
+#endif
