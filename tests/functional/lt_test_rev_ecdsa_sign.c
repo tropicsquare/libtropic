@@ -84,7 +84,7 @@ void lt_test_rev_ecdsa_sign(void)
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
-    uint8_t read_pub_key[32], msg_to_sign[MSG_TO_SIGN_LEN_MAX], rs[64];
+    uint8_t read_pub_key[64], msg_to_sign[MSG_TO_SIGN_LEN_MAX], rs[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
     uint32_t random_data[MSG_TO_SIGN_LEN_MAX / sizeof(uint32_t)], random_data_size;
@@ -120,8 +120,8 @@ void lt_test_rev_ecdsa_sign(void)
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sign(&h, i, msg_to_sign, random_data_size, rs));
 
-        // LT_LOG_INFO("Verifying signature...");
-        // TODO
+        LT_LOG_INFO("Verifying signature...");
+        LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sig_verify(msg_to_sign, random_data_size, read_pub_key, rs));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
@@ -150,8 +150,8 @@ void lt_test_rev_ecdsa_sign(void)
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sign(&h, i, msg_to_sign, random_data_size, rs));
 
-        // LT_LOG_INFO("Verifying signature...");
-        // TODO
+        LT_LOG_INFO("Verifying signature...");
+        LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sig_verify(msg_to_sign, random_data_size, read_pub_key, rs));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
