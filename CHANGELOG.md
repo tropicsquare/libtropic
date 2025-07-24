@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parameter checks to LT_HELPERS functions.
 - Added `LT_NONCE_OVERFLOW` to `lt_ret_t`.
 - Value `LT_L3_R_MEM_DATA_READ_SLOT_EMPTY` to `lt_ret_t` to indicate that the user slot is empty.
+- Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecdsa_verify()`.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
