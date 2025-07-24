@@ -16,8 +16,8 @@
  *
  * @param msg        Message to be checked
  * @param msg_len    Length of the message
- * @param pubkey     Signer's public key
- * @param rs         R and S part of the message's signature
+ * @param pubkey     Signer's public key (64B)
+ * @param rs         R and S part of the message's signature (64B)
  * @return int       0 if signature is valid, otherwise 1
  */
 int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
