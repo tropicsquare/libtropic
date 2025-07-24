@@ -85,6 +85,15 @@ int lt_test_ecc_eddsa(void);
 /**
  * @brief Tests ECDSA_Sign command.
  *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Store pre-generated private key to each slot.
+ *  3. Read the public key from each slot.
+ *  4. Generate random message with random size for signing.
+ *  5. Sign the message with each slot.
+ *  6. Verify the signature.
+ *  7. Erase each slot.
+ *  8. Do steps 2-7, but instead of storing the key, generate it.
  */
 void lt_test_rev_ecdsa_sign(void);
 
