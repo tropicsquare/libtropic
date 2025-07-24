@@ -382,7 +382,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const size_t msg_len,
                            uint8_t *rs);
 
 /**
