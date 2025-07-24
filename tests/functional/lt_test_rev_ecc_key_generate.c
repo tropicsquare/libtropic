@@ -47,6 +47,20 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
         }
     }
 
+    LT_LOG_INFO("Aborting secure session");
+    ret = lt_session_abort(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to abort secure session, ret=%s", lt_ret_verbose(ret));
+        return ret;
+    }
+
+    LT_LOG_INFO("Deinitializing handle");
+    ret = lt_deinit(&h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        return ret;
+    }
+
     return LT_OK;
 }
 
