@@ -408,7 +408,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const size_t msg_len);
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
 
 /**
  * @brief Decodes 'ECC ECDSA sign' result payload. Used for separate l3 communication, for more information read info at
