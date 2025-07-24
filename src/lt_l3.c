@@ -1004,7 +1004,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len)
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const size_t msg_len)
 {
     if (!h || (slot < ECC_SLOT_0) || (slot > ECC_SLOT_31) || !msg) {
         return LT_PARAM_ERR;
