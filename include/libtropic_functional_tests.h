@@ -83,11 +83,10 @@ extern uint8_t sh3pub[];
 int lt_test_ecc_eddsa(void);
 
 /**
- * @brief Test function which tests all ecc ECDSA commands on all ecc keys lots
+ * @brief Tests ECDSA_Sign command.
  *
- * @return int
  */
-int lt_test_ecc_ecdsa(void);
+void lt_test_rev_ecdsa_sign(void);
 
 /**
  * @brief Test Pairing_Key_Read, Pairing_Key_Write and Pairing_Key_Invalidate on all slots.

@@ -149,7 +149,7 @@ endif()
 # this name is also by CTest to identify the test and also used to create a macro (uppercase format)
 # which is used for test selection.
 set(LIBTROPIC_TEST_LIST
-    lt_test_ecc_ecdsa
+    lt_test_rev_ecdsa_sign
     lt_test_ecc_eddsa
     lt_test_ire_pairing_key_slots
     lt_test_rev_ping
@@ -195,7 +195,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_common.c
 
         # Files which include test functions definitions.
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecdsa_sign.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_pairing_key_slots.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ping.c
