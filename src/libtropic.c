@@ -1075,8 +1075,8 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot)
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs)
 {
-    if (!h || !msg || !rs || msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX || ecc_slot < ECC_SLOT_0
-        || ecc_slot > ECC_SLOT_31) {
+    if (!h || !msg || !rs || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot < ECC_SLOT_0)
+        || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1104,8 +1104,8 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs)
 {
-    if (!h || !msg || !rs || msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX || ecc_slot < ECC_SLOT_0
-        || ecc_slot > ECC_SLOT_31) {
+    if (!h || !msg || !rs || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot < ECC_SLOT_0)
+        || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1132,7 +1132,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
 
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    if (!msg || msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX || !pubkey || !rs) {
+    if (!msg || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || !pubkey || !rs) {
         return LT_PARAM_ERR;
     }
 
