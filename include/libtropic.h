@@ -386,6 +386,18 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
                            uint8_t *rs);
 
 /**
+ * @brief ECDSA signature verify, HOST SIDE ONLY, does not require TROPIC01 device
+ *
+ * @param msg         Message
+ * @param msg_len     Length of message
+ * @param pubkey      Public key related to private key which signed the message (64B)
+ * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
+ * @return            LT_OK if success, otherwise returns other error code.
+ *
+ */
+lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
+
+/**
  * @brief EdDSA sign message with a private key stored in TROPIC01 device
  *
  * @param h           Device's handle
@@ -403,8 +415,8 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
  *
  * @param msg         Message
  * @param msg_len     Length of message. Max length is 4095
- * @param pubkey      Public key related to private key which signed the message
- * @param rs          Signature to be verified, in a form of R and S bytes
+ * @param pubkey      Public key related to private key which signed the message (32B)
+ * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code. TODO info about other ret values
  *
  */
