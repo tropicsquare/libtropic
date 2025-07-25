@@ -152,6 +152,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_ecc_ecdsa
     lt_test_ecc_eddsa
     lt_test_ire_pairing_key_slots
+    lt_test_ire_write_i_config
     lt_test_rev_ping
     lt_test_rev_r_mem
     lt_test_rev_erase_r_config
@@ -198,6 +199,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_pairing_key_slots.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_write_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ping.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_r_mem.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
