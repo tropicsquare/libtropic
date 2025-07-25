@@ -215,4 +215,16 @@ void lt_test_rev_resend_req(void);
  */
 void lt_test_rev_write_r_config(void);
 
+/**
+ * @brief Tests Random_Value_Get command.
+ *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Generate random number 0-255 using lt_port_random_bytes(), which will be
+ *     used in the Random_Value_Get command.
+ *  3. Get random count (from step 2) of random bytes from TROPIC01.
+ *  4. Dump the random bytes from TROPIC01 into the log.
+ */
+void lt_test_rev_random_value_get(void);
+
 #endif
