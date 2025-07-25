@@ -1,6 +1,6 @@
 /**
- * @file lt_test_ire_read_write_pairing_keys.c
- * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
+ * @file lt_test_ire_pairing_key_slots.c
+ * @brief Test Pairing_Key_Read, Pairing_Key_Write and Pairing_Key_Invalidate on all slots.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -34,10 +34,10 @@ static void print_bytes(uint8_t *data, uint16_t len)
     }
 }
 
-void lt_test_ire_read_write_pairing_keys(void)
+void lt_test_ire_pairing_key_slots(void)
 {
     LT_LOG_INFO("----------------------------------------------");
-    LT_LOG_INFO("lt_test_ire_read_write_pairing_keys()");
+    LT_LOG_INFO("lt_test_ire_pairing_key_slots()");
     LT_LOG_INFO("----------------------------------------------");
 
     lt_handle_t h = {0};
@@ -83,7 +83,7 @@ void lt_test_ire_read_write_pairing_keys(void)
         LT_LOG_INFO("Reading pairing key slot %d...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
-        
+
         LT_LOG_INFO("Comparing contents of written and read key...");
         LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
         LT_LOG_INFO();
@@ -94,11 +94,11 @@ void lt_test_ire_read_write_pairing_keys(void)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Writing to pairing key slot %d (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
-        
+
         LT_LOG_INFO("Reading pairing key slot %d...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
-        
+
         LT_LOG_INFO("Comparing contents of expected key and read key...");
         LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
         LT_LOG_INFO();
@@ -108,7 +108,7 @@ void lt_test_ire_read_write_pairing_keys(void)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Invalidating pairing key slot %d...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, i));
-        
+
         LT_LOG_INFO("Reading pairing key slot %d (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_PAIRING_KEY_INVALID, lt_pairing_key_read(&h, read_key, i));
     }
