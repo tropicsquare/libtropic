@@ -58,12 +58,12 @@ void lt_test_ire_read_write_pairing_keys(void)
     LT_LOG_LINE();
 
     // Read pairing keys (1,2,3 should be empty)
-    LT_LOG_INFO("Reading pairing key slot 0:");
+    LT_LOG_INFO("Reading pairing key slot 0...");
     LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
     print_bytes(read_key, 32);
     LT_LOG_INFO();
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Reading pairing key slot %d, asserting LT_L3_PAIRING_KEY_EMPTY", i);
+        LT_LOG_INFO("Reading pairing key slot %d (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
         LT_LOG_INFO();
     }
@@ -71,7 +71,7 @@ void lt_test_ire_read_write_pairing_keys(void)
 
     // Write pairing keys into slot 1,2,3
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Writing to pairing key slot %d:", i);
+        LT_LOG_INFO("Writing to pairing key slot %d...", i);
         print_bytes(pub_keys[i], 32);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
         LT_LOG_INFO();
@@ -80,10 +80,11 @@ void lt_test_ire_read_write_pairing_keys(void)
 
     // Read all pairing keys and check value
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Reading pairing key slot %d:", i);
+        LT_LOG_INFO("Reading pairing key slot %d...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
-        LT_LOG_INFO("Comparing contents of written and read key");
+        
+        LT_LOG_INFO("Comparing contents of written and read key...");
         LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
         LT_LOG_INFO();
     }
@@ -91,12 +92,14 @@ void lt_test_ire_read_write_pairing_keys(void)
 
     // Write pairing key slots again (should fail)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Writing zeros to pairing key slot %d, asserting LT_L3_FAIL", i);
+        LT_LOG_INFO("Writing to pairing key slot %d (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
-        LT_LOG_INFO("Reading pairing key slot %d:", i);
+        
+        LT_LOG_INFO("Reading pairing key slot %d...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
-        LT_LOG_INFO("Comparing contents of expected key and read key");
+        
+        LT_LOG_INFO("Comparing contents of expected key and read key...");
         LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
         LT_LOG_INFO();
     }
