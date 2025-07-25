@@ -39,7 +39,7 @@ lt_ret_t lt_test_rev_ecdsa_sign_cleanup(void)
     }
 
     LT_LOG_INFO("Erasing all ECC key slots");
-    for (uint8_t i = 0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Erasing slot #%d", i);
         ret = lt_ecc_key_erase(&h, i);
@@ -99,7 +99,7 @@ void lt_test_rev_ecdsa_sign(void)
     lt_test_cleanup_function = &lt_test_rev_ecdsa_sign_cleanup;
 
     LT_LOG_INFO("Test ECDSA_Sign with stored key...");
-    for (uint8_t i = 0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Testing signing with ECC key slot #%d...", i);
 
@@ -129,7 +129,7 @@ void lt_test_rev_ecdsa_sign(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Test ECDSA_Sign with generated key...");
-    for (uint8_t i = 0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Testing signing with ECC key slot #%d...", i);
 
