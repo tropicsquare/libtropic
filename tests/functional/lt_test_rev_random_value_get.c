@@ -60,6 +60,7 @@ void lt_test_rev_random_value_get(void)
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
+    LT_LOG_INFO("Random_Value_Get will be executed %d times", RANDOM_VALUE_GET_LOOPS);
     for (uint16_t i = 0; i < RANDOM_VALUE_GET_LOOPS; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length <= %d (with lt_port_random_bytes())...", RANDOM_VALUE_GET_LEN_MAX);
