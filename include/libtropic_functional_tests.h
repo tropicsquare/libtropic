@@ -185,7 +185,7 @@ void lt_test_rev_read_i_config(void);
 
 /**
  * @brief Tests writing the I-Config.
- * 
+ *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Write the whole I-Config with random data.

@@ -13,7 +13,6 @@
 #include "libtropic_port.h"
 #include "string.h"
 
-
 void lt_test_ire_write_i_config(void)
 {
     LT_LOG_INFO("----------------------------------------------");
