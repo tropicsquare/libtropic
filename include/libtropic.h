@@ -479,7 +479,7 @@ const char *lt_ret_verbose(lt_ret_t ret);
 extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
 
 /**
- * @brief This function reads config objects from TROPIC01 and prints them out
+ * @brief Writes the whole R-Config with the passed *config*.
  *
  * @param h           Device's handle
  * @param config      Array into which objects are read
@@ -504,6 +504,16 @@ lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
+
+/**
+ * @brief Writes the whole I-Config with the passed *config*.
+ * @details Only the zero bits in *config* are written.
+ *
+ * @param h           Device's handle
+ * @param config      Array into which objects are read
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
 
 /**
  * @brief This function establish a secure channel between host MCU and TROPIC01 chip
