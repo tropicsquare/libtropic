@@ -76,6 +76,14 @@ extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
 
 /**
+ * @brief Non-test function to dump bytes in 8 byte rows.
+ *
+ * @param data Buffer to dump
+ * @param size Size of the buffer to dump
+ */
+void hexdump_8byte(const uint8_t *data, uint16_t size);
+
+/**
  * @brief Test function which tests all ecc EdDSA commands on all ecc keys lots
  *
  * @return int

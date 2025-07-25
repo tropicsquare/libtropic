@@ -15,29 +15,6 @@
 
 #define RANDOM_VALUE_GET_LOOPS 300
 
-/**
- * @brief Local function to dump bytes in 8 byte rows.
- *
- * @param data Buffer to dump
- * @param size Size of the buffer to dump
- */
-void hexdump_8byte(const uint8_t *data, uint16_t size)
-{
-    char line[3 * 8 + 1];  // 2 hex chars + 1 space per byte, plus null terminator
-
-    for (uint16_t i = 0; i < size; i += 8) {
-        uint16_t row_len = (size - i < 8) ? size - i : 8;
-        char *p = line;
-
-        for (uint16_t j = 0; j < row_len; j++) {
-            p += sprintf(p, "%02x ", data[i + j]);
-        }
-
-        *p = '\0';  // null-terminate the string
-        LT_LOG_INFO("%s", line);
-    }
-}
-
 void lt_test_rev_random_value_get(void)
 {
     LT_LOG_INFO("----------------------------------------------");
