@@ -294,8 +294,8 @@ lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
 
 /**
- * @brief Encodes Random_Value_Get command payload. Used for separate l3 communication, for more information read info at
- * the top of this file.
+ * @brief Encodes Random_Value_Get command payload. Used for separate l3 communication, for more information read info
+ * at the top of this file.
  *
  * @param h           Device's handle
  * @param len         Length of random data to get (255 bytes is the maximum)
@@ -304,8 +304,8 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
 lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len);
 
 /**
- * @brief Decodes Random_Value_Get result payload. Used for separate l3 communication, for more information read info at the
- * top of this file.
+ * @brief Decodes Random_Value_Get result payload. Used for separate l3 communication, for more information read info at
+ * the top of this file.
  *
  * @param h           Device's handle
  * @param buff        Buffer to receive random data
