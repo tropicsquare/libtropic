@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `config_description_table` to `cfg_desc_table`.
 - Functions `lt_ecc_eddsa_sign()`, `lt_ecc_ecdsa_sign()`, `lt_ecc_eddsa_sig_verify()` and `lt_ecc_ecdsa_sig_verify()` accept zero length of the message to be signed.
 - Function `lt_ecc_ecdsa_sign()` does not restrict message length - type of `msg_len` changed to `size_t`.
+- Renamed `lt_random_get()` to `lt_random_value_get()`, along with the separate API, to match the command name in the User API.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
