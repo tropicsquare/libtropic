@@ -90,7 +90,7 @@ int lt_test_ecc_eddsa(void);
 int lt_test_ecc_ecdsa(void);
 
 /**
- * @brief Test Pairing_Key_Read and Pairing_Key_Write on all slots.
+ * @brief Test Pairing_Key_Read, Pairing_Key_Write and Pairing_Key_Invalidate on all slots.
  *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0 and read it.
@@ -98,8 +98,10 @@ int lt_test_ecc_ecdsa(void);
  *  3. Write pairing key slots 1,2,3.
  *  4. Read all pairing key slots and check for expected value.
  *  5. Write zeros to all pairing key slots and check for failure.
+ *  6. Invalidate all pairing key slots.
+ *  7. Read all pairing key slots and check for failure.
  */
-void lt_test_ire_read_write_pairing_keys(void);
+void lt_test_ire_pairing_key_slots(void);
 
 /**
  * @brief Test Ping L3 command with random data of random length <= PING_LEN_MAX.
