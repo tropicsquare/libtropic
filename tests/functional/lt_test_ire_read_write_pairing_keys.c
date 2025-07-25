@@ -105,6 +105,15 @@ void lt_test_ire_read_write_pairing_keys(void)
     }
     LT_LOG_LINE();
 
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
+        LT_LOG_INFO("Invalidating pairing key slot %d...", i);
+        LT_TEST_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, i));
+        
+        LT_LOG_INFO("Reading pairing key slot %d (should fail)...", i);
+        LT_TEST_ASSERT(LT_L3_PAIRING_KEY_INVALID, lt_pairing_key_read(&h, read_key, i));
+    }
+    LT_LOG_LINE();
+
     LT_LOG_INFO("Aborting Secure Session");
     LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
 
