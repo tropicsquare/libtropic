@@ -294,25 +294,25 @@ lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
 
 /**
- * @brief Encodes 'random get' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes Random_Value_Get command payload. Used for separate l3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
- * @param len         Length of random data to get
+ * @param len         Length of random data to get (255 bytes is the maximum)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__random_get(lt_handle_t *h, const uint16_t len);
+lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len);
 
 /**
- * @brief Decodes 'random get' result payload. Used for separate l3 communication, for more information read info at the
+ * @brief Decodes Random_Value_Get result payload. Used for separate l3 communication, for more information read info at the
  * top of this file.
  *
  * @param h           Device's handle
  * @param buff        Buffer to receive random data
- * @param len         Length of random data to get, must be the same as sent in lt_out__random_get()
+ * @param len         Length of random data to get, must be the same as sent in lt_out__random_value_get()
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
+lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
 /**
  * @brief Encodes 'ECC key generation' command payload. Used for separate l3 communication, for more information read

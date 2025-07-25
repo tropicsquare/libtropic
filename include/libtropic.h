@@ -319,14 +319,14 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
 /**
- * @brief Get number of random bytes
+ * @brief Get random bytes from TROPIC01.
  *
  * @param h           Device's handle
  * @param buff        Buffer
- * @param len         Number of random bytes
+ * @param len         Number of random bytes (255 bytes is the maximum)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
+lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
 /**
  * @brief Generate ECC key in the device's ECC key slot

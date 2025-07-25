@@ -938,7 +938,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
     return lt_in__r_mem_data_erase(h);
 }
 
-lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
+lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 {
     if ((len > RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
         return LT_PARAM_ERR;
@@ -947,7 +947,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_out__random_get(h, len);
+    lt_ret_t ret = lt_out__random_value_get(h, len);
     if (ret != LT_OK) {
         return ret;
     }
@@ -962,7 +962,7 @@ lt_ret_t lt_random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
         return ret;
     }
 
-    return lt_in__random_get(h, buff, len);
+    return lt_in__random_value_get(h, buff, len);
 }
 
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
