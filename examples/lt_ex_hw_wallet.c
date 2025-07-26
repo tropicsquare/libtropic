@@ -423,9 +423,9 @@ static int session_H3(void)
     LT_LOG("%s", "lt_ecc_key_generate() in ECC_SLOT_24");
     LT_ASSERT(LT_OK, lt_ecc_key_generate(&h, ECC_SLOT_24, CURVE_ED25519));
 
-    LT_LOG("%s", "lt_random_get() RANDOM_VALUE_GET_LEN_MAX == 255");
+    LT_LOG("%s", "lt_random_value_get() RANDOM_VALUE_GET_LEN_MAX == 255");
     uint8_t buff[RANDOM_VALUE_GET_LEN_MAX];
-    LT_ASSERT(LT_OK, lt_random_get(&h, buff, RANDOM_VALUE_GET_LEN_MAX));
+    LT_ASSERT(LT_OK, lt_random_value_get(&h, buff, RANDOM_VALUE_GET_LEN_MAX));
 
     // TODO write r mem data
     LT_LOG("%s", "lt_r_mem_data_erase() slot 0 ");

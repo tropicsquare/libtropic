@@ -754,7 +754,7 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__random_get(lt_handle_t *h, const uint16_t len)
+lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len)
 {
     if ((len > RANDOM_VALUE_GET_LEN_MAX) || !h) {
         return LT_PARAM_ERR;
@@ -774,7 +774,7 @@ lt_ret_t lt_out__random_get(lt_handle_t *h, const uint16_t len)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
+lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 {
     if ((len > RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
         return LT_PARAM_ERR;
