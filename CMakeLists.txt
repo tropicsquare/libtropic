@@ -284,6 +284,15 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #                                                                         #
 ###########################################################################
 
+if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
+    target_compile_options(tropic PRIVATE -Wall -Wextra -Werror -Wpedantic
+        -Wshadow -Wformat=2 -Wcast-align -Wfloat-equal -Wnull-dereference
+        -Wredundant-decls -Wlogical-op -Wstrict-prototypes
+        -fstack-protector-strong
+    )
+endif()
+
+
 if(LT_PRINT_SPI_DATA)
     target_compile_definitions(tropic PRIVATE LT_PRINT_SPI_DATA)
 endif()

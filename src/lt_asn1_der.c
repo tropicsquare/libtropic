@@ -81,18 +81,18 @@ static lt_ret_t consume_bytes(struct parse_ctx_t *ctx, uint8_t *buf, uint16_t n,
     return LT_OK;
 }
 
-#define GET_BYTES(ctx, buf, n)                          \
-    do {                                                \
-        lt_ret_t rv = consume_bytes(ctx, buf, n, true); \
-        if (rv != LT_OK) return rv;                     \
+#define GET_BYTES(ctx, buf, n)                            \
+    do {                                                  \
+        lt_ret_t _rv_ = consume_bytes(ctx, buf, n, true); \
+        if (_rv_ != LT_OK) return _rv_;                   \
     } while (0);
 
 #define GET_NEXT_BYTE(ctx, buf) GET_BYTES(ctx, buf, 1)
 
-#define DROP_BYTES(ctx, n)                                \
-    do {                                                  \
-        lt_ret_t rv = consume_bytes(ctx, NULL, n, false); \
-        if (rv != LT_OK) return rv;                       \
+#define DROP_BYTES(ctx, n)                                  \
+    do {                                                    \
+        lt_ret_t _rv_ = consume_bytes(ctx, NULL, n, false); \
+        if (_rv_ != LT_OK) return _rv_;                     \
     } while (0);
 
 /**
@@ -163,7 +163,7 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
     switch (b) {
         case ASN1DER_SEQUENCE:
             while (ctx->past < start + len - 1) {
-                lt_ret_t rv = parse_object(ctx);
+                rv = parse_object(ctx);
                 if (rv != LT_OK) return rv;
             }
 
