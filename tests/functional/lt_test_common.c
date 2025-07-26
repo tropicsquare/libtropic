@@ -30,3 +30,20 @@ void lt_assert_fail_handler()
     }
     LT_FINISH_TEST();
 }
+
+void hexdump_8byte(const uint8_t *data, uint16_t size)
+{
+    char line[3 * 8 + 1];  // 2 hex chars + 1 space per byte, plus null terminator
+
+    for (uint16_t i = 0; i < size; i += 8) {
+        uint16_t row_len = (size - i < 8) ? size - i : 8;
+        char *p = line;
+
+        for (uint16_t j = 0; j < row_len; j++) {
+            p += sprintf(p, "%02x ", data[i + j]);
+        }
+
+        *p = '\0';  // null-terminate the string
+        LT_LOG_INFO("%s", line);
+    }
+}
