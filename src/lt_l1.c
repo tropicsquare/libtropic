@@ -46,6 +46,8 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
     if ((max_len < LT_L1_LEN_MIN) | (max_len > LT_L1_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
+#else
+    UNUSED(max_len);
 #endif
 
     int max_tries = LT_L1_READ_MAX_TRIES;
