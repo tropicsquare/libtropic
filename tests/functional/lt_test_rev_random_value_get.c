@@ -45,7 +45,7 @@ void lt_test_rev_random_value_get(void)
         random_data_size %= RANDOM_VALUE_GET_LEN_MAX + 1;  // 0-255
 
         LT_LOG_INFO("Getting %d random numbers from TROPIC01...", random_data_size);
-        LT_TEST_ASSERT(LT_OK, lt_random_get(&h, random_data, random_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_random_value_get(&h, random_data, random_data_size));
         LT_LOG_INFO("Random data from TROPIC01:");
         hexdump_8byte(random_data, random_data_size);
     }
