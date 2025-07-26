@@ -1398,6 +1398,32 @@ lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
     return LT_OK;
 }
 
+lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config)
+{
+    if (!h || !config) {
+        return LT_PARAM_ERR;
+    }
+
+    lt_ret_t ret;
+    uint32_t cfg_obj;
+    enum CONFIGURATION_OBJECTS_REGS addr;
+
+    for (uint8_t i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
+        cfg_obj = config->obj[i];
+        addr = cfg_desc_table[i].addr;
+        for (uint8_t j = 0; j <= 31; j++) {
+            if (!FIELD_GET(BIT(j), cfg_obj)) {
+                ret = lt_i_config_write(h, addr, j);
+                if (ret != LT_OK) {
+                    return ret;
+                }
+            }
+        }
+    }
+
+    return LT_OK;
+}
+
 lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
 {
     if (!h || !shipriv || !shipub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)) {
