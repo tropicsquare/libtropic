@@ -208,6 +208,16 @@ void lt_test_rev_read_chip_id(void);
 void lt_test_rev_read_i_config(void);
 
 /**
+ * @brief Tests writing the I-Config.
+ *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Write the whole I-Config with random data.
+ *  3. Read the whole I-Config and check that it was written.
+ */
+void lt_test_ire_write_i_config(void);
+
+/**
  * @brief Reads contents of R-Config and prints it to the log.
  *
  * Test steps:
