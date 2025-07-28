@@ -64,7 +64,7 @@ typedef uint32_t u32;
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define L3_CYPHERTEXT_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
 /** @brief Max size of one unit of transport on l3 layer */
-#define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_CYPHERTEXT_MAX_SIZE + 13 + L3_TAG_SIZE)
+#define L3_PACKET_MAX_SIZE (L3_RES_SIZE_SIZE + L3_CYPHERTEXT_MAX_SIZE + 13 + L3_TAG_SIZE)
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -73,7 +73,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
     /** @brief Command or result data including ID and TAG */
-    uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
+    uint8_t data[L3_PACKET_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
 // clang-format off
@@ -102,7 +102,7 @@ typedef struct {
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
 #ifndef LT_SIZE_OF_L3_BUFF
-#define LT_SIZE_OF_L3_BUFF L3_FRAME_MAX_SIZE
+#define LT_SIZE_OF_L3_BUFF L3_PACKET_MAX_SIZE
 #endif
 
 typedef struct {
