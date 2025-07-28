@@ -490,7 +490,7 @@ typedef struct {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
-#define PING_LEN_MAX (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
+#define PING_LEN_MAX 4096
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
