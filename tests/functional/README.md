@@ -18,12 +18,13 @@ To add a new test, you need to:
 
 ### Test types and cleanup
 As the tests are also ran against real chips, we recognize two types of tests:
-a. Reversible -- this type of test shall not make any irreversible changes to the chip. It may
+
+1. Reversible -- this type of test shall not make any irreversible changes to the chip. It may
    happen that the test is interrupted by a failed assert. For this cases there is a possibility
    to define a cleanup function, which is called on every failed assert before test termination.
    Every test that do some changes which require cleanup afterwards for the test to be truly reversible
    MUST contain the cleanup function.
-b. Irreversible -- this type of test causes changes which are not reversible by nature (e.g. I-config
+2. Irreversible -- this type of test causes changes which are not reversible by nature (e.g. I-config
    modifications). Those test do not have to implement cleanup function, as the chip is always
    "destroyed" after running the test.
 
