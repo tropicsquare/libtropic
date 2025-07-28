@@ -170,7 +170,7 @@ static int session_initial(void)
 {
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -232,7 +232,7 @@ static int session_H0(void)
 {
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -259,7 +259,7 @@ static int session_H1(void)
 {
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -315,7 +315,7 @@ static int session_H2(void)
 {
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -377,7 +377,7 @@ static int session_H3(void)
 {
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif

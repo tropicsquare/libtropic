@@ -89,7 +89,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 {
     if (!s2
         // Max len must be definitively smaller than size of l3 buffer
-        || max_len > L3_FRAME_MAX_SIZE || !buff) {
+        || max_len > L3_PACKET_MAX_SIZE || !buff) {
         return LT_PARAM_ERR;
     }
 
@@ -157,7 +157,7 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 {
     if (!s2
         // Max len must be definitively smaller than size of l3 buffer
-        || max_len > L3_FRAME_MAX_SIZE || !buff) {
+        || max_len > L3_PACKET_MAX_SIZE || !buff) {
         return LT_PARAM_ERR;
     }
 

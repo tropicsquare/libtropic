@@ -44,13 +44,13 @@ typedef uint32_t u32;
 #define L3_IV_SIZE 12u
 
 /** @brief Size of RES_SIZE field */
-#define L3_RES_SIZE_SIZE sizeof(uint16_t)
+#define L3_RES_SIZE_SIZE 2
 /** @brief Size of CMD_SIZE field */
-#define L3_CMD_SIZE_SIZE sizeof(uint16_t)
+#define L3_CMD_SIZE_SIZE 2
 /** @brief Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
 /** @brief Maximal size of l3 RES/RSP DATA field */
-#define L3_CMD_DATA_SIZE_MAX (4097)
+#define L3_CMD_DATA_SIZE_MAX (4111)
 
 /** @brief TODO Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
@@ -62,9 +62,13 @@ typedef uint32_t u32;
 #define LT_L1_LEN_MAX (1 + 1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
 
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
-#define L3_PACKET_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
-/** @brief Max size of one unit of transport on l3 layer */
-#define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
+#define L3_CYPHERTEXT_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
+/**
+ * @brief Max size of one unit of transport on l3 layer
+ *
+ * The number 13 is given by the longest possible padding, which is given by the EDDSA_Sign command.
+ */
+#define L3_PACKET_MAX_SIZE (L3_RES_SIZE_SIZE + L3_CYPHERTEXT_MAX_SIZE + 13 + L3_TAG_SIZE)
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -73,7 +77,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
     /** @brief Command or result data including ID and TAG */
-    uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
+    uint8_t data[L3_PACKET_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
 // clang-format off
@@ -102,7 +106,7 @@ typedef struct {
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
 #ifndef LT_SIZE_OF_L3_BUFF
-#define LT_SIZE_OF_L3_BUFF L3_FRAME_MAX_SIZE
+#define LT_SIZE_OF_L3_BUFF L3_PACKET_MAX_SIZE
 #endif
 
 typedef struct {
@@ -490,7 +494,7 @@ typedef struct {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
-#define PING_LEN_MAX (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
+#define PING_LEN_MAX 4096
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
