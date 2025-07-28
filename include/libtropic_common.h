@@ -50,7 +50,7 @@ typedef uint32_t u32;
 /** @brief Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
 /** @brief Maximal size of l3 RES/RSP DATA field */
-#define L3_CMD_DATA_SIZE_MAX (4097)
+#define L3_CMD_DATA_SIZE_MAX (4111)
 
 /** @brief TODO Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
