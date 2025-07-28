@@ -30,13 +30,13 @@ As the tests are also ran against real chips, we recognize two types of tests:
 
 #### Cleanup function
 If the assert fails, the assert function checks whether the `lt_test_cleanup_function` function pointer
-is not `NULL`. If not, the cleanup function is called automatically before terminating the test.
+is not `NULL`. If not, the cleanup function is called automatically before terminating the test. By default, the pointer is initialized to `NULL`.
 
 If you need cleanup function, please create the function and assign the `lt_test_cleanup_function`
-at the right moment in the test (e.g. after you have backed up data you would like to restore).
+at the right moment in the test (e.g. after you backed up data you would like to restore).
 
 You can of course reuse your cleanup function at the end of the test, so you don't have
-to duplicate the cleanup code if it would be the same.
+to duplicate the cleanup code if it would be the same. If you wrap the function call in the `LT_TEST_ASSERT`, do not forget to set `lt_test_cleanup_function` back to `NULL` beforehands, otherwise the cleanup will be called twice.
 
 ### Test template
 Change the lines with `TODO`.
