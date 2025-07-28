@@ -64,7 +64,7 @@ typedef uint32_t u32;
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define L3_PACKET_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
 /** @brief Max size of one unit of transport on l3 layer */
-#define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
+#define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + 13 + L3_TAG_SIZE)
 
 //--------------------------------------------------------------------------------------------------------------------//
 
