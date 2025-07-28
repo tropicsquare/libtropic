@@ -29,7 +29,7 @@ As the tests are also ran against real chips, we recognize two types of tests:
    "destroyed" after running the test.
 
 #### Cleanup function
-If the assert fails, the assert function checks whether the `lt_test_cleanup_function` pointer
+If the assert fails, the assert function checks whether the `lt_test_cleanup_function` function pointer
 is not `NULL`. If not, the cleanup function is called automatically before terminating the test.
 
 If you need cleanup function, please create the function and assign the `lt_test_cleanup_function`
