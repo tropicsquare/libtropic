@@ -1,7 +1,8 @@
 # Testing and running examples against TROPIC01 model
 Code in this directory is meant to be compiled under Unix and all tests and examples here are running against TROPIC01's Python model, so no chip or external hardware is needed.
 
-Testing is managed by CTest, examples are meant to be executed manually.
+- Testing is managed by CTest: the CTest will execute both test and model automatically.
+- For running examples, you need to start the model manually and then execute the example binary in a separate terminal. See below.
 
 ## How it works?
 Both processes (tests and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
