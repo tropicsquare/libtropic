@@ -1116,7 +1116,7 @@ lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs)
 lt_ret_t lt_out__mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index,
                                const uint32_t mcounter_value)
 {
-    if (!h || (mcounter_index > MCOUNTER_INDEX_15) || mcounter_value == 0) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
