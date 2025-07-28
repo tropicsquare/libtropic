@@ -30,7 +30,7 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     }
 
     LT_LOG_INFO("Erasing all ECC key slots");
-    for (uint8_t i = 0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Erasing slot #%d", i);
         ret = lt_ecc_key_erase(&h, i);
@@ -89,7 +89,7 @@ void lt_test_rev_ecc_key_generate(void)
     lt_test_cleanup_function = &lt_test_rev_ecc_key_generate_cleanup;
 
     LT_LOG_INFO("Testing ECC_Key_Generate using P256 curve...");
-    for (uint8_t i = 0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Testing ECC key slot #%d...", i);
 
@@ -120,7 +120,7 @@ void lt_test_rev_ecc_key_generate(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Testing ECC_Key_Generate using Ed25519 curve...");
-    for (uint8_t i = 0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Testing ECC key slot #%d...", i);
 
