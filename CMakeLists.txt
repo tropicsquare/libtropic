@@ -150,7 +150,7 @@ endif()
 # which is used for test selection.
 set(LIBTROPIC_TEST_LIST
     lt_test_rev_ecdsa_sign
-    lt_test_ecc_eddsa
+    lt_test_rev_eddsa_sign
     lt_test_ire_pairing_key_slots
     lt_test_rev_ping
     lt_test_rev_r_mem
@@ -197,7 +197,7 @@ if(LT_BUILD_TESTS)
 
         # Files which include test functions definitions.
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecdsa_sign.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_eddsa_sign.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_pairing_key_slots.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ping.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_r_mem.c
