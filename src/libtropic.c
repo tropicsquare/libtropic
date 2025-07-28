@@ -37,16 +37,15 @@
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
+    if (!h) {
+        return LT_PARAM_ERR;
+    }
+
     // When compiling libtropic with l3 buffer embedded into handle,
     // define buffer's length here (later used to prevent overflow during communication).
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
-
-    if (!h) {
-        return LT_PARAM_ERR;
-    }
-
     h->l3.session = SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     if (ret != LT_OK) {
