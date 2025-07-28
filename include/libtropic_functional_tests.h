@@ -255,6 +255,14 @@ void lt_test_rev_resend_req(void);
  */
 void lt_test_rev_sleep_req(void);
 
+/*
+ * @brief Test L2 Startup Request.
+ *
+ * Test steps:
+ *  1. 
+ */
+void lt_test_rev_startup_req(void);
+
 /**
  * @brief Backs up R-Config, writes it and then restores it.
  *
