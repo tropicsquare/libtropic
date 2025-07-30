@@ -14,14 +14,36 @@
 #include "libtropic_logging.h"
 #include "lt_l2.h"
 #include "lt_l2_api_structs.h"
+#include "lt_l1_port_wrap.h"
 
-enum lt_tropic01_mode { LT_BOOTLOADER_MODE, LT_NORMAL_MODE };
+#define REBOOT_WAIT_ATTEMPTS 10
+enum lt_tropic01_mode { LT_BOOTLOADER_MODE, LT_NORMAL_MODE, LT_BUSY };
+
 enum lt_tropic01_mode check_current_mode(lt_handle_t *h) {
 
     uint8_t spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
+    lt_ret_t ret;
 
-    LT_TEST_ASSERT(LT_OK, lt_get_info_spect_fw_ver(h, spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE))
-    LT_LOG_INFO("Spect ver: %x %x %x %x", spect_ver[0], spect_ver[1], spect_ver[2], spect_ver[3]);
+    LT_LOG_INFO("Retrieving SPECT FW version...");
+    for(int i = 0; i < REBOOT_WAIT_ATTEMPTS; i++) {
+        ret = lt_get_info_spect_fw_ver(h, spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        if (LT_OK == ret) {
+            break;
+        } else if (LT_L1_CHIP_BUSY == ret) {
+            LT_LOG_INFO("Chip busy, waiting and trying again...");
+            lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+        }
+    }
+
+    if (LT_OK == ret) {
+        LT_LOG_INFO("OK!");
+    } else {
+        LT_LOG_ERROR("Chip still busy! Terminating test.");
+        return LT_BUSY;
+    }
+
+    LT_LOG_INFO("Spect version:");
+    hexdump_8byte(spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
     if (0 == memcmp(spect_ver, "\x00\x00\x00\x80", LT_L2_GET_INFO_SPECT_FW_SIZE)) {
         return LT_BOOTLOADER_MODE;
     } else {
