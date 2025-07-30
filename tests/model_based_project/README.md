@@ -1,8 +1,11 @@
 # Testing and running examples against TROPIC01 model
-Code in this directory is meant to be compiled under Unix and all tests and examples here are running against TROPIC01's Python model, so no chip or external hardware is needed.
+Code in this directory is meant to be compiled under Unix and tests and examples here are running against TROPIC01's Python model, so no chip or external hardware is needed.
 
 - Testing is managed by CTest: the CTest will execute both test and model automatically.
 - For running examples, you need to start the model manually and then execute the example binary in a separate terminal. See below.
+
+**Important note:** There are some tests and examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those will always fail against the model. Namely:
+-  `lt_ex_fw_update`
 
 ## How it works?
 Both processes (tests and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
@@ -60,6 +63,11 @@ where `<test_regex>` is a regex expression for the test names from the list. To 
 ctest
 ```
 to enable verbose output, use the `-V` switch or `-W` switch for even more verbose output.
+
+To exclude some tests (e.g. those which are not compatible with model):
+```shell
+ctest -E <test_regex>
+```
 
 After CTest finishes, it informs about the results and saves all output to the `tests/model_based_project/build/run_logs/` directory. Output from the tests and responses from the model are saved.
 > Note: the model is automatically started for each test separately, so it behaves like a fresh TROPIC01 straight out of factory. All this and other handling is done by the script [model_test_runner.py](model_test_runner.py), which is called by CTest.
