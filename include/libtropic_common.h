@@ -67,7 +67,7 @@ typedef struct lt_l3_gen_frame_t {
     uint16_t cmd_size;
     /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
-} __attribute__((packed)) lt_l3_gen_frame_t ;
+} __attribute__((packed)) lt_l3_gen_frame_t;
 
 // clang-format off
 STATIC_ASSERT(
@@ -523,7 +523,7 @@ typedef enum CONFIGURATION_OBJECTS_REGS {
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR = 0X154,
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR = 0X158,
     CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = 0X160
-} CONFIGURATION_OBJECTS_REGS ;
+} CONFIGURATION_OBJECTS_REGS;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of one data slot in bytes */
