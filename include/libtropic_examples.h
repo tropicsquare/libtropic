@@ -53,7 +53,7 @@ int lt_ex_hardware_wallet(void);
 
 /**
  * @brief Example function, shows how to update TROPIC01's internal firmwares
- * 
+ *
  * @return int
  */
 int lt_ex_fw_update(void);
