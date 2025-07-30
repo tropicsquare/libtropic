@@ -186,7 +186,7 @@ void lt_test_rev_handshake_req(void);
 
 /**
  * @brief Test monotonic counter API - lt_mcounter_init, lt_mcounter_get, lt_mcounter_update.
- * 
+ *
  * Test steps:
  * 1. Check if all monotonic counters contain zero.
  * 2. Try to init each counter with random value twice, then try a few decrements.

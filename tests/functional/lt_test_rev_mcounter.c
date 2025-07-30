@@ -78,8 +78,8 @@ void lt_test_rev_mcounter(void)
 
     uint32_t init_val;
     uint32_t mcounter_val;
-    const int max_decrements     = 100;
-    int       current_decrements = 0;
+    const int max_decrements = 100;
+    int current_decrements = 0;
 
     // Basic test: init to random value and try to decrement a few times.
     LT_LOG_INFO("Starting basic test...");
