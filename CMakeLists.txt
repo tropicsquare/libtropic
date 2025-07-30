@@ -169,7 +169,7 @@ foreach(example_name ${LIBTROPIC_EXAMPLE_LIST})
     string(REPLACE " " "_" example_macro ${example_macro})
     string(APPEND LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT
         "#elif defined(${example_macro})\n"
-        "  ${example_name}();\n"
+        "__lt_ex_return_val__ = ${example_name}();\n"
     )
 endforeach()
 

@@ -11,13 +11,16 @@
 
 int main(void)
 {
-#ifdef LT_BUILD_EXAMPLES
-#include "lt_ex_registry.c.inc"
-#endif
-
 #ifdef LT_BUILD_TESTS
 #include "lt_test_registry.c.inc"
 #endif
 
+// When examples are being built, special variable containing example return value is defined.
+// Otherwise, 0 is always returned (in case of building tests).
+#ifdef LT_BUILD_EXAMPLES
+#include "lt_ex_registry.c.inc"
+    return __lt_ex_return_val__;
+#else
     return 0;
+#endif
 }
