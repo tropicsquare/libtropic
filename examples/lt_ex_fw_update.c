@@ -76,7 +76,7 @@ static void print_headers(lt_handle_t *h)
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 }
 
-void lt_ex_fw_update(void)
+int lt_ex_fw_update(void)
 {
     LT_LOG("\t=======================================================================");
     LT_LOG("\t=====  TROPIC01 FW update                                           ===");
@@ -153,7 +153,7 @@ void lt_ex_fw_update(void)
     }
     else {
         LT_LOG("     ERROR device couldn't get into STARTUP mode");
-        return;
+        return -1;
     }
     LT_LOG_LINE();
     LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_APP)));
@@ -164,5 +164,5 @@ void lt_ex_fw_update(void)
            lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
     LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
 
-    return;
+    return 0;
 }

@@ -53,8 +53,10 @@ int lt_ex_hardware_wallet(void);
 
 /**
  * @brief Example function, shows how to update TROPIC01's internal firmwares
+ * 
+ * @return int
  */
-void lt_ex_fw_update(void);
+int lt_ex_fw_update(void);
 
 /**
  * @brief Example usage of 'Mac And Destroy' pin verification scheme
