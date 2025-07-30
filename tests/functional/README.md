@@ -81,7 +81,7 @@ void lt_new_test(void)
     LT_LOG_INFO("----------------------------------------------");
 
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -101,7 +101,7 @@ void lt_new_test(void)
     // Call cleanup function, but don't call it from LT_TEST_ASSERT anymore.
     lt_test_cleanup_function = NULL;
     LT_LOG_INFO("Starting post-test cleanup");
-    LT_TEST_ASSERT(LT_OK, lt_test_rev_r_mem_cleanup());
+    LT_TEST_ASSERT(LT_OK, lt_new_test_cleanup());
     LT_LOG_INFO("Post-test cleanup was successful");
 }
 ```
