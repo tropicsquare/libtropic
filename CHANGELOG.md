@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functions `lt_ecc_eddsa_sign()`, `lt_ecc_ecdsa_sign()`, `lt_ecc_eddsa_sig_verify()` and `lt_ecc_ecdsa_sig_verify()` accept zero length of the message to be signed.
 - Function `lt_ecc_ecdsa_sign()` does not restrict message length - type of `msg_len` changed to `size_t`.
 - Renamed `lt_random_get()` to `lt_random_value_get()`, along with the separate API, to match the command name in the User API.
+- Renamed `L3_PACKET_MAX_SIZE` to `L3_CYPHERTEXT_MAX_SIZE`.
+- Renamed `L3_FRAME_MAX_SIZE` to `L3_PACKET_MAX_SIZE`.
+- Set `L3_RES_SIZE_SIZE` directly to value 2.
+
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -31,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Calculation of number of chunks in the function `lt_l2_send_encrypted_cmd()`.
 - Chip id parsing in `tests/model_based_project/create_model_cfg.py`.
 - Function `lt_r_mem_data_read` -  change `size` to output parameter and its handling.
+- Set value of macro `L3_CMD_DATA_SIZE_MAX` to 4111.
+- Added 13 of maximal padding to macro `L3_FRAME_MAX_SIZE`.
+- Set value of macro `PING_LEN_MAX` to 4096.
+
 
 ### Removed
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
