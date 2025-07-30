@@ -21,7 +21,7 @@
 lt_handle_t h;
 enum lt_tropic01_mode { LT_BOOTLOADER_MODE, LT_NORMAL_MODE, LT_BUSY };
 
-enum lt_tropic01_mode check_current_mode() {
+enum lt_tropic01_mode check_current_mode(void) {
 
     uint8_t spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
     lt_ret_t ret;
@@ -69,6 +69,8 @@ lt_ret_t lt_test_rev_startup_req_cleanup(void) {
         LT_LOG_ERROR("Cleanup failed!");
         return LT_FAIL;
     }
+
+    return LT_OK;
 }
 
 void lt_test_rev_startup_req(void)
