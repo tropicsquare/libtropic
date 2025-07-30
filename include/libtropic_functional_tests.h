@@ -264,7 +264,7 @@ void lt_test_rev_sleep_req(void);
  *  3. Reboot to bootloader mode and check.
  *  4. Reboot to bootloader mode again.
  *  5. Reboot to normal mode and check.
- * 
+ *
  * After each reboot before mode check, the test will wait until the chip is ready.
  * Mode check is done by reading SPECT FW version. The bootloader returns highest bit set to '1'
  * for each FW version.
