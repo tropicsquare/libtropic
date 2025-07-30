@@ -59,13 +59,13 @@ void lt_test_rev_startup_req(void)
         LT_TEST_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT));
         LT_LOG_INFO("Checking we are in the bootloader mode...");
         LT_TEST_ASSERT(LT_BOOTLOADER_MODE, check_current_mode(&h));
-        // LT_LOG_INFO("Checking that the handshake does not work...");
-        // LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+        LT_LOG_INFO("Checking that the handshake does not work...");
+        LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     }
 
     // Part 3: Try to reboot from bootloader to normal.
-    // LT_LOG_INFO("Rebooting to the normal mode...");
-    // LT_TEST_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
-    // LT_LOG_INFO("Checking we are again in the normal mode...");
-    // LT_TEST_ASSERT(LT_NORMAL_MODE, check_current_mode(&h));
+    LT_LOG_INFO("Rebooting to the normal mode...");
+    LT_TEST_ASSERT(LT_OK, lt_reboot(&h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
+    LT_LOG_INFO("Checking we are again in the normal mode...");
+    LT_TEST_ASSERT(LT_NORMAL_MODE, check_current_mode(&h));
 }
