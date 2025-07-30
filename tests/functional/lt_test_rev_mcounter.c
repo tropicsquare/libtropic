@@ -16,6 +16,8 @@
 // Shared with cleanup function.
 lt_handle_t h;
 
+// The monotonic counter does not have any default value defined in the datasheet.
+// Here we have chosen to initialize them to zero.
 lt_ret_t lt_test_rev_mcounter_cleanup(void)
 {
     lt_ret_t ret;
@@ -78,16 +80,6 @@ void lt_test_rev_mcounter(void)
     uint32_t mcounter_val;
     const int max_decrements     = 100;
     int       current_decrements = 0;
-
-    // Initial value test: check if all counters contain zero.
-    LT_LOG_INFO("Starting initial value test...");
-    for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
-        LT_LOG_INFO("Reading mcounter %d value...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mcounter_get(&h, i, &mcounter_val));
-        LT_LOG_INFO("Verifying mcounter value, should be: %d", 0);
-        LT_TEST_ASSERT(0, mcounter_val);
-    }
-    LT_LOG_LINE();
 
     // Basic test: init to random value and try to decrement a few times.
     LT_LOG_INFO("Starting basic test...");
