@@ -259,7 +259,15 @@ void lt_test_rev_sleep_req(void);
  * @brief Test L2 Startup Request.
  *
  * Test steps:
- *  1. 
+ *  1. Check the chip is in the normal mode.
+ *  2. Reboot to normal mode and check -- verify that standard reboot is working.
+ *  3. Reboot to bootloader mode and check.
+ *  4. Reboot to bootloader mode again.
+ *  5. Reboot to normal mode and check.
+ * 
+ * After each reboot before mode check, the test will wait until the chip is ready.
+ * Mode check is done by reading SPECT FW version. The bootloader returns highest bit set to '1'
+ * for each FW version.
  */
 void lt_test_rev_startup_req(void);
 
