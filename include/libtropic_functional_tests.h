@@ -325,4 +325,19 @@ void lt_test_rev_ecc_key_store(void);
  */
 void lt_test_rev_random_value_get(void);
 
+/**
+ * @brief Tests MAC_And_Destroy command using HMAC-SHA256 as the Key Derivation Function (KDF).
+ *
+ * Test steps:
+ *  1. Start Secure Session with pairing key slot 0.
+ *  2. Setup random PIN with randomly generated number of attempts.
+ *  3. Do a random number of wrong attempts (less than the maximum number of attempts).
+ *  4. Do an attempt with the correct PIN with the first understroyed slot and compare the cryptographic key with the
+ * one from the setup phase.
+ *  5. Restore all destroyed slots.
+ *  6. Do an attempt with the correct PIN with all the used slots and compare the cryptographic keys with the one from
+ * the setup phase.
+ */
+void lt_test_rev_mac_and_destroy(void);
+
 #endif
