@@ -21,9 +21,9 @@ typedef uint32_t u32;
 // This macro is used to change static functions into exported one, when compiling unit tests.
 // It allows to unit test static functions.
 #ifndef TEST
-#define STATIC static
+#define LT_STATIC static
 #else
-#define STATIC
+#define LT_STATIC
 #endif
 
 /** Macro to sanitize compiler warnings */

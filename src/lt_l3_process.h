@@ -66,7 +66,7 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
  * @param nonce       TODO elaborate more
  * @return            LT_OK if success, otherwise returns other error code.
  */
-STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
+LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
 #endif
 
 /**
