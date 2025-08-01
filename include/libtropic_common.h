@@ -303,6 +303,15 @@ STATIC_ASSERT(
 
 //--------------------------------------------------------------------------------------------------------------------//
 
+/** @brief Package type ID for bare silicon. */
+#define CHIP_PKG_BARE_SILICON_ID 0x8000
+/** @brief Package type ID for QFN32. */
+#define CHIP_PKG_QFN32_ID 0x80AA
+/* Fab ID of Tropic Square Lab. */
+#define FAB_ID_TROPIC_SQUARE_LAB 0xF00
+/* Fab ID of Production line #1. */
+#define FAB_ID_EPS_BRNO 0x001
+
 /**
  * @brief Data in this struct comes from BP (batch package) yml file. CHIP_INFO is read into this struct.
  */
