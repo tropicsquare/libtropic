@@ -122,6 +122,10 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
             return LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL;
         case L3_R_MEM_DATA_WRITE_SLOT_EXPIRED:
             return LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED;
+        case L3_MCOUNTER_UPDATE_ERROR:
+            return LT_L3_MCOUNTER_UPDATE_UPDATE_ERR;
+        case L3_MCOUNTER_COUNTER_INVALID:
+            return LT_L3_COUNTER_INVALID;
         default:
             return LT_FAIL;
     }
