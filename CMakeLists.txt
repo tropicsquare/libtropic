@@ -120,14 +120,38 @@ set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+###########################################################################
+# Libtropic FW update functions                                           #
+###########################################################################
+set(SDK_INCS ${SDK_SRCS}
+${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
+${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/fw_CPU_0_3_1.h
+)
+set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/
+)
+
 ###########################################################################
 # Libtropic examples:                                                     #
 # Collect files to be compiled when "examples" are enabled                #
 ###########################################################################
+set(LIBTROPIC_EXAMPLE_LIST
+    # lt_ex_fw_update
+    lt_ex_hello_world_separate_API
+    lt_ex_hello_world
+    lt_ex_hardware_wallet
+    lt_ex_macandd
+)
+
+# Export example list to parent project (usually platform-specific implementation).
+set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
+        # ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
     )
@@ -135,6 +159,25 @@ if(LT_BUILD_EXAMPLES)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/
     )
 endif()
+
+# Create an example registry based on the example list above. This example registry is then included
+# in platform-specific main.c.
+set(LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT "")
+foreach(example_name ${LIBTROPIC_EXAMPLE_LIST})
+    # Create a correct macro from example name.
+    string(TOUPPER ${example_name} example_macro)
+    string(REPLACE " " "_" example_macro ${example_macro})
+    string(APPEND LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT
+        "#elif defined(${example_macro})\n"
+        "__lt_ex_return_val__ = ${example_name}();\n"
+    )
+endforeach()
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_registry_template.c.inc
+    ${CMAKE_CURRENT_BINARY_DIR}/lt_ex_registry.c.inc
+    @ONLY
+)
 
 ###########################################################################
 # LIBTROPIC FUNCTIONAL TESTS                                              #
@@ -262,22 +305,6 @@ if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
     # Ensure the tropic target depends on the generated file
     list(APPEND SDK_SRCS "${KEYS_C_FILE}")
 endif()
-
-###########################################################################
-# Libtropic fw update:                                                    #
-# Collect files to be compiled when "fw update" is enabled                #
-###########################################################################
-
-if(LT_ENABLE_FW_UPDATE)
-    set(SDK_INCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/fw_CPU_0_3_1.h
-    )
-    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/
-    )
-endif()
-
 
 add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 
