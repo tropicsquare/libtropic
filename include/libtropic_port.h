@@ -31,6 +31,14 @@ typedef struct {
     uint32_t baud_rate;             // = 115200;
 } lt_uart_def_unix_t;
 
+#define DEVICE_PATH_MAX_LEN 256
+typedef struct {
+    int  spi_speed;
+    char spi_dev[DEVICE_PATH_MAX_LEN];
+    char gpio_dev[DEVICE_PATH_MAX_LEN];
+    int  gpio_cs_num;
+} lt_dev_unix_spi_t;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMON HAL FUNCTIONS
 //
