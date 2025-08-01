@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 
+#include "inttypes.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
@@ -40,7 +41,7 @@ void hexdump_8byte(const uint8_t *data, uint16_t size)
         char *p = line;
 
         for (uint16_t j = 0; j < row_len; j++) {
-            p += sprintf(p, "%02x ", data[i + j]);
+            p += sprintf(p, "%02" PRIx8 " ", data[i + j]);
         }
 
         *p = '\0';  // null-terminate the string

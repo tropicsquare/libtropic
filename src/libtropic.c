@@ -966,7 +966,7 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
-    if (!h || slot < ECC_SLOT_0 || slot > ECC_SLOT_31 || ((curve != CURVE_P256) && (curve != CURVE_ED25519))) {
+    if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519))) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -993,7 +993,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
 
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
 {
-    if (!h || slot < ECC_SLOT_0 || slot > ECC_SLOT_31 || ((curve != CURVE_P256) && (curve != CURVE_ED25519)) || !key) {
+    if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519)) || !key) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1020,7 +1020,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
                          ecc_key_origin_t *origin)
 {
-    if (!h || ecc_slot < ECC_SLOT_0 || ecc_slot > ECC_SLOT_31 || !key || !curve || !origin) {
+    if (!h || (ecc_slot > ECC_SLOT_31) || !key || !curve || !origin) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1047,7 +1047,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot)
 {
-    if (!h || ecc_slot < ECC_SLOT_0 || ecc_slot > ECC_SLOT_31) {
+    if (!h || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1075,7 +1075,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot)
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint32_t msg_len,
                            uint8_t *rs)
 {
-    if (!h || !msg || !rs || (ecc_slot < ECC_SLOT_0) || (ecc_slot > ECC_SLOT_31)) {
+    if (!h || !msg || !rs || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1116,8 +1116,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs)
 {
-    if (!h || !msg || !rs || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot < ECC_SLOT_0)
-        || (ecc_slot > ECC_SLOT_31)) {
+    if (!h || !msg || !rs || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1157,7 +1156,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
 {
-    if (!h || ((mcounter_index < 0) | (mcounter_index > 15)) || mcounter_value == 0) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15) || mcounter_value == 0) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1184,7 +1183,7 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
 
 lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index)
 {
-    if (!h || ((mcounter_index < 0) | (mcounter_index > 15))) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1211,7 +1210,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
 
 lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value)
 {
-    if (!h || ((mcounter_index < 0) | (mcounter_index > 15)) || !mcounter_value) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15) || !mcounter_value) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
