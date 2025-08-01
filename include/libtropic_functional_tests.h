@@ -238,6 +238,20 @@ void lt_test_rev_read_r_config(void);
 void lt_test_rev_resend_req(void);
 
 /**
+ * @brief Test Sleep_Req L2 request.
+ * 
+ * Test steps:
+ * 1. Start Secure Session.
+ * 2. Send Sleep Req.
+ * 3. Verify the Secure Session was terminated.
+ * 4. Wake the chip up.
+ * 
+ * @note There is no cleanup, as the chip does not have to be woken up. It is woken up automatically
+ *       by any L2 request.
+ */
+void lt_test_rev_sleep_req(void);
+
+/**
  * @brief Backs up R-Config, writes it and then restores it.
  *
  * Test steps:
