@@ -538,7 +538,7 @@ lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, 
  * @param   out_buf_size  Size of `out_buf`
  * @returns lt_ret_t
  */
-lt_ret_t lt_print_bytes(const uint8_t* bytes, const uint16_t length, char* out_buf, uint16_t out_buf_size);
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size);
 
 /**
  * @brief Interprets fields of CHIP_ID and prints them using the passed printf-like function.
@@ -547,7 +547,7 @@ lt_ret_t lt_print_bytes(const uint8_t* bytes, const uint16_t length, char* out_b
  * @param  print_func  printf-like function to use for printing
  * @return lt_ret_t    LT_OK on success, other values otherwise
  */
-lt_ret_t lt_print_chip_id(const struct lt_chip_id_t* chip_id, int (*print_func)(const char* format, ...));
+lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...));
 
 #endif
 

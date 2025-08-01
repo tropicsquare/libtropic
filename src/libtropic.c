@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "TROPIC01_configuration_objects.h"
+#include "inttypes.h"
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
@@ -32,7 +33,6 @@
 #include "lt_random.h"
 #include "lt_sha256.h"
 #include "lt_x25519.h"
-#include "inttypes.h"
 
 #define TS_GET_INFO_BLOCK_LEN 128
 
@@ -1485,7 +1485,7 @@ lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, 
     return LT_OK;
 }
 
-lt_ret_t lt_print_bytes(const uint8_t* bytes, const uint16_t length, char* out_buf, uint16_t out_buf_size)
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size)
 {
     if (!bytes || !out_buf || out_buf_size < (length * 2 + 1)) {
         // Write empty string if buffer too small
@@ -1503,7 +1503,7 @@ lt_ret_t lt_print_bytes(const uint8_t* bytes, const uint16_t length, char* out_b
     return LT_OK;
 }
 
-lt_ret_t lt_print_chip_id(const struct lt_chip_id_t* chip_id, int (*print_func)(const char* format, ...))
+lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...))
 {
     if (!chip_id || !print_func) {
         return LT_PARAM_ERR;
@@ -1617,7 +1617,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t* chip_id, int (*print_func)(
     }
 
     if (LT_OK
-            != lt_print_bytes((uint8_t*)&chip_id->ser_num, sizeof(chip_id->ser_num), print_bytes_buff,
+            != lt_print_bytes((uint8_t *)&chip_id->ser_num, sizeof(chip_id->ser_num), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
         || 0 > print_func("S/N                    = 0x%s\n", print_bytes_buff)) {
         return LT_FAIL;
