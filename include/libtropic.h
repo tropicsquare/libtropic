@@ -475,7 +475,7 @@ const char *lt_ret_verbose(lt_ret_t ret);
 
 #ifdef LT_HELPERS
 
-/** @brief Upper bound for CHIP_ID fields as hex string. */
+/** @brief Upper bound for CHIP_ID fields as hex string (used in lt_print_chip_id()). */
 #define CHIP_ID_FIELD_MAX_SIZE 35
 
 /** @brief Helper structure, holding string name and address for each configuration object. */
