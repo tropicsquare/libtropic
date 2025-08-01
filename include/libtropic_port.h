@@ -33,10 +33,10 @@ typedef struct {
 
 #define DEVICE_PATH_MAX_LEN 256
 typedef struct {
-    int  spi_speed;
+    int spi_speed;
     char spi_dev[DEVICE_PATH_MAX_LEN];
     char gpio_dev[DEVICE_PATH_MAX_LEN];
-    int  gpio_cs_num;
+    int gpio_cs_num;
 } lt_dev_unix_spi_t;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
