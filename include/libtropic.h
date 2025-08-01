@@ -475,6 +475,9 @@ const char *lt_ret_verbose(lt_ret_t ret);
 
 #ifdef LT_HELPERS
 
+/** @brief Upper bound for CHIP_ID fields as hex string (used in lt_print_chip_id()). */
+#define CHIP_ID_FIELD_MAX_SIZE 35
+
 /** @brief Helper structure, holding string name and address for each configuration object. */
 extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
 
@@ -525,6 +528,26 @@ lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
+
+/**
+ * @brief Prints bytes in hex format to the given output buffer.
+ *
+ * @param   bytes         Bytes to print
+ * @param   length        Length of `bytes`
+ * @param   out_buf       Output buffer to print to
+ * @param   out_buf_size  Size of `out_buf`
+ * @returns lt_ret_t
+ */
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size);
+
+/**
+ * @brief Interprets fields of CHIP_ID and prints them using the passed printf-like function.
+ *
+ * @param  chip_id     CHIP_ID structure
+ * @param  print_func  printf-like function to use for printing
+ * @return lt_ret_t    LT_OK on success, other values otherwise
+ */
+lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...));
 
 #endif
 
