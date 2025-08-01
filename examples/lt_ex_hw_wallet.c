@@ -154,9 +154,7 @@ struct lt_config_t config = {
          | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
         //------- CONFIGURATION_OBJECTS_TODO -----------------------
         // All slots can use MAC-and-destroy
-        (0xffffffff),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET -----------------------
-        (0),
+        (0xffffffff)
     }};
 
 /**
