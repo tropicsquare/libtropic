@@ -51,21 +51,18 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     uint32_t request_mode;
     uint8_t spiBPW = 8;
 
-    int speed = 100000;
-    char spi_dev[] = "/dev/spidev0.0";
-    char gpio_dev[] = "/dev/gpiochip0";
-    int  gpio_cs_num = 4;
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t*)(h->device);
 
     s.h = h;
 
     LOG_OUT("Initializing SPI...\n");
-    LOG_OUT("SPI speed: %d\n",   speed);
-    LOG_OUT("SPI device: %s\n",  spi_dev);
-    LOG_OUT("GPIO device: %s\n", gpio_dev);
-    LOG_OUT("GPIO CS pin: %d\n", gpio_cs_num);
+    LOG_OUT("SPI speed: %d\n",   device->spi_speed);
+    LOG_OUT("SPI device: %s\n",  device->spi_dev);
+    LOG_OUT("GPIO device: %s\n", device->gpio_dev);
+    LOG_OUT("GPIO CS pin: %d\n", device->gpio_cs_num);
 
     s.mode = SPI_MODE_0;
-    s.fd = open(spi_dev, O_RDWR);
+    s.fd = open(device->spi_dev, O_RDWR);
     if (s.fd < 0)
     {
         LOG_ERR("can't open device");
@@ -87,14 +84,14 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     if (request_mode != s.mode)
         LOG_ERR("WARNING device does not support requested mode 0x%x\n", request_mode);
 
-    if (ioctl (s.fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed) < 0)
+    if (ioctl (s.fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0)
     {
         LOG_ERR("can't set max speed Hz");
         return LT_FAIL;
     }
 
     // CS is controlled separately
-    s.gpiofd = open(gpio_dev, O_RDWR | O_CLOEXEC);
+    s.gpiofd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
     if (s.gpiofd < 0)
     {
         LOG_ERR("can't open GPIO device");
@@ -114,7 +111,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     
 
     memset(&s.gpioreq, 0, sizeof(s.gpioreq));
-    s.gpioreq.offsets[0] = gpio_cs_num;
+    s.gpioreq.offsets[0] = device->gpio_cs_num;
     s.gpioreq.num_lines = 1;
     s.gpioreq.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
     s.gpioreq.config.num_attrs = 1;
