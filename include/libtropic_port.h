@@ -19,6 +19,23 @@
 
 #include "libtropic_common.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// DEVICE STRUCTURES
+//
+// Here are device structures specific for each port. The structures can contain
+// arbitrary content required for port: configuration data, runtime data etc.
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#define UART_DEV_MAX_LEN 32
+typedef struct {
+    char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
+    uint32_t baud_rate;             // = 115200;
+} lt_uart_def_unix_t;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// COMMON HAL FUNCTIONS
+//
+// All of these functions have to be impemented by the port for libtropic to work.
+///////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
