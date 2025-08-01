@@ -5,6 +5,7 @@
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
+#include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -33,7 +34,7 @@ static char* print_bytes(uint8_t* data, uint16_t len)
     bytes_buffer[0] = '\0';
     for (uint16_t i = 0; i < len; i++) {
         char byte_str[4];
-        snprintf(byte_str, sizeof(byte_str), "%02X", data[i]);
+        snprintf(byte_str, sizeof(byte_str), "%02" PRIX8, data[i]);
         // Check if appending the byte would exceed the buffer size
         if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
             break;  // Stop if the buffer is full
@@ -61,7 +62,8 @@ static char* interpret_chip_id_ver(uint8_t* ver)
     }
 
     buff_interpreted[0] = '\0';
-    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%d.%d.%d.%d)", ver[0], ver[1], ver[2], ver[3]);
+    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ")", ver[0],
+             ver[1], ver[2], ver[3]);
 
     return buff_interpreted;
 }
@@ -176,7 +178,7 @@ static char* interpret_prov_info_ver(uint8_t* ver)
     }
 
     buff_interpreted[0] = '\0';
-    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%d)", ver[0]);
+    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%" PRIu8 ")", ver[0]);
 
     return buff_interpreted;
 }
@@ -253,7 +255,8 @@ static char* interpret_prov_date(uint8_t* prov_date)
         }
     }
 
-    snprintf(buff_interpreted, sizeof(buff_interpreted), "(\"%s %d, %d\")", month_names[month], day, year);
+    snprintf(buff_interpreted, sizeof(buff_interpreted), "(\"%s %" PRIi16 ", %" PRIu16 "\")", month_names[month], day,
+             year);
 
     return buff_interpreted;
 }
@@ -308,7 +311,8 @@ static char* interpret_prov_temp_ver(uint8_t* prov_temp_ver)
     }
 
     buff_interpreted[0] = '\0';
-    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%d.%d)", prov_temp_ver[0], prov_temp_ver[1]);
+    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%" PRIu8 ".%" PRIu8 ")", prov_temp_ver[0],
+             prov_temp_ver[1]);
 
     return buff_interpreted;
 }
@@ -327,7 +331,8 @@ static char* interpret_prov_spec_ver(uint8_t* prov_spec_ver)
     }
 
     buff_interpreted[0] = '\0';
-    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%d.%d)", prov_spec_ver[0], prov_spec_ver[1]);
+    snprintf(buff_interpreted, sizeof(buff_interpreted), "(v%" PRIu8 ".%" PRIu8 ")", prov_spec_ver[0],
+             prov_spec_ver[1]);
 
     return buff_interpreted;
 }
@@ -407,12 +412,12 @@ static lt_ret_t print_chip_id(struct lt_chip_id_t* chip_id)
                 print_bytes(chip_id->packg_type_id, sizeof(chip_id->packg_type_id)),
                 interpret_packg_id(chip_id->packg_type_id));
     // Reserved 2B RFU
-    LT_LOG_INFO("\tProv info version      = %02X\t\t\t\t\t%s", chip_id->prov_ver_fab_id_pn[0],
+    LT_LOG_INFO("\tProv info version      = %02" PRIX8 "\t\t\t\t\t%s", chip_id->prov_ver_fab_id_pn[0],
                 interpret_prov_info_ver(chip_id->prov_ver_fab_id_pn));
     uint16_t parsed_fab_id = ((chip_id->prov_ver_fab_id_pn[1] << 4) | (chip_id->prov_ver_fab_id_pn[2] >> 4)) & 0xfff;
-    LT_LOG_INFO("\tFab ID                 = %03X\t\t\t\t\t%s", parsed_fab_id, interpret_fab_id(parsed_fab_id));
+    LT_LOG_INFO("\tFab ID                 = %03" PRIX16 "\t\t\t\t\t%s", parsed_fab_id, interpret_fab_id(parsed_fab_id));
     uint16_t parsed_short_pn = ((chip_id->prov_ver_fab_id_pn[2] << 8) | (chip_id->prov_ver_fab_id_pn[3])) & 0xfff;
-    LT_LOG_INFO("\tP/N ID (short P/N)     = %03X", parsed_short_pn);
+    LT_LOG_INFO("\tP/N ID (short P/N)     = %03" PRIX16, parsed_short_pn);
     LT_LOG_INFO("\tProv date              = %s\t\t\t\t\t%s",
                 print_bytes(chip_id->provisioning_date, sizeof(chip_id->provisioning_date)),
                 interpret_prov_date(chip_id->provisioning_date));
