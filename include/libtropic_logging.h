@@ -28,6 +28,12 @@
 #define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
+#ifdef LIBT_DEBUG
+#define LT_LOG_DEBUG(f_, ...) printf("DEBUG   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#else
+#define LT_LOG_DEBUG(f_, ...)
+#endif
+
 // Assertions. Will log as a system message and call native assert function.
 // Note that parameters are stored to _val_ and _exp_ for a case when there
 // are function calls passed to the macros. Without the helper variables
