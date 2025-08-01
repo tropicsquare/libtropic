@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecdsa_verify()`.
 - Strict compilation flags for examples and tests.
 - Generic Unix SPI device support.
+- Helper functions `lt_print_bytes()` and `lt_print_chip_id()`.
+- Macros for chip package IDs and FAB IDs.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
