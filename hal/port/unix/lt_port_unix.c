@@ -25,15 +25,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
-
-#define LOG_OUT(f_, ...) printf("[SPI UAPI] "f_, ##__VA_ARGS__)
-#define LOG_ERR(f_, ...) fprintf(stderr, "ERROR: " f_, ##__VA_ARGS__)
-#define LOG_U8_ARRAY(arr, len)                                             \
-    for (int i = 0; i < len; i++)                                          \
-    {                                                                      \
-        printf("%02x ", arr[i]);                                          \
-    }                                                                      \
-    printf("\r\n");
+#include "libtropic_logging.h"
 
 typedef struct
 {
@@ -55,38 +47,38 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 
     s.h = h;
 
-    LOG_OUT("Initializing SPI...\n");
-    LOG_OUT("SPI speed: %d\n",   device->spi_speed);
-    LOG_OUT("SPI device: %s\n",  device->spi_dev);
-    LOG_OUT("GPIO device: %s\n", device->gpio_dev);
-    LOG_OUT("GPIO CS pin: %d\n", device->gpio_cs_num);
+    LT_LOG_DEBUG("Initializing SPI...\n");
+    LT_LOG_DEBUG("SPI speed: %d",   device->spi_speed);
+    LT_LOG_DEBUG("SPI device: %s",  device->spi_dev);
+    LT_LOG_DEBUG("GPIO device: %s", device->gpio_dev);
+    LT_LOG_DEBUG("GPIO CS pin: %d", device->gpio_cs_num);
 
     s.mode = SPI_MODE_0;
     s.fd = open(device->spi_dev, O_RDWR);
     if (s.fd < 0)
     {
-        LOG_ERR("can't open device");
+        LT_LOG_ERROR("can't open device");
         return LT_FAIL;
     }
 
     request_mode = s.mode;
     if (ioctl(s.fd, SPI_IOC_WR_MODE32, &s.mode) < 0)
     {
-        LOG_ERR("can't set spi mode");
+        LT_LOG_ERROR("can't set spi mode");
         return LT_FAIL;
     }
     /* RD is read what mode the device actually is in */
     if (ioctl(s.fd, SPI_IOC_RD_MODE32, &s.mode) < 0)
     {
-        LOG_ERR("can't get spi mode");
+        LT_LOG_ERROR("can't get spi mode");
         return LT_FAIL;
     }
     if (request_mode != s.mode)
-        LOG_ERR("WARNING device does not support requested mode 0x%x\n", request_mode);
+        LT_LOG_ERROR("WARNING device does not support requested mode 0x%x\n", request_mode);
 
     if (ioctl (s.fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0)
     {
-        LOG_ERR("can't set max speed Hz");
+        LT_LOG_ERROR("can't set max speed Hz");
         return LT_FAIL;
     }
 
@@ -94,22 +86,21 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     s.gpiofd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
     if (s.gpiofd < 0)
     {
-        LOG_ERR("can't open GPIO device");
+        LT_LOG_ERROR("can't open GPIO device");
         return LT_FAIL;
     }
 
     struct gpiochip_info info;
     if (ioctl(s.gpiofd, GPIO_GET_CHIPINFO_IOCTL, &info) < 0) {
-        LOG_ERR("GPIO_GET_CHIPINFO_IOCTL");
+        LT_LOG_ERROR("GPIO_GET_CHIPINFO_IOCTL");
         return LT_FAIL;
     }
 
+    LT_LOG_DEBUG("Device information:");
+    LT_LOG_DEBUG("[+] info.name = \"%s\"", info.name);
+    LT_LOG_DEBUG("[+] info.label = \"%s\"", info.label);
+    LT_LOG_DEBUG("[+] info.lines = \"%u\"", info.lines);
     
-    printf("[+] info.name = \"%s\"\n", info.name);
-    printf("[+] info.label = \"%s\"\n", info.label);
-    printf("[+] info.lines = \"%u\"\n", info.lines);
-    
-
     memset(&s.gpioreq, 0, sizeof(s.gpioreq));
     s.gpioreq.offsets[0] = device->gpio_cs_num;
     s.gpioreq.num_lines = 1;
@@ -119,8 +110,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     s.gpioreq.config.attrs[0].mask = 1;
     s.gpioreq.config.attrs[0].attr.values = 1; // initial value = 1
     if (ioctl(s.gpiofd, GPIO_V2_GET_LINE_IOCTL, &s.gpioreq) < 0) {
-        LOG_ERR("GPIO_V2_GET_LINE_IOCTL\n");
-        LOG_ERR("Errno: %s\n", strerror(errno));
+        LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL\n");
+        LT_LOG_ERROR("Errno: %s\n", strerror(errno));
         return LT_FAIL;
     }
 
@@ -143,7 +134,7 @@ lt_ret_t lt_port_spi_csn_low (lt_l2_state_t *h)
     values.mask = 1;
     values.bits = 0;
     if (ioctl(s.gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
-        LOG_ERR("GPIO_V2_LINE_SET_VALUES_IOCTL");
+        LT_LOG_ERROR("GPIO_V2_LINE_SET_VALUES_IOCTL");
         return LT_FAIL;
     }
     return LT_OK;
@@ -157,7 +148,7 @@ lt_ret_t lt_port_spi_csn_high (lt_l2_state_t *h)
     values.mask = 1;
     values.bits = 1;
     if (ioctl(s.gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
-        LOG_ERR("GPIO_V2_LINE_SET_VALUES_IOCTL");
+        LT_LOG_ERROR("GPIO_V2_LINE_SET_VALUES_IOCTL");
         return LT_FAIL;
     }
     return LT_OK;
@@ -174,11 +165,7 @@ lt_ret_t lt_port_spi_transfer (lt_l2_state_t *h, uint8_t offset, uint16_t tx_dat
         .delay_usecs   = 0,
     };
 
-    // LOG_OUT("-- Sending data through SPI bus, offset = %d, length = %d\n", offset, tx_data_length);
-    //LOG_U8_ARRAY((char*)(h->l2_buff + offset), tx_data_length);
     ret = ioctl(s.fd, SPI_IOC_MESSAGE(1), &spi);
-    // LOG_OUT("Received data (%d): \n", ret);
-    //LOG_U8_ARRAY((char*)(h->l2_buff + offset), tx_data_length);
     if (ret >= 0)
         return LT_OK;
     return LT_FAIL;
@@ -187,7 +174,7 @@ lt_ret_t lt_port_spi_transfer (lt_l2_state_t *h, uint8_t offset, uint16_t tx_dat
 lt_ret_t lt_port_delay (lt_l2_state_t *h, uint32_t wait_time_msecs)
 {
     UNUSED(h);
-    LOG_OUT("-- Waiting for the target.\n");
+    LT_LOG_DEBUG("-- Waiting for the target.");
 
     usleep(wait_time_msecs*1000);
 
