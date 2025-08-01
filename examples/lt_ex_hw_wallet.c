@@ -33,129 +33,126 @@
 
 /** @brief  User Conﬁguration Objects - values set here reflect the concept of a generic hardware wallet */
 struct lt_config_t config = {
-    .obj = {
-        //-------CONFIGURATION_OBJECTS_CFG_START_UP------------------------------------
-        // Enable checks on boot
-        (CONFIGURATION_OBJECTS_CFG_START_UP_MBIST_DIS_MASK | CONFIGURATION_OBJECTS_CFG_START_UP_RNGTEST_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_START_UP_MAINTENANCE_ENA_MASK
-         | CONFIGURATION_OBJECTS_CFG_START_UP_CPU_FW_VERIFY_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_START_UP_SPECT_FW_VERIFY_DIS_MASK),
-        //-------CONFIGURATION_OBJECTS_CFG_SLEEP_MODE----------------------------------
-        // Enable sleep mode only
-        (CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_SLEEP_MODE_EN_MASK),
-        //-------CONFIGURATION_OBJECTS_CFG_SENSORS-------------------------------------
-        // Enable all sensors
-        (CONFIGURATION_OBJECTS_CFG_SENSORS_PTRNG0_TEST_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_PTRNG1_TEST_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_OSCILLATOR_MON_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_SHIELD_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_VOLTAGE_MON_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_GLITCH_DET_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_TEMP_SENS_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_LASER_DET_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_EM_PULSE_DET_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_CPU_ALERT_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_PIN_VERIF_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_SCB_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_CPB_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_ECC_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_R_MEM_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_EKDB_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_I_MEM_BIT_FLIP_DIS_MASK
-         | CONFIGURATION_OBJECTS_CFG_SENSORS_PLATFORM_BIT_FLIP_DIS_MASK),
-        //------- CONFIGURATION_OBJECTS_CFG_DEBUG -------------------------------------
-        // Enable TROPIC01's fw log
-        (CONFIGURATION_OBJECTS_CFG_DEBUG_FW_LOG_EN_MASK),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE ---------------------
-        // No session can write pairing keys
-        0,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ ----------------------
-        // All sessions can read pairing keys
-        (TO_PAIRING_KEY_SH0(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
-                            | SESSION_SH3_HAS_ACCESS)
-         | TO_PAIRING_KEY_SH1(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
-                              | SESSION_SH3_HAS_ACCESS)
-         | TO_PAIRING_KEY_SH2(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
-                              | SESSION_SH3_HAS_ACCESS)
-         | TO_PAIRING_KEY_SH3(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
-                              | SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE ----------------
-        // Pairing key SH0PUB can be invalidated only from session SH0PUB
-        // H3 session can invalidate pairing key H1 H2 and H3
-        (TO_PAIRING_KEY_SH0(SESSION_SH0_HAS_ACCESS) | TO_PAIRING_KEY_SH1(SESSION_SH3_HAS_ACCESS)
-         | TO_PAIRING_KEY_SH2(SESSION_SH3_HAS_ACCESS) | TO_PAIRING_KEY_SH3(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE ------------------
-        // Reset value, not used currently
-        0x000000ff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ -------------------------
-        // Reset value, not used currently
-        0x0000ffff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE ------------------------
-        // Reset value, not used currently
-        0x0000ffff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ -------------------------
-        // Reset value, not used currently
-        0x0000ffff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_PING ----------------------------------
-        // Ping command is available for all session keys
-        (SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS | SESSION_SH3_HAS_ACCESS),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE ----------------------
-        // Reset value, not used currently
-        0xffffffff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ -----------------------
-        // Reset value, not used currently
-        0xffffffff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE ----------------------
-        // Reset value, not used currently
-        0xffffffff,
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET ----------------------
-        (SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS | SESSION_SH3_HAS_ACCESS),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE ----------------------
-        // No session can generate key in ecc key slot 0-7
-        // H3 can generate key in slots 8-31
-        (TO_ECC_KEY_SLOT_0_7(0) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE -------------------------
-        // H1 can store key into ecc key slot 0-7
-        // H3 can store key into ecc key slot 8-31
-        (TO_ECC_KEY_SLOT_0_7(SESSION_SH1_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ --------------------------
-        // All keys can read pubkey
-        (TO_ECC_KEY_SLOT_0_7(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+    .obj
+    = {//-------CONFIGURATION_OBJECTS_CFG_START_UP------------------------------------
+       // Enable checks on boot
+       (CONFIGURATION_OBJECTS_CFG_START_UP_MBIST_DIS_MASK | CONFIGURATION_OBJECTS_CFG_START_UP_RNGTEST_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_START_UP_MAINTENANCE_ENA_MASK
+        | CONFIGURATION_OBJECTS_CFG_START_UP_CPU_FW_VERIFY_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_START_UP_SPECT_FW_VERIFY_DIS_MASK),
+       //-------CONFIGURATION_OBJECTS_CFG_SLEEP_MODE----------------------------------
+       // Enable sleep mode only
+       (CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_SLEEP_MODE_EN_MASK),
+       //-------CONFIGURATION_OBJECTS_CFG_SENSORS-------------------------------------
+       // Enable all sensors
+       (CONFIGURATION_OBJECTS_CFG_SENSORS_PTRNG0_TEST_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_PTRNG1_TEST_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_OSCILLATOR_MON_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_SHIELD_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_VOLTAGE_MON_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_GLITCH_DET_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_TEMP_SENS_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_LASER_DET_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_EM_PULSE_DET_DIS_MASK | CONFIGURATION_OBJECTS_CFG_SENSORS_CPU_ALERT_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_PIN_VERIF_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_SCB_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_CPB_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_ECC_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_R_MEM_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_EKDB_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_I_MEM_BIT_FLIP_DIS_MASK
+        | CONFIGURATION_OBJECTS_CFG_SENSORS_PLATFORM_BIT_FLIP_DIS_MASK),
+       //------- CONFIGURATION_OBJECTS_CFG_DEBUG -------------------------------------
+       // Enable TROPIC01's fw log
+       (CONFIGURATION_OBJECTS_CFG_DEBUG_FW_LOG_EN_MASK),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE ---------------------
+       // No session can write pairing keys
+       0,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ ----------------------
+       // All sessions can read pairing keys
+       (TO_PAIRING_KEY_SH0(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+                           | SESSION_SH3_HAS_ACCESS)
+        | TO_PAIRING_KEY_SH1(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
                              | SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_8_15(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+        | TO_PAIRING_KEY_SH2(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+                             | SESSION_SH3_HAS_ACCESS)
+        | TO_PAIRING_KEY_SH3(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+                             | SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE ----------------
+       // Pairing key SH0PUB can be invalidated only from session SH0PUB
+       // H3 session can invalidate pairing key H1 H2 and H3
+       (TO_PAIRING_KEY_SH0(SESSION_SH0_HAS_ACCESS) | TO_PAIRING_KEY_SH1(SESSION_SH3_HAS_ACCESS)
+        | TO_PAIRING_KEY_SH2(SESSION_SH3_HAS_ACCESS) | TO_PAIRING_KEY_SH3(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE ------------------
+       // Reset value, not used currently
+       0x000000ff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ -------------------------
+       // Reset value, not used currently
+       0x0000ffff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE ------------------------
+       // Reset value, not used currently
+       0x0000ffff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ -------------------------
+       // Reset value, not used currently
+       0x0000ffff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_PING ----------------------------------
+       // Ping command is available for all session keys
+       (SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS | SESSION_SH3_HAS_ACCESS),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE ----------------------
+       // Reset value, not used currently
+       0xffffffff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ -----------------------
+       // Reset value, not used currently
+       0xffffffff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE ----------------------
+       // Reset value, not used currently
+       0xffffffff,
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET ----------------------
+       (SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS | SESSION_SH3_HAS_ACCESS),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE ----------------------
+       // No session can generate key in ecc key slot 0-7
+       // H3 can generate key in slots 8-31
+       (TO_ECC_KEY_SLOT_0_7(0) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE -------------------------
+       // H1 can store key into ecc key slot 0-7
+       // H3 can store key into ecc key slot 8-31
+       (TO_ECC_KEY_SLOT_0_7(SESSION_SH1_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ --------------------------
+       // All keys can read pubkey
+       (TO_ECC_KEY_SLOT_0_7(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+                            | SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_8_15(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+                               | SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_16_23(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
                                 | SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_16_23(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
-                                 | SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_24_31(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
-                                 | SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE -------------------------
-        // H1 key can erase keys in slot 0-7
-        // H3 key can erase key in slot  8-31
-        (TO_ECC_KEY_SLOT_0_7(SESSION_SH1_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN ----------------------------
-        // H3 can sign with all ECDSA key slots
-        (TO_ECC_KEY_SLOT_0_7(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN ----------------------------
-        // H3 can sign with all ECC key slots
-        (TO_ECC_KEY_SLOT_0_7(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
-         | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT -------------------------
-        // H3 can init all counters
-        (TO_LT_MCOUNTER_0_3(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_4_7(SESSION_SH3_HAS_ACCESS)
-         | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET --------------------------
-        // H3 can get all counters
-        (TO_LT_MCOUNTER_0_3(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_4_7(SESSION_SH3_HAS_ACCESS)
-         | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE -----------------------
-        // H3 can update all counters
-        (TO_LT_MCOUNTER_0_3(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_4_7(SESSION_SH3_HAS_ACCESS)
-         | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
-        //------- CONFIGURATION_OBJECTS_TODO -----------------------
-        // All slots can use MAC-and-destroy
-        (0xffffffff)
-    }};
+        | TO_ECC_KEY_SLOT_24_31(SESSION_SH0_HAS_ACCESS | SESSION_SH1_HAS_ACCESS | SESSION_SH2_HAS_ACCESS
+                                | SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE -------------------------
+       // H1 key can erase keys in slot 0-7
+       // H3 key can erase key in slot  8-31
+       (TO_ECC_KEY_SLOT_0_7(SESSION_SH1_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN ----------------------------
+       // H3 can sign with all ECDSA key slots
+       (TO_ECC_KEY_SLOT_0_7(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN ----------------------------
+       // H3 can sign with all ECC key slots
+       (TO_ECC_KEY_SLOT_0_7(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_8_15(SESSION_SH3_HAS_ACCESS)
+        | TO_ECC_KEY_SLOT_16_23(SESSION_SH3_HAS_ACCESS) | TO_ECC_KEY_SLOT_24_31(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT -------------------------
+       // H3 can init all counters
+       (TO_LT_MCOUNTER_0_3(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_4_7(SESSION_SH3_HAS_ACCESS)
+        | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET --------------------------
+       // H3 can get all counters
+       (TO_LT_MCOUNTER_0_3(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_4_7(SESSION_SH3_HAS_ACCESS)
+        | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE -----------------------
+       // H3 can update all counters
+       (TO_LT_MCOUNTER_0_3(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_4_7(SESSION_SH3_HAS_ACCESS)
+        | TO_LT_MCOUNTER_8_11(SESSION_SH3_HAS_ACCESS) | TO_LT_MCOUNTER_12_15(SESSION_SH3_HAS_ACCESS)),
+       //------- CONFIGURATION_OBJECTS_TODO -----------------------
+       // All slots can use MAC-and-destroy
+       (0xffffffff)}};
 
 /**
  * @brief Initial session, when chip is powered for the first time during manufacturing.
