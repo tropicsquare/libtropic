@@ -6,6 +6,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -29,7 +30,7 @@ lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
-    LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
@@ -39,14 +40,14 @@ lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     LT_LOG_INFO("Erasing all ECC key slots");
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Erasing slot #%d", i);
+        LT_LOG_INFO("Erasing slot #%" PRIu8, i);
         ret = lt_ecc_key_erase(&h, i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to erase slot.");
             return ret;
         }
 
-        LT_LOG_INFO("Reading slot #%d (should fail)", i);
+        LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
         ret = lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
@@ -90,7 +91,7 @@ void lt_test_rev_eddsa_sign(void)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
@@ -99,13 +100,13 @@ void lt_test_rev_eddsa_sign(void)
     LT_LOG_INFO("Test EDDSA_Sign with stored key...");
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Testing signing with ECC key slot #%d...", i);
+        LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
-        LT_LOG_INFO("Generating random data length <= %d...", LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
+        LT_LOG_INFO("Generating random data length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
         random_data_size %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
 
-        LT_LOG_INFO("Generating random message with length %d for signing...", random_data_size);
+        LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", random_data_size);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
         memcpy(msg_to_sign, random_data, random_data_size);
 
@@ -135,13 +136,13 @@ void lt_test_rev_eddsa_sign(void)
     LT_LOG_INFO("Test EDDSA_Sign with generated key...");
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Testing signing with ECC key slot #%d...", i);
+        LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
-        LT_LOG_INFO("Generating random data length <= %d...", LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
+        LT_LOG_INFO("Generating random data length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
         random_data_size %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
 
-        LT_LOG_INFO("Generating random message with length %d for signing...", random_data_size);
+        LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", random_data_size);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
         memcpy(msg_to_sign, random_data, random_data_size);
 

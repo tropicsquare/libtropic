@@ -6,6 +6,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -22,7 +23,7 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
 
-    LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
@@ -32,14 +33,14 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     LT_LOG_INFO("Erasing all ECC key slots");
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Erasing slot #%d", i);
+        LT_LOG_INFO("Erasing slot #%" PRIu8, i);
         ret = lt_ecc_key_erase(&h, i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to erase slot.");
             return ret;
         }
 
-        LT_LOG_INFO("Reading slot #%d (should fail)", i);
+        LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
         ret = lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
@@ -82,7 +83,7 @@ void lt_test_rev_ecc_key_generate(void)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
@@ -91,7 +92,7 @@ void lt_test_rev_ecc_key_generate(void)
     LT_LOG_INFO("Testing ECC_Key_Generate using P256 curve...");
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Testing ECC key slot #%d...", i);
+        LT_LOG_INFO("Testing ECC key slot #%" PRIu8 "...", i);
 
         LT_LOG_INFO("Checking if slot is empty...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
@@ -122,7 +123,7 @@ void lt_test_rev_ecc_key_generate(void)
     LT_LOG_INFO("Testing ECC_Key_Generate using Ed25519 curve...");
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Testing ECC key slot #%d...", i);
+        LT_LOG_INFO("Testing ECC key slot #%" PRIu8 "...", i);
 
         LT_LOG_INFO("Checking if slot is empty...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));

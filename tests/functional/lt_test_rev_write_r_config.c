@@ -6,6 +6,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -22,7 +23,7 @@ lt_ret_t lt_test_rev_write_r_config_cleanup(void)
     lt_ret_t ret;
     struct lt_config_t r_config;
 
-    LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
@@ -92,14 +93,14 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("Creating randomized R config for testing");
     LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(r_config_random.obj, LT_CONFIG_OBJ_CNT));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Backing up the whole R config:");
     LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config_backup));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config_backup.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config_backup.obj[i]);
     }
     LT_LOG_LINE();
 
@@ -113,7 +114,7 @@ void lt_test_rev_write_r_config(void)
     LT_LOG_INFO("Reading the whole R config");
     LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
         LT_LOG_INFO("Checking if it was written");
         LT_TEST_ASSERT(1, (r_config.obj[i] == r_config_random.obj[i]));
     }
@@ -128,7 +129,7 @@ void lt_test_rev_write_r_config(void)
     memset(r_config.obj, 0, sizeof(r_config.obj));
     LT_TEST_ASSERT(LT_OK, read_whole_R_config(&h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
         LT_LOG_INFO("Checking if it was not rewritten");
         LT_TEST_ASSERT(1, (r_config.obj[i] == r_config_random.obj[i]));
     }
