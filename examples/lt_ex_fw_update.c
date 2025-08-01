@@ -34,7 +34,7 @@ static char bytes_buffer[BUFF_SIZE];
 static char *print_bytes(uint8_t *data, uint16_t len)
 {
     if ((len > BUFF_SIZE) || (!data)) {
-        memcpy(bytes_buffer, "error_str_decoding", 20);
+        memcpy(bytes_buffer, "error_str_decoding", 19);
         return bytes_buffer;
     }
     bytes_buffer[0] = '\0';
