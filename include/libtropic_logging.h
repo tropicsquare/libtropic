@@ -24,9 +24,9 @@
         ##__VA_ARGS__)
 
 // Loggers with selectable message type.
-#define LT_LOG_INFO(f_, ...) printf("INFO    [%4u] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_WARN(f_, ...) printf("WARNING [%4u] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4u] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 
 // Assertions. Will log as a system message and call native assert function.
 // Note that parameters are stored to _val_ and _exp_ for a case when there
