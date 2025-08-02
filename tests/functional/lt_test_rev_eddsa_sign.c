@@ -144,7 +144,7 @@ void lt_test_rev_eddsa_sign(void)
         LT_LOG_INFO("Generating random message with length %d for signing...", random_data_size);
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
         memcpy(msg_to_sign, random_data, random_data_size);
-        
+
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
 
