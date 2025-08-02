@@ -19,7 +19,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "TROPIC01_configuration_objects.h"
 #include "libtropic_common.h"
 
 /**

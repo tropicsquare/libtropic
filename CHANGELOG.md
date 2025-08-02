@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set `L3_RES_SIZE_SIZE` directly to value 2.
 - Renamed `STATIC` to `LT_STATIC` due to naming conflicts.
 - Moved `lt_uart_def_unix_t` to `libtropic_port.h`.
+- Updated `enum CONFIGURATION_OBJECTS_REGS` with values from `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` to be compatible with User API v1.3.0.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -31,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generic Unix SPI device support.
 - Helper functions `lt_print_bytes()` and `lt_print_chip_id()`.
 - Macros for chip package IDs and FAB IDs.
+- Header files `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` with address enums and mask defines.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
@@ -50,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `keylen` parameter from `lt_ecc_key_read()` and `lt_in__ecc_key_read()`.
 - Removed `rs_len` parameter from `lt_ecc_eddsa_sign()` and `lt_ecc_ecdsa_sign()`.
 - Removed macro `LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN`.
+- Header file `include/TROPIC01_configuration_objects.h`.
 
 ## [0.1.0]
 
