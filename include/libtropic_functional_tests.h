@@ -88,13 +88,15 @@ void hexdump_8byte(const uint8_t *data, uint16_t size);
  *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
- *  2. Store pre-generated private key to each slot.
- *  3. Read the public key from each slot.
- *  4. Generate random message with random size for signing.
- *  5. Sign the message with each slot.
- *  6. Verify the signature.
- *  7. Erase each slot.
- *  8. Do steps 2-7, but instead of storing the key, generate it.
+ *  2. Generate random message with random size for signing.
+ *  3. Sign message with each empty slot and check for fail.
+ *  4. Store pre-generated private key to each slot.
+ *  5. Read the public key from each slot.
+ *  6. Sign the message with each slot.
+ *  7. Verify the signature.
+ *  8. Erase each slot.
+ *  9. Sign message with each erased slot and check for fail.
+ *  10. Do steps 2-9, but instead of storing the key, generate it.
  */
 void lt_test_rev_eddsa_sign(void);
 
@@ -103,13 +105,15 @@ void lt_test_rev_eddsa_sign(void);
  *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
- *  2. Store pre-generated private key to each slot.
- *  3. Read the public key from each slot.
- *  4. Generate random message with random size for signing.
- *  5. Sign the message with each slot.
- *  6. Verify the signature.
- *  7. Erase each slot.
- *  8. Do steps 2-7, but instead of storing the key, generate it.
+ *  2. Generate random message with random size for signing.
+ *  3. Sign message with each empty slot and check for fail.
+ *  4. Store pre-generated private key to each slot.
+ *  5. Read the public key from each slot.
+ *  6. Sign the message with each slot.
+ *  7. Verify the signature.
+ *  8. Erase each slot.
+ *  9. Sign message with each erased slot and check for fail.
+ *  10. Do steps 2-9, but instead of storing the key, generate it.
  */
 void lt_test_rev_ecdsa_sign(void);
 
