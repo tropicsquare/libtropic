@@ -8,10 +8,10 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "tropic01_application_co.h"
-#include "tropic01_bootloader_co.h"
 #include "libtropic_macros.h"
 #include "stdint.h"
+#include "tropic01_application_co.h"
+#include "tropic01_bootloader_co.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
