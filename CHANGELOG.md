@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set value of macro `L3_CMD_DATA_SIZE_MAX` to 4111.
 - Added 13 of maximal padding to macro `L3_FRAME_MAX_SIZE`.
 - Set value of macro `PING_LEN_MAX` to 4096.
-
+- Allowed mcounter index 0 in libtropic API (`lt_mcounter_init`).
 
 ### Removed
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
