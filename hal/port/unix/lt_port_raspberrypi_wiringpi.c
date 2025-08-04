@@ -12,6 +12,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <inttypes.h>
 #include <wiringPi.h>     /// for GPIO control
 #include <wiringPiSPI.h>  /// For SPI control
 
@@ -31,7 +32,7 @@ int fd = 0;
 #define LOG_ERR(f_, ...) fprintf(stderr, "ERROR: " f_, ##__VA_ARGS__)
 #define LOG_U8_ARRAY(arr, len)      \
     for (int i = 0; i < len; i++) { \
-        printf("%02x ", arr[i]);    \
+        printf("%02"PRIx8" ", arr[i]);    \
     }                               \
     printf("\r\n");
 #else
@@ -93,7 +94,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(timeout);
-    LOG_OUT("-- Transfer of %d B\n", tx_data_length);
+    LOG_OUT("-- Transfer of %"PRIu16" B\n", tx_data_length);
 
     int ret = wiringPiSPIxDataRW(0, 0, h->buff + offset, tx_data_length);
 
