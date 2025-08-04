@@ -63,13 +63,13 @@ lt_ret_t lt_test_rev_startup_req_cleanup(void)
     LT_LOG_INFO("Rebooting to the normal mode...");
     ret = lt_reboot(&h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Cleanup failed!");
+        LT_LOG_ERROR("Couldn't reboot to the normal mode!");
         return ret;
     }
 
     LT_LOG_INFO("Checking we are again in the normal mode...");
     if (LT_NORMAL_MODE != check_current_mode()) {
-        LT_LOG_ERROR("Cleanup failed!");
+        LT_LOG_ERROR("Still in bootloader mode!");
         return LT_FAIL;
     }
 
