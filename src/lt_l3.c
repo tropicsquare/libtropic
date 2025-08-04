@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "TROPIC01_configuration_objects.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_port.h"
@@ -346,9 +345,10 @@ static bool conf_addr_valid(enum CONFIGURATION_OBJECTS_REGS addr)
 
     switch (addr) {
         case CONFIGURATION_OBJECTS_CFG_START_UP_ADDR:
-        case CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR:
         case CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR:
         case CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_GPO_ADDR:
+        case CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR:
         case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR:
         case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR:
         case CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR:
