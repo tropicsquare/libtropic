@@ -24,7 +24,7 @@ void lt_assert_fail_handler()
             LT_LOG_INFO("Post-assert cleanup successful!");
         }
         else {
-            LT_LOG_ERROR("Post-assert cleanup failed: %s", lt_ret_verbose(ret));
+            LT_LOG_ERROR("Post-assert cleanup failed, ret=%s.", lt_ret_verbose(ret));
         }
     }
     else {
