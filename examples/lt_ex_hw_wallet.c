@@ -6,13 +6,12 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "inttypes.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 #include "libtropic_logging.h"
 #include "string.h"
-#include "inttypes.h"
+#include <inttypes.h>
 
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "Ping message for TROPIC01"

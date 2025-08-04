@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "inttypes.h"
+#include <inttypes.h>
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
