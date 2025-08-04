@@ -29,7 +29,7 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
         return ret;
     }
 
-    for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
+    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Initializing monotonic counter %d to zero...", i);
         ret = lt_mcounter_init(&h, i, 0);
         if (LT_OK != ret) {
@@ -109,7 +109,7 @@ void lt_test_rev_mcounter(void)
 
     // Decrement to zero test: set to random small value and try to decrement to 0.
     LT_LOG_INFO("Starting decrement to zero test...");
-    for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
+    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random small init value...");
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
         init_val %= 100;
@@ -137,7 +137,7 @@ void lt_test_rev_mcounter(void)
     // whether any counter was not overwritten. This will test
     // that there are no indexing problems.
     LT_LOG_INFO("Starting assignment test...");
-    for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
+    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Initializing monotonic counter %d with %u...", i, i);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, i));
     }
