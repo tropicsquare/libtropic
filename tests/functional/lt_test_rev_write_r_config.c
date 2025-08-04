@@ -25,28 +25,28 @@ lt_ret_t lt_test_rev_write_r_config_cleanup(void)
     LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to establish secure session, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Erasing R config, so it can be restored");
     ret = lt_r_config_erase(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to erase R config, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to erase R config.");
         return ret;
     }
 
     LT_LOG_INFO("Writing R config backup");
     ret = write_whole_R_config(&h, &r_config_backup);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to write R config, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to write R config.");
         return ret;
     }
 
     LT_LOG_INFO("Reading R config and checking if restored correctly");
     ret = read_whole_R_config(&h, &r_config);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to read R config, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to read R config.");
         return ret;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
@@ -59,14 +59,14 @@ lt_ret_t lt_test_rev_write_r_config_cleanup(void)
     LT_LOG_INFO("Aborting secure session");
     ret = lt_session_abort(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to abort secure session, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
     ret = lt_deinit(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
     }
 
