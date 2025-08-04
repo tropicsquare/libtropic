@@ -6,6 +6,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -26,7 +28,7 @@ int pin_check(lt_handle_t *h, uint8_t *pin, uint32_t pin_len, mac_and_destroy_sl
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
     lt_hmac_sha256(kdf_key_zeros, 256, pin, pin_len, v);
 
-    LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%d...", slot);
+    LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%d...", (int)slot);
     LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, slot, v, w));
 
     LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
@@ -64,14 +66,14 @@ void lt_test_rev_mac_and_destroy(void)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Setup PIN");
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", MAC_AND_DESTROY_SLOT_127);
+    LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)MAC_AND_DESTROY_SLOT_127);
     LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&tmp1, 1));
     n = (tmp1 % MAC_AND_DESTROY_SLOT_127) + 1;
 
@@ -83,7 +85,7 @@ void lt_test_rev_mac_and_destroy(void)
     LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&pin_len, 1));
     pin_len = (pin_len % PIN_LEN_MAX) + 1;
 
-    LT_LOG_INFO("Generating random PIN with length %d...", pin_len);
+    LT_LOG_INFO("Generating random PIN with length %" PRIu32 "...", pin_len);
     LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(tmp2, PIN_LEN_MAX / 4));
     memcpy(pin, tmp2, PIN_LEN_MAX);
 
@@ -96,16 +98,16 @@ void lt_test_rev_mac_and_destroy(void)
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
     lt_hmac_sha256(kdf_key_zeros, 256, pin, pin_len, v);
 
-    LT_LOG_INFO("Starting n=%d blocks of MAC_And_Destroy sequences", n);
+    LT_LOG_INFO("Starting n=%" PRIu8 " blocks of MAC_And_Destroy sequences", n);
     for (uint8_t i = 0; i < n; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Executing MAC_And_Destroy with u and slot #%d...", i);
+        LT_LOG_INFO("Executing MAC_And_Destroy with u and slot #%" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, u, ignored));
 
-        LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%d...", i);
+        LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, v, w));
 
-        LT_LOG_INFO("Executing MAC_And_Destroy with u and slot #%d...", i);
+        LT_LOG_INFO("Executing MAC_And_Destroy with u and slot #%" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, u, ignored));
 
         LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
@@ -123,21 +125,21 @@ void lt_test_rev_mac_and_destroy(void)
     LT_LOG_INFO("Check PIN");
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Generating a random number of wrong attempts from {0...n-1=%d}...", n - 1);
+    LT_LOG_INFO("Generating a random number of wrong attempts from {0...n-1=%" PRIu8 "}...", n - 1);
     LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&tmp1, 1));
     wrong_attempts = tmp1 % n;
 
     memcpy(pin_wrong, pin, pin_len);
     pin_wrong[0] = ~pin_wrong[0];  // make the PIN wrong
-    LT_LOG_INFO("Starting %d wrong attempts", wrong_attempts);
+    LT_LOG_INFO("Starting %" PRIu8 " wrong attempts", wrong_attempts);
     for (uint8_t i = 0; i < wrong_attempts; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Doing wrong attempt #%d...", i);
+        LT_LOG_INFO("Doing wrong attempt #%" PRIu8 "...", i);
         LT_TEST_ASSERT(1, pin_check(&h, pin_wrong, pin_len, i, ciphertexts, t, s));
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Checking PIN with the first undestroyed slot #%d...", wrong_attempts);
+    LT_LOG_INFO("Checking PIN with the first undestroyed slot #%" PRIu8 "...", wrong_attempts);
     LT_LOG_INFO();
     LT_TEST_ASSERT(0, pin_check(&h, pin, pin_len, wrong_attempts, ciphertexts, t, s));
 
@@ -155,7 +157,7 @@ void lt_test_rev_mac_and_destroy(void)
     lt_hmac_sha256(s, 32, (uint8_t *)"1", 1, u);
 
     for (uint8_t i = 0; i <= wrong_attempts; i++) {
-        LT_LOG_INFO("Restoring slot #%d...", i);
+        LT_LOG_INFO("Restoring slot #%" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, u, ignored));
     }
     LT_LOG_LINE();
@@ -163,7 +165,7 @@ void lt_test_rev_mac_and_destroy(void)
     LT_LOG_INFO("Checking PIN with all used slots...");
     for (uint8_t i = 0; i < n; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Doing an attempt with the correct PIN with slot #%d...", i);
+        LT_LOG_INFO("Doing an attempt with the correct PIN with slot #%" PRIu8 "...", i);
         LT_TEST_ASSERT(0, pin_check(&h, pin, pin_len, i, ciphertexts, t, s));
 
         LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
