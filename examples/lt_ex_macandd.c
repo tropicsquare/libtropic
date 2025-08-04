@@ -37,7 +37,7 @@ static char *print_bytes(uint8_t *data, uint16_t len)
     bytes_buffer[0] = '\0';
     for (uint16_t i = 0; i < len; i++) {
         char byte_str[4];
-        snprintf(byte_str, sizeof(byte_str), "%02X", data[i]);
+        snprintf(byte_str, sizeof(byte_str), "%02"PRIX8, data[i]);
         // Check if appending the byte would exceed the buffer size
         if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
             break;  // Stop if the buffer is full
@@ -416,10 +416,10 @@ int lt_ex_macandd(void)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_0,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
         lt_deinit(&h);
         return -1;
