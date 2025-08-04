@@ -5,7 +5,8 @@ Code in this directory is meant to be compiled under Unix and tests and examples
 - For running examples, you need to start the model manually and then execute the example binary in a separate terminal. See below.
 
 **Important note:** There are some tests and examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those will always fail against the model. Namely:
--  `lt_ex_fw_update`
+- `lt_ex_fw_update`
+- `lt_test_rev_startup_req`
 
 ## How it works?
 Both processes (tests and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
