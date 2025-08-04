@@ -6,10 +6,10 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <stdlib.h>
 
 #include "libtropic.h"
-#include <inttypes.h>
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"

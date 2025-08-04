@@ -15,14 +15,13 @@
 
 // GPIO
 #include <errno.h>
+#include <inttypes.h>
 #include <linux/gpio.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <inttypes.h>
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
@@ -70,7 +69,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
         LT_LOG_ERROR("can't get spi mode");
         return LT_FAIL;
     }
-    if (request_mode != s.mode) LT_LOG_ERROR("WARNING device does not support requested mode 0x%"PRIx32"\n", request_mode);
+    if (request_mode != s.mode)
+        LT_LOG_ERROR("WARNING device does not support requested mode 0x%" PRIx32 "\n", request_mode);
 
     if (ioctl(s.fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0) {
         LT_LOG_ERROR("can't set max speed Hz");

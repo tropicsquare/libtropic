@@ -8,13 +8,13 @@
 
 #include <arpa/inet.h>
 #include <errno.h>
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <inttypes.h>
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
@@ -27,10 +27,10 @@
 #ifdef LIBT_DEBUG
 #define LOG_OUT(f_, ...) printf("[TCP] " f_, ##__VA_ARGS__)
 #define LOG_ERR(f_, ...) fprintf(stderr, "ERROR: " f_, ##__VA_ARGS__)
-#define LOG_U8_ARRAY(arr, len)      \
-    for (int i = 0; i < len; i++) { \
-        printf("%02"PRIx8" ", arr[i]);    \
-    }                               \
+#define LOG_U8_ARRAY(arr, len)           \
+    for (int i = 0; i < len; i++) {      \
+        printf("%02" PRIx8 " ", arr[i]); \
+    }                                    \
     printf("\r\n");
 #else
 #define LOG_OUT(...)
@@ -178,7 +178,7 @@ static int lt_communicate(int *tx_payload_length_ptr, int *rx_payload_length_ptr
         return 1;
     }
 
-    LOG_OUT("Length field: %"PRIu16".\n", rx_buffer.LENGTH);
+    LOG_OUT("Length field: %" PRIu16 ".\n", rx_buffer.LENGTH);
     nb_bytes_to_receive += rx_buffer.LENGTH;
     nb_bytes_received_total += nb_bytes_received;
     LOG_OUT("Received %d bytes out of %d expected.\n", nb_bytes_received_total, nb_bytes_to_receive);
@@ -211,23 +211,23 @@ static int lt_communicate(int *tx_payload_length_ptr, int *rx_payload_length_ptr
 
     // server does not know the sent tag
     if (rx_buffer.TAG == TAG_E_INVALID) {
-        LOG_ERR("Tag %"PRIu8" is not known by the server.\n", tx_buffer.TAG);
+        LOG_ERR("Tag %" PRIu8 " is not known by the server.\n", tx_buffer.TAG);
         return 1;
     }
 
     // server does not know what to do with the sent tag
     else if (rx_buffer.TAG == TAG_E_UNSUPPORTED) {
-        LOG_ERR("Tag %"PRIu8" is not supported by the server.\n", tx_buffer.TAG);
+        LOG_ERR("Tag %" PRIu8 " is not supported by the server.\n", tx_buffer.TAG);
         return 1;
     }
 
     // RX tag and TX tag should be identical
     else if (rx_buffer.TAG != tx_buffer.TAG) {
-        LOG_ERR("Expected tag %"PRIu8", received %"PRIu8".\n", rx_buffer.TAG, tx_buffer.TAG);
+        LOG_ERR("Expected tag %" PRIu8 ", received %" PRIu8 ".\n", rx_buffer.TAG, tx_buffer.TAG);
         return 1;
     }
 
-    LOG_OUT("Rx tag and tx tag match: %"PRIu8".\n", rx_buffer.TAG);
+    LOG_OUT("Rx tag and tx tag match: %" PRIu8 ".\n", rx_buffer.TAG);
     if (rx_payload_length_ptr != NULL) {
         *rx_payload_length_ptr = nb_bytes_received_total - TCP_TAG_AND_LENGTH_SIZE;
     }

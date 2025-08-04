@@ -12,6 +12,7 @@
  */
 
 #include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"

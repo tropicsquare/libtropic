@@ -8,12 +8,12 @@
 
 #include "libtropic.h"
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
-#include <inttypes.h>
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
@@ -1495,7 +1495,7 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_b
     }
 
     for (uint16_t i = 0; i < length; i++) {
-        sprintf(&out_buf[i * 2], "%02"PRIX8, bytes[i]);
+        sprintf(&out_buf[i * 2], "%02" PRIX8, bytes[i]);
     }
     out_buf[length * 2] = '\0';
 

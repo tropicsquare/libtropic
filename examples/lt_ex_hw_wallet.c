@@ -6,12 +6,13 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 #include "libtropic_logging.h"
 #include "string.h"
-#include <inttypes.h>
 
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "Ping message for TROPIC01"
@@ -308,7 +309,7 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08"PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     LT_LOG_INFO("Creating an example config from the read R config...");
@@ -329,12 +330,12 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08"PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     // Write pairing keys into slots 1,2,3
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Writing to pairing key slot %"PRIu8"...", i);
+        LT_LOG_INFO("Writing to pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, pub_keys[i], i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to write pairing key, ret=%s", lt_ret_verbose(ret));
@@ -459,7 +460,7 @@ static int session1(lt_handle_t *h)
     uint8_t dummy_key[32] = {0};
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("\tWriting pairing key slot %"PRIu8"...", i);
+        LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, dummy_key, i);
         if (LT_L3_UNAUTHORIZED != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
@@ -533,7 +534,7 @@ static int session2(lt_handle_t *h)
 
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("\tWriting pairing key slot %"PRIu8"...", i);
+        LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, dummy_key, i);
         if (LT_L3_UNAUTHORIZED != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
@@ -721,7 +722,7 @@ static int session3(lt_handle_t *h)
 
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("\tWriting pairing key slot %"PRIu8"...", i);
+        LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, dummy_key, i);
         if (LT_L3_UNAUTHORIZED != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
