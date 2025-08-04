@@ -25,7 +25,7 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to establish secure session, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
     }
 
@@ -35,14 +35,14 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
         LT_LOG_INFO("Erasing slot #%d", i);
         ret = lt_ecc_key_erase(&h, i);
         if (LT_OK != ret) {
-            LT_LOG_ERROR("Failed to erase slot, ret=%s", lt_ret_verbose(ret));
+            LT_LOG_ERROR("Failed to erase slot.");
             return ret;
         }
 
         LT_LOG_INFO("Reading slot #%d (should fail)", i);
         ret = lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
-            LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY, ret=%s", lt_ret_verbose(ret));
+            LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
             return ret;
         }
     }
@@ -50,14 +50,14 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     LT_LOG_INFO("Aborting secure session");
     ret = lt_session_abort(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to abort secure session, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
     ret = lt_deinit(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
     }
 

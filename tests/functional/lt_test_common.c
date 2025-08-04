@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 
+#include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
@@ -18,11 +19,12 @@ void lt_assert_fail_handler()
 {
     if (NULL != lt_test_cleanup_function) {
         LT_LOG_INFO("Post-assert cleanup started.");
-        if (LT_OK == lt_test_cleanup_function()) {
+        lt_ret_t ret = lt_test_cleanup_function();
+        if (LT_OK == ret) {
             LT_LOG_INFO("Post-assert cleanup successful!");
         }
         else {
-            LT_LOG_ERROR("Post-assert cleanup failed!");
+            LT_LOG_ERROR("Post-assert cleanup failed, ret=%s.", lt_ret_verbose(ret));
         }
     }
     else {
