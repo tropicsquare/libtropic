@@ -132,7 +132,9 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memcpy(kdf_input_buff + PIN_size, add, add_size);
 
     LT_LOG_INFO("Getting random bytes...");
-    lt_ret_t ret = lt_port_random_bytes((uint32_t *)s, 8);
+    uint32_t random_data[sizeof(s) / 4];
+    lt_ret_t ret = lt_port_random_bytes(random_data, sizeof(s) / 4);
+    memcpy(s, random_data, sizeof(s));
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to get random bytes, ret=%s", lt_ret_verbose(ret));
         goto exit;
