@@ -42,4 +42,7 @@ void lt_test_rev_sleep_req(void)
 
     LT_LOG_INFO("Waking the chip up by sending dummy L2 request...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(&h, &chip_id));
+
+    LT_LOG_INFO("Deinitializing handle");
+    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
 }
