@@ -6,7 +6,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "inttypes.h"
+#include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_examples.h"
 #include "libtropic_logging.h"
@@ -37,7 +38,7 @@ static char *print_bytes(uint8_t *data, uint16_t len)
     bytes_buffer[0] = '\0';
     for (uint16_t i = 0; i < len; i++) {
         char byte_str[4];
-        snprintf(byte_str, sizeof(byte_str), "%02X", data[i]);
+        snprintf(byte_str, sizeof(byte_str), "%02" PRIX8, data[i]);
         // Check if appending the byte would exceed the buffer size
         if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
             break;  // Stop if the buffer is full
@@ -132,7 +133,9 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memcpy(kdf_input_buff + PIN_size, add, add_size);
 
     LT_LOG_INFO("Getting random bytes...");
-    lt_ret_t ret = lt_port_random_bytes((uint32_t *)s, 8);
+    uint32_t random_data[sizeof(s) / 4];
+    lt_ret_t ret = lt_port_random_bytes(random_data, sizeof(s) / 4);
+    memcpy(s, random_data, sizeof(s));
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to get random bytes, ret=%s", lt_ret_verbose(ret));
         goto exit;
@@ -416,10 +419,10 @@ int lt_ex_macandd(void)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_0,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
         lt_deinit(&h);
         return -1;

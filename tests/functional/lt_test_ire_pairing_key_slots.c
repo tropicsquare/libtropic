@@ -5,7 +5,8 @@
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
-#include "inttypes.h"
+#include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -23,7 +24,7 @@ static void print_bytes(uint8_t *data, uint16_t len)
     char buffer[256] = {0};
     for (uint16_t i = 0; i < len; i++) {
         char byte_str[4];
-        snprintf(byte_str, sizeof(byte_str), "%02X ", data[i]);
+        snprintf(byte_str, sizeof(byte_str), "%02" PRIX8 " ", data[i]);
         strncat(buffer, byte_str, sizeof(buffer) - strlen(buffer) - 1);
 
         // Print the buffer every 32 bytes or at the end of the data
@@ -53,17 +54,17 @@ void lt_test_ire_pairing_key_slots(void)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     // Read pairing keys (1,2,3 should be empty)
-    LT_LOG_INFO("Reading pairing key slot 0...");
+    LT_LOG_INFO("Reading pairing key slot %d...", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
     print_bytes(read_key, 32);
     LT_LOG_INFO();
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Reading pairing key slot %d (should fail)...", i);
+        LT_LOG_INFO("Reading pairing key slot %" PRIu8 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
         LT_LOG_INFO();
     }
@@ -71,7 +72,7 @@ void lt_test_ire_pairing_key_slots(void)
 
     // Write pairing keys into slot 1,2,3
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Writing to pairing key slot %d...", i);
+        LT_LOG_INFO("Writing to pairing key slot %" PRIu8 "...", i);
         print_bytes(pub_keys[i], 32);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
         LT_LOG_INFO();
@@ -80,7 +81,7 @@ void lt_test_ire_pairing_key_slots(void)
 
     // Read all pairing keys and check value
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Reading pairing key slot %d...", i);
+        LT_LOG_INFO("Reading pairing key slot %" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
 
@@ -92,10 +93,10 @@ void lt_test_ire_pairing_key_slots(void)
 
     // Write pairing key slots again (should fail)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Writing to pairing key slot %d (should fail)...", i);
+        LT_LOG_INFO("Writing to pairing key slot %" PRIu8 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
 
-        LT_LOG_INFO("Reading pairing key slot %d...", i);
+        LT_LOG_INFO("Reading pairing key slot %" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
         print_bytes(read_key, 32);
 
@@ -106,10 +107,10 @@ void lt_test_ire_pairing_key_slots(void)
     LT_LOG_LINE();
 
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Invalidating pairing key slot %d...", i);
+        LT_LOG_INFO("Invalidating pairing key slot %" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, i));
 
-        LT_LOG_INFO("Reading pairing key slot %d (should fail)...", i);
+        LT_LOG_INFO("Reading pairing key slot %" PRIu8 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_PAIRING_KEY_INVALID, lt_pairing_key_read(&h, read_key, i));
     }
     LT_LOG_LINE();

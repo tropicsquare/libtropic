@@ -6,6 +6,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <stdlib.h>
 
 #include "libtropic.h"
@@ -42,7 +43,7 @@ void hexdump_8byte(const uint8_t *data, uint16_t size)
         char *p = line;
 
         for (uint16_t j = 0; j < row_len; j++) {
-            p += sprintf(p, "%02x ", data[i + j]);
+            p += sprintf(p, "%02" PRIx8 " ", data[i + j]);
         }
 
         *p = '\0';  // null-terminate the string

@@ -7,6 +7,7 @@
  */
 #include "lt_l1.h"
 
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -25,7 +26,7 @@ void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir)
     }
     printf("%s", dir ? "  >>  TX: " : "  <<  RX: ");
     for (size_t i = 0; i < len; i++) {
-        printf("%02X ", data[i]);
+        printf("%02" PRIX8 " ", data[i]);
         if ((i + 1) % 32 == 0) {
             printf("\n          ");
         }

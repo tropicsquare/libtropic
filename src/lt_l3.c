@@ -34,10 +34,12 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
     memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
 
     // Create ephemeral host keys
-    lt_ret_t ret = lt_random_bytes((uint32_t *)state->ehpriv, 8);
+    uint32_t random_data[sizeof(state->ehpriv) / 4];
+    lt_ret_t ret = lt_random_bytes(random_data, sizeof(state->ehpriv) / 4);
     if (ret != LT_OK) {
         return ret;
     }
+    memcpy(state->ehpriv, random_data, sizeof(state->ehpriv) / 4);
     lt_X25519_scalarmult(state->ehpriv, state->ehpub);
 
     // Setup a request pointer to l2 buffer, which is placed in handle
@@ -803,7 +805,7 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
 
 lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
-    if (!h || slot < ECC_SLOT_0 || slot > ECC_SLOT_31 || ((curve != CURVE_P256) && (curve != CURVE_ED25519))) {
+    if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519))) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -848,7 +850,7 @@ lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h)
 lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve,
                                const uint8_t *key)
 {
-    if (!h || slot < ECC_SLOT_0 || slot > ECC_SLOT_31 || ((curve != CURVE_P256) && (curve != CURVE_ED25519)) || !key) {
+    if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519)) || !key) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -897,7 +899,7 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h)
 // lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
 lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot)
 {
-    if (!h || slot < ECC_SLOT_0 || slot > ECC_SLOT_31) {
+    if (!h || (slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -961,7 +963,7 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
 
 lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
 {
-    if (!h || slot < ECC_SLOT_0 || slot > ECC_SLOT_31) {
+    if (!h || (slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1006,7 +1008,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h)
 
 lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len)
 {
-    if (!h || (slot < ECC_SLOT_0) || (slot > ECC_SLOT_31) || !msg) {
+    if (!h || (slot > ECC_SLOT_31) || !msg) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1063,8 +1065,7 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs)
 
 lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len)
 {
-    if (!h || !msg || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot < ECC_SLOT_0)
-        || (ecc_slot > ECC_SLOT_31)) {
+    if (!h || !msg || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1115,7 +1116,7 @@ lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs)
 lt_ret_t lt_out__mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index,
                                const uint32_t mcounter_value)
 {
-    if (!h || ((mcounter_index < 0) | (mcounter_index > 15)) || mcounter_value == 0) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15) || mcounter_value == 0) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1161,7 +1162,7 @@ lt_ret_t lt_in__mcounter_init(lt_handle_t *h)
 
 lt_ret_t lt_out__mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index)
 {
-    if (!h || ((mcounter_index < 0) | (mcounter_index > 15))) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {
@@ -1206,7 +1207,7 @@ lt_ret_t lt_in__mcounter_update(lt_handle_t *h)
 
 lt_ret_t lt_out__mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index)
 {
-    if (!h || ((mcounter_index < 0) | (mcounter_index > 15))) {
+    if (!h || (mcounter_index > MCOUNTER_INDEX_15)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != SESSION_ON) {

@@ -6,7 +6,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "inttypes.h"
+#include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
@@ -293,10 +294,10 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_0,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
         return -1;
     }
@@ -308,7 +309,7 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     LT_LOG_INFO("Creating an example config from the read R config...");
@@ -329,12 +330,12 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08x", cfg_desc_table[i].desc, (unsigned int)r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     // Write pairing keys into slots 1,2,3
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("Writing to pairing key slot %d...", i);
+        LT_LOG_INFO("Writing to pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, pub_keys[i], i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to write pairing key, ret=%s", lt_ret_verbose(ret));
@@ -343,7 +344,7 @@ static int session_initial(lt_handle_t *h)
         LT_LOG_INFO("\tOK");
     }
 
-    LT_LOG_INFO("Invalidating pairing key slot %d...", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Invalidating pairing key slot %d...", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = lt_pairing_key_invalidate(h, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to invalidate pairing key slot, ret=%s", lt_ret_verbose(ret));
@@ -393,7 +394,7 @@ static int session0(lt_handle_t *h)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d (should fail)", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d (should fail)", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_L2_HSK_ERR != ret) {
         LT_LOG_ERROR("Return value is not LT_L2_HSK_ERR, ret=%s", lt_ret_verbose(ret));
@@ -428,10 +429,10 @@ static int session1(lt_handle_t *h)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_1);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_1);
     ret = verify_chip_and_start_secure_session(h, sh1priv, sh1pub, PAIRING_KEY_SLOT_INDEX_1);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_1,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_1,
                      lt_ret_verbose(ret));
         return -1;
     }
@@ -448,10 +449,10 @@ static int session1(lt_handle_t *h)
     LT_LOG_INFO("Message received from TROPIC01:");
     LT_LOG_INFO("\t\"%s\"", recv_buf);
 
-    LT_LOG_INFO("Storing attestation key into ECC slot %d...", ECC_SLOT_0);
+    LT_LOG_INFO("Storing attestation key into ECC slot %d...", (int)ECC_SLOT_0);
     ret = lt_ecc_key_store(h, ECC_SLOT_0, CURVE_ED25519, attestation_key);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to store ECC key to slot %d, ret=%s", ECC_SLOT_0, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to store ECC key to slot %d, ret=%s", (int)ECC_SLOT_0, lt_ret_verbose(ret));
         return -1;
     }
     LT_LOG_INFO("\tOK");
@@ -459,7 +460,7 @@ static int session1(lt_handle_t *h)
     uint8_t dummy_key[32] = {0};
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("\tWriting pairing key slot %d...", i);
+        LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, dummy_key, i);
         if (LT_L3_UNAUTHORIZED != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
@@ -502,10 +503,10 @@ static int session2(lt_handle_t *h)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_2);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_2);
     ret = verify_chip_and_start_secure_session(h, sh2priv, sh2pub, PAIRING_KEY_SLOT_INDEX_2);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_2,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_2,
                      lt_ret_verbose(ret));
         return -1;
     }
@@ -523,7 +524,7 @@ static int session2(lt_handle_t *h)
     LT_LOG_INFO("\t\"%s\"", recv_buf);
 
     uint8_t dummy_key[32];
-    LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", ECC_SLOT_0);
+    LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", (int)ECC_SLOT_0);
     ret = lt_ecc_key_store(h, ECC_SLOT_0, CURVE_ED25519, dummy_key);
     if (LT_L3_UNAUTHORIZED != ret) {
         LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
@@ -533,7 +534,7 @@ static int session2(lt_handle_t *h)
 
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("\tWriting pairing key slot %d...", i);
+        LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, dummy_key, i);
         if (LT_L3_UNAUTHORIZED != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
@@ -603,10 +604,10 @@ static int session3(lt_handle_t *h)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_3);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_3);
     ret = verify_chip_and_start_secure_session(h, sh3priv, sh3pub, PAIRING_KEY_SLOT_INDEX_3);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", PAIRING_KEY_SLOT_INDEX_3,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_3,
                      lt_ret_verbose(ret));
         return -1;
     }
@@ -633,7 +634,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    LT_LOG_INFO("Reading ECC key slot %d...", ECC_SLOT_0);
+    LT_LOG_INFO("Reading ECC key slot %d...", (int)ECC_SLOT_0);
     uint8_t slot_0_pubkey[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
@@ -652,7 +653,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    LT_LOG_INFO("Generating ECC key in slot %d...", ECC_SLOT_8);
+    LT_LOG_INFO("Generating ECC key in slot %d...", (int)ECC_SLOT_8);
     ret = lt_ecc_key_generate(h, ECC_SLOT_8, CURVE_ED25519);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to generate ECC key, ret=%s", lt_ret_verbose(ret));
@@ -660,7 +661,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    LT_LOG_INFO("Generating ECC key in slot %d...", ECC_SLOT_16);
+    LT_LOG_INFO("Generating ECC key in slot %d...", (int)ECC_SLOT_16);
     ret = lt_ecc_key_generate(h, ECC_SLOT_16, CURVE_ED25519);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to generate ECC key, ret=%s", lt_ret_verbose(ret));
@@ -668,7 +669,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    LT_LOG_INFO("Generating ECC key in slot %d...", ECC_SLOT_24);
+    LT_LOG_INFO("Generating ECC key in slot %d...", (int)ECC_SLOT_24);
     ret = lt_ecc_key_generate(h, ECC_SLOT_24, CURVE_ED25519);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to generate ECC key, ret=%s", lt_ret_verbose(ret));
@@ -676,7 +677,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    LT_LOG_INFO("Getting %d random bytes...", RANDOM_VALUE_GET_LEN_MAX);
+    LT_LOG_INFO("Getting %d random bytes...", (int)RANDOM_VALUE_GET_LEN_MAX);
     uint8_t buff[RANDOM_VALUE_GET_LEN_MAX];
     ret = lt_random_value_get(h, buff, RANDOM_VALUE_GET_LEN_MAX);
     if (LT_OK != ret) {
@@ -711,7 +712,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     uint8_t dummy_key[32];
-    LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", ECC_SLOT_0);
+    LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", (int)ECC_SLOT_0);
     ret = lt_ecc_key_store(h, ECC_SLOT_0, CURVE_ED25519, dummy_key);
     if (LT_L3_UNAUTHORIZED != ret) {
         LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
@@ -721,7 +722,7 @@ static int session3(lt_handle_t *h)
 
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
-        LT_LOG_INFO("\tWriting pairing key slot %d...", i);
+        LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
         ret = lt_pairing_key_write(h, dummy_key, i);
         if (LT_L3_UNAUTHORIZED != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));

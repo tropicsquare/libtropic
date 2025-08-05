@@ -1,4 +1,5 @@
 #include <fcntl.h>
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -108,7 +109,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
             cfsetospeed(&options, B115200);
             break;
         default:
-            fprintf(stderr, "warning: baud rate %u is not supported, using 9600.\n",
+            fprintf(stderr, "warning: baud rate %" PRIu32 " is not supported, using 9600.\n",
                     ((lt_uart_def_unix_t *)h->device)->baud_rate);
             cfsetospeed(&options, B9600);
             break;
@@ -189,7 +190,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     // Bytes from handle which are about to be sent are encoded as chars and stored here:
     char buffered_chars[512] = {0};
     for (int i = 0; i < (tx_data_length); i++) {
-        sprintf(buffered_chars + i * 2, "%02X", h->buff[i + offset]);  // TODO make this better?
+        sprintf(buffered_chars + i * 2, "%02" PRIX8, h->buff[i + offset]);  // TODO make this better?
     }
     // Controll characters to keep CS LOW, they are expected by USB dongle
     buffered_chars[tx_data_length * 2] = 'x';
@@ -208,7 +209,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     }
 
     for (size_t count = 0; count < 2 * tx_data_length; count++) {
-        sscanf(&buffered_chars[count * 2], "%2hhx", &h->buff[count + offset]);  // TODO make this better?
+        sscanf(&buffered_chars[count * 2], "%02" PRIx8, &h->buff[count + offset]);  // TODO make this better?
     }
 
     return LT_OK;
