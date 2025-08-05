@@ -45,7 +45,7 @@ int lt_ex_hello_world(lt_handle_t *h)
     uint8_t recv_buf[PING_MSG_SIZE];
     LT_LOG_INFO("Sending Ping command with message:");
     LT_LOG_INFO("\t\"%s\"", PING_MSG);
-    ret = lt_ping(h, (const uint8_t*)PING_MSG, recv_buf, PING_MSG_SIZE);
+    ret = lt_ping(h, (const uint8_t *)PING_MSG, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Ping command failed, ret=%s", lt_ret_verbose(ret));
         lt_session_abort(h);

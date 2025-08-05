@@ -10,6 +10,7 @@
  */
 
 #include <stdint.h>
+
 #include "libtropic_common.h"
 
 extern uint8_t sh0priv[];
@@ -27,7 +28,7 @@ extern uint8_t sh3pub[];
 /**
  * @brief Establishes Secure Session and executes Ping L3 command.
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
- * 
+ *
  * @param  h     Device's handle
  * @return -1 on fail, 0 otherwise
  */
@@ -38,7 +39,7 @@ int lt_ex_hello_world(lt_handle_t *h);
  *
  * Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
  * TODO explain more
- * 
+ *
  * @param  h     Device's handle
  * @return int
  */
@@ -57,7 +58,7 @@ int lt_ex_hello_world(lt_handle_t *h);
  *
  * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on
  * PCB.
- * 
+ *
  * @param  h     Device's handle
  * @return -1 on fail, 0 otherwise
  */

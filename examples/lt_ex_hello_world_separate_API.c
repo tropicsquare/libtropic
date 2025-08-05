@@ -109,7 +109,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     uint8_t recv_buf[PING_MSG_SIZE];
     LT_LOG_INFO("Executing lt_out__ping() with message:");
     LT_LOG_INFO("\t\"%s\"", PING_MSG);
-    ret = lt_out__ping(h, (const uint8_t*)PING_MSG, PING_MSG_SIZE);
+    ret = lt_out__ping(h, (const uint8_t *)PING_MSG, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__ping failed, ret=%s", lt_ret_verbose(ret));
         lt_session_abort(h);
