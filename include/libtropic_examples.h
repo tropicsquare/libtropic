@@ -10,6 +10,7 @@
  */
 
 #include <stdint.h>
+#include "libtropic_common.h"
 
 extern uint8_t sh0priv[];
 extern uint8_t sh0pub[];
