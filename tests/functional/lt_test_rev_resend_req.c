@@ -17,35 +17,28 @@
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
 
-void lt_test_rev_resend_req(void)
+void lt_test_rev_resend_req(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------");
     LT_LOG_INFO("lt_test_rev_resend_req()");
     LT_LOG_INFO("----------------------------------");
 
-    lt_handle_t h;
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
-
     LT_LOG_INFO("Preparing handle.");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     // Sending dummy Get_Info_Req. We don't need the data, just something to request a resend later.
     // We utilize that Get_Info_Req fits into one frame.
     struct lt_chip_id_t prev_chip_id;
     LT_LOG_INFO("Sending L2 Get_Info_Req...");
-    LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(&h, &prev_chip_id));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(h, &prev_chip_id));
 
     // Requesting a resend.
     LT_LOG_INFO("Asking to resend last response frame...");
-    lt_l2_resend_response(&h.l2);
+    lt_l2_resend_response(&h->l2);
 
     LT_LOG_INFO("Compare if previously received and now resended frames match.");
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h.l2.buff;
+    struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
     // Check incomming l3 length
     LT_TEST_ASSERT(LT_L2_GET_INFO_CHIP_ID_SIZE, p_l2_resp->rsp_len);
     // Compare contents.

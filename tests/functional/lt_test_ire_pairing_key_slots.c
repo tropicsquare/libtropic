@@ -35,37 +35,31 @@ static void print_bytes(uint8_t *data, uint16_t len)
     }
 }
 
-void lt_test_ire_pairing_key_slots(void)
+void lt_test_ire_pairing_key_slots(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_ire_pairing_key_slots()");
     LT_LOG_INFO("----------------------------------------------");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     uint8_t *pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
     uint8_t read_key[32] = {0};
     uint8_t zeros[32] = {0};
 
     LT_LOG_INFO("Initializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     // Read pairing keys (1,2,3 should be empty)
     LT_LOG_INFO("Reading pairing key slot %d...", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(h, read_key, PAIRING_KEY_SLOT_INDEX_0));
     print_bytes(read_key, 32);
     LT_LOG_INFO();
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(&h, read_key, i));
+        LT_TEST_ASSERT(LT_L3_PAIRING_KEY_EMPTY, lt_pairing_key_read(h, read_key, i));
         LT_LOG_INFO();
     }
     LT_LOG_LINE();
@@ -74,7 +68,7 @@ void lt_test_ire_pairing_key_slots(void)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Writing to pairing key slot %" PRIu8 "...", i);
         print_bytes(pub_keys[i], 32);
-        LT_TEST_ASSERT(LT_OK, lt_pairing_key_write(&h, pub_keys[i], i));
+        LT_TEST_ASSERT(LT_OK, lt_pairing_key_write(h, pub_keys[i], i));
         LT_LOG_INFO();
     }
     LT_LOG_LINE();
@@ -82,7 +76,7 @@ void lt_test_ire_pairing_key_slots(void)
     // Read all pairing keys and check value
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
+        LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(h, read_key, i));
         print_bytes(read_key, 32);
 
         LT_LOG_INFO("Comparing contents of written and read key...");
@@ -94,10 +88,10 @@ void lt_test_ire_pairing_key_slots(void)
     // Write pairing key slots again (should fail)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Writing to pairing key slot %" PRIu8 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_FAIL, lt_pairing_key_write(&h, zeros, i));
+        LT_TEST_ASSERT(LT_L3_FAIL, lt_pairing_key_write(h, zeros, i));
 
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(&h, read_key, i));
+        LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(h, read_key, i));
         print_bytes(read_key, 32);
 
         LT_LOG_INFO("Comparing contents of expected key and read key...");
@@ -108,16 +102,16 @@ void lt_test_ire_pairing_key_slots(void)
 
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Invalidating pairing key slot %" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_pairing_key_invalidate(&h, i));
+        LT_TEST_ASSERT(LT_OK, lt_pairing_key_invalidate(h, i));
 
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_PAIRING_KEY_INVALID, lt_pairing_key_read(&h, read_key, i));
+        LT_TEST_ASSERT(LT_L3_PAIRING_KEY_INVALID, lt_pairing_key_read(h, read_key, i));
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(h));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(h));
 }

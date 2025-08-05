@@ -22,7 +22,7 @@ uint8_t priv_test_key[]
        0x6f, 0xeb, 0xe6, 0x5f, 0x94, 0x3e, 0xf1, 0xb6, 0x0c, 0x74, 0x6d, 0x4c, 0x46, 0x83, 0xde, 0x15};
 
 // Shared with cleanup function
-lt_handle_t h;
+lt_handle_t *lt_h;
 
 lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
 {
@@ -32,7 +32,7 @@ lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     ecc_key_origin_t origin;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(lt_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
@@ -42,14 +42,14 @@ lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Erasing slot #%" PRIu8, i);
-        ret = lt_ecc_key_erase(&h, i);
+        ret = lt_ecc_key_erase(lt_h, i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to erase slot.");
             return ret;
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
-        ret = lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin);
+        ret = lt_ecc_key_read(lt_h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
             return ret;
@@ -57,14 +57,14 @@ lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     }
 
     LT_LOG_INFO("Aborting secure session");
-    ret = lt_session_abort(&h);
+    ret = lt_session_abort(lt_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(&h);
+    ret = lt_deinit(lt_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
@@ -73,27 +73,24 @@ lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     return LT_OK;
 }
 
-void lt_test_rev_eddsa_sign(void)
+void lt_test_rev_eddsa_sign(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_rev_eddsa_sign()");
     LT_LOG_INFO("----------------------------------------------");
 
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
+    lt_h = h;
+
     uint8_t read_pub_key[32], msg_to_sign[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX], rs[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
     uint32_t random_data[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX / sizeof(uint32_t)], random_data_size;
 
     LT_LOG_INFO("Initializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     lt_test_cleanup_function = &lt_test_rev_eddsa_sign_cleanup;
@@ -112,25 +109,25 @@ void lt_test_rev_eddsa_sign(void)
         memcpy(msg_to_sign, random_data, random_data_size);
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
 
         LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(&h, i, CURVE_ED25519, priv_test_key));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(h, i, CURVE_ED25519, priv_test_key));
 
         LT_LOG_INFO("Reading the stored public key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
 
         LT_LOG_INFO("Verifying signature...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, random_data_size, read_pub_key, rs));
 
         LT_LOG_INFO("Erasing the slot...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
 
         LT_LOG_INFO("Signing message with erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
     }
     LT_LOG_LINE();
 
@@ -148,25 +145,25 @@ void lt_test_rev_eddsa_sign(void)
         memcpy(msg_to_sign, random_data, random_data_size);
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
 
         LT_LOG_INFO("Generating private key using Ed25519 curve...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(&h, i, CURVE_ED25519));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(h, i, CURVE_ED25519));
 
         LT_LOG_INFO("Reading the generated public key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(&h, i, read_pub_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
 
         LT_LOG_INFO("Verifying signature...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, random_data_size, read_pub_key, rs));
 
         LT_LOG_INFO("Erasing the slot...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(&h, i));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
 
         LT_LOG_INFO("Signing message with erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(&h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
     }
     LT_LOG_LINE();
 
@@ -174,8 +171,8 @@ void lt_test_rev_eddsa_sign(void)
     lt_test_cleanup_function = NULL;
 
     LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(h));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(h));
 }

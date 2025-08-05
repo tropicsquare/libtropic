@@ -18,26 +18,20 @@
 /** @brief How many pings will be sent. */
 #define PING_MAX_LOOPS 200
 
-void lt_test_rev_ping(void)
+void lt_test_rev_ping(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_rev_ping()");
     LT_LOG_INFO("----------------------------------------------");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     uint8_t ping_msg_out[PING_LEN_MAX], ping_msg_in[PING_LEN_MAX];
     uint32_t random_data[PING_LEN_MAX / sizeof(uint32_t)], random_data_size;
 
     LT_LOG_INFO("Initializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Will send %d Ping commands with random data of random length", PING_MAX_LOOPS);
@@ -52,7 +46,7 @@ void lt_test_rev_ping(void)
         memcpy(ping_msg_out, random_data, random_data_size);
 
         LT_LOG_INFO("Sending Ping command #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_ping(&h, ping_msg_out, ping_msg_in, random_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_ping(h, ping_msg_out, ping_msg_in, random_data_size));
 
         LT_LOG_INFO("Comparing sent and received message...");
         LT_TEST_ASSERT(0, memcmp(ping_msg_out, ping_msg_in, random_data_size));
@@ -60,8 +54,8 @@ void lt_test_rev_ping(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(h));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(h));
 }
