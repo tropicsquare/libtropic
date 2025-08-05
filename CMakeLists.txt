@@ -169,7 +169,7 @@ foreach(example_name ${LIBTROPIC_EXAMPLE_LIST})
     string(REPLACE " " "_" example_macro ${example_macro})
     string(APPEND LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT
         "#elif defined(${example_macro})\n"
-        "__lt_ex_return_val__ = ${example_name}();\n"
+        "__lt_ex_return_val__ = ${example_name}(&__lt_handle__);\n"
     )
 endforeach()
 
@@ -227,7 +227,7 @@ foreach(test_name ${LIBTROPIC_TEST_LIST})
     string(REPLACE " " "_" test_macro ${test_macro})
     string(APPEND LIBTROPIC_TEST_FUNCTIONS_CONTENT
         "#elif defined(${test_macro})\n"
-        "  ${test_name}();\n"
+        "  ${test_name}(&__lt_handle__);\n"
     )
 endforeach()
 

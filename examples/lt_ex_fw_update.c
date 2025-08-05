@@ -77,33 +77,26 @@ static void print_headers(lt_handle_t *h)
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 }
 
-int lt_ex_fw_update(void)
+int lt_ex_fw_update(lt_handle_t *h)
 {
     LT_LOG("\t=======================================================================");
     LT_LOG("\t=====  TROPIC01 FW update                                           ===");
     LT_LOG("\t=======================================================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
-
     lt_ret_t ret = LT_FAIL;
 
-    lt_init(&h);
+    lt_init(h);
 
     // Reused variable
     uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     // First check in which mode chip operates, bootloader or application
-    LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if (h.l2.mode == LT_MODE_APP) {
+    LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(h)));
+    if (h->l2.mode == LT_MODE_APP) {
         LT_LOG("  Chip is executing application firmware");
         // App runs so we can see what firmwares are running
         // RISCV app firmware version
-        ret = lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
         if (ret != LT_OK) {
             LT_LOG("     lt_get_info_riscv_fw_ver()               %s", lt_ret_verbose(ret));
         }
@@ -113,7 +106,7 @@ int lt_ex_fw_update(void)
         }
 
         // SPECT firmware version
-        ret = lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret != LT_OK) {
             LT_LOG("     lt_get_info_spect_fw_ver()               %s", lt_ret_verbose(ret));
         }
@@ -122,31 +115,31 @@ int lt_ex_fw_update(void)
             LT_LOG("  spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
         }
         // Now reboot into STARTUP (bootloader)
-        LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_MAINTENANCE)));
+        LT_LOG("lt_reboot() reboot into STARTUP               %s", lt_ret_verbose(lt_reboot(h, LT_MODE_MAINTENANCE)));
     }
 
     // Check again mode
     LT_LOG_LINE();
-    LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(&h)));
-    if (h.l2.mode == LT_MODE_MAINTENANCE) {
+    LT_LOG("lt_update_mode()                              %s", lt_ret_verbose(lt_update_mode(h)));
+    if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
         // Chip must be in startup mode now.
         // Get bootloader version by issuing "Read riscv fw version" request while chip is in maintenance:
         LT_LOG("  lt_get_info_riscv_fw_ver()                  %s",
-               lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+               lt_ret_verbose(lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
         LT_LOG("  Bootloader version: %d.%d.%d    (+ unused %d)", fw_ver[3] & 0x7f, fw_ver[2], fw_ver[1], fw_ver[0]);
 
-        print_headers(&h);
+        print_headers(h);
 
         if (1) {
             // Erase firmware bank
             LT_LOG("lt_mutable_fw_erase()                    %s",
-                   lt_ret_verbose(lt_mutable_fw_erase(&h, FW_UPDATE_BANK)));
+                   lt_ret_verbose(lt_mutable_fw_erase(h, FW_UPDATE_BANK)));
             // Update firmware bank
             LT_LOG("lt_mutable_fw_update()                   %s",
-                   lt_ret_verbose(lt_mutable_fw_update(&h, FW_UPDATE_DATA, sizeof(fw_CPU_0_3_1), FW_UPDATE_BANK)));
+                   lt_ret_verbose(lt_mutable_fw_update(h, FW_UPDATE_DATA, sizeof(fw_CPU_0_3_1), FW_UPDATE_BANK)));
 
-            print_headers(&h);
+            print_headers(h);
         }
         else {
             LT_LOG("Update disabled");
@@ -157,12 +150,12 @@ int lt_ex_fw_update(void)
         return -1;
     }
     LT_LOG_LINE();
-    LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_APP)));
+    LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(h, LT_MODE_APP)));
     LT_LOG("lt_get_info_riscv_fw_ver()                    %s",
-           lt_ret_verbose(lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
+           lt_ret_verbose(lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE)));
     LT_LOG("riscv_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
     LT_LOG("lt_get_info_spect_fw_ver()                    %s",
-           lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
+           lt_ret_verbose(lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
     LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
 
     return 0;
