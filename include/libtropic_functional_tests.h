@@ -207,8 +207,10 @@ void lt_test_rev_handshake_req(lt_handle_t *h);
  *    time after reaching 0 -- should fail with UPDATE_ERROR.
  * 3. Try to set all counters with known value and check that no counter was assigned
  *    wrong value.
+ * 
+ * @param h     Device's handle
  */
-void lt_test_rev_mcounter(void);
+void lt_test_rev_mcounter(lt_handle_t *h);
 
 /**
  * @brief Read Certificate Store with 4 certificates and print it to log.

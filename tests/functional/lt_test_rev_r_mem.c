@@ -16,7 +16,7 @@
 #include "string.h"
 
 // Shared with cleanup function
-lt_handle_t *lt_h;
+lt_handle_t *g_h;
 
 lt_ret_t lt_test_rev_r_mem_cleanup(void)
 {
@@ -25,7 +25,7 @@ lt_ret_t lt_test_rev_r_mem_cleanup(void)
     uint16_t read_data_size;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(lt_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
@@ -35,14 +35,14 @@ lt_ret_t lt_test_rev_r_mem_cleanup(void)
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Erasing slot #%" PRIu16 "...", i);
-        ret = lt_r_mem_data_erase(lt_h, i);
+        ret = lt_r_mem_data_erase(g_h, i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to erase slot.");
             return ret;
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
-        ret = lt_r_mem_data_read(lt_h, i, r_mem_data, &read_data_size);
+        ret = lt_r_mem_data_read(g_h, i, r_mem_data, &read_data_size);
         if (LT_L3_R_MEM_DATA_READ_SLOT_EMPTY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_R_MEM_DATA_READ_SLOT_EMPTY.");
             return ret;
@@ -56,14 +56,14 @@ lt_ret_t lt_test_rev_r_mem_cleanup(void)
     }
 
     LT_LOG_INFO("Aborting secure session");
-    ret = lt_session_abort(lt_h);
+    ret = lt_session_abort(g_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(lt_h);
+    ret = lt_deinit(g_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
@@ -77,6 +77,9 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_rev_r_mem()");
     LT_LOG_INFO("----------------------------------------------");
+
+    // Making the handle accessible to the cleanup function.
+    g_h = h;
 
     uint8_t r_mem_data[R_MEM_DATA_SIZE_MAX], write_data[R_MEM_DATA_SIZE_MAX], zeros[R_MEM_DATA_SIZE_MAX] = {0};
     uint16_t read_data_size;

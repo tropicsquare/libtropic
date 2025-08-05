@@ -16,7 +16,7 @@
 #include "string.h"
 
 // Shared with cleanup function.
-lt_handle_t h;
+lt_handle_t *g_h;
 
 // The monotonic counter does not have any default value defined in the datasheet.
 // Here we have chosen to initialize them to zero.
@@ -25,7 +25,7 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Starting secure session with slot %d.", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
@@ -33,7 +33,7 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
 
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Initializing monotonic counter %d to zero...", i);
-        ret = lt_mcounter_init(&h, i, 0);
+        ret = lt_mcounter_init(g_h, i, 0);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to set counter %d to zero.", i);
             return ret;
@@ -41,14 +41,14 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
     }
 
     LT_LOG_INFO("Aborting secure session");
-    ret = lt_session_abort(&h);
+    ret = lt_session_abort(g_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(&h);
+    ret = lt_deinit(g_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
@@ -57,23 +57,20 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
     return LT_OK;
 }
 
-void lt_test_rev_mcounter(void)
+void lt_test_rev_mcounter(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_rev_mcounter()");
     LT_LOG_INFO("----------------------------------------------");
 
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
+    // Making the handle accessible to the cleanup function.
+    g_h = h;
 
     LT_LOG_INFO("Initializing handle.");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d.", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     lt_test_cleanup_function = &lt_test_rev_mcounter_cleanup;
@@ -89,21 +86,21 @@ void lt_test_rev_mcounter(void)
         LT_LOG_INFO("Generating random init value...");
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
-        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
+        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, init_val));
 
         LT_LOG_INFO("Initializing monotonic counter %d again (should be ok)...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
+        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, init_val));
 
         LT_LOG_INFO("Trying a few decrements...");
         current_decrements = 0;
         for (int expected_val = init_val; expected_val > 0 && current_decrements < max_decrements; expected_val--) {
             LT_LOG_INFO("Reading mcounter %d value...", i);
-            LT_TEST_ASSERT(LT_OK, lt_mcounter_get(&h, i, &mcounter_val));
+            LT_TEST_ASSERT(LT_OK, lt_mcounter_get(h, i, &mcounter_val));
             LT_LOG_INFO("Verifying mcounter value, should be: %d", expected_val);
             LT_TEST_ASSERT(expected_val, mcounter_val);
 
             LT_LOG_INFO("Decrementing...");
-            LT_TEST_ASSERT(LT_OK, lt_mcounter_update(&h, i));
+            LT_TEST_ASSERT(LT_OK, lt_mcounter_update(h, i));
             current_decrements++;
         }
     }
@@ -116,22 +113,22 @@ void lt_test_rev_mcounter(void)
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
         init_val %= 100;
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
-        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
+        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, init_val));
 
         LT_LOG_INFO("Decrementing to zero...");
         for (int expected_val = init_val; expected_val > 0; expected_val--) {
             LT_LOG_INFO("Reading mcounter %d value...", i);
-            LT_TEST_ASSERT(LT_OK, lt_mcounter_get(&h, i, &mcounter_val));
+            LT_TEST_ASSERT(LT_OK, lt_mcounter_get(h, i, &mcounter_val));
             LT_LOG_INFO("Verifying mcounter value, should be: %d", expected_val);
             LT_TEST_ASSERT(expected_val, mcounter_val);
 
             LT_LOG_INFO("Decrementing...");
-            LT_TEST_ASSERT(LT_OK, lt_mcounter_update(&h, i));
+            LT_TEST_ASSERT(LT_OK, lt_mcounter_update(h, i));
             current_decrements++;
         }
 
         LT_LOG_INFO("Try to decrement when mcounter is 0 (should fail)...");
-        LT_TEST_ASSERT(LT_L3_MCOUNTER_UPDATE_UPDATE_ERR, lt_mcounter_update(&h, i));
+        LT_TEST_ASSERT(LT_L3_MCOUNTER_UPDATE_UPDATE_ERR, lt_mcounter_update(h, i));
     }
     LT_LOG_LINE();
 
@@ -141,11 +138,11 @@ void lt_test_rev_mcounter(void)
     LT_LOG_INFO("Starting assignment test...");
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Initializing monotonic counter %d with %d...", i, i);
-        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, i));
+        LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, i));
     }
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Reading mcounter %d value...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mcounter_get(&h, i, &mcounter_val));
+        LT_TEST_ASSERT(LT_OK, lt_mcounter_get(h, i, &mcounter_val));
         LT_LOG_INFO("Verifying mcounter value, should be: %d", i);
         LT_TEST_ASSERT(i, mcounter_val);
     }

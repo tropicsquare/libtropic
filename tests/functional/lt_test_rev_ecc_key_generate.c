@@ -15,7 +15,7 @@
 #include "string.h"
 
 // Shared with cleanup function
-lt_handle_t *lt_h;
+lt_handle_t *g_h;
 
 lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
 {
@@ -25,7 +25,7 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     ecc_key_origin_t origin;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(lt_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
@@ -35,14 +35,14 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Erasing slot #%" PRIu8, i);
-        ret = lt_ecc_key_erase(lt_h, i);
+        ret = lt_ecc_key_erase(g_h, i);
         if (LT_OK != ret) {
             LT_LOG_ERROR("Failed to erase slot.");
             return ret;
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
-        ret = lt_ecc_key_read(lt_h, i, read_pub_key, &curve, &origin);
+        ret = lt_ecc_key_read(g_h, i, read_pub_key, &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
             return ret;
@@ -50,14 +50,14 @@ lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
     }
 
     LT_LOG_INFO("Aborting secure session");
-    ret = lt_session_abort(lt_h);
+    ret = lt_session_abort(g_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(lt_h);
+    ret = lt_deinit(g_h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
@@ -72,8 +72,8 @@ void lt_test_rev_ecc_key_generate(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_ecc_key_generate()");
     LT_LOG_INFO("----------------------------------------------");
 
-    // Making the handle accessible to cleanup.
-    lt_h = h;
+    // Making the handle accessible to the cleanup function.
+    g_h = h;
 
     uint8_t read_pub_key[64];
     lt_ecc_curve_type_t curve;

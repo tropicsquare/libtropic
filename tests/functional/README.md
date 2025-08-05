@@ -57,13 +57,13 @@ Change the lines with `TODO`.
 
 // Shared with cleanup function.
 // TODO: CAN BE REMOVED IF CLEANUP NOT USED.
-lt_handle_t *lt_h;
+lt_handle_t *g_h;
 
 // TODO: REMOVE OR EDIT
 lt_ret_t lt_new_test_cleanup(void)
 {
     LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(lt_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session, ret=%s", lt_ret_verbose(ret));
         return ret;
@@ -82,7 +82,7 @@ void lt_new_test(lt_handle_t *h)
 
     // TODO/NOTE: If you use cleanup, do not forget to assign handle to a globally available pointer,
     // so you can use the handle in the cleanup function.
-    lt_h = h;
+    g_h = h;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));

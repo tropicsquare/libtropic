@@ -18,7 +18,7 @@
 
 #define REBOOT_WAIT_ATTEMPTS 10
 
-lt_handle_t *lt_h;
+lt_handle_t *g_h;
 enum lt_tropic01_mode { LT_BOOTLOADER_MODE, LT_NORMAL_MODE, LT_BUSY };
 
 enum lt_tropic01_mode check_current_mode(void)
@@ -28,13 +28,13 @@ enum lt_tropic01_mode check_current_mode(void)
 
     LT_LOG_INFO("Retrieving SPECT FW version...");
     for (int i = 0; i < REBOOT_WAIT_ATTEMPTS; i++) {
-        ret = lt_get_info_spect_fw_ver(lt_h, spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(g_h, spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (LT_OK == ret) {
             break;
         }
         else if (LT_L1_CHIP_BUSY == ret) {
             LT_LOG_INFO("Chip busy, waiting and trying again...");
-            lt_l1_delay(&lt_h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+            lt_l1_delay(&g_h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
         }
     }
 
@@ -61,7 +61,7 @@ lt_ret_t lt_test_rev_startup_req_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Rebooting to the normal mode...");
-    ret = lt_reboot(lt_h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT);
+    ret = lt_reboot(g_h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the normal mode!");
         return ret;
@@ -82,7 +82,8 @@ void lt_test_rev_startup_req(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_startup_req()");
     LT_LOG_INFO("----------------------------------");
 
-    lt_h = h;
+    // Making the handle accessible to the cleanup function.
+    g_h = h;
 
     LT_LOG_INFO("Preparing handle.");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
