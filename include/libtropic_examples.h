@@ -26,6 +26,8 @@ extern uint8_t sh3pub[];
 /**
  * @brief Establishes Secure Session and executes Ping L3 command.
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ * 
+ * @param  h     Device's handle
  * @return -1 on fail, 0 otherwise
  */
 int lt_ex_hello_world(lt_handle_t *h);
@@ -35,6 +37,8 @@ int lt_ex_hello_world(lt_handle_t *h);
  *
  * Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
  * TODO explain more
+ * 
+ * @param  h     Device's handle
  * @return int
  */
 
@@ -52,6 +56,8 @@ int lt_ex_hello_world(lt_handle_t *h);
  *
  * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on
  * PCB.
+ * 
+ * @param  h     Device's handle
  * @return -1 on fail, 0 otherwise
  */
 int lt_ex_hello_world_separate_API(lt_handle_t *h);
@@ -72,6 +78,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h);
  * @warning We strongly recommend running this example against the TROPIC01 model only, as it does irreversible
  operations!
  *
+ * @param  h     Device's handle
  * @return 0 on success, -1 otherwise
  */
 int lt_ex_hardware_wallet(lt_handle_t *h);
@@ -79,6 +86,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h);
 /**
  * @brief Example function, shows how to update TROPIC01's internal firmwares
  *
+ * @param  h     Device's handle
  * @return int
  */
 int lt_ex_fw_update(lt_handle_t *h);
@@ -99,6 +107,7 @@ int lt_ex_fw_update(lt_handle_t *h);
  *
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
+ * @param  h     Device's handle
  * @return 0 on success, -1 otherwise
  */
 int lt_ex_macandd(lt_handle_t *h);
