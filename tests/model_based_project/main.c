@@ -5,19 +5,31 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <arpa/inet.h>
+#include <string.h>
+#include <time.h>
+
 #include "libtropic_examples.h"
 #include "libtropic_functional_tests.h"
-#include "string.h"
+#include "libtropic_logging.h"
+#include "libtropic_port.h"
 
 int main(void)
 {
     lt_handle_t __lt_handle__;
-
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     __lt_handle__.l3.buff = l3_buffer;
     __lt_handle__.l3.buff_len = sizeof(l3_buffer);
 #endif
+    // Initialize device before handing handle to the test.
+    lt_dev_unix_tcp_t device;
+    device.addr = inet_addr("127.0.0.1");
+    device.port = 28992;
+    device.rng_seed = (unsigned int)time(NULL);
+    __lt_handle__.l2.device = &device;
+
+    LT_LOG_INFO("RNG initialized with seed=%u\n", device.rng_seed);
 
 #ifdef LT_BUILD_TESTS
 #include "lt_test_registry.c.inc"

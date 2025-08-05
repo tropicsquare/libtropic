@@ -20,9 +20,6 @@
 #include "libtropic_port.h"
 #include "time.h"
 
-#define TCP_ADDR "127.0.0.1"
-#define TCP_PORT 28992
-
 // #define LIBT_DEBUG
 #ifdef LIBT_DEBUG
 #define LOG_OUT(f_, ...) printf("[TCP] " f_, ##__VA_ARGS__)
@@ -77,7 +74,7 @@ static buffer_s tx_buffer;
 // server socket
 static int socket_fd = -1;
 
-static int lt_connect_to_server()
+static int lt_connect_to_server(lt_dev_unix_tcp_t *device)
 {
     struct sockaddr_in server;
 
@@ -92,11 +89,11 @@ static int lt_connect_to_server()
     // Server information
     memset(&server, 0, sizeof(server));
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr(TCP_ADDR);
-    server.sin_port = htons(TCP_PORT);
+    server.sin_addr.s_addr = device->addr;
+    server.sin_port = htons(device->port);
 
     // Connect to the server
-    LOG_OUT("Connecting to %s:%d.\n", TCP_ADDR, TCP_PORT);
+    LOG_OUT("Connecting to %s:%d.\n", inet_ntoa(server.sin_addr), server.sin_port);
     if (connect(socket_fd, (struct sockaddr *)(&server), sizeof(server)) < 0) {
         LOG_ERR("Could not connect: %s (%d).\n", strerror(errno), errno);
         return 1;
@@ -235,12 +232,12 @@ static int lt_communicate(int *tx_payload_length_ptr, int *rx_payload_length_ptr
     return 0;
 }
 
-static int server_connect(void)
+static int server_connect(lt_dev_unix_tcp_t *device)
 {
     bzero(tx_buffer.BUFFER, MAX_BUFFER_LEN);
     bzero(rx_buffer.BUFFER, MAX_BUFFER_LEN);
 
-    int ret = lt_connect_to_server();
+    int ret = lt_connect_to_server(device);
     if (ret != 0) {
         return ret;
     }
@@ -255,15 +252,14 @@ static int server_disconnect(void)
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
-    int ret = server_connect();
+    lt_dev_unix_tcp_t *device = (lt_dev_unix_tcp_t *)(s2->device);
+
+    int ret = server_connect(device);
     if (ret != 0) {
         return LT_FAIL;
     }
 
-    srand(time(0));
-
-    // lt_reset_target();
+    srand(device->rng_seed);
 
     return LT_OK;
 }
