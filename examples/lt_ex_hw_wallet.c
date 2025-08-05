@@ -309,7 +309,7 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     LT_LOG_INFO("Creating an example config from the read R config...");
@@ -330,7 +330,7 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     // Write pairing keys into slots 1,2,3
