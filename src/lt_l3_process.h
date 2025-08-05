@@ -38,6 +38,10 @@
 #define L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
 /** @brief The writing operation limit is reached for the slot. */
 #define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
+/** @brief Failure to update the specified Monotonic Counter. The Monotonic Counter is already at 0. */
+#define L3_MCOUNTER_UPDATE_ERROR 0x13
+/** @brief The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
+#define L3_MCOUNTER_COUNTER_INVALID 0x14
 
 /**
  * @brief Encrypt content of l3 buffer and fill it with cyphertext ready to be sent to TROPIC01.

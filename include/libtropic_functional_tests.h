@@ -185,6 +185,18 @@ void lt_test_rev_erase_r_config(void);
 void lt_test_rev_handshake_req(void);
 
 /**
+ * @brief Test monotonic counter API - lt_mcounter_init, lt_mcounter_get, lt_mcounter_update.
+ *
+ * Test steps:
+ * 1. Try to init each counter with random value twice, then try a few decrements.
+ * 2. Set each of the counters to random small value, then decrement to zero. Try decrement one more
+ *    time after reaching 0 -- should fail with UPDATE_ERROR.
+ * 3. Try to set all counters with known value and check that no counter was assigned
+ *    wrong value.
+ */
+void lt_test_rev_mcounter(void);
+
+/**
  * @brief Read Certificate Store with 4 certificates and print it to log.
  *
  * Test steps:
