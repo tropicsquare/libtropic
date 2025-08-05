@@ -6,6 +6,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -22,10 +23,10 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
 {
     lt_ret_t ret;
 
-    LT_LOG_INFO("Starting secure session with slot %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting secure session with slot %d.", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to establish secure session, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
     }
 
@@ -33,7 +34,7 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
         LT_LOG_INFO("Initializing monotonic counter %d to zero...", i);
         ret = lt_mcounter_init(&h, i, 0);
         if (LT_OK != ret) {
-            LT_LOG_ERROR("Failed to set counter %d to zero, ret=%s", i, lt_ret_verbose(ret));
+            LT_LOG_ERROR("Failed to set counter %d to zero.", i);
             return ret;
         }
     }
@@ -41,14 +42,14 @@ lt_ret_t lt_test_rev_mcounter_cleanup(void)
     LT_LOG_INFO("Aborting secure session");
     ret = lt_session_abort(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to abort secure session, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to abort secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Deinitializing handle");
     ret = lt_deinit(&h);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to deinitialize handle.");
         return ret;
     }
 
@@ -67,10 +68,10 @@ void lt_test_rev_mcounter(void)
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
 
-    LT_LOG_INFO("Initializing handle");
+    LT_LOG_INFO("Initializing handle.");
     LT_TEST_ASSERT(LT_OK, lt_init(&h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d.", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
@@ -83,10 +84,10 @@ void lt_test_rev_mcounter(void)
 
     // Basic test: init to random value and try to decrement a few times.
     LT_LOG_INFO("Starting basic test...");
-    for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
+    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random init value...");
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
-        LT_LOG_INFO("Initializing monotonic counter %d with %u...", i, init_val);
+        LT_LOG_INFO("Initializing monotonic counter %d with " PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
 
         LT_LOG_INFO("Initializing monotonic counter %d again (should be ok)...", i);
@@ -113,7 +114,7 @@ void lt_test_rev_mcounter(void)
         LT_LOG_INFO("Generating random small init value...");
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
         init_val %= 100;
-        LT_LOG_INFO("Initializing monotonic counter %d with %u...", i, init_val);
+        LT_LOG_INFO("Initializing monotonic counter %d with " PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
 
         LT_LOG_INFO("Decrementing to zero...");
@@ -138,7 +139,7 @@ void lt_test_rev_mcounter(void)
     // that there are no indexing problems.
     LT_LOG_INFO("Starting assignment test...");
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
-        LT_LOG_INFO("Initializing monotonic counter %d with %u...", i, i);
+        LT_LOG_INFO("Initializing monotonic counter %d with %d...", i, i);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, i));
     }
     for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
