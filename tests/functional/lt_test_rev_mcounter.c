@@ -7,6 +7,7 @@
  */
 
 #include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -87,7 +88,7 @@ void lt_test_rev_mcounter(void)
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random init value...");
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
-        LT_LOG_INFO("Initializing monotonic counter %d with " PRIu32 "...", i, init_val);
+        LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
 
         LT_LOG_INFO("Initializing monotonic counter %d again (should be ok)...", i);
@@ -114,7 +115,7 @@ void lt_test_rev_mcounter(void)
         LT_LOG_INFO("Generating random small init value...");
         LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
         init_val %= 100;
-        LT_LOG_INFO("Initializing monotonic counter %d with " PRIu32 "...", i, init_val);
+        LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, init_val));
 
         LT_LOG_INFO("Decrementing to zero...");
@@ -142,7 +143,7 @@ void lt_test_rev_mcounter(void)
         LT_LOG_INFO("Initializing monotonic counter %d with %d...", i, i);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(&h, i, i));
     }
-    for (int i = MCOUNTER_INDEX_0; i < MCOUNTER_INDEX_15; i++) {
+    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Reading mcounter %d value...", i);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_get(&h, i, &mcounter_val));
         LT_LOG_INFO("Verifying mcounter value, should be: %d", i);
