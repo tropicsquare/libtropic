@@ -27,24 +27,12 @@
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
 
-typedef struct {
-    int fd;
-    int gpiofd;
-    struct gpio_v2_line_request gpioreq;
-    lt_l2_state_t *s2;
-    uint32_t mode;
-} state_s;
-
-static state_s s = {};
-
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     uint32_t request_mode;
     uint8_t spiBPW = 8;
 
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
-
-    s.s2 = s2;
 
     srand(device->rng_seed);
 
@@ -54,40 +42,40 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     LT_LOG_DEBUG("GPIO device: %s", device->gpio_dev);
     LT_LOG_DEBUG("GPIO CS pin: %d", device->gpio_cs_num);
 
-    s.mode = SPI_MODE_0;
-    s.fd = open(device->spi_dev, O_RDWR);
-    if (s.fd < 0) {
+    device->mode = SPI_MODE_0;
+    device->fd = open(device->spi_dev, O_RDWR);
+    if (device->fd < 0) {
         LT_LOG_ERROR("can't open device");
         return LT_FAIL;
     }
 
-    request_mode = s.mode;
-    if (ioctl(s.fd, SPI_IOC_WR_MODE32, &s.mode) < 0) {
+    request_mode = device->mode;
+    if (ioctl(device->fd, SPI_IOC_WR_MODE32, &device->mode) < 0) {
         LT_LOG_ERROR("can't set spi mode");
         return LT_FAIL;
     }
     /* RD is read what mode the device actually is in */
-    if (ioctl(s.fd, SPI_IOC_RD_MODE32, &s.mode) < 0) {
+    if (ioctl(device->fd, SPI_IOC_RD_MODE32, &device->mode) < 0) {
         LT_LOG_ERROR("can't get spi mode");
         return LT_FAIL;
     }
-    if (request_mode != s.mode)
+    if (request_mode != device->mode)
         LT_LOG_ERROR("WARNING device does not support requested mode 0x%" PRIx32 "\n", request_mode);
 
-    if (ioctl(s.fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0) {
+    if (ioctl(device->fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0) {
         LT_LOG_ERROR("can't set max speed Hz");
         return LT_FAIL;
     }
 
     // CS is controlled separately
-    s.gpiofd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
-    if (s.gpiofd < 0) {
+    device->gpiofd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
+    if (device->gpiofd < 0) {
         LT_LOG_ERROR("can't open GPIO device");
         return LT_FAIL;
     }
 
     struct gpiochip_info info;
-    if (ioctl(s.gpiofd, GPIO_GET_CHIPINFO_IOCTL, &info) < 0) {
+    if (ioctl(device->gpiofd, GPIO_GET_CHIPINFO_IOCTL, &info) < 0) {
         LT_LOG_ERROR("GPIO_GET_CHIPINFO_IOCTL");
         return LT_FAIL;
     }
@@ -97,7 +85,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     LT_LOG_DEBUG("[+] info.label = \"%s\"", info.label);
     LT_LOG_DEBUG("[+] info.lines = \"%u\"", info.lines);
 
-    memset(&s.gpioreq, 0, sizeof(s.gpioreq));
+    memset(&device->gpioreq, 0, sizeof(s.gpioreq));
     s.gpioreq.offsets[0] = device->gpio_cs_num;
     s.gpioreq.num_lines = 1;
     s.gpioreq.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
@@ -105,7 +93,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     s.gpioreq.config.attrs[0].attr.id = GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES;
     s.gpioreq.config.attrs[0].mask = 1;
     s.gpioreq.config.attrs[0].attr.values = 1;  // initial value = 1
-    if (ioctl(s.gpiofd, GPIO_V2_GET_LINE_IOCTL, &s.gpioreq) < 0) {
+    if (ioctl(device->gpiofd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq) < 0) {
         LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL\n");
         LT_LOG_ERROR("Errno: %s\n", strerror(errno));
         return LT_FAIL;
@@ -116,20 +104,18 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
-    close(s.gpiofd);
-    close(s.fd);
+    close(device->gpiofd);
+    close(device->fd);
     return LT_OK;
 }
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
     values.bits = 0;
-    if (ioctl(s.gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
+    if (ioctl(device->gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
         LT_LOG_ERROR("GPIO_V2_LINE_SET_VALUES_IOCTL");
         return LT_FAIL;
     }
@@ -138,12 +124,11 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
     values.bits = 1;
-    if (ioctl(s.gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
+    if (ioctl(device->gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
         LT_LOG_ERROR("GPIO_V2_LINE_SET_VALUES_IOCTL");
         return LT_FAIL;
     }

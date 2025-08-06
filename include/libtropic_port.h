@@ -41,6 +41,11 @@ typedef struct {
     char gpio_dev[DEVICE_PATH_MAX_LEN];
     int gpio_cs_num;
     unsigned int rng_seed;
+
+    int fd;
+    int gpio_fd;
+    struct gpio_v2_line_request gpioreq;
+    uint32_t mode;
 } lt_dev_unix_spi_t;
 
 typedef struct lt_dev_unix_tcp_t {
