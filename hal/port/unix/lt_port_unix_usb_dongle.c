@@ -54,6 +54,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 {
     lt_uart_def_unix_t *device = (lt_uart_def_unix_t *)h->device;
 
+    srand(device->rng_seed);
+
     // serialport init
     fd = open(device->dev_path, O_RDWR | O_NOCTTY);
     if (fd == -1) {

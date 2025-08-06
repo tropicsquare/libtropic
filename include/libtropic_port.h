@@ -31,6 +31,7 @@
 typedef struct {
     char dev_path[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
     uint32_t baud_rate;             // = 115200;
+    unsigned int rng_seed;
 } lt_uart_def_unix_t;
 
 #define DEVICE_PATH_MAX_LEN 256
