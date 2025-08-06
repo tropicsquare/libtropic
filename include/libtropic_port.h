@@ -16,24 +16,12 @@
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
-
-#include <netinet/in.h>
-
 #include "libtropic_common.h"
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// DEVICE STRUCTURES
-//
-// Here are device structures specific for each port. The structures can contain
-// arbitrary content required for port: configuration data, runtime data etc.
-///////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @brief Max length of a path to a device in the device tree.
+ */
 #define DEVICE_PATH_MAX_LEN 256
-
-typedef struct lt_dev_unix_tcp_t {
-    in_addr_t addr;
-    in_port_t port;
-    unsigned int rng_seed;
-} lt_dev_unix_tcp_t;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMON HAL FUNCTIONS

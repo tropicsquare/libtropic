@@ -15,10 +15,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
-#include "time.h"
+#include "lt_port_unix_tcp.h"
 
 // #define LIBT_DEBUG
 #ifdef LIBT_DEBUG
