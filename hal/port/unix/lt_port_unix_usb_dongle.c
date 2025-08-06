@@ -52,7 +52,7 @@ ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 
 lt_ret_t lt_port_init(lt_l2_state_t *h)
 {
-    lt_uart_def_unix_t *device = (lt_uart_def_unix_t *)h->device;
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
 
     srand(device->rng_seed);
 
