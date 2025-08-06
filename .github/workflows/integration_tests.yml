@@ -50,7 +50,7 @@ jobs:
 
       - name: Execute tests with CTest
         run: |
-            cd tests/model_based_project/build/
+            cd tropic01_model/build/
             ctest -V
       
       - name: Upload run logs
@@ -58,4 +58,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: run_logs
-          path: tests/model_based_project/build/run_logs/
+          path: tropic01_model/build/run_logs/
