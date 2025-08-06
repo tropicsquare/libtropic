@@ -106,7 +106,6 @@ if(LT_BUILD_TESTS)
     # Set some paths
     set(LAB_BATCH_PKG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${PATH_TO_LIBTROPIC}/provisioning_data/${DEFAULT_LAB_BATCH_PKG_DIR}")
     set(MODEL_CFG_PATH "${CMAKE_CURRENT_BINARY_DIR}/model_cfg.yml")
-    set(MODEL_LOG_CFG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/model_logging_cfg.yml")
     set(RUN_LOGS_DIR "${CMAKE_CURRENT_BINARY_DIR}/run_logs/")
 
     # Create configuration for the model
@@ -153,7 +152,6 @@ if(LT_BUILD_TESTS)
                 COMMAND python3 -m model_test_runner
                         -t ${CMAKE_CURRENT_BINARY_DIR}/${exe_name}
                         -c ${MODEL_CFG_PATH}
-                        -l ${MODEL_LOG_CFG_PATH}
                         -o ${RUN_LOGS_DIR}
         )
 
