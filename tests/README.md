@@ -1,10 +1,9 @@
 # Testing
 There are two types of tests used:
-1. **functional tests** (`functional/`) - this folder contains C code for functional tests used internally in Topic Square,
+1. **functional tests** (`functional/`) - this folder contains C code for functional tests used internally in Tropic Square, which test libtropic core API,
 2. **unit tests** (`unit/`) - basic checking of function arguments and return values using Ceedling, do not test correct behavior.
 
-Moreover, the `model_based_project/` directory contains a C project which is configured to compile libtropic with TCP transport layer
-and the functional tests (or examples) can be executed against the Python model of TROPIC01 (see [ts-tvl](https://github.com/tropicsquare/ts-tvl)).
-Testing against model simplifies development, because no real chip is needed and irreversible operation can be safely tested. Testing aganist
-model is also utilized in a CI job, triggered for example on pull requests.
+In this repository, tests are run only against the TROPIC01 model - refer to [this](../tropic01_model/README.md) readme for more information. Testing aganist the TROPIC01 model is also utilized in a CI job, triggered for the `master` and `develop` branches (pushes an pull requests).
+
+We also have other repositories (like [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32)), which implement a port of libtropic to specific platforms and the tests can also be run there.
 
