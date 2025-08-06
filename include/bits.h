@@ -13,8 +13,12 @@
 
 // ## allows token concatenation
 // X = 1 and Y = 10 would return 110
+#ifndef __AC
 #define __AC(X, Y) (X##Y)
+#endif
+#ifndef _AC
 #define _AC(X, Y) __AC(X, Y)
+#endif
 
 #define _U(x) (_AC(x, U))
 #define U(x) (_U(x))
