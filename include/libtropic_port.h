@@ -41,14 +41,6 @@ typedef struct lt_dev_unix_tcp_t {
     unsigned int rng_seed;
 } lt_dev_unix_tcp_t;
 
-typedef struct lt_dev_rpi_wiringpi_t {
-    int gpio_cs_num;
-    int spi_speed_hz;
-    unsigned int rng_seed;
-
-    int fd;
-} lt_dev_rpi_wiringpi_t;
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMON HAL FUNCTIONS
 //
