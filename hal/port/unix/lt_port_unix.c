@@ -31,20 +31,20 @@ typedef struct {
     int fd;
     int gpiofd;
     struct gpio_v2_line_request gpioreq;
-    lt_l2_state_t *h;
+    lt_l2_state_t *s2;
     uint32_t mode;
 } state_s;
 
 static state_s s = {};
 
-lt_ret_t lt_port_init(lt_l2_state_t *h)
+lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     uint32_t request_mode;
     uint8_t spiBPW = 8;
 
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(h->device);
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
 
-    s.h = h;
+    s.s2 = s2;
 
     LT_LOG_DEBUG("Initializing SPI...\n");
     LT_LOG_DEBUG("SPI speed: %d", device->spi_speed);
@@ -112,17 +112,17 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_deinit(lt_l2_state_t *h)
+lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     close(s.gpiofd);
     close(s.fd);
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
+lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
@@ -134,9 +134,9 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
+lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
@@ -148,13 +148,13 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(timeout);
     int ret = 0;
     struct spi_ioc_transfer spi = {
-        .tx_buf = (unsigned long)h->buff + offset,
-        .rx_buf = (unsigned long)h->buff + offset,
+        .tx_buf = (unsigned long)s2->buff + offset,
+        .rx_buf = (unsigned long)s2->buff + offset,
         .len = tx_data_length,
         .delay_usecs = 0,
     };
@@ -164,9 +164,9 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     return LT_FAIL;
 }
 
-lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t wait_time_msecs)
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
 {
-    UNUSED(h);
+    UNUSED(s2);
     LT_LOG_DEBUG("-- Waiting for the target.");
 
     usleep(wait_time_msecs * 1000);
@@ -177,7 +177,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t wait_time_msecs)
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
 {
     for (int i = 0; i < len; i++) {
-        buff[i] = (uint16_t)rand();  // TODO: Why 16_t?
+        buff[i] = (uint32_t)rand();
     }
 
     return LT_OK;
