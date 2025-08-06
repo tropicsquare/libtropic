@@ -29,7 +29,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define UART_DEV_MAX_LEN 32
 typedef struct {
-    char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
+    char dev_path[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
     uint32_t baud_rate;             // = 115200;
 } lt_uart_def_unix_t;
 

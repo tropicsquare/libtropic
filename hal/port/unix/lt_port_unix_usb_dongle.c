@@ -15,8 +15,6 @@
 #define READ_WRITE_DELAY 10
 
 int fd;
-const char device[] = "/dev/ttyACM0";
-uint32_t baud_rate = 115200;
 
 // Writes bytes to the serial port, returning 0 on success and -1 on failure.
 int write_port(int fd, uint8_t *buffer, size_t size)
@@ -54,13 +52,12 @@ ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 
 lt_ret_t lt_port_init(lt_l2_state_t *h)
 {
-    UNUSED(h);
-    // memset(h, 0, sizeof(lt_handle_t));
+    lt_uart_def_unix_t *device = (lt_uart_def_unix_t *)h->device;
 
     // serialport init
-    fd = open(((lt_uart_def_unix_t *)h->device)->device, O_RDWR | O_NOCTTY);
+    fd = open(device->dev_path, O_RDWR | O_NOCTTY);
     if (fd == -1) {
-        perror(((lt_uart_def_unix_t *)h->device)->device);
+        perror(device->dev_path);
         return LT_FAIL;
     }
 
@@ -92,7 +89,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 
     // This code only supports certain standard baud rates. Supporting
     // non-standard baud rates should be possible but takes more work.
-    switch (((lt_uart_def_unix_t *)h->device)->baud_rate) {
+    switch (device->baud_rate) {
         case 4800:
             cfsetospeed(&options, B4800);
             break;
@@ -110,7 +107,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
             break;
         default:
             fprintf(stderr, "warning: baud rate %" PRIu32 " is not supported, using 9600.\n",
-                    ((lt_uart_def_unix_t *)h->device)->baud_rate);
+                    device->baud_rate);
             cfsetospeed(&options, B9600);
             break;
     }
