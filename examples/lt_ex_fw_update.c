@@ -32,56 +32,6 @@
 /** @brief Size of the print buffer. */
 #define PRINT_BUFF_SIZE 196
 
-static void print_headers(lt_handle_t *h)
-{
-    lt_ret_t ret;
-    char print_buff[PRINT_BUFF_SIZE];
-    LT_LOG("  Chip contains following headers:");
-    uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
-    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-
-    ret = lt_print_bytes(header, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("    Header:                                   %s", print_buff);
-
-    ret = lt_print_bytes(header + 10, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("                                              %s", print_buff);
-
-    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-
-    ret = lt_print_bytes(header, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("    Header:                                   %s", print_buff);
-
-    ret = lt_print_bytes(header + 10, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("                                              %s", print_buff);
-
-    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-
-    ret = lt_print_bytes(header, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("    Header:                                   %s", print_buff);
-
-    ret = lt_print_bytes(header + 10, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("                                              %s", print_buff);
-
-    LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
-
-    ret = lt_print_bytes(header, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("    Header:                                   %s", print_buff);
-
-    ret = lt_print_bytes(header + 10, 10, print_buff, PRINT_BUFF_SIZE);
-    if (LT_OK != ret) LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
-    LT_LOG("                                              %s", print_buff);
-}
 
 int lt_ex_fw_update(lt_handle_t *h)
 {

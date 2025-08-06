@@ -156,6 +156,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/
 ###########################################################################
 set(LIBTROPIC_EXAMPLE_LIST
     # lt_ex_fw_update
+    lt_ex_show_chip_id_and_fwver
     lt_ex_hello_world_separate_API
     lt_ex_hello_world
     lt_ex_hardware_wallet
@@ -168,6 +169,7 @@ set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
         # ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_show_chip_id_and_fwver.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c

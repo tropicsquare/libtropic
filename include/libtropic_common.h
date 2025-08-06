@@ -448,7 +448,11 @@ STATIC_ASSERT(
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned fw header */
-#define LT_L2_GET_INFO_FW_HEADER_SIZE 20
+#define LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 20
+#define LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 52
+#define LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK 0
+/** @brief Maximal size of returned fw header */
+#define LT_L2_GET_INFO_FW_HEADER_SIZE LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2
 
 /** @brief BANK ID */
 typedef enum bank_id_t {
@@ -457,6 +461,45 @@ typedef enum bank_id_t {
     FW_BANK_SPECT1 = 17,  // SPECT bank 1.
     FW_BANK_SPECT2 = 18,  // SPECT bank 2
 } bank_id_t;
+
+/**
+ * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
+ * based on bootloader version. This header layout is returned by bootloader version v1.0.1
+ */
+struct header_boot_v1_t {
+    uint8_t type[4];
+    uint8_t version[4];
+    uint8_t size[4];
+    uint8_t git_hash[4];
+    uint8_t hash[4];
+} __attribute__((packed));
+
+/**
+ * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
+ * based on bootloader version. This header layout is returned by bootloader version v1.0.1
+ */
+struct header_boot_v2_t {
+    /** @brief Currently only two types supported:
+     * 1 == FW for RISCV coprocessor.
+     * 2 == FW for SPECT coprocessor */
+    uint16_t type;
+    uint8_t padding;
+    /** @brief This header version. */
+    uint8_t header_version;
+    /** @brief FW version, the same number as *TS_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION* or
+     * *TS_L2_GET_INFO_REQ_OBJECT_ID_SPECT_ROM_ID*. */
+    uint32_t ver;
+    /** @brief FW size in bytes (always aligned to uint32_t). */
+    uint32_t size;
+    /** @brief GIT hash of the underlying FW repository. */
+    uint32_t git_hash;
+    /** @brief Hash for data integrity (SHA256, 32B). */
+    u8 hash[32];
+    /** @brief Other FW version compatibility. In case RISCV FW there may be SPECT version to match. Zero means any
+     * version.*/
+    uint32_t pair_version;
+
+} __attribute__((packed)) __attribute__((aligned(4)));
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Pairing key indexes corresponds to S_HiPub */
