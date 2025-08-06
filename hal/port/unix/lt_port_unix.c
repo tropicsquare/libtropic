@@ -69,14 +69,14 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     }
 
     // CS is controlled separately
-    device->gpiofd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
-    if (device->gpiofd < 0) {
+    device->gpio_fd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
+    if (device->gpio_fd < 0) {
         LT_LOG_ERROR("can't open GPIO device");
         return LT_FAIL;
     }
 
     struct gpiochip_info info;
-    if (ioctl(device->gpiofd, GPIO_GET_CHIPINFO_IOCTL, &info) < 0) {
+    if (ioctl(device->gpio_fd, GPIO_GET_CHIPINFO_IOCTL, &info) < 0) {
         LT_LOG_ERROR("GPIO_GET_CHIPINFO_IOCTL");
         return LT_FAIL;
     }
@@ -94,7 +94,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     s.gpioreq.config.attrs[0].attr.id = GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES;
     s.gpioreq.config.attrs[0].mask = 1;
     s.gpioreq.config.attrs[0].attr.values = 1;  // initial value = 1
-    if (ioctl(device->gpiofd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq) < 0) {
+    if (ioctl(device->gpio_fd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq) < 0) {
         LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL\n");
         LT_LOG_ERROR("Errno: %s\n", strerror(errno));
         return LT_FAIL;
@@ -105,7 +105,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    close(device->gpiofd);
+    close(device->gpio_fd);
     close(device->fd);
     return LT_OK;
 }
