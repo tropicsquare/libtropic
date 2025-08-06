@@ -108,7 +108,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
             cfsetospeed(&options, B115200);
             break;
         default:
-            LT_LOG_WARNING(stderr, "Baud rate %" PRIu32 " is not supported, using 9600.\n",
+            LT_LOG_WARN(stderr, "Baud rate %" PRIu32 " is not supported, using 9600.\n",
                     device->baud_rate);
             cfsetospeed(&options, B9600);
             break;
