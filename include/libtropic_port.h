@@ -27,26 +27,13 @@
 // Here are device structures specific for each port. The structures can contain
 // arbitrary content required for port: configuration data, runtime data etc.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+#define DEVICE_PATH_MAX_LEN 256
 #define UART_DEV_MAX_LEN 32
 typedef struct {
     char dev_path[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
     uint32_t baud_rate;             // = 115200;
     unsigned int rng_seed;
 } lt_dev_unix_uart_t;
-
-#define DEVICE_PATH_MAX_LEN 256
-typedef struct {
-    int spi_speed;
-    char spi_dev[DEVICE_PATH_MAX_LEN];
-    char gpio_dev[DEVICE_PATH_MAX_LEN];
-    int gpio_cs_num;
-    unsigned int rng_seed;
-
-    int fd;
-    int gpio_fd;
-    struct gpio_v2_line_request gpioreq;
-    uint32_t mode;
-} lt_dev_unix_spi_t;
 
 typedef struct lt_dev_unix_tcp_t {
     in_addr_t addr;

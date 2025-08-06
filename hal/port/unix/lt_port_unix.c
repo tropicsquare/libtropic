@@ -26,6 +26,7 @@
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
+#include "lt_port_unix.h"
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
