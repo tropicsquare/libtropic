@@ -55,7 +55,7 @@ jobs:
       - name: Execute tests with CTest
         run: |
             cd tests/model_based_project/build/
-            ctest -V -E lt_test_rev_startup_req
+            ctest -V
       
       - name: Upload run logs
         if: always()
