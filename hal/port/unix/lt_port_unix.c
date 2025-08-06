@@ -86,14 +86,14 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     LT_LOG_DEBUG("[+] info.label = \"%s\"", info.label);
     LT_LOG_DEBUG("[+] info.lines = \"%u\"", info.lines);
 
-    memset(&device->gpioreq, 0, sizeof(s.gpioreq));
-    s.gpioreq.offsets[0] = device->gpio_cs_num;
-    s.gpioreq.num_lines = 1;
-    s.gpioreq.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
-    s.gpioreq.config.num_attrs = 1;
-    s.gpioreq.config.attrs[0].attr.id = GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES;
-    s.gpioreq.config.attrs[0].mask = 1;
-    s.gpioreq.config.attrs[0].attr.values = 1;  // initial value = 1
+    memset(&device->gpioreq, 0, sizeof(device->gpioreq));
+    device->gpioreq.offsets[0] = device->gpio_cs_num;
+    device->gpioreq.num_lines = 1;
+    device->gpioreq.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
+    device->gpioreq.config.num_attrs = 1;
+    device->gpioreq.config.attrs[0].attr.id = GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES;
+    device->gpioreq.config.attrs[0].mask = 1;
+    device->gpioreq.config.attrs[0].attr.values = 1;  // initial value = 1
     if (ioctl(device->gpio_fd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq) < 0) {
         LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL\n");
         LT_LOG_ERROR("Errno: %s\n", strerror(errno));
@@ -105,6 +105,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+
     close(device->gpio_fd);
     close(device->fd);
     return LT_OK;
@@ -112,6 +114,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
@@ -125,6 +128,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
@@ -139,6 +143,8 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(timeout);
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    
     int ret = 0;
     struct spi_ioc_transfer spi = {
         .tx_buf = (unsigned long)s2->buff + offset,
@@ -147,7 +153,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         .delay_usecs = 0,
     };
 
-    ret = ioctl(s.fd, SPI_IOC_MESSAGE(1), &spi);
+    ret = ioctl(device->fd, SPI_IOC_MESSAGE(1), &spi);
     if (ret >= 0) return LT_OK;
     return LT_FAIL;
 }
