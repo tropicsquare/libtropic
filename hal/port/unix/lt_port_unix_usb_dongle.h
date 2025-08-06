@@ -12,4 +12,6 @@ typedef struct lt_dev_unix_uart_t {
     char dev_path[DEVICE_PATH_MAX_LEN];
     uint32_t baud_rate;
     unsigned int rng_seed;
+
+    int fd;
 } lt_dev_unix_uart_t;

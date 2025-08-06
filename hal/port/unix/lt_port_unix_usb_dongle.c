@@ -15,8 +15,6 @@
 
 #define READ_WRITE_DELAY 10
 
-int fd;
-
 // Writes bytes to the serial port, returning 0 on success and -1 on failure.
 int write_port(int fd, uint8_t *buffer, size_t size)
 {
@@ -58,24 +56,24 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     srand(device->rng_seed);
 
     // serialport init
-    fd = open(device->dev_path, O_RDWR | O_NOCTTY);
-    if (fd == -1) {
+    device->fd = open(device->dev_path, O_RDWR | O_NOCTTY);
+    if (device->fd == -1) {
         perror(device->dev_path);
         return LT_FAIL;
     }
 
     // Flush away any bytes previously read or written.
-    int result = tcflush(fd, TCIOFLUSH);
+    int result = tcflush(device->fd, TCIOFLUSH);
     if (result) {
         perror("tcflush failed");  // just a warning, not a fatal error
     }
 
     // Get the current configuration of the serial port.
     struct termios options;
-    result = tcgetattr(fd, &options);
+    result = tcgetattr(device->fd, &options);
     if (result) {
         perror("tcgetattr failed");
-        close(fd);
+        close(device->fd);
         return LT_FAIL;
     }
 
@@ -116,10 +114,10 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     }
     cfsetispeed(&options, cfgetospeed(&options));
 
-    result = tcsetattr(fd, TCSANOW, &options);
+    result = tcsetattr(device->fd, TCSANOW, &options);
     if (result) {
         perror("tcsetattr failed");
-        close(fd);
+        close(device->fd);
         return LT_FAIL;
     }
 
@@ -128,8 +126,9 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 {
-    UNUSED(h);
-    close(fd);
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
+
+    close(device->fd);
 
     return LT_OK;
 }
@@ -159,15 +158,15 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
 
     char cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
-    if (write_port(fd, cs_high, 5) != 0) {
+    if (write_port(device->fd, cs_high, 5) != 0) {
         return LT_L1_SPI_ERROR;
     }
 
     uint8_t buff[4];
-    int readed = read_port(fd, buff, 4);
+    int readed = read_port(device->fd, buff, 4);
     if (readed != 4) {
         return LT_L1_SPI_ERROR;
     }
@@ -180,8 +179,10 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
-    UNUSED(h);
+    
     UNUSED(timeout);
+
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
 
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
@@ -196,14 +197,14 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     buffered_chars[tx_data_length * 2] = 'x';
     buffered_chars[tx_data_length * 2 + 1] = '\n';
 
-    int ret = write_port(fd, buffered_chars, (tx_data_length * 2) + 2);
+    int ret = write_port(device->fd, buffered_chars, (tx_data_length * 2) + 2);
     if (ret != 0) {
         return LT_L1_SPI_ERROR;
     }
 
     lt_port_delay(h, READ_WRITE_DELAY);
 
-    int readed = read_port(fd, buffered_chars, (2 * tx_data_length) + 2);
+    int readed = read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2);
     if (readed != ((2 * tx_data_length) + 2)) {
         return LT_L1_SPI_ERROR;
     }
