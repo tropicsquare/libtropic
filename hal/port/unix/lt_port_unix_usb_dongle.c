@@ -1,3 +1,5 @@
+#include "lt_port_unix_usb_dongle.h"
+
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stddef.h>
@@ -10,9 +12,8 @@
 #include <unistd.h>
 
 #include "libtropic_common.h"
-#include "libtropic_port.h"
-#include "lt_port_unix_usb_dongle.h"
 #include "libtropic_logging.h"
+#include "libtropic_port.h"
 
 #define READ_WRITE_DELAY 10
 
@@ -108,8 +109,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
             cfsetospeed(&options, B115200);
             break;
         default:
-            LT_LOG_WARN("Baud rate %" PRIu32 " is not supported, using 9600.\n",
-                    device->baud_rate);
+            LT_LOG_WARN("Baud rate %" PRIu32 " is not supported, using 9600.\n", device->baud_rate);
             cfsetospeed(&options, B9600);
             break;
     }
@@ -180,7 +180,6 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
-    
     UNUSED(timeout);
 
     lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;

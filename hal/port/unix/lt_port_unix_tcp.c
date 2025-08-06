@@ -6,6 +6,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "lt_port_unix_tcp.h"
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <inttypes.h>
@@ -14,12 +16,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
-#include "lt_port_unix_tcp.h"
 
 // #define LIBT_DEBUG
 #ifdef LIBT_DEBUG

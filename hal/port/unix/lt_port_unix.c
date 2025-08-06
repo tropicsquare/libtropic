@@ -144,7 +144,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 {
     UNUSED(timeout);
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
-    
+
     int ret = 0;
     struct spi_ioc_transfer spi = {
         .tx_buf = (unsigned long)s2->buff + offset,

@@ -6,6 +6,7 @@
  */
 
 #include <linux/gpio.h>
+
 #include "libtropic_port.h"
 
 typedef struct lt_dev_unix_uart_t {
