@@ -50,9 +50,9 @@ ssize_t read_port(int fd, uint8_t *buffer, size_t size)
     return received;
 }
 
-lt_ret_t lt_port_init(lt_l2_state_t *h)
+lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
 
     srand(device->rng_seed);
 
@@ -125,18 +125,18 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_deinit(lt_l2_state_t *h)
+lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
 
     close(device->fd);
 
     return LT_OK;
 }
 
-lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t wait_time_msecs)
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
 {
-    UNUSED(h);
+    UNUSED(s2);
     usleep(wait_time_msecs * 1000);
     return LT_OK;
 }
@@ -150,16 +150,16 @@ lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
+lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
     /* CS LOW is handled automatically when SPI transfer is executed */
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
+lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
 
     char cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
     if (write_port(device->fd, cs_high, 5) != 0) {
@@ -178,12 +178,12 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     
     UNUSED(timeout);
 
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)h->device;
+    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
 
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
@@ -192,7 +192,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     // Bytes from handle which are about to be sent are encoded as chars and stored here:
     char buffered_chars[512] = {0};
     for (int i = 0; i < (tx_data_length); i++) {
-        sprintf(buffered_chars + i * 2, "%02" PRIX8, h->buff[i + offset]);  // TODO make this better?
+        sprintf(buffered_chars + i * 2, "%02" PRIX8, s2->buff[i + offset]);  // TODO make this better?
     }
     // Controll characters to keep CS LOW, they are expected by USB dongle
     buffered_chars[tx_data_length * 2] = 'x';
@@ -203,7 +203,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
         return LT_L1_SPI_ERROR;
     }
 
-    lt_port_delay(h, READ_WRITE_DELAY);
+    lt_port_delay(s2, READ_WRITE_DELAY);
 
     int readed = read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2);
     if (readed != ((2 * tx_data_length) + 2)) {
@@ -211,7 +211,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     }
 
     for (size_t count = 0; count < 2 * tx_data_length; count++) {
-        sscanf(&buffered_chars[count * 2], "%02" PRIx8, &h->buff[count + offset]);  // TODO make this better?
+        sscanf(&buffered_chars[count * 2], "%02" PRIx8, &s2->buff[count + offset]);  // TODO make this better?
     }
 
     return LT_OK;
