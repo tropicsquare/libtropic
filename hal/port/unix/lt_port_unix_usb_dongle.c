@@ -11,6 +11,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_port.h"
+#include "lt_port_unix_usb_dongle.h"
 
 #define READ_WRITE_DELAY 10
 

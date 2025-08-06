@@ -28,12 +28,6 @@
 // arbitrary content required for port: configuration data, runtime data etc.
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define DEVICE_PATH_MAX_LEN 256
-#define UART_DEV_MAX_LEN 32
-typedef struct {
-    char dev_path[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
-    uint32_t baud_rate;             // = 115200;
-    unsigned int rng_seed;
-} lt_dev_unix_uart_t;
 
 typedef struct lt_dev_unix_tcp_t {
     in_addr_t addr;
