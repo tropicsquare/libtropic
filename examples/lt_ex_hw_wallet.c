@@ -1,5 +1,5 @@
 /**
- * @file TROPIC01_hw_wallet.c
+ * @file lt_ex_hw_wallet.c
  * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
  * @author Tropic Square s.r.o.
  *
