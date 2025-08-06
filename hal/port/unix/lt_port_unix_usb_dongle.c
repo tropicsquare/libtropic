@@ -12,6 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 #include "lt_port_unix_usb_dongle.h"
+#include "libtropic_logging.h"
 
 #define READ_WRITE_DELAY 10
 
@@ -107,7 +108,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
             cfsetospeed(&options, B115200);
             break;
         default:
-            fprintf(stderr, "warning: baud rate %" PRIu32 " is not supported, using 9600.\n",
+            LT_LOG_WARNING(stderr, "Baud rate %" PRIu32 " is not supported, using 9600.\n",
                     device->baud_rate);
             cfsetospeed(&options, B9600);
             break;
