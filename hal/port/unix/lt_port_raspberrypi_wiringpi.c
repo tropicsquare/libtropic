@@ -19,13 +19,6 @@
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 
-// CS is controlled separately
-#define GPIO_CS 25
-#define SPI_SPEED_HZ 5000000
-
-// File descriptor, used in init and deinit
-int fd = 0;
-
 // #define LIBT_DEBUG
 #ifdef LIBT_DEBUG
 #define LOG_OUT(f_, ...) printf("[TCP] " f_, ##__VA_ARGS__)
@@ -62,11 +55,10 @@ lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
 
 lt_ret_t lt_port_init(lt_l2_state_t *h)
 {
-    UNUSED(h);
-    // memset(h, 0, sizeof(lt_handle_t));
+    lt_dev_rpi_wiringpi_t *device = (lt_dev_rpi_wiringpi_t*)(h->device);
 
     // Pseudo RNG init
-    srand(time(NULL));
+    srand(device->rng_seed);
 
     // Setup CS pin
     wiringPiSetupGpio();
@@ -74,8 +66,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     digitalWrite(GPIO_CS, HIGH);
 
     // Setup SPI, returns fd, error if -1 is returned
-    fd = wiringPiSPISetup(0, SPI_SPEED_HZ);
-    if (fd < 0) {
+    device->fd = wiringPiSPISetup(0, SPI_SPEED_HZ);
+    if (device->fd < 0) {
         return LT_FAIL;
     }
 
@@ -84,9 +76,9 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    lt_dev_rpi_wiringpi_t *device = (lt_dev_rpi_wiringpi_t*)(h->device);
 
-    close(fd);
+    close(device->fd);
 
     return LT_OK;
 }
@@ -103,20 +95,20 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    lt_dev_rpi_wiringpi_t *device = (lt_dev_rpi_wiringpi_t*)(h->device);
+    
     LOG_OUT("-- Driving Chip Select to Low.\n");
-
-    digitalWrite(GPIO_CS, LOW);
+    digitalWrite(device->gpio_cs_num, LOW);
 
     return LT_OK;
 }
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    lt_dev_rpi_wiringpi_t *device = (lt_dev_rpi_wiringpi_t*)(h->device);
+    
     LOG_OUT("-- Driving Chip Select to High.\n");
-
-    digitalWrite(GPIO_CS, HIGH);
+    digitalWrite(device->gpio_cs_num, HIGH);
 
     return LT_OK;
 }
