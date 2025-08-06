@@ -6,9 +6,6 @@ import time
 import sys
 import socket
 
-MODEL_LOGGING_CFG_PATH = pathlib.Path(__file__).parent.joinpath("model_logging_cfg.yml")
-MODEL_CFG_PATH         = pathlib.Path(__file__).parent.joinpath("model_cfg.yml")
-
 def wait_for_server_start(host="127.0.0.1", port=28992, retry_interval=0.2, max_attempts=10) -> bool:
     for i in range(max_attempts):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -35,6 +32,20 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "-c", "--model-cfg",
+        help="Path to the model configuration YAML file.",
+        type=pathlib.Path,
+        required=True
+    )
+
+    parser.add_argument(
+        "-l", "--model-log-cfg",
+        help="Path to the model logging configuration YAML file.",
+        type=pathlib.Path,
+        required=True
+    )
+
+    parser.add_argument(
         "-o", "--output-dir",
         help="Path to the directory where output should be saved.",
         type=pathlib.Path,
@@ -45,6 +56,8 @@ if __name__ == "__main__":
 
     # Save args
     test_path: pathlib.Path = args.test
+    model_cfg_path: pathlib.Path = args.model_cfg
+    model_log_cfg_path: pathlib.Path = args.model_log_cfg
     output_path: pathlib.Path = args.output_dir
     test_name = test_path.stem
 
@@ -52,21 +65,21 @@ if __name__ == "__main__":
     output_path.mkdir(parents=True, exist_ok=True)
 
     # Load model logging configuration, modify logging file name and save
-    with MODEL_LOGGING_CFG_PATH.open("r") as f:
-        model_config = yaml.safe_load(f)
+    with model_log_cfg_path.open("r") as f:
+        model_log_cfg = yaml.safe_load(f)
     
     model_logging_file_path = output_path.joinpath(f"{test_name}_model_response").with_suffix(".log")
-    model_config["handlers"]["file"]["filename"] = str(model_logging_file_path)
+    model_log_cfg["handlers"]["file"]["filename"] = str(model_logging_file_path)
 
     model_logging_cfg_modified_path = pathlib.Path("model_logging_cfg_modified.yml")
     with model_logging_cfg_modified_path.open("w") as f:
-        yaml.dump(model_config, f, default_flow_style=False)
+        yaml.dump(model_log_cfg, f, default_flow_style=False)
 
     # Start the model server
     model_process = subprocess.Popen(
         [
             "model_server", "tcp",
-            "-c", f"{str(MODEL_CFG_PATH)}",
+            "-c", f"{str(model_cfg_path)}",
             "-l", f"{str(model_logging_cfg_modified_path)}"
         ]
     )
