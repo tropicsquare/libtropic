@@ -97,8 +97,10 @@ void hexdump_8byte(const uint8_t *data, uint16_t size);
  *  8. Erase each slot.
  *  9. Sign message with each erased slot and check for fail.
  *  10. Do steps 2-9, but instead of storing the key, generate it.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_eddsa_sign(void);
+void lt_test_rev_eddsa_sign(lt_handle_t *h);
 
 /**
  * @brief Tests ECDSA_Sign command.
@@ -114,8 +116,10 @@ void lt_test_rev_eddsa_sign(void);
  *  8. Erase each slot.
  *  9. Sign message with each erased slot and check for fail.
  *  10. Do steps 2-9, but instead of storing the key, generate it.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_ecdsa_sign(void);
+void lt_test_rev_ecdsa_sign(lt_handle_t *h);
 
 /**
  * @brief Test Pairing_Key_Read, Pairing_Key_Write and Pairing_Key_Invalidate on all slots.
@@ -128,8 +132,10 @@ void lt_test_rev_ecdsa_sign(void);
  *  5. Write zeros to all pairing key slots and check for failure.
  *  6. Invalidate all pairing key slots.
  *  7. Read all pairing key slots and check for failure.
+ *
+ * @param h     Device's handle
  */
-void lt_test_ire_pairing_key_slots(void);
+void lt_test_ire_pairing_key_slots(lt_handle_t *h);
 
 /**
  * @brief Test Ping L3 command with random data of random length <= PING_LEN_MAX.
@@ -141,8 +147,10 @@ void lt_test_ire_pairing_key_slots(void);
  *  4. Send Ping command with the random data.
  *  5. Check if the same data were received.
  *  6. Repeat steps 2-5 PING_MAX_LOOPS times.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_ping(void);
+void lt_test_rev_ping(lt_handle_t *h);
 
 /**
  * @brief Test R_Mem_Data_* commands on all User Data slots
@@ -160,8 +168,10 @@ void lt_test_rev_ping(void);
  *  9. Read all slots and check if they were written.
  *      - if the random length is 0, check that read fails (slot empty).
  *  10. Erase all slots and check that reading fails.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_r_mem(void);
+void lt_test_rev_r_mem(lt_handle_t *h);
 
 /**
  * @brief Backs up R-Config, erases it and then restores it.
@@ -171,8 +181,10 @@ void lt_test_rev_r_mem(void);
  *  2. Read the whole R-Config and save it.
  *  3. Erase the R-Config and check it.
  *  4. Restore the R-Config and check it.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_erase_r_config(void);
+void lt_test_rev_erase_r_config(lt_handle_t *h);
 
 /**
  * @brief Test Secure Session initialization using handshake request and abortion of the Session.
@@ -181,8 +193,10 @@ void lt_test_rev_erase_r_config(void);
  *  1. Secure Session can be estabilished and aborted.
  *  2. Secure Session can be estabilished multiple times without aborting a previous existing Session.
  *  3. Secure Session can be aborted multiple times, even though there is no session.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_handshake_req(void);
+void lt_test_rev_handshake_req(lt_handle_t *h);
 
 /**
  * @brief Test monotonic counter API - lt_mcounter_init, lt_mcounter_get, lt_mcounter_update.
@@ -193,8 +207,10 @@ void lt_test_rev_handshake_req(void);
  *    time after reaching 0 -- should fail with UPDATE_ERROR.
  * 3. Try to set all counters with known value and check that no counter was assigned
  *    wrong value.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_mcounter(void);
+void lt_test_rev_mcounter(lt_handle_t *h);
 
 /**
  * @brief Read Certificate Store with 4 certificates and print it to log.
@@ -202,8 +218,10 @@ void lt_test_rev_mcounter(void);
  * Test steps:
  *  1. Get device Certificate Store.
  *  2. For each of the 4 certificates, check if its size is not zero and print it.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_read_cert_store(void);
+void lt_test_rev_read_cert_store(lt_handle_t *h);
 
 /**
  * @brief Test reading Chip ID and parse it.
@@ -211,8 +229,10 @@ void lt_test_rev_read_cert_store(void);
  * Test steps:
  *  1. Get device Chip ID.
  *  2. Parse it and print it.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_read_chip_id(void);
+void lt_test_rev_read_chip_id(lt_handle_t *h);
 
 /**
  * @brief Reads contents of I-Config and prints it to the log.
@@ -220,8 +240,10 @@ void lt_test_rev_read_chip_id(void);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Read the whole I-config.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_read_i_config(void);
+void lt_test_rev_read_i_config(lt_handle_t *h);
 
 /**
  * @brief Tests writing the I-Config.
@@ -230,8 +252,10 @@ void lt_test_rev_read_i_config(void);
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Write the whole I-Config with random data.
  *  3. Read the whole I-Config and check that it was written.
+ *
+ * @param h     Device's handle
  */
-void lt_test_ire_write_i_config(void);
+void lt_test_ire_write_i_config(lt_handle_t *h);
 
 /**
  * @brief Reads contents of R-Config and prints it to the log.
@@ -239,8 +263,10 @@ void lt_test_ire_write_i_config(void);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Read the whole R-config.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_read_r_config(void);
+void lt_test_rev_read_r_config(lt_handle_t *h);
 
 /**
  * @brief Test Resend_Req L2 request.
@@ -250,8 +276,10 @@ void lt_test_rev_read_r_config(void);
  * 2. Request a resend of the last L2 frame and store it.
  * 3. Contents of the original and resended frames are compared. This will check whether
  *    the resend works as intended.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_resend_req(void);
+void lt_test_rev_resend_req(lt_handle_t *h);
 
 /**
  * @brief Test Sleep_Req L2 request.
@@ -264,8 +292,10 @@ void lt_test_rev_resend_req(void);
  *
  * @note There is no cleanup, as the chip does not have to be woken up. It is woken up automatically
  *       by any L2 request.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_sleep_req(void);
+void lt_test_rev_sleep_req(lt_handle_t *h);
 
 /*
  * @brief Test L2 Startup Request.
@@ -280,8 +310,10 @@ void lt_test_rev_sleep_req(void);
  * After each reboot before mode check, the test will wait until the chip is ready.
  * Mode check is done by reading SPECT FW version. The bootloader returns highest bit set to '1'
  * for each FW version.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_startup_req(void);
+void lt_test_rev_startup_req(lt_handle_t *h);
 
 /**
  * @brief Backs up R-Config, writes it and then restores it.
@@ -292,8 +324,10 @@ void lt_test_rev_startup_req(void);
  *  3. Write the whole R-Config with random data and check it.
  *  4. Write the whole R-Config again and check for an error.
  *  4. Restore the R-Config and check it.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_write_r_config(void);
+void lt_test_rev_write_r_config(lt_handle_t *h);
 
 /**
  * @brief Test ECC_Key_Generate command, along with ECC_Key_Read and ECC_Key_Erase.
@@ -306,8 +340,10 @@ void lt_test_rev_write_r_config(void);
  *  5. Read the generated public key and check curve and origin.
  *  6. Erase the key slot.
  *  7. Repeat steps 2-6 for the Ed25519 curve.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_ecc_key_generate(void);
+void lt_test_rev_ecc_key_generate(lt_handle_t *h);
 
 /**
  * @brief Test ECC_Key_Store command, along with ECC_Key_Read and ECC_Key_Erase.
@@ -322,8 +358,10 @@ void lt_test_rev_ecc_key_generate(void);
  *  7. Erase the key slot.
  *  8. Repeat steps 2-6 for the Ed25519 curve with pre-generated keys (without storing invalid private key - that cannot
  * be checked in the case of Ed25519).
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_ecc_key_store(void);
+void lt_test_rev_ecc_key_store(lt_handle_t *h);
 
 /**
  * @brief Tests Random_Value_Get command.
@@ -334,8 +372,10 @@ void lt_test_rev_ecc_key_store(void);
  *     used in the Random_Value_Get command.
  *  3. Get random count (from step 2) of random bytes from TROPIC01.
  *  4. Dump the random bytes from TROPIC01 into the log.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_random_value_get(void);
+void lt_test_rev_random_value_get(lt_handle_t *h);
 
 /**
  * @brief Tests MAC_And_Destroy command using HMAC-SHA256 as the Key Derivation Function (KDF).
@@ -349,7 +389,9 @@ void lt_test_rev_random_value_get(void);
  *  5. Restore all destroyed slots.
  *  6. Do an attempt with the correct PIN with all the used slots and compare the cryptographic keys with the one from
  * the setup phase.
+ *
+ * @param h     Device's handle
  */
-void lt_test_rev_mac_and_destroy(void);
+void lt_test_rev_mac_and_destroy(lt_handle_t *h);
 
 #endif

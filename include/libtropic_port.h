@@ -17,6 +17,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <netinet/in.h>
+
 #include "libtropic_common.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,12 @@ typedef struct {
     char gpio_dev[DEVICE_PATH_MAX_LEN];
     int gpio_cs_num;
 } lt_dev_unix_spi_t;
+
+typedef struct lt_dev_unix_tcp_t {
+    in_addr_t addr;
+    in_port_t port;
+    unsigned int rng_seed;
+} lt_dev_unix_tcp_t;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // COMMON HAL FUNCTIONS

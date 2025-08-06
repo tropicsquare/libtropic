@@ -17,25 +17,19 @@
 /** @brief Size of the Ping message, including '\0'. */
 #define PING_MSG_SIZE 44
 
-int lt_ex_hello_world_separate_API(void)
+int lt_ex_hello_world_separate_API(lt_handle_t *h)
 {
     LT_LOG_INFO("=========================================================");
     LT_LOG_INFO("====  TROPIC01 Hello World with Separate API Example ====");
     LT_LOG_INFO("=========================================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
-    ret = lt_init(&h);
+    ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -46,10 +40,10 @@ int lt_ex_hello_world_separate_API(void)
         = {.certs = {cert1, cert2, cert3, cert4},
            .buf_len = {LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
                        LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE}};
-    ret = lt_get_info_cert_store(&h, &store);
+    ret = lt_get_info_cert_store(h, &store);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get Certificate Store, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -59,7 +53,7 @@ int lt_ex_hello_world_separate_API(void)
     ret = lt_get_st_pub(&store, stpub, 32);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get stpub key, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
@@ -71,10 +65,10 @@ int lt_ex_hello_world_separate_API(void)
     // Inicialize session from a server side by creating state->ehpriv and state->ehpub,
     // l2 request is prepared into handle's buffer (h->l2_buff)
     LT_LOG_INFO("Executing lt_out__session_start()...");
-    ret = lt_out__session_start(&h, PAIRING_KEY_SLOT_INDEX_0, &state);
+    ret = lt_out__session_start(h, PAIRING_KEY_SLOT_INDEX_0, &state);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__session_start() failed, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -82,17 +76,17 @@ int lt_ex_hello_world_separate_API(void)
 
     // Following l2 functions are called on remote host
     LT_LOG_INFO("Executing lt_l2_send()...");
-    ret = lt_l2_send(&h.l2);
+    ret = lt_l2_send(&h->l2);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_send() failed, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_INFO("Executing lt_l2_receive()...");
-    ret = lt_l2_receive(&h.l2);
+    ret = lt_l2_receive(&h->l2);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_receive() failed, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -102,10 +96,10 @@ int lt_ex_hello_world_separate_API(void)
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
     LT_LOG_INFO("Executing lt_in__session_start()...");
-    ret = lt_in__session_start(&h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
+    ret = lt_in__session_start(h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
@@ -115,37 +109,37 @@ int lt_ex_hello_world_separate_API(void)
     uint8_t recv_buf[PING_MSG_SIZE];
     LT_LOG_INFO("Executing lt_out__ping() with message:");
     LT_LOG_INFO("\t\"%s\"", PING_MSG);
-    ret = lt_out__ping(&h, (const uint8_t*)PING_MSG, PING_MSG_SIZE);
+    ret = lt_out__ping(h, (const uint8_t *)PING_MSG, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__ping failed, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
 
     LT_LOG_INFO("Executing lt_l2_send_encrypted_cmd()...");
-    ret = lt_l2_send_encrypted_cmd(&h.l2, h.l3.buff, h.l3.buff_len);
+    ret = lt_l2_send_encrypted_cmd(&h->l2, h->l3.buff, h->l3.buff_len);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_send_encrypted_cmd failed, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_INFO("Executing lt_l2_recv_encrypted_res()...");
-    ret = lt_l2_recv_encrypted_res(&h.l2, h.l3.buff, h.l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_l2_recv_encrypted_res failed, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
 
     LT_LOG_INFO("Executing lt_in__ping()...");
-    ret = lt_in__ping(&h, recv_buf, PING_MSG_SIZE);
+    ret = lt_in__ping(h, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__ping failed, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -154,15 +148,15 @@ int lt_ex_hello_world_separate_API(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    ret = lt_session_abort(&h);
+    ret = lt_session_abort(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(&h);
+    ret = lt_deinit(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
         return -1;

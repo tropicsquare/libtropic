@@ -309,7 +309,7 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     LT_LOG_INFO("Creating an example config from the read R config...");
@@ -330,7 +330,7 @@ static int session_initial(lt_handle_t *h)
         return -1;
     }
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
-        LT_LOG_INFO("%s: 0x%08" PRIu32, cfg_desc_table[i].desc, r_config.obj[i]);
+        LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
     }
 
     // Write pairing keys into slots 1,2,3
@@ -748,56 +748,49 @@ static int session3(lt_handle_t *h)
     return 0;
 }
 
-int lt_ex_hardware_wallet(void)
+int lt_ex_hardware_wallet(lt_handle_t *h)
 {
     LT_LOG_INFO("==========================================");
     LT_LOG_INFO("==== TROPIC01 Hardware Wallet Example ====");
     LT_LOG_INFO("==========================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
-
     LT_LOG_LINE();
     LT_LOG_INFO("Initial session with pairing key slot 0");
-    if (session_initial(&h) == -1) {
-        if (h.l3.session == SESSION_ON) lt_session_abort(&h);
-        lt_deinit(&h);
+    if (session_initial(h) == -1) {
+        if (h->l3.session == SESSION_ON) lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Session with pairing key slot 0");
-    if (session0(&h) == -1) {
-        if (h.l3.session == SESSION_ON) lt_session_abort(&h);
-        lt_deinit(&h);
+    if (session0(h) == -1) {
+        if (h->l3.session == SESSION_ON) lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Session with pairing key slot 1");
-    if (session1(&h) == -1) {
-        if (h.l3.session == SESSION_ON) lt_session_abort(&h);
-        lt_deinit(&h);
+    if (session1(h) == -1) {
+        if (h->l3.session == SESSION_ON) lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Session with pairing key slot 2");
-    if (session2(&h) == -1) {
-        if (h.l3.session == SESSION_ON) lt_session_abort(&h);
-        lt_deinit(&h);
+    if (session2(h) == -1) {
+        if (h->l3.session == SESSION_ON) lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Session with pairing key slot 3");
-    if (session3(&h) == -1) {
-        if (h.l3.session == SESSION_ON) lt_session_abort(&h);
-        lt_deinit(&h);
+    if (session3(h) == -1) {
+        if (h->l3.session == SESSION_ON) lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
 
