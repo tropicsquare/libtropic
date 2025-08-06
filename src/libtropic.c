@@ -77,6 +77,11 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    // The byte used here shall not be ID byte of some request, otherwise chip would be confused
+    // and would return CRC error.
+    // GET_RESP 0xAA works fine.
+    h->l2.buff[0] = GET_RESPONSE_REQ_ID;
+
     // Transfer just one byte to read CHIP_STATUS byte
     lt_l1_spi_csn_low(&h->l2);
 
@@ -90,10 +95,10 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
     if (h->l2.buff[0] & CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = 1;
+        h->l2.mode = LT_MODE_MAINTENANCE;
     }
     else {
-        h->l2.mode = 0;
+        h->l2.mode = LT_MODE_APP;
     }
 
     return LT_OK;
@@ -346,12 +351,13 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
     }
 
     // Check incomming l3 length
-    if (LT_L2_GET_INFO_FW_HEADER_SIZE != (p_l2_resp->rsp_len)) {
+    if ((LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
+        && (LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
+        && (LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(header, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object,
-           LT_L2_GET_INFO_FW_HEADER_SIZE);  // TODO specify and fix size of header
+    memcpy(header, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, p_l2_resp->rsp_len);
 
     return LT_OK;
 }
@@ -484,6 +490,12 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     }
 
     lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+
+    // Update mode variable in handle after reboot
+    ret = lt_update_mode(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     return LT_OK;
 }

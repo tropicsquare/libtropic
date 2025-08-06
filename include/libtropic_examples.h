@@ -103,4 +103,13 @@ int lt_ex_fw_update(void);
  */
 int lt_ex_macandd(void);
 
+/**
+ * @brief Example usage of TROPIC01 - shows how to read chip's ID and firmware versions.
+ *
+ * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ *
+ * @return 0 on success, -1 otherwise
+ */
+int lt_ex_show_chip_id_and_fwver(void);
+
 #endif

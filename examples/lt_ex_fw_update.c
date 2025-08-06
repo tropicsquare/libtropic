@@ -57,22 +57,22 @@ static void print_headers(lt_handle_t *h)
     LT_LOG("  Chip contains following headers:");
     uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
     LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW1        %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW1, header, sizeof(header))));
     LT_LOG("    Header:                                   %s", print_bytes(header, 10));
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 
     LT_LOG("    lt_get_info_fw_bank()  FW_BANK_FW2        %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_FW2, header, sizeof(header))));
     LT_LOG("    Header:                                   %s", print_bytes(header, 10));
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 
     LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT1     %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, sizeof(header))));
     LT_LOG("    Header:                                   %s", print_bytes(header, 10));
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 
     LT_LOG("    lt_get_info_fw_bank()  FW_BANK_SPECT2     %s",
-           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, LT_L2_GET_INFO_FW_HEADER_SIZE)));
+           lt_ret_verbose(lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, sizeof(header))));
     LT_LOG("    Header:                                   %s", print_bytes(header, 10));
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 }

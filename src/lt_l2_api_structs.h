@@ -511,6 +511,49 @@ STATIC_ASSERT(
 /** @brief Response length */
 #define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
 
+#ifdef FWUPDATE_ABAB
+/** @brief Firmware type for RISC-V main CPU*/
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_CPU 1
+/** @brief Firmware type for SPECT coprocessor */
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_SPECT 2
+
+/**
+ * @brief
+ * Request to start updating mutable FW.
+ * Supported only in Start-up mode (i.e. after Startup_Req with MAINTENANCE_REBOOT).
+ * Possible to update only same or newer version.
+ * NOTE: Chip automatically selects memory space for FW storage and erases it.
+ */
+struct lt_l2_mutable_fw_update_req_t {
+    u8 signature[64];  /**< Signature of SHA256 hash of all following data in this packet */
+    u8 hash[32];       /**< SHA256 HASH of first FW chunk of data sent using Mutable_FW_Update_Data */
+    u16 type;          /**< FW type which is going to be updated */
+    u8 padding;        /**< Padding, zero value */
+    u8 header_version; /**< Version of used header */
+    u32 version;       /**< Version of FW */
+    u8 crc[2];         /**< Checksum */
+} __attribute__((__packed__));
+
+/** @brief Request ID */
+#define TS_L2_MUTABLE_FW_UPDATE_DATA_REQ 0xb1
+
+// response
+
+/**
+ * @brief Request to write a chunk of the new mutable FW into memory bank
+ * Supported only in Start-up mode after Mutable_FW_Update_Req successfully processed.
+ */
+struct ts_l2_mutable_fw_update_data_req_t {
+    u8 hash[32];  /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
+    u16 offset;   /**< The offset of the specific bank to write the FW chunk data to */
+    u8 data[220]; /**< The binary data to write. Data size should be a multiple of 4 */
+    u8 crc[2];    /**< Checksum */
+} __attribute__((__packed__));
+
+// response
+
+#endif
+
 /**
  * @brief
  * Request to write a chunk of the new mutable FW to a R-Memory bank.
