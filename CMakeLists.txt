@@ -54,12 +54,10 @@ set(LT_SPECT_FW_VERSION "0_3_1")
 ###########################################################################
 
 if(LT_BUILD_DOCS)
-    find_package(Doxygen)
+    find_package(Doxygen REQUIRED)
     if(Doxygen_FOUND)
         add_subdirectory(docs)
-        message(STATUS "Doxygen found, building docs")
-    else()
-        message(STATUS "Doxygen not found, not building docs")
+        message(STATUS "Doxygen found, enabled documentation building.")
     endif()
 endif()
 
@@ -86,6 +84,7 @@ project(libtropic_SDK
 set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ecdsa.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
 )
@@ -131,14 +130,69 @@ set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+###########################################################################
+# Libtropic FW update functions                                           #
+###########################################################################
+#set(SDK_INCS ${SDK_SRCS}
+#${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
+#${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/fw_CPU_0_3_1.h
+#)
+#set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+#${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/
+#)
+
+###########################################################################
+# Libtropic fw update:                                                    #
+# Collect files to be compiled when "fw update" is enabled                #
+# Compile only selected FW version for single silicon version             #
+###########################################################################
+if(LT_ENABLE_FW_UPDATE)
+
+    if (LT_SILICON_REV STREQUAL "ABAB")
+        set(BL_FOLDER boot_v_1_0_1)
+    elseif (LT_SILICON_REV STREQUAL "ACAB")
+        set(BL_FOLDER boot_v_2_0_1)
+    else()
+        message(FATAL_ERROR "Invalid silicon revision (LT_SILICON_REV): ${LT_SILICON_REV}")
+    endif()
+
+    # TODO: Set define here that will contain name of the variable with CPU / SPECT
+    #       FW arrays. This may replace the "FW_UPDATE_DATA" from lt_ex_fw_update.
+    #       Further, there needs to be also a macro for SPECT FW data and header file name
+    #       since each FW version header file is different!
+
+    set(SDK_INCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU_${LT_CPU_FW_VERSION}.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT_${LT_SPECT_FW_VERSION}.h
+    )
+    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
+    )
+endif()
+
+
 ###########################################################################
 # Libtropic examples:                                                     #
 # Collect files to be compiled when "examples" are enabled                #
 ###########################################################################
+set(LIBTROPIC_EXAMPLE_LIST
+    # lt_ex_fw_update
+    lt_ex_hello_world_separate_API
+    lt_ex_hello_world
+    lt_ex_hardware_wallet
+    lt_ex_macandd
+)
+
+# Export example list to parent project (usually platform-specific implementation).
+set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
+        # ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
     )
@@ -146,6 +200,25 @@ if(LT_BUILD_EXAMPLES)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/
     )
 endif()
+
+# Create an example registry based on the example list above. This example registry is then included
+# in platform-specific main.c.
+set(LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT "")
+foreach(example_name ${LIBTROPIC_EXAMPLE_LIST})
+    # Create a correct macro from example name.
+    string(TOUPPER ${example_name} example_macro)
+    string(REPLACE " " "_" example_macro ${example_macro})
+    string(APPEND LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT
+        "#elif defined(${example_macro})\n"
+        "__lt_ex_return_val__ = ${example_name}();\n"
+    )
+endforeach()
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_registry_template.c.inc
+    ${CMAKE_CURRENT_BINARY_DIR}/lt_ex_registry.c.inc
+    @ONLY
+)
 
 ###########################################################################
 # LIBTROPIC FUNCTIONAL TESTS                                              #
@@ -160,19 +233,26 @@ endif()
 # this name is also by CTest to identify the test and also used to create a macro (uppercase format)
 # which is used for test selection.
 set(LIBTROPIC_TEST_LIST
-    # lt_test_read_chip_id_reversible
-    lt_test_read_write_pairing_keys_irreversible
-    lt_test_write_r_config
-    lt_test_ping
-    lt_test_ecc_ecdsa
-    lt_test_ecc_eddsa
-    lt_test_r_mem
-    lt_test_erase_r_config_reversible
-    lt_test_read_r_config_reversible
-    lt_test_read_cert_store_reversible
-    lt_test_read_i_config_reversible
-    lt_test_handshake_req_reversible
-    lt_test_resend_req_reversible
+    lt_test_rev_ecdsa_sign
+    lt_test_rev_eddsa_sign
+    lt_test_ire_pairing_key_slots
+    lt_test_ire_write_i_config
+    lt_test_rev_ping
+    lt_test_rev_r_mem
+    lt_test_rev_erase_r_config
+    lt_test_rev_handshake_req
+    lt_test_rev_read_cert_store
+    lt_test_rev_read_chip_id
+    lt_test_rev_read_i_config
+    lt_test_rev_read_r_config
+    lt_test_rev_resend_req
+    lt_test_rev_sleep_req
+    lt_test_rev_startup_req
+    lt_test_rev_write_r_config
+    lt_test_rev_ecc_key_generate
+    lt_test_rev_ecc_key_store
+    lt_test_rev_random_value_get
+    lt_test_rev_mac_and_destroy
 )
 
 # Export test list to parent project (usually platform-specific implementation).
@@ -202,19 +282,30 @@ configure_file(
 # a bit of flexibility for a case where one would want to implement more tests in one file etc.
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_cert_store_reversible.c
-        # ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_chip_id_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_i_config_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_r_config_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_ecdsa.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ecc_eddsa.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_erase_r_config_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ping.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_r_mem.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_read_write_pairing_keys_irreversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_write_r_config.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_handshake_req_reversible.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_resend_req_reversible.c
+        # Special file with stuff common for testing.
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_common.c
+
+        # Files which include test functions definitions.
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecdsa_sign.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_eddsa_sign.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_pairing_key_slots.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_ire_write_i_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ping.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_r_mem.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_handshake_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_cert_store.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_sleep_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_startup_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_write_r_config.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecc_key_generate.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecc_key_store.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_random_value_get.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mac_and_destroy.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
@@ -262,37 +353,6 @@ if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
     list(APPEND SDK_SRCS "${KEYS_C_FILE}")
 endif()
 
-###########################################################################
-# Libtropic fw update:                                                    #
-# Collect files to be compiled when "fw update" is enabled                #
-# Compile only selected FW version for single silicon version             #
-###########################################################################
-if(LT_ENABLE_FW_UPDATE)
-
-    if (LT_SILICON_REV STREQUAL "ABAB")
-        set(BL_FOLDER boot_v_1_0_1)
-    elseif (LT_SILICON_REV STREQUAL "ACAB")
-        set(BL_FOLDER boot_v_2_0_1)
-    else()
-        message(FATAL_ERROR "Invalid silicon revision (LT_SILICON_REV): ${LT_SILICON_REV}")
-    endif()
-
-    # TODO: Set define here that will contain name of the variable with CPU / SPECT
-    #       FW arrays. This may replace the "FW_UPDATE_DATA" from lt_ex_fw_update.
-    #       Further, there needs to be also a macro for SPECT FW data and header file name
-    #       since each FW version header file is different!
-
-    set(SDK_INCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU_${LT_CPU_FW_VERSION}.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT_${LT_SPECT_FW_VERSION}.h
-    )
-    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
-    )
-endif()
-
-
 add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 
 target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
@@ -305,6 +365,15 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #   Compile and link                                                      #
 #                                                                         #
 ###########################################################################
+
+if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
+    target_compile_options(tropic PRIVATE -Wall -Wextra -Werror -Wpedantic
+        -Wshadow -Wformat=2 -Wcast-align -Wfloat-equal -Wnull-dereference
+        -Wredundant-decls -Wlogical-op -Wstrict-prototypes
+        -fstack-protector-strong
+    )
+endif()
+
 
 if(LT_PRINT_SPI_DATA)
     target_compile_definitions(tropic PRIVATE LT_PRINT_SPI_DATA)

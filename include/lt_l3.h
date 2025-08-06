@@ -259,10 +259,9 @@ lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
  *
  * @param h           Device's handle
  * @param udata_slot  Slot to read data from
- * @param size        Size of data to read
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, const uint16_t size);
+lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
 
 /**
  * @brief Decodes 'r mem data read' result payload. Used for separate l3 communication, for more information read info
@@ -270,10 +269,10 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, cons
  *
  * @param h           Device's handle
  * @param data        Buffer to receive data
- * @param size        Size of data to read, must be the same as sent in lt_out__r_mem_data_read()
+ * @param size        Number of bytes read into data
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t size);
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size);
 
 /**
  * @brief Encodes 'r mem data erase' command payload. Used for separate l3 communication, for more information read info
@@ -295,25 +294,25 @@ lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
 
 /**
- * @brief Encodes 'random get' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes Random_Value_Get command payload. Used for separate l3 communication, for more information read info
+ * at the top of this file.
+ *
+ * @param h           Device's handle
+ * @param len         Length of random data to get (255 bytes is the maximum)
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len);
+
+/**
+ * @brief Decodes Random_Value_Get result payload. Used for separate l3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
- * @param len         Length of random data to get
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_out__random_get(lt_handle_t *h, const uint16_t len);
-
-/**
- * @brief Decodes 'random get' result payload. Used for separate l3 communication, for more information read info at the
- * top of this file.
- *
- * @param h           Device's handle
  * @param buff        Buffer to receive random data
- * @param len         Length of random data to get, must be the same as sent in lt_out__random_get()
+ * @param len         Length of random data to get, must be the same as sent in lt_out__random_value_get()
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__random_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
+lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
 /**
  * @brief Encodes 'ECC key generation' command payload. Used for separate l3 communication, for more information read
@@ -372,14 +371,13 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
  * the top of this file.
  *
  * @param h           Device's handle
- * @param key         Buffer to receive ECC public key
- * @param keylen      Length of the key's buffer, must be at least 64 bytes
+ * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
+ * for P256), according to *curve*
  * @param curve       Will be filled by curve type
  * @param origin      Will be filled by origin type
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t keylen, lt_ecc_curve_type_t *curve,
-                             ecc_key_origin_t *origin);
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
  * @brief Encodes 'ECC key erase' command payload. Used for separate l3 communication, for more information read info at
@@ -410,18 +408,17 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint16_t msg_len);
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
 
 /**
  * @brief Decodes 'ECC ECDSA sign' result payload. Used for separate l3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
- * @param rs          Buffer to receive signature (r,s)
- * @param rs_len      Length of the signature buffer, must be at least 64 bytes
+ * @param rs          Buffer with a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
 
 /**
  * @brief Encodes 'ECC EdDSA sign' command payload. Used for separate l3 communication, for more information read info
@@ -440,11 +437,10 @@ lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const
  * the top of this file.
  *
  * @param h           Device's handle
- * @param rs          Buffer to receive signature (r,s)
- * @param rs_len      Length of the signature buffer, must be at least 64 bytes
+ * @param rs          Buffer with a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs, const uint8_t rs_len);
+lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs);
 
 /**
  * @brief Encodes 'ECC verify' command payload. Used for separate l3 communication, for more information read info at

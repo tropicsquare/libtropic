@@ -11,7 +11,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "inttypes.h"
+#include <inttypes.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
@@ -34,7 +35,7 @@ static char bytes_buffer[BUFF_SIZE];
 static char *print_bytes(uint8_t *data, uint16_t len)
 {
     if ((len > BUFF_SIZE) || (!data)) {
-        memcpy(bytes_buffer, "error_str_decoding", 20);
+        memcpy(bytes_buffer, "error_str_decoding", 19);
         return bytes_buffer;
     }
     bytes_buffer[0] = '\0';
@@ -76,7 +77,7 @@ static void print_headers(lt_handle_t *h)
     LT_LOG("                                              %s", print_bytes(header + 10, 10));
 }
 
-void lt_ex_fw_update(void)
+int lt_ex_fw_update(void)
 {
     LT_LOG("\t=======================================================================");
     LT_LOG("\t=====  TROPIC01 FW update                                           ===");
@@ -84,7 +85,7 @@ void lt_ex_fw_update(void)
 
     lt_handle_t h = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_FRAME_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     h.l3.buff = l3_buffer;
     h.l3.buff_len = sizeof(l3_buffer);
 #endif
@@ -153,7 +154,7 @@ void lt_ex_fw_update(void)
     }
     else {
         LT_LOG("     ERROR device couldn't get into STARTUP mode");
-        return;
+        return -1;
     }
     LT_LOG_LINE();
     LT_LOG("lt_reboot() reboot                            %s", lt_ret_verbose(lt_reboot(&h, LT_MODE_APP)));
@@ -164,5 +165,5 @@ void lt_ex_fw_update(void)
            lt_ret_verbose(lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE)));
     LT_LOG("spect_fw_ver: %d.%d.%d    (+ unused %d)", fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
 
-    return;
+    return 0;
 }

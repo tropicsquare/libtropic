@@ -19,6 +19,31 @@
 
 #include "libtropic_common.h"
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// DEVICE STRUCTURES
+//
+// Here are device structures specific for each port. The structures can contain
+// arbitrary content required for port: configuration data, runtime data etc.
+///////////////////////////////////////////////////////////////////////////////////////////////////
+#define UART_DEV_MAX_LEN 32
+typedef struct {
+    char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
+    uint32_t baud_rate;             // = 115200;
+} lt_uart_def_unix_t;
+
+#define DEVICE_PATH_MAX_LEN 256
+typedef struct {
+    int spi_speed;
+    char spi_dev[DEVICE_PATH_MAX_LEN];
+    char gpio_dev[DEVICE_PATH_MAX_LEN];
+    int gpio_cs_num;
+} lt_dev_unix_spi_t;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// COMMON HAL FUNCTIONS
+//
+// All of these functions have to be impemented by the port for libtropic to work.
+///////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
@@ -87,7 +112,7 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
  *
  * @param buff        Buffer to be filled
  * @param len         number of 32bit numbers
- * @return lt_ret_t   S_OK if success, otherwise returns other error code.
+ * @return lt_ret_t   LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len);
 

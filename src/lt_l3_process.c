@@ -18,7 +18,7 @@
 #include "lt_l1.h"
 #include "lt_l2.h"
 
-STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
+LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 {
 #ifdef LIBT_DEBUG
     if (!nonce) {

@@ -37,7 +37,7 @@ The last argument is a path to the firmware you want to flash.
 There are some optional arguments, see help for more information. Usually they are not needed.
 
 ### Native
-You can use the `lt_test_runner` class directly, which is preffered in Python scripts (e.g. test automations).
+You can use the `lt_test_runner` class directly, which is preferred in Python scripts (e.g. test automations).
 
 The `lt_test_runner` takes 4 arguments:
 - working directory (for logs),
@@ -45,15 +45,20 @@ The `lt_test_runner` takes 4 arguments:
 - path to mapping config,
 - path to adapter config.
 
-After the test runner is successfully created, you can call `run` method with a path to the firmware
-as an argument. It will return result in a form of enum (`lt_test_runner.lt_test_result`).
+After the test runner is successfully instantiated, you can call `run` method with following arguments:
+- a path to the firmware to flash,
+- timeout between individual message received,
+- total test timeout,
+- a flag whether to ignore assert failure and continue receiving messages from target (do not terminate).
+
+The function will return result in a form of an enum (`lt_test_runner.lt_test_result`).
 
 ## Structure and extensibility
 The test runner consists of several main parts:
 - `lt_platform`: JTAG/SWD platform communication.
 - `lt_openocd_launcher`: OpenOCD subprocess handler.
 - `lt_environment_tools`: various helper functions.
-- `lt_test_runner`: main class which actually do all the test steps (flashing, reading from serial...).
+- `lt_test_runner`: main class which actually does all the test steps (flashing, reading from serial...).
 
 If you want to add a new platform, you:
 1. Create a new file named `lt_platform_name.py`. If a file for the platform family already exists, use that. For example, all STM32-based platforms should be in `lt_platform_stm32.py`.
@@ -61,7 +66,7 @@ If you want to add a new platform, you:
 3. Create a new entry in the `adapter_mapping.csv` file.
 4. Add ID-class mapping to the `lt_platform_factory`. Use the string you defined in the `adapter_mapping`.
 
-The platform is an universal interface to access platforms, so the same code in the `lt_test_runner` can be used for as many platforms as possible (classic polymorphism). For example, if `lt_test_runner` needs to flash the target, it calls the `load_elf` method of the `lt_platform` and depending on which platform is actually hidden behind the abstract class, different commands are sent to the OpenOCD.
+The platform is an universal interface to access platforms, so the same code in the `lt_test_runner` can be used for all the platforms (classic polymorphism). For example, if `lt_test_runner` needs to flash the target, it calls the `load_elf` method of the `lt_platform` and depending on which platform is actually hidden behind the abstract class, different commands are sent to the OpenOCD.
 
 If you want to modify what steps are done in the test routine, you need to create a new class which
 derives from the `lt_test_runner`. In the derived class, override the `run` method with your own code.

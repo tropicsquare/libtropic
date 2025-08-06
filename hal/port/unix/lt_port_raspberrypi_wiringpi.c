@@ -1,5 +1,5 @@
 /**
- * @file lt_port_raspberrypi_spi.c
+ * @file lt_port_raspberrypi_wiringpi.c
  * @author Tropic Square s.r.o.
  * @brief  L1 implementation for raspberrypi. Expects wiringPi library to be
  * installed on Raspberry Pi, for more info about this library check https://github.com/WiringPi/WiringPi/tree/master
@@ -7,6 +7,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,14 +26,14 @@
 // File descriptor, used in init and deinit
 int fd = 0;
 
-// #define NDEBUG
-#ifdef NDEBUG
+// #define LIBT_DEBUG
+#ifdef LIBT_DEBUG
 #define LOG_OUT(f_, ...) printf("[TCP] " f_, ##__VA_ARGS__)
 #define LOG_ERR(f_, ...) fprintf(stderr, "ERROR: " f_, ##__VA_ARGS__)
-#define LOG_U8_ARRAY(arr, len)      \
-    for (int i = 0; i < len; i++) { \
-        printf("%02x ", arr[i]);    \
-    }                               \
+#define LOG_U8_ARRAY(arr, len)           \
+    for (int i = 0; i < len; i++) {      \
+        printf("%02" PRIx8 " ", arr[i]); \
+    }                                    \
     printf("\r\n");
 #else
 #define LOG_OUT(...)
@@ -53,7 +54,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t wait_time_msecs)
 lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
 {
     for (int i = 0; i < len; i++) {
-        buff[i] = (uint16_t)rand();
+        buff[i] = (uint32_t)rand();
     }
 
     return LT_OK;
@@ -93,7 +94,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(timeout);
-    LOG_OUT("-- Transfer of %d B\n", tx_data_length);
+    LOG_OUT("-- Transfer of %" PRIu16 " B\n", tx_data_length);
 
     int ret = wiringPiSPIxDataRW(0, 0, h->buff + offset, tx_data_length);
 

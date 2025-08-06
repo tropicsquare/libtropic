@@ -8,8 +8,10 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "libtropic_macros.h"
 #include "stdint.h"
-#include "tools.h"
+#include "tropic01_application_co.h"
+#include "tropic01_bootloader_co.h"
 
 /** Alias for unsigned 8 bit integer */
 typedef uint8_t u8;
@@ -21,9 +23,9 @@ typedef uint32_t u32;
 // This macro is used to change static functions into exported one, when compiling unit tests.
 // It allows to unit test static functions.
 #ifndef TEST
-#define STATIC static
+#define LT_STATIC static
 #else
-#define STATIC
+#define LT_STATIC
 #endif
 
 /** Macro to sanitize compiler warnings */
@@ -44,13 +46,13 @@ typedef uint32_t u32;
 #define L3_IV_SIZE 12u
 
 /** @brief Size of RES_SIZE field */
-#define L3_RES_SIZE_SIZE sizeof(uint16_t)
+#define L3_RES_SIZE_SIZE 2
 /** @brief Size of CMD_SIZE field */
-#define L3_CMD_SIZE_SIZE sizeof(uint16_t)
+#define L3_CMD_SIZE_SIZE 2
 /** @brief Size of l3 CMD_ID field */
 #define L3_CMD_ID_SIZE (1)
 /** @brief Maximal size of l3 RES/RSP DATA field */
-#define L3_CMD_DATA_SIZE_MAX (4097)
+#define L3_CMD_DATA_SIZE_MAX (4111)
 
 /** @brief TODO Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
@@ -62,9 +64,13 @@ typedef uint32_t u32;
 #define LT_L1_LEN_MAX (1 + 1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
 
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
-#define L3_PACKET_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
-/** @brief Max size of one unit of transport on l3 layer */
-#define L3_FRAME_MAX_SIZE (L3_RES_SIZE_SIZE + L3_PACKET_MAX_SIZE + L3_TAG_SIZE)
+#define L3_CYPHERTEXT_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
+/**
+ * @brief Max size of one unit of transport on l3 layer
+ *
+ * The number 13 is given by the longest possible padding, which is given by the EDDSA_Sign command.
+ */
+#define L3_PACKET_MAX_SIZE (L3_RES_SIZE_SIZE + L3_CYPHERTEXT_MAX_SIZE + 13 + L3_TAG_SIZE)
 
 //--------------------------------------------------------------------------------------------------------------------//
 
@@ -73,7 +79,7 @@ struct __attribute__((packed)) lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
     /** @brief Command or result data including ID and TAG */
-    uint8_t data[L3_FRAME_MAX_SIZE - L3_RES_SIZE_SIZE];
+    uint8_t data[L3_PACKET_MAX_SIZE - L3_RES_SIZE_SIZE];
 };
 
 // clang-format off
@@ -83,16 +89,10 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_gen_frame_t, cmd_size) +
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
     )
-);
+)
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
-
-#define UART_DEV_MAX_LEN 32
-typedef struct {
-    char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
-    uint32_t baud_rate;             // = 115200;
-} lt_uart_def_unix_t;
 
 typedef struct {
     void *device;
@@ -102,7 +102,7 @@ typedef struct {
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
 #ifndef LT_SIZE_OF_L3_BUFF
-#define LT_SIZE_OF_L3_BUFF L3_FRAME_MAX_SIZE
+#define LT_SIZE_OF_L3_BUFF L3_PACKET_MAX_SIZE
 #endif
 
 typedef struct {
@@ -169,74 +169,76 @@ typedef enum {
     LT_L1_INT_TIMEOUT = 10,
 
     // Return values based on RESULT field
+    /** @brief User slot is empty */
+    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 11,
     /** @brief L3 result [API r_mem_data_write]: write failed, because slot is already written in */
-    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL = 11,
+    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL = 12,
     /** @brief L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
-    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED = 12,
+    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED = 13,
     /** @brief L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is
        invalid. */
-    LT_L3_ECC_INVALID_KEY = 13,
+    LT_L3_ECC_INVALID_KEY = 14,
     /** @brief L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter
        is already at 0. */
-    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR = 14,
+    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR = 15,
     /** @brief L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The
        counter must be reinitialized. */
-    LT_L3_COUNTER_INVALID = 15,
+    LT_L3_COUNTER_INVALID = 16,
     /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been
        written to it yet */
-    LT_L3_PAIRING_KEY_EMPTY = 16,
+    LT_L3_PAIRING_KEY_EMPTY = 17,
     /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has
        been invalidated */
-    LT_L3_PAIRING_KEY_INVALID = 17,
+    LT_L3_PAIRING_KEY_INVALID = 18,
     /** @brief L3 command was received correctly*/
-    LT_L3_OK = 18,
+    LT_L3_OK = 19,
     /** @brief L3 command was not received correctly */
-    LT_L3_FAIL = 19,
+    LT_L3_FAIL = 20,
     /** @brief Current pairing keys are not authorized for execution of the last command */
-    LT_L3_UNAUTHORIZED = 20,
+    LT_L3_UNAUTHORIZED = 21,
     /** @brief Received L3 command is invalid */
-    LT_L3_INVALID_CMD = 21,
+    LT_L3_INVALID_CMD = 22,
     /** @brief L3 data does not have an expected length */
-    LT_L3_DATA_LEN_ERROR = 22,
+    LT_L3_DATA_LEN_ERROR = 23,
 
     // Return values based on STATUS field
     /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 23,
+    LT_L2_IN_CRC_ERR = 24,
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 24,
+    LT_L2_REQ_CONT = 25,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 25,
+    LT_L2_RES_CONT = 26,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 26,
+    LT_L2_HSK_ERR = 27,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 27,
+    LT_L2_NO_SESSION = 28,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 28,
+    LT_L2_TAG_ERR = 29,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 29,
+    LT_L2_CRC_ERR = 30,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 30,
+    LT_L2_GEN_ERR = 31,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 31,
+    LT_L2_NO_RESP = 32,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 32,
+    LT_L2_UNKNOWN_REQ = 33,
     /** @brief Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED = 33,
+    LT_L2_STATUS_NOT_RECOGNIZED = 34,
     /** @brief L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR = 34,
+    LT_L2_DATA_LEN_ERROR = 35,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 35,
+    LT_CERT_STORE_INVALID = 36,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 36,
+    LT_CERT_UNSUPPORTED = 37,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 37,
+    LT_CERT_ITEM_NOT_FOUND = 38,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 38,
+    LT_NONCE_OVERFLOW = 39,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 39
+    LT_RET_T_LAST_VALUE = 40
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS 100
@@ -283,7 +285,7 @@ struct lt_ser_num_t {
     uint8_t wafer_id;    /**< 8 bits for wafer ID */
     uint16_t x_coord;    /**< 16 bits for x-coordinate */
     uint16_t y_coord;    /**< 16 bits for y-coordinate */
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 // clang-format off
 STATIC_ASSERT(
@@ -298,10 +300,19 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_ser_num_t, x_coord) + 
         MEMBER_SIZE(struct lt_ser_num_t, y_coord)
     )
-);
+)
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
+
+/** @brief Package type ID for bare silicon. */
+#define CHIP_PKG_BARE_SILICON_ID 0x8000
+/** @brief Package type ID for QFN32. */
+#define CHIP_PKG_QFN32_ID 0x80AA
+/* Fab ID of Tropic Square Lab. */
+#define FAB_ID_TROPIC_SQUARE_LAB 0xF00
+/* Fab ID of Production line #1. */
+#define FAB_ID_EPS_BRNO 0x001
 
 /**
  * @brief Data in this struct comes from BP (batch package) yml file. CHIP_INFO is read into this struct.
@@ -403,7 +414,7 @@ struct lt_chip_id_t {
      * @brief Padding (192 bits).
      */
     uint8_t rfu_4[24];
-} __attribute__((__packed__));
+} __attribute__((packed));
 
 // clang-format off
 STATIC_ASSERT(
@@ -431,7 +442,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_chip_id_t, rfu_3) + 
         MEMBER_SIZE(struct lt_chip_id_t, rfu_4)
     )
-);
+)
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -488,7 +499,7 @@ typedef struct {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
-#define PING_LEN_MAX (L3_CMD_DATA_SIZE_MAX - L3_CMD_ID_SIZE)
+#define PING_LEN_MAX 4096
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
@@ -502,44 +513,40 @@ typedef enum {
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
 enum CONFIGURATION_OBJECTS_REGS {
-    CONFIGURATION_OBJECTS_CFG_START_UP_ADDR = 0X0,
-    CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR = 0X8,
-    CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR = 0X10,
-    CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR = 0X14,
-    CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR = 0X20,
-    CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR = 0X24,
-    CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR = 0X28,
-    CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR = 0X30,
-    CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR = 0X34,
-    CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR = 0X40,
-    CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR = 0X44,
-    CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR = 0X100,
-    CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR = 0X110,
-    CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR = 0X114,
-    CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR = 0X118,
-    CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR = 0X120,
-    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR = 0X130,
-    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR = 0X134,
-    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR = 0X138,
-    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR = 0X13C,
-    CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR = 0X140,
-    CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR = 0X144,
-    CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR = 0X150,
-    CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR = 0X154,
-    CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR = 0X158,
-    CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = 0X160
+    CONFIGURATION_OBJECTS_CFG_START_UP_ADDR = BOOTLOADER_CO_CFG_START_UP_ADDR,
+    CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR = BOOTLOADER_CO_CFG_SENSORS_ADDR,
+    CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR = BOOTLOADER_CO_CFG_DEBUG_ADDR,
+    CONFIGURATION_OBJECTS_CFG_GPO_ADDR = APPLICATION_CO_CFG_GPO_ADDR,
+    CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR = APPLICATION_CO_CFG_SLEEP_MODE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR = APPLICATION_CO_CFG_UAP_PAIRING_KEY_WRITE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR = APPLICATION_CO_CFG_UAP_PAIRING_KEY_READ_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR = APPLICATION_CO_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR = APPLICATION_CO_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR = APPLICATION_CO_CFG_UAP_R_CONFIG_READ_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR = APPLICATION_CO_CFG_UAP_I_CONFIG_WRITE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR = APPLICATION_CO_CFG_UAP_I_CONFIG_READ_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR = APPLICATION_CO_CFG_UAP_PING_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR = APPLICATION_CO_CFG_UAP_R_MEM_DATA_WRITE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR = APPLICATION_CO_CFG_UAP_R_MEM_DATA_READ_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR = APPLICATION_CO_CFG_UAP_R_MEM_DATA_ERASE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR = APPLICATION_CO_CFG_UAP_RANDOM_VALUE_GET_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR = APPLICATION_CO_CFG_UAP_ECC_KEY_GENERATE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR = APPLICATION_CO_CFG_UAP_ECC_KEY_STORE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR = APPLICATION_CO_CFG_UAP_ECC_KEY_READ_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR = APPLICATION_CO_CFG_UAP_ECC_KEY_ERASE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR = APPLICATION_CO_CFG_UAP_ECDSA_SIGN_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR = APPLICATION_CO_CFG_UAP_EDDSA_SIGN_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_INIT_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_GET_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_UPDATE_ADDR,
+    CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_ADDR
 };
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of one data slot in bytes */
 #define R_MEM_DATA_SIZE_MAX (444)
-/** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511, but the last one is used for M&D data.
- * Example code can be found in examples/lt_ex_macandd.c, for more info about Mac And Destroy functionality read app
- * note */
-#define R_MEM_DATA_SLOT_MAX (510)
-/** @brief Memory slot used for storing of M&D related data in Mac And Destroy example code. For more info see
- * examples/lt_ex_macandd.c */
-#define R_MEM_DATA_SLOT_MACANDD (511)
+/** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511. */
+#define R_MEM_DATA_SLOT_MAX (511)
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximum number of random bytes requested at once */
@@ -796,7 +803,7 @@ struct lt_config_obj_desc_t {
 };
 
 /** @brief Number of configuration objects in lt_config_t */
-#define LT_CONFIG_OBJ_CNT 26
+#define LT_CONFIG_OBJ_CNT 27
 
 /** @brief Structure to hold all configuration objects */
 struct lt_config_t {

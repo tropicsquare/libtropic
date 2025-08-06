@@ -10,20 +10,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Enhanced internal test runner logging and error reporting.
 - Renamed `LT_L2_LAST_RET` to `LT_RET_T_LAST_VALUE` for clarity in `lt_ret_t`.
+- Refactored `lt_ex_macandd` example.
+- Refactored `lt_ex_hello_world_separate_API` example.
+- Refactored `lt_ex_hello_world` example.
+- Refactored `lt_ex_hw_wallet` example.
+- Use `LIBT_DEBUG` instead of `NDEBUG` in `lt_port_{unix_tcp,raspberrypi_wiringpi}.c`.
+- Renamed `config_description_table` to `cfg_desc_table`.
+- Functions `lt_ecc_eddsa_sign()`, `lt_ecc_ecdsa_sign()`, `lt_ecc_eddsa_sig_verify()` and `lt_ecc_ecdsa_sig_verify()` accept zero length of the message to be signed.
+- Function `lt_ecc_ecdsa_sign()` does not restrict message length - type of `msg_len` changed to `size_t`.
+- Renamed `lt_random_get()` to `lt_random_value_get()`, along with the separate API, to match the command name in the User API.
+- Renamed `L3_PACKET_MAX_SIZE` to `L3_CYPHERTEXT_MAX_SIZE`.
+- Renamed `L3_FRAME_MAX_SIZE` to `L3_PACKET_MAX_SIZE`.
+- Set `L3_RES_SIZE_SIZE` directly to value 2.
+- Renamed `STATIC` to `LT_STATIC` due to naming conflicts.
+- Moved `lt_uart_def_unix_t` to `libtropic_port.h`.
+- Updated `enum CONFIGURATION_OBJECTS_REGS` with values from `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` to be compatible with User API v1.3.0.
+- Use strict format string types from `inttypes.h` or `%zu` for `size_t` (increases good portability).
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
 - Parameter checks to LT_HELPERS functions.
 - Added `LT_NONCE_OVERFLOW` to `lt_ret_t`.
+- Value `LT_L3_R_MEM_DATA_READ_SLOT_EMPTY` to `lt_ret_t` to indicate that the user slot is empty.
+- Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecdsa_verify()`.
+- Strict compilation flags for examples and tests.
+- Generic Unix SPI device support.
+- Helper functions `lt_print_bytes()` and `lt_print_chip_id()`.
+- Macros for chip package IDs and FAB IDs.
+- Header files `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` with address enums and mask defines.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
 - Added missing `LT_L1_INT_TIMEOUT` in `lt_ret_strs`.
-- Chip id parsing in `tests/model_based_project/create_model_cfg.py`
 - Fixed nonce overflow vulnerability in lt_l3_nonce_increase, the function now returns `LT_NONCE_OVERFLOW` if the nonce cannot be increased anymore.
+- Calculation of number of chunks in the function `lt_l2_send_encrypted_cmd()`.
+- Chip id parsing in `tests/model_based_project/create_model_cfg.py`.
+- Function `lt_r_mem_data_read` -  change `size` to output parameter and its handling.
+- Set value of macro `L3_CMD_DATA_SIZE_MAX` to 4111.
+- Added 13 of maximal padding to macro `L3_FRAME_MAX_SIZE`.
+- Set value of macro `PING_LEN_MAX` to 4096.
+
 
 ### Removed
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
+- Functions `get_conf_addr()`, `get_conf_desc()`, accessing the configuration table directly is advised instead.
+- Removed `keylen` parameter from `lt_ecc_key_read()` and `lt_in__ecc_key_read()`.
+- Removed `rs_len` parameter from `lt_ecc_eddsa_sign()` and `lt_ecc_ecdsa_sign()`.
+- Removed macro `LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN`.
+- Header file `include/TROPIC01_configuration_objects.h`.
+- Checks with `<` for enums (fixes compilation errors on STM32 and shouldn't be needed anyway).
 
 ## [0.1.0]
 

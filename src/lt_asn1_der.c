@@ -7,6 +7,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <lt_asn1_der.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -37,12 +38,12 @@ struct parse_ctx_t {
 };
 
 #ifdef ASNDER_LOG_EN
-#define PARSE_ERR(ctx, msg, ...)                                   \
-    do {                                                           \
-        LT_LOG_ERROR("ASN1 DER Parsing error:");                   \
-        LT_LOG_ERROR("    Byte position:    %d", ctx->past);       \
-        LT_LOG_ERROR("    Byte value:       0x%x", *(ctx->head));  \
-        LT_LOG_ERROR("    Error:            " msg, ##__VA_ARGS__); \
+#define PARSE_ERR(ctx, msg, ...)                                       \
+    do {                                                               \
+        LT_LOG_ERROR("ASN1 DER Parsing error:");                       \
+        LT_LOG_ERROR("    Byte position:    %" PRIu16, ctx->past);     \
+        LT_LOG_ERROR("    Byte value:       0x%" PRIx8, *(ctx->head)); \
+        LT_LOG_ERROR("    Error:            " msg, ##__VA_ARGS__);     \
     } while (0);
 
 #else
@@ -62,7 +63,8 @@ struct parse_ctx_t {
 static lt_ret_t consume_bytes(struct parse_ctx_t *ctx, uint8_t *buf, uint16_t n, bool copy)
 {
     if (ctx->past + n > ctx->len) {
-        PARSE_ERR(ctx, "Incomplete byte stream. Past: %d, n: %d, len: %d", ctx->past, n, ctx->len);
+        PARSE_ERR(ctx, "Incomplete byte stream. Past: %" PRIu16 ", n: %" PRIu16 ", len: %" PRIu16, ctx->past, n,
+                  ctx->len);
         return LT_CERT_STORE_INVALID;
     }
 
@@ -81,18 +83,18 @@ static lt_ret_t consume_bytes(struct parse_ctx_t *ctx, uint8_t *buf, uint16_t n,
     return LT_OK;
 }
 
-#define GET_BYTES(ctx, buf, n)                          \
-    do {                                                \
-        lt_ret_t rv = consume_bytes(ctx, buf, n, true); \
-        if (rv != LT_OK) return rv;                     \
+#define GET_BYTES(ctx, buf, n)                            \
+    do {                                                  \
+        lt_ret_t _rv_ = consume_bytes(ctx, buf, n, true); \
+        if (_rv_ != LT_OK) return _rv_;                   \
     } while (0);
 
 #define GET_NEXT_BYTE(ctx, buf) GET_BYTES(ctx, buf, 1)
 
-#define DROP_BYTES(ctx, n)                                \
-    do {                                                  \
-        lt_ret_t rv = consume_bytes(ctx, NULL, n, false); \
-        if (rv != LT_OK) return rv;                       \
+#define DROP_BYTES(ctx, n)                                  \
+    do {                                                    \
+        lt_ret_t _rv_ = consume_bytes(ctx, NULL, n, false); \
+        if (_rv_ != LT_OK) return _rv_;                     \
     } while (0);
 
 /**
@@ -155,25 +157,28 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 
 #ifdef ASNDER_LOG_EN
     LT_LOG("parse_object:");
-    LT_LOG("    Start: %d", start);
-    LT_LOG("    Object type: 0x%x", b);
-    LT_LOG("    Object len: %d", len);
+    LT_LOG("    Start: %" PRIu16, start);
+    LT_LOG("    Object type: 0x%" PRIx8, b);
+    LT_LOG("    Object len: %" PRIu16, len);
 #endif
 
     switch (b) {
         case ASN1DER_SEQUENCE:
             while (ctx->past < start + len - 1) {
-                lt_ret_t rv = parse_object(ctx);
+                rv = parse_object(ctx);
                 if (rv != LT_OK) return rv;
             }
 
             if (start + len != ctx->past) {
                 PARSE_ERR(ctx,
                           "Invalid Sequence length. "
-                          "Sequence start: %d. "
-                          "Expected length: %d. "
-                          "Expected end: %d. "
-                          "Real end: %d",
+                          "Sequence start: %" PRIu16
+                          ". "
+                          "Expected length: %" PRIu16
+                          ". "
+                          "Expected end: %" PRIu16
+                          ". "
+                          "Real end: %" PRIu16,
                           start, len, start + len - 1, ctx->past);
                 return LT_CERT_STORE_INVALID;
             }
@@ -188,7 +193,7 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 
             if (ctx->obj_id == obj_id) {
 #ifdef ASNDER_LOG_EN
-                LT_LOG("Found searched object: 0x%x. Next object will be sampled!", ctx->obj_id);
+                LT_LOG("Found searched object: 0x%" PRIx32 ". Next object will be sampled!", ctx->obj_id);
 #endif
                 ctx->sample_next = true;
             }
@@ -216,10 +221,10 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
                     ctx->cropped = true;
 
 #ifdef ASNDER_LOG_EN
-                    LT_LOG(
-                        "Sample buffer (%d) is smaller than size of the object to be sampled (%d). "
-                        "Cropping %d bytes from %s of the searched object",
-                        ctx->sbuf_len, sample_len, n_crop_bytes, crop_prefix ? "prefix" : "suffix");
+                    LT_LOG("Sample buffer (%d) is smaller than size of the object to be sampled (%" PRIu8
+                           "). "
+                           "Cropping %" PRIu16 " bytes from %s of the searched object",
+                           ctx->sbuf_len, sample_len, n_crop_bytes, crop_prefix ? "prefix" : "suffix");
 #endif
 
                     if (crop_prefix) {

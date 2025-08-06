@@ -162,7 +162,7 @@ void test_lt_ecc_key_generate__l3_fail()
 //    lt_l3_cmd_Stub(callback_lt_ecc_key_generate_lt_l3_cmd);
 //    TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 //
-//    size_inject_value = (uint16_t)((rand() % (L3_PACKET_MAX_SIZE - 2)) + 2);
+//    size_inject_value = (uint16_t)((rand() % (L3_CYPHERTEXT_MAX_SIZE - 2)) + 2);
 //    lt_l3_cmd_Stub(callback_lt_ecc_key_generate_lt_l3_cmd);
 //    TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_generate(&h, ECC_SLOT_1, CURVE_ED25519));
 //}

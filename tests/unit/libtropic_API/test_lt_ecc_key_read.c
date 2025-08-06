@@ -172,7 +172,7 @@ lt_ret_t callback_lt_ecc_key_read_lt_l3_cmd(lt_handle_t *h, int __attribute__((u
 //    lt_l3_cmd_Stub(callback_lt_ecc_key_read_lt_l3_cmd);
 //
 //    for (int i = 0; i < 25; i++) {
-//        size_inject_value = (uint16_t)(rand() % L3_PACKET_MAX_SIZE);
+//        size_inject_value = (uint16_t)(rand() % L3_CYPHERTEXT_MAX_SIZE);
 //
 //        if (size_inject_value != 48) { // skip correct value
 //            curve_inject_valuet_value       = CURVE_ED25519;
