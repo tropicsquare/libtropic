@@ -315,6 +315,14 @@ static int session_initial(lt_handle_t *h)
     LT_LOG_INFO("Creating an example config from the read R config...");
     create_example_r_config(&r_config);
 
+    LT_LOG_INFO("Erasing R config in case it is already written...");
+    ret = lt_r_config_erase(h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to erase R config, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("\tOK");
+
     LT_LOG_INFO("Writing the whole R config with the example config...");
     ret = write_whole_R_config(h, &r_config);
     if (LT_OK != ret) {
