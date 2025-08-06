@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved `lt_uart_def_unix_t` to `libtropic_port.h`.
 - Updated `enum CONFIGURATION_OBJECTS_REGS` with values from `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` to be compatible with User API v1.3.0.
 - Use strict format string types from `inttypes.h` or `%zu` for `size_t` (increases good portability).
+- Moved `model_based_project/` from `tests/` to repo root and renamed to `tropic01_model/`.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Helper functions `lt_print_bytes()` and `lt_print_chip_id()`.
 - Macros for chip package IDs and FAB IDs.
 - Header files `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` with address enums and mask defines.
+- Model configuration is automatically created when tests are run in `tropic01_model/`.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
@@ -59,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed macro `LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN`.
 - Header file `include/TROPIC01_configuration_objects.h`.
 - Checks with `<` for enums (fixes compilation errors on STM32 and shouldn't be needed anyway).
+- File `tests/model_based_project/compile_tests.sh` (refer to `tropic01_model/README.md` for instructions about compiling tests).
+- File `tests/model_based_project/model_logging_cfg.py`.
 
 ## [0.1.0]
 
