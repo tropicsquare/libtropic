@@ -46,6 +46,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     s.s2 = s2;
 
+    srand(device->rng_seed);
+
     LT_LOG_DEBUG("Initializing SPI...\n");
     LT_LOG_DEBUG("SPI speed: %d", device->spi_speed);
     LT_LOG_DEBUG("SPI device: %s", device->spi_dev);
