@@ -21,6 +21,7 @@ option(LT_HELPERS "Compile helper function" ON)
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
+option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags" OFF)
 
 set(DEFAULT_LAB_BATCH_PKG_DIR
     "2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
@@ -333,12 +334,26 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #                                                                         #
 ###########################################################################
 
-if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
-    target_compile_options(tropic PRIVATE -Wall -Wextra -Werror -Wpedantic
+# Conditionally apply strict compilation flags
+if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
+
+    # 1. Apply the compiler options immediately.
+    # This is the primary action of this block.
+    target_compile_options(tropic PUBLIC
+        -Wall -Wextra -Werror -Wpedantic
         -Wshadow -Wformat=2 -Wcast-align -Wfloat-equal -Wnull-dereference
         -Wredundant-decls -Wlogical-op -Wstrict-prototypes
         -fstack-protector-strong
     )
+
+    # 2. Handle the cache variable for user visibility.
+    # If the flag wasn't already ON, it means tests/examples implicitly enabled it.
+    # We update the cache so the user sees the actual state in cmake-gui.
+    if(NOT LT_STRICT_COMP_FLAGS)
+        message(STATUS "Enabling strict compilation flags because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
+        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags" FORCE)
+    endif()
+
 endif()
 
 
