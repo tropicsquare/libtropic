@@ -26,4 +26,4 @@ typedef struct lt_dev_unix_tcp_t {
     unsigned int rng_seed;
 } lt_dev_unix_tcp_t;
 
-#endif // LT_PORT_UNIX_TCP_H
+#endif  // LT_PORT_UNIX_TCP_H

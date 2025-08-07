@@ -14,4 +14,4 @@
 // Get struct member size at compile-time.
 #define MEMBER_SIZE(type, member) (sizeof(((type *)0)->member))
 
-#endif // LT_LIBTROPIC_MACROS
+#endif  // LT_LIBTROPIC_MACROS

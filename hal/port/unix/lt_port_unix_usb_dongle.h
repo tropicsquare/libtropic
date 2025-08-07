@@ -31,4 +31,4 @@ typedef struct lt_dev_unix_uart_t {
     int fd;
 } lt_dev_unix_uart_t;
 
-#endif // LT_PORT_UNIX_USB_DONGLE_H
+#endif  // LT_PORT_UNIX_USB_DONGLE_H

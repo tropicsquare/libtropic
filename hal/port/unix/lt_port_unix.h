@@ -41,4 +41,4 @@ typedef struct {
     uint32_t mode;
 } lt_dev_unix_spi_t;
 
-#endif // LT_PORT_UNIX_H
+#endif  // LT_PORT_UNIX_H
