@@ -1,14 +1,3 @@
-#ifndef LT_LIBTROPIC_PORT_H
-#define LT_LIBTROPIC_PORT_H
-
-/**
- * @defgroup group_port_functions Layer 1 port specific functions
- * @brief Defined for each supported platform
- * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported.
- *
- * @{
- */
-
 /**
  * @file libtropic_port.h
  * @brief Header file with layer 1 interfaces which are defined based on host platform
@@ -16,6 +5,10 @@
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
+
+#ifndef LT_LIBTROPIC_PORT_H
+#define LT_LIBTROPIC_PORT_H
+
 #include "libtropic_common.h"
 
 /**
@@ -23,11 +16,15 @@
  */
 #define DEVICE_PATH_MAX_LEN 256
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// COMMON HAL FUNCTIONS
-//
-// All of these functions have to be impemented by the port for libtropic to work.
-///////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @defgroup group_port_functions Layer 1 port specific functions
+ * @brief Defined for each supported platform.
+ * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported.
+ *          All of these functions have to be impemented by the port for libtropic to work.
+ *
+ * @{
+ */
+
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
