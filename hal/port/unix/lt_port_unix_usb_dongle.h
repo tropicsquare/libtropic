@@ -1,3 +1,6 @@
+#ifndef LT_PORT_UNIX_USB_DONGLE_H
+#define LT_PORT_UNIX_USB_DONGLE_H
+
 /**
  * @file lt_port_unix_usb_dongle.h
  * @author Tropic Square s.r.o.
@@ -27,3 +30,5 @@ typedef struct lt_dev_unix_uart_t {
     /** @private @brief UART device file descriptor. */
     int fd;
 } lt_dev_unix_uart_t;
+
+#endif // LT_PORT_UNIX_USB_DONGLE_H

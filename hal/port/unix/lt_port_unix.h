@@ -1,3 +1,6 @@
+#ifndef LT_PORT_UNIX_H
+#define LT_PORT_UNIX_H
+
 /**
  * @file lt_port_unix.h
  * @author Tropic Square s.r.o.
@@ -37,3 +40,5 @@ typedef struct {
     /** @private @brief SPI mode. */
     uint32_t mode;
 } lt_dev_unix_spi_t;
+
+#endif // LT_PORT_UNIX_H

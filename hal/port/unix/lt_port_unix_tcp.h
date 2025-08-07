@@ -1,3 +1,6 @@
+#ifndef LT_PORT_UNIX_TCP_H
+#define LT_PORT_UNIX_TCP_H
+
 /**
  * @file lt_port_unix_tcp.h
  * @author Tropic Square s.r.o.
@@ -22,3 +25,5 @@ typedef struct lt_dev_unix_tcp_t {
     /** @public @brief Seed for the platform's random number generator. */
     unsigned int rng_seed;
 } lt_dev_unix_tcp_t;
+
+#endif // LT_PORT_UNIX_TCP_H
