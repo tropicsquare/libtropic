@@ -30,7 +30,7 @@ int write_port(int fd, uint8_t *buffer, size_t size)
 {
     ssize_t result = write(fd, buffer, size);
     if (result != (ssize_t)size) {
-        perror("failed to write to port");
+        LT_LOG_ERROR("failed to write to port");
         return -1;
     }
     return 0;
@@ -47,7 +47,7 @@ ssize_t read_port(int fd, uint8_t *buffer, size_t size)
     while (received < size) {
         ssize_t r = read(fd, buffer + received, size - received);
         if (r < 0) {
-            perror("failed to read from port");
+            LT_LOG_ERROR("failed to read from port");
             return -1;
         }
         if (r == 0) {
@@ -68,21 +68,21 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     // serialport init
     device->fd = open(device->dev_path, O_RDWR | O_NOCTTY);
     if (device->fd == -1) {
-        perror(device->dev_path);
+        LT_LOG_ERROR(device->dev_path);
         return LT_FAIL;
     }
 
     // Flush away any bytes previously read or written.
     int result = tcflush(device->fd, TCIOFLUSH);
     if (result) {
-        perror("tcflush failed");  // just a warning, not a fatal error
+        LT_LOG_ERROR("tcflush failed");  // just a warning, not a fatal error
     }
 
     // Get the current configuration of the serial port.
     struct termios options;
     result = tcgetattr(device->fd, &options);
     if (result) {
-        perror("tcgetattr failed");
+        LT_LOG_ERROR("tcgetattr failed");
         close(device->fd);
         return LT_FAIL;
     }
@@ -125,7 +125,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     result = tcsetattr(device->fd, TCSANOW, &options);
     if (result) {
-        perror("tcsetattr failed");
+        LT_LOG_ERROR("tcsetattr failed");
         close(device->fd);
         return LT_FAIL;
     }
