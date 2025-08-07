@@ -26,7 +26,7 @@
 #define READ_WRITE_DELAY 10
 
 // Writes bytes to the serial port, returning 0 on success and -1 on failure.
-int write_port(int fd, uint8_t *buffer, size_t size)
+static int write_port(int fd, uint8_t *buffer, size_t size)
 {
     ssize_t result = write(fd, buffer, size);
     if (result != (ssize_t)size) {
@@ -41,7 +41,7 @@ int write_port(int fd, uint8_t *buffer, size_t size)
 // timeout or other error.
 // Returns the number of bytes successfully read into the buffer, or -1 if
 // there was an error reading.
-ssize_t read_port(int fd, uint8_t *buffer, size_t size)
+static ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 {
     size_t received = 0;
     while (received < size) {
