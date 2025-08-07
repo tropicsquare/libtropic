@@ -119,7 +119,7 @@ if(LT_BUILD_TESTS)
         COMMENT "Creating configuration for the model"
         VERBATIM
     )
-    # Wrap it in a custom target so we can depend on it
+    # Wrap it in a custom target so we can create a dependency
     add_custom_target(generate_model_cfg DEPENDS ${MODEL_CFG_PATH})
 
     # Remove tests we don't want to run against model

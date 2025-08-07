@@ -12,7 +12,7 @@ There are some examples which are not compatible with model, as the model does n
 ## How it works?
 Both processes (tests/examples and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
 > [!NOTE]
-This functionality is implemented by the Unix TCP HAL [here](../hal/port/unix/lt_port_unix_tcp.c).
+This functionality is implemented with the help of the Unix TCP HAL [here](../hal/port/unix/lt_port_unix_tcp.c).
 
 ## Model setup
 First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
