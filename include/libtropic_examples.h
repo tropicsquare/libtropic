@@ -13,6 +13,8 @@
 
 #include "libtropic_common.h"
 
+#ifndef LT_EXAMPLE_TEST_KEYS_DECLARED
+#define LT_EXAMPLE_TEST_KEYS_DECLARED
 extern uint8_t sh0priv[];
 extern uint8_t sh0pub[];
 
@@ -24,6 +26,7 @@ extern uint8_t sh2pub[];
 
 extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
+#endif // LT_EXAMPLE_TEST_KEYS_DECLARED
 
 /**
  * @brief Establishes Secure Session and executes Ping L3 command.

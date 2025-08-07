@@ -62,18 +62,20 @@ void lt_assert_fail_handler(void);
         LT_LOG_INFO("TEST FINISHED!"); \
     }
 
-// Default factory pairing keys
+#ifndef LT_EXAMPLE_TEST_KEYS_DECLARED
+#define LT_EXAMPLE_TEST_KEYS_DECLARED
 extern uint8_t sh0priv[];
 extern uint8_t sh0pub[];
-// Keys with acces to write attestation key in slot 1
+
 extern uint8_t sh1priv[];
 extern uint8_t sh1pub[];
-// Keys with access only to read serial number
+
 extern uint8_t sh2priv[];
 extern uint8_t sh2pub[];
-// Keys for application
+
 extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
+#endif // LT_EXAMPLE_TEST_KEYS_DECLARED
 
 /**
  * @brief Non-test function to dump bytes in 8 byte rows.
