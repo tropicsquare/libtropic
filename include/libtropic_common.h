@@ -794,40 +794,49 @@ typedef enum {
 #define SERIAL_CODE_SIZE 32u
 
 //---------------------------------------------------------------------------------------------------------------------//
-/** @brief Macro to controll which session can access command targeting content of pairing key SH0 */
+/** @brief Macro to control which session can access command targeting content of pairing key SH0 */
 #define TO_PAIRING_KEY_SH0(x) ((x) << 0)
-/** @brief Macro to controll which session can access command targeting content of pairing key SH1 */
+/** @brief Macro to control which session can access command targeting content of pairing key SH1 */
 #define TO_PAIRING_KEY_SH1(x) ((x) << 8)
-/** @brief Macro to controll which session can access command targeting content of pairing key SH2 */
+/** @brief Macro to control which session can access command targeting content of pairing key SH2 */
 #define TO_PAIRING_KEY_SH2(x) ((x) << 16)
-/** @brief Macro to controll which session can access command targeting content of pairing key SH3 */
+/** @brief Macro to control which session can access command targeting content of pairing key SH3 */
 #define TO_PAIRING_KEY_SH3(x) ((x) << 24)
 
-/** @brief Macro to controll which session can access command targeting counter 0-3 */
+/** @brief Macro to control which session can access command targeting counter 0-3 */
 #define TO_LT_MCOUNTER_0_3(x) ((x) << 0)
-/** @brief Macro to controll which session can access command targeting counter 4-7 */
+/** @brief Macro to control which session can access command targeting counter 4-7 */
 #define TO_LT_MCOUNTER_4_7(x) ((x) << 8)
-/** @brief Macro to controll which session can access command targeting counter 8-11 */
+/** @brief Macro to control which session can access command targeting counter 8-11 */
 #define TO_LT_MCOUNTER_8_11(x) ((x) << 16)
-/** @brief Macro to controll which session can access command targeting counter 12-15 */
+/** @brief Macro to control which session can access command targeting counter 12-15 */
 #define TO_LT_MCOUNTER_12_15(x) ((x) << 24)
 
-/** @brief Macro to controll which session can access command targeting ECC_SLOT 0-7 */
+/** @brief Macro to control which session can access command targeting ECC_SLOT 0-7 */
 #define TO_ECC_KEY_SLOT_0_7(x) ((x) << 0)
-/** @brief Macro to controll which session can access command targeting ECC_SLOT 8-15 */
+/** @brief Macro to control which session can access command targeting ECC_SLOT 8-15 */
 #define TO_ECC_KEY_SLOT_8_15(x) ((x) << 8)
-/** @brief Macro to controll which session can access command targeting ECC_SLOT 16-23 */
+/** @brief Macro to control which session can access command targeting ECC_SLOT 16-23 */
 #define TO_ECC_KEY_SLOT_16_23(x) ((x) << 16)
-/** @brief Macro to controll which session can access command targeting ECC_SLOT 24-31 */
+/** @brief Macro to control which session can access command targeting ECC_SLOT 24-31 */
 #define TO_ECC_KEY_SLOT_24_31(x) ((x) << 24)
 
-/** @brief Macro to controll if session SH0 has access to a specific command */
+/** @brief Macro to control which session can access command targeting MACANDD slot 0-31 */
+#define TO_MACANDD_SLOT_0_31(x) ((x) << APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_MACANDD_0_31_POS)
+/** @brief Macro to control which session can access command targeting MACANDD slot 32-63 */
+#define TO_MACANDD_SLOT_32_63(x) ((x) << APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_MACANDD_32_63_POS)
+/** @brief Macro to control which session can access command targeting MACANDD slot 64-95 */
+#define TO_MACANDD_SLOT_64_95(x) ((x) << APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_MACANDD_64_95_POS)
+/** @brief Macro to control which session can access command targeting MACANDD slot 96-127 */
+#define TO_MACANDD_SLOT_96_127(x) ((x) << APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_MACANDD_96_127_POS)
+
+/** @brief Macro to control if session SH0 has access to a specific command */
 #define SESSION_SH0_HAS_ACCESS (uint8_t)0x01
-/** @brief Macro to controll if session SH1 has access to a specific command */
+/** @brief Macro to control if session SH1 has access to a specific command */
 #define SESSION_SH1_HAS_ACCESS (uint8_t)0x02
-/** @brief Macro to controll if session SH2 has access to a specific command */
+/** @brief Macro to control if session SH2 has access to a specific command */
 #define SESSION_SH2_HAS_ACCESS (uint8_t)0x04
-/** @brief Macro to controll if session SH3 has access to a specific command */
+/** @brief Macro to control if session SH3 has access to a specific command */
 #define SESSION_SH3_HAS_ACCESS (uint8_t)0x08
 
 /** @brief This structure is used in this example to simplify looping
