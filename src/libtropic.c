@@ -1343,7 +1343,7 @@ struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT] = {
     {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE        ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR},
     {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR}};
 
-lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
+lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
 {
     if (!h || !config) {
         return LT_PARAM_ERR;
@@ -1361,7 +1361,7 @@ lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
     return LT_OK;
 }
 
-lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
+lt_ret_t lt_write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
 {
     if (!h || !config) {
         return LT_PARAM_ERR;
@@ -1379,7 +1379,7 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config)
     return LT_OK;
 }
 
-lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
+lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
 {
     if (!h || !config) {
         return LT_PARAM_ERR;
@@ -1397,7 +1397,7 @@ lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config)
     return LT_OK;
 }
 
-lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config)
+lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config)
 {
     if (!h || !config) {
         return LT_PARAM_ERR;
@@ -1423,7 +1423,7 @@ lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config)
     return LT_OK;
 }
 
-lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
+lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
 {
     if (!h || !shipriv || !shipub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)) {
         return LT_PARAM_ERR;

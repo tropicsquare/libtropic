@@ -25,7 +25,7 @@ lt_ret_t lt_test_rev_write_r_config_cleanup(void)
     struct lt_config_t r_config;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
@@ -39,14 +39,14 @@ lt_ret_t lt_test_rev_write_r_config_cleanup(void)
     }
 
     LT_LOG_INFO("Writing R config backup");
-    ret = write_whole_R_config(g_h, &r_config_backup);
+    ret = lt_write_whole_R_config(g_h, &r_config_backup);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to write R config.");
         return ret;
     }
 
     LT_LOG_INFO("Reading R config and checking if restored correctly");
-    ret = read_whole_R_config(g_h, &r_config);
+    ret = lt_read_whole_R_config(g_h, &r_config);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to read R config.");
         return ret;
@@ -93,11 +93,11 @@ void lt_test_rev_write_r_config(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(r_config_random.obj, LT_CONFIG_OBJ_CNT));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Backing up the whole R config:");
-    LT_TEST_ASSERT(LT_OK, read_whole_R_config(h, &r_config_backup));
+    LT_TEST_ASSERT(LT_OK, lt_read_whole_R_config(h, &r_config_backup));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config_backup.obj[i]);
     }
@@ -108,10 +108,10 @@ void lt_test_rev_write_r_config(lt_handle_t *h)
     lt_test_cleanup_function = &lt_test_rev_write_r_config_cleanup;
 
     LT_LOG_INFO("Writing the whole R config");
-    LT_TEST_ASSERT(LT_OK, write_whole_R_config(h, &r_config_random));
+    LT_TEST_ASSERT(LT_OK, lt_write_whole_R_config(h, &r_config_random));
 
     LT_LOG_INFO("Reading the whole R config");
-    LT_TEST_ASSERT(LT_OK, read_whole_R_config(h, &r_config));
+    LT_TEST_ASSERT(LT_OK, lt_read_whole_R_config(h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
         LT_LOG_INFO("Checking if it was written");
@@ -126,7 +126,7 @@ void lt_test_rev_write_r_config(lt_handle_t *h)
 
     LT_LOG_INFO("Reading the whole R config");
     memset(r_config.obj, 0, sizeof(r_config.obj));
-    LT_TEST_ASSERT(LT_OK, read_whole_R_config(h, &r_config));
+    LT_TEST_ASSERT(LT_OK, lt_read_whole_R_config(h, &r_config));
     for (int i = 0; i < LT_CONFIG_OBJ_CNT; i++) {
         LT_LOG_INFO("%s: 0x%08" PRIx32, cfg_desc_table[i].desc, r_config.obj[i]);
         LT_LOG_INFO("Checking if it was not rewritten");

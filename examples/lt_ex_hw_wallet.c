@@ -295,7 +295,7 @@ static int session_initial(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
@@ -303,7 +303,7 @@ static int session_initial(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Reading the whole R config:");
-    ret = read_whole_R_config(h, &r_config);
+    ret = lt_read_whole_R_config(h, &r_config);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to read R config, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -324,7 +324,7 @@ static int session_initial(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Writing the whole R config with the example config...");
-    ret = write_whole_R_config(h, &r_config);
+    ret = lt_write_whole_R_config(h, &r_config);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to write R config, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -332,7 +332,7 @@ static int session_initial(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Reading the whole R config again:");
-    ret = read_whole_R_config(h, &r_config);
+    ret = lt_read_whole_R_config(h, &r_config);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to read R config, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -403,7 +403,7 @@ static int session0(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d (should fail)", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_L2_HSK_ERR != ret) {
         LT_LOG_ERROR("Return value is not LT_L2_HSK_ERR, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -438,7 +438,7 @@ static int session1(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_1);
-    ret = verify_chip_and_start_secure_session(h, sh1priv, sh1pub, PAIRING_KEY_SLOT_INDEX_1);
+    ret = lt_verify_chip_and_start_secure_session(h, sh1priv, sh1pub, PAIRING_KEY_SLOT_INDEX_1);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_1,
                      lt_ret_verbose(ret));
@@ -512,7 +512,7 @@ static int session2(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_2);
-    ret = verify_chip_and_start_secure_session(h, sh2priv, sh2pub, PAIRING_KEY_SLOT_INDEX_2);
+    ret = lt_verify_chip_and_start_secure_session(h, sh2priv, sh2pub, PAIRING_KEY_SLOT_INDEX_2);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_2,
                      lt_ret_verbose(ret));
@@ -613,7 +613,7 @@ static int session3(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_3);
-    ret = verify_chip_and_start_secure_session(h, sh3priv, sh3pub, PAIRING_KEY_SLOT_INDEX_3);
+    ret = lt_verify_chip_and_start_secure_session(h, sh3priv, sh3pub, PAIRING_KEY_SLOT_INDEX_3);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_3,
                      lt_ret_verbose(ret));

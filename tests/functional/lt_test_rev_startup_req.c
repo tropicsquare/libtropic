@@ -106,7 +106,7 @@ void lt_test_rev_startup_req(lt_handle_t *h)
         LT_TEST_ASSERT(LT_BOOTLOADER_MODE, check_current_mode());
         LT_LOG_INFO("Checking that the handshake does not work...");
         LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ,
-                       verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     }
 
     // Part 3: Try to reboot from bootloader to normal.
