@@ -21,33 +21,8 @@
 /** @brief Last slot in User memory used for storing of M&D related data (only in this example). */
 #define R_MEM_DATA_SLOT_MACANDD (511)
 
-/**
- * @brief This function is used for debug print of bytes as hexadecimal string.
- *
- * @param data        Pointer to data to be printed
- * @param len         Length in bytes of data to be printed
- */
-#define BUFF_SIZE 196
-static char bytes_buffer[BUFF_SIZE];
-static char *print_bytes(uint8_t *data, uint16_t len)
-{
-    if ((len > BUFF_SIZE) || (!data)) {
-        memcpy(bytes_buffer, "error_str_decoding", 19);
-        return bytes_buffer;
-    }
-    bytes_buffer[0] = '\0';
-    for (uint16_t i = 0; i < len; i++) {
-        char byte_str[4];
-        snprintf(byte_str, sizeof(byte_str), "%02" PRIX8, data[i]);
-        // Check if appending the byte would exceed the buffer size
-        if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
-            break;  // Stop if the buffer is full
-        }
-        strncat(bytes_buffer, byte_str, sizeof(bytes_buffer) - strlen(bytes_buffer) - 1);
-    }
-
-    return bytes_buffer;
-}
+/** @brief Size of the print buffer. */
+#define PRINT_BUFF_SIZE 196
 
 #ifndef MACANDD_ROUNDS
 #define MACANDD_ROUNDS 12
@@ -447,7 +422,13 @@ int lt_ex_macandd(lt_handle_t *h)
         return -1;
     }
     LT_LOG_INFO("\tOK");
-    LT_LOG_INFO("Initialized secret: %s", print_bytes(secret, 32));
+    char print_buff[PRINT_BUFF_SIZE];
+    ret = lt_print_bytes(secret, 32, print_buff, PRINT_BUFF_SIZE);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("Initialized secret: %s", print_buff);
     LT_LOG_LINE();
 
     LT_LOG_INFO("Doing %d PIN check attempts with wrong PIN...", MACANDD_ROUNDS);
@@ -460,7 +441,12 @@ int lt_ex_macandd(lt_handle_t *h)
             lt_deinit(h);
             return -1;
         }
-        LT_LOG_INFO("\tSecret: %s", print_bytes(secret, 32));
+        ret = lt_print_bytes(secret, 32, print_buff, PRINT_BUFF_SIZE);
+        if (LT_OK != ret) {
+            LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
+            return -1;
+        }
+        LT_LOG_INFO("\tSecret: %s", print_buff);
     }
     LT_LOG_INFO("\tOK");
 
@@ -472,7 +458,12 @@ int lt_ex_macandd(lt_handle_t *h)
         lt_deinit(h);
         return -1;
     }
-    LT_LOG_INFO("\tExported secret: %s", print_bytes(secret, 32));
+    ret = lt_print_bytes(secret, 32, print_buff, PRINT_BUFF_SIZE);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("\tExported secret: %s", print_buff);
     LT_LOG_INFO("\tOK");
     LT_LOG_LINE();
 
