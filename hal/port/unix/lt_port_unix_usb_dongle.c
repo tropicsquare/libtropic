@@ -3,6 +3,9 @@
  * @author Tropic Square s.r.o.
  * @brief Port for communication with USB UART Dongle (TS1302).
  *
+ * The TS1302 dongle uses a special protocol to translate UART communication to SPI. This port
+ * implements the protocol.
+ * 
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -199,12 +202,13 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         return LT_L1_DATA_LEN_ERROR;
     }
 
-    // Bytes from handle which are about to be sent are encoded as chars and stored here:
+    // Bytes from handle which are about to be sent are encoded as chars and stored to buffered_chars.
     char buffered_chars[512] = {0};
-    for (int i = 0; i < (tx_data_length); i++) {
-        sprintf(buffered_chars + i * 2, "%02" PRIX8, s2->buff[i + offset]);  // TODO make this better?
+    for (int i = 0; i < tx_data_length; i++) {
+        sprintf(buffered_chars + i * 2, "%02" PRIX8, s2->buff[i + offset]);
     }
-    // Controll characters to keep CS LOW, they are expected by USB dongle
+
+    // Control characters to keep CS LOW (they are expected by USB dongle).
     buffered_chars[tx_data_length * 2] = 'x';
     buffered_chars[tx_data_length * 2 + 1] = '\n';
 
@@ -215,13 +219,13 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 
     lt_port_delay(s2, READ_WRITE_DELAY);
 
-    int readed = read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2);
-    if (readed != ((2 * tx_data_length) + 2)) {
+    int read_bytes = read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2);
+    if (read_bytes != ((2 * tx_data_length) + 2)) {
         return LT_L1_SPI_ERROR;
     }
 
     for (size_t count = 0; count < 2 * tx_data_length; count++) {
-        sscanf(&buffered_chars[count * 2], "%02" PRIx8, &s2->buff[count + offset]);  // TODO make this better?
+        sscanf(&buffered_chars[count * 2], "%02" PRIx8, &s2->buff[count + offset]);
     }
 
     return LT_OK;
