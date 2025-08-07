@@ -1,5 +1,5 @@
 /**
- * @file lt_port_unix.c
+ * @file lt_port_unix_spi.c
  * @author Evgeny Beysembaev <evgeny@contentwise.tech>
  * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
  *
@@ -26,7 +26,7 @@
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
-#include "lt_port_unix.h"
+#include "lt_port_unix_spi.h"
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
