@@ -543,8 +543,9 @@ enum CONFIGURATION_OBJECTS_REGS {
 };
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief CONFIGURATION_OBJECTS_REGISTERS index map to lt_config_t
- * Must reflect the order in cfg_desc_table.
+/**
+ * @brief CONFIGURATION_OBJECTS_REGISTERS index map to lt_config_t.
+ * @warning Must reflect the order in cfg_desc_table.
  */
 enum CONFIGURATION_OBJECTS_REGS_IDX {
     CONFIGURATION_OBJECTS_CFG_START_UP_IDX = 0,
