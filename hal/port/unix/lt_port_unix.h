@@ -1,6 +1,7 @@
 /**
  * @file lt_port_unix.h
  * @author Tropic Square s.r.o.
+ * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

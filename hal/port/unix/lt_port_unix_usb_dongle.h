@@ -1,6 +1,7 @@
 /**
  * @file lt_port_unix_usb_dongle.h
  * @author Tropic Square s.r.o.
+ * @brief Port for communication with USB UART Dongle (TS1302).
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

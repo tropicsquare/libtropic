@@ -1,7 +1,7 @@
 /**
  * @file lt_port_unix.c
  * @author Tropic Square s.r.o.
- * @brief  C TCP client for communicating with the TROPIC01 Model
+ * @brief Port for communication with the TROPIC01 Model using TCP.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

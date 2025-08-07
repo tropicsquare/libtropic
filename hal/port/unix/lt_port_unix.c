@@ -1,7 +1,7 @@
 /**
  * @file lt_port_unix.c
  * @author Evgeny Beysembaev <evgeny@contentwise.tech>
- * @brief  L1 implementation for Generic SPI and GPIO Linux UAPI
+ * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
