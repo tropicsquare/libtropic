@@ -4,3 +4,6 @@ build/
 .venv/
 venv/
 __pycache__/
+.model_config_save.yaml
+model_cfg.yml
+*.whl

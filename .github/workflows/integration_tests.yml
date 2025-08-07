@@ -41,25 +41,21 @@ jobs:
             sudo apt-get install cmake build-essential
             pip install ${{ env.WHEEL_FILE_NAME }}
 
-      - name: Create model configuration
+      - name: Compile libtropic with tests for the model
         run: |
-            cd tests/model_based_project/
-            python3 create_model_cfg.py \
-            --pkg-dir ../../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
+            cd tropic01_model/
+            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug
+            cd build/
+            make
 
-      - name: Compile libtropic with tests
-        run: |
-            cd tests/model_based_project/
-            ./compile_tests.sh
-      
       - name: Execute tests with CTest
         run: |
-            cd tests/model_based_project/build/
-            ctest -V -E lt_test_rev_startup_req
+            cd tropic01_model/build/
+            ctest -V
       
       - name: Upload run logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: run_logs
-          path: tests/model_based_project/build/run_logs/
+          path: tropic01_model/build/run_logs/
