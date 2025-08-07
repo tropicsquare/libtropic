@@ -28,9 +28,9 @@
 // Writes bytes to the serial port, returning 0 on success and -1 on failure.
 static int write_port(int fd, uint8_t *buffer, size_t size)
 {
-    ssize_t result = write(fd, buffer, size);
-    if (result != (ssize_t)size) {
-        LT_LOG_ERROR("failed to write to port");
+    ssize_t written_bytes = write(fd, buffer, size);
+    if (written_bytes != (ssize_t)size) {
+        LT_LOG_ERROR("Failed to write to port, written_bytes=%zd.", written_bytes);
         return -1;
     }
     return 0;
@@ -45,16 +45,16 @@ static ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 {
     size_t received = 0;
     while (received < size) {
-        ssize_t r = read(fd, buffer + received, size - received);
-        if (r < 0) {
-            LT_LOG_ERROR("failed to read from port");
+        ssize_t read_bytes = read(fd, buffer + received, size - received);
+        if (read_bytes < 0) {
+            LT_LOG_ERROR("Failed to read from port, read_bytes=%zd.", read_bytes);
             return -1;
         }
-        if (r == 0) {
-            // Timeout
+        if (read_bytes == 0) {
+            // Timeout.
             break;
         }
-        received += r;
+        received += read_bytes;
     }
     return received;
 }
@@ -65,24 +65,25 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     srand(device->rng_seed);
 
-    // serialport init
+    // Initialize the serial port.
     device->fd = open(device->dev_path, O_RDWR | O_NOCTTY);
     if (device->fd == -1) {
-        LT_LOG_ERROR(device->dev_path);
+        LT_LOG_ERROR("Error opening serial at \"%s\".", device->dev_path);
         return LT_FAIL;
     }
 
     // Flush away any bytes previously read or written.
     int result = tcflush(device->fd, TCIOFLUSH);
     if (result) {
-        LT_LOG_ERROR("tcflush failed");  // just a warning, not a fatal error
+        // just a warning, not a fatal error
+        LT_LOG_WARN("tcflush failed, result=%d", result);
     }
 
     // Get the current configuration of the serial port.
     struct termios options;
     result = tcgetattr(device->fd, &options);
     if (result) {
-        LT_LOG_ERROR("tcgetattr failed");
+        LT_LOG_ERROR("tcgetattr failed, result=%d", result);
         close(device->fd);
         return LT_FAIL;
     }
@@ -125,7 +126,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     result = tcsetattr(device->fd, TCSANOW, &options);
     if (result) {
-        LT_LOG_ERROR("tcsetattr failed");
+        LT_LOG_ERROR("tcsetattr failed, result=%d", result);
         close(device->fd);
         return LT_FAIL;
     }
@@ -137,9 +138,11 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
-    close(device->fd);
-
-    return LT_OK;
+    if(close(device->fd)) {
+        return LT_FAIL;
+    } else {
+        return LT_OK;
+    }
 }
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
@@ -161,7 +164,7 @@ lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
     UNUSED(s2);
-    /* CS LOW is handled automatically when SPI transfer is executed */
+    // CS LOW is handled automatically when SPI transfer is executed.
     return LT_OK;
 }
 
@@ -175,8 +178,8 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
     }
 
     uint8_t buff[4];
-    int readed = read_port(device->fd, buff, 4);
-    if (readed != 4) {
+    int read_bytes = read_port(device->fd, buff, 4);
+    if (read_bytes != 4) {
         return LT_L1_SPI_ERROR;
     }
 
