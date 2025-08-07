@@ -122,7 +122,7 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
  *
  * @note              To successfully estabilish Secure Session, you need to know Tropic01's X25519 public key.
  *                    (STPUB). The STPUB can be obtained using lt_get_st_pub, or you can use
- *                    verify_chip_and_start_secure_session helper function, which will obtain the STPUB
+ *                    lt_verify_chip_and_start_secure_session helper function, which will obtain the STPUB
  *                    automatically and set up the Secure Session for you.
  *
  * @param h           Device's handle
@@ -464,14 +464,6 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
  */
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
 
-/**
- * @details Helper function for printing out name of returned value
- *
- * @param ret lt_ret_t returned type value
- * @return const char* description of return value.
- */
-const char *lt_ret_verbose(lt_ret_t ret);
-
 #ifdef LT_HELPERS
 
 /** @brief Upper bound for CHIP_ID fields as hex string (used in lt_print_chip_id()). */
@@ -481,13 +473,21 @@ const char *lt_ret_verbose(lt_ret_t ret);
 extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
 
 /**
+ * @details Helper function for printing out name of returned value.
+ *
+ * @param ret lt_ret_t returned type value
+ * @return description of return value
+ */
+const char *lt_ret_verbose(lt_ret_t ret);
+
+/**
  * @brief Writes the whole R-Config with the passed `config`.
  *
  * @param h           Device's handle
  * @param config      Array into which objects are read
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
+lt_ret_t lt_write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
 
 /**
  * @brief This function reads R config objects into structure
@@ -496,7 +496,7 @@ lt_ret_t write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
  * @param config      Struct into which objects are readed
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
+lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
 
 /**
  * @brief This function reads I config objects into structure
@@ -505,7 +505,7 @@ lt_ret_t read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
  * @param config      Struct into which objects are readed
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
+lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
 
 /**
  * @brief Writes the whole I-Config with the passed `config`.
@@ -515,7 +515,7 @@ lt_ret_t read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
  * @param config      Array into which objects are read
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
+lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
 
 /**
  * @brief This function establish a secure channel between host MCU and TROPIC01 chip
@@ -526,7 +526,7 @@ lt_ret_t write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
  * @param pkey_index  Pairing key's index
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
+lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
 
 /**
  * @brief Prints bytes in hex format to the given output buffer.

@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `enum CONFIGURATION_OBJECTS_REGS` with values from `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` to be compatible with User API v1.3.0.
 - Use strict format string types from `inttypes.h` or `%zu` for `size_t` (increases good portability).
 - Moved `model_based_project/` from `tests/` to repo root and renamed to `tropic01_model/`.
+- Added prefix `lt_` to all helper functions.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
