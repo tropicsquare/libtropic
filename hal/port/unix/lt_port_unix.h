@@ -12,7 +12,7 @@
 
 /**
  * @brief Device structure for Unix SPI port.
- * 
+ *
  * @note Public members are meant to be configured by the developer before passing the handle to
  *       libtropic.
  */

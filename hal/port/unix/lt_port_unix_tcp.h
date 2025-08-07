@@ -10,7 +10,7 @@
 
 /**
  * @brief Device structure for Unix model port (TCP communication).
- * 
+ *
  * @note Public members are meant to be configured by the developer before passing the handle to
  *       libtropic.
  */
