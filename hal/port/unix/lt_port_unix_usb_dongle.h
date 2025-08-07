@@ -19,7 +19,7 @@
  * @note Public members are meant to be configured by the developer before passing the handle to
  *       libtropic.
  */
-typedef struct lt_dev_unix_uart_t {
+typedef struct lt_dev_unix_usb_dongle_t {
     /** @public @brief Path to USB UART device. */
     char dev_path[DEVICE_PATH_MAX_LEN];
     /** @public @brief UART baudrate. */
@@ -29,6 +29,6 @@ typedef struct lt_dev_unix_uart_t {
 
     /** @private @brief UART device file descriptor. */
     int fd;
-} lt_dev_unix_uart_t;
+} lt_dev_unix_usb_dongle_t;
 
 #endif  // LT_PORT_UNIX_USB_DONGLE_H

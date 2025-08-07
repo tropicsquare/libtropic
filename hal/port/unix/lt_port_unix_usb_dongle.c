@@ -61,7 +61,7 @@ ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
+    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
     srand(device->rng_seed);
 
@@ -135,7 +135,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
+    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
     close(device->fd);
 
@@ -167,7 +167,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
+    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
     char cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
     if (write_port(device->fd, cs_high, 5) != 0) {
@@ -190,7 +190,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 {
     UNUSED(timeout);
 
-    lt_dev_unix_uart_t *device = (lt_dev_unix_uart_t *)s2->device;
+    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
