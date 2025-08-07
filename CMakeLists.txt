@@ -22,6 +22,14 @@ option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" O
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags" OFF)
+option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
+
+# Define the ASAN flags here so they are not duplicated.
+set(LT_ASAN_COMPILE_FLAGS "-fsanitize=address,leak,undefined;-fno-omit-frame-pointer;-g"
+    CACHE INTERNAL "Robust compile flags for Sanitizers (ASan, LSan, UBSan)")
+
+set(LT_ASAN_LINK_FLAGS "-fsanitize=address,leak,undefined;-static-libasan"
+    CACHE INTERNAL "Link flags for Sanitizers (ASan, LSan, UBSan)")
 
 set(DEFAULT_LAB_BATCH_PKG_DIR
     "2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
