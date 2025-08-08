@@ -4,7 +4,8 @@
  * @brief Port for communication with USB UART Dongle (TS1302).
  *
  * The TS1302 dongle uses a special protocol to translate UART communication to SPI. This port
- * implements the protocol.
+ * implements the protocol. More info about the dongle in GitHub repo:
+ * https://github.com/tropicsquare/ts13-usb-dev-kit-fw
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -207,7 +208,8 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         sprintf(buffered_chars + i * 2, "%02" PRIX8, s2->buff[i + offset]);
     }
 
-    // Control characters to keep CS LOW (they are expected by USB dongle).
+    // Control characters to keep CS LOW (they are expected by USB dongle, see the top of this file
+    // for more information).
     buffered_chars[tx_data_length * 2] = 'x';
     buffered_chars[tx_data_length * 2 + 1] = '\n';
 
