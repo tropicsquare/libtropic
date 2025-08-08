@@ -538,7 +538,7 @@ static int session2(lt_handle_t *h)
     LT_LOG_INFO("Message received from TROPIC01:");
     LT_LOG_INFO("\t\"%s\"", recv_buf);
 
-    uint8_t dummy_key[32];
+    uint8_t dummy_key[32] = {0};
     LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", (int)ECC_SLOT_0);
     ret = lt_ecc_key_store(h, ECC_SLOT_0, CURVE_ED25519, dummy_key);
     if (LT_L3_UNAUTHORIZED != ret) {

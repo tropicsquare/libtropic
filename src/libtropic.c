@@ -363,7 +363,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
         return LT_PARAM_ERR;
     }
 
-    session_state_t state;
+    session_state_t state = {0};
 
     lt_ret_t ret = lt_out__session_start(h, pkey_index, &state);
     if (ret != LT_OK) {

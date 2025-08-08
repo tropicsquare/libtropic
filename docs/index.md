@@ -145,22 +145,6 @@ Then do the same for files used in trezor_crypto.
 
 ## Using CMAKE switches {#using-cmake-switches}
 
-Libtropic is configurable with CMake options. They are either passed from parent project's CMakeLists.txt, or over prompt when building is invoked.
+Libtropic is configurable with CMake options. They are either passed from parent project's `CMakeLists.txt`, or over prompt when building is invoked.
 
-```
-option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
-option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
-option(LT_BUILD_DOCS "Build documentation" OFF)
-option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
-option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
-option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
-# This switch controls if helper utilities are compiled in. In most cases this should be ON,
-# examples and tests need to have helpers utilities compiled.
-# Switch it off to compile only basic libtropic API.
-option(LT_HELPERS "Compile helper function" ON)
-# Enable usage of INT pin during communication. Instead of polling for response,
-# host will be notified by INT pin when response is ready.
-option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
-option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
-option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
-```
+To see available options, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.

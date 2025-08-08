@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed Generic Linux SPI port to `lt_port_unix_spi.c`.
 - Runtime state of Generic Linux ports (SPI, USB) is now kept in device structure in handle. This structure
   is also used for port configuration (device mapping, speeds...).
+- Strict compile flags can now be activated with `LT_STRICT_COMP_FLAGS` CMake variable, which is automatically set when examples or tests are built.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -46,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Model configuration is automatically created when tests are run in `tropic01_model/`.
 - Enum `CONFIGURATION_OBJECTS_REGS_IDX` with indexes of `lt_config_t.obj`.
 - Macros `TO_MACANDD_SLOT_0_31`, `TO_MACANDD_SLOT_32_63`, `TO_MACANDD_SLOT_64_95`, `TO_MACANDD_SLOT_96_127`.
+- Model project: ability to run tests with AddressSanitizer or Valgrind with `LT_ASAN` or `LT_VALGRIND`.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.

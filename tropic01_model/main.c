@@ -6,6 +6,7 @@
  */
 
 #include <arpa/inet.h>
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
 
@@ -17,7 +18,13 @@
 
 int main(void)
 {
-    lt_handle_t __lt_handle__;
+#ifdef LT_BUILD_TESTS
+    // Disable buffering on stdout and stderr (problem in GitHub CI)
+    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stderr, NULL, _IONBF, 0);
+#endif
+
+    lt_handle_t __lt_handle__ = {0};
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
     __lt_handle__.l3.buff = l3_buffer;
