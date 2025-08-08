@@ -321,9 +321,10 @@ void lt_test_rev_startup_req(lt_handle_t *h);
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
  *  2. Backup the whole R-Config.
- *  3. Write the whole R-Config with random data and check it.
- *  4. Write the whole R-Config again and check for an error.
- *  4. Restore the R-Config and check it.
+ *  3. Erase the R-config.
+ *  4. Write the whole R-Config with random data and check it.
+ *  5. Write the whole R-Config again and check for an error.
+ *  6. Restore the R-Config and check it.
  *
  * @param h     Device's handle
  */
