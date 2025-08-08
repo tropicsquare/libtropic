@@ -40,7 +40,7 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "-v", "--use-valgrind",
+        "--use-valgrind",
         help="Runs the test with Valgrind.",
         action="store_true"
     )
