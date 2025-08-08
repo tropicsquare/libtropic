@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Moved `lt_uart_def_unix_t` to `libtropic_port.h`.
 - Updated `enum CONFIGURATION_OBJECTS_REGS` with values from `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` to be compatible with User API v1.3.0.
 - Use strict format string types from `inttypes.h` or `%zu` for `size_t` (increases good portability).
+- Moved `model_based_project/` from `tests/` to repo root and renamed to `tropic01_model/`.
+- Added prefix `lt_` to all helper functions.
+- Renamed Generic Linux SPI port to `lt_port_unix_spi.c`.
+- Runtime state of Generic Linux ports (SPI, USB) is now kept in device structure in handle. This structure
+  is also used for port configuration (device mapping, speeds...).
+- Strict compile flags can now be activated with `LT_STRICT_COMP_FLAGS` CMake variable, which is automatically set when examples or tests are built.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -38,6 +44,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Helper functions `lt_print_bytes()` and `lt_print_chip_id()`.
 - Macros for chip package IDs and FAB IDs.
 - Header files `include/tropic01_application_co.h` and `include/tropic01_bootloader_co.h` with address enums and mask defines.
+- Model configuration is automatically created when tests are run in `tropic01_model/`.
+- Enum `CONFIGURATION_OBJECTS_REGS_IDX` with indexes of `lt_config_t.obj`.
+- Macros `TO_MACANDD_SLOT_0_31`, `TO_MACANDD_SLOT_32_63`, `TO_MACANDD_SLOT_64_95`, `TO_MACANDD_SLOT_96_127`.
+- Model project: ability to run tests with AddressSanitizer or Valgrind with `LT_ASAN` or `LT_VALGRIND`.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
@@ -49,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set value of macro `L3_CMD_DATA_SIZE_MAX` to 4111.
 - Added 13 of maximal padding to macro `L3_FRAME_MAX_SIZE`.
 - Set value of macro `PING_LEN_MAX` to 4096.
-
+- Allowed mcounter index 0 in libtropic API (`lt_mcounter_init`).
 
 ### Removed
 - Macro `LT_USE_ASSERT`, `assert()` is always inserted.
@@ -59,6 +69,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed macro `LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN`.
 - Header file `include/TROPIC01_configuration_objects.h`.
 - Checks with `<` for enums (fixes compilation errors on STM32 and shouldn't be needed anyway).
+- File `tests/model_based_project/compile_tests.sh` (refer to `tropic01_model/README.md` for instructions about compiling tests).
+- File `tests/model_based_project/model_logging_cfg.py`.
+- WiringPi port (`lt_port_raspberrypi_wiringpi.c`), was replaced with Generic Linux SPI port (`lt_port_unix_spi.c`).
 
 ## [0.1.0]
 

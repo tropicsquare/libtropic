@@ -16,27 +16,22 @@
 /** @brief Length of the buffers for certificates. */
 #define CERTS_BUF_LEN 700
 
-void lt_test_rev_read_cert_store(void)
+void lt_test_rev_read_cert_store(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_rev_read_cert_store()");
     LT_LOG_INFO("----------------------------------------------");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
-    uint8_t cert1[CERTS_BUF_LEN], cert2[CERTS_BUF_LEN], cert3[CERTS_BUF_LEN], cert4[CERTS_BUF_LEN];
+    uint8_t cert1[CERTS_BUF_LEN] = {0}, cert2[CERTS_BUF_LEN] = {0}, cert3[CERTS_BUF_LEN] = {0},
+            cert4[CERTS_BUF_LEN] = {0};
     struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
                                     .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
 
     LT_LOG_INFO("Initializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Reading Certificate store");
-    LT_TEST_ASSERT(LT_OK, lt_get_info_cert_store(&h, &store));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_cert_store(h, &store));
     LT_LOG_INFO();
 
     uint8_t *cert;
@@ -58,5 +53,5 @@ void lt_test_rev_read_cert_store(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(h));
 }

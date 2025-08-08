@@ -16,34 +16,28 @@
 /** @brief Size of the Ping message, including '\0'. */
 #define PING_MSG_SIZE 44
 
-int lt_ex_hello_world(void)
+int lt_ex_hello_world(lt_handle_t *h)
 {
     LT_LOG_INFO("======================================");
     LT_LOG_INFO("==== TROPIC01 Hello World Example ====");
     LT_LOG_INFO("======================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
-    ret = lt_init(&h);
+    ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
@@ -51,11 +45,11 @@ int lt_ex_hello_world(void)
     uint8_t recv_buf[PING_MSG_SIZE];
     LT_LOG_INFO("Sending Ping command with message:");
     LT_LOG_INFO("\t\"%s\"", PING_MSG);
-    ret = lt_ping(&h, (const uint8_t*)PING_MSG, recv_buf, PING_MSG_SIZE);
+    ret = lt_ping(h, (const uint8_t *)PING_MSG, recv_buf, PING_MSG_SIZE);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Ping command failed, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
@@ -65,15 +59,15 @@ int lt_ex_hello_world(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    ret = lt_session_abort(&h);
+    ret = lt_session_abort(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(&h);
+    ret = lt_deinit(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
         return -1;

@@ -1,3 +1,6 @@
+#ifndef LT_LIBTROPIC_MACROS
+#define LT_LIBTROPIC_MACROS
+
 /**
  * @file libtropic_macros.h
  * @brief Various helper macros.
@@ -10,3 +13,5 @@
 
 // Get struct member size at compile-time.
 #define MEMBER_SIZE(type, member) (sizeof(((type *)0)->member))
+
+#endif  // LT_LIBTROPIC_MACROS

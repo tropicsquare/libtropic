@@ -47,27 +47,21 @@ int pin_check(lt_handle_t *h, uint8_t *pin, uint32_t pin_len, mac_and_destroy_sl
     return 0;
 }
 
-void lt_test_rev_mac_and_destroy(void)
+void lt_test_rev_mac_and_destroy(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
     LT_LOG_INFO("lt_test_rev_mac_and_destroy()");
     LT_LOG_INFO("----------------------------------------------");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     uint8_t n, wrong_attempts, s[32], t[32], u[32], v[32], w[32], k_from_setup[32], k_from_check[32], k_i[32],
         ignored[32], pin[PIN_LEN_MAX], pin_wrong[PIN_LEN_MAX], ciphertexts[128][32];
     uint32_t pin_len, tmp1, tmp2[PIN_LEN_MAX];
 
     LT_LOG_INFO("Initializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_init(&h));
+    LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Setup PIN");
@@ -102,13 +96,13 @@ void lt_test_rev_mac_and_destroy(void)
     for (uint8_t i = 0; i < n; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Executing MAC_And_Destroy with u and slot #%" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, u, ignored));
+        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, i, u, ignored));
 
         LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, v, w));
+        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, i, v, w));
 
         LT_LOG_INFO("Executing MAC_And_Destroy with u and slot #%" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, u, ignored));
+        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, i, u, ignored));
 
         LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
         lt_hmac_sha256(w, 32, pin, pin_len, k_i);
@@ -135,13 +129,13 @@ void lt_test_rev_mac_and_destroy(void)
     for (uint8_t i = 0; i < wrong_attempts; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Doing wrong attempt #%" PRIu8 "...", i);
-        LT_TEST_ASSERT(1, pin_check(&h, pin_wrong, pin_len, i, ciphertexts, t, s));
+        LT_TEST_ASSERT(1, pin_check(h, pin_wrong, pin_len, i, ciphertexts, t, s));
     }
     LT_LOG_LINE();
 
     LT_LOG_INFO("Checking PIN with the first undestroyed slot #%" PRIu8 "...", wrong_attempts);
     LT_LOG_INFO();
-    LT_TEST_ASSERT(0, pin_check(&h, pin, pin_len, wrong_attempts, ciphertexts, t, s));
+    LT_TEST_ASSERT(0, pin_check(h, pin, pin_len, wrong_attempts, ciphertexts, t, s));
 
     LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
     // Compute the cryptographic key k
@@ -158,7 +152,7 @@ void lt_test_rev_mac_and_destroy(void)
 
     for (uint8_t i = 0; i <= wrong_attempts; i++) {
         LT_LOG_INFO("Restoring slot #%" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(&h, i, u, ignored));
+        LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, i, u, ignored));
     }
     LT_LOG_LINE();
 
@@ -166,7 +160,7 @@ void lt_test_rev_mac_and_destroy(void)
     for (uint8_t i = 0; i < n; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Doing an attempt with the correct PIN with slot #%" PRIu8 "...", i);
-        LT_TEST_ASSERT(0, pin_check(&h, pin, pin_len, i, ciphertexts, t, s));
+        LT_TEST_ASSERT(0, pin_check(h, pin, pin_len, i, ciphertexts, t, s));
 
         LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
         // Compute the cryptographic key k
@@ -178,8 +172,8 @@ void lt_test_rev_mac_and_destroy(void)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(&h));
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(h));
 
     LT_LOG_INFO("Deinitializing handle");
-    LT_TEST_ASSERT(LT_OK, lt_deinit(&h));
+    LT_TEST_ASSERT(LT_OK, lt_deinit(h));
 }

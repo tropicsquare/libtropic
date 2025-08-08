@@ -19,6 +19,7 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
+
 // In TROPIC01_fw_update_files/ there are all officially released and signed firmwares for TROPIC01 chip, for all
 // silicon revisions. Header files containing the firmware update bytes have all the same name, switching happens in
 // CMakeFiles.txt, where it can be defined which firmware will be used use based on path to this header.
@@ -37,22 +38,15 @@
 #define FW_APP_UPDATE_BANK FW_BANK_FW1
 #define FW_SPECT_UPDATE_BANK FW_BANK_SPECT1
 
-int lt_ex_fw_update(void)
+int lt_ex_fw_update(lt_handle_t *h)
 {
     LT_LOG("\t=======================================================================");
     LT_LOG("\t=====  TROPIC01 FW update                                           ===");
     LT_LOG("\t=======================================================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
-
     lt_ret_t ret = LT_FAIL;
 
-    lt_init(&h);
+    lt_init(h);
 
     // Reused variable
     uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
@@ -108,6 +102,7 @@ int lt_ex_fw_update(void)
             LT_LOG_ERROR("Failed to get RISCV firmware version, ret=%s", lt_ret_verbose(ret));
         }
 
+
         // Getting SPECT firmware version
         ret = lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret == LT_OK) {
@@ -116,6 +111,7 @@ int lt_ex_fw_update(void)
         }
         else {
             LT_LOG_ERROR("Failed to get SPECT firmware version, ret=%s", lt_ret_verbose(ret));
+
         }
     }
     else {

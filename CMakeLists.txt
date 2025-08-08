@@ -21,12 +21,28 @@ option(LT_HELPERS "Compile helper function" ON)
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
+option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags" OFF)
+option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
+option(LT_VALGRIND "Enable Valgrind" OFF)
 
-set(LT_SH0_PRIV_PATH_DEFAULT "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/sh0_key_pair/sh_x25519_private_key_2025-03-24T09-15-15Z.pem")
+# Define the ASAN flags here so they are not duplicated.
+set(LT_ASAN_COMPILE_FLAGS "-fsanitize=address,leak,undefined;-fno-omit-frame-pointer;-g"
+    CACHE INTERNAL "Robust compile flags for Sanitizers (ASan, LSan, UBSan)")
+
+set(LT_ASAN_LINK_FLAGS "-fsanitize=address,leak,undefined;-static-libasan"
+    CACHE INTERNAL "Link flags for Sanitizers (ASan, LSan, UBSan)")
+
+set(DEFAULT_LAB_BATCH_PKG_DIR
+    "2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
+    CACHE STRING
+    "Default lab batch package directory"
+)
+set(LT_SH0_PRIV_PATH_DEFAULT "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/${DEFAULT_LAB_BATCH_PKG_DIR}sh0_key_pair/sh_x25519_private_key_2025-03-24T09-15-15Z.pem")
 set(LT_SH0_PRIV_PATH
     "${LT_SH0_PRIV_PATH_DEFAULT}"
     CACHE FILEPATH
-    "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)")
+    "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)"
+)
 
 # Check if cryptography provider is defined
 if(
@@ -214,7 +230,7 @@ foreach(example_name ${LIBTROPIC_EXAMPLE_LIST})
     string(REPLACE " " "_" example_macro ${example_macro})
     string(APPEND LIBTROPIC_EXAMPLE_FUNCTIONS_CONTENT
         "#elif defined(${example_macro})\n"
-        "__lt_ex_return_val__ = ${example_name}();\n"
+        "__lt_ex_return_val__ = ${example_name}(&__lt_handle__);\n"
     )
 endforeach()
 
@@ -245,6 +261,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_r_mem
     lt_test_rev_erase_r_config
     lt_test_rev_handshake_req
+    lt_test_rev_mcounter
     lt_test_rev_read_cert_store
     lt_test_rev_read_chip_id
     lt_test_rev_read_i_config
@@ -271,7 +288,7 @@ foreach(test_name ${LIBTROPIC_TEST_LIST})
     string(REPLACE " " "_" test_macro ${test_macro})
     string(APPEND LIBTROPIC_TEST_FUNCTIONS_CONTENT
         "#elif defined(${test_macro})\n"
-        "  ${test_name}();\n"
+        "  ${test_name}(&__lt_handle__);\n"
     )
 endforeach()
 
@@ -298,6 +315,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_r_mem.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_handshake_req.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mcounter.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_cert_store.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_chip_id.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
@@ -370,12 +388,26 @@ target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 #                                                                         #
 ###########################################################################
 
-if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
-    target_compile_options(tropic PRIVATE -Wall -Wextra  -Wpedantic
+# Conditionally apply strict compilation flags
+if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
+
+    # 1. Apply the compiler options immediately.
+    # This is the primary action of this block.
+    target_compile_options(tropic PUBLIC
+        -Wall -Wextra -Werror -Wpedantic
         -Wshadow -Wformat=2 -Wcast-align -Wfloat-equal -Wnull-dereference
         -Wredundant-decls -Wlogical-op -Wstrict-prototypes
         -fstack-protector-strong
     )
+
+    # 2. Handle the cache variable for user visibility.
+    # If the flag wasn't already ON, it means tests/examples implicitly enabled it.
+    # We update the cache so the user sees the actual state in cmake-gui.
+    if(NOT LT_STRICT_COMP_FLAGS)
+        message(STATUS "Enabling strict compilation flags because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
+        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags" FORCE)
+    endif()
+
 endif()
 
 

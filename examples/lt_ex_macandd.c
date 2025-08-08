@@ -21,33 +21,8 @@
 /** @brief Last slot in User memory used for storing of M&D related data (only in this example). */
 #define R_MEM_DATA_SLOT_MACANDD (511)
 
-/**
- * @brief This function is used for debug print of bytes as hexadecimal string.
- *
- * @param data        Pointer to data to be printed
- * @param len         Length in bytes of data to be printed
- */
-#define BUFF_SIZE 196
-static char bytes_buffer[BUFF_SIZE];
-static char *print_bytes(uint8_t *data, uint16_t len)
-{
-    if ((len > BUFF_SIZE) || (!data)) {
-        memcpy(bytes_buffer, "error_str_decoding", 19);
-        return bytes_buffer;
-    }
-    bytes_buffer[0] = '\0';
-    for (uint16_t i = 0; i < len; i++) {
-        char byte_str[4];
-        snprintf(byte_str, sizeof(byte_str), "%02" PRIX8, data[i]);
-        // Check if appending the byte would exceed the buffer size
-        if (strlen(bytes_buffer) + strlen(byte_str) + 1 > sizeof(bytes_buffer)) {
-            break;  // Stop if the buffer is full
-        }
-        strncat(bytes_buffer, byte_str, sizeof(bytes_buffer) - strlen(bytes_buffer) - 1);
-    }
-
-    return bytes_buffer;
-}
+/** @brief Size of the print buffer. */
+#define PRINT_BUFF_SIZE 196
 
 #ifndef MACANDD_ROUNDS
 #define MACANDD_ROUNDS 12
@@ -397,34 +372,28 @@ exit:
     return ret;
 }
 
-int lt_ex_macandd(void)
+int lt_ex_macandd(lt_handle_t *h)
 {
     LT_LOG_INFO("==========================================");
     LT_LOG_INFO("==== TROPIC01 Mac and Destroy Example ====");
     LT_LOG_INFO("==========================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
-    ret = lt_init(&h);
+    ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = verify_chip_and_start_secure_session(&h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -445,52 +414,68 @@ int lt_ex_macandd(void)
 
     // Set the PIN and log out the secret
     LT_LOG("Setting the user PIN...");
-    ret = lt_PIN_set(&h, pin, 4, additional_data, additional_data_size, secret);
+    ret = lt_PIN_set(h, pin, 4, additional_data, additional_data_size, secret);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to set the user PIN, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_INFO("\tOK");
-    LT_LOG_INFO("Initialized secret: %s", print_bytes(secret, 32));
+    char print_buff[PRINT_BUFF_SIZE];
+    ret = lt_print_bytes(secret, 32, print_buff, PRINT_BUFF_SIZE);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("Initialized secret: %s", print_buff);
     LT_LOG_LINE();
 
     LT_LOG_INFO("Doing %d PIN check attempts with wrong PIN...", MACANDD_ROUNDS);
     for (int i = 1; i < MACANDD_ROUNDS; i++) {
         LT_LOG_INFO("\tInputting wrong PIN -> slot #%d destroyed", i);
-        ret = lt_PIN_check(&h, pin_wrong, 4, additional_data, additional_data_size, secret);
+        ret = lt_PIN_check(h, pin_wrong, 4, additional_data, additional_data_size, secret);
         if (LT_FAIL != ret) {
             LT_LOG_ERROR("Return value is not LT_FAIL, ret=%s", lt_ret_verbose(ret));
-            lt_session_abort(&h);
-            lt_deinit(&h);
+            lt_session_abort(h);
+            lt_deinit(h);
             return -1;
         }
-        LT_LOG_INFO("\tSecret: %s", print_bytes(secret, 32));
+        ret = lt_print_bytes(secret, 32, print_buff, PRINT_BUFF_SIZE);
+        if (LT_OK != ret) {
+            LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
+            return -1;
+        }
+        LT_LOG_INFO("\tSecret: %s", print_buff);
     }
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Doing Final PIN attempt with correct PIN, slots are reinitialized again...");
-    ret = lt_PIN_check(&h, pin, 4, additional_data, additional_data_size, secret);
+    ret = lt_PIN_check(h, pin, 4, additional_data, additional_data_size, secret);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Attempt with correct PIN failed, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(&h);
-        lt_deinit(&h);
+        lt_session_abort(h);
+        lt_deinit(h);
         return -1;
     }
-    LT_LOG_INFO("\tExported secret: %s", print_bytes(secret, 32));
+    ret = lt_print_bytes(secret, 32, print_buff, PRINT_BUFF_SIZE);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("lt_print_bytes failed, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+    LT_LOG_INFO("\tExported secret: %s", print_buff);
     LT_LOG_INFO("\tOK");
     LT_LOG_LINE();
 
     LT_LOG_INFO("Aborting Secure Session");
-    ret = lt_session_abort(&h);
+    ret = lt_session_abort(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
         return -1;
     }
 
     LT_LOG_INFO("Deinitializing handle");
-    ret = lt_deinit(&h);
+    ret = lt_deinit(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
         return -1;
