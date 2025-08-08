@@ -39,6 +39,12 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "-v", "--use-valgrind",
+        help="Runs the test with Valgrind.",
+        action="store_true"
+    )
+
+    parser.add_argument(
         "-o", "--output-dir",
         help="Path to the directory where output should be saved.",
         type=pathlib.Path,
@@ -50,6 +56,7 @@ if __name__ == "__main__":
     # Save args
     test_path: pathlib.Path = args.test
     model_cfg_path: pathlib.Path = args.model_cfg
+    use_valgrind: bool = args.use_valgrind
     output_path: pathlib.Path = args.output_dir
     test_name = test_path.stem
 
@@ -98,15 +105,17 @@ if __name__ == "__main__":
     ret = 0
     with output_path.joinpath(test_name).with_suffix(".log").open("w") as f:
         try: 
-            subprocess.run(
-                [
-                    "stdbuf", "-o0", "-e0",  # Disable buffering of stdout and stderr
-                    str(test_path)
-                ],
-                stdout=f,
-                stderr=f,
-                check=True
-            )
+            test_cmd = ["stdbuf", "-o0", "-e0"]  # Disable buffering of stdout and stderr
+            if use_valgrind:
+                test_cmd += ["valgrind",
+                             "--leak-check=full",
+                             "--show-leak-kinds=all",
+                             "--track-origins=yes",
+                             "--verbose",
+                             "--error-exitcode=1"]
+            test_cmd += [str(test_path)]
+
+            subprocess.run(args=test_cmd, stdout=f, stderr=f, check=True)
         except subprocess.CalledProcessError as e:
             ret = e.returncode
 

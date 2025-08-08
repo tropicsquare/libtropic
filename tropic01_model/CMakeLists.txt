@@ -43,6 +43,12 @@ if(LT_ASAN)
     add_link_options(${LT_ASAN_LINK_FLAGS})
 endif()
 
+set(VALGRIND_ARG "")
+if(LT_VALGRIND)
+    message(STATUS "Tests will be run with Valgrind.")
+    set(VALGRIND_ARG --use-valgrind)
+endif()
+
 ###########################################################################
 #                                                                         #
 #   SOURCES                                                               #
@@ -162,6 +168,7 @@ if(LT_BUILD_TESTS)
                 COMMAND python3 -m model_test_runner
                         -t ${CMAKE_CURRENT_BINARY_DIR}/${exe_name}
                         -c ${MODEL_CFG_PATH}
+                        ${VALGRIND_ARG}
                         -o ${RUN_LOGS_DIR}
         )
 
