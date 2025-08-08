@@ -144,9 +144,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     if (close(device->fd)) {
         return LT_FAIL;
     }
-    else {
-        return LT_OK;
-    }
+    return LT_OK;
 }
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
