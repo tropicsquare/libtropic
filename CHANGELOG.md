@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use strict format string types from `inttypes.h` or `%zu` for `size_t` (increases good portability).
 - Moved `model_based_project/` from `tests/` to repo root and renamed to `tropic01_model/`.
 - Added prefix `lt_` to all helper functions.
+- Renamed Generic Linux SPI port to `lt_port_unix_spi.c`.
+- Runtime state of Generic Linux ports (SPI, USB) is now kept in device structure in handle. This structure
+  is also used for port configuration (device mapping, speeds...).
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -65,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Checks with `<` for enums (fixes compilation errors on STM32 and shouldn't be needed anyway).
 - File `tests/model_based_project/compile_tests.sh` (refer to `tropic01_model/README.md` for instructions about compiling tests).
 - File `tests/model_based_project/model_logging_cfg.py`.
+- WiringPi port (`lt_port_raspberrypi_wiringpi.c`), was replaced with Generic Linux SPI port (`lt_port_unix_spi.c`).
 
 ## [0.1.0]
 
