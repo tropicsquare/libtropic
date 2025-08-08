@@ -5,7 +5,7 @@
  *
  * The TS1302 dongle uses a special protocol to translate UART communication to SPI. This port
  * implements the protocol.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
@@ -141,9 +141,10 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
-    if(close(device->fd)) {
+    if (close(device->fd)) {
         return LT_FAIL;
-    } else {
+    }
+    else {
         return LT_OK;
     }
 }

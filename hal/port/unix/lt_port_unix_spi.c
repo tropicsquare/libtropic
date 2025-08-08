@@ -2,7 +2,7 @@
  * @file lt_port_unix_spi.c
  * @author Evgeny Beysembaev <evgeny@contentwise.tech>
  * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
- * 
+ *
  * @note The chip select (CS) pin is controlled separately using GPIO, as the protocol requires
  *       manual handling of the chip select.
  *
@@ -33,15 +33,15 @@
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    lt_dev_unix_spi_t *device        = (lt_dev_unix_spi_t *)(s2->device);
-    uint8_t            spiBPW        = 8;
-    uint32_t           request_mode;
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    uint8_t spiBPW = 8;
+    uint32_t request_mode;
 
     srand(device->rng_seed);
 
     LT_LOG_DEBUG("Initializing SPI...\n");
-    LT_LOG_DEBUG("SPI speed: %d",   device->spi_speed);
-    LT_LOG_DEBUG("SPI device: %s",  device->spi_dev);
+    LT_LOG_DEBUG("SPI speed: %d", device->spi_speed);
+    LT_LOG_DEBUG("SPI device: %s", device->spi_dev);
     LT_LOG_DEBUG("GPIO device: %s", device->gpio_dev);
     LT_LOG_DEBUG("GPIO CS pin: %d", device->gpio_cs_num);
 
@@ -58,7 +58,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         close(device->fd);
         return LT_FAIL;
     }
-    
+
     // RD is read what mode the device actually is in.
     if (ioctl(device->fd, SPI_IOC_RD_MODE32, &device->mode) < 0) {
         LT_LOG_ERROR("Can't get SPI mode!");
@@ -123,7 +123,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     // We want to attempt to close both, even if one of them fails, hence storing the return val
     // and checking later.
     int gpio_close_ret = close(device->gpio_fd);
-    int spi_close_ret  = close(device->fd);
+    int spi_close_ret = close(device->fd);
 
     if (gpio_close_ret || spi_close_ret) {
         return LT_FAIL;
@@ -168,9 +168,9 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 
     int ret = 0;
     struct spi_ioc_transfer spi = {
-        .tx_buf      = (unsigned long)s2->buff + offset,
-        .rx_buf      = (unsigned long)s2->buff + offset,
-        .len         = tx_data_length,
+        .tx_buf = (unsigned long)s2->buff + offset,
+        .rx_buf = (unsigned long)s2->buff + offset,
+        .len = tx_data_length,
         .delay_usecs = 0,
     };
 
