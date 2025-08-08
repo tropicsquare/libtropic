@@ -46,6 +46,8 @@ make
 As a result, executables for each example are built in the `build/` directory.
 > [!TIP]
 To enable debugging symbols (e.g. to use GDB) and debug logging, add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
+>
+> To use AddressSanitizer (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 
 3. Create a YAML configuration for the model from one of the lab batch packages:
 ```shell
@@ -83,6 +85,10 @@ make
 As a result, executables for each test are built in the `build/` directory.
 > [!TIP]
 To enable debugging symbols (e.g. to use GDB) and debug logging, add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
+>
+> To use AddressSanitizer (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
+>
+> To execute the tests with Valgrind, add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_VALGRIND=1` when executing `cmake`. Note that Valgrind will be executed automatically only when using CTest!
 
 3. Now, the tests can be run using CTest. To see available tests, run:
 ```shell
