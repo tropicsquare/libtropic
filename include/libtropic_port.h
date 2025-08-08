@@ -1,14 +1,3 @@
-#ifndef LT_LIBTROPIC_PORT_H
-#define LT_LIBTROPIC_PORT_H
-
-/**
- * @defgroup group_port_functions Layer 1 port specific functions
- * @brief Defined for each supported platform
- * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported.
- *
- * @{
- */
-
 /**
  * @file libtropic_port.h
  * @brief Header file with layer 1 interfaces which are defined based on host platform
@@ -17,41 +6,25 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <netinet/in.h>
+#ifndef LT_LIBTROPIC_PORT_H
+#define LT_LIBTROPIC_PORT_H
 
 #include "libtropic_common.h"
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// DEVICE STRUCTURES
-//
-// Here are device structures specific for each port. The structures can contain
-// arbitrary content required for port: configuration data, runtime data etc.
-///////////////////////////////////////////////////////////////////////////////////////////////////
-#define UART_DEV_MAX_LEN 32
-typedef struct {
-    char device[UART_DEV_MAX_LEN];  // = "/dev/ttyACM0";
-    uint32_t baud_rate;             // = 115200;
-} lt_uart_def_unix_t;
-
+/**
+ * @brief Max length of a path to a device in the device tree.
+ */
 #define DEVICE_PATH_MAX_LEN 256
-typedef struct {
-    int spi_speed;
-    char spi_dev[DEVICE_PATH_MAX_LEN];
-    char gpio_dev[DEVICE_PATH_MAX_LEN];
-    int gpio_cs_num;
-} lt_dev_unix_spi_t;
 
-typedef struct lt_dev_unix_tcp_t {
-    in_addr_t addr;
-    in_port_t port;
-    unsigned int rng_seed;
-} lt_dev_unix_tcp_t;
+/**
+ * @defgroup group_port_functions Layer 1 port specific functions
+ * @brief Defined for each supported platform.
+ * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported.
+ *          All of these functions have to be impemented by the port for libtropic to work.
+ *
+ * @{
+ */
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// COMMON HAL FUNCTIONS
-//
-// All of these functions have to be impemented by the port for libtropic to work.
-///////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
