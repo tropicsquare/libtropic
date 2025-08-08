@@ -31,7 +31,7 @@
 
 /**
  * @brief Writes bytes to the serial port.
- * 
+ *
  * @return 0 on success and -1 on failure.
  */
 static int write_port(int fd, uint8_t *buffer, size_t size)
@@ -47,7 +47,7 @@ static int write_port(int fd, uint8_t *buffer, size_t size)
 /**
  * @brief Reads bytes from the serial port.
  * Returns after all the desired bytes have been read, or if there is a timeout or other error.
- * 
+ *
  * @return Returns the number of bytes successfully read into the buffer, or -1 if there was an error reading.
  */
 static ssize_t read_port(int fd, uint8_t *buffer, size_t size)
