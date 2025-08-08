@@ -5,6 +5,7 @@ import yaml
 import time
 import sys
 import socket
+import os
 
 def wait_for_server_start(host="127.0.0.1", port=28992, retry_interval=0.2, max_attempts=10) -> bool:
     for i in range(max_attempts):
@@ -93,7 +94,8 @@ if __name__ == "__main__":
             "model_server", "tcp",
             "-c", f"{str(model_cfg_path)}",
             "-l", f"{str(model_log_cfg_path)}"
-        ]
+        ],
+        env=os.environ
     )
 
     # Wait for model server to start
@@ -105,17 +107,25 @@ if __name__ == "__main__":
     ret = 0
     with output_path.joinpath(test_name).with_suffix(".log").open("w") as f:
         try: 
-            test_cmd = ["stdbuf", "-o0", "-e0"]  # Disable buffering of stdout and stderr
+            test_cmd = []
             if use_valgrind:
+                valgrind_log_path = output_path.joinpath(f"{test_name}_valgrind_report").with_suffix(".log")
                 test_cmd += ["valgrind",
                              "--leak-check=full",
                              "--show-leak-kinds=all",
                              "--track-origins=yes",
                              "--verbose",
-                             "--error-exitcode=1"]
+                             "--error-exitcode=1",
+                             f"--log-file={str(valgrind_log_path)}",
+                             "--child-silent-after-fork=yes"]
             test_cmd += [str(test_path)]
 
-            subprocess.run(args=test_cmd, stdout=f, stderr=f, check=True)
+            subprocess.run(
+                args=test_cmd,
+                stdout=f, stderr=f,
+                env=os.environ,
+                check=True
+            )
         except subprocess.CalledProcessError as e:
             ret = e.returncode
 
