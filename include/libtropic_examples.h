@@ -124,6 +124,6 @@ int lt_ex_macandd(lt_handle_t *h);
  *
  * @return 0 on success, -1 otherwise
  */
-int lt_ex_show_chip_id_and_fwver(void);
+int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
 
 #endif
