@@ -52,31 +52,31 @@ int lt_ex_fw_update(lt_handle_t *h)
     uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     // For firmware update chip must be rebooted into MAINTENANCE mode.
-    ret = lt_reboot(&h, LT_MODE_MAINTENANCE);
+    ret = lt_reboot(h, LT_MODE_MAINTENANCE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         return -1;
     }
 
-    if (h.l2.mode == LT_MODE_MAINTENANCE) {
+    if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
 
 #ifdef ABAB // ABAB silicon revision needs bank to be erased first
         // Erase application firmware bank
         LT_LOG("lt_mutable_fw_erase()                         %s",
-               lt_ret_verbose(lt_mutable_fw_erase(&h, FW_APP_UPDATE_BANK)));
+               lt_ret_verbose(lt_mutable_fw_erase(h, FW_APP_UPDATE_BANK)));
 #endif
         // Update APP firmware bank
         LT_LOG("lt_mutable_fw_update() APP                    %s",
-               lt_ret_verbose(lt_mutable_fw_update(&h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK)));
+               lt_ret_verbose(lt_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK)));
 #ifdef ABAB // ABAB silicon revision needs bank to be erased first
         // Erase SPECT firmware bank
         LT_LOG("lt_mutable_fw_erase()                         %s",
-               lt_ret_verbose(lt_mutable_fw_erase(&h, FW_SPECT_UPDATE_BANK)));
+               lt_ret_verbose(lt_mutable_fw_erase(h, FW_SPECT_UPDATE_BANK)));
 #endif
         // Update SPECT firmware bank
         LT_LOG("lt_mutable_fw_update() SPECT                  %s",
-               lt_ret_verbose(lt_mutable_fw_update(&h, fw_SPECT, sizeof(fw_SPECT), FW_SPECT_UPDATE_BANK)));
+               lt_ret_verbose(lt_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), FW_SPECT_UPDATE_BANK)));
 
     }
     else {
@@ -86,14 +86,14 @@ int lt_ex_fw_update(lt_handle_t *h)
     LT_LOG_LINE();
 
     // To read firmware versions chip must be rebooted into application mode.
-    ret = lt_reboot(&h, LT_MODE_APP);
+    ret = lt_reboot(h, LT_MODE_APP);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         return -1;
     }
 
-    if (h.l2.mode == LT_MODE_APP) {
-        ret = lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+    if (h->l2.mode == LT_MODE_APP) {
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
         if (ret == LT_OK) {
             LT_LOG("  Chip is executing RISCV application firmware version: %d.%d.%d    (+ .%d)", fw_ver[3], fw_ver[2],
                    fw_ver[1], fw_ver[0]);
@@ -104,7 +104,7 @@ int lt_ex_fw_update(lt_handle_t *h)
 
 
         // Getting SPECT firmware version
-        ret = lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret == LT_OK) {
             LT_LOG("  Chip is executing SPECT firmware version:             %d.%d.%d    (+ .%d)", fw_ver[3], fw_ver[2],
                    fw_ver[1], fw_ver[0]);

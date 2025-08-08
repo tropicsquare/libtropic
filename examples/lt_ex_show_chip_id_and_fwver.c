@@ -175,22 +175,16 @@ static void print_all_fw_headers_v2(lt_handle_t *h)
     }
 }
 
-int lt_ex_show_chip_id_and_fwver(void)
+int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
 {
     LT_LOG("\t=======================================================================");
     LT_LOG("\t=====  TROPIC01 explore chip                                        ===");
     LT_LOG("\t=======================================================================");
 
-    lt_handle_t h = {0};
-#if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
-    h.l3.buff = l3_buffer;
-    h.l3.buff_len = sizeof(l3_buffer);
-#endif
     // This variable is reused on more places in this example to store different firmware versions
     uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
-    lt_ret_t ret = lt_init(&h);
+    lt_ret_t ret = lt_init(h);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -200,15 +194,15 @@ int lt_ex_show_chip_id_and_fwver(void)
     // If there are valid firmwares, chip will execute them on boot. In any case we will try to reboot into application,
     // in case chip would be in maintenance mode (executing bootloader)
     LT_LOG("  Rebooting into APPLICATION mode to check firmware versions...");
-    ret = lt_reboot(&h, LT_MODE_APP);
+    ret = lt_reboot(h, LT_MODE_APP);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
     }
 
-    if (h.l2.mode == LT_MODE_APP) {
+    if (h->l2.mode == LT_MODE_APP) {
         // App runs so we can see what firmwares are running
         // Getting RISCV app firmware version
-        ret = lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
         if (ret == LT_OK) {
             LT_LOG("  Chip is executing RISCV application firmware version: %d.%d.%d    (+ .%d)", fw_ver[3], fw_ver[2],
                    fw_ver[1], fw_ver[0]);
@@ -218,7 +212,7 @@ int lt_ex_show_chip_id_and_fwver(void)
         }
 
         // Getting SPECT firmware version
-        ret = lt_get_info_spect_fw_ver(&h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret == LT_OK) {
             LT_LOG("  Chip is executing SPECT firmware version:             %d.%d.%d    (+ .%d)", fw_ver[3], fw_ver[2],
                    fw_ver[1], fw_ver[0]);
@@ -234,18 +228,18 @@ int lt_ex_show_chip_id_and_fwver(void)
     LT_LOG_LINE();
 
     LT_LOG("  Rebooting into MAINTENANCE mode to check bootloader version and fw bank headers...");
-    ret = lt_reboot(&h, LT_MODE_MAINTENANCE);
+    ret = lt_reboot(h, LT_MODE_MAINTENANCE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to reboot into MAINTENANCE mode, ret=%s", lt_ret_verbose(ret));
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
-    if (h.l2.mode == LT_MODE_MAINTENANCE) {
-        ret = lt_get_info_riscv_fw_ver(&h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+    if (h->l2.mode == LT_MODE_MAINTENANCE) {
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
         if (ret != LT_OK) {
             LT_LOG_ERROR("Failed to get bootloader version, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(&h);
+            lt_deinit(h);
             return -1;
         }
 
@@ -254,14 +248,14 @@ int lt_ex_show_chip_id_and_fwver(void)
             LT_LOG("  Bootloader version:                 %d.%d.%d    (+ .%d)", fw_ver[3] & 0x7f, fw_ver[2], fw_ver[1],
                    fw_ver[0]);
 
-            print_all_headers_v1(&h);
+            print_all_headers_v1(h);
         }
         else {
             // Checking if bootloader version is 2.0.1
             if (((fw_ver[3] & 0x7f) == 2) && (fw_ver[2] == 0) && (fw_ver[1] == 1) && (fw_ver[0] == 0)) {
                 LT_LOG("  Bootloader version:                 %d.%d.%d    (+ .%d)", fw_ver[3] & 0x7f, fw_ver[2],
                        fw_ver[1], fw_ver[0]);
-                print_all_fw_headers_v2(&h);
+                print_all_fw_headers_v2(h);
             }
             else {
                 LT_LOG_ERROR("Unknown bootloader version %d.%d.%d.%d", fw_ver[3] & 0x7f, fw_ver[2], fw_ver[1],
@@ -272,7 +266,7 @@ int lt_ex_show_chip_id_and_fwver(void)
     }
     else {
         LT_LOG("     ERROR device couldn't get into MAINTENANCE mode");
-        lt_deinit(&h);
+        lt_deinit(h);
         return -1;
     }
 
@@ -282,7 +276,7 @@ int lt_ex_show_chip_id_and_fwver(void)
 
     struct lt_chip_id_t chip_id = {0};
 
-    lt_get_info_chip_id(&h, &chip_id);
+    lt_get_info_chip_id(h, &chip_id);
     lt_print_chip_id(&chip_id, printf);
 
     return 0;
