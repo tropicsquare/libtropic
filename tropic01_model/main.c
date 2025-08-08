@@ -6,9 +6,9 @@
  */
 
 #include <arpa/inet.h>
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <stdio.h>
 
 #include "libtropic_examples.h"
 #include "libtropic_functional_tests.h"
@@ -18,7 +18,7 @@
 
 int main(void)
 {
-#ifdef LT_BUILD_TESTS    
+#ifdef LT_BUILD_TESTS
     // Disable buffering on stdout and stderr (problem in GitHub CI)
     setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
