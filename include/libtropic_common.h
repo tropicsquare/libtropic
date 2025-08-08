@@ -234,7 +234,7 @@ typedef enum lt_ret_t {
     LT_RET_T_LAST_VALUE = 40
 } lt_ret_t;
 
-#define LT_TROPIC01_REBOOT_DELAY_MS 100
+#define LT_TROPIC01_REBOOT_DELAY_MS 250
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */

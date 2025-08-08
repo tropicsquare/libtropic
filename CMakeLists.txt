@@ -13,7 +13,7 @@ option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
-option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" OFF)
+option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" ON)
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
 # Switch it off to compile only basic libtropic API.
@@ -55,15 +55,32 @@ if(
     message(FATAL_ERROR "No cryptography provider is defined.")
 endif()
 
-# Silicon revision, allowed values:
-#   ABAB - Silicon revision B - Bootloader 1.0.1
-#   ACAB - Silicon revision C - Bootloader 2.0.1
-set(LT_SILICON_REV "ABAB")
+###########################################################################
+#                                                                         #
+#   Define files for firmware update.                                     #
+#                                                                         #
+#   For more info about firmware update go into                           #
+#   TROPIC01_fw_update_files/README.md                                    #
+#                                                                         #
+#   [1] Define silicon revision, allowed                                  #
+#       values are:                                                       #
+#           ABAB - Silicon revision B - Bootloader v1.0.1                 #
+#           ACAB - Silicon revision C - Bootloader v2.0.1                 #
+#                                                                         #
+#   [2] Define firmware files here, allowed values are:                   #
+#       APP: 0_3_1                                                        #
+#       APP: 0_4_0                                                        #
+#       APP: 0_5_0                                                        #
+#       APP: 1_0_0                                                        #
+#       SPECT: Use version present in folder of chosen firmware           #
+#                                                                         #
+#    Always use bundled versions from "TROPIC01_fw_update_files" folder!  #
+#                                                                         #
+###########################################################################
 
-# TROPIC01 FW version compiled into libtropic
-# Always use bundled versions from "TROPIC01_fw_update_files" folder
-set(LT_CPU_FW_VERSION "0_5_0")
-set(LT_SPECT_FW_VERSION "0_3_1")
+set(LT_SILICON_REV "ABAB")
+set(LT_CPU_FW_VERSION "1_0_0")
+#set(LT_SPECT_FW_VERSION "1_0_1")  # TODO this is unused, because pair SPECT version in chosen fw folder is taken
 
 ###########################################################################
 #                                                                         #
@@ -149,36 +166,52 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+
 ###########################################################################
-# Libtropic FW update functions                                           #
+# Libtropic fw update:                                                    #
+# Collect files to be compiled when "fw update" is enabled                #
+# Compile only selected FW version for single silicon version             #
 ###########################################################################
-set(SDK_INCS ${SDK_SRCS}
-${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
-${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/fw_CPU_0_3_1.h
-)
-set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
-${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/boot_v_1_0_1/fw_v_0_3_1/
-)
+if(LT_ENABLE_FW_UPDATE)
+    if (LT_SILICON_REV STREQUAL "ABAB")
+        set(BL_FOLDER boot_v_1_0_1)
+    elseif (LT_SILICON_REV STREQUAL "ACAB")
+        set(BL_FOLDER boot_v_2_0_1)
+    else()
+        message(FATAL_ERROR "Invalid silicon revision (LT_SILICON_REV): ${LT_SILICON_REV}")
+    endif()
+
+    set(SDK_INCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT.h
+    )
+    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
+    )
+endif()
+
 
 ###########################################################################
 # Libtropic examples:                                                     #
 # Collect files to be compiled when "examples" are enabled                #
 ###########################################################################
 set(LIBTROPIC_EXAMPLE_LIST
-    # lt_ex_fw_update
     lt_ex_show_chip_id_and_fwver
     lt_ex_hello_world_separate_API
     lt_ex_hello_world
     lt_ex_hardware_wallet
     lt_ex_macandd
 )
+if(LT_ENABLE_FW_UPDATE)
+    set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} lt_ex_fw_update)
+endif()
 
 # Export example list to parent project (usually platform-specific implementation).
 set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
 
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
-        # ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_show_chip_id_and_fwver.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
@@ -374,6 +407,12 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
 
 endif()
 
+
+if (LT_SILICON_REV STREQUAL "ABAB")
+    target_compile_definitions(tropic PRIVATE ABAB)
+elseif (LT_SILICON_REV STREQUAL "ACAB")
+    target_compile_definitions(tropic PRIVATE ACAB)
+endif()
 
 if(LT_PRINT_SPI_DATA)
     target_compile_definitions(tropic PRIVATE LT_PRINT_SPI_DATA)

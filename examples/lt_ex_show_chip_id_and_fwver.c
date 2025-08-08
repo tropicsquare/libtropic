@@ -201,6 +201,9 @@ int lt_ex_show_chip_id_and_fwver(void)
     // in case chip would be in maintenance mode (executing bootloader)
     LT_LOG("  Rebooting into APPLICATION mode to check firmware versions...");
     ret = lt_reboot(&h, LT_MODE_APP);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+    }
 
     if (h.l2.mode == LT_MODE_APP) {
         // App runs so we can see what firmwares are running

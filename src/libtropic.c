@@ -533,6 +533,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
     return LT_OK;
 }
 
+#ifdef ABAB
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
 {
     if (!h || !fw_data || fw_data_size > 25600
@@ -593,6 +594,77 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
 
     return LT_OK;
 }
+#endif
+#ifdef ACAB
+#include "stdio.h"
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
+{
+    UNUSED(fw_data_size);
+    if (!h || !fw_data /* || fw_data_size > 25600*/
+        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
+            && (bank_id != FW_BANK_SPECT2))) {
+        return LT_PARAM_ERR;
+    }
+
+    uint8_t len = fw_data[0];
+    uint16_t n_offset = len + 1;  // First byte is length of the request, so we start from the next byte
+    int uploaded_size = 0;
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_mutable_fw_update_req_t *p_l2_req = (struct lt_l2_mutable_fw_update_req_t *)h->l2.buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)h->l2.buff;
+
+    p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
+    memcpy((uint8_t *)&p_l2_req->req_len, fw_data, len + 1);
+
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct ts_l2_mutable_fw_update_data_req_t *p2_l2_req = (struct ts_l2_mutable_fw_update_data_req_t *)h->l2.buff;
+
+    uploaded_size = len;
+
+    do {
+        // printf("do newloop\r\n");
+        len = fw_data[n_offset];
+        p2_l2_req->req_id = TS_L2_MUTABLE_FW_UPDATE_DATA_REQ;
+        // p2_l2_req->req_len = len;
+        memcpy((uint8_t *)&p2_l2_req->req_len, fw_data + n_offset, len + 1);
+
+        ret = lt_l2_send(&h->l2);
+        if (ret != LT_OK) {
+            // printf("lt_l2_send failed: %d\n", ret);
+            return ret;
+        }
+        ret = lt_l2_receive(&h->l2);
+        if (ret != LT_OK) {
+            // printf("lt_l2_receive failed: %d\n", ret);
+            return ret;
+        }
+
+        if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+            return LT_FAIL;
+        }
+
+        n_offset += len + 1;
+        uploaded_size += len + 1;
+    } while ((uploaded_size + 1) < fw_data_size);
+
+    return LT_OK;
+}
+#endif
 
 lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
 {
