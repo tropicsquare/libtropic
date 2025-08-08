@@ -45,7 +45,7 @@ endif()
 
 set(VALGRIND_ARG "")
 if(LT_VALGRIND)
-    message(STATUS "Tests will be run with Valgrind.")
+    message(STATUS "Tests will be run with Valgrind (only when using CTest!).")
     set(VALGRIND_ARG --use-valgrind)
 endif()
 
@@ -163,18 +163,43 @@ if(LT_BUILD_TESTS)
         # Make sure model configuration exists before building this test
         add_dependencies(${exe_name} generate_model_cfg)
 
+        # Define the test command
+        set(TEST_COMMAND
+            "python3" "-m" "model_test_runner"
+            "-t" "${CMAKE_CURRENT_BINARY_DIR}/${exe_name}"
+            "-c" "${MODEL_CFG_PATH}"
+            ${VALGRIND_ARG}
+            "-o" "${RUN_LOGS_DIR}"
+        )
+        # Convert TEST_COMMAND into a space-separated string
+        list(JOIN TEST_COMMAND " " TEST_COMMAND)
+
+        # Variable for cleanup command which will remove previous log files from ASAN.
+        # ASAN always puts PID number at the end of the file, so running the same test
+        # multiple times always generates new ASAN log file, but we only want the latest one.
+        set(ASAN_FILES_CLEANUP_COMMAND "")
+        if(LT_ASAN)
+            set(ASAN_LOG_PATH "${RUN_LOGS_DIR}${test_name}_asan_report.log")
+            set(ASAN_FILES_CLEANUP_COMMAND "rm -f ${ASAN_LOG_PATH}* && ")
+        endif()
+
         # Add CTest entry.
         add_test(NAME ${test_name}
-                COMMAND python3 -m model_test_runner
-                        -t ${CMAKE_CURRENT_BINARY_DIR}/${exe_name}
-                        -c ${MODEL_CFG_PATH}
-                        ${VALGRIND_ARG}
-                        -o ${RUN_LOGS_DIR}
+                 COMMAND sh -c "${ASAN_FILES_CLEANUP_COMMAND}${TEST_COMMAND}"
         )
 
-        # Add scripts/ to PYTHONPATH, so we can run model_test_runner.py as a module
+        # Prepare environment variables for the test run. Start with PYTHONPATH.
+        set(TEST_ENVIRONMENT "PYTHONPATH=${PYTHONPATH}:${ABSOLUTE_PATH_TO_LIBTROPIC}/scripts/")
+
+        # If ASan is enabled, define a unique log path and add it to the environment.
+        if(LT_ASAN)
+            list(APPEND TEST_ENVIRONMENT "ASAN_OPTIONS=log_path=${ASAN_LOG_PATH}")
+            list(APPEND TEST_ENVIRONMENT "UBSAN_OPTIONS=log_path=${ASAN_LOG_PATH}")
+        endif()
+
+        # Set the final combined environment for the test.
         set_tests_properties(${test_name} PROPERTIES
-            ENVIRONMENT "PYTHONPATH=${PYTHONPATH}:${ABSOLUTE_PATH_TO_LIBTROPIC}/scripts/"
+            ENVIRONMENT "${TEST_ENVIRONMENT}"
         )
     endforeach()
 endif()
