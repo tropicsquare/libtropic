@@ -651,8 +651,8 @@ STATIC_ASSERT(
  * Supported only in Start-up mode after Mutable_FW_Update_Req successfully processed.
  */
 struct ts_l2_mutable_fw_update_data_req_t {
-    u8 req_id;         /**< Request ID byte */
-    u8 req_len;        /**< Length byte */
+    u8 req_id;    /**< Request ID byte */
+    u8 req_len;   /**< Length byte */
     u8 hash[32];  /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
     u16 offset;   /**< The offset of the specific bank to write the FW chunk data to */
     u8 data[220]; /**< The binary data to write. Data size should be a multiple of 4 */
