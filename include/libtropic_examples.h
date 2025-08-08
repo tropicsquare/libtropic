@@ -26,7 +26,7 @@ extern uint8_t sh2pub[];
 
 extern uint8_t sh3priv[];
 extern uint8_t sh3pub[];
-#endif // LT_EXAMPLE_TEST_KEYS_DECLARED
+#endif  // LT_EXAMPLE_TEST_KEYS_DECLARED
 
 /**
  * @brief Establishes Secure Session and executes Ping L3 command.

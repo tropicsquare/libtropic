@@ -22,7 +22,8 @@ void lt_test_rev_read_cert_store(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_read_cert_store()");
     LT_LOG_INFO("----------------------------------------------");
 
-    uint8_t cert1[CERTS_BUF_LEN] = {0}, cert2[CERTS_BUF_LEN] = {0}, cert3[CERTS_BUF_LEN] = {0}, cert4[CERTS_BUF_LEN] = {0};
+    uint8_t cert1[CERTS_BUF_LEN] = {0}, cert2[CERTS_BUF_LEN] = {0}, cert3[CERTS_BUF_LEN] = {0},
+            cert4[CERTS_BUF_LEN] = {0};
     struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
                                     .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
 
