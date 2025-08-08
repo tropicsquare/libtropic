@@ -107,6 +107,9 @@ void lt_test_rev_write_r_config(lt_handle_t *h)
     // sense to call the cleanup function.
     lt_test_cleanup_function = &lt_test_rev_write_r_config_cleanup;
 
+    LT_LOG_INFO("Erasing R config, so it can be written.");
+    LT_ASSERT(LT_OK, lt_r_config_erase(h));
+
     LT_LOG_INFO("Writing the whole R config");
     LT_TEST_ASSERT(LT_OK, lt_write_whole_R_config(h, &r_config_random));
 
