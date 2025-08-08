@@ -60,7 +60,7 @@ int lt_ex_fw_update(void)
     if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
 
-#ifdef ABAB // ABAB silicon revision needs bank to be erased first
+#ifdef ABAB  // ABAB silicon revision needs bank to be erased first
         // Erase application firmware bank
         LT_LOG("lt_mutable_fw_erase()                         %s",
                lt_ret_verbose(lt_mutable_fw_erase(h, FW_APP_UPDATE_BANK)));
@@ -68,7 +68,7 @@ int lt_ex_fw_update(void)
         // Update APP firmware bank
         LT_LOG("lt_mutable_fw_update() APP                    %s",
                lt_ret_verbose(lt_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK)));
-#ifdef ABAB // ABAB silicon revision needs bank to be erased first
+#ifdef ABAB  // ABAB silicon revision needs bank to be erased first
         // Erase SPECT firmware bank
         LT_LOG("lt_mutable_fw_erase()                         %s",
                lt_ret_verbose(lt_mutable_fw_erase(h, FW_SPECT_UPDATE_BANK)));
@@ -76,7 +76,6 @@ int lt_ex_fw_update(void)
         // Update SPECT firmware bank
         LT_LOG("lt_mutable_fw_update() SPECT                  %s",
                lt_ret_verbose(lt_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), FW_SPECT_UPDATE_BANK)));
-
     }
     else {
         LT_LOG("     ERROR device couldn't get into MAINTENANCE mode");
