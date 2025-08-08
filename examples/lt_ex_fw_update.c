@@ -19,7 +19,6 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-
 // In TROPIC01_fw_update_files/ there are all officially released and signed firmwares for TROPIC01 chip, for all
 // silicon revisions. Header files containing the firmware update bytes have all the same name, switching happens in
 // CMakeFiles.txt, where it can be defined which firmware will be used use based on path to this header.
@@ -61,7 +60,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
 
-#ifdef ABAB // ABAB silicon revision needs bank to be erased first
+#ifdef ABAB  // ABAB silicon revision needs bank to be erased first
         // Erase application firmware bank
         LT_LOG("lt_mutable_fw_erase()                         %s",
                lt_ret_verbose(lt_mutable_fw_erase(h, FW_APP_UPDATE_BANK)));
@@ -69,7 +68,7 @@ int lt_ex_fw_update(lt_handle_t *h)
         // Update APP firmware bank
         LT_LOG("lt_mutable_fw_update() APP                    %s",
                lt_ret_verbose(lt_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK)));
-#ifdef ABAB // ABAB silicon revision needs bank to be erased first
+#ifdef ABAB  // ABAB silicon revision needs bank to be erased first
         // Erase SPECT firmware bank
         LT_LOG("lt_mutable_fw_erase()                         %s",
                lt_ret_verbose(lt_mutable_fw_erase(h, FW_SPECT_UPDATE_BANK)));
@@ -77,7 +76,6 @@ int lt_ex_fw_update(lt_handle_t *h)
         // Update SPECT firmware bank
         LT_LOG("lt_mutable_fw_update() SPECT                  %s",
                lt_ret_verbose(lt_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), FW_SPECT_UPDATE_BANK)));
-
     }
     else {
         LT_LOG("     ERROR device couldn't get into MAINTENANCE mode");
@@ -102,7 +100,6 @@ int lt_ex_fw_update(lt_handle_t *h)
             LT_LOG_ERROR("Failed to get RISCV firmware version, ret=%s", lt_ret_verbose(ret));
         }
 
-
         // Getting SPECT firmware version
         ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret == LT_OK) {
@@ -111,7 +108,6 @@ int lt_ex_fw_update(lt_handle_t *h)
         }
         else {
             LT_LOG_ERROR("Failed to get SPECT firmware version, ret=%s", lt_ret_verbose(ret));
-
         }
     }
     else {
