@@ -77,6 +77,11 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    // The byte used here shall not be ID byte of some request, otherwise chip would be confused
+    // and would return CRC error.
+    // GET_RESP 0xAA works fine.
+    h->l2.buff[0] = GET_RESPONSE_REQ_ID;
+
     // Transfer just one byte to read CHIP_STATUS byte
     lt_l1_spi_csn_low(&h->l2);
 
@@ -90,10 +95,10 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
     if (h->l2.buff[0] & CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = 1;
+        h->l2.mode = LT_MODE_MAINTENANCE;
     }
     else {
-        h->l2.mode = 0;
+        h->l2.mode = LT_MODE_APP;
     }
 
     return LT_OK;
@@ -346,12 +351,13 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
     }
 
     // Check incomming l3 length
-    if (LT_L2_GET_INFO_FW_HEADER_SIZE != (p_l2_resp->rsp_len)) {
+    if ((LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
+        && (LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
+        && (LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(header, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object,
-           LT_L2_GET_INFO_FW_HEADER_SIZE);  // TODO specify and fix size of header
+    memcpy(header, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, p_l2_resp->rsp_len);
 
     return LT_OK;
 }
@@ -485,6 +491,12 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
 
     lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
 
+    // Update mode variable in handle after reboot
+    ret = lt_update_mode(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
     return LT_OK;
 }
 
@@ -521,6 +533,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
     return LT_OK;
 }
 
+#ifdef ABAB
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
 {
     if (!h || !fw_data || fw_data_size > 25600
@@ -581,6 +594,77 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
 
     return LT_OK;
 }
+#endif
+#ifdef ACAB
+#include "stdio.h"
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
+{
+    UNUSED(fw_data_size);
+    if (!h || !fw_data /* || fw_data_size > 25600*/
+        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
+            && (bank_id != FW_BANK_SPECT2))) {
+        return LT_PARAM_ERR;
+    }
+
+    uint8_t len = fw_data[0];
+    uint16_t n_offset = len + 1;  // First byte is length of the request, so we start from the next byte
+    int uploaded_size = 0;
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct lt_l2_mutable_fw_update_req_t *p_l2_req = (struct lt_l2_mutable_fw_update_req_t *)h->l2.buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)h->l2.buff;
+
+    p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
+    memcpy((uint8_t *)&p_l2_req->req_len, fw_data, len + 1);
+
+    lt_ret_t ret = lt_l2_send(&h->l2);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_l2_receive(&h->l2);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        return LT_FAIL;
+    }
+
+    // Setup a request pointer to l2 buffer, which is placed in handle
+    struct ts_l2_mutable_fw_update_data_req_t *p2_l2_req = (struct ts_l2_mutable_fw_update_data_req_t *)h->l2.buff;
+
+    uploaded_size = len;
+
+    do {
+        // printf("do newloop\r\n");
+        len = fw_data[n_offset];
+        p2_l2_req->req_id = TS_L2_MUTABLE_FW_UPDATE_DATA_REQ;
+        // p2_l2_req->req_len = len;
+        memcpy((uint8_t *)&p2_l2_req->req_len, fw_data + n_offset, len + 1);
+
+        ret = lt_l2_send(&h->l2);
+        if (ret != LT_OK) {
+            // printf("lt_l2_send failed: %d\n", ret);
+            return ret;
+        }
+        ret = lt_l2_receive(&h->l2);
+        if (ret != LT_OK) {
+            // printf("lt_l2_receive failed: %d\n", ret);
+            return ret;
+        }
+
+        if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+            return LT_FAIL;
+        }
+
+        n_offset += len + 1;
+        uploaded_size += len + 1;
+    } while ((uploaded_size + 1) < fw_data_size);
+
+    return LT_OK;
+}
+#endif
 
 lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
 {
