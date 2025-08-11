@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.21.0)
 #                                                                         #
 ###########################################################################
 
+include(cmake/strict_compile_flags.cmake)
+
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
@@ -21,7 +23,7 @@ option(LT_HELPERS "Compile helper function" ON)
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
-option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags" OFF)
+option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
 option(LT_VALGRIND "Enable Valgrind" OFF)
 
@@ -319,7 +321,7 @@ if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
                 -DSH0_PRIV_RAW_PATH=${SH0_PRIV_RAW_FILE}
                 -DSH0_PUB_RAW_PATH=${SH0_PUB_RAW_FILE}
                 -DOUTPUT_C_FILE=${KEYS_C_FILE}
-                -P "${CMAKE_CURRENT_SOURCE_DIR}/generate_sh0_keys.cmake"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_sh0_keys.cmake"
         DEPENDS "${SH0_PRIV_RAW_FILE}" "${SH0_PUB_RAW_FILE}"
         COMMENT "Generating sh0_keys.c from DER files"
         VERBATIM
@@ -348,19 +350,14 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
 
     # 1. Apply the compiler options immediately.
     # This is the primary action of this block.
-    target_compile_options(tropic PUBLIC
-        -Wall -Wextra -Werror -Wpedantic
-        -Wshadow -Wformat=2 -Wcast-align -Wfloat-equal -Wnull-dereference
-        -Wredundant-decls -Wlogical-op -Wstrict-prototypes
-        -fstack-protector-strong
-    )
+    target_link_libraries(tropic PRIVATE libtropic::strict_comp_flags)
 
     # 2. Handle the cache variable for user visibility.
     # If the flag wasn't already ON, it means tests/examples implicitly enabled it.
     # We update the cache so the user sees the actual state in cmake-gui.
     if(NOT LT_STRICT_COMP_FLAGS)
-        message(STATUS "Enabling strict compilation flags because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
-        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags" FORCE)
+        message(STATUS "Enabling strict compilation flags for libtropic because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
+        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags for libtropic" FORCE)
     endif()
 
 endif()
