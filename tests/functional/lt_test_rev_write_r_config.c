@@ -12,7 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
+#include "lt_random.h"
 #include "string.h"
 
 // Shared with cleanup function.
@@ -90,7 +90,7 @@ void lt_test_rev_write_r_config(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Creating randomized R config for testing");
-    LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(r_config_random.obj, LT_CONFIG_OBJ_CNT));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(r_config_random.obj, sizeof(r_config_random.obj)));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));

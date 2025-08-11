@@ -12,7 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
+#include "lt_random.h"
 #include "string.h"
 
 #define RANDOM_VALUE_GET_LOOPS 300
@@ -23,8 +23,8 @@ void lt_test_rev_random_value_get(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_random_value_get()");
     LT_LOG_INFO("----------------------------------------------");
 
-    uint32_t random_data_size;
     uint8_t random_data[RANDOM_VALUE_GET_LEN_MAX];
+    uint16_t random_data_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
@@ -36,15 +36,14 @@ void lt_test_rev_random_value_get(lt_handle_t *h)
     LT_LOG_INFO("Random_Value_Get will be executed %d times", RANDOM_VALUE_GET_LOOPS);
     for (uint16_t i = 0; i < RANDOM_VALUE_GET_LOOPS; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Generating random data length <= %d (with lt_port_random_bytes())...",
-                    (int)RANDOM_VALUE_GET_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= RANDOM_VALUE_GET_LEN_MAX + 1;  // 0-255
+        LT_LOG_INFO("Generating random data length <= %d (with lt_random_bytes())...", (int)RANDOM_VALUE_GET_LEN_MAX);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&random_data_len, sizeof(random_data_len)));
+        random_data_len %= RANDOM_VALUE_GET_LEN_MAX + 1;  // 0-255
 
-        LT_LOG_INFO("Getting %" PRIu32 " random numbers from TROPIC01...", random_data_size);
-        LT_TEST_ASSERT(LT_OK, lt_random_value_get(h, random_data, random_data_size));
+        LT_LOG_INFO("Getting %" PRIu16 " random numbers from TROPIC01...", random_data_len);
+        LT_TEST_ASSERT(LT_OK, lt_random_value_get(h, random_data, random_data_len));
         LT_LOG_INFO("Random data from TROPIC01:");
-        hexdump_8byte(random_data, random_data_size);
+        hexdump_8byte(random_data, random_data_len);
     }
     LT_LOG_LINE();
 

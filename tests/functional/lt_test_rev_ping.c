@@ -12,7 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
+#include "lt_random.h"
 #include "string.h"
 
 /** @brief How many pings will be sent. */
@@ -25,7 +25,7 @@ void lt_test_rev_ping(lt_handle_t *h)
     LT_LOG_INFO("----------------------------------------------");
 
     uint8_t ping_msg_out[PING_LEN_MAX], ping_msg_in[PING_LEN_MAX];
-    uint32_t random_data[PING_LEN_MAX / sizeof(uint32_t)], random_data_size;
+    uint16_t ping_msg_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
@@ -38,18 +38,17 @@ void lt_test_rev_ping(lt_handle_t *h)
     for (uint16_t i = 0; i < PING_MAX_LOOPS; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length <= %d...", (int)PING_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= PING_LEN_MAX + 1;  // 0-4096
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&ping_msg_len, sizeof(ping_msg_len)));
+        ping_msg_len %= PING_LEN_MAX + 1;  // 0-4096
 
-        LT_LOG_INFO("Generating %" PRIu32 " random bytes...", random_data_size);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
-        memcpy(ping_msg_out, random_data, random_data_size);
+        LT_LOG_INFO("Generating %" PRIu16 " random bytes...", ping_msg_len);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(ping_msg_out, ping_msg_len));
 
         LT_LOG_INFO("Sending Ping command #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_ping(h, ping_msg_out, ping_msg_in, random_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_ping(h, ping_msg_out, ping_msg_in, ping_msg_len));
 
         LT_LOG_INFO("Comparing sent and received message...");
-        LT_TEST_ASSERT(0, memcmp(ping_msg_out, ping_msg_in, random_data_size));
+        LT_TEST_ASSERT(0, memcmp(ping_msg_out, ping_msg_in, ping_msg_len));
     }
     LT_LOG_LINE();
 

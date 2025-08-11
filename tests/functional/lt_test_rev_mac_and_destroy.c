@@ -12,15 +12,15 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
 #include "lt_hmac_sha256.h"
+#include "lt_random.h"
 #include "string.h"
 
 #define PIN_LEN_MAX 2048
 
 uint8_t kdf_key_zeros[256] = {0};
 
-int pin_check(lt_handle_t *h, uint8_t *pin, uint32_t pin_len, mac_and_destroy_slot_t slot, uint8_t ciphertexts[128][32],
+int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, mac_and_destroy_slot_t slot, uint8_t ciphertexts[128][32],
               uint8_t *t, uint8_t *s)
 {
     uint8_t v[32], w[32], k_i[32], t_[32];
@@ -55,7 +55,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
 
     uint8_t n, wrong_attempts, s[32], t[32], u[32], v[32], w[32], k_from_setup[32], k_from_check[32], k_i[32],
         ignored[32], pin[PIN_LEN_MAX], pin_wrong[PIN_LEN_MAX], ciphertexts[128][32];
-    uint32_t pin_len, tmp1, tmp2[PIN_LEN_MAX];
+    uint16_t pin_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
@@ -68,20 +68,18 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO();
 
     LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)MAC_AND_DESTROY_SLOT_127);
-    LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&tmp1, 1));
-    n = (tmp1 % MAC_AND_DESTROY_SLOT_127) + 1;
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&n, sizeof(n)));
+    n = (n % MAC_AND_DESTROY_SLOT_127) + 1;
 
     LT_LOG_INFO("Generating random 32B secret s...");
-    LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(tmp2, 32 / 4));
-    memcpy(s, tmp2, 32);
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(s, sizeof(s)));
 
     LT_LOG_INFO("Generating random length from {1...%d} for the PIN...", PIN_LEN_MAX);
-    LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&pin_len, 1));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&pin_len, sizeof(pin_len)));
     pin_len = (pin_len % PIN_LEN_MAX) + 1;
 
-    LT_LOG_INFO("Generating random PIN with length %" PRIu32 "...", pin_len);
-    LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(tmp2, PIN_LEN_MAX / 4));
-    memcpy(pin, tmp2, PIN_LEN_MAX);
+    LT_LOG_INFO("Generating random PIN with length %" PRIu16 "...", pin_len);
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(pin, sizeof(pin)));
 
     LT_LOG_INFO("Computing t = KDF(s, \"0\")...");
     lt_hmac_sha256(s, 32, (uint8_t *)"0", 1, t);
@@ -120,8 +118,8 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO();
 
     LT_LOG_INFO("Generating a random number of wrong attempts from {0...n-1=%" PRIu8 "}...", n - 1);
-    LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&tmp1, 1));
-    wrong_attempts = tmp1 % n;
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&wrong_attempts, sizeof(wrong_attempts)));
+    wrong_attempts %= n;
 
     memcpy(pin_wrong, pin, pin_len);
     pin_wrong[0] = ~pin_wrong[0];  // make the PIN wrong

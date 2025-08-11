@@ -13,8 +13,8 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-// Needed to access to lt_port_random_bytes()
-#include "libtropic_port.h"
+// Needed to access to lt_random_bytes()
+#include "lt_random.h"
 // Needed to access HMAC_SHA256
 #include "lt_hmac_sha256.h"
 
@@ -107,10 +107,8 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memcpy(kdf_input_buff, PIN, PIN_size);
     memcpy(kdf_input_buff + PIN_size, add, add_size);
 
-    LT_LOG_INFO("Getting random bytes...");
-    uint32_t random_data[sizeof(s) / 4];
-    lt_ret_t ret = lt_port_random_bytes(random_data, sizeof(s) / 4);
-    memcpy(s, random_data, sizeof(s));
+    LT_LOG_INFO("Generating random secret s...");
+    lt_ret_t ret = lt_random_bytes(s, sizeof(s));
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to get random bytes, ret=%s", lt_ret_verbose(ret));
         goto exit;

@@ -12,7 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
+#include "lt_random.h"
 #include "string.h"
 
 // Shared with cleanup function
@@ -82,8 +82,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     g_h = h;
 
     uint8_t r_mem_data[R_MEM_DATA_SIZE_MAX], write_data[R_MEM_DATA_SIZE_MAX], zeros[R_MEM_DATA_SIZE_MAX] = {0};
-    uint16_t read_data_size;
-    uint32_t random_data[R_MEM_DATA_SIZE_MAX / sizeof(uint32_t)], random_data_size;
+    uint16_t read_data_size, write_data_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
@@ -110,8 +109,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data for slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
-        memcpy(write_data, random_data, sizeof(write_data));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(write_data, sizeof(write_data)));
 
         LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, R_MEM_DATA_SIZE_MAX));
@@ -158,26 +156,25 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length < %d...", (int)R_MEM_DATA_SIZE_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= R_MEM_DATA_SIZE_MAX;
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&write_data_len, sizeof(write_data_len)));
+        write_data_len %= R_MEM_DATA_SIZE_MAX;
 
-        LT_LOG_INFO("Generating %" PRIu32 " random bytes for slot #%" PRIu16 "...", random_data_size, i);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
-        memcpy(write_data, random_data, random_data_size);
+        LT_LOG_INFO("Generating %" PRIu16 " random bytes for slot #%" PRIu16 "...", write_data_len, i);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(write_data, write_data_len));
 
         LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT_COND(lt_r_mem_data_write(h, i, write_data, random_data_size), random_data_size != 0, LT_OK,
+        LT_TEST_ASSERT_COND(lt_r_mem_data_write(h, i, write_data, write_data_len), write_data_len != 0, LT_OK,
                             LT_L3_FAIL);
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT_COND(lt_r_mem_data_read(h, i, r_mem_data, &read_data_size), random_data_size != 0, LT_OK,
+        LT_TEST_ASSERT_COND(lt_r_mem_data_read(h, i, r_mem_data, &read_data_size), write_data_len != 0, LT_OK,
                             LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
 
         LT_LOG_INFO("Checking number of read bytes...");
-        LT_TEST_ASSERT(1, (read_data_size == random_data_size));
+        LT_TEST_ASSERT(1, (read_data_size == write_data_len));
 
         LT_LOG_INFO("Checking contents...");
-        LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, random_data_size));
+        LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, write_data_len));
     }
     LT_LOG_LINE();
 

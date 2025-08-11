@@ -12,8 +12,8 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
 #include "lt_l3_api_structs.h"
+#include "lt_random.h"
 #include "string.h"
 
 // Pre-generated key for testing using OpenSSL
@@ -85,7 +85,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
     uint8_t read_pub_key[32], msg_to_sign[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX], rs[64];
     lt_ecc_curve_type_t curve;
     ecc_key_origin_t origin;
-    uint32_t random_data[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX / sizeof(uint32_t)], random_data_size;
+    uint32_t msg_to_sign_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
@@ -101,16 +101,15 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_LOG_INFO();
         LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
-        LT_LOG_INFO("Generating random data length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
+        LT_LOG_INFO("Generating random message length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&msg_to_sign_len, sizeof(msg_to_sign_len)));
+        msg_to_sign_len %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
 
-        LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", random_data_size);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
-        memcpy(msg_to_sign, random_data, random_data_size);
+        LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", msg_to_sign_len);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(h, i, CURVE_ED25519, priv_test_key));
@@ -119,16 +118,16 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Verifying signature...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, random_data_size, read_pub_key, rs));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, msg_to_sign_len, read_pub_key, rs));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
 
         LT_LOG_INFO("Signing message with erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
     }
     LT_LOG_LINE();
 
@@ -137,16 +136,15 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_LOG_INFO();
         LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
-        LT_LOG_INFO("Generating random data length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&random_data_size, 1));
-        random_data_size %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
+        LT_LOG_INFO("Generating random message length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&msg_to_sign_len, sizeof(msg_to_sign_len)));
+        msg_to_sign_len %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
 
-        LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", random_data_size);
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(random_data, sizeof(random_data) / sizeof(uint32_t)));
-        memcpy(msg_to_sign, random_data, random_data_size);
+        LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", msg_to_sign_len);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Generating private key using Ed25519 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(h, i, CURVE_ED25519));
@@ -155,16 +153,16 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Verifying signature...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, random_data_size, read_pub_key, rs));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, msg_to_sign_len, read_pub_key, rs));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
 
         LT_LOG_INFO("Signing message with erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, random_data_size, rs));
+        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
     }
     LT_LOG_LINE();
 

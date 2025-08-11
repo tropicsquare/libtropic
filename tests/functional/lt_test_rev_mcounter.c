@@ -12,7 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "libtropic_port.h"
+#include "lt_random.h"
 #include "string.h"
 
 // Shared with cleanup function.
@@ -84,7 +84,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
     LT_LOG_INFO("Starting basic test...");
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random init value...");
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&init_val, sizeof(init_val)));
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, init_val));
 
@@ -110,7 +110,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
     LT_LOG_INFO("Starting decrement to zero test...");
     for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random small init value...");
-        LT_TEST_ASSERT(LT_OK, lt_port_random_bytes(&init_val, 1));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&init_val, sizeof(init_val)));
         init_val %= 100;
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, init_val));
