@@ -35,7 +35,7 @@
  * @param  fd        File descriptor of the port to write to.
  * @param  buffer    Pointer to the buffer containing the data to be written.
  * @param  size      Size of the data in bytes to be written from the buffer.
- * 
+ *
  * @return Returns 0 on success, or -1 on error.
  */
 static int write_port(int fd, uint8_t *buffer, size_t size)
@@ -52,7 +52,7 @@ static int write_port(int fd, uint8_t *buffer, size_t size)
  * @brief Reads data from a serial port (specified by fd).
  *
  * @note  Returns after all the desired bytes have been read, or if there is a timeout or other error.
- * 
+ *
  * @param fd        The file descriptor to read from.
  * @param buffer    Pointer to the buffer where the read data will be stored.
  * @param size      The maximum number of bytes to read into the buffer.
