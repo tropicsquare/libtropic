@@ -23,7 +23,7 @@ option(LT_HELPERS "Compile helper function" ON)
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
-option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags" OFF)
+option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
 option(LT_VALGRIND "Enable Valgrind" OFF)
 
@@ -356,8 +356,8 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
     # If the flag wasn't already ON, it means tests/examples implicitly enabled it.
     # We update the cache so the user sees the actual state in cmake-gui.
     if(NOT LT_STRICT_COMP_FLAGS)
-        message(STATUS "Enabling strict compilation flags because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
-        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags" FORCE)
+        message(STATUS "Enabling strict compilation flags for libtropic because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
+        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags for libtropic" FORCE)
     endif()
 
 endif()
