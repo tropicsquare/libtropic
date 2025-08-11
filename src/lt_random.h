@@ -16,9 +16,9 @@
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
  * @param buff        Buffer to be filled
- * @param len         number of 32bit numbers
+ * @param count       Number of random bytes
  * @return lt_ret_t
  */
-lt_ret_t lt_random_bytes(uint32_t *buff, uint16_t len);
+lt_ret_t lt_random_bytes(void *buff, uint16_t count);
 
 #endif

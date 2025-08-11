@@ -155,10 +155,12 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
     return LT_OK;
 }
 
-lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
+lt_ret_t lt_port_random_bytes(void *buff, uint16_t count)
 {
-    for (int i = 0; i < len; i++) {
-        buff[i] = (uint32_t)rand();
+    uint8_t *buff_ptr = buff;
+    for (uint16_t i = 0; i < count; i++) {
+        // Number from rand() is guaranteed to have at least 15 bits valid
+        buff_ptr[i] = (uint8_t)(rand() & 0xFF);
     }
 
     return LT_OK;

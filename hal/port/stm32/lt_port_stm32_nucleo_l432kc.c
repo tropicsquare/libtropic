@@ -23,11 +23,16 @@ RNG_HandleTypeDef rng;
 // SPI handle declaration
 SPI_HandleTypeDef SpiHandle;
 
-lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
+lt_ret_t lt_port_random_bytes(void *buff, uint16_t count)
 {
-    for (int i = 0; i < len; i++) {
-        uint32_t helper = HAL_RNG_GetRandomNumber(&rng);
-        buff[i] = helper;
+    uint16_t bytes_left = count;
+    uint8_t *buff_ptr = buff;
+    while (bytes_left) {
+        uint32_t random_data = HAL_RNG_GetRandomNumber(&rng);
+        uint16_t cpy_cnt = bytes_left < sizeof(random_data) ? bytes_left : sizeof(random_data);
+        memcpy(buff_ptr, &random_data, cpy_cnt);
+        bytes_left -= cpy_cnt;
+        buff_ptr += cpy_cnt;
     }
 
     return LT_OK;
