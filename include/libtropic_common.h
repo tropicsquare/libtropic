@@ -73,7 +73,7 @@ typedef struct lt_l3_gen_frame_t {
     uint16_t cmd_size;
     /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_PACKET_MAX_SIZE - L3_RES_SIZE_SIZE];
-} __attribute__((packed)) lt_l3_gen_frame_t ;
+} __attribute__((packed)) lt_l3_gen_frame_t;
 
 // clang-format off
 STATIC_ASSERT(
