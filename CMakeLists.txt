@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.21.0)
 #                                                                         #
 ###########################################################################
 
+include(cmake/strict_compile_flags.cmake)
+
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
@@ -319,7 +321,7 @@ if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
                 -DSH0_PRIV_RAW_PATH=${SH0_PRIV_RAW_FILE}
                 -DSH0_PUB_RAW_PATH=${SH0_PUB_RAW_FILE}
                 -DOUTPUT_C_FILE=${KEYS_C_FILE}
-                -P "${CMAKE_CURRENT_SOURCE_DIR}/generate_sh0_keys.cmake"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_sh0_keys.cmake"
         DEPENDS "${SH0_PRIV_RAW_FILE}" "${SH0_PUB_RAW_FILE}"
         COMMENT "Generating sh0_keys.c from DER files"
         VERBATIM
@@ -348,12 +350,7 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
 
     # 1. Apply the compiler options immediately.
     # This is the primary action of this block.
-    target_compile_options(tropic PUBLIC
-        -Wall -Wextra -Werror -Wpedantic
-        -Wshadow -Wformat=2 -Wcast-align -Wfloat-equal -Wnull-dereference
-        -Wredundant-decls -Wlogical-op -Wstrict-prototypes
-        -fstack-protector-strong
-    )
+    target_link_libraries(tropic PRIVATE libtropic::strict_comp_flags)
 
     # 2. Handle the cache variable for user visibility.
     # If the flag wasn't already ON, it means tests/examples implicitly enabled it.
