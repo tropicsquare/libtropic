@@ -16,13 +16,13 @@
 #define SHA256_DIGEST_LENGTH 32
 
 /** sha256 context structure */
-typedef struct lt_crypto_sha256_ctx {
+struct lt_crypto_sha256_ctx {
 #ifdef USE_MBEDTLS
     uint32_t space[32];
 #elif LT_USE_TREZOR_CRYPTO
     uint32_t space[256];  // mbedtls is ok with 32. TODO how big is Hasher struct
 #endif
-} lt_crypto_sha256_ctx_t;
+};
 
 /**
  * @details This function initializes hash context

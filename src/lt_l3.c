@@ -68,7 +68,7 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_i
                                  'A', 'E', 'S', 'G', 'C', 'M', '_', 'S', 'H', 'A', '2', '5', '6', 0x00, 0x00, 0x00};
     uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
     // h = SHA_256(protocol_name)
-    lt_crypto_sha256_ctx_t hctx = {0};
+    struct lt_crypto_sha256_ctx_t hctx = {0};
     lt_sha256_init(&hctx);
     lt_sha256_start(&hctx);
     lt_sha256_update(&hctx, protocol_name, 32);
@@ -1017,7 +1017,7 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uin
 
     // Prepare hash of a message
     uint8_t msg_hash[32] = {0};
-    lt_crypto_sha256_ctx_t hctx = {0};
+    struct lt_crypto_sha256_ctx_t hctx = {0};
     lt_sha256_init(&hctx);
     lt_sha256_start(&hctx);
     lt_sha256_update(&hctx, (uint8_t *)msg, msg_len);
