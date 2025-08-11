@@ -37,7 +37,7 @@
 #define FW_APP_UPDATE_BANK FW_BANK_FW1
 #define FW_SPECT_UPDATE_BANK FW_BANK_SPECT1
 
-int lt_ex_fw_update(void)
+int lt_ex_fw_update(lt_handle_t *h)
 {
     LT_LOG("\t=======================================================================");
     LT_LOG("\t=====  TROPIC01 FW update                                           ===");

@@ -72,7 +72,7 @@ endif()
 #       APP: 0_4_0                                                        #
 #       APP: 0_5_0                                                        #
 #       APP: 1_0_0                                                        #
-#       SPECT: Use version present in folder of chosen firmware           #
+#       SPECT: Use version in folder next to application firmware update  #
 #                                                                         #
 #    Always use bundled versions from "TROPIC01_fw_update_files" folder!  #
 #                                                                         #
@@ -80,7 +80,6 @@ endif()
 
 set(LT_SILICON_REV "ABAB")
 set(LT_CPU_FW_VERSION "1_0_0")
-#set(LT_SPECT_FW_VERSION "1_0_1")  # TODO this is unused, because pair SPECT version in chosen fw folder is taken
 
 ###########################################################################
 #                                                                         #

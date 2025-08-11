@@ -594,9 +594,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
 
     return LT_OK;
 }
-#endif
-#ifdef ACAB
-#include "stdio.h"
+#elif ACAB
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
 {
     UNUSED(fw_data_size);
@@ -637,20 +635,16 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
     uploaded_size = len;
 
     do {
-        // printf("do newloop\r\n");
         len = fw_data[n_offset];
         p2_l2_req->req_id = TS_L2_MUTABLE_FW_UPDATE_DATA_REQ;
-        // p2_l2_req->req_len = len;
         memcpy((uint8_t *)&p2_l2_req->req_len, fw_data + n_offset, len + 1);
 
         ret = lt_l2_send(&h->l2);
         if (ret != LT_OK) {
-            // printf("lt_l2_send failed: %d\n", ret);
             return ret;
         }
         ret = lt_l2_receive(&h->l2);
         if (ret != LT_OK) {
-            // printf("lt_l2_receive failed: %d\n", ret);
             return ret;
         }
 
@@ -664,6 +658,8 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
 
     return LT_OK;
 }
+#else
+#error "Undefined silicon revision. Please define either ABAB or ACAB."
 #endif
 
 lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
