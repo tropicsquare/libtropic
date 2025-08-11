@@ -30,9 +30,13 @@
 #define READ_WRITE_DELAY 10
 
 /**
- * @brief Writes bytes to the serial port.
+ * @brief Writes data to a serial port (specified by fd).
  *
- * @return 0 on success and -1 on failure.
+ * @param  fd        File descriptor of the port to write to.
+ * @param  buffer    Pointer to the buffer containing the data to be written.
+ * @param  size      Size of the data in bytes to be written from the buffer.
+ * 
+ * @return Returns 0 on success, or -1 on error.
  */
 static int write_port(int fd, uint8_t *buffer, size_t size)
 {
@@ -45,10 +49,15 @@ static int write_port(int fd, uint8_t *buffer, size_t size)
 }
 
 /**
- * @brief Reads bytes from the serial port.
- * Returns after all the desired bytes have been read, or if there is a timeout or other error.
+ * @brief Reads data from a serial port (specified by fd).
  *
- * @return Returns the number of bytes successfully read into the buffer, or -1 if there was an error reading.
+ * @note  Returns after all the desired bytes have been read, or if there is a timeout or other error.
+ * 
+ * @param fd        The file descriptor to read from.
+ * @param buffer    Pointer to the buffer where the read data will be stored.
+ * @param size      The maximum number of bytes to read into the buffer.
+ *
+ * @return Returns the number of bytes actually read on success, or -1 on error.
  */
 static ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 {
