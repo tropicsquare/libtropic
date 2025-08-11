@@ -15,7 +15,7 @@
 #endif
 
 /** AES-GCM context structure */
-struct lt_crypto_aes_gcm_ctx {
+struct lt_crypto_aes_gcm_ctx_t {
 #if LT_USE_TREZOR_CRYPTO
     gcm_ctx ctx;
 #elif USE_MBEDTLS

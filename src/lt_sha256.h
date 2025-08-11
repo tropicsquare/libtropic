@@ -16,7 +16,7 @@
 #define SHA256_DIGEST_LENGTH 32
 
 /** sha256 context structure */
-struct lt_crypto_sha256_ctx {
+struct lt_crypto_sha256_ctx_t {
 #ifdef USE_MBEDTLS
     uint32_t space[32];
 #elif LT_USE_TREZOR_CRYPTO
