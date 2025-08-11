@@ -1,10 +1,32 @@
 /**
  * @file lt_ex_fw_update.c
  * @name Firmware update
- * @brief This code performs firmware update of TROPIC01 chip. Use defines at the beginning of this file to specify
- * firmware version and slot.
+ * @brief This code performs firmware update of TROPIC01 chip.
  *
- * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ * How to select the firmware for this example:
+ *
+ * The `TROPIC01_fw_update_files/` directory contains all officially released
+ * and signed firmwares for the TROPIC01 chip, for all silicon revisions.
+ *
+ * To specify which firmware to use for the update:
+ *   1. Open the `CMakeLists.txt` file.
+ *   2. Set the `LT_SILICON_REV` variable to your chip's silicon revision (e.g., "ABAB").
+ *   3. Set the `LT_CPU_FW_VERSION` and `LT_SPECT_FW_VERSION` to the desired versions.
+ *
+ * The build system uses these variables to include the correct firmware header files into produced binary containing
+ * firmware update example.
+ *
+ * @note The firmware update process differs based on the silicon revision:
+ *       - **ACAB Revision**: Automatically selects an inactive bank for the update.
+ *       - **ABAB Revision**: Requires the target bank to be manually erased before writing
+ *         the new firmware. This example demonstrates this by calling
+ *         `lt_mutable_fw_erase()` before `lt_mutable_fw_update()`.
+ *
+ *       For the ABAB revision, it may be necessary to erase both sets of firmware banks
+ *       (e.g., FW_BANK_FW1 and FW_BANK_FW2) to ensure a successful update, depending on
+ *       their current state. This example only updates ABAB banks defined by
+ *       `FW_APP_UPDATE_BANK` and `FW_SPECT_UPDATE_BANK`.
+ *       We recommend reading the TROPIC01 datasheet for more details.
  *
  * @author Tropic Square s.r.o.
  *
@@ -13,26 +35,25 @@
 
 #include <inttypes.h>
 
+#include "fw_CPU.h"
+#include "fw_SPECT.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_examples.h"
 #include "libtropic_logging.h"
 #include "string.h"
 
-// In TROPIC01_fw_update_files/ there are all officially released and signed firmwares for TROPIC01 chip, for all
-// silicon revisions. Header files containing the firmware update bytes have all the same name, switching happens in
-// CMakeFiles.txt, where it can be defined which firmware will be used use based on path to this header.
-// Alternatively, firmware update files are there also in binary form, which can be used on devices with filesystem, but
-// this is covered by different example.
-#include "fw_CPU.h"
-#include "fw_SPECT.h"
-
-/** @brief Define firmware banks to be used during update
- * App fw bank FW_BANK_FW1 will be erased an firmware will be installed there.
- * SPECT fw bank FW_BANK_SPECT1 will be erased an firmware will be installed there.
+/**
+ * @brief Defines the target firmware banks for this update example.
  *
- * Please note that chip has own application logic which from bank is used to boot.
- * For correct behaviour it might be necessary to erase all banks prior running this example.
+ * This example is configured to update the following banks:
+ * - Application (CPU) firmware: `FW_BANK_FW1`
+ * - SPECT firmware:             `FW_BANK_SPECT1`
+ *
+ * @note The TROPIC01 chip contains internal logic to select which bank to boot
+ * from after an update. For predictable behavior, particularly with the ABAB
+ * silicon revision, it may be necessary to erase all firmware banks before
+ * running this example.
  */
 #define FW_APP_UPDATE_BANK FW_BANK_FW1
 #define FW_SPECT_UPDATE_BANK FW_BANK_SPECT1
@@ -61,7 +82,7 @@ int lt_ex_fw_update(lt_handle_t *h)
         LT_LOG("  Chip is executing bootloader");
 
 #ifdef ABAB  // ABAB silicon revision needs bank to be erased first
-        // Erase application firmware bank
+        // Erase application firmware bank. Call following function twice with different arguments to erase both banks.
         LT_LOG("lt_mutable_fw_erase()                         %s",
                lt_ret_verbose(lt_mutable_fw_erase(h, FW_APP_UPDATE_BANK)));
 #endif
@@ -69,7 +90,7 @@ int lt_ex_fw_update(lt_handle_t *h)
         LT_LOG("lt_mutable_fw_update() APP                    %s",
                lt_ret_verbose(lt_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK)));
 #ifdef ABAB  // ABAB silicon revision needs bank to be erased first
-        // Erase SPECT firmware bank
+        // Erase SPECT firmware bank. Call following function twice with different arguments to erase both banks.
         LT_LOG("lt_mutable_fw_erase()                         %s",
                lt_ret_verbose(lt_mutable_fw_erase(h, FW_SPECT_UPDATE_BANK)));
 #endif

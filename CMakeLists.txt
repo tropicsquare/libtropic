@@ -68,9 +68,6 @@ endif()
 #           ACAB - Silicon revision C - Bootloader v2.0.1                 #
 #                                                                         #
 #   [2] Define firmware files here, allowed values are:                   #
-#       APP: 0_3_1                                                        #
-#       APP: 0_4_0                                                        #
-#       APP: 0_5_0                                                        #
 #       APP: 1_0_0                                                        #
 #       SPECT: Use version in folder next to application firmware update  #
 #                                                                         #
@@ -78,7 +75,7 @@ endif()
 #                                                                         #
 ###########################################################################
 
-set(LT_SILICON_REV "ABAB")
+set(LT_SILICON_REV "ACAB")
 set(LT_CPU_FW_VERSION "1_0_0")
 
 ###########################################################################
