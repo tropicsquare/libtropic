@@ -87,7 +87,7 @@ if (LT_BUILD_EXAMPLES)
 
         # Define executable (separate for each example) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
-        target_link_libraries(${exe_name} PRIVATE tropic)
+        target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
 
         # Enable example registry using LT_BUILD_EXAMPLES and choose correct example for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_EXAMPLES)
@@ -154,7 +154,7 @@ if(LT_BUILD_TESTS)
 
         # Define executable (separate for each test) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
-        target_link_libraries(${exe_name} PRIVATE tropic)
+        target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
 
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
