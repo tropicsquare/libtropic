@@ -33,14 +33,14 @@
  * A dummy command to check the Secure Channel Session communication.
  */
 struct lt_l3_ping_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The input data
      */
-    u8 data_in[4096]; /**< Data in */
-    u8 tag[16];       /**< L3 tag */
+    uint8_t data_in[4096]; /**< Data in */
+    uint8_t tag[16];       /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -60,14 +60,14 @@ STATIC_ASSERT(
  * A dummy command to check the Secure Channel Session communication.
  */
 struct lt_l3_ping_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The output data (loopback of the DATA_IN L3 Field).
      */
-    u8 data_out[4096]; /**< Data out */
-    u8 tag[16];        /**< L3 tag */
+    uint8_t data_out[4096]; /**< Data out */
+    uint8_t tag[16];        /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -103,24 +103,24 @@ STATIC_ASSERT(
  * Command to write the X25519 public key to a Pairing Key slot.
  */
 struct lt_l3_pairing_key_write_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The Pairing Key slot. Valid values are 0 - 3.
      */
-    u16 slot; /**< Slot to write in */
+    uint16_t slot; /**< Slot to write in */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding; /**< Padding */
+    uint8_t padding; /**< Padding */
     /**
      * @brief
      * The X25519 public key to be written in the Pairing Key slot specified in the SLOT field.
      */
-    u8 s_hipub[32]; /**< Public Key */
-    u8 tag[16];     /**< L3 tag */
+    uint8_t s_hipub[32]; /**< Public Key */
+    uint8_t tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -142,9 +142,9 @@ STATIC_ASSERT(
  * Command to write the X25519 public key to a Pairing Key slot.
  */
 struct lt_l3_pairing_key_write_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -179,14 +179,14 @@ STATIC_ASSERT(
  * Command to read the X25519 public key from a Pairing Key slot.
  */
 struct lt_l3_pairing_key_read_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The Pairing Key slot. Valid values are 0 - 3.
      */
-    u16 slot;   /**< Slot to Read */
-    u8 tag[16]; /**< L3 tag */
+    uint16_t slot;   /**< Slot to Read */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -206,19 +206,19 @@ STATIC_ASSERT(
  * Command to read the X25519 public key from a Pairing Key slot.
  */
 struct lt_l3_pairing_key_read_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The X25519 public key to be written in the Pairing Key slot specified in the SLOT field.
      */
-    u8 s_hipub[32]; /**< Public Key */
-    u8 tag[16];     /**< L3 tag */
+    uint8_t s_hipub[32]; /**< Public Key */
+    uint8_t tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -255,14 +255,14 @@ STATIC_ASSERT(
  * Command to invalidate the X25519 public key in a Pairing Key slot.
  */
 struct lt_l3_pairing_key_invalidate_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The Pairing Key slot. Valid values are 0 - 3.
      */
-    u16 slot;   /**< Slot to Invalidate */
-    u8 tag[16]; /**< L3 tag */
+    uint16_t slot;   /**< Slot to Invalidate */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -282,9 +282,9 @@ STATIC_ASSERT(
  * Command to invalidate the X25519 public key in a Pairing Key slot.
  */
 struct lt_l3_pairing_key_invalidate_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -311,24 +311,24 @@ STATIC_ASSERT(
  * Command to write a single CO to R-Config.
  */
 struct lt_l3_r_config_write_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The CO address offset for TROPIC01 to compute the actual CO address.
      */
-    u16 address; /**< Configuration object address */
+    uint16_t address; /**< Configuration object address */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding; /**< Padding */
+    uint8_t padding; /**< Padding */
     /**
      * @brief
      * The CO value to write in the computed address.
      */
-    u32 value;  /**< Configuration object value */
-    u8 tag[16]; /**< L3 tag */
+    uint32_t value;  /**< Configuration object value */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -350,9 +350,9 @@ STATIC_ASSERT(
  * Command to write a single CO to R-Config.
  */
 struct lt_l3_r_config_write_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -379,14 +379,14 @@ STATIC_ASSERT(
  * Command to read a single CO from R-Config.
  */
 struct lt_l3_r_config_read_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The CO address offset for TROPIC01 to compute the actual CO address.
      */
-    u16 address; /**< Configuration object address */
-    u8 tag[16];  /**< L3 tag */
+    uint16_t address; /**< Configuration object address */
+    uint8_t tag[16];  /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -406,19 +406,19 @@ STATIC_ASSERT(
  * Command to read a single CO from R-Config.
  */
 struct lt_l3_r_config_read_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The CO value TROPIC01 read from the computed address.
      */
-    u32 value;  /**< Configuration object value */
-    u8 tag[16]; /**< L3 tag */
+    uint32_t value;  /**< Configuration object value */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -447,9 +447,9 @@ STATIC_ASSERT(
  * Command to erase the whole R-Config (convert the bits of all CO to 1).
  */
 struct lt_l3_r_config_erase_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -468,9 +468,9 @@ STATIC_ASSERT(
  * Command to erase the whole R-Config (convert the bits of all CO to 1).
  */
 struct lt_l3_r_config_erase_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -497,19 +497,19 @@ STATIC_ASSERT(
  * Command to write a single bit of CO (from I-Config) from 1 to 0.
  */
 struct lt_l3_i_config_write_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The CO address offset for TROPIC01 to compute the actual CO address.
      */
-    u16 address; /**< Configuration object address */
+    uint16_t address; /**< Configuration object address */
     /**
      * @brief
      * The bit to write from 1 to 0. Valid values are 0-31.
      */
-    u8 bit_index; /**< Bit to write. */
-    u8 tag[16];   /**< L3 tag */
+    uint8_t bit_index; /**< Bit to write. */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -530,9 +530,9 @@ STATIC_ASSERT(
  * Command to write a single bit of CO (from I-Config) from 1 to 0.
  */
 struct lt_l3_i_config_write_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -559,14 +559,14 @@ STATIC_ASSERT(
  * Command to read a single CO from I-Config.
  */
 struct lt_l3_i_config_read_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The CO address offset for TROPIC01 to compute the actual CO address.
      */
-    u16 address; /**< Configuration object address */
-    u8 tag[16];  /**< L3 tag */
+    uint16_t address; /**< Configuration object address */
+    uint8_t tag[16];  /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -586,19 +586,19 @@ STATIC_ASSERT(
  * Command to read a single CO from I-Config.
  */
 struct lt_l3_i_config_read_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The CO value TROPIC01 read from the computed address.
      */
-    u32 value;  /**< Configuration object value */
-    u8 tag[16]; /**< L3 tag */
+    uint32_t value;  /**< Configuration object value */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -631,24 +631,24 @@ STATIC_ASSERT(
  * Command to write general purpose data in a slot from the User Data partition in R-Memory.
  */
 struct lt_l3_r_mem_data_write_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot of the User Data partition. Valid values are 0 - 511.
      */
-    u16 udata_slot; /**< Slot to write */
+    uint16_t udata_slot; /**< Slot to write */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding; /**< Padding */
+    uint8_t padding; /**< Padding */
     /**
      * @brief
      * The data stream to be written in the slot specified in the UDATA_SLOT L3 field.
      */
-    u8 data[444]; /**< Data to write */
-    u8 tag[16];   /**< L3 tag */
+    uint8_t data[444]; /**< Data to write */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -670,9 +670,9 @@ STATIC_ASSERT(
  * Command to write general purpose data in a slot from the User Data partition in R-Memory.
  */
 struct lt_l3_r_mem_data_write_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -700,14 +700,14 @@ STATIC_ASSERT(
  * Command to read the general purpose data from a slot of the User Data partition in R-Memory.
  */
 struct lt_l3_r_mem_data_read_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot of the User Data partition. Valid values are 0 - 511.
      */
-    u16 udata_slot; /**< Slot to read */
-    u8 tag[16];     /**< L3 tag */
+    uint16_t udata_slot; /**< Slot to read */
+    uint8_t tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -727,19 +727,19 @@ STATIC_ASSERT(
  * Command to read the general purpose data from a slot of the User Data partition in R-Memory.
  */
 struct lt_l3_r_mem_data_read_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The data stream read from the slot specified in the UDATA_SLOT L3 field.
      */
-    u8 data[444]; /**< Data to read */
-    u8 tag[16];   /**< L3 tag */
+    uint8_t data[444]; /**< Data to read */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -768,14 +768,14 @@ STATIC_ASSERT(
  * Command to erase a slot from the User Data partition in R-Memory.
  */
 struct lt_l3_r_mem_data_erase_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot of the User Data partition. Valid values are 0 - 511.
      */
-    u16 udata_slot; /**< Slot to erase */
-    u8 tag[16];     /**< L3 tag */
+    uint16_t udata_slot; /**< Slot to erase */
+    uint8_t tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -795,9 +795,9 @@ STATIC_ASSERT(
  * Command to erase a slot from the User Data partition in R-Memory.
  */
 struct lt_l3_r_mem_data_erase_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -824,14 +824,14 @@ STATIC_ASSERT(
  * Command to get random numbers generated by TRNG2.
  */
 struct lt_l3_random_value_get_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The number of random bytes to get.
      */
-    u8 n_bytes; /**< Number of bytes to get. */
-    u8 tag[16]; /**< L3 tag */
+    uint8_t n_bytes; /**< Number of bytes to get. */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -851,19 +851,19 @@ STATIC_ASSERT(
  * Command to get random numbers generated by TRNG2.
  */
 struct lt_l3_random_value_get_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The random data from TRNG2 in the number of bytes specified in the N_BYTES L3 Field.
      */
-    u8 random_data[255]; /**< Random data */
-    u8 tag[16];          /**< L3 tag */
+    uint8_t random_data[255]; /**< Random data */
+    uint8_t tag[16];          /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -896,19 +896,19 @@ STATIC_ASSERT(
  * Command to generate an ECC Key and store the key in a slot from the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_generate_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot to write the generated key. Valid values are 0 - 31.
      */
-    u16 slot; /**< ECC Key slot */
+    uint16_t slot; /**< ECC Key slot */
     /**
      * @brief
      * The Elliptic Curve the key is generated from.
      */
-    u8 curve;   /**< Elliptic Curve */
-    u8 tag[16]; /**< L3 tag */
+    uint8_t curve;   /**< Elliptic Curve */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -929,9 +929,9 @@ STATIC_ASSERT(
  * Command to generate an ECC Key and store the key in a slot from the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_generate_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -962,29 +962,29 @@ STATIC_ASSERT(
  * Command to store an ECC Key in a slot from the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_store_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot to write the K L3 Field. Valid values are 0 - 31.
      */
-    u16 slot; /**< ECC Key slot */
+    uint16_t slot; /**< ECC Key slot */
     /**
      * @brief
      * The Elliptic Curve the key is generated from.
      */
-    u8 curve; /**< The type of Elliptic Curve the K L3 Field belongs to. */
+    uint8_t curve; /**< The type of Elliptic Curve the K L3 Field belongs to. */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[12]; /**< Padding */
+    uint8_t padding[12]; /**< Padding */
     /**
      * @brief
      * The ECC Key to store. The key must be a member of the field given by the curve specified in the CURVE L3 Field.
      */
-    u8 k[32];   /**< Key to store */
-    u8 tag[16]; /**< L3 tag */
+    uint8_t k[32];   /**< Key to store */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1007,9 +1007,9 @@ STATIC_ASSERT(
  * Command to store an ECC Key in a slot from the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_store_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1044,14 +1044,14 @@ STATIC_ASSERT(
  * Command to read the public ECC Key from a slot of the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_read_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot to read the public ECC Key from. Valid values are 0 - 31.
      */
-    u16 slot;   /**< ECC Key slot */
-    u8 tag[16]; /**< L3 tag */
+    uint16_t slot;   /**< ECC Key slot */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1071,29 +1071,29 @@ STATIC_ASSERT(
  * Command to read the public ECC Key from a slot of the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_read_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The type of Elliptic Curve public key returned.
      */
-    u8 curve; /**< Elliptic Curve */
+    uint8_t curve; /**< Elliptic Curve */
     /**
      * @brief
      * The origin of the key.
      */
-    u8 origin; /**< Origin of the key. */
+    uint8_t origin; /**< Origin of the key. */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[13]; /**< Padding */
+    uint8_t padding[13]; /**< Padding */
     /**
      * @brief
      * The public key from the ECC Key slot as specified in the SLOT L3 Field.
      */
-    u8 pub_key[64]; /**< Public Key */
-    u8 tag[16];     /**< L3 tag */
+    uint8_t pub_key[64]; /**< Public Key */
+    uint8_t tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1124,14 +1124,14 @@ STATIC_ASSERT(
  * Command to erase an ECC Key from a slot in the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_erase_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot to erase. Valid values are 0 - 31.
      */
-    u16 slot;   /**< ECC Key slot */
-    u8 tag[16]; /**< L3 tag */
+    uint16_t slot;   /**< ECC Key slot */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1151,9 +1151,9 @@ STATIC_ASSERT(
  * Command to erase an ECC Key from a slot in the ECC Keys partition in R-Memory.
  */
 struct lt_l3_ecc_key_erase_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1180,24 +1180,24 @@ STATIC_ASSERT(
  * Command to sign a message hash with an ECDSA algorithm.
  */
 struct lt_l3_ecdsa_sign_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot (from the ECC Keys partition in R-Memory) to read the key for ECDSA signing.
      */
-    u16 slot; /**< ECC Key slot */
+    uint16_t slot; /**< ECC Key slot */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[13]; /**< Padding */
+    uint8_t padding[13]; /**< Padding */
     /**
      * @brief
      * The hash of the message to sign (max size of 32 bytes).
      */
-    u8 msg_hash[32]; /**< Hash of the Message to sign. */
-    u8 tag[16];      /**< L3 tag */
+    uint8_t msg_hash[32]; /**< Hash of the Message to sign. */
+    uint8_t tag[16];      /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1219,24 +1219,24 @@ STATIC_ASSERT(
  * Command to sign a message hash with an ECDSA algorithm.
  */
 struct lt_l3_ecdsa_sign_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[15]; /**< Padding */
+    uint8_t padding[15]; /**< Padding */
     /**
      * @brief
      * ECDSA signature - The R part
      */
-    u8 r[32]; /**< ECDSA Signature - R part */
+    uint8_t r[32]; /**< ECDSA Signature - R part */
     /**
      * @brief
      * ECDSA signature - The S part
      */
-    u8 s[32];   /**< ECDSA Signature - S part */
-    u8 tag[16]; /**< L3 tag */
+    uint8_t s[32];   /**< ECDSA Signature - S part */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1268,24 +1268,24 @@ STATIC_ASSERT(
  * Command to sign a message with an EdDSA algorithm.
  */
 struct lt_l3_eddsa_sign_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot (from the ECC Keys partition in R-Memory) to read the key for EdDSA signing.
      */
-    u16 slot; /**< ECC Key slot */
+    uint16_t slot; /**< ECC Key slot */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[13]; /**< Padding */
+    uint8_t padding[13]; /**< Padding */
     /**
      * @brief
      * The message to sign (max size of 4096 bytes).
      */
-    u8 msg[4096]; /**< Message to sign. */
-    u8 tag[16];   /**< L3 tag */
+    uint8_t msg[4096]; /**< Message to sign. */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1307,24 +1307,24 @@ STATIC_ASSERT(
  * Command to sign a message with an EdDSA algorithm.
  */
 struct lt_l3_eddsa_sign_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[15]; /**< Padding */
+    uint8_t padding[15]; /**< Padding */
     /**
      * @brief
      * EdDSA signature - The R part
      */
-    u8 r[32]; /**< EDDSA Signature - R part */
+    uint8_t r[32]; /**< EDDSA Signature - R part */
     /**
      * @brief
      * EdDSA signature - The S part
      */
-    u8 s[32];   /**< EDDSA Signature - S part */
-    u8 tag[16]; /**< L3 tag */
+    uint8_t s[32];   /**< EDDSA Signature - S part */
+    uint8_t tag[16]; /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1354,24 +1354,24 @@ STATIC_ASSERT(
  * Command to initialize the Monotonic Counter.
  */
 struct lt_l3_mcounter_init_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The index of the Monotonic Counter to initialize. Valid values are 0 - 15.
      */
-    u16 mcounter_index; /**< Index of Monotonic Counter */
+    uint16_t mcounter_index; /**< Index of Monotonic Counter */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding; /**< Padding */
+    uint8_t padding; /**< Padding */
     /**
      * @brief
      * The initialization value of the Monotonic Counter.
      */
-    u32 mcounter_val; /**< Initialization value. */
-    u8 tag[16];       /**< L3 tag */
+    uint32_t mcounter_val; /**< Initialization value. */
+    uint8_t tag[16];       /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1393,9 +1393,9 @@ STATIC_ASSERT(
  * Command to initialize the Monotonic Counter.
  */
 struct lt_l3_mcounter_init_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1422,14 +1422,14 @@ STATIC_ASSERT(
  * Command to update the Monotonic Counter (decrement by 1).
  */
 struct lt_l3_mcounter_update_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The index of the Monotonic Counter to update. Valid values are 0 - 15.
      */
-    u16 mcounter_index; /**< Index of Monotonic Counter */
-    u8 tag[16];         /**< L3 tag */
+    uint16_t mcounter_index; /**< Index of Monotonic Counter */
+    uint8_t tag[16];         /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1449,9 +1449,9 @@ STATIC_ASSERT(
  * Command to update the Monotonic Counter (decrement by 1).
  */
 struct lt_l3_mcounter_update_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1478,14 +1478,14 @@ STATIC_ASSERT(
  * Command to get the value of the Monotonic Counter.
  */
 struct lt_l3_mcounter_get_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The index of the Monotonic Counter to get the value of. Valid index values are 0 - 15.
      */
-    u16 mcounter_index; /**< Index of Monotonic Counter */
-    u8 tag[16];         /**< L3 tag */
+    uint16_t mcounter_index; /**< Index of Monotonic Counter */
+    uint8_t tag[16];         /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1505,19 +1505,19 @@ STATIC_ASSERT(
  * Command to get the value of the Monotonic Counter.
  */
 struct lt_l3_mcounter_get_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The value of the Monotonic Counter specified by the MCOUNTER_INDEX L3 Field.
      */
-    u32 mcounter_val; /**< Initialization value. */
-    u8 tag[16];       /**< L3 tag */
+    uint32_t mcounter_val; /**< Initialization value. */
+    uint8_t tag[16];       /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1546,25 +1546,25 @@ STATIC_ASSERT(
  * Command to execute the MAC-and-Destroy sequence.
  */
 struct lt_l3_mac_and_destroy_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
     /**
      * @brief
      * The slot (from the MAC-and-Destroy data partition in R-Memory) to execute the MAC_And_Destroy sequence. Valid
      * values are 0 - 127.
      */
-    u16 slot; /**< Mac-and-Destroy slot */
+    uint16_t slot; /**< Mac-and-Destroy slot */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding; /**< Padding */
+    uint8_t padding; /**< Padding */
     /**
      * @brief
      * The data input for the MAC-and-Destroy sequence.
      */
-    u8 data_in[32]; /**< Input data */
-    u8 tag[16];     /**< L3 tag */
+    uint8_t data_in[32]; /**< Input data */
+    uint8_t tag[16];     /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1586,19 +1586,19 @@ STATIC_ASSERT(
  * Command to execute the MAC-and-Destroy sequence.
  */
 struct lt_l3_mac_and_destroy_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The data output from the MAC-and-Destroy sequence.
      */
-    u8 data_out[32]; /**< Output data */
-    u8 tag[16];      /**< L3 tag */
+    uint8_t data_out[32]; /**< Output data */
+    uint8_t tag[16];      /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1627,9 +1627,9 @@ STATIC_ASSERT(
  * Command to obtain the unique per-chip identifier.
  */
 struct lt_l3_serial_code_get_cmd_t {
-    u16 cmd_size; /**< L3 command size */
-    u8 cmd_id;    /**< Command Identifier */
-    u8 tag[16];   /**< L3 tag */
+    uint16_t cmd_size; /**< L3 command size */
+    uint8_t cmd_id;    /**< Command Identifier */
+    uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off
@@ -1648,19 +1648,19 @@ STATIC_ASSERT(
  * Command to obtain the unique per-chip identifier.
  */
 struct lt_l3_serial_code_get_res_t {
-    u16 res_size; /**< L3 result size */
-    u8 result;    /**< Result status indication */
+    uint16_t res_size; /**< L3 result size */
+    uint8_t result;    /**< Result status indication */
     /**
      * @brief
      * The padding by dummy data.
      */
-    u8 padding[3]; /**< Padding */
+    uint8_t padding[3]; /**< Padding */
     /**
      * @brief
      * The unique per-chip identifier.
      */
-    u8 serial_code[32]; /**< Serial code */
-    u8 tag[16];         /**< L3 tag */
+    uint8_t serial_code[32]; /**< Serial code */
+    uint8_t tag[16];         /**< L3 tag */
 } __attribute__((packed));
 
 // clang-format off

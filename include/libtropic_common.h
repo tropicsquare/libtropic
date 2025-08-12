@@ -13,13 +13,6 @@
 #include "tropic01_application_co.h"
 #include "tropic01_bootloader_co.h"
 
-/** Alias for unsigned 8 bit integer */
-typedef uint8_t u8;
-/** Alias for unsigned 16 bit integer */
-typedef uint16_t u16;
-/** Alias for unsigned 32 bit integer */
-typedef uint32_t u32;
-
 // This macro is used to change static functions into exported one, when compiling unit tests.
 // It allows to unit test static functions.
 #ifndef TEST
@@ -75,12 +68,12 @@ typedef uint32_t u32;
 //--------------------------------------------------------------------------------------------------------------------//
 
 /** @brief Generic L3 command and result frame */
-struct __attribute__((packed)) lt_l3_gen_frame_t {
+typedef struct lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
     /** @brief Command or result data including ID and TAG */
     uint8_t data[L3_PACKET_MAX_SIZE - L3_RES_SIZE_SIZE];
-};
+} __attribute__((packed)) lt_l3_gen_frame_t;
 
 // clang-format off
 STATIC_ASSERT(
@@ -94,7 +87,7 @@ STATIC_ASSERT(
 
 //--------------------------------------------------------------------------------------------------------------------//
 
-typedef struct {
+typedef struct lt_l2_state_t {
     void *device;
     uint8_t mode;
     uint8_t buff[1 + L2_MAX_FRAME_SIZE];
@@ -105,7 +98,7 @@ typedef struct {
 #define LT_SIZE_OF_L3_BUFF L3_PACKET_MAX_SIZE
 #endif
 
-typedef struct {
+typedef struct lt_l3_state_t {
     uint32_t session;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
@@ -143,7 +136,7 @@ typedef struct lt_handle_t {
  * @brief Enum return type.
  * @note Specific values are given for easier lookup of values.
  */
-typedef enum {
+typedef enum lt_ret_t {
     /** @brief Operation was successful */
     LT_OK = 0,
     /** @brief Operation was not succesfull */
@@ -248,7 +241,7 @@ typedef enum {
 #define LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL 3840
 #define LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE 700
 
-typedef enum {
+typedef enum lt_cert_kind_t {
     LT_CERT_KIND_DEVICE = 0,
     LT_CERT_KIND_XXXX = 1,
     LT_CERT_KIND_TROPIC01 = 2,
@@ -261,11 +254,11 @@ typedef enum {
 /**
  * @brief Certificate store contents
  */
-struct lt_cert_store_t {
+typedef struct lt_cert_store_t {
     uint8_t *certs[LT_NUM_CERTIFICATES];    /** Certificates */
     uint16_t buf_len[LT_NUM_CERTIFICATES];  /** Length of buffers for certificates */
     uint16_t cert_len[LT_NUM_CERTIFICATES]; /** Lenght of certificates (from Cert store header) */
-};
+} lt_cert_store_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
@@ -277,7 +270,7 @@ struct lt_cert_store_t {
  *
  * @details This structure contains fields for parsing the chip's serial number data.
  */
-struct lt_ser_num_t {
+typedef struct lt_ser_num_t {
     uint8_t sn;          /**< 8 bits for serial number */
     uint8_t fab_data[3]; /**< 12 bits fab ID, 12 bits part number ID */
     uint16_t fab_date;   /**< 16 bits for fabrication date */
@@ -285,7 +278,7 @@ struct lt_ser_num_t {
     uint8_t wafer_id;    /**< 8 bits for wafer ID */
     uint16_t x_coord;    /**< 16 bits for x-coordinate */
     uint16_t y_coord;    /**< 16 bits for y-coordinate */
-} __attribute__((packed));
+} __attribute__((packed)) lt_ser_num_t;
 
 // clang-format off
 STATIC_ASSERT(
@@ -317,7 +310,7 @@ STATIC_ASSERT(
 /**
  * @brief Data in this struct comes from BP (batch package) yml file. CHIP_INFO is read into this struct.
  */
-struct lt_chip_id_t {
+typedef struct lt_chip_id_t {
     /**
      * @brief CHIP_ID structure versioning (32 bits), defined by Tropic Square in BP.
      * @details Example encoding: v1.2.3.4 = 0x01,0x02,0x03,0x04
@@ -414,7 +407,7 @@ struct lt_chip_id_t {
      * @brief Padding (192 bits).
      */
     uint8_t rfu_4[24];
-} __attribute__((packed));
+} __attribute__((packed)) lt_chip_id_t;
 
 // clang-format off
 STATIC_ASSERT(
@@ -458,7 +451,7 @@ STATIC_ASSERT(
 #define LT_L2_GET_INFO_FW_HEADER_SIZE 20
 
 /** @brief BANK ID */
-typedef enum {
+typedef enum bank_id_t {
     FW_BANK_FW1 = 1,      // Firmware bank 1.
     FW_BANK_FW2 = 2,      // Firmware bank 2
     FW_BANK_SPECT1 = 17,  // SPECT bank 1.
@@ -467,7 +460,7 @@ typedef enum {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Pairing key indexes corresponds to S_HiPub */
-typedef enum {
+typedef enum pkey_index_t {
     PAIRING_KEY_SLOT_INDEX_0,
     PAIRING_KEY_SLOT_INDEX_1,
     PAIRING_KEY_SLOT_INDEX_2,
@@ -475,7 +468,7 @@ typedef enum {
 } pkey_index_t;
 
 /** @brief Structure used to store variables used during establishment of a secure session */
-typedef struct {
+typedef struct session_state_t {
     uint8_t ehpriv[32];
     uint8_t ehpub[32];
     // pkey_index_t pkey_index;
@@ -503,7 +496,7 @@ typedef struct {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
-typedef enum {
+typedef enum pairing_key_slot_t {
     SH0PUB = 0,
     SH1PUB,
     SH2PUB,
@@ -512,7 +505,7 @@ typedef enum {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
-enum CONFIGURATION_OBJECTS_REGS {
+typedef enum CONFIGURATION_OBJECTS_REGS {
     CONFIGURATION_OBJECTS_CFG_START_UP_ADDR = BOOTLOADER_CO_CFG_START_UP_ADDR,
     CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR = BOOTLOADER_CO_CFG_SENSORS_ADDR,
     CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR = BOOTLOADER_CO_CFG_DEBUG_ADDR,
@@ -540,14 +533,14 @@ enum CONFIGURATION_OBJECTS_REGS {
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_GET_ADDR,
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_UPDATE_ADDR,
     CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_ADDR
-};
+} CONFIGURATION_OBJECTS_REGS;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /**
  * @brief CONFIGURATION_OBJECTS_REGISTERS index map to lt_config_t.
  * @warning Must reflect the order in cfg_desc_table.
  */
-enum CONFIGURATION_OBJECTS_REGS_IDX {
+typedef enum CONFIGURATION_OBJECTS_REGS_IDX {
     CONFIGURATION_OBJECTS_CFG_START_UP_IDX = 0,
     CONFIGURATION_OBJECTS_CFG_SENSORS_IDX,
     CONFIGURATION_OBJECTS_CFG_DEBUG_IDX,
@@ -575,7 +568,7 @@ enum CONFIGURATION_OBJECTS_REGS_IDX {
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_IDX,
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_IDX,
     CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_IDX,
-};
+} CONFIGURATION_OBJECTS_REGS_IDX;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of one data slot in bytes */
@@ -589,7 +582,7 @@ enum CONFIGURATION_OBJECTS_REGS_IDX {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
-typedef enum {
+typedef enum ecc_slot_t {
     ECC_SLOT_0 = 0,
     ECC_SLOT_1,
     ECC_SLOT_2,
@@ -625,14 +618,14 @@ typedef enum {
 } ecc_slot_t;
 
 /** @brief ECC key type */
-typedef enum { CURVE_P256 = 1, CURVE_ED25519 } lt_ecc_curve_type_t;
+typedef enum lt_ecc_curve_type_t { CURVE_P256 = 1, CURVE_ED25519 } lt_ecc_curve_type_t;
 
 /** @brief ECC key origin */
-typedef enum { CURVE_GENERATED = 1, CURVE_STORED } ecc_key_origin_t;
+typedef enum ecc_key_origin_t { CURVE_GENERATED = 1, CURVE_STORED } ecc_key_origin_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Use to choose one from 16 counters */
-enum lt_mcounter_index_t {
+typedef enum lt_mcounter_index_t {
     MCOUNTER_INDEX_0 = 0,
     MCOUNTER_INDEX_1 = 1,
     MCOUNTER_INDEX_2 = 2,
@@ -649,7 +642,7 @@ enum lt_mcounter_index_t {
     MCOUNTER_INDEX_13 = 13,
     MCOUNTER_INDEX_14 = 14,
     MCOUNTER_INDEX_15 = 15
-};
+} lt_mcounter_index_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned MAC-and-Destroy data */
@@ -658,7 +651,7 @@ enum lt_mcounter_index_t {
 #define MACANDD_ROUNDS_MAX 128
 
 /** @brief Mac-and-Destroy slot indexes */
-typedef enum {
+typedef enum mac_and_destroy_slot_t {
     MAC_AND_DESTROY_SLOT_0 = 0,
     MAC_AND_DESTROY_SLOT_1,
     MAC_AND_DESTROY_SLOT_2,
@@ -841,17 +834,17 @@ typedef enum {
 
 /** @brief This structure is used in this example to simplify looping
  *         through all config addresses and printing out them into debug */
-struct lt_config_obj_desc_t {
+typedef struct lt_config_obj_desc_t {
     char desc[60];
     enum CONFIGURATION_OBJECTS_REGS addr;
-};
+} lt_config_obj_desc_t;
 
 /** @brief Number of configuration objects in lt_config_t */
 #define LT_CONFIG_OBJ_CNT 27
 
 /** @brief Structure to hold all configuration objects */
-struct lt_config_t {
+typedef struct lt_config_t {
     uint32_t obj[LT_CONFIG_OBJ_CNT];
-};
+} lt_config_t;
 
 #endif
