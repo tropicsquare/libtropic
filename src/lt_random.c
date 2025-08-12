@@ -14,7 +14,7 @@
 lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
 #ifdef LIBT_DEBUG
-    if (!buff) {
+    if (!buff || !s2) {
         return LT_PARAM_ERR;
     }
 #endif
