@@ -34,12 +34,10 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
     memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
 
     // Create ephemeral host keys
-    uint32_t random_data[sizeof(state->ehpriv) / 4];
-    lt_ret_t ret = lt_random_bytes(random_data, sizeof(state->ehpriv) / 4);
+    lt_ret_t ret = lt_random_bytes(state->ehpriv, sizeof(state->ehpriv));
     if (ret != LT_OK) {
         return ret;
     }
-    memcpy(state->ehpriv, random_data, sizeof(state->ehpriv) / 4);
     lt_X25519_scalarmult(state->ehpriv, state->ehpub);
 
     // Setup a request pointer to l2 buffer, which is placed in handle

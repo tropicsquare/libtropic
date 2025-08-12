@@ -6,15 +6,17 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <stdlib.h>
+
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 
-lt_ret_t lt_random_bytes(uint32_t *buff, uint16_t len)
+lt_ret_t lt_random_bytes(void *buff, size_t count)
 {
 #ifdef LIBT_DEBUG
     if (!buff) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_random_bytes(buff, len);
+    return lt_port_random_bytes(buff, count);
 }
