@@ -34,7 +34,6 @@
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
-    uint8_t spiBPW = 8;
     uint32_t request_mode;
 
     srand(device->rng_seed);
