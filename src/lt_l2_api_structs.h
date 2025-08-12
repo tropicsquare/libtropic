@@ -575,7 +575,7 @@ STATIC_ASSERT(
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb0
 /** @brief Request min length */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN 3u
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN 0x68
 /** @brief Response length */
 #define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
 /** @brief Firmware type for RISC-V main CPU*/

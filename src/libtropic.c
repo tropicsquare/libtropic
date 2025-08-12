@@ -500,6 +500,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     return LT_OK;
 }
 
+#ifdef ABAB
 lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
 {
     if (!h
@@ -533,10 +534,9 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
     return LT_OK;
 }
 
-#ifdef ABAB
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
 {
-    if (!h || !fw_data || fw_data_size > 25600
+    if (!h || !fw_data || fw_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX
         || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
             && (bank_id != FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
@@ -595,18 +595,11 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
     return LT_OK;
 }
 #elif ACAB
-lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
 {
-    UNUSED(fw_data_size);
-    if (!h || !fw_data /* || fw_data_size > 25600*/
-        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
-            && (bank_id != FW_BANK_SPECT2))) {
+    if (!h || !update_request) {
         return LT_PARAM_ERR;
     }
-
-    uint8_t len = fw_data[0];
-    uint16_t n_offset = len + 1;  // First byte is length of the request, so we start from the next byte
-    int uploaded_size = 0;
 
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct lt_l2_mutable_fw_update_req_t *p_l2_req = (struct lt_l2_mutable_fw_update_req_t *)h->l2.buff;
@@ -614,7 +607,8 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
     struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)h->l2.buff;
 
     p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
-    memcpy((uint8_t *)&p_l2_req->req_len, fw_data, len + 1);
+    p_l2_req->req_len = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN;
+    memcpy((uint8_t *)&p_l2_req->req_len, update_request, LT_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1);
 
     lt_ret_t ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
@@ -629,17 +623,30 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         return LT_FAIL;
     }
 
+    return LT_OK;
+}
+
+lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size)
+{
+    if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX) {
+        return LT_PARAM_ERR;
+    }
+
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct ts_l2_mutable_fw_update_data_req_t *p2_l2_req = (struct ts_l2_mutable_fw_update_data_req_t *)h->l2.buff;
+    // Setup a request pointer to l2 buffer with response data
+    struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)h->l2.buff;
 
-    uploaded_size = len;
+    // Data consist of "request" and "data" parts,
+    // 'data' byte chunks are taken from following index:
+    int chunk_index = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1;
 
     do {
-        len = fw_data[n_offset];
+        uint8_t len = update_data[chunk_index];
         p2_l2_req->req_id = TS_L2_MUTABLE_FW_UPDATE_DATA_REQ;
-        memcpy((uint8_t *)&p2_l2_req->req_len, fw_data + n_offset, len + 1);
+        memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, len + 1);
 
-        ret = lt_l2_send(&h->l2);
+        lt_ret_t ret = lt_l2_send(&h->l2);
         if (ret != LT_OK) {
             return ret;
         }
@@ -652,9 +659,8 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
             return LT_FAIL;
         }
 
-        n_offset += len + 1;
-        uploaded_size += len + 1;
-    } while ((uploaded_size + 1) < fw_data_size);
+        chunk_index += len + 1;
+    } while ((chunk_index) < update_data_size);
 
     return LT_OK;
 }
@@ -1747,6 +1753,50 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
         || 0 > print_func("Batch ID               = 0x%s\n", print_bytes_buff)) {
         return LT_FAIL;
     }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
+                                 bank_id_t bank_id)
+{
+#ifdef ABAB
+    if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX
+        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
+            && (bank_id != FW_BANK_SPECT2))) {
+        return LT_PARAM_ERR;
+    }
+    lt_ret_t ret = lt_mutable_fw_erase(h, bank_id);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_mutable_fw_update(h, update_data, update_data_size, bank_id);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+#elif ACAB
+    UNUSED(bank_id);  // bank_id is not used with ACAB, chip handles banks on its own
+    if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX) {
+        return LT_PARAM_ERR;
+    }
+
+    // send the update 'request'
+    lt_ret_t ret = lt_mutable_fw_update(h, update_data);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    // send the rest - update 'data'
+    ret = lt_mutable_fw_update_data(h, update_data, update_data_size);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+#else
+#error "Undefined silicon revision. Please define either ABAB or ACAB."
+#endif
 
     return LT_OK;
 }

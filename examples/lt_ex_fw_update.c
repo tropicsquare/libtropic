@@ -1,32 +1,27 @@
 /**
  * @file lt_ex_fw_update.c
  * @name Firmware update
- * @brief This code performs firmware update of TROPIC01 chip.
+ * @brief This code performs firmware update of TROPIC01 chip, works on both ABAB and ACAB silicon revisions.
  *
  * How to select the firmware for this example:
  *
  * The `TROPIC01_fw_update_files/` directory contains all officially released
- * and signed firmwares for the TROPIC01 chip, for all silicon revisions.
+ * and signed firmwares for the TROPIC01 chip, for all silicon revision.
  *
  * To specify which firmware to use for the update:
  *   1. Open the `CMakeLists.txt` file.
  *   2. Set the `LT_SILICON_REV` variable to your chip's silicon revision (e.g., "ABAB").
- *   3. Set the `LT_CPU_FW_VERSION` and `LT_SPECT_FW_VERSION` to the desired versions.
+ *   3. Set the `LT_CPU_FW_VERSION` the desired versions.
  *
- * The build system uses these variables to include the correct firmware header files into produced binary containing
- * firmware update example.
+ * The build system uses these variables to place chosen firmware data into compiled binary, SPECT firmware data will be
+ * chosen automatically.
  *
- * @note The firmware update process differs based on the silicon revision:
- *       - **ACAB Revision**: Automatically selects an inactive bank for the update.
- *       - **ABAB Revision**: Requires the target bank to be manually erased before writing
- *         the new firmware. This example demonstrates this by calling
- *         `lt_mutable_fw_erase()` before `lt_mutable_fw_update()`.
+ * @note ACAB revision handles firmware banks differently than ABAB revision.
+ *      For ACAB, the chip manages firmware banks internally, and passed `bank_id` is ignored.
+ *      For ABAB, the chip requires the user to specify which bank to update, this might be defined by
+ * FW_APP_UPDATE_BANK and FW_APP_UPDATE_SPECT in this file. With ABABs, sometimes, it may be necessary to erase both
+ * banks to see expected behaviour, because chip always boots higher firmware version.
  *
- *       For the ABAB revision, it may be necessary to erase both sets of firmware banks
- *       (e.g., FW_BANK_FW1 and FW_BANK_FW2) to ensure a successful update, depending on
- *       their current state. This example only updates ABAB banks defined by
- *       `FW_APP_UPDATE_BANK` and `FW_SPECT_UPDATE_BANK`.
- *       We recommend reading the TROPIC01 datasheet for more details.
  *
  * @author Tropic Square s.r.o.
  *
@@ -50,10 +45,7 @@
  * - Application (CPU) firmware: `FW_BANK_FW1`
  * - SPECT firmware:             `FW_BANK_SPECT1`
  *
- * @note The TROPIC01 chip contains internal logic to select which bank to boot
- * from after an update. For predictable behavior, particularly with the ABAB
- * silicon revision, it may be necessary to erase all firmware banks before
- * running this example.
+ * @note Used only during ABAB update, ACAB update ignores firmware banks
  */
 #define FW_APP_UPDATE_BANK FW_BANK_FW1
 #define FW_SPECT_UPDATE_BANK FW_BANK_SPECT1
@@ -81,22 +73,12 @@ int lt_ex_fw_update(lt_handle_t *h)
     if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG("  Chip is executing bootloader");
 
-#ifdef ABAB  // ABAB silicon revision needs bank to be erased first
-        // Erase application firmware bank. Call following function twice with different arguments to erase both banks.
-        LT_LOG("lt_mutable_fw_erase()                         %s",
-               lt_ret_verbose(lt_mutable_fw_erase(h, FW_APP_UPDATE_BANK)));
-#endif
-        // Update APP firmware bank
-        LT_LOG("lt_mutable_fw_update() APP                    %s",
-               lt_ret_verbose(lt_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK)));
-#ifdef ABAB  // ABAB silicon revision needs bank to be erased first
-        // Erase SPECT firmware bank. Call following function twice with different arguments to erase both banks.
-        LT_LOG("lt_mutable_fw_erase()                         %s",
-               lt_ret_verbose(lt_mutable_fw_erase(h, FW_SPECT_UPDATE_BANK)));
-#endif
-        // Update SPECT firmware bank
-        LT_LOG("lt_mutable_fw_update() SPECT                  %s",
-               lt_ret_verbose(lt_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), FW_SPECT_UPDATE_BANK)));
+        LT_LOG("lt_do_mutable_fw_update() APP                 %s",
+               lt_ret_verbose(lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU),
+                                                      FW_APP_UPDATE_BANK)));  // Update CPU firmware bank
+        LT_LOG("lt_do_mutable_fw_update() SPECT               %s",
+               lt_ret_verbose(lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT),
+                                                      FW_SPECT_UPDATE_BANK)));  // Update SPECT firmware bank
     }
     else {
         LT_LOG("     ERROR device couldn't get into MAINTENANCE mode");

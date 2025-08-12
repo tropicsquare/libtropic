@@ -13,7 +13,6 @@ option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
-option(LT_ENABLE_FW_UPDATE "Enable firmware update functions and compile firmware update in a form of byte array" ON)
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
 # examples and tests need to have helpers utilities compiled.
 # Switch it off to compile only basic libtropic API.
@@ -165,27 +164,24 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
 
 ###########################################################################
 # Libtropic fw update:                                                    #
-# Collect files to be compiled when "fw update" is enabled                #
-# Compile only selected FW version for single silicon version             #
+# Compile only selected FW version for dedicated silicon version          #
 ###########################################################################
-if(LT_ENABLE_FW_UPDATE)
-    if (LT_SILICON_REV STREQUAL "ABAB")
-        set(BL_FOLDER boot_v_1_0_1)
-    elseif (LT_SILICON_REV STREQUAL "ACAB")
-        set(BL_FOLDER boot_v_2_0_1)
-    else()
-        message(FATAL_ERROR "Invalid silicon revision (LT_SILICON_REV): ${LT_SILICON_REV}")
-    endif()
-
-    set(SDK_INCS ${SDK_SRCS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT.h
-    )
-    set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
-        ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
-    )
+if (LT_SILICON_REV STREQUAL "ABAB")
+    set(BL_FOLDER boot_v_1_0_1)
+elseif (LT_SILICON_REV STREQUAL "ACAB")
+    set(BL_FOLDER boot_v_2_0_1)
+else()
+    message(FATAL_ERROR "Invalid silicon revision (LT_SILICON_REV): ${LT_SILICON_REV}")
 endif()
+
+set(SDK_INCS ${SDK_INCS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT.h
+)
+
+set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
+    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
+)
 
 
 ###########################################################################
@@ -198,16 +194,15 @@ set(LIBTROPIC_EXAMPLE_LIST
     lt_ex_hello_world
     lt_ex_hardware_wallet
     lt_ex_macandd
+    lt_ex_fw_update
 )
-if(LT_ENABLE_FW_UPDATE)
-    set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} lt_ex_fw_update)
-endif()
 
 # Export example list to parent project (usually platform-specific implementation).
 set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
 
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_fw_update.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_show_chip_id_and_fwver.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world_separate_API.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
