@@ -93,11 +93,12 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
 /**
  * @brief Fill buffer with random bytes, platform defined function.
  *
+ * @param s2          Structure holding l2 state
  * @param buff        Buffer to be filled
  * @param len         Number of random bytes
  * @return lt_ret_t   LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_port_random_bytes(void *buff, size_t count);
+lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
 
 /** @} */  // end of group_port_functions
 

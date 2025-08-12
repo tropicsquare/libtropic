@@ -23,7 +23,7 @@ RNG_HandleTypeDef rng;
 // SPI handle declaration
 SPI_HandleTypeDef SpiHandle;
 
-lt_ret_t lt_port_random_bytes(void *buff, size_t count)
+lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     size_t bytes_left = count;
     uint8_t *buff_ptr = buff;

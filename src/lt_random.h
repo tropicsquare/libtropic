@@ -17,10 +17,11 @@
 /**
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
+ * @param s2          Structure holding l2 state
  * @param buff        Buffer to be filled
  * @param count       Number of random bytes
  * @return lt_ret_t
  */
-lt_ret_t lt_random_bytes(void *buff, size_t count);
+lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
 
 #endif

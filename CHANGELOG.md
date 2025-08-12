@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is also used for port configuration (device mapping, speeds...).
 - Strict compile flags can now be activated with `LT_STRICT_COMP_FLAGS` CMake variable, which is automatically set when examples or tests are built.
 - API change in `lt_random_bytes()`, `lt_port_random_bytes()`: changed `buff` parameter to `void*`, renamed parameter `len` to `count`
+- API change in `lt_random_bytes()`, `lt_port_random_bytes()`: added `s2` parameter.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
