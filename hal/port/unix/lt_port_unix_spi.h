@@ -19,7 +19,7 @@
  * @note Public members are meant to be configured by the developer before passing the handle to
  *       libtropic.
  */
-typedef struct lt_port_unix_spi {
+typedef struct lt_dev_unix_spi_t {
     /** @public @brief SPI speed in Hz. */
     int spi_speed;
     /** @public @brief Path to the SPI device. */
