@@ -591,15 +591,15 @@ STATIC_ASSERT(
  * NOTE: Chip automatically selects memory space for FW storage and erases it.
  */
 struct lt_l2_mutable_fw_update_req_t {
-    u8 req_id;         /**< Request ID byte */
-    u8 req_len;        /**< Length byte */
-    u8 signature[64];  /**< Signature of SHA256 hash of all following data in this packet */
-    u8 hash[32];       /**< SHA256 HASH of first FW chunk of data sent using Mutable_FW_Update_Data */
-    u16 type;          /**< FW type which is going to be updated */
-    u8 padding;        /**< Padding, zero value */
-    u8 header_version; /**< Version of used header */
-    u32 version;       /**< Version of FW */
-    u8 crc[2];         /**< Checksum */
+    uint8_t req_id;         /**< Request ID byte */
+    uint8_t req_len;        /**< Length byte */
+    uint8_t signature[64];  /**< Signature of SHA256 hash of all following data in this packet */
+    uint8_t hash[32];       /**< SHA256 HASH of first FW chunk of data sent using Mutable_FW_Update_Data */
+    uint16_t type;          /**< FW type which is going to be updated */
+    uint8_t padding;        /**< Padding, zero value */
+    uint8_t header_version; /**< Version of used header */
+    uint32_t version;       /**< Version of FW */
+    uint8_t crc[2];         /**< Checksum */
 } __attribute__((__packed__));
 
 // clang-format off
@@ -628,10 +628,10 @@ STATIC_ASSERT(
  * Request for TROPIC01 to reset.
  */
 struct lt_l2_mutable_fw_update_rsp_t {
-    u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status;      /**< L2 status byte */
-    u8 rsp_len;     /**< Length of incoming data */
-    u8 crc[2];      /**< Checksum */
+    uint8_t chip_status; /**< CHIP_STATUS byte */
+    uint8_t status;      /**< L2 status byte */
+    uint8_t rsp_len;     /**< Length of incoming data */
+    uint8_t crc[2];      /**< Checksum */
 } __attribute__((packed));
 
 // clang-format off
@@ -651,12 +651,12 @@ STATIC_ASSERT(
  * Supported only in Start-up mode after Mutable_FW_Update_Req successfully processed.
  */
 struct ts_l2_mutable_fw_update_data_req_t {
-    u8 req_id;    /**< Request ID byte */
-    u8 req_len;   /**< Length byte */
-    u8 hash[32];  /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
-    u16 offset;   /**< The offset of the specific bank to write the FW chunk data to */
-    u8 data[220]; /**< The binary data to write. Data size should be a multiple of 4 */
-    u8 crc[2];    /**< Checksum */
+    uint8_t req_id;    /**< Request ID byte */
+    uint8_t req_len;   /**< Length byte */
+    uint8_t hash[32];  /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
+    uint16_t offset;   /**< The offset of the specific bank to write the FW chunk data to */
+    uint8_t data[220]; /**< The binary data to write. Data size should be a multiple of 4 */
+    uint8_t crc[2];    /**< Checksum */
 } __attribute__((__packed__));
 
 // clang-format off
@@ -678,10 +678,10 @@ STATIC_ASSERT(
  * Request for TROPIC01 to reset.
  */
 struct ts_l2_mutable_fw_update_data_rsp_t {
-    u8 chip_status; /**< CHIP_STATUS byte */
-    u8 status;      /**< L2 status byte */
-    u8 rsp_len;     /**< Length of incoming data */
-    u8 crc[2];      /**< Checksum */
+    uint8_t chip_status; /**< CHIP_STATUS byte */
+    uint8_t status;      /**< L2 status byte */
+    uint8_t rsp_len;     /**< Length of incoming data */
+    uint8_t crc[2];      /**< Checksum */
 } __attribute__((packed));
 
 // clang-format off

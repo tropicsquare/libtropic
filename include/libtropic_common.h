@@ -494,7 +494,7 @@ struct header_boot_v2_t {
     /** @brief GIT hash of the underlying FW repository. */
     uint32_t git_hash;
     /** @brief Hash for data integrity (SHA256, 32B). */
-    u8 hash[32];
+    uint8_t hash[32];
     /** @brief Other FW version compatibility. In case RISCV FW there may be SPECT version to match. Zero means any
      * version.*/
     uint32_t pair_version;
