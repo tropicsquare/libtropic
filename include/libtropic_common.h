@@ -54,6 +54,39 @@ typedef uint32_t u32;
 /** @brief Maximal size of l3 RES/RSP DATA field */
 #define L3_CMD_DATA_SIZE_MAX (4111)
 
+/** @brief Size of CHIP_STATUS in L1 transfer. */
+#define L1_TRANSFER_CHIP_STATUS_SIZE 1
+
+/** @brief Size of REQ_ID field in the L2 frame. */
+#define L2_FRAME_REQ_ID_SIZE 1
+/** @brief Size of REQ_LEN field in the L2 frame. */
+#define L2_FRAME_REQ_LEN_SIZE 1
+/** @brief Size of REQ_CRC field in the L2 frame. */
+#define L2_FRAME_REQ_CRC_SIZE 2
+
+/** @brief Size of STATUS field in the L2 frame. */
+#define L2_FRAME_STATUS_SIZE 1
+/** @brief Size of RSP_LEN field in the L2 frame. */
+#define L2_FRAME_RSP_LEN_SIZE 1
+/** @brief Size of RSP_CRC field in the L2 frame. */
+#define L2_FRAME_RSP_CRC_SIZE 2
+
+/** @brief Offset of REQ_LEN field in the L2 frame. */
+#define L2_FRAME_REQ_LEN_OFFSET L2_FRAME_REQ_ID_SIZE
+/** @brief Offset of RSP_LEN field in the L2 frame.
+ * @note It also includes the L1 CHIP_STATUS byte.
+ */
+#define L2_FRAME_RSP_LEN_OFFSET (L1_TRANSFER_CHIP_STATUS_SIZE + L2_FRAME_STATUS_SIZE)
+
+/** @brief Minimal size of L2 request frame. */
+#define L2_REQ_FRAME_MIN_SIZE (L2_FRAME_REQ_ID_SIZE + L2_FRAME_REQ_LEN_SIZE + L2_FRAME_REQ_CRC_SIZE)
+
+/** @brief Minimal size of L2 response frame.
+ * @note It also includes the L1 CHIP_STATUS byte.
+ */
+#define L2_RESP_FRAME_MIN_SIZE \
+    (L1_TRANSFER_CHIP_STATUS_SIZE + L2_FRAME_STATUS_SIZE + L2_FRAME_RSP_LEN_SIZE + L2_FRAME_RSP_CRC_SIZE)
+
 /** @brief TODO Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
 /** @brief Maximal size of one l2 frame */
@@ -65,6 +98,9 @@ typedef uint32_t u32;
 
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define L3_CYPHERTEXT_MAX_SIZE (L3_CMD_ID_SIZE + L3_CMD_DATA_SIZE_MAX)
+
+/** @brief Minimum size of one unit of transport on L3 layer */
+#define L3_PACKET_MIN_SIZE (L3_RES_SIZE_SIZE + L3_CMD_ID_SIZE + L3_TAG_SIZE)
 /**
  * @brief Max size of one unit of transport on l3 layer
  *
