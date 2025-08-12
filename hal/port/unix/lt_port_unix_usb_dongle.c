@@ -191,7 +191,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
     lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
-    char cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
+    uint8_t cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
     if (write_port(device->fd, cs_high, 5) != 0) {
         return LT_L1_SPI_ERROR;
     }
@@ -219,9 +219,9 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     }
 
     // Bytes from handle which are about to be sent are encoded as chars and stored to buffered_chars.
-    char buffered_chars[512] = {0};
+    uint8_t buffered_chars[512] = {0};
     for (int i = 0; i < tx_data_length; i++) {
-        sprintf(buffered_chars + i * 2, "%02" PRIX8, s2->buff[i + offset]);
+        sprintf((char*)(buffered_chars + i * 2), "%02" PRIX8, s2->buff[i + offset]);
     }
 
     // Control characters to keep CS LOW (they are expected by USB dongle, see the top of this file
@@ -242,7 +242,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     }
 
     for (size_t count = 0; count < 2 * tx_data_length; count++) {
-        sscanf(&buffered_chars[count * 2], "%02" PRIx8, &s2->buff[count + offset]);
+        sscanf((char*)&buffered_chars[count * 2], "%02" SCNx8, &s2->buff[count + offset]);
     }
 
     return LT_OK;
