@@ -11,12 +11,12 @@
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 
-lt_ret_t lt_random_bytes(void *buff, size_t count)
+lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
 #ifdef LIBT_DEBUG
     if (!buff) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_random_bytes(buff, count);
+    return lt_port_random_bytes(s2, buff, count);
 }

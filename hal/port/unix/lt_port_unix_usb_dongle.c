@@ -169,7 +169,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
     return LT_OK;
 }
 
-lt_ret_t lt_port_random_bytes(void *buff, size_t count)
+lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     uint8_t *buff_ptr = buff;
     for (size_t i = 0; i < count; i++) {
