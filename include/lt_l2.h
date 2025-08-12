@@ -68,6 +68,37 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len);
+
+/**
+ * @brief Get length of the L2 request frame.
+ *
+ * @param buff       Buffer with L2 frame
+ * @param buff_len   Length of `buff`
+ * @param req_len    Length of the L2 request frame
+ * @return           LT_OK if success, other error code otherwise.
+ */
+lt_ret_t l2_get_req_frame_len(const uint8_t *buff, uint16_t buff_len, uint16_t *req_len);
+
+/**
+ * @brief Get length of the L2 response frame.
+ *
+ * @param buff       Buffer with L2 frame
+ * @param buff_len   Length of `buff`
+ * @param rsp_len    Length of the L2 response frame
+ * @return           LT_OK if success, other error code otherwise.
+ */
+lt_ret_t l2_get_rsp_frame_len(const uint8_t *buff, uint16_t buff_len, uint16_t *rsp_len);
+
+/**
+ * @brief Get length of the L3 packet.
+ *
+ * @param buff         Buffer with L3 packet
+ * @param buff_len     Length of `buff`
+ * @param packet_len   Length of the L3 packet
+ * @return             LT_OK if success, other error code otherwise.
+ */
+lt_ret_t l3_get_packet_len(const uint8_t *buff, uint16_t buff_len, uint16_t *packet_len);
+
 /** @} */  // end of group_l2_functions
 
 #endif

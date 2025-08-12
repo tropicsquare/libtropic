@@ -203,3 +203,37 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
     return LT_FAIL;
 }
+
+lt_ret_t l2_get_req_frame_len(const uint8_t *buff, uint16_t buff_len, uint16_t *req_len)
+{
+    if (!buff || buff_len < L2_REQ_FRAME_MIN_SIZE || !req_len) {
+        return LT_PARAM_ERR;
+    }
+
+    *req_len = buff[L2_FRAME_REQ_LEN_OFFSET] + L2_FRAME_REQ_ID_SIZE + L2_FRAME_REQ_LEN_SIZE;
+    return LT_OK;
+}
+
+lt_ret_t l2_get_rsp_frame_len(const uint8_t *buff, uint16_t buff_len, uint16_t *rsp_len)
+{
+    if (!buff || buff_len < L2_RESP_FRAME_MIN_SIZE || !rsp_len) {
+        return LT_PARAM_ERR;
+    }
+
+    *rsp_len
+        = buff[L2_FRAME_RSP_LEN_OFFSET] + L1_TRANSFER_CHIP_STATUS_SIZE + L2_FRAME_STATUS_SIZE + L2_FRAME_RSP_LEN_SIZE;
+
+    return LT_OK;
+}
+
+lt_ret_t l3_get_packet_len(const uint8_t *buff, uint16_t buff_len, uint16_t *packet_len)
+{
+    if (!buff || buff_len < L3_PACKET_MIN_SIZE || !packet_len) {
+        return LT_PARAM_ERR;
+    }
+
+    struct lt_l3_gen_frame_t *frame = (struct lt_l3_gen_frame_t *)buff;
+    *packet_len = frame->cmd_size + L3_CMD_SIZE_SIZE + L3_TAG_SIZE;
+
+    return LT_OK;
+}
