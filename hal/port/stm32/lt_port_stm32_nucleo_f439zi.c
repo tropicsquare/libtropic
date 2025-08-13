@@ -14,9 +14,10 @@
 #include "libtropic_port.h"
 #include "main.h"
 #include "libtropic_logging.h"
+#include "lt_port_stm32_nucleo_f439zi.h"
 
-// Random number generator's handle
-RNG_HandleTypeDef rng;
+lt_dev_stm32_nucleo_f439zi device;
+
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
@@ -24,7 +25,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
     size_t bytes_left = count;
     uint8_t *buff_ptr = buff;
     while (bytes_left) {
-        uint32_t random_data = HAL_RNG_GetRandomNumber(&rng);
+        uint32_t random_data = HAL_RNG_GetRandomNumber(&device.rng_handle);
         size_t cpy_cnt = bytes_left < sizeof(random_data) ? bytes_left : sizeof(random_data);
         memcpy(buff_ptr, &random_data, cpy_cnt);
         bytes_left -= cpy_cnt;
@@ -38,8 +39,6 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
    vendor/STM32CubeF4/Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
 */
 
-/* SPI handle declaration */
-SPI_HandleTypeDef SpiHandle;
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
@@ -69,25 +68,25 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     UNUSED(s2);
 
-    if (HAL_RNG_Init(&rng) != HAL_OK) {
+    if (HAL_RNG_Init(&device.rng_handle) != HAL_OK) {
         return LT_FAIL;
     }
 
     /* Set the SPI parameters */
-    SpiHandle.Instance = LT_SPI_INSTANCE;
-    SpiHandle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-    SpiHandle.Init.Direction = SPI_DIRECTION_2LINES;
-    SpiHandle.Init.CLKPhase = SPI_PHASE_1EDGE;
-    SpiHandle.Init.CLKPolarity = SPI_POLARITY_LOW;
-    SpiHandle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-    // SpiHandle.Init.CRCPolynomial     = 7;
-    SpiHandle.Init.DataSize = SPI_DATASIZE_8BIT;
-    SpiHandle.Init.FirstBit = SPI_FIRSTBIT_MSB;
-    SpiHandle.Init.NSS = SPI_NSS_HARD_OUTPUT;
-    SpiHandle.Init.TIMode = SPI_TIMODE_DISABLE;
-    SpiHandle.Init.Mode = SPI_MODE_MASTER;
+    device.spi_handle.Instance = LT_SPI_INSTANCE;
+    device.spi_handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    device.spi_handle.Init.Direction = SPI_DIRECTION_2LINES;
+    device.spi_handle.Init.CLKPhase = SPI_PHASE_1EDGE;
+    device.spi_handle.Init.CLKPolarity = SPI_POLARITY_LOW;
+    device.spi_handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    // spi_handle.Init.CRCPolynomial     = 7;
+    device.spi_handle.Init.DataSize = SPI_DATASIZE_8BIT;
+    device.spi_handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    device.spi_handle.Init.NSS = SPI_NSS_HARD_OUTPUT;
+    device.spi_handle.Init.TIMode = SPI_TIMODE_DISABLE;
+    device.spi_handle.Init.Mode = SPI_MODE_MASTER;
 
-    if (HAL_SPI_Init(&SpiHandle) != HAL_OK) {
+    if (HAL_SPI_Init(&device.spi_handle) != HAL_OK) {
         return LT_FAIL;
     }
 
@@ -118,11 +117,11 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     UNUSED(s2);
 
-    if (HAL_RNG_DeInit(&rng) != HAL_OK) {
+    if (HAL_RNG_DeInit(&device.rng_handle) != HAL_OK) {
         return LT_FAIL;
     }
 
-    if (HAL_SPI_DeInit(&SpiHandle) != HAL_OK) {
+    if (HAL_SPI_DeInit(&device.spi_handle) != HAL_OK) {
         LT_LOG_ERROR("Failed to deinit SPI!");
     }
 
@@ -134,7 +133,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&SpiHandle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&device.spi_handle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
     if (ret != HAL_OK) {
         return LT_FAIL;
     }
