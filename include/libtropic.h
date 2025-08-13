@@ -176,7 +176,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
  * @param bank_id     enum bank_id_t
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id);
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
 
 /**
  * @brief Update mutable firmware in one of banks

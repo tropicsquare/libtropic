@@ -501,7 +501,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
 }
 
 #ifdef ABAB
-lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id)
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id)
 {
     if (!h
         || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
@@ -1599,7 +1599,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->chip_id_ver, sizeof(chip_id->chip_id_ver), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("CHIP_ID ver            = 0x%s (v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ")\n",
+        || 0 > print_func("CHIP_ID ver            = 0x%s (v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 ")\r\n",
                           print_bytes_buff, chip_id->chip_id_ver[0], chip_id->chip_id_ver[1], chip_id->chip_id_ver[2],
                           chip_id->chip_id_ver[3])) {
         return LT_FAIL;
@@ -1608,7 +1608,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->fl_chip_info, sizeof(chip_id->fl_chip_info), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("FL_PROD_DATA           = 0x%s (%s)\n", print_bytes_buff,
+        || 0 > print_func("FL_PROD_DATA           = 0x%s (%s)\r\n", print_bytes_buff,
                           chip_id->fl_chip_info[0] == 0x01 ? "PASSED" : "N/A")) {
         return LT_FAIL;
     }
@@ -1616,7 +1616,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->func_test_info, sizeof(chip_id->func_test_info), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("MAN_FUNC_TEST          = 0x%s (%s)\n", print_bytes_buff,
+        || 0 > print_func("MAN_FUNC_TEST          = 0x%s (%s)\r\n", print_bytes_buff,
                           chip_id->func_test_info[0] == 0x01 ? "PASSED" : "N/A")) {
         return LT_FAIL;
     }
@@ -1624,7 +1624,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->silicon_rev, sizeof(chip_id->silicon_rev), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Silicon rev            = 0x%s (%c%c%c%c)\n", print_bytes_buff, chip_id->silicon_rev[0],
+        || 0 > print_func("Silicon rev            = 0x%s (%c%c%c%c)\r\n", print_bytes_buff, chip_id->silicon_rev[0],
                           chip_id->silicon_rev[1], chip_id->silicon_rev[2], chip_id->silicon_rev[3])) {
         return LT_FAIL;
     }
@@ -1649,11 +1649,11 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
             strcpy(packg_type_id_str, "N/A");
             break;
     }
-    if (0 > print_func("Package ID             = 0x%s (%s)\n", print_bytes_buff, packg_type_id_str)) {
+    if (0 > print_func("Package ID             = 0x%s (%s)\r\n", print_bytes_buff, packg_type_id_str)) {
         return LT_FAIL;
     }
 
-    if (0 > print_func("Prov info ver          = 0x%02" PRIX8 " (v%" PRIu8 ")\n", chip_id->prov_ver_fab_id_pn[0],
+    if (0 > print_func("Prov info ver          = 0x%02" PRIX8 " (v%" PRIu8 ")\r\n", chip_id->prov_ver_fab_id_pn[0],
                        chip_id->prov_ver_fab_id_pn[0])) {
         return LT_FAIL;
     }
@@ -1661,50 +1661,52 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     uint16_t parsed_fab_id = ((chip_id->prov_ver_fab_id_pn[1] << 4) | (chip_id->prov_ver_fab_id_pn[2] >> 4)) & 0xfff;
     switch (parsed_fab_id) {
         case FAB_ID_TROPIC_SQUARE_LAB:
-            if (0 > print_func("Fab ID                 = 0x%03" PRIX16 " (%s)\n", parsed_fab_id, "Tropic Square Lab")) {
+            if (0
+                > print_func("Fab ID                 = 0x%03" PRIX16 " (%s)\r\n", parsed_fab_id, "Tropic Square Lab")) {
                 return LT_FAIL;
             }
             break;
 
         case FAB_ID_EPS_BRNO:
-            if (0 > print_func("Fab ID                 = 0x%03" PRIX16 " (%s)\n", parsed_fab_id, "EPS Global - Brno")) {
+            if (0
+                > print_func("Fab ID                 = 0x%03" PRIX16 " (%s)\r\n", parsed_fab_id, "EPS Global - Brno")) {
                 return LT_FAIL;
             }
             break;
 
         default:
-            if (0 > print_func("Fab ID         = 0x%03" PRIX16 " (%s)\n", parsed_fab_id, "N/A")) {
+            if (0 > print_func("Fab ID         = 0x%03" PRIX16 " (%s)\r\n", parsed_fab_id, "N/A")) {
                 return LT_FAIL;
             }
             break;
     }
 
     uint16_t parsed_short_pn = ((chip_id->prov_ver_fab_id_pn[2] << 8) | (chip_id->prov_ver_fab_id_pn[3])) & 0xfff;
-    if (0 > print_func("P/N ID (short P/N)     = 0x%03" PRIX16 "\n", parsed_short_pn)) {
+    if (0 > print_func("P/N ID (short P/N)     = 0x%03" PRIX16 "\r\n", parsed_short_pn)) {
         return LT_FAIL;
     }
 
     if (LT_OK
             != lt_print_bytes(chip_id->provisioning_date, sizeof(chip_id->provisioning_date), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Prov date              = 0x%s \n", print_bytes_buff)) {
+        || 0 > print_func("Prov date              = 0x%s \r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
     if (LT_OK != lt_print_bytes(chip_id->hsm_ver, sizeof(chip_id->hsm_ver), print_bytes_buff, CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("HSM HW/FW/SW ver       = 0x%s\n", print_bytes_buff)) {
+        || 0 > print_func("HSM HW/FW/SW ver       = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
     if (LT_OK != lt_print_bytes(chip_id->prog_ver, sizeof(chip_id->prog_ver), print_bytes_buff, CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Programmer ver         = 0x%s\n", print_bytes_buff)) {
+        || 0 > print_func("Programmer ver         = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
     if (LT_OK
             != lt_print_bytes((uint8_t *)&chip_id->ser_num, sizeof(chip_id->ser_num), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("S/N                    = 0x%s\n", print_bytes_buff)) {
+        || 0 > print_func("S/N                    = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
@@ -1715,14 +1717,14 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->part_num_data, sizeof(chip_id->part_num_data), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("P/N (long)             = 0x%s (%s)\n", print_bytes_buff, pn_data)) {
+        || 0 > print_func("P/N (long)             = 0x%s (%s)\r\n", print_bytes_buff, pn_data)) {
         return LT_FAIL;
     }
 
     if (LT_OK
             != lt_print_bytes(chip_id->prov_templ_ver, sizeof(chip_id->prov_templ_ver), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Prov template ver      = 0x%s (v%" PRIu8 ".%" PRIu8 ")\n", print_bytes_buff,
+        || 0 > print_func("Prov template ver      = 0x%s (v%" PRIu8 ".%" PRIu8 ")\r\n", print_bytes_buff,
                           chip_id->prov_templ_ver[0], chip_id->prov_templ_ver[1])) {
         return LT_FAIL;
     }
@@ -1730,14 +1732,14 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->prov_templ_tag, sizeof(chip_id->prov_templ_tag), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Prov template tag      = 0x%s\n", print_bytes_buff)) {
+        || 0 > print_func("Prov template tag      = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
     if (LT_OK
             != lt_print_bytes(chip_id->prov_spec_ver, sizeof(chip_id->prov_spec_ver), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Prov specification ver = 0x%s (v%" PRIu8 ".%" PRIu8 ")\n", print_bytes_buff,
+        || 0 > print_func("Prov specification ver = 0x%s (v%" PRIu8 ".%" PRIu8 ")\r\n", print_bytes_buff,
                           chip_id->prov_spec_ver[0], chip_id->prov_spec_ver[1])) {
         return LT_FAIL;
     }
@@ -1745,12 +1747,12 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     if (LT_OK
             != lt_print_bytes(chip_id->prov_spec_tag, sizeof(chip_id->prov_spec_tag), print_bytes_buff,
                               CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Prov specification tag = 0x%s\n", print_bytes_buff)) {
+        || 0 > print_func("Prov specification tag = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
     if (LT_OK != lt_print_bytes(chip_id->batch_id, sizeof(chip_id->batch_id), print_bytes_buff, CHIP_ID_FIELD_MAX_SIZE)
-        || 0 > print_func("Batch ID               = 0x%s\n", print_bytes_buff)) {
+        || 0 > print_func("Batch ID               = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
 
