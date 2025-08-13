@@ -88,7 +88,7 @@ if __name__ == "__main__":
             spect_fw_filename = filename2
             cpu_fw_filename = filename1
         else:
-            printf("Can't locate SPECT and CPU FWs")
+            print("Can't locate SPECT and CPU FWs")
 
         print(f"Located SPECT FW: {spect_fw_filename}")
         print(f"Located CPU FW: {cpu_fw_filename}")
