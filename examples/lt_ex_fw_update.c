@@ -54,6 +54,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     ret = lt_reboot(h, LT_MODE_MAINTENANCE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
         return -1;
     }
 
@@ -69,6 +70,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     else {
         LT_LOG_ERROR("Device couldn't get into MAINTENANCE mode");
+        lt_deinit(h);
         return -1;
     }
     LT_LOG_LINE();
@@ -78,6 +80,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     ret = lt_reboot(h, LT_MODE_APP);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
         return -1;
     }
 
@@ -90,6 +93,7 @@ int lt_ex_fw_update(lt_handle_t *h)
         }
         else {
             LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
+            lt_deinit(h);
             return -1;
         }
 
@@ -101,11 +105,13 @@ int lt_ex_fw_update(lt_handle_t *h)
         }
         else {
             LT_LOG_ERROR("Failed to get SPECT FW version, ret=%s", lt_ret_verbose(ret));
+            lt_deinit(h);
             return -1;
         }
     }
     else {
         LT_LOG_ERROR("Device couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid or banks are empty");
+        lt_deinit(h);
         return -1;
     }
 
