@@ -1,5 +1,5 @@
 /**
- * @file lt_port_unix.c
+ * @file lt_port_unix_tcp.c
  * @author Tropic Square s.r.o.
  * @brief Port for communication with the TROPIC01 Model using TCP.
  *
@@ -20,92 +20,39 @@
 #include <unistd.h>
 
 #include "libtropic_common.h"
+#include "libtropic_logging.h"
 #include "libtropic_port.h"
 
-// #define LIBT_DEBUG
-#ifdef LIBT_DEBUG
-#define LOG_OUT(f_, ...) printf("[TCP] " f_, ##__VA_ARGS__)
-#define LOG_ERR(f_, ...) fprintf(stderr, "ERROR: " f_, ##__VA_ARGS__)
-#define LOG_U8_ARRAY(arr, len)           \
-    for (int i = 0; i < len; i++) {      \
-        printf("%02" PRIx8 " ", arr[i]); \
-    }                                    \
-    printf("\r\n");
-#else
-#define LOG_OUT(...)
-#define LOG_ERR(...)
-#define LOG_U8_ARRAY(...)
-#endif
-
-#define TCP_TAG_AND_LENGTH_SIZE (sizeof(uint8_t) + sizeof(uint16_t))
-#define MAX_PAYLOAD_LEN L2_MAX_FRAME_SIZE
-#define MAX_BUFFER_LEN (TCP_TAG_AND_LENGTH_SIZE + MAX_PAYLOAD_LEN)
-
-#define TX_ATTEMPTS 3
-#define RX_ATTEMPTS 3
-#define MAX_RECV_SIZE (MAX_PAYLOAD_LEN + TCP_TAG_AND_LENGTH_SIZE)
-
-typedef struct {
-    union {
-        uint8_t BUFFER[MAX_BUFFER_LEN];
-        struct __attribute__((__packed__, __aligned__)) {
-            uint8_t TAG;
-            uint16_t LENGTH;
-            uint8_t PAYLOAD[MAX_PAYLOAD_LEN];
-        };
-    };
-} buffer_s;
-
-// Possible values for TAG field
-typedef enum {
-    TAG_E_SPI_DRIVE_CSN_LOW = 0x01,
-    TAG_E_SPI_DRIVE_CSN_HIGH = 0x02,
-    TAG_E_SPI_SEND = 0x03,
-    TAG_E_POWER_ON = 0x04,
-    TAG_E_POWER_OFF = 0x05,
-    TAG_E_WAIT = 0x06,
-    TAG_E_RESET_TARGET = 0x10,
-    TAG_E_INVALID = 0xfd,
-    TAG_E_UNSUPPORTED = 0xfe,
-} tag_e;
-
-// reception buffer
-static buffer_s rx_buffer;
-// emission buffer
-static buffer_s tx_buffer;
-// server socket
-static int socket_fd = -1;
-
-static int lt_connect_to_server(lt_dev_unix_tcp_t *device)
+static lt_ret_t connect_to_server(lt_dev_unix_tcp_t *dev)
 {
     struct sockaddr_in server;
 
     // Create socket
-    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (socket_fd < 0) {
-        LOG_ERR("Could not create socket: %s (%d).\n", strerror(errno), errno);
+    dev->socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (dev->socket_fd < 0) {
+        LT_LOG_ERROR("Could not create socket: %s (%d).", strerror(errno), errno);
         return LT_FAIL;
     }
-    LOG_OUT("Socket created.\n");
+    LT_LOG_DEBUG("Socket created.");
 
     // Server information
     memset(&server, 0, sizeof(server));
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = device->addr;
-    server.sin_port = htons(device->port);
+    server.sin_addr.s_addr = dev->addr;
+    server.sin_port = htons(dev->port);
 
     // Connect to the server
-    LOG_OUT("Connecting to %s:%d.\n", inet_ntoa(server.sin_addr), server.sin_port);
-    if (connect(socket_fd, (struct sockaddr *)(&server), sizeof(server)) < 0) {
-        LOG_ERR("Could not connect: %s (%d).\n", strerror(errno), errno);
-        return 1;
+    LT_LOG_DEBUG("Connecting to %s:%d.", inet_ntoa(server.sin_addr), server.sin_port);
+    if (connect(dev->socket_fd, (struct sockaddr *)(&server), sizeof(server)) < 0) {
+        LT_LOG_ERROR("Could not connect: %s (%d).", strerror(errno), errno);
+        return LT_FAIL;
     }
-    LOG_OUT("Connected to the server.\n");
+    LT_LOG_DEBUG("Connected to the server.");
 
-    return 0;
+    return LT_OK;
 }
 
-static int lt_send_all(int socket, uint8_t *buffer, size_t length)
+static lt_ret_t send_all(int socket, uint8_t *buffer, size_t length)
 {
     int nb_bytes_sent;
     int nb_bytes_sent_total = 0;
@@ -114,17 +61,17 @@ static int lt_send_all(int socket, uint8_t *buffer, size_t length)
 
     // attempt several times to send the data
     for (int i = 0; i < TX_ATTEMPTS; i++) {
-        LOG_OUT("Attempting to send data: attempt #%d.\n", i);
+        LT_LOG_DEBUG("Attempting to send data: attempt #%d.", i);
         nb_bytes_sent = send(socket, ptr, nb_bytes_to_send, 0);
         if (nb_bytes_sent <= 0) {
-            LOG_ERR("Send failed: %s (%d).\n", strerror(errno), errno);
-            return 1;
+            LT_LOG_ERROR("Send failed: %s (%d).", strerror(errno), errno);
+            return LT_FAIL;
         }
 
         nb_bytes_to_send -= nb_bytes_sent;
         if (nb_bytes_to_send == 0) {
-            LOG_OUT("All %zu bytes sent successfully.\n", length);
-            return 0;
+            LT_LOG_DEBUG("All %zu bytes sent successfully.", length);
+            return LT_OK;
         }
 
         ptr += nb_bytes_sent;
@@ -132,19 +79,19 @@ static int lt_send_all(int socket, uint8_t *buffer, size_t length)
     }
 
     // could not send all the data after several attempts
-    LOG_ERR("%d bytes sent instead of expected %zu ", nb_bytes_sent_total, length);
-    LOG_ERR("after %d attempts.\n", TX_ATTEMPTS);
+    LT_LOG_ERROR("%d bytes sent instead of expected %zu ", nb_bytes_sent_total, length);
+    LT_LOG_ERROR("after %d attempts.", TX_ATTEMPTS);
 
-    return 1;
+    return LT_FAIL;
 }
 
-static int lt_communicate(int *tx_payload_length_ptr, int *rx_payload_length_ptr)
+static lt_ret_t communicate(lt_dev_unix_tcp_t *dev, int *tx_payload_length_ptr, int *rx_payload_length_ptr)
 {
-    int status;
+    lt_ret_t ret;
     int nb_bytes_received;
     int nb_bytes_received_total = 0;
     int nb_bytes_to_receive = TCP_TAG_AND_LENGTH_SIZE;
-    uint8_t *rx_ptr = rx_buffer.BUFFER;
+    uint8_t *rx_ptr = dev->rx_buffer.buff;
     // number of bytes to send
     int nb_bytes_to_send = TCP_TAG_AND_LENGTH_SIZE;
 
@@ -153,50 +100,46 @@ static int lt_communicate(int *tx_payload_length_ptr, int *rx_payload_length_ptr
     }
 
     // update payload length field
-    tx_buffer.LENGTH = nb_bytes_to_send - TCP_TAG_AND_LENGTH_SIZE;
+    dev->tx_buffer.len = nb_bytes_to_send - TCP_TAG_AND_LENGTH_SIZE;
 
-    // send data
-    LOG_U8_ARRAY(tx_buffer.BUFFER, nb_bytes_to_send);
-
-    status = lt_send_all(socket_fd, tx_buffer.BUFFER, nb_bytes_to_send);
-    if (status != 0) {
-        return status;
+    ret = send_all(dev->socket_fd, dev->tx_buffer.buff, nb_bytes_to_send);
+    if (ret != LT_OK) {
+        return ret;
     }
 
     // receive data
-    LOG_OUT("- Receiving data from target.\n");
-    nb_bytes_received = recv(socket_fd, rx_buffer.BUFFER, MAX_RECV_SIZE, 0);
+    LT_LOG_DEBUG("- Receiving data from target.");
+    nb_bytes_received = recv(dev->socket_fd, dev->rx_buffer.buff, MAX_RECV_SIZE, 0);
 
     if (nb_bytes_received < 0) {
-        LOG_ERR("Receive failed: %s (%d).\n", strerror(errno), errno);
-        return 1;
+        LT_LOG_ERROR("Receive failed: %s (%d).", strerror(errno), errno);
+        return LT_FAIL;
     }
-
     else if (nb_bytes_received < nb_bytes_to_receive) {
-        LOG_ERR("At least %d bytes are expected: %d.\n", nb_bytes_to_receive, nb_bytes_received);
-        return 1;
+        LT_LOG_ERROR("At least %d bytes are expected: %d.", nb_bytes_to_receive, nb_bytes_received);
+        return LT_FAIL;
     }
 
-    LOG_OUT("Length field: %" PRIu16 ".\n", rx_buffer.LENGTH);
-    nb_bytes_to_receive += rx_buffer.LENGTH;
+    LT_LOG_DEBUG("Length field: %" PRIu16 ".", dev->rx_buffer.len);
+    nb_bytes_to_receive += dev->rx_buffer.len;
     nb_bytes_received_total += nb_bytes_received;
-    LOG_OUT("Received %d bytes out of %d expected.\n", nb_bytes_received_total, nb_bytes_to_receive);
+    LT_LOG_DEBUG("Received %d bytes out of %d expected.", nb_bytes_received_total, nb_bytes_to_receive);
 
     if (nb_bytes_received_total < nb_bytes_to_receive) {
         rx_ptr += nb_bytes_received;
 
         for (int i = 0; i < RX_ATTEMPTS; i++) {
-            LOG_OUT("Attempting to receive remaining bytes: attempt #%d.\n", i);
-            nb_bytes_received = recv(socket_fd, rx_buffer.BUFFER, MAX_RECV_SIZE, 0);
+            LT_LOG_DEBUG("Attempting to receive remaining bytes: attempt #%d.", i);
+            nb_bytes_received = recv(dev->socket_fd, dev->rx_buffer.buff, MAX_RECV_SIZE, 0);
 
             if (nb_bytes_received < 0) {
-                LOG_ERR("Receive failed: %s (%d).\n", strerror(errno), errno);
-                return 1;
+                LT_LOG_ERROR("Receive failed: %s (%d).", strerror(errno), errno);
+                return LT_FAIL;
             }
 
             nb_bytes_received_total += nb_bytes_received;
             if (nb_bytes_received_total >= nb_bytes_to_receive) {
-                LOG_OUT("Received %d bytes in total.\n", nb_bytes_received_total);
+                LT_LOG_DEBUG("Received %d bytes in total.", nb_bytes_received_total);
                 break;
             }
             rx_ptr += nb_bytes_received;
@@ -204,73 +147,78 @@ static int lt_communicate(int *tx_payload_length_ptr, int *rx_payload_length_ptr
     }
 
     if (nb_bytes_received_total != nb_bytes_to_receive) {
-        LOG_ERR("Received %d bytes in total instead of %d.\n", nb_bytes_received_total, nb_bytes_to_receive);
-        return 1;
+        LT_LOG_ERROR("Received %d bytes in total instead of %d.", nb_bytes_received_total, nb_bytes_to_receive);
+        return LT_FAIL;
     }
 
     // server does not know the sent tag
-    if (rx_buffer.TAG == TAG_E_INVALID) {
-        LOG_ERR("Tag %" PRIu8 " is not known by the server.\n", tx_buffer.TAG);
-        return 1;
+    if ((unix_tcp_tag_t)dev->rx_buffer.tag == TAG_E_INVALID) {
+        LT_LOG_ERROR("Tag %" PRIu8 " is not known by the server.", dev->tx_buffer.tag);
+        return LT_FAIL;
     }
-
     // server does not know what to do with the sent tag
-    else if (rx_buffer.TAG == TAG_E_UNSUPPORTED) {
-        LOG_ERR("Tag %" PRIu8 " is not supported by the server.\n", tx_buffer.TAG);
-        return 1;
+    else if ((unix_tcp_tag_t)dev->rx_buffer.tag == TAG_E_UNSUPPORTED) {
+        LT_LOG_ERROR("Tag %" PRIu8 " is not supported by the server.", dev->tx_buffer.tag);
+        return LT_FAIL;
     }
-
     // RX tag and TX tag should be identical
-    else if (rx_buffer.TAG != tx_buffer.TAG) {
-        LOG_ERR("Expected tag %" PRIu8 ", received %" PRIu8 ".\n", rx_buffer.TAG, tx_buffer.TAG);
-        return 1;
+    else if (dev->rx_buffer.tag != dev->tx_buffer.tag) {
+        LT_LOG_ERROR("Expected tag %" PRIu8 ", received %" PRIu8 ".", dev->rx_buffer.tag, dev->tx_buffer.tag);
+        return LT_FAIL;
     }
 
-    LOG_OUT("Rx tag and tx tag match: %" PRIu8 ".\n", rx_buffer.TAG);
+    LT_LOG_DEBUG("Rx tag and tx tag match: %" PRIu8 ".", dev->rx_buffer.tag);
     if (rx_payload_length_ptr != NULL) {
         *rx_payload_length_ptr = nb_bytes_received_total - TCP_TAG_AND_LENGTH_SIZE;
     }
 
-    return 0;
+    return LT_OK;
 }
 
-static int server_connect(lt_dev_unix_tcp_t *device)
+static lt_ret_t server_connect(lt_dev_unix_tcp_t *dev)
 {
-    bzero(tx_buffer.BUFFER, MAX_BUFFER_LEN);
-    bzero(rx_buffer.BUFFER, MAX_BUFFER_LEN);
+    bzero(dev->tx_buffer.buff, MAX_BUFFER_LEN);
+    bzero(dev->rx_buffer.buff, MAX_BUFFER_LEN);
 
-    int ret = lt_connect_to_server(device);
-    if (ret != 0) {
+    lt_ret_t ret = connect_to_server(dev);
+    if (ret != LT_OK) {
         return ret;
     }
-    return 0;
+
+    return LT_OK;
 }
 
-static int server_disconnect(void)
+static lt_ret_t server_disconnect(int socket_fd)
 {
-    LOG_OUT("-- Server disconnect\n");
-    return close(socket_fd);
+    LT_LOG_DEBUG("-- Server disconnect");
+    if (close(socket_fd)) {
+        LT_LOG_ERROR("close() failed: %s (%d)", strerror(errno), errno);
+        return LT_FAIL;
+    }
+
+    return LT_OK;
 }
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    lt_dev_unix_tcp_t *device = (lt_dev_unix_tcp_t *)(s2->device);
+    lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
 
-    int ret = server_connect(device);
-    if (ret != 0) {
-        return LT_FAIL;
+    lt_ret_t ret = server_connect(dev);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    srand(device->rng_seed);
+    srand(dev->rng_seed);
 
     return LT_OK;
 }
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
-    if (server_disconnect() != 0) {
-        return LT_FAIL;
+    lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
+    lt_ret_t ret = server_disconnect(dev->socket_fd);
+    if (ret != LT_OK) {
+        return ret;
     }
 
     return LT_OK;
@@ -278,63 +226,65 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
-    LOG_OUT("-- Driving Chip Select to Low.\n");
-    tx_buffer.TAG = TAG_E_SPI_DRIVE_CSN_LOW;
-    return lt_communicate(NULL, NULL);
+    lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
+    LT_LOG_DEBUG("-- Driving Chip Select to Low.");
+    dev->tx_buffer.tag = TAG_E_SPI_DRIVE_CSN_LOW;
+    return communicate(dev, NULL, NULL);
 }
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
-    LOG_OUT("-- Driving Chip Select to High.\n");
-    tx_buffer.TAG = TAG_E_SPI_DRIVE_CSN_HIGH;
-    return lt_communicate(NULL, NULL);
+    lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
+    LT_LOG_DEBUG("-- Driving Chip Select to High.");
+    dev->tx_buffer.tag = TAG_E_SPI_DRIVE_CSN_HIGH;
+    return communicate(dev, NULL, NULL);
 }
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     UNUSED(timeout);
+    lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
+    lt_ret_t ret;
 
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
 
-    LOG_OUT("-- Sending data through SPI bus.\n");
+    LT_LOG_DEBUG("-- Sending data through SPI bus.");
 
     int tx_payload_length = tx_data_length;
     int rx_payload_length;
 
-    tx_buffer.TAG = TAG_E_SPI_SEND;
-    tx_buffer.LENGTH = (uint16_t)tx_payload_length;
+    dev->tx_buffer.tag = TAG_E_SPI_SEND;
+    dev->tx_buffer.len = (uint16_t)tx_payload_length;
 
     // copy tx_data to tx payload
-    memcpy(&tx_buffer.PAYLOAD, s2->buff, tx_payload_length);
+    memcpy(&dev->tx_buffer.payload, s2->buff, tx_payload_length);
 
-    int status = lt_communicate(&tx_payload_length, &rx_payload_length);
-    if (status != 0) {
+    ret = communicate(dev, &tx_payload_length, &rx_payload_length);
+    if (ret != LT_OK) {
         return LT_FAIL;
     }
 
-    memcpy(s2->buff + offset, &rx_buffer.PAYLOAD, rx_payload_length);
+    memcpy(s2->buff + offset, &dev->rx_buffer.payload, rx_payload_length);
 
     return LT_OK;
 }
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_usecs)
 {
-    UNUSED(s2);
-    LOG_OUT("-- Waiting for the target.\n");
+    lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
+    LT_LOG_DEBUG("-- Waiting for the target.");
 
-    tx_buffer.TAG = TAG_E_WAIT;
+    dev->tx_buffer.tag = TAG_E_WAIT;
     int payload_length = sizeof(uint32_t);
     //*(uint32_t *)(&tx_buffer.PAYLOAD) = wait_time_usecs;
-    rx_buffer.PAYLOAD[0] = wait_time_usecs & 0x000000ff;
-    rx_buffer.PAYLOAD[1] = (wait_time_usecs & 0x0000ff00) >> 8;
-    rx_buffer.PAYLOAD[2] = (wait_time_usecs & 0x00ff0000) >> 16;
-    rx_buffer.PAYLOAD[3] = (wait_time_usecs & 0xff000000) >> 24;
+    dev->rx_buffer.payload[0] = wait_time_usecs & 0x000000ff;
+    dev->rx_buffer.payload[1] = (wait_time_usecs & 0x0000ff00) >> 8;
+    dev->rx_buffer.payload[2] = (wait_time_usecs & 0x00ff0000) >> 16;
+    dev->rx_buffer.payload[3] = (wait_time_usecs & 0xff000000) >> 24;
 
-    return lt_communicate(&payload_length, NULL);
+    return communicate(dev, &payload_length, NULL);
 }
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
