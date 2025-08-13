@@ -40,9 +40,9 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 /* SPI handle declaration */
 SPI_HandleTypeDef SpiHandle;
 
-lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
+lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
 
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_RESET);
     while (HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN)) {
@@ -52,9 +52,9 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
+lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
 
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
     while (!HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN)) {
@@ -64,9 +64,9 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_init(lt_l2_state_t *h)
+lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
 
     if (HAL_RNG_Init(&rng) != HAL_OK) {
         return LT_FAIL;
@@ -116,9 +116,9 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_deinit(lt_l2_state_t *h)
+lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    UNUSED(h);
+    UNUSED(s2);
 
     if (HAL_RNG_DeInit(&rng) != HAL_OK) {
         return LT_FAIL;
@@ -129,12 +129,12 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
 {
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&SpiHandle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
     if (ret != HAL_OK) {
         return LT_FAIL;
     }
@@ -142,9 +142,9 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
     return LT_OK;
 }
 
-lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t ms)
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
-    UNUSED(h);
+    UNUSED(s2);
 
     HAL_Delay(ms);
 
@@ -152,9 +152,9 @@ lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t ms)
 }
 
 #if LT_USE_INT_PIN
-lt_ret_t lt_port_delay_on_int(lt_l2_state_t *h, uint32_t ms)
+lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 {
-    UNUSED(h);
+    UNUSED(s2);
     uint32_t time_initial = HAL_GetTick();
     uint32_t time_actual;
     while ((HAL_GPIO_ReadPin(LT_INT_BANK, LT_INT_PIN) == 0)) {
