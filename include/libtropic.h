@@ -198,7 +198,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
  *
  * @param h               Device's handle
  * @param update_request  Array with firmware update request bytes
- * @return lt_ret_t       LT_OK if success, otherwise returns other error code.
+ * @return                LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request);
 
@@ -209,7 +209,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request);
  * @param h                 Device's handle
  * @param update_data       Array with firmware update data bytes
  * @param update_data_size  Size of update data
- * @return lt_ret_t         LT_OK if success, otherwise returns other error code.
+ * @return                  LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size);
 
@@ -585,7 +585,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
  * @param bank_id  Bank ID where the update should be applied, valid values are
  *                     For ABAB: FW_BANK_FW1, FW_BANK_FW2, FW_BANK_SPECT1, FW_BANK_SPECT2
  *                     For ACAB: Parameter is ignored, chip is handling firmware banks on its own
- * @return lt_ret_t    LT_OK if success, otherwise returns other error code.
+ * @return             LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
                                  bank_id_t bank_id);
