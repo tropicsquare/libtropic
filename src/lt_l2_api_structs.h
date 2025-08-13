@@ -623,8 +623,7 @@ STATIC_ASSERT(
 #define TS_L2_MUTABLE_FW_UPDATE_DATA_REQ 0xb1
 
 /**
- * @brief
- * Request for TROPIC01 to reset.
+ * @brief Response on lt_l2_mutable_fw_update_req_t
  */
 struct lt_l2_mutable_fw_update_rsp_t {
     uint8_t chip_status; /**< CHIP_STATUS byte */
@@ -649,7 +648,7 @@ STATIC_ASSERT(
  * @brief Request to write a chunk of the new mutable FW into memory bank
  * Supported only in Start-up mode after Mutable_FW_Update_Req successfully processed.
  */
-struct ts_l2_mutable_fw_update_data_req_t {
+struct lt_l2_mutable_fw_update_data_req_t {
     uint8_t req_id;    /**< Request ID byte */
     uint8_t req_len;   /**< Length byte */
     uint8_t hash[32];  /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
@@ -660,23 +659,22 @@ struct ts_l2_mutable_fw_update_data_req_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct ts_l2_mutable_fw_update_data_req_t) ==
+    sizeof(struct lt_l2_mutable_fw_update_data_req_t) ==
     (
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_req_t, req_id) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_req_t, req_len) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_req_t, hash) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_req_t, offset) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_req_t, data) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_req_t, crc)
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, hash) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, offset) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, data) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, crc)
     )
 )
 // clang-format on
 
 /**
- * @brief
- * Request for TROPIC01 to reset.
+ * @brief response on lt_l2_mutable_fw_update_data_req_t
  */
-struct ts_l2_mutable_fw_update_data_rsp_t {
+struct lt_l2_mutable_fw_update_data_rsp_t {
     uint8_t chip_status; /**< CHIP_STATUS byte */
     uint8_t status;      /**< L2 status byte */
     uint8_t rsp_len;     /**< Length of incoming data */
@@ -685,12 +683,12 @@ struct ts_l2_mutable_fw_update_data_rsp_t {
 
 // clang-format off
 STATIC_ASSERT(
-    sizeof(struct ts_l2_mutable_fw_update_data_rsp_t) ==
+    sizeof(struct lt_l2_mutable_fw_update_data_rsp_t) ==
     (
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_rsp_t, chip_status) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_rsp_t, status) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct ts_l2_mutable_fw_update_data_rsp_t, crc)
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, crc)
     )
 )
 // clang-format on

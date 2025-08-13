@@ -61,7 +61,7 @@ endif()
 #   For more info about firmware update go into                           #
 #   TROPIC01_fw_update_files/README.md                                    #
 #                                                                         #
-#   [1] Define silicon revision, allowed                                  #
+#   [1] Define LT_SILICON_REV, allowed                                  #
 #       values are:                                                       #
 #           ABAB - Silicon revision B - Bootloader v1.0.1                 #
 #           ACAB - Silicon revision C - Bootloader v2.0.1                 #

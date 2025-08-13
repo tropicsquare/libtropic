@@ -77,7 +77,7 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
-    // The byte used here shall not be ID byte of some request, otherwise chip would be confused
+    // The byte used here must not be ID byte of some request, otherwise chip would be confused
     // and would return CRC error.
     // GET_RESP 0xAA works fine.
     h->l2.buff[0] = GET_RESPONSE_REQ_ID;
@@ -633,7 +633,7 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct ts_l2_mutable_fw_update_data_req_t *p2_l2_req = (struct ts_l2_mutable_fw_update_data_req_t *)h->l2.buff;
+    struct lt_l2_mutable_fw_update_data_req_t *p2_l2_req = (struct lt_l2_mutable_fw_update_data_req_t *)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)h->l2.buff;
 
