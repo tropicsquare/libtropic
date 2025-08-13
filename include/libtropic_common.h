@@ -466,19 +466,33 @@ typedef enum bank_id_t {
  * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
  * based on bootloader version. This header layout is returned by bootloader version v1.0.1
  */
-struct header_boot_v1_t {
+typedef struct header_boot_v1_t {
     uint8_t type[4];
     uint8_t version[4];
     uint8_t size[4];
     uint8_t git_hash[4];
     uint8_t hash[4];
-} __attribute__((packed));
+} header_boot_v1_t __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    ( sizeof(struct header_boot_v1_t) )
+    ==
+    (
+        MEMBER_SIZE(struct header_boot_v1_t, type) + 
+        MEMBER_SIZE(struct header_boot_v1_t, version) + 
+        MEMBER_SIZE(struct header_boot_v1_t, size) + 
+        MEMBER_SIZE(struct header_boot_v1_t, git_hash) + 
+        MEMBER_SIZE(struct header_boot_v1_t, hash)
+    )
+)
+// clang-format on
 
 /**
  * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
  * based on bootloader version. This header layout is returned by bootloader version v1.0.1
  */
-struct header_boot_v2_t {
+typedef struct header_boot_v2_t {
     /** @brief Currently only two types supported:
      * 1 == FW for RISCV coprocessor.
      * 2 == FW for SPECT coprocessor */
@@ -499,7 +513,24 @@ struct header_boot_v2_t {
      * version.*/
     uint32_t pair_version;
 
-} __attribute__((packed)) __attribute__((aligned(4)));
+} header_boot_v2_t __attribute__((packed)) __attribute__((aligned(4)));
+
+// clang-format off
+STATIC_ASSERT(
+    ( sizeof(struct header_boot_v2_t) )
+    ==
+    (
+        MEMBER_SIZE(struct header_boot_v2_t, type) + 
+        MEMBER_SIZE(struct header_boot_v2_t, padding) + 
+        MEMBER_SIZE(struct header_boot_v2_t, header_version) + 
+        MEMBER_SIZE(struct header_boot_v2_t, ver) + 
+        MEMBER_SIZE(struct header_boot_v2_t, size) +
+        MEMBER_SIZE(struct header_boot_v2_t, git_hash) +
+        MEMBER_SIZE(struct header_boot_v2_t, hash) +
+        MEMBER_SIZE(struct header_boot_v2_t, pair_version)
+    )
+)
+// clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Pairing key indexes corresponds to S_HiPub */
