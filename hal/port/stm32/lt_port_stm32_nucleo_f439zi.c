@@ -13,6 +13,7 @@
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 #include "main.h"
+#include "libtropic_logging.h"
 
 // Random number generator's handle
 RNG_HandleTypeDef rng;
@@ -109,9 +110,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LT_INT_BANK, &GPIO_InitStruct);
 #endif
-    // TODO this is probably crap, this function should be called by HAL
-    // internally. But lt_init didnt work properly if it is not here.
-    HAL_SPI_MspInit(&SpiHandle);
 
     return LT_OK;
 }
@@ -124,7 +122,9 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
         return LT_FAIL;
     }
 
-    HAL_SPI_MspDeInit(&SpiHandle);
+    if (HAL_SPI_DeInit(&SpiHandle) != HAL_OK) {
+        LT_LOG_ERROR("Failed to deinit SPI!");
+    }
 
     return LT_OK;
 }
