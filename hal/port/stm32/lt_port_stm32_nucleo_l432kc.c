@@ -25,6 +25,7 @@ SPI_HandleTypeDef SpiHandle;
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
+    UNUSED(s2);
     size_t bytes_left = count;
     uint8_t *buff_ptr = buff;
     while (bytes_left) {
