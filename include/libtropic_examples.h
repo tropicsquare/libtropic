@@ -89,10 +89,30 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h);
 int lt_ex_hardware_wallet(lt_handle_t *h);
 
 /**
- * @brief Example function, shows how to update TROPIC01's internal firmwares
+ * @brief Performs firmware update of TROPIC01 chip.
  *
- * @param  h     Device's handle
- * @return int
+ * How to select the firmware for this example:
+ *
+ * The `TROPIC01_fw_update_files/` directory contains all officially released
+ * and signed firmwares for the TROPIC01 chip, for all silicon revision.
+ *
+ * To specify which firmware to use for the update:
+ *   1. Open the `CMakeLists.txt` file.
+ *   2. Set the `LT_SILICON_REV` variable to your chip's silicon revision (e.g., "ABAB").
+ *   3. Set the `LT_CPU_FW_VERSION` the desired versions.
+ *
+ * The build system uses these variables to place chosen firmware data into compiled binary, SPECT firmware data will be
+ * chosen automatically.
+ *
+ * @note ACAB revision handles firmware banks differently than ABAB revision.
+ *      For ACAB, the chip manages firmware banks internally, and passed `bank_id` is ignored.
+ *      For ABAB, the chip requires the user to specify which bank to update, this might be defined by
+ * FW_APP_UPDATE_BANK and FW_APP_UPDATE_SPECT in this file. With ABABs, sometimes, it may be necessary to erase both
+ * banks to see expected behaviour, because chip always boots higher firmware version.
+ *
+ *
+ * @param h     Handle to the TROPIC01 chip.
+ * @return int  0 on success, -1 on failure.
  */
 int lt_ex_fw_update(lt_handle_t *h);
 
@@ -116,5 +136,15 @@ int lt_ex_fw_update(lt_handle_t *h);
  * @return 0 on success, -1 otherwise
  */
 int lt_ex_macandd(lt_handle_t *h);
+
+/**
+ * @brief This example shows how to read TROPIC01's chip ID and firmware versions. Prints chip application firmware
+ * versions and also bootloader version.
+ *
+ * @note We recommend reading TROPIC01's datasheet before diving into this example!
+ *
+ * @return 0 on success, -1 otherwise
+ */
+int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
 
 #endif

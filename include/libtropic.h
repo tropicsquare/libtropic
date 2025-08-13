@@ -166,6 +166,9 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
  */
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
 
+#ifdef ABAB
+/** @brief Maximal size of update data */
+#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 25600  // TODO Maybe better value for this?
 /**
  * @brief Erase mutable firmware in one of banks
  *
@@ -186,6 +189,31 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, bank_id_t bank_id);
  */
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id);
 
+#elif ACAB
+/** @brief Maximal size of update data */
+#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 30000  // TODO Maybe better value for this?
+
+/**
+ * @brief This function sends mutable firmware update 'request' to TROPIC01 with silicon revision ACAB
+ *
+ * @param h               Device's handle
+ * @param update_request  Array with firmware update request bytes
+ * @return                LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request);
+
+/**
+ * @brief  This function sends mutable firmware update 'data' to TROPIC01 with silicon revision ACAB. Function
+ * lt_mutable_fw_update() must be called first to start authenticated mutable fw update.
+ *
+ * @param h                 Device's handle
+ * @param update_data       Array with firmware update data bytes
+ * @param update_data_size  Size of update data
+ * @return                  LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size);
+
+#endif
 /**
  * @brief Get TROPIC01's internal log message (if enabled/available)
  *
@@ -547,6 +575,20 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_b
  * @return lt_ret_t    LT_OK on success, other values otherwise
  */
 lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...));
+
+/**
+ * @brief Function used to perform mutable firmware update on ABAB and ACAB silicon revisions.
+ *
+ * @param h          Device's handle
+ * @param update_data  Pointer to the data to be written
+ * @param update_data_size  Size of the data to be written
+ * @param bank_id  Bank ID where the update should be applied, valid values are
+ *                     For ABAB: FW_BANK_FW1, FW_BANK_FW2, FW_BANK_SPECT1, FW_BANK_SPECT2
+ *                     For ACAB: Parameter is ignored, chip is handling firmware banks on its own
+ * @return             LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
+                                 bank_id_t bank_id);
 
 #endif
 

@@ -491,6 +491,8 @@ STATIC_ASSERT(
 )
 // clang-format on
 
+// Firmware update API structs for ABAB silicon revision
+#ifdef ABAB
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
 /** @brief Request min length */
@@ -566,6 +568,131 @@ STATIC_ASSERT(
     )
 )
 // clang-format on
+#endif
+
+// Firmware update API structs for ACAB silicon revision
+#ifdef ACAB
+/** @brief Request ID */
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb0
+/** @brief Request min length */
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN 0x68
+/** @brief Response length */
+#define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
+/** @brief Firmware type for RISC-V main CPU*/
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_CPU 1
+/** @brief Firmware type for SPECT coprocessor */
+#define LT_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_SPECT 2
+
+/**
+ * @brief
+ * Request to start updating mutable FW.
+ * Supported only in Start-up mode (i.e. after Startup_Req with MAINTENANCE_REBOOT).
+ * Possible to update only same or newer version.
+ * NOTE: Chip automatically selects memory space for FW storage and erases it.
+ */
+struct lt_l2_mutable_fw_update_req_t {
+    uint8_t req_id;         /**< Request ID byte */
+    uint8_t req_len;        /**< Length byte */
+    uint8_t signature[64];  /**< Signature of SHA256 hash of all following data in this packet */
+    uint8_t hash[32];       /**< SHA256 HASH of first FW chunk of data sent using Mutable_FW_Update_Data */
+    uint16_t type;          /**< FW type which is going to be updated */
+    uint8_t padding;        /**< Padding, zero value */
+    uint8_t header_version; /**< Version of used header */
+    uint32_t version;       /**< Version of FW */
+    uint8_t crc[2];         /**< Checksum */
+} __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, signature) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, hash) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, type) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, padding) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, header_version) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, version) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
+    )
+)
+// clang-format on
+
+/** @brief Request ID */
+#define TS_L2_MUTABLE_FW_UPDATE_DATA_REQ 0xb1
+
+/**
+ * @brief Response on lt_l2_mutable_fw_update_req_t
+ */
+struct lt_l2_mutable_fw_update_rsp_t {
+    uint8_t chip_status; /**< CHIP_STATUS byte */
+    uint8_t status;      /**< L2 status byte */
+    uint8_t rsp_len;     /**< Length of incoming data */
+    uint8_t crc[2];      /**< Checksum */
+} __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
+    )
+)
+// clang-format on
+
+/**
+ * @brief Request to write a chunk of the new mutable FW into memory bank
+ * Supported only in Start-up mode after Mutable_FW_Update_Req successfully processed.
+ */
+struct lt_l2_mutable_fw_update_data_req_t {
+    uint8_t req_id;    /**< Request ID byte */
+    uint8_t req_len;   /**< Length byte */
+    uint8_t hash[32];  /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
+    uint16_t offset;   /**< The offset of the specific bank to write the FW chunk data to */
+    uint8_t data[220]; /**< The binary data to write. Data size should be a multiple of 4 */
+    uint8_t crc[2];    /**< Checksum */
+} __attribute__((__packed__));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_data_req_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_id) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, hash) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, offset) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, data) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, crc)
+    )
+)
+// clang-format on
+
+/**
+ * @brief response on lt_l2_mutable_fw_update_data_req_t
+ */
+struct lt_l2_mutable_fw_update_data_rsp_t {
+    uint8_t chip_status; /**< CHIP_STATUS byte */
+    uint8_t status;      /**< L2 status byte */
+    uint8_t rsp_len;     /**< Length of incoming data */
+    uint8_t crc[2];      /**< Checksum */
+} __attribute__((packed));
+
+// clang-format off
+STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_data_rsp_t) ==
+    (
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, chip_status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, status) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, rsp_len) +
+        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, crc)
+    )
+)
+// clang-format on
+#endif
 
 /** @brief Request ID */
 #define LT_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
