@@ -622,7 +622,6 @@ STATIC_ASSERT(
 /** @brief Request ID */
 #define TS_L2_MUTABLE_FW_UPDATE_DATA_REQ 0xb1
 
-// response
 /**
  * @brief
  * Request for TROPIC01 to reset.
