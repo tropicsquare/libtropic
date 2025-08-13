@@ -247,8 +247,6 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     }
     else {
         LT_LOG_ERROR("Chip couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid");
-        lt_deinit(h);
-        return -1;
     }
     LT_LOG_LINE();
 
