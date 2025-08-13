@@ -121,7 +121,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     uint8_t *cert_head = store->certs[curr_cert];
 
     // Worst case full ceert-store is read out
-    for (int i = 0; i < (LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL/TS_GET_INFO_BLOCK_LEN); i++) {
+    for (int i = 0; i < (LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TS_GET_INFO_BLOCK_LEN); i++) {
         p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
         p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
         p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
