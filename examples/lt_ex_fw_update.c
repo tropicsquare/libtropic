@@ -30,46 +30,27 @@
 #define FW_APP_UPDATE_BANK FW_BANK_FW1
 #define FW_SPECT_UPDATE_BANK FW_BANK_SPECT1
 
-/**
- * @brief Performs firmware update of TROPIC01 chip.
- *
- * How to select the firmware for this example:
- *
- * The `TROPIC01_fw_update_files/` directory contains all officially released
- * and signed firmwares for the TROPIC01 chip, for all silicon revision.
- *
- * To specify which firmware to use for the update:
- *   1. Open the `CMakeLists.txt` file.
- *   2. Set the `LT_SILICON_REV` variable to your chip's silicon revision (e.g., "ABAB").
- *   3. Set the `LT_CPU_FW_VERSION` the desired versions.
- *
- * The build system uses these variables to place chosen firmware data into compiled binary, SPECT firmware data will be
- * chosen automatically.
- *
- * @note ACAB revision handles firmware banks differently than ABAB revision.
- *      For ACAB, the chip manages firmware banks internally, and passed `bank_id` is ignored.
- *      For ABAB, the chip requires the user to specify which bank to update, this might be defined by
- * FW_APP_UPDATE_BANK and FW_APP_UPDATE_SPECT in this file. With ABABs, sometimes, it may be necessary to erase both
- * banks to see expected behaviour, because chip always boots higher firmware version.
- *
- *
- * @param h     Handle to the TROPIC01 chip.
- * @return int  0 on success, -1 on failure.
- */
 int lt_ex_fw_update(lt_handle_t *h)
 {
-    LT_LOG_INFO("\t=======================================================================");
-    LT_LOG_INFO("\t=====  TROPIC01 FW update                                           ===");
-    LT_LOG_INFO("\t=======================================================================");
+    LT_LOG_INFO("====================================");
+    LT_LOG_INFO("==== TROPIC01 FW update Example ====");
+    LT_LOG_INFO("====================================");
 
-    lt_ret_t ret = LT_FAIL;
+    lt_ret_t ret;
 
-    lt_init(h);
+    LT_LOG_INFO("Initializing handle");
+    ret = lt_init(h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
 
     // Reused variable
     uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     // For firmware update chip must be rebooted into MAINTENANCE mode.
+    LT_LOG_INFO("Rebooting into Maintenance mode");
     ret = lt_reboot(h, LT_MODE_MAINTENANCE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
@@ -77,7 +58,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
 
     if (h->l2.mode == LT_MODE_MAINTENANCE) {
-        LT_LOG_INFO("  Chip is executing bootloader");
+        LT_LOG_INFO("Chip is executing bootloader");
 
         LT_LOG_INFO("lt_do_mutable_fw_update() APP                 %s",
                     lt_ret_verbose(lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU),
@@ -87,12 +68,13 @@ int lt_ex_fw_update(lt_handle_t *h)
                                                            FW_SPECT_UPDATE_BANK)));  // Update SPECT firmware bank
     }
     else {
-        LT_LOG_INFO("     ERROR device couldn't get into MAINTENANCE mode");
+        LT_LOG_ERROR("Device couldn't get into MAINTENANCE mode");
         return -1;
     }
     LT_LOG_LINE();
 
     // To read firmware versions chip must be rebooted into application mode.
+    LT_LOG_INFO("Rebooting into Application mode");
     ret = lt_reboot(h, LT_MODE_APP);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
@@ -100,31 +82,31 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
 
     if (h->l2.mode == LT_MODE_APP) {
+        LT_LOG_INFO("Reading RISC-V FW version");
         ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
         if (ret == LT_OK) {
-            LT_LOG_INFO("  Chip is executing RISCV application firmware version: %d.%d.%d    (+ .%d)", fw_ver[3],
+            LT_LOG_INFO("Chip is executing RISC-V application FW version: %"PRIu8".%"PRIu8".%"PRIu8"    (+ .%"PRIu8")", fw_ver[3],
                         fw_ver[2], fw_ver[1], fw_ver[0]);
         }
         else {
-            LT_LOG_ERROR("Failed to get RISCV firmware version, ret=%s", lt_ret_verbose(ret));
+            LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
             return -1;
         }
 
-        // Getting SPECT firmware version
+        LT_LOG_INFO("Reading SPECT FW version");
         ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret == LT_OK) {
-            LT_LOG_INFO("  Chip is executing SPECT firmware version:             %d.%d.%d    (+ .%d)", fw_ver[3],
+            LT_LOG_INFO("Chip is executing SPECT FW version: %"PRIu8".%"PRIu8".%"PRIu8"    (+ .%"PRIu8")", fw_ver[3],
                         fw_ver[2], fw_ver[1], fw_ver[0]);
         }
         else {
-            LT_LOG_ERROR("Failed to get SPECT firmware version, ret=%s", lt_ret_verbose(ret));
+            LT_LOG_ERROR("Failed to get SPECT FW version, ret=%s", lt_ret_verbose(ret));
             return -1;
         }
     }
     else {
-        LT_LOG_INFO(
-            "     Device couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid or banks are "
-            "empty");
+        LT_LOG_ERROR("Device couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid or banks are empty");
+        return -1;
     }
 
     return 0;
