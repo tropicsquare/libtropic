@@ -61,15 +61,24 @@ int lt_ex_fw_update(lt_handle_t *h)
     if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG_INFO("Chip is executing bootloader");
 
-        LT_LOG_INFO("lt_do_mutable_fw_update() APP                 %s",
-                    lt_ret_verbose(lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU),
-                                                           FW_APP_UPDATE_BANK)));  // Update CPU firmware bank
-        LT_LOG_INFO("lt_do_mutable_fw_update() SPECT               %s",
-                    lt_ret_verbose(lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT),
-                                                           FW_SPECT_UPDATE_BANK)));  // Update SPECT firmware bank
+        LT_LOG_INFO("Updating RISC-V FW");
+        ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), FW_APP_UPDATE_BANK);
+        if (ret != LT_OK) {
+            LT_LOG_ERROR("RISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
+            lt_deinit(h);
+            return -1;
+        }
+
+        LT_LOG_INFO("Updating SPECT FW");
+        ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), FW_SPECT_UPDATE_BANK);
+        if (ret != LT_OK) {
+            LT_LOG_ERROR("SPECT FW update failed, ret=%s", lt_ret_verbose(ret));
+            lt_deinit(h);
+            return -1;
+        }
     }
     else {
-        LT_LOG_ERROR("Device couldn't get into MAINTENANCE mode");
+        LT_LOG_ERROR("Chip couldn't get into MAINTENANCE mode");
         lt_deinit(h);
         return -1;
     }
@@ -88,8 +97,9 @@ int lt_ex_fw_update(lt_handle_t *h)
         LT_LOG_INFO("Reading RISC-V FW version");
         ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
         if (ret == LT_OK) {
-            LT_LOG_INFO("Chip is executing RISC-V application FW version: %"PRIu8".%"PRIu8".%"PRIu8"    (+ .%"PRIu8")", fw_ver[3],
-                        fw_ver[2], fw_ver[1], fw_ver[0]);
+            LT_LOG_INFO("Chip is executing RISC-V application FW version: %" PRIu8 ".%" PRIu8 ".%" PRIu8
+                        "    (+ .%" PRIu8 ")",
+                        fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
         }
         else {
             LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
@@ -100,8 +110,8 @@ int lt_ex_fw_update(lt_handle_t *h)
         LT_LOG_INFO("Reading SPECT FW version");
         ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
         if (ret == LT_OK) {
-            LT_LOG_INFO("Chip is executing SPECT FW version: %"PRIu8".%"PRIu8".%"PRIu8"    (+ .%"PRIu8")", fw_ver[3],
-                        fw_ver[2], fw_ver[1], fw_ver[0]);
+            LT_LOG_INFO("Chip is executing SPECT FW version: %" PRIu8 ".%" PRIu8 ".%" PRIu8 "    (+ .%" PRIu8 ")",
+                        fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
         }
         else {
             LT_LOG_ERROR("Failed to get SPECT FW version, ret=%s", lt_ret_verbose(ret));
@@ -110,7 +120,8 @@ int lt_ex_fw_update(lt_handle_t *h)
         }
     }
     else {
-        LT_LOG_ERROR("Device couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid or banks are empty");
+        LT_LOG_ERROR(
+            "Device couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid or banks are empty");
         lt_deinit(h);
         return -1;
     }
