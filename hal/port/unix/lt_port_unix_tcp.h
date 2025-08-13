@@ -22,7 +22,7 @@
 #define MAX_RECV_SIZE (MAX_PAYLOAD_LEN + TCP_TAG_AND_LENGTH_SIZE)
 
 /** @brief Possible values for `tag` field of `unix_tcp_buffer_t`. */
-typedef enum unix_tcp_tag_e {
+typedef enum unix_tcp_tag_t {
     TAG_E_SPI_DRIVE_CSN_LOW = 0x01,
     TAG_E_SPI_DRIVE_CSN_HIGH = 0x02,
     TAG_E_SPI_SEND = 0x03,
@@ -32,7 +32,7 @@ typedef enum unix_tcp_tag_e {
     TAG_E_RESET_TARGET = 0x10,
     TAG_E_INVALID = 0xfd,
     TAG_E_UNSUPPORTED = 0xfe,
-} unix_tcp_tag_e;
+} unix_tcp_tag_t;
 
 /** @brief Structure for RX and TX buffers. */
 typedef struct unix_tcp_buffer_t {

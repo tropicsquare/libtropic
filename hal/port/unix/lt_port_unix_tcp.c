@@ -1,5 +1,5 @@
 /**
- * @file lt_port_unix.c
+ * @file lt_port_unix_tcp.c
  * @author Tropic Square s.r.o.
  * @brief Port for communication with the TROPIC01 Model using TCP.
  *
@@ -115,7 +115,6 @@ static lt_ret_t communicate(lt_dev_unix_tcp_t *dev, int *tx_payload_length_ptr, 
         LT_LOG_ERROR("Receive failed: %s (%d).", strerror(errno), errno);
         return LT_FAIL;
     }
-
     else if (nb_bytes_received < nb_bytes_to_receive) {
         LT_LOG_ERROR("At least %d bytes are expected: %d.", nb_bytes_to_receive, nb_bytes_received);
         return LT_FAIL;
@@ -153,17 +152,15 @@ static lt_ret_t communicate(lt_dev_unix_tcp_t *dev, int *tx_payload_length_ptr, 
     }
 
     // server does not know the sent tag
-    if ((unix_tcp_tag_e)dev->rx_buffer.tag == TAG_E_INVALID) {
+    if ((unix_tcp_tag_t)dev->rx_buffer.tag == TAG_E_INVALID) {
         LT_LOG_ERROR("Tag %" PRIu8 " is not known by the server.", dev->tx_buffer.tag);
         return LT_FAIL;
     }
-
     // server does not know what to do with the sent tag
-    else if ((unix_tcp_tag_e)dev->rx_buffer.tag == TAG_E_UNSUPPORTED) {
+    else if ((unix_tcp_tag_t)dev->rx_buffer.tag == TAG_E_UNSUPPORTED) {
         LT_LOG_ERROR("Tag %" PRIu8 " is not supported by the server.", dev->tx_buffer.tag);
         return LT_FAIL;
     }
-
     // RX tag and TX tag should be identical
     else if (dev->rx_buffer.tag != dev->tx_buffer.tag) {
         LT_LOG_ERROR("Expected tag %" PRIu8 ", received %" PRIu8 ".", dev->rx_buffer.tag, dev->tx_buffer.tag);
