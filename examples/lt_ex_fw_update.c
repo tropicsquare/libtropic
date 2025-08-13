@@ -126,5 +126,12 @@ int lt_ex_fw_update(lt_handle_t *h)
         return -1;
     }
 
+    LT_LOG_INFO("Deinitializing handle");
+    ret = lt_deinit(h);
+    if (LT_OK != ret) {
+        LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
+        return -1;
+    }
+
     return 0;
 }
