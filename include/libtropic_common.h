@@ -472,7 +472,7 @@ typedef struct header_boot_v1_t {
     uint8_t size[4];
     uint8_t git_hash[4];
     uint8_t hash[4];
-} header_boot_v1_t __attribute__((packed));
+} __attribute__((packed)) header_boot_v1_t;
 
 // clang-format off
 STATIC_ASSERT(
@@ -513,7 +513,7 @@ typedef struct header_boot_v2_t {
      * version.*/
     uint32_t pair_version;
 
-} header_boot_v2_t __attribute__((packed)) __attribute__((aligned(4)));
+} __attribute__((packed)) __attribute__((aligned(4))) header_boot_v2_t;
 
 // clang-format off
 STATIC_ASSERT(
