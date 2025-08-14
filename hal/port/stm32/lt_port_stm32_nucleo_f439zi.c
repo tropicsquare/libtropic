@@ -1,6 +1,10 @@
 /**
- * @file lt_port_stm32.c
+ * @file lt_port_stm32_nucleo_f439zi.c
  * @author Tropic Square s.r.o.
+ * @brief Port for STM32 NUCLEO-F439ZI.
+ *
+ * Most of this SPI code is inspired by https://github.com/STMicroelectronics/STM32CubeF4:
+ * Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
