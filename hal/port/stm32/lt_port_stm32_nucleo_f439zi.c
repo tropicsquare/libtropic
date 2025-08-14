@@ -24,8 +24,16 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
     lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
     size_t bytes_left = count;
     uint8_t *buff_ptr = buff;
+    int ret;
+    uint32_t random_data;
+
     while (bytes_left) {
-        uint32_t random_data = HAL_RNG_GetRandomNumber(&device->rng_handle);
+        ret = HAL_RNG_GenerateRandomNumber(&device->rng_handle, &random_data);
+        if (ret != HAL_OK) {
+            LT_LOG_ERROR("HAL_RNG_GenerateRandomNumber failed, ret=%d", ret);
+            return LT_FAIL;
+        }
+
         size_t cpy_cnt = bytes_left < sizeof(random_data) ? bytes_left : sizeof(random_data);
         memcpy(buff_ptr, &random_data, cpy_cnt);
         bytes_left -= cpy_cnt;
