@@ -107,8 +107,9 @@ typedef struct lt_l3_state_t {
     uint8_t decrypt[352] __attribute__((aligned(16)));
 #elif USE_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
-#else  
-    uint8_t encrypt[352] __attribute__((aligned(16)));  // Default size of gcm context structures is set for trezor_crypto library
+#else
+    // Default size of gcm context structures are set to reflect sizes used in trezor_crypto library
+    uint8_t encrypt[352] __attribute__((aligned(16)));
     uint8_t decrypt[352] __attribute__((aligned(16)));
 #endif
 #if LT_SEPARATE_L3_BUFF

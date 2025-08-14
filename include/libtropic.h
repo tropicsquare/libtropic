@@ -27,7 +27,8 @@
  * @param h           Device's handle
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  *
  */
 lt_ret_t lt_init(lt_handle_t *h);
@@ -43,7 +44,8 @@ lt_ret_t lt_init(lt_handle_t *h);
  * @param h           Device's handle
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_deinit(lt_handle_t *h);
 
@@ -57,7 +59,8 @@ lt_ret_t lt_deinit(lt_handle_t *h);
  * @param h           Device's handle
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_update_mode(lt_handle_t *h);
 
@@ -68,7 +71,8 @@ lt_ret_t lt_update_mode(lt_handle_t *h);
  * @param store       Certificate store handle to be filled
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
 
@@ -80,7 +84,8 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
  * @param stpub_len   Length of buffer for STPub
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len);
 
@@ -95,7 +100,8 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
  * @param chip_id     Structure which holds all fields of CHIP ID
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
 
@@ -107,7 +113,8 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
  * @param max_len     Length of a buffer to store fw version in
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
@@ -119,7 +126,8 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
  * @param max_len     Length of a buffer to store fw version in
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
@@ -132,7 +140,8 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
  * @param max_len     Length of a buffer
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
 
@@ -151,7 +160,8 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
  * @param shipub      Secure host public key
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv,
                           const uint8_t *shipub);
@@ -167,7 +177,8 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
  * @param h           Device's handle
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_session_abort(lt_handle_t *h);
 
@@ -178,7 +189,8 @@ lt_ret_t lt_session_abort(lt_handle_t *h);
  * @param sleep_kind  Kind of sleep
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
 
@@ -189,7 +201,8 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
  * @param startup_id  Startup ID
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
 
@@ -203,7 +216,8 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
  * @param bank_id     enum bank_id_t
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
 
@@ -252,7 +266,8 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
  * @param msg_len_max Max possible length of TROPIC01's log message
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 
@@ -266,7 +281,8 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
  * @param len         Length of both messages (msg_out and msg_in)
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len);
 
@@ -278,7 +294,8 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
  * @param slot        Pairing key lot SH0PUB - SH3PUB
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const uint8_t slot);
 
@@ -290,7 +307,8 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
  * @param slot        Pairing key lot SH0PUB - SH3PUB
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t slot);
 
@@ -301,7 +319,8 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
  * @param slot        Pairing key lot SH0PUB - SH3PUB
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
 
@@ -313,7 +332,8 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
  * @param obj         Content to be written
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
 
@@ -325,7 +345,8 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
  * @param obj         Variable to read content into
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  *
  */
 lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
@@ -336,7 +357,8 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
  * @param h           Device's handle
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_r_config_erase(lt_handle_t *h);
 
@@ -348,7 +370,8 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
  * @param bit_index   Index of bit to write from 1 to 0
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
 
@@ -360,7 +383,8 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
  * @param obj         Variable to read content into
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
 
@@ -373,7 +397,8 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
  * @param size        Size of data to be read
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size);
 
@@ -386,7 +411,8 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
  * @param size        Number of bytes read into data
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size);
 
@@ -397,7 +423,8 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
  * @param udata_slot  Memory's slot to be erased
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
@@ -409,7 +436,8 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
  * @param len         Number of random bytes (255 bytes is the maximum)
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
@@ -421,7 +449,8 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
@@ -434,7 +463,8 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
  * @param key         Key to store (only the first 32 bytes are stored)
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
 
@@ -449,7 +479,8 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
  * @param origin      Will be filled by origin byte
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
                          ecc_key_origin_t *origin);
@@ -461,7 +492,8 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key
  * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
 
@@ -475,7 +507,8 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint32_t msg_len,
                            uint8_t *rs);
@@ -489,7 +522,8 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
  * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  *
  */
 lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
@@ -504,7 +538,8 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs);
@@ -530,7 +565,8 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
  * @param mcounter_value  Value to set as an initial value
  *
  * @retval                LT_OK Function executed successfully
- * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value
  */
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
 
@@ -541,7 +577,8 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
  * @param mcounter_index  Index of monotonic counter
  *
  * @retval                LT_OK Function executed successfully
- * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value
  */
 lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index);
 
@@ -553,7 +590,8 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
  * @param mcounter_value  Value of monotonic counter
  *
  * @retval                LT_OK Function executed successfully
- * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value
  */
 lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
 
@@ -569,7 +607,8 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
  * @param data_in     Data returned from TROPIC01 to host
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
 
@@ -587,7 +626,8 @@ extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
  * @param ret         lt_ret_t returned type value
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 const char *lt_ret_verbose(lt_ret_t ret);
 
@@ -598,7 +638,8 @@ const char *lt_ret_verbose(lt_ret_t ret);
  * @param config      Array into which objects are read
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
 
@@ -609,7 +650,8 @@ lt_ret_t lt_write_whole_R_config(lt_handle_t *h, const struct lt_config_t *confi
  * @param config      Struct into which objects are readed
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
 
@@ -620,7 +662,8 @@ lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
  * @param config      Struct into which objects are readed
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
 
@@ -632,7 +675,8 @@ lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
  * @param config      Array into which objects are read
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
 
@@ -645,7 +689,8 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
  * @param pkey_index  Pairing key's index
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
 
@@ -658,7 +703,8 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
  * @param   out_buf_size  Size of `out_buf`
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size);
 
@@ -669,7 +715,8 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_b
  * @param  print_func  printf-like function to use for printing
  *
  * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
+ * of returned value
  */
 lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...));
 
