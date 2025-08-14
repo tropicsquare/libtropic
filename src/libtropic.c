@@ -253,9 +253,9 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
     return LT_OK;
 }
 
-lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len)
+lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver)
 {
-    if (!h || !ver || max_len < LT_L2_GET_INFO_RISCV_FW_SIZE) {
+    if (!h || !ver) {
         return LT_PARAM_ERR;
     }
 
@@ -288,9 +288,9 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
     return LT_OK;
 }
 
-lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len)
+lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
 {
-    if (!h || !ver || max_len < LT_L2_GET_INFO_SPECT_FW_SIZE) {
+    if (!h || !ver) {
         return LT_PARAM_ERR;
     }
 
@@ -1526,14 +1526,14 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
 
     // This is not used in this example, but let's read it anyway
     uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
-    ret = lt_get_info_riscv_fw_ver(h, riscv_fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+    ret = lt_get_info_riscv_fw_ver(h, riscv_fw_ver);
     if (ret != LT_OK) {
         return ret;
     }
 
     // This is not used in this example, but let's read it anyway
     uint8_t spect_fw_ver[LT_L2_GET_INFO_SPECT_FW_SIZE] = {0};
-    ret = lt_get_info_spect_fw_ver(h, spect_fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+    ret = lt_get_info_spect_fw_ver(h, spect_fw_ver);
     if (ret != LT_OK) {
         return ret;
     }

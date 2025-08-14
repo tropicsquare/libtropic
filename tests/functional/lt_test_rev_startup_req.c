@@ -28,7 +28,7 @@ enum lt_tropic01_mode check_current_mode(void)
 
     LT_LOG_INFO("Retrieving SPECT FW version...");
     for (int i = 0; i < REBOOT_WAIT_ATTEMPTS; i++) {
-        ret = lt_get_info_spect_fw_ver(g_h, spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(g_h, spect_ver);
         if (LT_OK == ret) {
             break;
         }

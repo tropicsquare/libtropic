@@ -220,7 +220,7 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
         // App runs so we can see what firmwares are running
         // Getting RISCV app firmware version
         LT_LOG_INFO("Reading RISC-V FW version");
-        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver);
         if (ret == LT_OK) {
             LT_LOG_INFO("Chip is executing RISC-V application FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8
                         "    (+ .%02" PRIX8 ")",
@@ -233,7 +233,7 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
         }
 
         LT_LOG_INFO("Reading SPECT FW version");
-        ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(h, fw_ver);
         if (ret == LT_OK) {
             LT_LOG_INFO("Chip is executing SPECT firmware version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8
                         "    (+ .%02" PRIX8 ")",
@@ -260,7 +260,7 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
 
     if (h->l2.mode == LT_MODE_MAINTENANCE) {
         LT_LOG_INFO("Reading RISC-V FW version for bootloader version");
-        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver);
         if (ret != LT_OK) {
             LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
             lt_deinit(h);

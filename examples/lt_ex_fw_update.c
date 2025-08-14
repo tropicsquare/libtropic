@@ -95,7 +95,7 @@ int lt_ex_fw_update(lt_handle_t *h)
 
     if (h->l2.mode == LT_MODE_APP) {
         LT_LOG_INFO("Reading RISC-V FW version");
-        ret = lt_get_info_riscv_fw_ver(h, fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE);
+        ret = lt_get_info_riscv_fw_ver(h, fw_ver);
         if (ret == LT_OK) {
             LT_LOG_INFO("Chip is executing RISC-V application FW version: %" PRIu8 ".%" PRIu8 ".%" PRIu8
                         "    (+ .%" PRIu8 ")",
@@ -108,7 +108,7 @@ int lt_ex_fw_update(lt_handle_t *h)
         }
 
         LT_LOG_INFO("Reading SPECT FW version");
-        ret = lt_get_info_spect_fw_ver(h, fw_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(h, fw_ver);
         if (ret == LT_OK) {
             LT_LOG_INFO("Chip is executing SPECT FW version: %" PRIu8 ".%" PRIu8 ".%" PRIu8 "    (+ .%" PRIu8 ")",
                         fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
