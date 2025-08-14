@@ -27,6 +27,8 @@
 #define L2_STATUS_REQUEST_CONT 0x03
 /** @brief STATUS ﬁeld value */
 #define L2_STATUS_RESULT_CONT 0x04
+/** @brief STATUS field value */
+#define L2_STATUS_RESP_DISABLED 0x78
 /** @brief STATUS ﬁeld value */
 #define L2_STATUS_HSK_ERR 0x79
 /** @brief STATUS ﬁeld value */
