@@ -74,6 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - File `tests/model_based_project/compile_tests.sh` (refer to `tropic01_model/README.md` for instructions about compiling tests).
 - File `tests/model_based_project/model_logging_cfg.py`.
 - WiringPi port (`lt_port_raspberrypi_wiringpi.c`), was replaced with Generic Linux SPI port (`lt_port_unix_spi.c`).
+- Parameter `max_len` from functions `lt_get_info_riscv_fw_ver()` and `lt_get_info_spect_fw_ver()`.
+- Attribute `__attribute__((aligned(4)))` for `struct header_boot_v2_t`.
 
 ## [0.1.0]
 
