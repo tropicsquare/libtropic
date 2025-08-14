@@ -166,7 +166,7 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
 
     LT_LOG_INFO("Reading Chip ID...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(h, &chip_id));
-    LT_TEST_ASSERT(LT_OK, lt_print_chip_id(&chip_id, printf));
+    LT_TEST_ASSERT(LT_OK, lt_print_chip_id(&chip_id, chip_id_printf_wrapper));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Reading RISC-V bootloader version...");
