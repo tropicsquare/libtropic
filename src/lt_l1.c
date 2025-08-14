@@ -81,7 +81,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             s2->mode = LT_MODE_APP;
         }
 
-        // TODO comment
+        // Proceed further in case CHIP_STATUS contains READY bit, signalizing that chip is ready to receive request
         if (s2->buff[0] & (CHIP_MODE_READY_bit)) {
             // receive STATUS byte and length byte
             if (lt_l1_spi_transfer(s2, 1, 2, timeout) != LT_OK) {  // offset 1
@@ -89,10 +89,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
                 return LT_L1_SPI_ERROR;
             }
 
-            // TODO Better to read two bytes, not one. Then length.
-            // This function as it is now will return chip in alarm mode when
-            // spi wires are not connected (and therefore reading 0xff), but I want to get chip busy instead.
-            // Hotfix for fpga no resp handling:
+            // 0xFF received in second byte means that chip has no response to send.
             if (s2->buff[1] == 0xff) {
                 lt_l1_spi_csn_high(s2);
                 lt_l1_delay(s2, LT_L1_READ_RETRY_DELAY);
