@@ -25,7 +25,9 @@
  * encoding data.
  *
  * @param s2          Structure holding l2 state
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully
  */
 lt_ret_t lt_l2_send(lt_l2_state_t *s2);
 
@@ -34,7 +36,9 @@ lt_ret_t lt_l2_send(lt_l2_state_t *s2);
  *        It is used in lt_l2_receive when a problem is detected with the last frame received.
  *
  * @param s2          Structure holding l2 state
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully
  */
 lt_ret_t lt_l2_resend_response(lt_l2_state_t *s2);
 
@@ -43,7 +47,9 @@ lt_ret_t lt_l2_resend_response(lt_l2_state_t *s2);
  *        Structures defined in lt_l2_api_structs.h migh help with decoding.
  *
  * @param s2          Structure holding l2 state
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully
  */
 lt_ret_t lt_l2_receive(lt_l2_state_t *s2);
 
@@ -54,7 +60,9 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2);
  * @param s2          Structure holding l2 state
  * @param buff        Buffer containing encrypted l3 command
  * @param max_len     Maximal length of buff. Whole buffer might be used, or just its part.
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully
  */
 lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len);
 
@@ -65,7 +73,9 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
  * @param s2          Structure holding l2 state
  * @param buff        Buffer where encrypted l3 result will be stored
  * @param max_len     Maximal length of buff. Whole buffer might be used, or just its part.
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully
  */
 lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len);
 /** @} */  // end of group_l2_functions
