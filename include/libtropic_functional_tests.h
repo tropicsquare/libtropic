@@ -292,7 +292,7 @@ void lt_test_ire_write_i_config(lt_handle_t *h);
 void lt_test_rev_read_r_config(lt_handle_t *h);
 
 /**
- * @brief Test Resend_Req L2 request in Application mode.
+ * @brief Test Resend_Req L2 request in Application and Maintenance mode.
  *
  * Test steps:
  * 1. Reboot into Application mode.
