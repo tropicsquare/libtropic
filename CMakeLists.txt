@@ -259,8 +259,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_get_info_req_bootloader
     lt_test_rev_read_i_config
     lt_test_rev_read_r_config
-    lt_test_rev_resend_req_app
-    lt_test_rev_resend_req_bootloader
+    lt_test_rev_resend_req
     lt_test_rev_sleep_req
     lt_test_rev_startup_req
     lt_test_rev_write_r_config
@@ -315,8 +314,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_info_req_bootloader.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req_app.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req_bootloader.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_sleep_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_startup_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_write_r_config.c

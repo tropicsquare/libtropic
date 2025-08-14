@@ -295,28 +295,16 @@ void lt_test_rev_read_r_config(lt_handle_t *h);
  * @brief Test Resend_Req L2 request in Application mode.
  *
  * Test steps:
- * 1. Send Get_Info_Req and receive response frame, store the frame.
- * 2. Request a resend of the last L2 frame and store it.
- * 3. Contents of the original and resended frames are compared. This will check whether
- *    the resend works as intended.
- *
- * @param h     Device's handle
- */
-void lt_test_rev_resend_req_app(lt_handle_t *h);
-
-/**
- * @brief Test Resend_Req L2 request in Maintenance mode.
- *
- * Test steps:
- * 1. Reboot into Maintenance mode.
+ * 1. Reboot into Application mode.
  * 2. Send Get_Info_Req and receive response frame, store the frame.
  * 3. Request a resend of the last L2 frame and store it.
  * 4. Contents of the original and resended frames are compared. This will check whether
  *    the resend works as intended.
+ * 5. Reboot into Maintenance mode and do steps 2-4 again.
  *
  * @param h     Device's handle
  */
-void lt_test_rev_resend_req_bootloader(lt_handle_t *h);
+void lt_test_rev_resend_req(lt_handle_t *h);
 
 /**
  * @brief Test Sleep_Req L2 request.
