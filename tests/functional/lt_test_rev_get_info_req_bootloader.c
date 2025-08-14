@@ -25,15 +25,15 @@ static void print_fw_header_bootloader_v1_0_1(uint8_t *header)
 {
     struct header_boot_v1_t *p_h = (struct header_boot_v1_t *)header;
 
-    LT_LOG_INFO("Type:     %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->type[3], p_h->type[2], p_h->type[1],
+    LT_LOG_INFO("Type:     0x%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->type[3], p_h->type[2], p_h->type[1],
                 p_h->type[0]);
-    LT_LOG_INFO("Version:  %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->version[3], p_h->version[2],
+    LT_LOG_INFO("Version:  0x%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->version[3], p_h->version[2],
                 p_h->version[1], p_h->version[0]);
-    LT_LOG_INFO("Size:     %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->size[3], p_h->size[2], p_h->size[1],
+    LT_LOG_INFO("Size:     0x%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->size[3], p_h->size[2], p_h->size[1],
                 p_h->size[0]);
-    LT_LOG_INFO("Git hash: %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->git_hash[3], p_h->git_hash[2],
+    LT_LOG_INFO("Git hash: 0x%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->git_hash[3], p_h->git_hash[2],
                 p_h->git_hash[1], p_h->git_hash[0]);
-    LT_LOG_INFO("FW hash:  %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->hash[3], p_h->hash[2], p_h->hash[1],
+    LT_LOG_INFO("FW hash:  0x%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->hash[3], p_h->hash[2], p_h->hash[1],
                 p_h->hash[0]);
 }
 
@@ -42,18 +42,18 @@ static void print_fw_header_bootloader_v2_0_1(uint8_t *header)
     struct header_boot_v2_t *p_h = (struct header_boot_v2_t *)header;
     char hash_str[BOOTLOADER_V2_0_1_HASH_PRINT_BUFF_SIZE];
 
-    LT_LOG_INFO("Type:              %04" PRIX16, p_h->type);
-    LT_LOG_INFO("Padding:           %02" PRIX8, p_h->padding);
-    LT_LOG_INFO("FW header version: %02" PRIX8, p_h->header_version);
-    LT_LOG_INFO("Version:           %08" PRIX32, p_h->ver);
-    LT_LOG_INFO("Size:              %08" PRIX32, p_h->size);
-    LT_LOG_INFO("Git hash:          %08" PRIX32, p_h->git_hash);
-
+    LT_LOG_INFO("Calling lt_print_bytes()...");
     LT_TEST_ASSERT(LT_OK,
                    lt_print_bytes(p_h->hash, sizeof(p_h->hash), hash_str, BOOTLOADER_V2_0_1_HASH_PRINT_BUFF_SIZE));
-    LT_LOG_INFO("Hash:              %s", hash_str);
 
-    LT_LOG_INFO("Pair version:      %08" PRIX32, p_h->pair_version);
+    LT_LOG_INFO("Type:              0x%04" PRIX16, p_h->type);
+    LT_LOG_INFO("Padding:           0x%02" PRIX8, p_h->padding);
+    LT_LOG_INFO("FW header version: 0x%02" PRIX8, p_h->header_version);
+    LT_LOG_INFO("Version:           0x%08" PRIX32, p_h->ver);
+    LT_LOG_INFO("Size:              0x%08" PRIX32, p_h->size);
+    LT_LOG_INFO("Git hash:          0x%08" PRIX32, p_h->git_hash);
+    LT_LOG_INFO("Hash:              \"%s\"", hash_str);
+    LT_LOG_INFO("Pair version:      0x%08" PRIX32, p_h->pair_version);
 }
 
 static void read_fw_banks_bootloader_v1_0_1(void)
@@ -63,18 +63,22 @@ static void read_fw_banks_bootloader_v1_0_1(void)
     LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW1);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
+    LT_LOG_INFO();
 
     LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW2);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
+    LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT1);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
+    LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT2);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
+    LT_LOG_INFO();
 }
 
 static void read_fw_banks_bootloader_v2_0_1(void)
@@ -84,18 +88,22 @@ static void read_fw_banks_bootloader_v2_0_1(void)
     LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW1);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
+    LT_LOG_INFO();
 
     LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW2);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
+    LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT1);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
+    LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT2);
     LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
+    LT_LOG_INFO();
 }
 
 lt_ret_t lt_test_rev_get_info_req_bootloader_cleanup(void)
@@ -171,13 +179,13 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
 
     LT_LOG_INFO("Reading RISC-V bootloader version...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_riscv_fw_ver(h, riscv_ver));
-    LT_LOG_INFO("RISC-V FW version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", riscv_ver[3], riscv_ver[2],
+    LT_LOG_INFO("RISC-V Bootloader version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", riscv_ver[3] & 0x7f, riscv_ver[2],
                 riscv_ver[1], riscv_ver[0]);
     LT_LOG_LINE();
 
     LT_LOG_INFO("Reading SPECT bootloader version (should be dummy)...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_spect_fw_ver(h, spect_ver));
-    LT_LOG_INFO("SPECT FW version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", spect_ver[3], spect_ver[2],
+    LT_LOG_INFO("SPECT Bootloader version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", spect_ver[3], spect_ver[2],
                 spect_ver[1], spect_ver[0]);
     LT_LOG_INFO("Checking SPECT bootloader version dummy value...");
     LT_TEST_ASSERT(0, memcmp(spect_ver, "\x00\x00\x00\x80", sizeof(spect_ver)));
@@ -195,6 +203,7 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
         LT_LOG_ERROR("Unknown bootloader version!");
         LT_TEST_ASSERT(1, 0);
     }
+    LT_LOG_LINE();
 
     // Call cleanup function, but don't call it from LT_TEST_ASSERT anymore.
     lt_test_cleanup_function = NULL;
