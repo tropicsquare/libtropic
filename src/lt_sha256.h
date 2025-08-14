@@ -20,7 +20,7 @@ struct lt_crypto_sha256_ctx_t {
 #ifdef USE_MBEDTLS
     uint32_t space[32];
 #elif LT_USE_TREZOR_CRYPTO
-    uint32_t space[256];  // mbedtls is ok with 32. TODO how big is Hasher struct
+    uint32_t space[256];
 #endif
 };
 
