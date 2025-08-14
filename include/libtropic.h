@@ -683,6 +683,12 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
 /**
  * @brief This function establish a secure channel between host MCU and TROPIC01 chip
  *
+ * @warning This function currently DOES NOT validate/verify the whole certificate chain, it just parses out STPUB from
+ * the device's certificate, because STPUB is used for handshake.
+ *
+ * To verify the whole certificate chain we recommend to download all certificates from chip by using
+ * lt_get_info_cert_store() and use any apropriate third party tool to verify validity of certificate chain.
+ *
  * @param h           Device's handle
  * @param shipriv     Host's private pairing key (SHiPUB)
  * @param shipub      Host's public pairing key  (SHiPUB)
