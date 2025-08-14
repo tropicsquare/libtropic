@@ -583,8 +583,6 @@ static int session2(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    // TODO: Unauthorized sign with attestation key
-
     LT_LOG_INFO("Aborting Secure Session");
     ret = lt_session_abort(h);
     if (LT_OK != ret) {
