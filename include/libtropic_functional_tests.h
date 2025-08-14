@@ -397,4 +397,19 @@ void lt_test_rev_random_value_get(lt_handle_t *h);
  */
 void lt_test_rev_mac_and_destroy(lt_handle_t *h);
 
+/**
+ * @brief Tests Get_Log_Req command in Application and Maintenance mode.
+ * 
+ * Test steps:
+ *  1. Reboot into Application mode.
+ *  2. Start Secure Session with pairing key slot 0.
+ *  3. Read CFG_DEBUG from I and R config to check if FW logging is enabled.
+ *  4. Read the FW log (assert LT_OK if FW logging enabled, LT_L2_RESP_DISABLED otherwise).
+ *  5. Print the FW log into the test log if enabled or it's length is not zero.
+ *  6. Reboot into Maintenance mode and repeat steps 2-5.
+ * 
+ * @param h     Device's handle
+ */
+void lt_test_rev_get_log_req(lt_handle_t *h);
+
 #endif
