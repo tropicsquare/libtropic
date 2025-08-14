@@ -25,7 +25,10 @@
  * @brief Initialize handle and transport layer
  *
  * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
+ *
  */
 lt_ret_t lt_init(lt_handle_t *h);
 
@@ -38,19 +41,23 @@ lt_ret_t lt_init(lt_handle_t *h);
  *                    unless new Secure Session is started.
  *
  * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_deinit(lt_handle_t *h);
 
 /**
  * @brief Update mode variable in handle
- * Read one byte from spi, check CHIP_MODE_STARTUP_bit and update this information in handle.alignas
+ * Reads one byte from SPI, check CHIP_MODE_STARTUP_bit and update this information in handle.l2.mode
  *
  * Info from this bit is updated in handle on every l1 transaction anyway.
  * This function can be used to actualize it whenever user wants.
  *
  * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_update_mode(lt_handle_t *h);
 
@@ -59,7 +66,9 @@ lt_ret_t lt_update_mode(lt_handle_t *h);
  *
  * @param h           Device's handle
  * @param store       Certificate store handle to be filled
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
 
@@ -69,7 +78,9 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
  * @param store       Certificate store handle
  * @param stpub       TROPIC01 STPUB to be filled, unique for each device
  * @param stpub_len   Length of buffer for STPub
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len);
 
@@ -82,7 +93,9 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
  *
  * @param h           Device's handle
  * @param chip_id     Structure which holds all fields of CHIP ID
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
 
@@ -92,7 +105,9 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
  * @param h           Device's handle
  * @param ver         Buffer for FW version bytes
  * @param max_len     Length of a buffer to store fw version in
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
@@ -102,7 +117,9 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
  * @param h           Device's handle
  * @param ver         Buffer for SPECT version bytes
  * @param max_len     Length of a buffer to store fw version in
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
 
@@ -113,7 +130,9 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
  * @param bank_id     ID of firmware bank (one from enum bank_id_t)
  * @param header      Buffer to store fw header bytes into
  * @param max_len     Length of a buffer
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
 
@@ -130,7 +149,9 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
  * @param pkey_index  Index of pairing public key
  * @param shipriv     Secure host private key
  * @param shipub      Secure host public key
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv,
                           const uint8_t *shipub);
@@ -144,7 +165,9 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index
  *                    unless new Secure Session is started.
  *
  * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_session_abort(lt_handle_t *h);
 
@@ -153,7 +176,9 @@ lt_ret_t lt_session_abort(lt_handle_t *h);
  *
  * @param h           Device's handle
  * @param sleep_kind  Kind of sleep
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
 
@@ -162,7 +187,9 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
  *
  * @param h           Device's handle
  * @param startup_id  Startup ID
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
 
@@ -174,18 +201,21 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
  *
  * @param h           Device's handle
  * @param bank_id     enum bank_id_t
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
 
 /**
  * @brief Update mutable firmware in one of banks
  *
- * @param h           Device's handle
- * @param fw_data     Array with firmware bytes
+ * @param h             Device's handle
+ * @param fw_data       Array with firmware bytes
  * @param fw_data_size  Number of firmware's bytes in passed array
- * @param bank_id     enum bank_id_t
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param bank_id       enum bank_id_t
+ * lt_ret_t             LT_OK            - SUCCESS
+ *                      other parameters - ERROR, for verbose output pass return value to function lt_ret_verbose()
  */
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id);
 
@@ -220,7 +250,9 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
  * @param h           Device's handle
  * @param log_msg     Log message
  * @param msg_len_max Max possible length of TROPIC01's log message
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
 
@@ -232,7 +264,9 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
  * @param msg_out     Ping message going out
  * @param msg_in      Ping message going in
  * @param len         Length of both messages (msg_out and msg_in)
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len);
 
@@ -242,7 +276,9 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
  * @param h           Device's handle
  * @param pairing_pub 32B of pubkey
  * @param slot        Pairing key lot SH0PUB - SH3PUB
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const uint8_t slot);
 
@@ -252,7 +288,9 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
  * @param h           Device's handle
  * @param pairing_pub 32B of pubkey
  * @param slot        Pairing key lot SH0PUB - SH3PUB
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t slot);
 
@@ -261,7 +299,9 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
  *
  * @param h           Device's handle
  * @param slot        Pairing key lot SH0PUB - SH3PUB
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
 
@@ -271,7 +311,9 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
  * @param h           Device's handle
  * @param addr        Address of a config object
  * @param obj         Content to be written
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
 
@@ -281,7 +323,9 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
  * @param h           Device's handle
  * @param addr        Address of a config object
  * @param obj         Variable to read content into
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  *
  */
 lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
@@ -290,7 +334,9 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
  * @brief Erase the whole config space
  *
  * @param h           Device's handle
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_r_config_erase(lt_handle_t *h);
 
@@ -300,7 +346,9 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
  * @param h           Device's handle
  * @param addr        Address of a config object
  * @param bit_index   Index of bit to write from 1 to 0
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
 
@@ -310,7 +358,9 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
  * @param h           Device's handle
  * @param addr        Address of a config object
  * @param obj         Variable to read content into
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
 
@@ -321,7 +371,9 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
  * @param size        Size of data to be read
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size);
 
@@ -332,7 +384,9 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t 
  * @param udata_slot  Memory's slot to be read
  * @param data        Buffer to read data into
  * @param size        Number of bytes read into data
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size);
 
@@ -341,7 +395,9 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
  *
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be erased
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
@@ -351,7 +407,9 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
  * @param h           Device's handle
  * @param buff        Buffer
  * @param len         Number of random bytes (255 bytes is the maximum)
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
@@ -361,7 +419,9 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
  * @param h           Device's handle
  * @param slot        Slot number ecc_slot_t
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
@@ -372,7 +432,9 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
  * @param slot        Slot number ecc_slot_t
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
  * @param key         Key to store (only the first 32 bytes are stored)
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
 
@@ -385,7 +447,9 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
  * for P256), according to *curve*
  * @param curve       Will be filled by curve byte
  * @param origin      Will be filled by origin byte
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
                          ecc_key_origin_t *origin);
@@ -395,7 +459,9 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key
  *
  * @param h           Device's handle
  * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
 
@@ -407,7 +473,9 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
  * @param msg         Buffer containing a message
  * @param msg_len     Length of msg's buffer
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint32_t msg_len,
                            uint8_t *rs);
@@ -419,7 +487,9 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
  * @param msg_len     Length of message
  * @param pubkey      Public key related to private key which signed the message (64B)
  * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  *
  */
 lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
@@ -432,7 +502,9 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs);
@@ -444,8 +516,9 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint
  * @param msg_len     Length of message. Max length is 4095
  * @param pubkey      Public key related to private key which signed the message (32B)
  * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
- * @return            LT_OK if success, otherwise returns other error code. TODO info about other ret values
- *
+ * lt_ret_t           LT_OK          - success
+ *                    LT_PARAM_ERROR - wrong parameters were passed
+ *                    LT_FAIL        - signature verify failed
  */
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
@@ -455,7 +528,9 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
  * @param mcounter_value  Value to set as an initial value
- * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ *
+ * @retval                LT_OK Functions executed successfully
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value);
 
@@ -464,7 +539,9 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
  *
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
- * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ *
+ * @retval                LT_OK Functions executed successfully
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index);
 
@@ -474,7 +551,9 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
  * @param mcounter_value  Value of monotonic counter
- * @return                LT_OK if success, otherwise returns other error code. TODO info about other ret values
+ *
+ * @retval                LT_OK Functions executed successfully
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value);
 
@@ -488,7 +567,9 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
  * @param slot        Mac-and-Destroy slot index, valid values are 0-127
  * @param data_out    Data to be sent from host to TROPIC01
  * @param data_in     Data returned from TROPIC01 to host
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
 
@@ -503,8 +584,10 @@ extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
 /**
  * @details Helper function for printing out name of returned value.
  *
- * @param ret lt_ret_t returned type value
- * @return description of return value
+ * @param ret         lt_ret_t returned type value
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 const char *lt_ret_verbose(lt_ret_t ret);
 
@@ -513,7 +596,9 @@ const char *lt_ret_verbose(lt_ret_t ret);
  *
  * @param h           Device's handle
  * @param config      Array into which objects are read
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_write_whole_R_config(lt_handle_t *h, const struct lt_config_t *config);
 
@@ -522,7 +607,9 @@ lt_ret_t lt_write_whole_R_config(lt_handle_t *h, const struct lt_config_t *confi
  *
  * @param h           Device's handle
  * @param config      Struct into which objects are readed
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
 
@@ -531,7 +618,9 @@ lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config);
  *
  * @param h           Device's handle
  * @param config      Struct into which objects are readed
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
 
@@ -541,7 +630,9 @@ lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
  *
  * @param h           Device's handle
  * @param config      Array into which objects are read
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *config);
 
@@ -552,7 +643,9 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
  * @param shipriv     Host's private pairing key (SHiPUB)
  * @param shipub      Host's public pairing key  (SHiPUB)
  * @param pkey_index  Pairing key's index
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
 
@@ -563,7 +656,9 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
  * @param   length        Length of `bytes`
  * @param   out_buf       Output buffer to print to
  * @param   out_buf_size  Size of `out_buf`
- * @returns lt_ret_t
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size);
 
@@ -572,7 +667,9 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_b
  *
  * @param  chip_id     CHIP_ID structure
  * @param  print_func  printf-like function to use for printing
- * @return lt_ret_t    LT_OK on success, other values otherwise
+ *
+ * @retval            LT_OK Functions executed successfully
+ * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding of returned value
  */
 lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...));
 
