@@ -1,6 +1,6 @@
 /**
- * @file lt_test_rev_resend_req.c
- * @brief Test L2 Resend Request.
+ * @file lt_test_rev_resend_req_app.c
+ * @brief Test L2 Resend Request in Application mode.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -17,10 +17,10 @@
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
 
-void lt_test_rev_resend_req(lt_handle_t *h)
+void lt_test_rev_resend_req_app(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------");
-    LT_LOG_INFO("lt_test_rev_resend_req()");
+    LT_LOG_INFO("lt_test_rev_resend_req_app()");
     LT_LOG_INFO("----------------------------------");
 
     LT_LOG_INFO("Preparing handle.");
