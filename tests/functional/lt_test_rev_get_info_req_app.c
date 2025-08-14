@@ -7,6 +7,7 @@
  */
 
 #include <inttypes.h>
+#include <string.h>
 
 #include "libtropic.h"
 #include "libtropic_common.h"
@@ -68,6 +69,8 @@ void lt_test_rev_get_info_req_app(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_get_info_spect_fw_ver(h, spect_ver));
     LT_LOG_INFO("SPECT FW version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", spect_ver[3], spect_ver[2],
                 spect_ver[1], spect_ver[0]);
+    LT_LOG_INFO("Checking if SPECT FW version is not dummy...");
+    LT_TEST_ASSERT(1, (memcmp(spect_ver, "\x00\x00\x00\x80", sizeof(spect_ver)) != 0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Deinitializing handle");
