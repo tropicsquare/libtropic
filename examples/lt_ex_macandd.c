@@ -173,7 +173,10 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
         lt_hmac_sha256(w, 32, kdf_input_buff, PIN_size + add_size, k_i);
 
         // Encrypt s using k_i as a key
-        // TODO implement some better encryption, or discuss if using XOR here is fine
+        //
+        // Warning: All s[n] are encrypted here using k_i[n] as a key, results are stored into ci[n].
+        // Because size of the 'message s' is the same as a size of the 'key k_i', simple XOR is used here - discuss
+        // more apropriate method with experts on cryptography.
         for (int j = 0; j < 32; j++) {
             *(nvm.ci + (i * 32 + j)) = k_i[j] ^ s[j];
         }
@@ -309,7 +312,11 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     lt_hmac_sha256(w_, 32, kdf_input_buff, PIN_size + add_size, k_i);
 
     // Read the ciphertext c_i and tag t from NVM, decrypt c_i with k’_i as the key and obtain s_
-    // TODO figure out if XOR can be used here?
+
+    // Warning: All ci[n] arrays were during PIN set phase encrypted by XORing k_i[n] and a key s[n].
+    //
+    // For getting s[n] again, they are decrypted here by XORing ci[n] with k_i[n]
+    // Discuss more propriate method with experts on cryptography.
     for (int j = 0; j < 32; j++) {
         s_[j] = *(nvm.ci + (nvm.i * 32 + j)) ^ k_i[j];
     }
