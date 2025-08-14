@@ -34,7 +34,7 @@ extern uint8_t sh3pub[];
  *
  * @param  h     Device's handle
  *
- * @retval       0  Functions executed successfully
+ * @retval       0  Function executed successfully
  * @retval      -1  Function did not execute successully
  */
 int lt_ex_hello_world(lt_handle_t *h);
@@ -56,7 +56,7 @@ int lt_ex_hello_world(lt_handle_t *h);
  *
  * @param  h     Device's handle
  *
- * @retval       0  Functions executed successfully
+ * @retval       0  Function executed successfully
  * @retval      -1  Function did not execute successully
  */
 int lt_ex_hello_world_separate_API(lt_handle_t *h);
@@ -79,7 +79,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h);
  *
  * @param  h     Device's handle
  *
- * @retval       0  Functions executed successfully
+ * @retval       0  Function executed successfully
  * @retval      -1  Function did not execute successully
  */
 int lt_ex_hardware_wallet(lt_handle_t *h);
@@ -89,7 +89,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h);
  *
  * @param  h     Device's handle
  *
- * @retval       0  Functions executed successfully
+ * @retval       0  Function executed successfully
  * @retval      -1  Function did not execute successully
  */
 int lt_ex_fw_update(lt_handle_t *h);
@@ -112,7 +112,7 @@ int lt_ex_fw_update(lt_handle_t *h);
  *
  * @param  h     Device's handle
  *
- * @retval       0  Functions executed successfully
+ * @retval       0  Function executed successfully
  * @retval      -1  Function did not execute successully
  */
 int lt_ex_macandd(lt_handle_t *h);
