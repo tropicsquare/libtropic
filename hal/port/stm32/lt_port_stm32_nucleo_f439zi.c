@@ -58,8 +58,11 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
+    int ret;
 
-    if (HAL_RNG_Init(&device->rng_handle) != HAL_OK) {
+    ret = HAL_RNG_Init(&device->rng_handle);
+    if (ret != HAL_OK) {
+        LT_LOG_ERROR("Failed to init RNG, ret=%d", ret);
         return LT_FAIL;
     }
 
@@ -76,8 +79,10 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     device->spi_handle.Init.TIMode = SPI_TIMODE_DISABLE;
     device->spi_handle.Init.Mode = SPI_MODE_MASTER;
 
-    if (HAL_SPI_Init(&device->spi_handle) != HAL_OK) {
-        return LT_FAIL;
+    ret = HAL_SPI_Init(&device->spi_handle);
+    if (ret != HAL_OK) {
+        LT_LOG_ERROR("Failed to init SPI, ret=%d", ret);
+        return LT_L1_SPI_ERROR;
     }
 
     // GPIO for chip select.
@@ -106,13 +111,18 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
+    int ret;
 
-    if (HAL_RNG_DeInit(&device->rng_handle) != HAL_OK) {
+    ret = HAL_RNG_DeInit(&device->rng_handle);
+    if (ret != HAL_OK) {
+        LT_LOG_ERROR("Failed to deinit RNG, ret=%d", ret);
         return LT_FAIL;
     }
 
-    if (HAL_SPI_DeInit(&device->spi_handle) != HAL_OK) {
-        LT_LOG_ERROR("Failed to deinit SPI!");
+    ret = HAL_SPI_DeInit(&device->spi_handle);
+    if (ret != HAL_OK) {
+        LT_LOG_ERROR("Failed to deinit SPI, ret=%d", ret);
+        return LT_FAIL;
     }
 
     return LT_OK;
@@ -123,11 +133,13 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
 
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
+        LT_LOG_ERROR("Invalid data length!");
         return LT_L1_DATA_LEN_ERROR;
     }
     int ret = HAL_SPI_TransmitReceive(&device->spi_handle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
     if (ret != HAL_OK) {
-        return LT_FAIL;
+        LT_LOG_ERROR("HAL_SPI_TransmitReceive failed, ret=%d", ret);
+        return LT_L1_SPI_ERROR;
     }
 
     return LT_OK;
