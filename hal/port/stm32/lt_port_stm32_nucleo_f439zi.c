@@ -46,9 +46,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
     UNUSED(s2);
 
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_RESET);
-    while (HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN)) {
-        ;
-    }
+    while (HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN));
 
     return LT_OK;
 }
@@ -58,9 +56,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
     UNUSED(s2);
 
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
-    while (!HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN)) {
-        ;
-    }
+    while (!HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN));
 
     return LT_OK;
 }
