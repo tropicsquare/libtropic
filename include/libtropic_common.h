@@ -513,7 +513,7 @@ typedef struct header_boot_v2_t {
      * version.*/
     uint32_t pair_version;
 
-} __attribute__((packed)) __attribute__((aligned(4))) header_boot_v2_t;
+} __attribute__((packed)) header_boot_v2_t;
 
 // clang-format off
 STATIC_ASSERT(
