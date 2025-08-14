@@ -1698,7 +1698,8 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
         return LT_FAIL;
     }
 
-    if (LT_OK != lt_print_bytes(chip_id->prog_ver, sizeof(chip_id->prog_ver), print_bytes_buff, sizeof(print_bytes_buff))
+    if (LT_OK
+            != lt_print_bytes(chip_id->prog_ver, sizeof(chip_id->prog_ver), print_bytes_buff, sizeof(print_bytes_buff))
         || 0 > print_func("Programmer ver         = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }
@@ -1751,7 +1752,8 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
         return LT_FAIL;
     }
 
-    if (LT_OK != lt_print_bytes(chip_id->batch_id, sizeof(chip_id->batch_id), print_bytes_buff, sizeof(print_bytes_buff))
+    if (LT_OK
+            != lt_print_bytes(chip_id->batch_id, sizeof(chip_id->batch_id), print_bytes_buff, sizeof(print_bytes_buff))
         || 0 > print_func("Batch ID               = 0x%s\r\n", print_bytes_buff)) {
         return LT_FAIL;
     }

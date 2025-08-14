@@ -7,8 +7,8 @@
  */
 
 #include <inttypes.h>
-#include <stdlib.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "libtropic.h"

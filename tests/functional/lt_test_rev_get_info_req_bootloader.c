@@ -179,8 +179,8 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
 
     LT_LOG_INFO("Reading RISC-V bootloader version...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_riscv_fw_ver(h, riscv_ver));
-    LT_LOG_INFO("RISC-V Bootloader version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", riscv_ver[3] & 0x7f, riscv_ver[2],
-                riscv_ver[1], riscv_ver[0]);
+    LT_LOG_INFO("RISC-V Bootloader version: v%" PRIu8 ".%" PRIu8 ".%" PRIu8 ".%" PRIu8 "", riscv_ver[3] & 0x7f,
+                riscv_ver[2], riscv_ver[1], riscv_ver[0]);
     LT_LOG_LINE();
 
     LT_LOG_INFO("Reading SPECT bootloader version (should be dummy)...");
