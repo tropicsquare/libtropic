@@ -49,7 +49,9 @@
  * This function expects that l3 buffer is already filled with data to be sent.
  *
  * @param s3          Structure holding l3 state
- * @return            LT_OK if success, otherwise returns other error code.
+ *
+ * @retval            LT_OK Function executed successfully
+ * @retval            other Function did not execute successully
  */
 lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3);
 
@@ -67,8 +69,10 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
 /**
  * @brief Used to increase nonce
  *
- * @param nonce       TODO elaborate more
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param nonce       4B long number used as nonce inside of Noise protocol
+ *
+ * @retval            LT_OK Function executed successfully
+ * @retval            other Function did not execute successully
  */
 LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
 #endif
