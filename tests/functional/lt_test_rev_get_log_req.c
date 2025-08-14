@@ -20,9 +20,10 @@ lt_handle_t *g_h;
 
 static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r_config_cfg_debug)
 {
-    uint8_t log_msg[GET_LOG_MAX_MSG_LEN+1];
+    uint8_t log_msg[GET_LOG_MAX_MSG_LEN + 1];
     uint16_t log_msg_len;
-    int fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK) && (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
+    int fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK)
+                    && (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
 
     LT_LOG_INFO("Getting RISC-V FW log...");
     LT_TEST_ASSERT_COND(lt_get_log_req(g_h, log_msg, &log_msg_len), fw_log_en, LT_OK, LT_L2_RESP_DISABLED);

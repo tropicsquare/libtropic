@@ -792,11 +792,11 @@ STATIC_ASSERT(
  * Get log from FW running on RISCV CPU.
  */
 struct lt_l2_get_log_rsp_t {
-    uint8_t chip_status; /**< CHIP_STATUS byte */
-    uint8_t status;      /**< L2 status byte */
-    uint8_t rsp_len;     /**< Length of incoming data */
+    uint8_t chip_status;                  /**< CHIP_STATUS byte */
+    uint8_t status;                       /**< L2 status byte */
+    uint8_t rsp_len;                      /**< Length of incoming data */
     uint8_t log_msg[GET_LOG_MAX_MSG_LEN]; /**< Log message of RISC-V FW */
-    uint8_t crc[2];       /**< Checksum */
+    uint8_t crc[2];                       /**< Checksum */
 } __attribute__((packed));
 
 // clang-format off
