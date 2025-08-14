@@ -86,6 +86,18 @@ extern uint8_t sh3pub[];
 void hexdump_8byte(const uint8_t *data, uint16_t size);
 
 /**
+ * @brief Printf-like wrapper for LT_LOG_INFO used with lt_print_chip_id().
+ *
+ * @param format  A printf-style format string describing how to format the subsequent arguments. Must be a
+ * null-terminated string.
+ * @param ...     Additional arguments corresponding to the format specifiers in `format`.
+ *
+ * @return       The number of characters printed (excluding the terminating null byte), or a negative value if an
+ * output error occurs.
+ */
+int chip_id_printf_wrapper(const char *format, ...);
+
+/**
  * @brief Tests EDDSA_Sign command.
  *
  * Test steps:
