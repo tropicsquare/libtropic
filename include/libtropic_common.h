@@ -47,7 +47,7 @@
 /** @brief Maximal size of l3 RES/RSP DATA field */
 #define L3_CMD_DATA_SIZE_MAX (4111)
 
-/** @brief TODO Maximal size of data field in one L2 transfer */
+/** @brief Maximal size of data field in one L2 transfer */
 #define L2_CHUNK_MAX_DATA_SIZE 252u
 /** @brief Maximal size of one l2 frame */
 #define L2_MAX_FRAME_SIZE (1 + 1 + L2_CHUNK_MAX_DATA_SIZE + 2)
@@ -107,9 +107,8 @@ typedef struct lt_l3_state_t {
     uint8_t decrypt[352] __attribute__((aligned(16)));
 #elif USE_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
-#else  // TODO figure out how to allocate correct space without a need of passing LT_USE_TREZOR_CRYPTO from platform's
-       // cmake
-    uint8_t encrypt[352] __attribute__((aligned(16)));
+#else  
+    uint8_t encrypt[352] __attribute__((aligned(16)));  // Default size of gcm context structures is set for trezor_crypto library
     uint8_t decrypt[352] __attribute__((aligned(16)));
 #endif
 #if LT_SEPARATE_L3_BUFF
