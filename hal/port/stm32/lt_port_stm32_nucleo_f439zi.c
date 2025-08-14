@@ -13,7 +13,6 @@
 #include <string.h>
 
 #include "stm32f4xx_hal.h"
-// Pin definitions are in main.h:
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 #include "main.h"
@@ -35,11 +34,6 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
     return LT_OK;
 }
-
-/* Most of this SPI code is taken from:
-   vendor/STM32CubeF4/Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
-*/
-
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
@@ -69,14 +63,13 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         return LT_FAIL;
     }
 
-    /* Set the SPI parameters */
+    // Set the SPI parameters.
     device->spi_handle.Instance = LT_SPI_INSTANCE;
     device->spi_handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     device->spi_handle.Init.Direction = SPI_DIRECTION_2LINES;
     device->spi_handle.Init.CLKPhase = SPI_PHASE_1EDGE;
     device->spi_handle.Init.CLKPolarity = SPI_POLARITY_LOW;
     device->spi_handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-    // spi_handle.Init.CRCPolynomial     = 7;
     device->spi_handle.Init.DataSize = SPI_DATASIZE_8BIT;
     device->spi_handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
     device->spi_handle.Init.NSS = SPI_NSS_HARD_OUTPUT;
@@ -87,7 +80,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         return LT_FAIL;
     }
 
-    // GPIO for chip select:
+    // GPIO for chip select.
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     LT_SPI_CS_CLK_ENABLE();
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
@@ -98,7 +91,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     HAL_GPIO_Init(LT_SPI_CS_BANK, &GPIO_InitStruct);
 
 #if LT_USE_INT_PIN
-    /* GPIO for INT pin */
+    // GPIO for INT pin.
     LT_INT_CLK_ENABLE();
     GPIO_InitStruct.Pin = LT_INT_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
