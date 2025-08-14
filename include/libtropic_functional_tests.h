@@ -131,9 +131,11 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h);
  *  2. Read pairing key slots 1,2,3 and check they are empty.
  *  3. Write pairing key slots 1,2,3.
  *  4. Read all pairing key slots and check for expected value.
- *  5. Write zeros to all pairing key slots and check for failure.
- *  6. Invalidate all pairing key slots.
- *  7. Read all pairing key slots and check for failure.
+ *  5. Start Secure Session with slots 1,2,3 and abort.
+ *  6. Start Secure Session with pairing key slot 0.
+ *  7. Write zeros to all pairing key slots and check for failure.
+ *  8. Invalidate all pairing key slots.
+ *  9. Read and write all pairing key slots and check for failure.
  *
  * @param h     Device's handle
  */
