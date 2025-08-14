@@ -18,23 +18,11 @@
 
 lt_handle_t *g_h;
 
-static void lt_test_rev_get_log_req_body(void)
+static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r_config_cfg_debug)
 {
     uint8_t log_msg[GET_LOG_MAX_MSG_LEN+1];
     uint16_t log_msg_len;
-    uint32_t i_config_cfg_debug, r_config_cfg_debug;
-    int fw_log_en;
-
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
-    LT_LOG_INFO();
-
-    LT_LOG_INFO("Reading CFG_DEBUG from I config...");
-    LT_TEST_ASSERT(LT_OK, lt_i_config_read(g_h, CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR, &i_config_cfg_debug));
-
-    LT_LOG_INFO("Reading CFG_DEBUG from R config...");
-    LT_TEST_ASSERT(LT_OK, lt_r_config_read(g_h, CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR, &r_config_cfg_debug));
-    fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK) && (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
+    int fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK) && (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
 
     LT_LOG_INFO("Getting RISC-V FW log...");
     LT_TEST_ASSERT_COND(lt_get_log_req(g_h, log_msg, &log_msg_len), fw_log_en, LT_OK, LT_L2_RESP_DISABLED);
@@ -50,19 +38,17 @@ static void lt_test_rev_get_log_req_body(void)
         }
     }
     else {
-        LT_LOG_INFO("RISC-V FW logging is disabled in I or R config.");
+        LT_LOG_INFO("RISC-V FW logging is disabled:");
+        LT_LOG_INFO("I config FW_LOG_EN=%d", (int)i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
+        LT_LOG_INFO("R config FW_LOG_EN=%d", (int)r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
     }
-    
-
-    LT_LOG_INFO("Aborting Secure Session");
-    LT_TEST_ASSERT(LT_OK, lt_session_abort(g_h));
 }
 
 lt_ret_t lt_test_rev_get_log_req_cleanup(void)
 {
     lt_ret_t ret;
 
-    LT_LOG_INFO("Rebooting to the Application mode...");
+    LT_LOG_INFO("Rebooting into Application mode...");
     ret = lt_reboot(g_h, LT_MODE_APP);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the Application mode!");
@@ -87,13 +73,28 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
 
     g_h = h;
 
+    uint32_t i_config_cfg_debug, r_config_cfg_debug;
+
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_MAINTENANCE));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_APP));
 
-    lt_test_rev_get_log_req_body();
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+
+    LT_LOG_INFO("Reading CFG_DEBUG from I config...");
+    LT_TEST_ASSERT(LT_OK, lt_i_config_read(g_h, CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR, &i_config_cfg_debug));
+
+    LT_LOG_INFO("Reading CFG_DEBUG from R config...");
+    LT_TEST_ASSERT(LT_OK, lt_r_config_read(g_h, CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR, &r_config_cfg_debug));
+
+    LT_LOG_INFO("Aborting Secure Session");
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(g_h));
+    LT_LOG_LINE();
+
+    lt_test_rev_get_log_req_body(i_config_cfg_debug, r_config_cfg_debug);
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into Maintenance mode...");
@@ -101,7 +102,7 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
 
     lt_test_cleanup_function = &lt_test_rev_get_log_req_cleanup;
 
-    lt_test_rev_get_log_req_body();
+    lt_test_rev_get_log_req_body(i_config_cfg_debug, r_config_cfg_debug);
     LT_LOG_LINE();
 
     // Call cleanup function, but don't call it from LT_TEST_ASSERT anymore.
