@@ -208,7 +208,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
 
 #ifdef ABAB
 /** @brief Maximal size of update data */
-#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 25600  // TODO Maybe better value for this?
+#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 25600
 /**
  * @brief Erase mutable firmware in one of banks
  *
@@ -235,7 +235,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
 
 #elif ACAB
 /** @brief Maximal size of update data */
-#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 30000  // TODO Maybe better value for this?
+#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 30720
 
 /**
  * @brief This function sends mutable firmware update 'request' to TROPIC01 with silicon revision ACAB
