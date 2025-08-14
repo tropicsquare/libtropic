@@ -38,16 +38,6 @@ extern uint8_t sh3pub[];
 int lt_ex_hello_world(lt_handle_t *h);
 
 /**
- * @brief Example function, Hello World with separate API
- *
- * Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
- * TODO explain more
- *
- * @param  h     Device's handle
- * @return int
- */
-
-/**
  * @brief Establishes Secure Session and executes Ping L3 command using separated API.
  *
  * This example shows how to use separated API calls with TROPIC01. Separate calls are named lt_out__* and
