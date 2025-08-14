@@ -92,6 +92,9 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
 
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_PAIRING_KEY_INVALID, lt_pairing_key_read(h, read_key, i));
+
+        LT_LOG_INFO("Writing to pairing key slot %" PRIu8 " (should fail)...", i);
+        LT_TEST_ASSERT(LT_L3_FAIL, lt_pairing_key_write(h, zeros, i));
     }
     LT_LOG_LINE();
 
