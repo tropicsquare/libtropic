@@ -68,14 +68,14 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
         ret = lt_l1_spi_transfer(s2, 0, 1, timeout);
         if (ret != LT_OK) {
             lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-            UNUSED(ret_unused); // We don't care about it, we return ret from SPI transfer anyway.
+            UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
             return ret;
         }
 
         // Check ALARM bit of CHIP_STATUS byte
         if (s2->buff[0] & CHIP_MODE_ALARM_bit) {
             lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-            UNUSED(ret_unused); // We don't care about it, we return LT_L1_CHIP_ALARM_MODE anyway.
+            UNUSED(ret_unused);  // We don't care about it, we return LT_L1_CHIP_ALARM_MODE anyway.
             return LT_L1_CHIP_ALARM_MODE;
         }
 
@@ -94,7 +94,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             ret = lt_l1_spi_transfer(s2, 1, 2, timeout);
             if (ret != LT_OK) {  // offset 1
                 lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-                UNUSED(ret_unused); // We don't care about it, we return ret from SPI transfer anyway.
+                UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
                 return ret;
             }
 
@@ -118,14 +118,14 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             uint16_t length = s2->buff[2] + 2;
             if (length > (LT_L1_LEN_MAX - 2)) {
                 lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-                UNUSED(ret_unused); // We don't care about it, we return LT_L1_DATA_LEN_ERROR anyway.
+                UNUSED(ret_unused);  // We don't care about it, we return LT_L1_DATA_LEN_ERROR anyway.
                 return LT_L1_DATA_LEN_ERROR;
             }
             // Receive the rest of incomming bytes, including crc
             ret = lt_l1_spi_transfer(s2, 3, length, timeout);
             if (ret != LT_OK) {  // offset 3
                 lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-                UNUSED(ret_unused); // We don't care about it, we return ret from SPI transfer anyway.
+                UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
                 return ret;
             }
             ret = lt_l1_spi_csn_high(s2);
@@ -200,7 +200,7 @@ lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeo
     ret = lt_l1_spi_transfer(s2, 0, len, timeout);
     if (ret != LT_OK) {
         lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-        UNUSED(ret_unused); // We don't care about it, we return ret from SPI transfer anyway.
+        UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
         return ret;
     }
 

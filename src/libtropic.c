@@ -93,7 +93,7 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     ret = lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT);
     if (ret != LT_OK) {
         lt_ret_t ret_unused = lt_l1_spi_csn_high(&h->l2);
-        UNUSED(ret_unused); // We don't care about it, we return ret from SPI transfer anyway.
+        UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
         return ret;
     }
 

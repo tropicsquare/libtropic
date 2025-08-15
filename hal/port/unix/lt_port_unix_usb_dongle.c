@@ -12,6 +12,7 @@
 
 #include "lt_port_unix_usb_dongle.h"
 
+#include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stddef.h>
@@ -22,7 +23,6 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"

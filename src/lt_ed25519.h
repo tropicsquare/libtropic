@@ -20,6 +20,7 @@
  * @param rs         R and S part of the message's signature
  * @return int       0 if signature is valid, otherwise 1
  */
-int lt_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs) __attribute__((warn_unused_result));
+int lt_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+    __attribute__((warn_unused_result));
 
 #endif

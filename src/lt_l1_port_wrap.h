@@ -60,7 +60,8 @@ lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2) __attribute__((warn_unused_result
  * @param timeout     Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout) __attribute__((warn_unused_result));
+lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout)
+    __attribute__((warn_unused_result));
 
 /**
  * @brief Platform's definition for delay, specifies what host
