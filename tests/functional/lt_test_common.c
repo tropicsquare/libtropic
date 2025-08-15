@@ -18,7 +18,7 @@
 
 lt_ret_t (*lt_test_cleanup_function)(void) = NULL;
 
-void lt_assert_fail_handler()
+void lt_assert_fail_handler(void)
 {
     if (NULL != lt_test_cleanup_function) {
         LT_LOG_INFO("Post-assert cleanup started.");

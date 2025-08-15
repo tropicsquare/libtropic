@@ -6,8 +6,9 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <stdlib.h>
+#include <stdint.h>
 
+#include "lt_random.h"
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 

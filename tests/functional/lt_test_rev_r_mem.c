@@ -18,7 +18,7 @@
 // Shared with cleanup function
 lt_handle_t *g_h;
 
-lt_ret_t lt_test_rev_r_mem_cleanup(void)
+static lt_ret_t lt_test_rev_r_mem_cleanup(void)
 {
     lt_ret_t ret;
     uint8_t r_mem_data[R_MEM_DATA_SIZE_MAX];
