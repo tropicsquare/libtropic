@@ -73,7 +73,7 @@ void lt_test_rev_resend_req(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_MAINTENANCE));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_APP));
 
     lt_test_rev_resend_req_body();
     LT_LOG_LINE();
