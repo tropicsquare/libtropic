@@ -130,7 +130,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     ret = HAL_SPI_DeInit(&device->spi_handle);
     if (ret != HAL_OK) {
         LT_LOG_ERROR("Failed to deinit SPI, ret=%d", ret);
-        return LT_FAIL;
+        return LT_L1_SPI_ERROR;
     }
 
     return LT_OK;
