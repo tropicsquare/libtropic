@@ -141,6 +141,7 @@ if(LT_BUILD_TESTS)
     # Remove tests we don't want to run against model
     list(REMOVE_ITEM LIBTROPIC_TEST_LIST
         lt_test_rev_startup_req
+        lt_test_rev_get_info_req_bootloader
     )
 
     # Loop through tests defined in libtropic and prepare environment.

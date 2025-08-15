@@ -116,7 +116,7 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
+lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver);
 
 /**
  * @brief Read TROPIC01's SPECT firmware version
@@ -129,7 +129,7 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t m
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
+lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
 
 /**
  * @brief Read TROPIC01's fw bank info
@@ -259,7 +259,8 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
 
 #endif
 /**
- * @brief Get TROPIC01's internal log message (if enabled/available)
+ * @brief Get Log message of TROPIC01's RISC-V FW (if enabled/available).
+ * @note RISC-V FW logging can be disabled in the I/R Config.
  *
  * @param h           Device's handle
  * @param log_msg     Log message
@@ -269,7 +270,7 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len);
 
 /**
  * @brief Test secure session by exchanging a message with chip

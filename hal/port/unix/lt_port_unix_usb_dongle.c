@@ -12,6 +12,7 @@
 
 #include "lt_port_unix_usb_dongle.h"
 
+#include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stddef.h>
@@ -165,7 +166,12 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
 {
     UNUSED(s2);
-    usleep(wait_time_msecs * 1000);
+    int ret = usleep(wait_time_msecs * 1000);
+    if (ret != 0) {
+        LT_LOG_ERROR("usleep() failed: %s (%d)", strerror(errno), ret);
+        return LT_FAIL;
+    }
+
     return LT_OK;
 }
 

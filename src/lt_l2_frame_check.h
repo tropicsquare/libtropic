@@ -27,6 +27,8 @@
 #define L2_STATUS_REQUEST_CONT 0x03
 /** @brief STATUS ﬁeld value */
 #define L2_STATUS_RESULT_CONT 0x04
+/** @brief STATUS field value */
+#define L2_STATUS_RESP_DISABLED 0x78
 /** @brief STATUS ﬁeld value */
 #define L2_STATUS_HSK_ERR 0x79
 /** @brief STATUS ﬁeld value */
@@ -48,7 +50,7 @@
  * @param             frame
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l2_frame_check(const uint8_t *frame);
+lt_ret_t lt_l2_frame_check(const uint8_t *frame) __attribute__((warn_unused_result));
 
 /** @} */  // end of group_l2_frame_check_functions
 

@@ -255,8 +255,8 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_erase_r_config
     lt_test_rev_handshake_req
     lt_test_rev_mcounter
-    lt_test_rev_read_cert_store
-    lt_test_rev_read_chip_id
+    lt_test_rev_get_info_req_app
+    lt_test_rev_get_info_req_bootloader
     lt_test_rev_read_i_config
     lt_test_rev_read_r_config
     lt_test_rev_resend_req
@@ -267,6 +267,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_ecc_key_store
     lt_test_rev_random_value_get
     lt_test_rev_mac_and_destroy
+    lt_test_rev_get_log_req
 )
 
 # Export test list to parent project (usually platform-specific implementation).
@@ -309,8 +310,8 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_handshake_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mcounter.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_cert_store.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_chip_id.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_info_req_app.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_info_req_bootloader.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_resend_req.c
@@ -321,6 +322,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecc_key_store.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_random_value_get.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mac_and_destroy.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_log_req.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/

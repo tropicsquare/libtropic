@@ -53,7 +53,7 @@
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully
  */
-lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3);
+lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3) __attribute__((warn_unused_result));
 
 /**
  * @brief Decrypt response from TROPIC01 and fill l3 buffer with decrypted data.
@@ -63,7 +63,7 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3);
  * @param s3          Structure holding l3 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
+lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3) __attribute__((warn_unused_result));
 
 #ifdef TEST
 /**
@@ -74,7 +74,7 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully
  */
-LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
+LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce) __attribute__((warn_unused_result));
 #endif
 
 /**

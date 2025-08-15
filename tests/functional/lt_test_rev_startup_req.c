@@ -19,22 +19,22 @@
 #define REBOOT_WAIT_ATTEMPTS 10
 
 lt_handle_t *g_h;
-enum lt_tropic01_mode { LT_BOOTLOADER_MODE, LT_NORMAL_MODE, LT_BUSY };
+enum lt_tropic01_mode { STARTUP_MODE, APPLICATION_MODE, BUSY };
 
-enum lt_tropic01_mode check_current_mode(void)
+static enum lt_tropic01_mode check_current_mode(void)
 {
     uint8_t spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
     lt_ret_t ret;
 
     LT_LOG_INFO("Retrieving SPECT FW version...");
     for (int i = 0; i < REBOOT_WAIT_ATTEMPTS; i++) {
-        ret = lt_get_info_spect_fw_ver(g_h, spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
+        ret = lt_get_info_spect_fw_ver(g_h, spect_ver);
         if (LT_OK == ret) {
             break;
         }
         else if (LT_L1_CHIP_BUSY == ret) {
             LT_LOG_INFO("Chip busy, waiting and trying again...");
-            lt_l1_delay(&g_h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+            LT_TEST_ASSERT(LT_OK, lt_l1_delay(&g_h->l2, LT_TROPIC01_REBOOT_DELAY_MS));
         }
     }
 
@@ -43,20 +43,20 @@ enum lt_tropic01_mode check_current_mode(void)
     }
     else {
         LT_LOG_ERROR("Chip still busy! Terminating test.");
-        return LT_BUSY;
+        return BUSY;
     }
 
     LT_LOG_INFO("Spect version:");
     hexdump_8byte(spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
     if (0 == memcmp(spect_ver, "\x00\x00\x00\x80", LT_L2_GET_INFO_SPECT_FW_SIZE)) {
-        return LT_BOOTLOADER_MODE;
+        return STARTUP_MODE;
     }
     else {
-        return LT_NORMAL_MODE;
+        return APPLICATION_MODE;
     }
 }
 
-lt_ret_t lt_test_rev_startup_req_cleanup(void)
+static lt_ret_t lt_test_rev_startup_req_cleanup(void)
 {
     lt_ret_t ret;
 
@@ -68,7 +68,7 @@ lt_ret_t lt_test_rev_startup_req_cleanup(void)
     }
 
     LT_LOG_INFO("Checking we are again in the normal mode...");
-    if (LT_NORMAL_MODE != check_current_mode()) {
+    if (APPLICATION_MODE != check_current_mode()) {
         LT_LOG_ERROR("Still in bootloader mode!");
         return LT_FAIL;
     }
@@ -92,18 +92,18 @@ void lt_test_rev_startup_req(lt_handle_t *h)
 
     // Part 1: Try to reboot from normal to normal.
     LT_LOG_INFO("Checking we are in the normal mode...");
-    LT_TEST_ASSERT(LT_NORMAL_MODE, check_current_mode());
+    LT_TEST_ASSERT(APPLICATION_MODE, check_current_mode());
     LT_LOG_INFO("Rebooting to the normal mode...");
     LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
     LT_LOG_INFO("Checking we are again in the normal mode...");
-    LT_TEST_ASSERT(LT_NORMAL_MODE, check_current_mode());
+    LT_TEST_ASSERT(APPLICATION_MODE, check_current_mode());
 
     // Part 2: Try to reboot from normal to bootloader and from bootloader to bootloader.
     for (int i = 0; i < 2; i++) {
         LT_LOG_INFO("Rebooting to the bootloader mode (maintenance reboot)...");
         LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT));
         LT_LOG_INFO("Checking we are in the bootloader mode...");
-        LT_TEST_ASSERT(LT_BOOTLOADER_MODE, check_current_mode());
+        LT_TEST_ASSERT(STARTUP_MODE, check_current_mode());
         LT_LOG_INFO("Checking that the handshake does not work...");
         LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ,
                        lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
@@ -113,5 +113,5 @@ void lt_test_rev_startup_req(lt_handle_t *h)
     LT_LOG_INFO("Rebooting to the normal mode...");
     LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
     LT_LOG_INFO("Checking we are again in the normal mode...");
-    LT_TEST_ASSERT(LT_NORMAL_MODE, check_current_mode());
+    LT_TEST_ASSERT(APPLICATION_MODE, check_current_mode());
 }

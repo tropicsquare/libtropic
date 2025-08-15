@@ -86,6 +86,18 @@ extern uint8_t sh3pub[];
 void hexdump_8byte(const uint8_t *data, uint16_t size);
 
 /**
+ * @brief Printf-like wrapper for LT_LOG_INFO used with lt_print_chip_id().
+ *
+ * @param format  A printf-style format string describing how to format the subsequent arguments. Must be a
+ * null-terminated string.
+ * @param ...     Additional arguments corresponding to the format specifiers in `format`.
+ *
+ * @return       The number of characters printed (excluding the terminating null byte), or a negative value if an
+ * output error occurs.
+ */
+int chip_id_printf_wrapper(const char *format, ...);
+
+/**
  * @brief Tests EDDSA_Sign command.
  *
  * Test steps:
@@ -215,26 +227,35 @@ void lt_test_rev_handshake_req(lt_handle_t *h);
 void lt_test_rev_mcounter(lt_handle_t *h);
 
 /**
- * @brief Read Certificate Store with 4 certificates and print it to log.
+ * @brief Test Get_Info_Req command in Application mode with all possible OBJECT_ID values.
  *
  * Test steps:
  *  1. Get device Certificate Store.
  *  2. For each of the 4 certificates, check if its size is not zero and print it.
+ *  3. Get Chip ID and print it to log.
+ *  4. Get RISC-V FW version and print it to log.
+ *  5. Get SPECT FW version and print it to log.
  *
  * @param h     Device's handle
  */
-void lt_test_rev_read_cert_store(lt_handle_t *h);
+void lt_test_rev_get_info_req_app(lt_handle_t *h);
 
 /**
- * @brief Test reading Chip ID and parse it.
+ * @brief Test Get_Info_Req command in Maintenance mode with all possible OBJECT_ID values.
  *
  * Test steps:
- *  1. Get device Chip ID.
- *  2. Parse it and print it.
+ *  1. Reboot to Maintenance mode.
+ *  2. Get device Certificate Store.
+ *  3. For each of the 4 certificates, check if its size is not zero and print it.
+ *  4. Get Chip ID and print it to log.
+ *  5. Get RISC-V bootloader version and print it to log.
+ *  6. Get SPECT bootloader version, print it to log and check it's dummy.
+ *  7. Read all FW banks and based on the bootloader version (1.0.1 or 2.0.1), print it to log.
+ *  8. Reboot back to Application mode.
  *
  * @param h     Device's handle
  */
-void lt_test_rev_read_chip_id(lt_handle_t *h);
+void lt_test_rev_get_info_req_bootloader(lt_handle_t *h);
 
 /**
  * @brief Reads contents of I-Config and prints it to the log.
@@ -271,13 +292,15 @@ void lt_test_ire_write_i_config(lt_handle_t *h);
 void lt_test_rev_read_r_config(lt_handle_t *h);
 
 /**
- * @brief Test Resend_Req L2 request.
+ * @brief Test Resend_Req L2 request in Application and Maintenance mode.
  *
  * Test steps:
- * 1. Send Get_Info_Req and receive response frame, store the frame.
- * 2. Request a resend of the last L2 frame and store it.
- * 3. Contents of the original and resended frames are compared. This will check whether
+ * 1. Reboot into Application mode.
+ * 2. Send Get_Info_Req and receive response frame, store the frame.
+ * 3. Request a resend of the last L2 frame and store it.
+ * 4. Contents of the original and resended frames are compared. This will check whether
  *    the resend works as intended.
+ * 5. Reboot into Maintenance mode and do steps 2-4 again.
  *
  * @param h     Device's handle
  */
@@ -396,5 +419,20 @@ void lt_test_rev_random_value_get(lt_handle_t *h);
  * @param h     Device's handle
  */
 void lt_test_rev_mac_and_destroy(lt_handle_t *h);
+
+/**
+ * @brief Tests Get_Log_Req command in Application and Maintenance mode.
+ *
+ * Test steps:
+ *  1. Reboot into Application mode.
+ *  2. Start Secure Session with pairing key slot 0.
+ *  3. Read CFG_DEBUG from I and R config to check if FW logging is enabled.
+ *  4. Read the FW log (assert LT_OK if FW logging enabled, LT_L2_RESP_DISABLED otherwise).
+ *  5. Print the FW log into the test log if enabled or it's length is not zero.
+ *  6. Reboot into Maintenance mode and repeat steps 2-5.
+ *
+ * @param h     Device's handle
+ */
+void lt_test_rev_get_log_req(lt_handle_t *h);
 
 #endif
