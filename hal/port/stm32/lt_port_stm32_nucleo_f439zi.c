@@ -45,20 +45,20 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
+    lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
 
-    HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_RESET);
-    while (HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN));
+    HAL_GPIO_WritePin(device->spi_cs_gpio_bank, device->spi_cs_gpio_pin, GPIO_PIN_RESET);
+    while (HAL_GPIO_ReadPin(device->spi_cs_gpio_bank, device->spi_cs_gpio_pin));
 
     return LT_OK;
 }
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
+    lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
 
-    HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
-    while (!HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN));
+    HAL_GPIO_WritePin(device->spi_cs_gpio_bank, device->spi_cs_gpio_pin, GPIO_PIN_SET);
+    while (!HAL_GPIO_ReadPin(device->spi_cs_gpio_bank, device->spi_cs_gpio_pin));
 
     return LT_OK;
 }
@@ -75,7 +75,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     }
 
     // Set the SPI parameters.
-    device->spi_handle.Instance = LT_SPI_INSTANCE;
+    device->spi_handle.Instance = device->spi_instance;
     device->spi_handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
     device->spi_handle.Init.Direction = SPI_DIRECTION_2LINES;
     device->spi_handle.Init.CLKPhase = SPI_PHASE_1EDGE;
@@ -96,21 +96,21 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     // GPIO for chip select.
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     LT_SPI_CS_CLK_ENABLE();
-    HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
-    GPIO_InitStruct.Pin = LT_SPI_CS_PIN;
+    HAL_GPIO_WritePin(device->spi_cs_gpio_bank, device->spi_cs_gpio_pin, GPIO_PIN_SET);
+    GPIO_InitStruct.Pin = device->spi_cs_gpio_pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-    HAL_GPIO_Init(LT_SPI_CS_BANK, &GPIO_InitStruct);
+    HAL_GPIO_Init(device->spi_cs_gpio_bank, &GPIO_InitStruct);
 
 #if LT_USE_INT_PIN
     // GPIO for INT pin.
     LT_INT_CLK_ENABLE();
-    GPIO_InitStruct.Pin = LT_INT_PIN;
+    GPIO_InitStruct.Pin = device->int_gpio_pin;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LT_INT_BANK, &GPIO_InitStruct);
+    HAL_GPIO_Init(device->int_gpio_bank, &GPIO_InitStruct);
 #endif
 
     return LT_OK;
@@ -165,10 +165,11 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 #if LT_USE_INT_PIN
 lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 {
-    UNUSED(s2);
+    lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);    
     uint32_t time_initial = HAL_GetTick();
     uint32_t time_actual;
-    while ((HAL_GPIO_ReadPin(LT_INT_BANK, LT_INT_PIN) == 0)) {
+
+    while ((HAL_GPIO_ReadPin(device->int_gpio_bank, device->int_gpio_pin) == 0)) {
         time_actual = HAL_GetTick();
         if ((time_actual - time_initial) > ms) {
             return LT_L1_INT_TIMEOUT;
