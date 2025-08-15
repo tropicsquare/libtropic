@@ -90,21 +90,19 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
  * @brief Read TROPIC01's RISCV firmware version
  *
  * @param h           Device's handle
- * @param ver         Buffer for FW version bytes
- * @param max_len     Length of a buffer to store fw version in
+ * @param ver         Buffer for FW version bytes with size `LT_L2_GET_INFO_RISCV_FW_SIZE`
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
+lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver);
 
 /**
  * @brief Read TROPIC01's SPECT firmware version
  *
  * @param h           Device's handle
- * @param ver         Buffer for SPECT version bytes
- * @param max_len     Length of a buffer to store fw version in
+ * @param ver         Buffer for SPECT version bytes with size `LT_L2_GET_INFO_SPECT_FW_SIZE`
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver, const uint16_t max_len);
+lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
 
 /**
  * @brief Read TROPIC01's fw bank info

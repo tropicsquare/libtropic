@@ -7,7 +7,9 @@
  */
 
 #include <inttypes.h>
+#include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "libtropic.h"
 #include "libtropic_common.h"
@@ -49,4 +51,30 @@ void hexdump_8byte(const uint8_t *data, uint16_t size)
         *p = '\0';  // null-terminate the string
         LT_LOG_INFO("%s", line);
     }
+}
+
+int chip_id_printf_wrapper(const char *format, ...)
+{
+    int ret;
+    char buff[CHIP_ID_FIELD_MAX_SIZE * 3];
+    va_list args;
+
+    // Format the message
+    va_start(args, format);
+    ret = vsnprintf(buff, sizeof(buff), format, args);
+    if (ret < 0) {
+        return ret;
+    }
+    va_end(args);
+
+    // Strip trailing \r\n
+    size_t len = strlen(buff);
+    while (len > 0 && (buff[len - 1] == '\n' || buff[len - 1] == '\r')) {
+        buff[--len] = '\0';
+    }
+
+    // Log the message
+    LT_LOG_INFO("%s", buff);
+
+    return ret;
 }
