@@ -52,7 +52,6 @@ uint16_t crc16(const uint8_t *data, int16_t len)
     return (crc << 8 | crc >> 8);
 }
 
-// TODO test boundaries of passed req
 void add_crc(void *req)
 {
     uint8_t *p = (uint8_t *)req;

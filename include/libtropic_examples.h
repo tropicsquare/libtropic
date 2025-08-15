@@ -33,19 +33,11 @@ extern uint8_t sh3pub[];
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
  * @param  h     Device's handle
- * @return -1 on fail, 0 otherwise
+ *
+ * @retval       0  Function executed successfully
+ * @retval      -1  Function did not execute successully
  */
 int lt_ex_hello_world(lt_handle_t *h);
-
-/**
- * @brief Example function, Hello World with separate API
- *
- * Verifies chip's certificate, establishes secure channel and executes Ping l3 command.
- * TODO explain more
- *
- * @param  h     Device's handle
- * @return int
- */
 
 /**
  * @brief Establishes Secure Session and executes Ping L3 command using separated API.
@@ -63,7 +55,9 @@ int lt_ex_hello_world(lt_handle_t *h);
  * PCB.
  *
  * @param  h     Device's handle
- * @return -1 on fail, 0 otherwise
+ *
+ * @retval       0  Function executed successfully
+ * @retval      -1  Function did not execute successully
  */
 int lt_ex_hello_world_separate_API(lt_handle_t *h);
 
@@ -84,35 +78,19 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h);
  operations!
  *
  * @param  h     Device's handle
- * @return 0 on success, -1 otherwise
+ *
+ * @retval       0  Function executed successfully
+ * @retval      -1  Function did not execute successully
  */
 int lt_ex_hardware_wallet(lt_handle_t *h);
 
 /**
  * @brief Performs firmware update of TROPIC01 chip.
  *
- * How to select the firmware for this example:
+ * @param  h     Device's handle
  *
- * The `TROPIC01_fw_update_files/` directory contains all officially released
- * and signed firmwares for the TROPIC01 chip, for all silicon revision.
- *
- * To specify which firmware to use for the update:
- *   1. Open the `CMakeLists.txt` file.
- *   2. Set the `LT_SILICON_REV` variable to your chip's silicon revision (e.g., "ABAB").
- *   3. Set the `LT_CPU_FW_VERSION` the desired versions.
- *
- * The build system uses these variables to place chosen firmware data into compiled binary, SPECT firmware data will be
- * chosen automatically.
- *
- * @note ACAB revision handles firmware banks differently than ABAB revision.
- *      For ACAB, the chip manages firmware banks internally, and passed `bank_id` is ignored.
- *      For ABAB, the chip requires the user to specify which bank to update, this might be defined by
- * FW_APP_UPDATE_BANK and FW_APP_UPDATE_SPECT in this file. With ABABs, sometimes, it may be necessary to erase both
- * banks to see expected behaviour, because chip always boots higher firmware version.
- *
- *
- * @param h     Handle to the TROPIC01 chip.
- * @return int  0 on success, -1 on failure.
+ * @retval       0  Function executed successfully
+ * @retval      -1  Function did not execute successully
  */
 int lt_ex_fw_update(lt_handle_t *h);
 
@@ -133,7 +111,9 @@ int lt_ex_fw_update(lt_handle_t *h);
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
  * @param  h     Device's handle
- * @return 0 on success, -1 otherwise
+ *
+ * @retval       0  Function executed successfully
+ * @retval      -1  Function did not execute successully
  */
 int lt_ex_macandd(lt_handle_t *h);
 

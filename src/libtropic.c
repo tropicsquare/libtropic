@@ -28,7 +28,7 @@
 #include "lt_l2_api_structs.h"
 #include "lt_l3.h"
 #include "lt_l3_api_structs.h"
-#include "lt_l3_process.h"  // TODO remove
+#include "lt_l3_process.h"
 #include "lt_random.h"
 #include "lt_sha256.h"
 #include "lt_x25519.h"
