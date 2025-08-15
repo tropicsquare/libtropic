@@ -77,20 +77,30 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    lt_ret_t ret;
+
     // The byte used here must not be ID byte of some request, otherwise chip would be confused
     // and would return CRC error.
     // GET_RESP 0xAA works fine.
     h->l2.buff[0] = GET_RESPONSE_REQ_ID;
 
     // Transfer just one byte to read CHIP_STATUS byte
-    lt_l1_spi_csn_low(&h->l2);
-
-    if (lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT) != LT_OK) {
-        lt_l1_spi_csn_high(&h->l2);
-        return LT_L1_SPI_ERROR;
+    ret = lt_l1_spi_csn_low(&h->l2);
+    if (ret != LT_OK) {
+        return ret;
     }
 
-    lt_l1_spi_csn_high(&h->l2);
+    ret = lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT);
+    if (ret != LT_OK) {
+        lt_ret_t ret_unused = lt_l1_spi_csn_high(&h->l2);
+        UNUSED(ret_unused); // We don't care about it, we return ret from SPI transfer anyway.
+        return ret;
+    }
+
+    ret = lt_l1_spi_csn_high(&h->l2);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
@@ -489,7 +499,10 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
         return LT_FAIL;
     }
 
-    lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+    ret = lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // Update mode variable in handle after reboot
     ret = lt_update_mode(h);

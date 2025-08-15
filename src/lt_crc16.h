@@ -18,7 +18,7 @@
  * @param size
  * @return uint16_t
  */
-uint16_t crc16(const uint8_t *buf, int16_t size);
+uint16_t crc16(const uint8_t *buf, int16_t size) __attribute__((warn_unused_result));
 
 /**
  * @brief

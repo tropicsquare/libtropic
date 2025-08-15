@@ -25,7 +25,7 @@
  * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_init(lt_l2_state_t *s2);
+lt_ret_t lt_l1_init(lt_l2_state_t *s2) __attribute__((warn_unused_result));
 
 /**
  * @brief Wipe handle and deinitialize l1. This is wrapper for platform defined function.
@@ -33,7 +33,7 @@ lt_ret_t lt_l1_init(lt_l2_state_t *s2);
  * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_deinit(lt_l2_state_t *s2);
+lt_ret_t lt_l1_deinit(lt_l2_state_t *s2) __attribute__((warn_unused_result));
 
 /**
  * @brief Sets chip select pin low. This is wrapper for platform defined function.
@@ -41,7 +41,7 @@ lt_ret_t lt_l1_deinit(lt_l2_state_t *s2);
  * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s2);
+lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s2) __attribute__((warn_unused_result));
 
 /**
  * @brief Set chip select pin high. This is wrapper for platform defined function.
@@ -49,7 +49,7 @@ lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s2);
  * @param s2          Structure holding l2 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2);
+lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2) __attribute__((warn_unused_result));
 
 /**
  * @brief Do l1 transfer. This is wrapper for platform defined function.
@@ -60,7 +60,7 @@ lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2);
  * @param timeout     Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout);
+lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout) __attribute__((warn_unused_result));
 
 /**
  * @brief Platform's definition for delay, specifies what host
@@ -71,7 +71,7 @@ lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, 
  * @param ms          Time to wait in miliseconds
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms);
+lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_unused_result));
 
 #if LT_USE_INT_PIN
 /**
@@ -81,7 +81,7 @@ lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms);
  * @param ms          Maximal time to wait in miliseconds
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
+lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_unused_result));
 #endif
 
 /** @} */  // end of group_l1_functions

@@ -34,7 +34,7 @@ void lt_test_rev_resend_req(lt_handle_t *h)
 
     // Requesting a resend.
     LT_LOG_INFO("Asking to resend last response frame...");
-    lt_l2_resend_response(&h->l2);
+    LT_TEST_ASSERT(LT_OK, lt_l2_resend_response(&h->l2));
 
     LT_LOG_INFO("Compare if previously received and now resended frames match.");
     // Setup a request pointer to l2 buffer with response data

@@ -20,6 +20,6 @@
  * @param rs         R and S part of the message's signature (64B)
  * @return int       0 if signature is valid, otherwise 1
  */
-int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
+int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs) __attribute__((warn_unused_result));
 
 #endif

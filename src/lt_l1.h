@@ -50,7 +50,7 @@
  * @param timeout     Timeout - how long function will wait for response
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout);
+lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout) __attribute__((warn_unused_result));
 
 /**
  * @brief Write data from host platform into Tropic chip
@@ -60,7 +60,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
  * @param timeout     Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout);
+lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout) __attribute__((warn_unused_result));
 
 /** @} */  // end of group_l1_functions
 

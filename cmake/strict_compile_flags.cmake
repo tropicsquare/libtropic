@@ -23,5 +23,6 @@ target_compile_options(libtropic_strict_comp_flags INTERFACE
     -Wredundant-decls
     -Wlogical-op
     -Wstrict-prototypes
+    -Wunused-result
     -fstack-protector-strong
 )
