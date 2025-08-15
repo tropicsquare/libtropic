@@ -185,7 +185,11 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
     UNUSED(s2);
     LT_LOG_DEBUG("-- Waiting for the target.");
 
-    usleep(wait_time_msecs * 1000);
+    int ret = usleep(wait_time_msecs * 1000);
+    if (ret != 0) {
+        LT_LOG_ERROR("usleep() failed: %s (%d)", strerror(errno), ret);
+        return LT_FAIL;
+    }
 
     return LT_OK;
 }

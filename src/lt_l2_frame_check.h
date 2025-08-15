@@ -50,7 +50,7 @@
  * @param             frame
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l2_frame_check(const uint8_t *frame);
+lt_ret_t lt_l2_frame_check(const uint8_t *frame) __attribute__((warn_unused_result));
 
 /** @} */  // end of group_l2_frame_check_functions
 

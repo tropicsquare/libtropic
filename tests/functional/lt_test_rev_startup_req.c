@@ -21,7 +21,7 @@
 lt_handle_t *g_h;
 enum lt_tropic01_mode { STARTUP_MODE, APPLICATION_MODE, BUSY };
 
-enum lt_tropic01_mode check_current_mode(void)
+static enum lt_tropic01_mode check_current_mode(void)
 {
     uint8_t spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
     lt_ret_t ret;
@@ -34,7 +34,7 @@ enum lt_tropic01_mode check_current_mode(void)
         }
         else if (LT_L1_CHIP_BUSY == ret) {
             LT_LOG_INFO("Chip busy, waiting and trying again...");
-            lt_l1_delay(&g_h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+            LT_TEST_ASSERT(LT_OK, lt_l1_delay(&g_h->l2, LT_TROPIC01_REBOOT_DELAY_MS));
         }
     }
 
@@ -56,7 +56,7 @@ enum lt_tropic01_mode check_current_mode(void)
     }
 }
 
-lt_ret_t lt_test_rev_startup_req_cleanup(void)
+static lt_ret_t lt_test_rev_startup_req_cleanup(void)
 {
     lt_ret_t ret;
 

@@ -22,6 +22,6 @@
  * @param count       Number of random bytes
  * @return lt_ret_t
  */
-lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
+lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count) __attribute__((warn_unused_result));
 
 #endif

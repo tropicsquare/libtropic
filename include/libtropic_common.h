@@ -148,7 +148,7 @@ typedef enum lt_ret_t {
     /** @brief Error detected during cryptographic operation */
     LT_CRYPTO_ERR = 4,
 
-    /** @brief Spi transfer returned error */
+    /** @brief Some SPI related operation was not successful */
     LT_L1_SPI_ERROR = 5,
     /** @brief Data does not have an expected length */
     LT_L1_DATA_LEN_ERROR = 6,
