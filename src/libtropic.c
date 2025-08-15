@@ -1397,7 +1397,7 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_L2_UNKNOWN_REQ",
                                     "LT_L2_STATUS_NOT_RECOGNIZED",
                                     "LT_L2_DATA_LEN_ERROR",
-                                    "LT_CERT_STORE_INVALID"
+                                    "LT_CERT_STORE_INVALID",
                                     "LT_CERT_UNSUPPORTED",
                                     "LT_CERT_ITEM_NOT_FOUND",
                                     "LT_NONCE_OVERFLOW"};
