@@ -1,7 +1,7 @@
 /**
  * @file lt_port_stm32_nucleo_f439zi.c
  * @author Tropic Square s.r.o.
- * @brief Port for STM32 NUCLEO-F439ZI.
+ * @brief Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select).
  *
  * Most of this SPI code is inspired by https://github.com/STMicroelectronics/STM32CubeF4:
  * Projects/STM32F429I-Discovery/Examples/SPI/SPI_FullDuplex_ComPolling/Src/main.c
