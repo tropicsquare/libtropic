@@ -213,14 +213,15 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
 
 #endif
 /**
- * @brief Get TROPIC01's internal log message (if enabled/available)
+ * @brief Get Log message of TROPIC01's RISC-V FW (if enabled/available).
+ * @note RISC-V FW logging can be disabled in the I/R Config.
  *
- * @param h           Device's handle
- * @param log_msg     Log message
- * @param msg_len_max Max possible length of TROPIC01's log message
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h            Device's handle
+ * @param log_msg      Buffer for the log message (atleast 255B)
+ * @param log_msg_len  Length of the log message
+ * @return             LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max);
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len);
 
 /**
  * @brief Test secure session by exchanging a message with chip

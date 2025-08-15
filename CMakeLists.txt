@@ -267,6 +267,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_ecc_key_store
     lt_test_rev_random_value_get
     lt_test_rev_mac_and_destroy
+    lt_test_rev_get_log_req
 )
 
 # Export test list to parent project (usually platform-specific implementation).
@@ -321,6 +322,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecc_key_store.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_random_value_get.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mac_and_destroy.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_log_req.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/

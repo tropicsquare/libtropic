@@ -201,37 +201,39 @@ typedef enum lt_ret_t {
     LT_L2_REQ_CONT = 25,
     /** @brief There is more than one chunk to be received for a current response */
     LT_L2_RES_CONT = 26,
+    /** @brief The L2 Request frame is disabled and can’t be executed */
+    LT_L2_RESP_DISABLED = 27,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 27,
+    LT_L2_HSK_ERR = 28,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 28,
+    LT_L2_NO_SESSION = 29,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 29,
+    LT_L2_TAG_ERR = 30,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 30,
+    LT_L2_CRC_ERR = 31,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 31,
+    LT_L2_GEN_ERR = 32,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 32,
+    LT_L2_NO_RESP = 33,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 33,
+    LT_L2_UNKNOWN_REQ = 34,
     /** @brief Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED = 34,
+    LT_L2_STATUS_NOT_RECOGNIZED = 35,
     /** @brief L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR = 35,
+    LT_L2_DATA_LEN_ERROR = 36,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 36,
+    LT_CERT_STORE_INVALID = 37,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 37,
+    LT_CERT_UNSUPPORTED = 38,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 38,
+    LT_CERT_ITEM_NOT_FOUND = 39,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 39,
+    LT_NONCE_OVERFLOW = 40,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 40
+    LT_RET_T_LAST_VALUE = 41
 } lt_ret_t;
 
 #define LT_TROPIC01_REBOOT_DELAY_MS 250

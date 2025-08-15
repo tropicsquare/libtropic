@@ -668,9 +668,9 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
 #error "Undefined silicon revision. Please define either ABAB or ACAB."
 #endif
 
-lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
 {
-    if (!h || !log_msg || msg_len_max > GET_LOG_MAX_MSG_LEN) {
+    if (!h || !log_msg || !log_msg_len) {
         return LT_PARAM_ERR;
     }
 
@@ -691,9 +691,7 @@ lt_ret_t lt_get_log(lt_handle_t *h, uint8_t *log_msg, uint16_t msg_len_max)
         return ret;
     }
 
-    // No check for incomming l3 length because we don't know in advance how big message will be,
-    // the max possible length is 255 (uint8_t) and that fits the safe size GET_LOG_MAX_MSG_LEN of log_msg buffer
-
+    *log_msg_len = p_l2_resp->rsp_len;
     memcpy(log_msg, p_l2_resp->log_msg, p_l2_resp->rsp_len);
 
     return LT_OK;
@@ -1375,6 +1373,7 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_L2_IN_CRC_ERR",
                                     "LT_L2_REQ_CONT",
                                     "LT_L2_RES_CONT",
+                                    "LT_L2_RESP_DISABLED",
                                     "LT_L2_HSK_ERR",
                                     "LT_L2_NO_SESSION",
                                     "LT_L2_TAG_ERR",
