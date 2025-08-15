@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Strict compile flags can now be activated with `LT_STRICT_COMP_FLAGS` CMake variable, which is automatically set when examples or tests are built.
 - API change in `lt_random_bytes()`, `lt_port_random_bytes()`: changed `buff` parameter to `void*`, renamed parameter `len` to `count`
 - API change in `lt_random_bytes()`, `lt_port_random_bytes()`: added `s2` parameter.
+- API change in `lt_get_log()`: renamed to `lt_get_log_req()`, renamed `msg_len_max` to `log_msg_len` and made an output parameter.
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.
@@ -50,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enum `CONFIGURATION_OBJECTS_REGS_IDX` with indexes of `lt_config_t.obj`.
 - Macros `TO_MACANDD_SLOT_0_31`, `TO_MACANDD_SLOT_32_63`, `TO_MACANDD_SLOT_64_95`, `TO_MACANDD_SLOT_96_127`.
 - Model project: ability to run tests with AddressSanitizer or Valgrind with `LT_ASAN` or `LT_VALGRIND`.
+- Support for `RESP_DISABLED` value of STATUS field in L2 frame.
 
 ### Fixed
 - Assigned value to `LT_L1_CHIP_BUSY` and `LT_L1_INT_TIMEOUT` in `lt_ret_t`, incremented all values starting from `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL`.
