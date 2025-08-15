@@ -9,15 +9,16 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "lt_port_stm32_nucleo_f439zi.h"
+
 #include <stdint.h>
 #include <string.h>
 
-#include "stm32f4xx_hal.h"
 #include "libtropic_common.h"
+#include "libtropic_logging.h"
 #include "libtropic_port.h"
 #include "main.h"
-#include "libtropic_logging.h"
-#include "lt_port_stm32_nucleo_f439zi.h"
+#include "stm32f4xx_hal.h"
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
@@ -144,7 +145,8 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         LT_LOG_ERROR("Invalid data length!");
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&device->spi_handle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
+    int ret
+        = HAL_SPI_TransmitReceive(&device->spi_handle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
     if (ret != HAL_OK) {
         LT_LOG_ERROR("HAL_SPI_TransmitReceive failed, ret=%d", ret);
         return LT_L1_SPI_ERROR;
@@ -165,7 +167,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 #if LT_USE_INT_PIN
 lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 {
-    lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);    
+    lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
     uint32_t time_initial = HAL_GetTick();
     uint32_t time_actual;
 
