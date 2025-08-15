@@ -11,11 +11,8 @@ For detailed information about the libtropic library architecture and developmen
       - [USB dongle with TROPIC01](#usb-dongle-with-tropic01)
   - [Libtropic library examples and tests {#libtropic-library-examples}](#libtropic-library-examples-and-tests-libtropic-library-examples)
   - [Standalone example projects {#standalone-example-projects}](#standalone-example-projects-standalone-example-projects)
-      - [STM32](#stm32)
-      - [Unix](#unix)
   - [Adding libtropic to existing project {#adding-libtropic-to-existing-project}](#adding-libtropic-to-existing-project-adding-libtropic-to-existing-project)
       - [Do you use Makefile instead of CMake?](#do-you-use-makefile-instead-of-cmake)
-  - [Using CMAKE switches {#using-cmake-switches}](#using-cmake-switches-using-cmake-switches)
 
 ## Getting TROPIC01 {#getting-tropic01}
 
@@ -60,43 +57,42 @@ Check out `examples/` folder, it contains a few examples of how libtropic functi
 There is also folder `tests/functional/` with code used internally for testing.
 
 
-**Functions from `examples/` and `tests/functional/` are not compiled into libtropic library by default. In order to have access to all examples functions from parent project, special switch must be passed to compilation.**
+> [!NOTE]
+Examples or functional tests are not compiled by default. They can be compiled by adding special CMake options, which is discussed further in this text.
 
-The purpose of this is to control inclusion of code, because example code could occupy some unnecessary space and it is not needed anymore once users get familiar with library - then this code can be switched off.
+To compile examples, either
+- pass `-DLT_BUILD_EXAMPLES=1` to `cmake` during compilation, or
+- in your CMake file, switch this option on: `set(LT_BUILD_EXAMPLES ON)`.
 
-Examples code can be enabled by:
-* pass `-DLT_BUILD_EXAMPLES=1` during parent project compilation, or
-* in parent CMake file, switch this option on: `set(LT_BUILD_EXAMPLES ON)`
+To compile functional tests, either
+- pass `-DLT_BUILD_TESTS=1` to `cmake` during compilation, or
+- in your CMake file, switch this option on: `set(LT_BUILD_TESTS ON)`.
 
-Functional tests code can be enabled by:
-* pass `-DLT_BUILD_TESTS=1` during parent project compilation, or
-* in parent CMake file, switch this option on: `set(LT_BUILD_TESTS ON)`
+> [!IMPORTANT]
+> When `LT_BUILD_EXAMPLES` or `LT_BUILD_TESTS` are set, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.
 
-Both examples and functional tests require SH0 private key to establish a secure session with TROPIC01. CMake variable `LT_SH0_PRIV_PATH` is used for that and its default value is set to path to the SH0 private key from the currently used `lab_batch_package`, found in `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. Naturally, it can be overridden with another path to SH0 private key. CMake loads the key raw data and saves it to `sh0priv` C array, defined in `include/libtropic_functional_tests.h` or `include/libtropic_examples.h`. The variable `LT_SH0_PRIV_PATH` is not expected to be used in user applications.
+> [!TIP]
+> For more information about the `provisioning_data/` directory structure, see it's README.md.
+
+> [!TIP]
+> To see the whole process of executing examples or functional tests against the TROPIC01 model, see README.md in the `tropic01_model/` directory.
 
 ## Standalone example projects {#standalone-example-projects}
+Our examples and functional tests are platform independent, so they can also be compiled and run in our platform repositories:
+1. [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32)
+2. [libtropic-linux](https://github.com/tropicsquare/libtropic-linux)
 
-Standalone example projects are ready to be compiled and used as a starting point to build some other applications.
+Both of these repositories consist of:
+- libtropic as a git submodule
+- directories for supported platforms
+  - `CMakeLists.txt`
+  - include directory
+  - source directory with `main.c`
+  - additional files (readme, scripts, ...)
 
-The consist of two parts:
-* platform related project parts - dependencies, libraries, hw initialization, ...
-* Code in main(), where particular libtropic example is executed
+For more detailed info, refer to the aforementioned platform repositories.
 
-For more info check one of projects for platforms of our choice:
-
-#### STM32
-
-Integration example for STM32 is available through [this](https://github.com/tropicsquare/libtropic-stm32) repository and contains code for:
-- Nucleo-f439zi
-- Nucleo-l432kc
-
-#### Unix
-
-For Unix based examples we have `cmd line utility` called [libtropic-util](https://github.com/tropicsquare/libtropic-util).
-
-This is Unix program to test API calls against TROPIC01, works for:
-- TROPIC01 connected over SPI - tested on Raspberrypi 3 and 4
-- USB dongle with TROPIC01
+Besides that, we offer the [libtropic-util](https://github.com/tropicsquare/libtropic-util) repository, which implements a CLI based utility for executing TROPIC01's commands.
 
 ## Adding libtropic to existing project {#adding-libtropic-to-existing-project}
 
@@ -104,7 +100,7 @@ How can you add libtropic to your existing project?
 
 At first please read all chapters in this page so you get familiar with how library works.
 
-Then we recommend to add libtropic as a submodule. Libtropic uses CMAKE build system, therefore it could be added to compilation of existing CMake projects in a following way:
+Then we recommend to add libtropic as a submodule. Libtropic uses CMake build system, therefore it could be added to compilation of existing CMake projects in a following way:
 
 ```
 # CMakeLists.txt file
@@ -129,22 +125,19 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 
 ### Linking
 
-target_link_options(produced_binary PRIVATE -Wl,--gc-sections)
+target_link_options(produced_binary PRIVATE <your_linker_flags>)
 
 ```
 
-Please note that exact CMake calls depend on configuration of a project into which libtropic is being added. For more inspiration have a look into standalone example projects.
+> [!NOTE]
+Exact CMake calls depend on configuration of a project into which libtropic is being added. For more inspiration, have a look at the aforementioned platform repositories.
+
+> [!TIP]
+> We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
 
 
 #### Do you use Makefile instead of CMake?
 
-In this case you have to add list of all libtropic *.c and *.h files manually to your makefile and then for all CMake ON option (located in libtropic's CMakeFile.txt) you define -D switch in your makefile.
+In this case you have to add list of all libtropic *.c and *.h files manually to your makefile and then for all CMake ON options (located in libtropic's CMakeFile.txt) you define -D switch in your makefile.
 
-Then do the same for files used in trezor_crypto.
-
-
-## Using CMAKE switches {#using-cmake-switches}
-
-Libtropic is configurable with CMake options. They are either passed from parent project's `CMakeLists.txt`, or over prompt when building is invoked.
-
-To see available options, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
+Then do the same for files used in `vendor/trezor_crypto/`.
