@@ -180,12 +180,12 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     return LT_FAIL;
 }
 
-lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
     UNUSED(s2);
     LT_LOG_DEBUG("-- Waiting for the target.");
 
-    usleep(wait_time_msecs * 1000);
+    usleep(ms * 1000);
 
     return LT_OK;
 }

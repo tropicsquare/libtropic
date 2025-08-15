@@ -271,7 +271,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     return LT_OK;
 }
 
-lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_usecs)
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
     lt_dev_unix_tcp_t *dev = (lt_dev_unix_tcp_t *)(s2->device);
     LT_LOG_DEBUG("-- Waiting for the target.");
@@ -279,10 +279,10 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_usecs)
     dev->tx_buffer.tag = TAG_E_WAIT;
     int payload_length = sizeof(uint32_t);
     //*(uint32_t *)(&tx_buffer.PAYLOAD) = wait_time_usecs;
-    dev->rx_buffer.payload[0] = wait_time_usecs & 0x000000ff;
-    dev->rx_buffer.payload[1] = (wait_time_usecs & 0x0000ff00) >> 8;
-    dev->rx_buffer.payload[2] = (wait_time_usecs & 0x00ff0000) >> 16;
-    dev->rx_buffer.payload[3] = (wait_time_usecs & 0xff000000) >> 24;
+    dev->rx_buffer.payload[0] = ms & 0x000000ff;
+    dev->rx_buffer.payload[1] = (ms & 0x0000ff00) >> 8;
+    dev->rx_buffer.payload[2] = (ms & 0x00ff0000) >> 16;
+    dev->rx_buffer.payload[3] = (ms & 0xff000000) >> 24;
 
     return communicate(dev, &payload_length, NULL);
 }

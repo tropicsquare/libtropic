@@ -162,10 +162,10 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     return LT_OK;
 }
 
-lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t wait_time_msecs)
+lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
     UNUSED(s2);
-    usleep(wait_time_msecs * 1000);
+    usleep(ms * 1000);
     return LT_OK;
 }
 

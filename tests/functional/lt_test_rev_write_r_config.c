@@ -19,7 +19,7 @@
 struct lt_config_t r_config_backup;
 lt_handle_t *g_h;
 
-lt_ret_t lt_test_rev_write_r_config_cleanup(void)
+static lt_ret_t lt_test_rev_write_r_config_cleanup(void)
 {
     lt_ret_t ret;
     struct lt_config_t r_config;

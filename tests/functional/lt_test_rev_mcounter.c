@@ -20,7 +20,7 @@ lt_handle_t *g_h;
 
 // The monotonic counter does not have any default value defined in the datasheet.
 // Here we have chosen to initialize them to zero.
-lt_ret_t lt_test_rev_mcounter_cleanup(void)
+static lt_ret_t lt_test_rev_mcounter_cleanup(void)
 {
     lt_ret_t ret;
 
