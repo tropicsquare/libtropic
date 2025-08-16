@@ -23,6 +23,7 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     LT_LOG_INFO("----------------------------------------------");
 
     uint8_t *pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
+    uint8_t *priv_keys[] = {sh0priv, sh1priv, sh2priv, sh3priv};
     uint8_t read_key[32] = {0};
     uint8_t zeros[32] = {0};
     char print_buff[PRINT_BUFF_SIZE];
@@ -70,6 +71,24 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     }
     LT_LOG_LINE();
 
+    LT_LOG_INFO("Aborting Secure Session with slot %d...", (int)PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_session_abort(h));
+    LT_LOG_LINE();
+
+    // Test secure session with slots 1,2,3
+    for (uint8_t i = PAIRING_KEY_SLOT_INDEX_1; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
+        LT_LOG_INFO("Starting Secure Session with key %" PRIu8 "...", i);
+        LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, priv_keys[i], pub_keys[i], i));
+
+        LT_LOG_INFO("Aborting Secure Session with slot %" PRIu8 "...", i);
+        LT_TEST_ASSERT(LT_OK, lt_session_abort(h));
+    }
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Starting Secure Session with key %d...", (int)PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_LINE();
+
     // Write pairing key slots again (should fail)
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Writing to pairing key slot %" PRIu8 " (should fail)...", i);
@@ -86,6 +105,7 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     }
     LT_LOG_LINE();
 
+    // Invalidate all slots, try reading and writing them
     for (uint8_t i = PAIRING_KEY_SLOT_INDEX_0; i <= PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Invalidating pairing key slot %" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_invalidate(h, i));
