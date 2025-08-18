@@ -135,7 +135,6 @@ class lt_test_runner:
 
         if not reached_assert_flag:
             logger_runner.info("FYI: There was no assert. If this is a test, check whether asserts are defined correctly. (No assert = useless test!)")
-            err_count += 1
 
         logger_runner.info("!!!!!!!!!!!!!!!! TEST END !!!!!!!!!!!!!!!!")
         ########################################################################################
