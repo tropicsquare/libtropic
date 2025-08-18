@@ -77,7 +77,13 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     // Set the SPI parameters.
     device->spi_handle.Instance = device->spi_instance;
-    device->spi_handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    
+    if (device->baudrate_prescaler == 0) {
+        device->spi_handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+    } else {
+        device->spi_handle.Init.BaudRatePrescaler = device->baudrate_prescaler;
+    }
+
     device->spi_handle.Init.Direction = SPI_DIRECTION_2LINES;
     device->spi_handle.Init.CLKPhase = SPI_PHASE_1EDGE;
     device->spi_handle.Init.CLKPolarity = SPI_POLARITY_LOW;
