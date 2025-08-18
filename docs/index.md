@@ -2,19 +2,19 @@
 
 Welcome to the documentation page for **libtropic**, the official C library for TROPIC01 chip. This guide will help you get started with building applications using **TROPIC01** and **libtropic**.
 
-For detailed information about the libtropic library architecture and development, please refer to the `For contributors` section.
+For detailed information about the libtropic library architecture and development, please refer to the [For contributors](./contributors.md) section.
 
 - [Hello World!](#hello-world)
-  - [Getting TROPIC01 {#getting-tropic01}](#getting-tropic01-getting-tropic01)
+  - [Getting TROPIC01](#getting-tropic01)
       - [QFN32 Samples](#qfn32-samples)
       - [Breakout PCB with TROPIC01](#breakout-pcb-with-tropic01)
       - [USB dongle with TROPIC01](#usb-dongle-with-tropic01)
-  - [Libtropic library examples and tests {#libtropic-library-examples}](#libtropic-library-examples-and-tests-libtropic-library-examples)
-  - [Standalone example projects {#standalone-example-projects}](#standalone-example-projects-standalone-example-projects)
-  - [Adding libtropic to existing project {#adding-libtropic-to-existing-project}](#adding-libtropic-to-existing-project-adding-libtropic-to-existing-project)
+  - [Libtropic library examples and tests](#libtropic-library-examples-and-tests)
+  - [Standalone example projects](#standalone-example-projects)
+  - [Adding libtropic to existing project](#adding-libtropic-to-existing-project)
       - [Do you use Makefile instead of CMake?](#do-you-use-makefile-instead-of-cmake)
 
-## Getting TROPIC01 {#getting-tropic01}
+## Getting TROPIC01
 
 `TROPIC01` is currently available in three forms:
 
@@ -50,7 +50,7 @@ Designed for evaluation on systems where SPI is not available.
 Please visit [tropicsquare.com](https://tropicsquare.com/tropic01-samples), sign-up and check availability.
 
 
-## Libtropic library examples and tests {#libtropic-library-examples}
+## Libtropic library examples and tests
 
 Check out `examples/` folder, it contains a few examples of how libtropic functions might be used.
 
@@ -77,7 +77,7 @@ To compile functional tests, either
 > [!TIP]
 > To see the whole process of executing examples or functional tests against the TROPIC01 model, see README.md in the `tropic01_model/` directory.
 
-## Standalone example projects {#standalone-example-projects}
+## Standalone example projects
 Our examples and functional tests are platform independent, so they can also be compiled and run in our platform repositories:
 1. [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32)
 2. [libtropic-linux](https://github.com/tropicsquare/libtropic-linux)
@@ -94,7 +94,7 @@ For more detailed info, refer to the aforementioned platform repositories.
 
 Besides that, we offer the [libtropic-util](https://github.com/tropicsquare/libtropic-util) repository, which implements a CLI based utility for executing TROPIC01's commands.
 
-## Adding libtropic to existing project {#adding-libtropic-to-existing-project}
+## Adding libtropic to existing project
 
 How can you add libtropic to your existing project?
 

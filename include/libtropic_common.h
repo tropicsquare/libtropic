@@ -26,7 +26,7 @@
 #define UNUSED(x) (void)(x)
 #endif
 
-/** @brief This particular value means that secure session was succesfully established and it is currently ON */
+/** @brief This particular value means that secure session was successfully established and it is currently ON */
 #define SESSION_ON 0xA5A55A5A
 /** @brief This particular value means that secure session is currently OFF */
 #define SESSION_OFF 0x0
@@ -76,6 +76,8 @@ typedef struct lt_l3_gen_frame_t {
 } __attribute__((packed)) lt_l3_gen_frame_t;
 
 // clang-format off
+/** \cond */
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l3_gen_frame_t) ==
     (
@@ -83,6 +85,8 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l3_gen_frame_t, data)
     )
 )
+/** \endcond */
+/** \endcond */
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -139,7 +143,7 @@ typedef struct lt_handle_t {
 typedef enum lt_ret_t {
     /** @brief Operation was successful */
     LT_OK = 0,
-    /** @brief Operation was not succesfull */
+    /** @brief Operation was not successful */
     LT_FAIL = 1,
     /* Host no session */
     LT_HOST_NO_SESSION = 2,
@@ -283,6 +287,7 @@ typedef struct lt_ser_num_t {
 } __attribute__((packed)) lt_ser_num_t;
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     ( sizeof(struct lt_ser_num_t) )
     ==
@@ -296,6 +301,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_ser_num_t, y_coord)
     )
 )
+/** \endcond */
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -412,6 +418,7 @@ typedef struct lt_chip_id_t {
 } __attribute__((packed)) lt_chip_id_t;
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     ( sizeof(struct lt_chip_id_t) )
     ==
@@ -438,6 +445,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_chip_id_t, rfu_4)
     )
 )
+/** \endcond */
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
@@ -477,6 +485,7 @@ typedef struct header_boot_v1_t {
 } __attribute__((packed)) header_boot_v1_t;
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     ( sizeof(struct header_boot_v1_t) )
     ==
@@ -488,6 +497,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct header_boot_v1_t, hash)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -518,6 +528,7 @@ typedef struct header_boot_v2_t {
 } __attribute__((packed)) header_boot_v2_t;
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     ( sizeof(struct header_boot_v2_t) )
     ==
@@ -532,6 +543,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct header_boot_v2_t, pair_version)
     )
 )
+/** \endcond */
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//

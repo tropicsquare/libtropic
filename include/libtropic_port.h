@@ -1,22 +1,5 @@
-/**
- * @file libtropic_port.h
- * @brief Header file with layer 1 interfaces which are defined based on host platform
- * @author Tropic Square s.r.o.
- *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
- */
-
 #ifndef LT_LIBTROPIC_PORT_H
 #define LT_LIBTROPIC_PORT_H
-
-#include <stdlib.h>
-
-#include "libtropic_common.h"
-
-/**
- * @brief Max length of a path to a device in the device tree.
- */
-#define DEVICE_PATH_MAX_LEN 256
 
 /**
  * @defgroup group_port_functions Layer 1 port specific functions
@@ -26,6 +9,23 @@
  *
  * @{
  */
+
+/**
+ * @file libtropic_port.h
+ * @brief Header file with layer 1 interfaces which are defined based on host platform
+ * @author Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
+
+#include <stdlib.h>
+
+#include "libtropic_common.h"
+
+/**
+ * @brief Max length of a path to a device in the device tree.
+ */
+#define DEVICE_PATH_MAX_LEN 256
 
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.
@@ -48,7 +48,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2);
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2);
 
 /**
- * @brief Set chip select pin low, platform defined function.
+ * @brief Sets chip select pin low, platform defined function.
  *
  * @param s2          Structure holding l2 state
  *
@@ -58,7 +58,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2);
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2);
 
 /**
- * @brief Set chip select pin high, platform defined function.
+ * @brief Sets chip select pin high, platform defined function.
  *
  * @param s2          Structure holding l2 state
  *
@@ -68,7 +68,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2);
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2);
 
 /**
- * @brief Do l1 transfer, platform defined function.
+ * @brief Does L1 transfer, platform defined function.
  *
  * @param s2          Structure holding l2 state
  * @param tx_len      The length of data to be transferred
@@ -82,7 +82,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
 
 /**
  * @brief Platform defined function for delay, specifies what host platform should do when libtropic's functions need
- * some delay
+ * some delay.
  *
  * @param s2          Structure holding l2 state
  * @param ms          Time to wait in miliseconds
@@ -94,7 +94,8 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms);
 
 #if LT_USE_INT_PIN
 /**
- * @brief Platform definde function used to specify reading of int pin, used as a signal that chip has a response
+ * @brief Platform defined function used to specify reading of an interrupt pin, used as a signal that chip has a
+ * response.
  *
  * @param s2          Structure holding l2 state
  * @param ms          Max time to wait in miliseconds
@@ -109,7 +110,7 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
  *
  * @param s2          Structure holding l2 state
  * @param buff        Buffer to be filled
- * @param len         number of 32bit numbers
+ * @param count       Number of random bytes
  *
  * @retval            LT_OK   Function executed successfully
  * @retval            LT_FAIL Function did not execute successully

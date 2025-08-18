@@ -69,6 +69,7 @@ struct lt_l2_get_info_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_get_info_req_t) ==
     (
@@ -79,6 +80,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_get_info_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -102,6 +104,7 @@ struct lt_l2_get_info_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_get_info_rsp_t) ==
     (
@@ -112,6 +115,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_get_info_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -154,6 +158,7 @@ struct lt_l2_handshake_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_handshake_req_t) ==
     (
@@ -164,6 +169,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -189,6 +195,7 @@ struct lt_l2_handshake_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_handshake_req_t) ==
     (
@@ -199,6 +206,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -226,6 +234,7 @@ struct lt_l2_encrypted_cmd_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_cmd_req_t) ==
     (
@@ -235,6 +244,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -255,6 +265,7 @@ struct lt_l2_encrypted_cmd_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_cmd_rsp_t) ==
     (
@@ -265,6 +276,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -286,6 +298,7 @@ struct lt_l2_encrypted_session_abt_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_session_abt_req_t) ==
     (
@@ -294,6 +307,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -308,6 +322,7 @@ struct lt_l2_encrypted_session_abt_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_session_abt_rsp_t) ==
     (
@@ -317,6 +332,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -338,6 +354,7 @@ struct lt_l2_resend_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_resend_req_t) ==
     (
@@ -346,6 +363,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_resend_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -360,6 +378,7 @@ struct lt_l2_resend_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_resend_rsp_t) ==
     (
@@ -369,6 +388,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_resend_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -399,6 +419,7 @@ struct lt_l2_sleep_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_sleep_req_t) ==
     (
@@ -408,6 +429,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_sleep_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -422,6 +444,7 @@ struct lt_l2_sleep_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_sleep_rsp_t) ==
     (
@@ -431,6 +454,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_sleep_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -457,6 +481,7 @@ struct lt_l2_startup_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_startup_req_t) ==
     (
@@ -466,6 +491,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_startup_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -480,6 +506,7 @@ struct lt_l2_startup_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_startup_rsp_t) ==
     (
@@ -489,6 +516,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_startup_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 // Firmware update API structs for ABAB silicon revision
@@ -530,6 +558,7 @@ struct lt_l2_mutable_fw_update_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_req_t) ==
     (
@@ -541,6 +570,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -558,6 +588,7 @@ struct lt_l2_mutable_fw_update_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_rsp_t) ==
     (
@@ -567,6 +598,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 #endif
 
@@ -603,6 +635,7 @@ struct lt_l2_mutable_fw_update_req_t {
 } __attribute__((__packed__));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_req_t) ==
     (
@@ -617,6 +650,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -633,6 +667,7 @@ struct lt_l2_mutable_fw_update_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_rsp_t) ==
     (
@@ -642,6 +677,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -658,6 +694,7 @@ struct lt_l2_mutable_fw_update_data_req_t {
 } __attribute__((__packed__));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_data_req_t) ==
     (
@@ -669,6 +706,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -682,6 +720,7 @@ struct lt_l2_mutable_fw_update_data_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_data_rsp_t) ==
     (
@@ -691,6 +730,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 #endif
 
@@ -723,6 +763,7 @@ struct lt_l2_mutable_fw_erase_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_erase_req_t) ==
     (
@@ -732,6 +773,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -747,6 +789,7 @@ struct lt_l2_mutable_fw_erase_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_erase_rsp_t) ==
     (
@@ -756,6 +799,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /** @brief Request ID */
@@ -777,6 +821,7 @@ struct lt_l2_get_log_req_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_get_log_req_t) ==
     (
@@ -785,6 +830,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_get_log_req_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 /**
@@ -800,6 +846,7 @@ struct lt_l2_get_log_rsp_t {
 } __attribute__((packed));
 
 // clang-format off
+/** \cond */
 STATIC_ASSERT(
     sizeof(struct lt_l2_get_log_rsp_t) ==
     (
@@ -810,6 +857,7 @@ STATIC_ASSERT(
         MEMBER_SIZE(struct lt_l2_get_log_rsp_t, crc)
     )
 )
+/** \endcond */
 // clang-format on
 
 #endif  // !LT_L2_API_STRUCTS_H

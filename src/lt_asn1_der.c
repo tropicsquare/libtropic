@@ -140,7 +140,7 @@ static lt_ret_t parse_length(struct parse_ctx_t *ctx, uint16_t *len)
  *          in the sequence that shall be of primitive type into ctx.
  *
  * @param   ctx     Parsing context
- * @returns LT_OK if succesfull, false otherwise
+ * @returns LT_OK if successful, false otherwise
  */
 static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 {

@@ -2,6 +2,12 @@
 #define LT_LIBTROPIC_EXAMPLES_H
 
 /**
+ * @defgroup libtropic_examples libtropic examples
+ * @brief Show simple example usage of libtropic.
+ * @{
+ */
+
+/**
  * @file libtropic_examples.h
  * @brief Functions with examples of usage of TROPIC01 chip
  * @author Tropic Square s.r.o.
@@ -126,5 +132,7 @@ int lt_ex_macandd(lt_handle_t *h);
  * @return 0 on success, -1 otherwise
  */
 int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
+
+/** @} */  // end of libtropic_examples group
 
 #endif

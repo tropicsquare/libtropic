@@ -42,7 +42,7 @@
 #define GET_RESPONSE_REQ_ID 0xAA
 
 /**
- * @brief Read data from Tropic chip into host platform
+ * @brief Reads data from TROPIC01 into host platform
  *
  * @param s2          Structure holding l2 state
  * @param max_len     Max len of receive buffer
@@ -53,7 +53,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
     __attribute__((warn_unused_result));
 
 /**
- * @brief Write data from host platform into Tropic chip
+ * @brief Writes data from host platform into TROPIC01
  *
  * @param s2          Structure holding l2 state
  * @param len         Length of data to send
