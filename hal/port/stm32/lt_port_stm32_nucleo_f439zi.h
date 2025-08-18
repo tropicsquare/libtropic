@@ -22,9 +22,9 @@ typedef struct lt_dev_stm32_nucleo_f439zi {
     /** @brief @public Instance of STM SPI interface. Use STM32 macro (SPIX, e.g. SPI1). */
     SPI_TypeDef *spi_instance;
 
-    /** 
-     * @brief @public Baudrate prescaler value, used to set SPI speed. Use STM32 macro (e.g. SPI_BAUDRATEPRESCALER_32). 
-     * 
+    /**
+     * @brief @public Baudrate prescaler value, used to set SPI speed. Use STM32 macro (e.g. SPI_BAUDRATEPRESCALER_32).
+     *
      * @note If set to zero, it will default to SPI_BAUDRATEPRESCALER_32.
      */
     uint16_t baudrate_prescaler;

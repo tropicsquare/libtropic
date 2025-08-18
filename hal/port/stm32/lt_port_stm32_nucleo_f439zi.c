@@ -77,10 +77,11 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     // Set the SPI parameters.
     device->spi_handle.Instance = device->spi_instance;
-    
+
     if (device->baudrate_prescaler == 0) {
         device->spi_handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
-    } else {
+    }
+    else {
         device->spi_handle.Init.BaudRatePrescaler = device->baudrate_prescaler;
     }
 
