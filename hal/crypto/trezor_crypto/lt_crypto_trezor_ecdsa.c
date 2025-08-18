@@ -9,9 +9,9 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "lt_ecdsa.h"
 #include "ecdsa.h"
 #include "hasher.h"
+#include "lt_ecdsa.h"
 #include "nist256p1.h"
 
 int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)

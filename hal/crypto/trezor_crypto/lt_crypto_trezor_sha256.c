@@ -11,8 +11,8 @@
 
 #include "hasher.h"
 #include "hmac.h"
-#include "lt_sha256.h"
 #include "lt_hmac_sha256.h"
+#include "lt_sha256.h"
 
 void lt_sha256_init(void *ctx)
 {

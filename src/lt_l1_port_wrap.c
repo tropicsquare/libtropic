@@ -6,11 +6,12 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "lt_l1_port_wrap.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#include "lt_l1_port_wrap.h"
 #include "libtropic_common.h"
 #include "libtropic_port.h"
 
