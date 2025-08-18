@@ -134,7 +134,7 @@ class lt_test_runner:
                     comm_error_count += 1
 
         if not reached_assert_flag:
-            logger_runner.error("There was no assert in the test! Check whether the test is designed correctly! (No assert = useless test!)")
+            logger_runner.info("FYI: There was no assert. If this is a test, check whether asserts are defined correctly. (No assert = useless test!)")
             err_count += 1
 
         logger_runner.info("!!!!!!!!!!!!!!!! TEST END !!!!!!!!!!!!!!!!")
