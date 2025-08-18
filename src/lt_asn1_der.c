@@ -17,6 +17,10 @@
 // Uncomment to enable parser logging
 // #define ASNDER_LOG_EN
 
+#ifdef ASNDER_LOG_EN
+    #include "libtropic_logging.h"
+#endif
+
 /**
  * @brief ASN1 DER parsing context
  *
@@ -185,10 +189,17 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
             break;
 
         case ASN1DER_OBJECT_IDENTIFIER: {
+            if (len < 3) {
+#ifdef ASNDER_LOG_EN                
+                LT_LOG("Length too short (< 3), skipping.");
+#endif // ASNDER_LOG_EN
+                break;
+            } 
+
             uint8_t buf[len];
             GET_BYTES(ctx, buf, len);
 
-            // TODO: Can it happend len is smaller than 3 ?
+            // We skip this step if the len is shorter than 3, so this is OK.
             uint32_t obj_id = (((uint32_t)buf[0]) << 16) | (((uint32_t)buf[1]) << 8) | (((uint32_t)buf[2]));
 
             if (ctx->obj_id == obj_id) {
