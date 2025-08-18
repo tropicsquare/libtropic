@@ -1,6 +1,6 @@
 #!/bin/bash
-cd tests/model_based_project/
+cd tropic01_model/
 mkdir -p build
 cd build
-cmake ..
+cmake -DLT_BUILD_TESTS=1 -DLT_BUILD_EXAMPLES=1 ..
 make clean && make
