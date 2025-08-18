@@ -792,12 +792,12 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
     }
 
     // Check incoming L3 length. The size is always equal to the number of requested random bytes + 4,
-    // where '4' is padding (3 bytes) + result flag (1 byte).
+    // where '4' is padding (3 bytes) + result status (1 byte).
     if (LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
-    // Here we copy only random bytes, excluding padding and status flag, hence using len from the 
+    // Here we copy only random bytes, excluding padding and result status, hence using len from the 
     // parameter. Note: p_l3_res->res_size could be used as well if we subtract LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN.
     memcpy(buff, p_l3_res->random_data, len);
 
