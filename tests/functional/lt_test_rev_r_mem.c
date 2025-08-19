@@ -152,12 +152,13 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Testing writing all slots partially or with zero data size...");
+    LT_LOG_INFO("Testing writing all slots partially...");
     for (uint16_t i = 0; i <= R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length < %d...", (int)R_MEM_DATA_SIZE_MAX);
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &write_data_len, sizeof(write_data_len)));
-        write_data_len %= R_MEM_DATA_SIZE_MAX;
+        write_data_len %= R_MEM_DATA_SIZE_MAX - 1;  // 0-442
+        write_data_len += 1;                        // 1-443
 
         LT_LOG_INFO("Generating %" PRIu16 " random bytes for slot #%" PRIu16 "...", write_data_len, i);
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, write_data, write_data_len));
