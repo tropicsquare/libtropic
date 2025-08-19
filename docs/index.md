@@ -12,7 +12,7 @@ For detailed information about the libtropic library architecture and developmen
   - [Libtropic library examples and tests](#libtropic-library-examples-and-tests)
   - [Standalone example projects](#standalone-example-projects)
   - [Adding libtropic to existing project](#adding-libtropic-to-existing-project)
-      - [Do you use Makefile instead of CMake?](#do-you-use-makefile-instead-of-cmake)
+  - [Do you use Makefile instead of CMake?](#do-you-use-makefile-instead-of-cmake)
 
 ## Getting TROPIC01
 
@@ -56,9 +56,7 @@ Check out `examples/` folder, it contains a few examples of how libtropic functi
 
 There is also folder `tests/functional/` with code used internally for testing.
 
-
-> [!NOTE]
-Examples or functional tests are not compiled by default. They can be compiled by adding special CMake options, which is discussed further in this text.
+**Examples or functional tests are not compiled by default. They can be compiled by adding special CMake options, which is discussed further in this text.**
 
 To compile examples, either
 - pass `-DLT_BUILD_EXAMPLES=1` to `cmake` during compilation, or
@@ -68,14 +66,12 @@ To compile functional tests, either
 - pass `-DLT_BUILD_TESTS=1` to `cmake` during compilation, or
 - in your CMake file, switch this option on: `set(LT_BUILD_TESTS ON)`.
 
-> [!IMPORTANT]
-> When `LT_BUILD_EXAMPLES` or `LT_BUILD_TESTS` are set, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.
+**When `LT_BUILD_EXAMPLES` or `LT_BUILD_TESTS` are set, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.**
 
-> [!TIP]
-> For more information about the `provisioning_data/` directory structure, see it's README.md.
 
-> [!TIP]
-> To see the whole process of executing examples or functional tests against the TROPIC01 model, see README.md in the `tropic01_model/` directory.
+**For more information about the `provisioning_data/` directory structure, see it's README.md.**
+
+**To see the whole process of executing examples or functional tests against the TROPIC01 model, see README.md in the `tropic01_model/` directory.**
 
 ## Standalone example projects
 Our examples and functional tests are platform independent, so they can also be compiled and run in our platform repositories:
@@ -129,14 +125,12 @@ target_link_options(produced_binary PRIVATE <your_linker_flags>)
 
 ```
 
-> [!NOTE]
-Exact CMake calls depend on configuration of a project into which libtropic is being added. For more inspiration, have a look at the aforementioned platform repositories.
+**Exact CMake calls depend on configuration of a project into which libtropic is being added. For more inspiration, have a look at the aforementioned platform repositories.**
 
-> [!TIP]
-> We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
+**We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.**
 
 
-#### Do you use Makefile instead of CMake?
+## Do you use Makefile instead of CMake?
 
 In this case you have to add list of all libtropic *.c and *.h files manually to your makefile and then for all CMake ON options (located in libtropic's CMakeFile.txt) you define -D switch in your makefile.
 
