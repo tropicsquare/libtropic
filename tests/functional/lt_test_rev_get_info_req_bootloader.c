@@ -106,7 +106,7 @@ static void read_fw_banks_bootloader_v2_0_1(void)
     LT_LOG_INFO();
 }
 
-lt_ret_t lt_test_rev_get_info_req_bootloader_cleanup(void)
+static lt_ret_t lt_test_rev_get_info_req_bootloader_cleanup(void)
 {
     lt_ret_t ret;
 

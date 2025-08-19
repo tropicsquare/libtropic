@@ -18,7 +18,7 @@
 This is done after the 'Result reflected' step. */
 #define CRC16_FINAL_XOR_VALUE 0x0000
 
-uint16_t crc16_byte(uint8_t data, uint16_t crc)
+static uint16_t crc16_byte(uint8_t data, uint16_t crc)
 {
     uint16_t current_byte;
     int i;

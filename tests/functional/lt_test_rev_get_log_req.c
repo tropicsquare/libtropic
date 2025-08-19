@@ -45,7 +45,7 @@ static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r
     }
 }
 
-lt_ret_t lt_test_rev_get_log_req_cleanup(void)
+static lt_ret_t lt_test_rev_get_log_req_cleanup(void)
 {
     lt_ret_t ret;
 

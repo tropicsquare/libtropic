@@ -6,15 +6,13 @@
  */
 
 #ifdef LT_USE_TREZOR_CRYPTO
-#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
 #include "hasher.h"
 #include "hmac.h"
+#include "lt_hmac_sha256.h"
 #include "lt_sha256.h"
-#include "memzero.h"
-#include "sha2.h"
 
 void lt_sha256_init(void *ctx)
 {

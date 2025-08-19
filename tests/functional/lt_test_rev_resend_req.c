@@ -40,7 +40,7 @@ static void lt_test_rev_resend_req_body(void)
     LT_TEST_ASSERT(0, memcmp(&prev_chip_id, p_l2_resp->object, LT_L2_GET_INFO_CHIP_ID_SIZE));
 }
 
-lt_ret_t lt_test_rev_resend_req_cleanup(void)
+static lt_ret_t lt_test_rev_resend_req_cleanup(void)
 {
     lt_ret_t ret;
 

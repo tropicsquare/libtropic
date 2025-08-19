@@ -17,7 +17,7 @@
 // Shared with cleanup function
 lt_handle_t *g_h;
 
-lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
+static lt_ret_t lt_test_rev_ecc_key_generate_cleanup(void)
 {
     lt_ret_t ret;
     uint8_t read_pub_key[64];
