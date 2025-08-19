@@ -35,13 +35,13 @@ void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir)
 }
 #endif
 
-lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout)
+lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout_ms)
 {
 #ifdef LIBT_DEBUG
     if (!s2) {
         return LT_PARAM_ERR;
     }
-    if ((timeout < LT_L1_TIMEOUT_MS_MIN) | (timeout > LT_L1_TIMEOUT_MS_MAX)) {
+    if ((timeout_ms < LT_L1_TIMEOUT_MS_MIN) | (timeout_ms > LT_L1_TIMEOUT_MS_MAX)) {
         return LT_PARAM_ERR;
     }
     if ((max_len < LT_L1_LEN_MIN) | (max_len > LT_L1_LEN_MAX)) {
@@ -65,7 +65,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             return ret;
         }
 
-        ret = lt_l1_spi_transfer(s2, 0, 1, timeout);
+        ret = lt_l1_spi_transfer(s2, 0, 1, timeout_ms);
         if (ret != LT_OK) {
             lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
             UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
@@ -91,7 +91,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
         // Proceed further in case CHIP_STATUS contains READY bit, signalizing that chip is ready to receive request
         if (s2->buff[0] & (CHIP_MODE_READY_bit)) {
             // receive STATUS byte and length byte
-            ret = lt_l1_spi_transfer(s2, 1, 2, timeout);
+            ret = lt_l1_spi_transfer(s2, 1, 2, timeout_ms);
             if (ret != LT_OK) {  // offset 1
                 lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
                 UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
@@ -119,7 +119,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
                 return LT_L1_DATA_LEN_ERROR;
             }
             // Receive the rest of incomming bytes, including crc
-            ret = lt_l1_spi_transfer(s2, 3, length, timeout);
+            ret = lt_l1_spi_transfer(s2, 3, length, timeout_ms);
             if (ret != LT_OK) {  // offset 3
                 lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
                 UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
@@ -171,13 +171,13 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
     return LT_L1_CHIP_BUSY;
 }
 
-lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout)
+lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout_ms)
 {
 #ifdef LIBT_DEBUG
     if (!s2) {
         return LT_PARAM_ERR;
     }
-    if ((timeout < LT_L1_TIMEOUT_MS_MIN) | (timeout > LT_L1_TIMEOUT_MS_MAX)) {
+    if ((timeout_ms < LT_L1_TIMEOUT_MS_MIN) | (timeout_ms > LT_L1_TIMEOUT_MS_MAX)) {
         return LT_PARAM_ERR;
     }
     if ((len < LT_L1_LEN_MIN) | (len > LT_L1_LEN_MAX)) {
@@ -194,7 +194,7 @@ lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeo
 #ifdef LT_PRINT_SPI_DATA
     print_hex_chunks(s2->buff, len, SPI_DIR_MOSI);
 #endif
-    ret = lt_l1_spi_transfer(s2, 0, len, timeout);
+    ret = lt_l1_spi_transfer(s2, 0, len, timeout_ms);
     if (ret != LT_OK) {
         lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
         UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.

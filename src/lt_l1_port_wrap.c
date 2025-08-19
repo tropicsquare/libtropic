@@ -53,14 +53,14 @@ lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s)
     return lt_port_spi_csn_high(s);
 }
 
-lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s, uint8_t offset, uint16_t tx_len, uint32_t timeout)
+lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s, uint8_t offset, uint16_t tx_len, uint32_t timeout_ms)
 {
 #ifdef LIBT_DEBUG
     if (!s) {
         return LT_PARAM_ERR;
     }
 #endif
-    return lt_port_spi_transfer(s, offset, tx_len, timeout);
+    return lt_port_spi_transfer(s, offset, tx_len, timeout_ms);
 }
 
 lt_ret_t lt_l1_delay(lt_l2_state_t *s, uint32_t ms)

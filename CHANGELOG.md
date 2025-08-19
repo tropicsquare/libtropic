@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API change in `lt_random_bytes()`, `lt_port_random_bytes()`: changed `buff` parameter to `void*`, renamed parameter `len` to `count`
 - API change in `lt_random_bytes()`, `lt_port_random_bytes()`: added `s2` parameter.
 - API change in `lt_get_log()`: renamed to `lt_get_log_req()`, renamed `msg_len_max` to `log_msg_len` and made an output parameter.
+- API change in `lt_port_spi_transfer()`, `lt_l1_spi_transfer()`, `lt_l1_read()`, `lt_l1_write()`: renamed `timeout` to `timeout_ms`
 
 ### Added
 - Macro `LT_CONFIG_OBJ_CNT` for number of objects in the configuration structure.

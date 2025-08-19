@@ -73,12 +73,12 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2);
  * @param s2          Structure holding l2 state
  * @param tx_len      The length of data to be transferred
  * @param offset      Offset in handle's internal buffer where incomming bytes should be stored into
- * @param timeout     Timeout
+ * @param timeout_ms  Timeout
  *
  * @retval            LT_OK   Function executed successfully
  * @retval            LT_FAIL Function did not execute successully
  */
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout);
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout_ms);
 
 /**
  * @brief Platform defined function for delay, specifies what host platform should do when libtropic's functions need
