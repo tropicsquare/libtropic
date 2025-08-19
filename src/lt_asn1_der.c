@@ -18,7 +18,7 @@
 // #define ASNDER_LOG_EN
 
 #ifdef ASNDER_LOG_EN
-    #include "libtropic_logging.h"
+#include "libtropic_logging.h"
 #endif
 
 /**
@@ -190,11 +190,11 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 
         case ASN1DER_OBJECT_IDENTIFIER: {
             if (len < 3) {
-#ifdef ASNDER_LOG_EN                
+#ifdef ASNDER_LOG_EN
                 LT_LOG("Length too short (< 3), skipping.");
-#endif // ASNDER_LOG_EN
+#endif  // ASNDER_LOG_EN
                 break;
-            } 
+            }
 
             uint8_t buf[len];
             GET_BYTES(ctx, buf, len);
