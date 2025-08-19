@@ -659,6 +659,8 @@ typedef enum CONFIGURATION_OBJECTS_REGS_IDX {
 } CONFIGURATION_OBJECTS_REGS_IDX;
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Minimal size of one data slot in bytes */
+#define R_MEM_DATA_SIZE_MIN (1)
 /** @brief Maximal size of one data slot in bytes */
 #define R_MEM_DATA_SIZE_MAX (444)
 /** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511. */
