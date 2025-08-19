@@ -120,12 +120,12 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout_ms);
     if (ret != HAL_OK) {
         return LT_FAIL;
     }

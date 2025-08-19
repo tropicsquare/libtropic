@@ -144,7 +144,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
     lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
 
@@ -152,8 +152,8 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         LT_LOG_ERROR("Invalid data length!");
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret
-        = HAL_SPI_TransmitReceive(&device->spi_handle, s2->buff + offset, s2->buff + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&device->spi_handle, s2->buff + offset, s2->buff + offset, tx_data_length,
+                                      timeout_ms);
     if (ret != HAL_OK) {
         LT_LOG_ERROR("HAL_SPI_TransmitReceive failed, ret=%d", ret);
         return LT_L1_SPI_ERROR;

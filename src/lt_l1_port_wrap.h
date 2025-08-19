@@ -57,10 +57,10 @@ lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2) __attribute__((warn_unused_result
  * @param s2          Structure holding l2 state
  * @param offset      Offset in handle's internal buffer where incomming bytes should be stored into
  * @param tx_len      The length of data to be transferred
- * @param timeout     Timeout
+ * @param timeout_ms  Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout)
+lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout_ms)
     __attribute__((warn_unused_result));
 
 /**
