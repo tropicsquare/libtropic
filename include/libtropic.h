@@ -395,7 +395,8 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written
+ * @param size        Size of data to be written (valid range given by macros `R_MEM_DATA_SIZE_MIN` and
+ * `R_MEM_DATA_SIZE_MAX`)
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
