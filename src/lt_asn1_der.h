@@ -2,7 +2,7 @@
 #define LT_ASN1_DER_H
 
 /**
- * @file asn1_der.h
+ * @file lt_asn1_der.h
  * @brief ASN1 DER parser
  * @author Tropic Square s.r.o.
  *

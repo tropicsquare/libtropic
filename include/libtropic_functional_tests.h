@@ -2,6 +2,12 @@
 #define LT_LIBTROPIC_FUNC_TESTS_H
 
 /**
+ * @defgroup libtropic_funct_tests libtropic functional tests
+ * @brief Test all libtropic main API functions.
+ * @{
+ */
+
+/**
  * @file libtropic_functional_tests.h
  * @brief Functions with functional tests used internally for testing behaviour of TROPIC01 chip
  * @author Tropic Square s.r.o.
@@ -15,6 +21,10 @@
 
 extern lt_ret_t (*lt_test_cleanup_function)(void);
 
+/**
+ * @brief Called when `LT_TEST_ASSERT` or `LT_TEST_ASSERT_COND` fails.
+ *
+ */
 void lt_assert_fail_handler(void);
 
 // Assertions -- special variant for functional tests.
@@ -324,7 +334,7 @@ void lt_test_rev_resend_req(lt_handle_t *h);
  */
 void lt_test_rev_sleep_req(lt_handle_t *h);
 
-/*
+/**
  * @brief Test L2 Startup Request.
  *
  * Test steps:
@@ -436,5 +446,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h);
  * @param h     Device's handle
  */
 void lt_test_rev_get_log_req(lt_handle_t *h);
+
+/** @} */  // end of libtropic_funct_tests group
 
 #endif

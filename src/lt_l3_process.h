@@ -44,9 +44,8 @@
 #define L3_MCOUNTER_COUNTER_INVALID 0x14
 
 /**
- * @brief Encrypt content of l3 buffer and fill it with cyphertext ready to be sent to TROPIC01.
- *
- * This function expects that l3 buffer is already filled with data to be sent.
+ * @brief Encrypts content of L3 buffer and fills it with cyphertext ready to be sent to TROPIC01.
+ * @note This function expects that L3 buffer is already filled with data to be sent.
  *
  * @param s3          Structure holding l3 state
  *
@@ -56,9 +55,8 @@
 lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3) __attribute__((warn_unused_result));
 
 /**
- * @brief Decrypt response from TROPIC01 and fill l3 buffer with decrypted data.
- *
- * This function is used after encrypted l3 payload was received from TROPIC01.
+ * @brief Decrypts response from TROPIC01 and fills L3 buffer with decrypted data.
+ * @note This function is used after encrypted l3 payload was received from TROPIC01.
  *
  * @param s3          Structure holding l3 state
  * @return            LT_OK if success, otherwise returns other error code.
@@ -78,10 +76,12 @@ LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce) __attribute__((warn_unus
 #endif
 
 /**
- * @brief Used to invalidate host's session data
+ * @brief Invalidates host's session data
  *
  * @param s3          Structure holding l3 state
  */
 void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3);
+
+/** @} */  // end of group_l3_functions group
 
 #endif

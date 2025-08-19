@@ -2,16 +2,16 @@
 #define LT_LIBTROPIC_SEPARATE_API_H
 
 /**
- * @defgroup libtropic_l3 libtropic l3 functions
- * @brief Expected to be used by an application when using separate calls for l3 data out and l3 data in
- * @details This module provides functions for separate l3 communication with TROPIC01. Function prepended with
+ * @defgroup libtropic_l3 libtropic Layer 3 functions
+ * @brief Expected to be used by an application when using separate calls for L3 data out and L3 data in
+ * @details This module provides functions for separate L3 communication with TROPIC01. Function prepended with
  * 'lt_out__' are used to prepare data for sending to TROPIC01, while functions prepended with 'lt_in__' are used to
  * decode data received from TROPIC01.
  *
- * Sending and receiving data is done through l2 layer, which is not covered by this module and user is expected to call
+ * Sending and receiving data is done through L2 layer, which is not covered by this module and user is expected to call
  * lt_l2_send() at the point when data is ready to be sent to TROPIC01.
  *
- * For more information have a look into libtropic.c, how separate calls are used in a single call.
+ * For more information have a look into `libtropic.c`, how separate calls are used in a single call.
  * @{
  */
 
@@ -29,10 +29,10 @@
 #include "libtropic_common.h"
 
 /**
- * @brief Initiates secure session. After succesfull execution, handle->l2_buff will contain data for L2 handshake
- * request.
+ * @brief Initiates secure session.
  *
- *        For more information read info at the top of this file.
+ * After successful execution, `h->l2->buff` will contain data for L2 handshake request.
+ * @note For more information read info at the top of this file.
  *
  * @param h           Device's handle
  * @param pkey_index  Index of pairing public key
@@ -43,10 +43,10 @@
 lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, session_state_t *state);
 
 /**
- * @brief Decodes 'TROPIC01's response during secure session's establishment. Designed to be used together with
- * lt_out__session_start(), lt_l2_send() and lt_l2_receive()
+ * @brief Decodes TROPIC01's response during secure session's establishment.
  *
- *        Secure session will be established after succesfull execution. For more information read info at the top of
+ * Designed to be used together with `lt_out__session_start()`, `lt_l2_send()` and `lt_l2_receive()`.
+ * @note Secure session will be established after successful execution. For more information read info at the top of
  * this file.
  *
  * @param h           Device's handle
@@ -62,7 +62,8 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_i
                               const uint8_t *shipriv, const uint8_t *shipub, session_state_t *state);
 
 /**
- * @brief Encodes 'ping' command payload. Used for separate l3 communication, for more information read info at the top
+ * @brief Encodes Ping command payload.
+ * @note Used for separate L3 communication, for more information read info at the top
  * of this file.
  *
  * @param h           Device's handle
@@ -73,7 +74,8 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_i
 lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len);
 
 /**
- * @brief Decodes 'ping' result payload. Used for separate l3 communication, for more information read info at the top
+ * @brief Decodes Ping result payload.
+ * @note Used for separate L3 communication, for more information read info at the top
  * of this file.
  *
  * @param h           Device's handle
@@ -84,15 +86,19 @@ lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len
 lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len);
 
 /**
- * @brief Encodes 'pairing key write' command payload. Used for separate l3 communication, for more information read
+ * @brief Encodes Pairing_Key_Write command payload.
+ * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
  * @param h           Device's handle
+ * @param pairing_pub 32B of pubkey
+ * @param slot        Pairing key lot SH0PUB - SH3PUB
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const uint8_t slot);
 /**
- * @brief Decodes 'pairing key write' result payload. Used for separate l3 communication, for more information read info
+ * @brief Decodes Pairing_Key_Write result payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -101,7 +107,8 @@ lt_ret_t lt_out__pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, c
 lt_ret_t lt_in__pairing_key_write(lt_handle_t *h);
 
 /**
- * @brief Encodes 'pairing key read' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes Pairing_Key_Read command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -111,7 +118,8 @@ lt_ret_t lt_in__pairing_key_write(lt_handle_t *h);
 lt_ret_t lt_out__pairing_key_read(lt_handle_t *h, const uint8_t slot);
 
 /**
- * @brief Decodes 'pairing key read' result payload. Used for separate l3 communication, for more information read info
+ * @brief Decodes Pairing_Key_Read result payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -121,7 +129,8 @@ lt_ret_t lt_out__pairing_key_read(lt_handle_t *h, const uint8_t slot);
 lt_ret_t lt_in__pairing_key_read(lt_handle_t *h, uint8_t *pubkey);
 
 /**
- * @brief Encodes 'pairing key invalidate' command payload. Used for separate l3 communication, for more information
+ * @brief Encodes Pairing_Key_Invalidate command payload.
+ * @note Used for separate L3 communication, for more information
  * read info at the top of this file.
  *
  * @param h           Device's handle
@@ -131,7 +140,8 @@ lt_ret_t lt_in__pairing_key_read(lt_handle_t *h, uint8_t *pubkey);
 lt_ret_t lt_out__pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
 
 /**
- * @brief Decodes 'pairing key invalidate' result payload. Used for separate l3 communication, for more information read
+ * @brief Decodes Pairing_Key_Invalidate result payload.
+ * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
  * @param h           Device's handle
@@ -140,16 +150,20 @@ lt_ret_t lt_out__pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
 lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
 
 /**
- * @brief Encodes 'r config write' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes R_Config_Write command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
+ * @param addr        Address of a config object
+ * @param obj         Content to be written
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
 
 /**
- * @brief Decodes 'r config write' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes R_Config_Write result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -158,7 +172,8 @@ lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS 
 lt_ret_t lt_in__r_config_write(lt_handle_t *h);
 
 /**
- * @brief Encodes 'r config read' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes R_Config_Read command payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -168,7 +183,8 @@ lt_ret_t lt_in__r_config_write(lt_handle_t *h);
 lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
 
 /**
- * @brief Decodes 'r config read' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes R_Config_Read result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -178,7 +194,8 @@ lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_
 lt_ret_t lt_in__r_config_read(lt_handle_t *h, uint32_t *obj);
 
 /**
- * @brief Encodes 'r config erase' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes R_Config_Erase command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -187,7 +204,8 @@ lt_ret_t lt_in__r_config_read(lt_handle_t *h, uint32_t *obj);
 lt_ret_t lt_out__r_config_erase(lt_handle_t *h);
 
 /**
- * @brief Decodes 'r config erase' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes R_Config_Erase result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -196,7 +214,8 @@ lt_ret_t lt_out__r_config_erase(lt_handle_t *h);
 lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
 
 /**
- * @brief Encodes 'i config write' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes I_Config_Write command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -207,7 +226,8 @@ lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
 lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
 
 /**
- * @brief Decodes 'i config write' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes I_Config_Write result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -216,7 +236,8 @@ lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS
 lt_ret_t lt_in__i_config_write(lt_handle_t *h);
 
 /**
- * @brief Encodes 'i config read' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes I_Config_Read command payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -226,7 +247,8 @@ lt_ret_t lt_in__i_config_write(lt_handle_t *h);
 lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
 
 /**
- * @brief Decodes 'i config read' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes I_Config_Read result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -236,16 +258,21 @@ lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_
 lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
 
 /**
- * @brief Encodes 'r mem data write' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes R_Mem_Data_Write command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
+ * @param udata_slot  Memory's slot to be written
+ * @param data        Buffer of data to be written into R MEMORY slot
+ * @param size        Size of data to be read
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size);
 
 /**
- * @brief Decodes 'r mem data write' result payload. Used for separate l3 communication, for more information read info
+ * @brief Decodes R_Mem_Data_Write result payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -254,7 +281,8 @@ lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uin
 lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
 
 /**
- * @brief Encodes 'r mem data read' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes R_Mem_Data_Read command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -264,7 +292,8 @@ lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
 lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
 
 /**
- * @brief Decodes 'r mem data read' result payload. Used for separate l3 communication, for more information read info
+ * @brief Decodes R_Mem_Data_Read result payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -275,7 +304,8 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
 lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size);
 
 /**
- * @brief Encodes 'r mem data erase' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes R_Mem_Data_Erase command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -285,7 +315,8 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size);
 lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 
 /**
- * @brief Decodes 'r mem data erase' result payload. Used for separate l3 communication, for more information read info
+ * @brief Decodes R_Mem_Data_Erase result payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -294,7 +325,8 @@ lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
 
 /**
- * @brief Encodes Random_Value_Get command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes Random_Value_Get command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -304,7 +336,8 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
 lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len);
 
 /**
- * @brief Decodes Random_Value_Get result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes Random_Value_Get result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -315,7 +348,8 @@ lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len);
 lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
 
 /**
- * @brief Encodes 'ECC key generation' command payload. Used for separate l3 communication, for more information read
+ * @brief Encodes ECC_Key_Generate command payload.
+ * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
  * @param h           Device's handle
@@ -326,7 +360,8 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
 lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
- * @brief Decodes 'ECC key generation' result payload. Used for separate l3 communication, for more information read
+ * @brief Decodes ECC_Key_Generate result payload.
+ * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
  * @param h           Device's handle
@@ -335,7 +370,8 @@ lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const l
 lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
 
 /**
- * @brief Encodes 'ECC key store' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes ECC_Key_Store command payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -348,7 +384,8 @@ lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_e
                                const uint8_t *key);
 
 /**
- * @brief Decodes 'ECC key store' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes ECC_Key_Store result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -357,7 +394,8 @@ lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_e
 lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
 
 /**
- * @brief Encodes 'ECC key read' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes ECC_Key_Read command payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -367,7 +405,8 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
 lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
 
 /**
- * @brief Decodes 'ECC key read' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes ECC_Key_Read result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -380,7 +419,8 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
 lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
 
 /**
- * @brief Encodes 'ECC key erase' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes ECC_Key_Erase command payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -390,7 +430,8 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
 lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
 
 /**
- * @brief Decodes 'ECC key erase' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes ECC_Key_Erase result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -399,7 +440,8 @@ lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
 lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
 
 /**
- * @brief Encodes 'ECC ECDSA sign' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes ECDSA_Sign command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -411,7 +453,8 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
 lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
 
 /**
- * @brief Decodes 'ECC ECDSA sign' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes ECDSA_Sign result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -421,7 +464,8 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uin
 lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
 
 /**
- * @brief Encodes 'ECC EdDSA sign' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes EDDSA_Sign command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -433,7 +477,8 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
 lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len);
 
 /**
- * @brief Decodes 'ECC EdDSA sign' result payload. Used for separate l3 communication, for more information read info at
+ * @brief Decodes EDDSA_Sign result payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
  * @param h           Device's handle
@@ -443,22 +488,24 @@ lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const
 lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs);
 
 /**
- * @brief Encodes 'ECC verify' command payload. Used for separate l3 communication, for more information read info at
+ * @brief Encodes MCounter_Init command payload.
+ * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
- * @param slot        ECC key slot to use for verification
- * @param msg         Message to verify
- * @param msg_len     Length of the message
- * @param rs          Signature (r,s) to verify
- * @param rs_len      Length of the signature, must be at least 64 bytes
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h               Device's handle
+ * @param mcounter_index  Index of monotonic counter
+ * @param mcounter_value  Value to set as an initial value
+ *
+ * @retval                LT_OK Function executed successfully
+ * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value
  */
 lt_ret_t lt_out__mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index,
                                const uint32_t mcounter_value);
 
 /**
- * @brief Decodes 'ECC verify' result payload. Used for separate l3 communication, for more information read info at the
+ * @brief Decodes MCounter_Init command result payload.
+ * @note Used for separate L3 communication, for more information read info at the
  * top of this file.
  *
  * @param h           Device's handle
@@ -467,7 +514,8 @@ lt_ret_t lt_out__mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mc
 lt_ret_t lt_in__mcounter_init(lt_handle_t *h);
 
 /**
- * @brief Encodes 'monotonic counter update' command payload. Used for separate l3 communication, for more information
+ * @brief Encodes MCounter_Update command payload.
+ * @note Used for separate L3 communication, for more information
  * read info at the top of this file.
  *
  * @param h           Device's handle
@@ -477,7 +525,8 @@ lt_ret_t lt_in__mcounter_init(lt_handle_t *h);
 lt_ret_t lt_out__mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index);
 
 /**
- * @brief Decodes 'monotonic counter update' result payload. Used for separate l3 communication, for more information
+ * @brief Decodes MCounter_Update result payload.
+ * @note Used for separate L3 communication, for more information
  * read info at the top of this file.
  *
  * @param h           Device's handle
@@ -486,7 +535,8 @@ lt_ret_t lt_out__mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t 
 lt_ret_t lt_in__mcounter_update(lt_handle_t *h);
 
 /**
- * @brief Encodes 'monotonic counter get' command payload. Used for separate l3 communication, for more information read
+ * @brief Encodes MCounter_Get command payload.
+ * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
  * @param h           Device's handle
@@ -496,7 +546,8 @@ lt_ret_t lt_in__mcounter_update(lt_handle_t *h);
 lt_ret_t lt_out__mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index);
 
 /**
- * @brief Decodes 'monotonic counter get' result payload. Used for separate l3 communication, for more information read
+ * @brief Decodes MCounter_Get result payload.
+ * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
  * @param h           Device's handle
@@ -506,7 +557,8 @@ lt_ret_t lt_out__mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mco
 lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value);
 
 /**
- * @brief Encodes 'MAC and destroy' command payload. Used for separate l3 communication, for more information read info
+ * @brief Encodes MAC_And_Destroy command payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle
@@ -517,7 +569,8 @@ lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value);
 lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out);
 
 /**
- * @brief Decodes 'MAC and destroy' result payload. Used for separate l3 communication, for more information read info
+ * @brief Decodes MAC_And_Destroy result payload.
+ * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
  * @param h           Device's handle

@@ -45,7 +45,7 @@
 #define L2_STATUS_NO_RESP 0xFF
 
 /**
- * @brief This function checks if incomming L2 frame is valid
+ * @brief Checks if incomming L2 frame is valid
  *
  * @param             frame
  * @return            LT_OK if success, otherwise returns other error code.
