@@ -10,15 +10,18 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <stdlib.h>
+
 #include "libtropic_common.h"
 
 /**
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
+ * @param s2          Structure holding l2 state
  * @param buff        Buffer to be filled
- * @param len         number of 32bit numbers
+ * @param count       Number of random bytes
  * @return lt_ret_t
  */
-lt_ret_t lt_random_bytes(uint32_t *buff, uint16_t len);
+lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count) __attribute__((warn_unused_result));
 
 #endif

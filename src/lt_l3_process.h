@@ -38,42 +38,50 @@
 #define L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
 /** @brief The writing operation limit is reached for the slot. */
 #define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
+/** @brief Failure to update the specified Monotonic Counter. The Monotonic Counter is already at 0. */
+#define L3_MCOUNTER_UPDATE_ERROR 0x13
+/** @brief The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
+#define L3_MCOUNTER_COUNTER_INVALID 0x14
 
 /**
- * @brief Encrypt content of l3 buffer and fill it with cyphertext ready to be sent to TROPIC01.
+ * @brief Encrypts content of L3 buffer and fills it with cyphertext ready to be sent to TROPIC01.
+ * @note This function expects that L3 buffer is already filled with data to be sent.
  *
- * This function expects that l3 buffer is already filled with data to be sent.
+ * @param s3          Structure holding l3 state
+ *
+ * @retval            LT_OK Function executed successfully
+ * @retval            other Function did not execute successully
+ */
+lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3) __attribute__((warn_unused_result));
+
+/**
+ * @brief Decrypts response from TROPIC01 and fills L3 buffer with decrypted data.
+ * @note This function is used after encrypted l3 payload was received from TROPIC01.
  *
  * @param s3          Structure holding l3 state
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3);
-
-/**
- * @brief Decrypt response from TROPIC01 and fill l3 buffer with decrypted data.
- *
- * This function is used after encrypted l3 payload was received from TROPIC01.
- *
- * @param s3          Structure holding l3 state
- * @return            LT_OK if success, otherwise returns other error code.
- */
-lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3);
+lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3) __attribute__((warn_unused_result));
 
 #ifdef TEST
 /**
  * @brief Used to increase nonce
  *
- * @param nonce       TODO elaborate more
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param nonce       4B long number used as nonce inside of Noise protocol
+ *
+ * @retval            LT_OK Function executed successfully
+ * @retval            other Function did not execute successully
  */
-STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce);
+LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce) __attribute__((warn_unused_result));
 #endif
 
 /**
- * @brief Used to invalidate host's session data
+ * @brief Invalidates host's session data
  *
  * @param s3          Structure holding l3 state
  */
 void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3);
+
+/** @} */  // end of group_l3_functions group
 
 #endif

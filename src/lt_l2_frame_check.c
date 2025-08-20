@@ -51,6 +51,8 @@ lt_ret_t lt_l2_frame_check(const uint8_t *frame)
             return LT_L2_NO_RESP;
         case L2_STATUS_UNKNOWN_ERR:
             return LT_L2_UNKNOWN_REQ;
+        case L2_STATUS_RESP_DISABLED:
+            return LT_L2_RESP_DISABLED;
         default:
             return LT_L2_STATUS_NOT_RECOGNIZED;
     }

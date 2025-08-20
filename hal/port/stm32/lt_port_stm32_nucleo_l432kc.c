@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "libtropic_common.h"
+#include "libtropic_macros.h"
 #include "libtropic_port.h"
 #include "stm32l4xx_hal.h"
 
@@ -23,11 +24,17 @@ RNG_HandleTypeDef rng;
 // SPI handle declaration
 SPI_HandleTypeDef SpiHandle;
 
-lt_ret_t lt_port_random_bytes(uint32_t *buff, uint16_t len)
+lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
-    for (int i = 0; i < len; i++) {
-        uint32_t helper = HAL_RNG_GetRandomNumber(&rng);
-        buff[i] = helper;
+    UNUSED(s2);
+    size_t bytes_left = count;
+    uint8_t *buff_ptr = buff;
+    while (bytes_left) {
+        uint32_t random_data = HAL_RNG_GetRandomNumber(&rng);
+        size_t cpy_cnt = bytes_left < sizeof(random_data) ? bytes_left : sizeof(random_data);
+        memcpy(buff_ptr, &random_data, cpy_cnt);
+        bytes_left -= cpy_cnt;
+        buff_ptr += cpy_cnt;
     }
 
     return LT_OK;
@@ -114,12 +121,12 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout)
+lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
     if (offset + tx_data_length > LT_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
-    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout);
+    int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout_ms);
     if (ret != HAL_OK) {
         return LT_FAIL;
     }

@@ -2,7 +2,7 @@
 #define LT_ASN1_DER_H
 
 /**
- * @file asn1_der.h
+ * @file lt_asn1_der.h
  * @brief ASN1 DER parser
  * @author Tropic Square s.r.o.
  *
@@ -49,6 +49,6 @@ enum asn1der_crop_kind_t { ASN1DER_CROP_SUFFIX, ASN1DER_CROP_PREFIX };
  *                      LT_CERT_ITEM_NOT_FOUND if OBJECT_IDENTIFIER with "obj_id" value was not found!
  */
 lt_ret_t asn1der_find_object(const uint8_t *stream, uint16_t len, int32_t obj_id, uint8_t *buf, int buf_len,
-                             enum asn1der_crop_kind_t crop_kind);
+                             enum asn1der_crop_kind_t crop_kind) __attribute__((warn_unused_result));
 
 #endif

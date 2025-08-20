@@ -949,7 +949,8 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/../include/ \
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/../hal/ \
+                         @CMAKE_CURRENT_SOURCE_DIR@/../include/ \
                          @CMAKE_CURRENT_SOURCE_DIR@/../src/ \
                          @CMAKE_CURRENT_SOURCE_DIR@/
 
@@ -2416,7 +2417,7 @@ INCLUDE_FILE_PATTERNS  =
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             = __attribute__((x))=
+PREDEFINED             = __attribute__((x))= ACAB LT_HELPERS LT_USE_INT_PIN
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The

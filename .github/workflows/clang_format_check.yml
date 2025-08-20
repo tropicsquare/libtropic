@@ -1,6 +1,9 @@
 name: clang-format Check
 on:
   push:
+    branches:
+      - master
+      - develop
     paths:
       - '**.c'
       - '**.h'

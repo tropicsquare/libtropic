@@ -29,6 +29,14 @@ set(TREZOR_CRYPTO_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/ed25519-donna/ed25519-donna-32bit-tables.c
     ${CMAKE_CURRENT_SOURCE_DIR}/ed25519-donna/ed25519-donna-basepoint-table.c
     ${CMAKE_CURRENT_SOURCE_DIR}/rand.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/ecdsa.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/nist256p1.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/bignum.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/rfc6979.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/address.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/base58.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/secp256k1.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hmac_drbg.c
 )
 
 add_library(trezor_crypto ${TREZOR_CRYPTO_SRCS})

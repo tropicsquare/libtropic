@@ -116,7 +116,7 @@ lt_ret_t test_lt_l2_encrypted_cmd__overflow_callback(const uint8_t *frame, int c
 }
 
 // This is kinda tricky. resp->rsp_len is unsigned 8bit int => max value cannot be larger
-// than L3_FRAME_MAX_SIZE, so overflow cannot be triggered by a callback. So, we need to
+// than L3_PACKET_MAX_SIZE, so overflow cannot be triggered by a callback. So, we need to
 // trigger this by making offset larger.
 void test_lt_l2_encrypted_cmd__recv_overflow()
 {

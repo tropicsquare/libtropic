@@ -27,8 +27,7 @@
 #define CHIP_MODE_STARTUP_bit 0x04
 
 /** Max number of GET_INFO requests when chip is not answering */
-#define LT_L1_READ_MAX_TRIES \
-    50  // Increasing from 10 to 50 to cover SPI slave convertor behaviour. TODO put back to 10 in the future
+#define LT_L1_READ_MAX_TRIES 10
 /** Number of ms to wait between each GET_INFO request */
 #define LT_L1_READ_RETRY_DELAY 25
 
@@ -43,24 +42,26 @@
 #define GET_RESPONSE_REQ_ID 0xAA
 
 /**
- * @brief Read data from Tropic chip into host platform
+ * @brief Reads data from TROPIC01 into host platform
  *
  * @param s2          Structure holding l2 state
  * @param max_len     Max len of receive buffer
- * @param timeout     Timeout - how long function will wait for response
+ * @param timeout_ms  Timeout - how long function will wait for response
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout);
+lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout_ms)
+    __attribute__((warn_unused_result));
 
 /**
- * @brief Write data from host platform into Tropic chip
+ * @brief Writes data from host platform into TROPIC01
  *
  * @param s2          Structure holding l2 state
  * @param len         Length of data to send
- * @param timeout     Timeout
+ * @param timeout_ms  Timeout
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout);
+lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout_ms)
+    __attribute__((warn_unused_result));
 
 /** @} */  // end of group_l1_functions
 
