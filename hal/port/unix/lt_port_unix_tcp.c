@@ -21,6 +21,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
+#include "libtropic_macros.h"
 #include "libtropic_port.h"
 
 static lt_ret_t connect_to_server(lt_dev_unix_tcp_t *dev)

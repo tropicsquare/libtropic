@@ -28,6 +28,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
+#include "libtropic_macros.h"
 #include "libtropic_port.h"
 #include "lt_port_unix_spi.h"
 

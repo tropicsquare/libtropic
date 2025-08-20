@@ -16,6 +16,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
+#include "libtropic_macros.h"
 #include "libtropic_port.h"
 #include "main.h"
 #include "stm32f4xx_hal.h"
