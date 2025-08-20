@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include "libtropic_common.h"
+#include "libtropic_macros.h"
 #include "libtropic_port.h"
 #include "stm32l4xx_hal.h"
 

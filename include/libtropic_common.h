@@ -21,11 +21,6 @@
 #define LT_STATIC
 #endif
 
-/** Macro to sanitize compiler warnings */
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
-#endif
-
 /** @brief This particular value means that secure session was successfully established and it is currently ON */
 #define SESSION_ON 0xA5A55A5A
 /** @brief This particular value means that secure session is currently OFF */
