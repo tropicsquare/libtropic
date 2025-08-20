@@ -8,6 +8,26 @@ TROPIC01's SDK written in C. Contributors, please follow [guidelines](https://gi
 For more info about TROPIC01 chip and it's **datasheet** or **User API**, check out developers resources in the [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
 
 
+## Compatibility with TROPIC01 firmware versions
+
+For the `libtropic` library to function correctly with the TROPIC01 secure element, the versions of three key components must be compatible:
+
+1.  **`libtropic` SDK**: The version of this library.
+2.  **Application Firmware**: The main firmware running on the TROPIC01 chip.
+3.  **SPECT Firmware**: The co-processor firmware on the TROPIC01 chip.
+
+The following table outlines the tested and supported compatibility between different released versions:
+
+| API document version                                                                                   | `libtropic`         | Application            | SPECT            |  Bootloader |  Tests                                     |
+| :----------------------------------------------------------------------------------------------------: |:-------------------:|:----------------------:|:----------------:|  :-------:  |  :---------------------------------------: |
+| [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 1.0.0               | 1.0.0                  | 1.0.0            |  v1.0.1     |  <code style="color : green">Passed</code> |
+| [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 1.0.0               | 1.0.0                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> |
+
+
+Using mismatched versions can lead to unexpected behavior or errors. We recommend using the latest compatible versions for all components.
+
+For retrieving firmware versions from TROPIC01 check code in `examples/lt_ex_show_chip_id_and_fw_ver.c`. For updating firmware please follow code example in `examples/lt_ex_fw_update.c`.
+
 ## Repository structure
 * `CMakeLists.txt` Root CMake project file
 * `cmake/` CMake related files

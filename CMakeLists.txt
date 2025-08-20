@@ -103,7 +103,7 @@ endif()
 ###########################################################################
 
 project(libtropic_SDK
-#        VERSION unreleased
+        VERSION 1.0.0
         DESCRIPTION "TROPIC01 software development kit"
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
