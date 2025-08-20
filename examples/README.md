@@ -22,9 +22,9 @@ Demonstrates how to read and display the chip’s unique ID and firmware version
 Illustrates the MAC-and-destroy feature. Refer to the application note and code comments for details.
 
 
-## WARNING: Ireversible examples
+## WARNING: Irreversible examples
 
-List of ireversible examples.
+List of irreversible examples.
 
 #### lt_ex_hw_wallet.c
 
