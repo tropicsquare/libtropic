@@ -153,7 +153,7 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
     LT_LOG_INFO("Reading X509 Certificate Store...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_cert_store(h, &store));
     LT_LOG_INFO();
-
+#ifdef ACAB
     uint8_t *cert;
     for (int i = 0; i < 4; i++) {
         cert = store.certs[i];
@@ -171,7 +171,11 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
         LT_LOG_INFO();
     }
     LT_LOG_LINE();
-
+#elif ABAB
+/* Bootloader v1.0.1 provided just 512B for device certificate only */
+#else
+#error "Undefined silicon revision. Please define either ABAB or ACAB."
+#endif
     LT_LOG_INFO("Reading Chip ID...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(h, &chip_id));
     LT_TEST_ASSERT(LT_OK, lt_print_chip_id(&chip_id, chip_id_printf_wrapper));
