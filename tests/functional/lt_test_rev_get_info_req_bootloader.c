@@ -134,12 +134,13 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
     LT_LOG_INFO("----------------------------------------------");
 
     g_h = h;
-
+#ifdef ACAB
     uint8_t cert1[CERTS_BUF_LEN] = {0}, cert2[CERTS_BUF_LEN] = {0}, cert3[CERTS_BUF_LEN] = {0},
-            cert4[CERTS_BUF_LEN] = {0}, riscv_ver[LT_L2_GET_INFO_RISCV_FW_SIZE],
-            spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
+            cert4[CERTS_BUF_LEN] = {0};
     struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
                                     .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
+#endif
+    uint8_t riscv_ver[LT_L2_GET_INFO_RISCV_FW_SIZE], spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
     struct lt_chip_id_t chip_id = {0};
 
     LT_LOG_INFO("Initializing handle");
@@ -150,6 +151,7 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
 
     lt_test_cleanup_function = &lt_test_rev_get_info_req_bootloader_cleanup;
 
+#ifdef ACAB
     LT_LOG_INFO("Reading X509 Certificate Store...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_cert_store(h, &store));
     LT_LOG_INFO();
@@ -171,7 +173,11 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
         LT_LOG_INFO();
     }
     LT_LOG_LINE();
-
+#elif ABAB
+    LT_LOG_INFO("Bootloader v1.0.1 provided just 512B for device certificate only");
+#else
+#error "Undefined silicon revision. Please define either ABAB or ACAB."
+#endif
     LT_LOG_INFO("Reading Chip ID...");
     LT_TEST_ASSERT(LT_OK, lt_get_info_chip_id(h, &chip_id));
     LT_TEST_ASSERT(LT_OK, lt_print_chip_id(&chip_id, chip_id_printf_wrapper));
