@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
+- CMake options for 4 verbosity levels (from highest to lowest verbosity): `LT_LOG_LVL_DEBUG`, `LT_LOG_LVL_INFO`, `LT_LOG_LVL_WARN`, `LT_LOG_LVL_ERROR`. If none selected, nothing will be logged (except for examples and tests).
 
 ### Fixed
 
