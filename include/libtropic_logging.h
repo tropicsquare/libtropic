@@ -24,11 +24,25 @@
         ##__VA_ARGS__)
 
 // Loggers with selectable message type.
+#if LT_LOG_ENABLE_INFO
 #define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
-#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#else
+#define LT_LOG_INFO(f_, ...)
+#endif
 
-#ifdef LIBT_DEBUG
+#if LT_LOG_ENABLE_WARN
+#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#else
+#define LT_LOG_WARN(f_, ...)
+#endif
+
+#if LT_LOG_ENABLE_ERROR
+#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#else
+#define LT_LOG_ERROR(f_, ...)
+#endif
+
+#if LT_LOG_ENABLE_DEBUG
 #define LT_LOG_DEBUG(f_, ...) printf("DEBUG   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_DEBUG(f_, ...)

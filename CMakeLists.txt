@@ -25,6 +25,56 @@ option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low 
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
 option(LT_VALGRIND "Enable Valgrind" OFF)
+# Logging options
+option(LT_LOG_LVL_INFO "Set log level to INFO+WARN+ERROR" OFF)
+option(LT_LOG_LVL_WARN "Set log level to WARN+ERROR" OFF)
+option(LT_LOG_LVL_ERROR "Set log level to ERROR" OFF)
+option(LT_LOG_LVL_DEBUG "Set log level to INFO+WARN+ERROR+DEBUG" OFF)
+
+# Force INFO logging level when building tests/examples
+if(LT_BUILD_TESTS OR LT_BUILD_EXAMPLES)
+    if(NOT (LT_LOG_LVL_DEBUG OR LT_LOG_LVL_INFO OR LT_LOG_LVL_WARN OR LT_LOG_LVL_ERROR))
+        message(STATUS "No log level specified; defaulting to INFO for tests/examples.")
+        set(LT_LOG_LVL_INFO ON CACHE BOOL "Set log level to INFO+WARN+ERROR" FORCE)
+    endif()
+endif()
+
+# These are internal macros for enabling the logging macros
+# Default: all logging disabled
+set(LT_LOG_ENABLE_INFO  0 CACHE INTERNAL "")
+set(LT_LOG_ENABLE_WARN  0 CACHE INTERNAL "")
+set(LT_LOG_ENABLE_ERROR 0 CACHE INTERNAL "")
+set(LT_LOG_ENABLE_DEBUG 0 CACHE INTERNAL "")
+
+# Set logging ENABLE flags based on selected logging level
+if(LT_LOG_LVL_DEBUG)
+    message(STATUS "Log level set to DEBUG")
+    set(LT_LOG_ENABLE_DEBUG 1)
+    set(LT_LOG_ENABLE_INFO  1)
+    set(LT_LOG_ENABLE_WARN  1)
+    set(LT_LOG_ENABLE_ERROR 1)
+
+elseif(LT_LOG_LVL_INFO)
+    message(STATUS "Log level set to INFO")
+    set(LT_LOG_ENABLE_DEBUG 0)
+    set(LT_LOG_ENABLE_INFO  1)
+    set(LT_LOG_ENABLE_WARN  1)
+    set(LT_LOG_ENABLE_ERROR 1)
+
+elseif(LT_LOG_LVL_WARN)
+    message(STATUS "Log level set to WARN")
+    set(LT_LOG_ENABLE_DEBUG 0)
+    set(LT_LOG_ENABLE_INFO  0)
+    set(LT_LOG_ENABLE_WARN  1)
+    set(LT_LOG_ENABLE_ERROR 1)
+
+elseif(LT_LOG_LVL_ERROR)
+    message(STATUS "Log level set to ERROR")
+    set(LT_LOG_ENABLE_DEBUG 0)
+    set(LT_LOG_ENABLE_INFO  0)
+    set(LT_LOG_ENABLE_WARN  0)
+    set(LT_LOG_ENABLE_ERROR 1)
+endif()
 
 # Define the ASAN flags here so they are not duplicated.
 set(LT_ASAN_COMPILE_FLAGS "-fsanitize=address,leak,undefined;-fno-omit-frame-pointer;-g"
@@ -376,6 +426,14 @@ target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
 target_include_directories(tropic PUBLIC ${SDK_DIRS_PUB})
 
 target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
+
+# Propagate logging settings
+target_compile_definitions(tropic PUBLIC
+    LT_LOG_ENABLE_DEBUG=${LT_LOG_ENABLE_DEBUG}
+    LT_LOG_ENABLE_ERROR=${LT_LOG_ENABLE_ERROR}
+    LT_LOG_ENABLE_WARN=${LT_LOG_ENABLE_WARN}
+    LT_LOG_ENABLE_INFO=${LT_LOG_ENABLE_INFO}
+)
 
 ###########################################################################
 #                                                                         #
