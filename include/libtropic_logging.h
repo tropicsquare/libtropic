@@ -28,13 +28,13 @@
 // Loggers with selectable message type.
 
 /** @brief Dummy macro used when no logging is configured. */
-#define LT_LOG_DISABLED(...) \
-    do { \
-        if (0) { \
-            /* A base string ensures printf is always valid. */ \
+#define LT_LOG_DISABLED(...)                                     \
+    do {                                                         \
+        if (0) {                                                 \
+            /* A base string ensures printf is always valid. */  \
             /* Using a single space is minimal and effective. */ \
-            printf(" " __VA_ARGS__); \
-        } \
+            printf(" " __VA_ARGS__);                             \
+        }                                                        \
     } while (0)
 
 #if LT_LOG_ENABLE_INFO
