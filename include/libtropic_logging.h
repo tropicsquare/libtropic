@@ -12,8 +12,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "libtropic_macros.h"
-
 // Only info-level loggers and decorators.
 // This has no effect, test runner just simply copies these lines to the log.
 #define LT_LOG(f_, ...) LT_LOG_INFO(f_, ##__VA_ARGS__)
