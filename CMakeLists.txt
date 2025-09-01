@@ -428,6 +428,16 @@ add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
 target_include_directories(tropic PUBLIC ${SDK_DIRS_PUB})
 
+# Compiler flags: These are an internal implementation detail.
+# They are needed to build the library's own object files correctly.
+# 'PRIVATE' applies them only to the 'tropic' target itself.
+target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
+# Linker flags: This is a usage requirement for any consumer.
+# The final executable that links against 'tropic' needs this flag.
+# 'INTERFACE' propagates this requirement to the consumer without
+# applying it to the library target itself.
+target_link_options(tropic INTERFACE -Wl,--gc-sections)
+
 target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
 
 # Propagate logging settings

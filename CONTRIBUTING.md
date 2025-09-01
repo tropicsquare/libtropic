@@ -3,7 +3,7 @@
 We love contributions! To make contributing simple for both sides, please:
 
 - Open an issue and describe how you would like to contribute and discuss details with us.
-- Create a branch and do the changes:
+- Create a branch from develop and do the changes:
     - Make sure your commit messages follow our guidelines -- [see below](#commit-messages).
     - Make sure to follow specifics in our coding style -- [see below](#coding-style).
     - Make sure your code is properly formatted with `clang-format` version >16! Otherwise the PR check will fail and cannot be merged.
