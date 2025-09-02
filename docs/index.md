@@ -6,9 +6,6 @@ For detailed information about the libtropic library architecture and developmen
 
 - [Hello World!](#hello-world)
   - [Getting TROPIC01](#getting-tropic01)
-      - [QFN32 Samples](#qfn32-samples)
-      - [Breakout PCB with TROPIC01](#breakout-pcb-with-tropic01)
-      - [USB dongle with TROPIC01](#usb-dongle-with-tropic01)
   - [Libtropic library examples and tests](#libtropic-library-examples-and-tests)
   - [Standalone example projects](#standalone-example-projects)
   - [Adding libtropic to existing project](#adding-libtropic-to-existing-project)
@@ -16,39 +13,15 @@ For detailed information about the libtropic library architecture and developmen
 
 ## Getting TROPIC01
 
-`TROPIC01` is currently available in three forms:
-
-- QFN32 4x4mm IC package for direct PCB integration
-- Development board with pre-soldered TROPIC01 for easy evaluation
-- USB dongle with TROPIC01 for systems without SPI bus
-
-#### QFN32 Samples
-
-
 <img src="QFN32.jpg" alt="Secure Tropic Click" width="20%"/>
 
-Samples can be requested through our website. Visit [tropicsquare.com/tropic01-samples](https://tropicsquare.com/tropic01-samples) for more info.
+`TROPIC01` is currently available in several form factors, for example:
 
+- QFN32 4x4mm IC package for direct PCB integration,
+- Development boards with pre-soldered TROPIC01 for easy evaluation,
+- USB dongle with TROPIC01 for systems without SPI bus.
 
-#### Breakout PCB with TROPIC01
-
-PCB modules with `TROPIC01 engineering samples` are available as **Secure Tropic Click** through our external partner **MIKROE**'s webshop.
-
-To order, visit [mikroe.com](https://www.mikroe.com/secure-tropic-click).
-
-<img src="secure-tropic-click.png" alt="Secure Tropic Click" width="20%"/>
-
-You can interface **Secure Tropic Click** with your platform over SPI bus using a breadboard or wires. Additional conversion PCBs are available on the MIKROE website, including an [arduino](https://www.mikroe.com/arduino-uno-click-shield) form factor extension board.
-
-#### USB dongle with TROPIC01
-
-Designed for evaluation on systems where SPI is not available.
-
-<img src="ts1301_top_assembled.png" alt="Secure Tropic Click" width="30%"/>
-
-
-Please visit [tropicsquare.com](https://tropicsquare.com/tropic01-samples), sign-up and check availability.
-
+Check out [the TROPIC01 repository](https://github.com/tropicsquare/TROPIC01), where you can find datasheets, documentation and ordering instructions.
 
 ## Libtropic library examples and tests
 
@@ -66,8 +39,7 @@ To compile functional tests, either
 - pass `-DLT_BUILD_TESTS=1` to `cmake` during compilation, or
 - in your CMake file, switch this option on: `set(LT_BUILD_TESTS ON)`.
 
-**When `LT_BUILD_EXAMPLES` or `LT_BUILD_TESTS` are set, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.**
-
+**During build, SH0 keypair is automatically chosen from `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`, this SH0 key is present in the majority of distributed TROPIC01 chips. In certain cases (first engineering samples) it might be necessary to manually set it (in PEM or DER format) with following cmake switch: `-DLT_SH0_PRIV_PATH=<path to sh0_priv_engineering_sample01.pem>`**
 
 **For more information about the `provisioning_data/` directory structure, see it's README.md.**
 
