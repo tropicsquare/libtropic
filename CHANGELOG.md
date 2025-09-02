@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
+- CMake option for setting logging verbosity level: `LT_LOG_LVL`.
 - Compiler and linker flags to delete unused sections.
 
 ### Fixed

@@ -13,6 +13,7 @@ For detailed information about the libtropic library architecture and developmen
   - [Standalone example projects](#standalone-example-projects)
   - [Adding libtropic to existing project](#adding-libtropic-to-existing-project)
   - [Do you use Makefile instead of CMake?](#do-you-use-makefile-instead-of-cmake)
+  - [Logging](#logging)
 
 ## Getting TROPIC01
 
@@ -135,3 +136,25 @@ target_link_options(produced_binary PRIVATE <your_linker_flags>)
 In this case you have to add list of all libtropic *.c and *.h files manually to your makefile and then for all CMake ON options (located in libtropic's CMakeFile.txt) you define -D switch in your makefile.
 
 Then do the same for files used in `vendor/trezor_crypto/`.
+
+## Logging
+The library contains a logging functionality, which is disabled by default (unless you compile tests or examples).
+
+You may find it useful to enable logging during libtropic evaluation or integration. There are five logging levels:
+
+- none (default unless compiling tests or examples),
+- error,
+- warning,
+- info,
+- debug.
+
+To switch the logging level, you can use a following switch: `-DLT_LOG_LVL`. The table below summarizes all
+logging levels and a switch corresponding to each level.
+
+| Level   | CMake switch           |
+|---------|------------------------|
+| none    | `-DLT_LOG_LVL=None`    |
+| error   | `-DLT_LOG_LVL=Error`   |
+| warning | `-DLT_LOG_LVL=Warning` |
+| info    | `-DLT_LOG_LVL=Info`    |
+| debug   | `-DLT_LOG_LVL=Debug`   |

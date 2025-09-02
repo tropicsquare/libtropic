@@ -43,7 +43,7 @@ static lt_ret_t connect_to_server(lt_dev_unix_tcp_t *dev)
     server.sin_port = htons(dev->port);
 
     // Connect to the server
-    LT_LOG_DEBUG("Connecting to %s:%d.", inet_ntoa(server.sin_addr), server.sin_port);
+    LT_LOG_DEBUG("Connecting to %s:%d.", inet_ntoa(server.sin_addr), dev->port);
     if (connect(dev->socket_fd, (struct sockaddr *)(&server), sizeof(server)) < 0) {
         LT_LOG_ERROR("Could not connect: %s (%d).", strerror(errno), errno);
         return LT_FAIL;
