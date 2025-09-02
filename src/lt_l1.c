@@ -131,7 +131,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
                 return ret;
             }
 #ifdef LT_PRINT_SPI_DATA
-            print_hex_chunks(s2->buff, s2->buff[2] + 4, SPI_DIR_MISO);
+            print_hex_chunks(s2->buff, s2->buff[2] + 5, SPI_DIR_MISO);
 #endif
             return LT_OK;
 
