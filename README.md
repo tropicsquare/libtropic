@@ -5,7 +5,7 @@
 TROPIC01's SDK written in C. Contributors, please follow [guidelines](https://github.com/tropicsquare/libtropic/blob/master/CONTRIBUTING.md).
 
 
-For more info about TROPIC01 chip and it's **datasheet** or **User API**, check out developers resources in the [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
+For more information about TROPIC01 chip and its **datasheet** or **User API**, check out developers resources in the [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
 
 
 ## Compatibility with TROPIC01 firmware versions
@@ -16,23 +16,22 @@ For the `libtropic` library to function correctly with the TROPIC01 secure eleme
 2.  **Application Firmware**: The main firmware running on the TROPIC01 chip.
 3.  **SPECT Firmware**: The co-processor firmware on the TROPIC01 chip.
 
-The following table outlines the tested and supported compatibility between different released versions:
+The following table outlines the tested and supported compatibility between released versions:
 
 | API document version                                                                                   | `libtropic`         | Application            | SPECT            |  Bootloader |  Tests                                     |
 | :----------------------------------------------------------------------------------------------------: |:-------------------:|:----------------------:|:----------------:|  :-------:  |  :---------------------------------------: |
 | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 1.0.0               | 1.0.0                  | 1.0.0            |  v1.0.1     |  <code style="color : green">Passed</code> |
 | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 1.0.0               | 1.0.0                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> |
 
+Using mismatched versions of the components may result in unpredictable behavior or errors. It is strongly advised to use the latest compatible versions of all components to ensure proper functionality.  
 
-Using mismatched versions can lead to unexpected behavior or errors. We recommend using the latest compatible versions for all components.
-
-For retrieving firmware versions from TROPIC01 check code in `examples/lt_ex_show_chip_id_and_fw_ver.c`. For updating firmware please follow code example in `examples/lt_ex_fw_update.c`.
+For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_show_chip_id_and_fw_ver.c`. For updating firmware, please follow code example in `examples/lt_ex_fw_update.c`.
 
 ## Repository structure
 * `CMakeLists.txt` Root CMake project file
 * `cmake/` CMake related files
 * `docs/` Documentation
-* `examples/` A few examples how libtropic might be used
+* `examples/` A few examples of how libtropic might be used
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
 * `include/` Public API header files
 * `keys/` Default pairing keys for slots 1, 2, 3 (used in examples and functional tests)
@@ -59,7 +58,7 @@ Platform repositories, showing example usage of libtropic on known platforms:
 
 HTML documentation for the latest master version is available [here](https://tropicsquare.github.io/libtropic/).
 
-The documentation can be built manually as following:
+The documentation can be built manually as follows:
 ```sh
 mkdir build
 cd build
@@ -69,9 +68,6 @@ make doc_doxygen
 
 The documentation will be available in the `build/docs/doxygen/html/`.
 Open [index.html](build/docs/doxygen/html/index.html) with your favorite web browser.
-
-> [!NOTE]
-> After executing `cmake -DLT_BUILD_DOCS=1 ..`, you might get warnings about `LIBTROPIC_EXAMPLE_LIST` and `LIBTROPIC_TEST_LIST`. This is okay, you can ignore that.
 
 ## License
 
