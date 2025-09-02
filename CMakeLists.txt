@@ -54,6 +54,10 @@ if(
     message(FATAL_ERROR "No cryptography provider is defined.")
 endif()
 
+# Check whether compiling standalone (e.g. as a library or doc only) or as a child project (= has parent scope)
+# and save result to HAS_PARENT_SCOPE.
+get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
+
 ###########################################################################
 #                                                                         #
 #   Define files for firmware update.                                     #
@@ -197,8 +201,10 @@ set(LIBTROPIC_EXAMPLE_LIST
     lt_ex_fw_update
 )
 
-# Export example list to parent project (usually platform-specific implementation).
-set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+# Export example list to parent project (usually platform-specific implementation) if parent project exists.
+if (HAS_PARENT_SCOPE)
+    set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+endif()
 
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
@@ -270,8 +276,10 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_get_log_req
 )
 
-# Export test list to parent project (usually platform-specific implementation).
-set(LIBTROPIC_TEST_LIST ${LIBTROPIC_TEST_LIST} PARENT_SCOPE)
+# Export test list to parent project (usually platform-specific implementation) if parent project exists.
+if (HAS_PARENT_SCOPE)
+    set(LIBTROPIC_TEST_LIST ${LIBTROPIC_TEST_LIST} PARENT_SCOPE)
+endif()
 
 # Create a test registry based on the test list above. This test registry is then included
 # in platform-specific main.c.
