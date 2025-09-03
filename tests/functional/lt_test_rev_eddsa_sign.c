@@ -29,7 +29,7 @@ static lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
     lt_ret_t ret;
     uint8_t read_pub_key[64];
     lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_key_origin_t origin;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
     ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
@@ -84,7 +84,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
 
     uint8_t read_pub_key[32], msg_to_sign[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX], rs[64];
     lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_key_origin_t origin;
     uint32_t msg_to_sign_len;
 
     LT_LOG_INFO("Initializing handle");

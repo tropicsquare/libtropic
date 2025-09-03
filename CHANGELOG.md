@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed prefixes of all platform HAL files to `libtropic_`.
 - `lt_l2.h`, `lt_l2.c`, `lt_l3.h`, `lt_l3.c`: change prefix to `libtropic_`.
 - Renamed `LIBT_DEBUG` to `LT_REDUNDANT_ARG_CHECK`, as it is used only for the redundant argument checks.
+- Renamed `ecc_key_origin_t` to `lt_ecc_key_origin_t`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

@@ -650,7 +650,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("Reading ECC key slot %d...", (int)ECC_SLOT_0);
     uint8_t slot_0_pubkey[64];
     lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_key_origin_t origin;
     ret = lt_ecc_key_read(h, ECC_SLOT_0, slot_0_pubkey, &curve, &origin);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to read ECC slot, ret=%s", lt_ret_verbose(ret));

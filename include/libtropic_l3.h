@@ -417,7 +417,7 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
  * @param origin      Will be filled by origin type
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin);
 
 /**
  * @brief Encodes ECC_Key_Erase command payload.

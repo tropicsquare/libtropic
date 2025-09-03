@@ -706,7 +706,7 @@ typedef enum ecc_slot_t {
 typedef enum lt_ecc_curve_type_t { CURVE_P256 = 1, CURVE_ED25519 } lt_ecc_curve_type_t;
 
 /** @brief ECC key origin */
-typedef enum ecc_key_origin_t { CURVE_GENERATED = 1, CURVE_STORED } ecc_key_origin_t;
+typedef enum lt_ecc_key_origin_t { CURVE_GENERATED = 1, CURVE_STORED } lt_ecc_key_origin_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal allowed value of the monotonic counter. */
