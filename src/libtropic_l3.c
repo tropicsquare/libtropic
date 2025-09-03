@@ -896,7 +896,7 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h)
 }
 
 // lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen,
-// lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
+// lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin)
 lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot)
 {
     if (!h || (slot > ECC_SLOT_31)) {
@@ -917,7 +917,7 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin)
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin)
 {
     if (!h || !key || !curve || !origin) {
         return LT_PARAM_ERR;
