@@ -380,7 +380,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
         return LT_PARAM_ERR;
     }
 
-    session_state_t state = {0};
+    lt_session_state_t state = {0};
 
     lt_ret_t ret = lt_out__session_start(h, pkey_index, &state);
     if (ret != LT_OK) {
@@ -401,7 +401,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
     }
 
     ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &state);
-    memset(&state, 0, sizeof(session_state_t));
+    memset(&state, 0, sizeof(lt_session_state_t));
 
     return ret;
 }

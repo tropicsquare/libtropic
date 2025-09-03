@@ -40,7 +40,7 @@
  * session establishment in lt_in__session_start().
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, session_state_t *state);
+lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, lt_session_state_t *state);
 
 /**
  * @brief Decodes TROPIC01's response during secure session's establishment.
@@ -59,7 +59,7 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
-                              const uint8_t *shipriv, const uint8_t *shipub, session_state_t *state);
+                              const uint8_t *shipriv, const uint8_t *shipub, lt_session_state_t *state);
 
 /**
  * @brief Encodes Ping command payload.
