@@ -12,9 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.
 - Compiler and linker flags to delete unused sections.
+- Macro `MCOUNTER_VALUE_MAX` for the maximal allowed value of monotonic counter.
 
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
+- `lt_mcounter_init()`: Allow `mcounter_value` only from range 0-`MCOUNTER_VALUE_MAX`.
 
 ### Removed
 
