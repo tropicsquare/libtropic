@@ -567,7 +567,7 @@ lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value);
  * @param data_out    Data to be sent out, must be 32 bytes long
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out);
+lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out);
 
 /**
  * @brief Decodes MAC_And_Destroy result payload.

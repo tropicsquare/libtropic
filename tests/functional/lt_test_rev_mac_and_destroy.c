@@ -20,7 +20,7 @@
 
 uint8_t kdf_key_zeros[256] = {0};
 
-static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, mac_and_destroy_slot_t slot,
+static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, lt_mac_and_destroy_slot_t slot,
                      uint8_t ciphertexts[128][32], uint8_t *t, uint8_t *s)
 {
     uint8_t v[32], w[32], k_i[32], t_[32];
