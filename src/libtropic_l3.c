@@ -21,7 +21,7 @@
 #include "lt_sha256.h"
 #include "lt_x25519.h"
 
-lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, session_state_t *state)
+lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, session_state_t *state)
 {
     if (!h || (pkey_index > PAIRING_KEY_SLOT_INDEX_3) || !state) {
         return LT_PARAM_ERR;
@@ -50,7 +50,7 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
     return LT_OK;
 }
 
-lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index,
+lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
                               const uint8_t *shipriv, const uint8_t *shipub, session_state_t *state)
 {
     if (!h || !stpub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3) || !shipriv || !shipub || !state) {
