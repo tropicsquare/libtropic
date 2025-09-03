@@ -588,7 +588,7 @@ typedef enum lt_pairing_key_slot_t {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
-typedef enum CONFIGURATION_OBJECTS_REGS {
+typedef enum lt_config_obj_addr_t {
     CONFIGURATION_OBJECTS_CFG_START_UP_ADDR = BOOTLOADER_CO_CFG_START_UP_ADDR,
     CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR = BOOTLOADER_CO_CFG_SENSORS_ADDR,
     CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR = BOOTLOADER_CO_CFG_DEBUG_ADDR,
@@ -616,7 +616,7 @@ typedef enum CONFIGURATION_OBJECTS_REGS {
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_GET_ADDR,
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR = APPLICATION_CO_CFG_UAP_MCOUNTER_UPDATE_ADDR,
     CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR = APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_ADDR
-} CONFIGURATION_OBJECTS_REGS;
+} lt_config_obj_addr_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /**
@@ -924,7 +924,7 @@ typedef enum mac_and_destroy_slot_t {
  *         through all config addresses and printing out them into debug */
 typedef struct lt_config_obj_desc_t {
     char desc[60];
-    enum CONFIGURATION_OBJECTS_REGS addr;
+    enum lt_config_obj_addr_t addr;
 } lt_config_obj_desc_t;
 
 /** @brief Number of configuration objects in lt_config_t */

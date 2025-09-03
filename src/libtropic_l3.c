@@ -338,7 +338,7 @@ lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h)
     return LT_OK;
 }
 
-static bool conf_addr_valid(enum CONFIGURATION_OBJECTS_REGS addr)
+static bool conf_addr_valid(enum lt_config_obj_addr_t addr)
 {
     bool valid = false;
 
@@ -375,7 +375,7 @@ static bool conf_addr_valid(enum CONFIGURATION_OBJECTS_REGS addr)
     return valid;
 }
 
-lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj)
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj)
 {
     if (!h || !conf_addr_valid(addr)) {
         return LT_PARAM_ERR;
@@ -421,7 +421,7 @@ lt_ret_t lt_in__r_config_write(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr)
+lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr)
 {
     if (!h || !conf_addr_valid(addr)) {
         return LT_PARAM_ERR;
@@ -512,7 +512,7 @@ lt_ret_t lt_in__r_config_erase(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index)
+lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint8_t bit_index)
 {
     if (!h || !conf_addr_valid(addr) || (bit_index > 31)) {
         return LT_PARAM_ERR;
@@ -558,7 +558,7 @@ lt_ret_t lt_in__i_config_write(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr)
+lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr)
 {
     if (!h || !conf_addr_valid(addr)) {
         return LT_PARAM_ERR;

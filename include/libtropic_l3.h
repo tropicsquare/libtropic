@@ -159,7 +159,7 @@ lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
  * @param obj         Content to be written
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj);
 
 /**
  * @brief Decodes R_Config_Write result payload.
@@ -180,7 +180,7 @@ lt_ret_t lt_in__r_config_write(lt_handle_t *h);
  * @param addr        Address to read configuration object from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
+lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr);
 
 /**
  * @brief Decodes R_Config_Read result payload.
@@ -223,7 +223,7 @@ lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
  * @param bit_index   Bit index to write in the configuration object
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
+lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint8_t bit_index);
 
 /**
  * @brief Decodes I_Config_Write result payload.
@@ -244,7 +244,7 @@ lt_ret_t lt_in__i_config_write(lt_handle_t *h);
  * @param addr        Address to read configuration object from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
+lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr);
 
 /**
  * @brief Decodes I_Config_Read result payload.
