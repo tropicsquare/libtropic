@@ -612,7 +612,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
 
 /** @} */  // end of libtropic_API group
 

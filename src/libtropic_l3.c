@@ -1252,7 +1252,7 @@ lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value)
     return LT_OK;
 }
 
-lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out)
+lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out)
 {
     if (!h || !data_out || slot > MAC_AND_DESTROY_SLOT_127) {
         return LT_PARAM_ERR;

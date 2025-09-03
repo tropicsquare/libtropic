@@ -1352,7 +1352,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
     return lt_in__mcounter_get(h, mcounter_value);
 }
 
-lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in)
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in)
 {
     if (!h || !data_out || !data_in || slot > MAC_AND_DESTROY_SLOT_127) {
         return LT_PARAM_ERR;

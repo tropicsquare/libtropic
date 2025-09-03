@@ -739,7 +739,7 @@ typedef enum lt_mcounter_index_t {
 #define MACANDD_ROUNDS_MAX 128
 
 /** @brief Mac-and-Destroy slot indexes */
-typedef enum mac_and_destroy_slot_t {
+typedef enum lt_mac_and_destroy_slot_t {
     MAC_AND_DESTROY_SLOT_0 = 0,
     MAC_AND_DESTROY_SLOT_1,
     MAC_AND_DESTROY_SLOT_2,
@@ -868,7 +868,7 @@ typedef enum mac_and_destroy_slot_t {
     MAC_AND_DESTROY_SLOT_125,
     MAC_AND_DESTROY_SLOT_126,
     MAC_AND_DESTROY_SLOT_127
-} mac_and_destroy_slot_t;
+} lt_mac_and_destroy_slot_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned serial code */
