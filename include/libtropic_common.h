@@ -667,7 +667,7 @@ typedef enum lt_config_obj_idx_t {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
-typedef enum ecc_slot_t {
+typedef enum lt_ecc_slot_t {
     ECC_SLOT_0 = 0,
     ECC_SLOT_1,
     ECC_SLOT_2,
@@ -700,7 +700,7 @@ typedef enum ecc_slot_t {
     ECC_SLOT_29,
     ECC_SLOT_30,
     ECC_SLOT_31,
-} ecc_slot_t;
+} lt_ecc_slot_t;
 
 /** @brief ECC key type */
 typedef enum lt_ecc_curve_type_t { CURVE_P256 = 1, CURVE_ED25519 } lt_ecc_curve_type_t;

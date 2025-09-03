@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `pairing_key_slot_t` to `lt_pairing_key_slot_t`.
 - Renamed `CONFIGURATION_OBJECTS_REGS` to `lt_config_obj_addr_t`.
 - Renamed `CONFIGURATION_OBJECTS_REGS_IDX` to `lt_config_obj_idx_t`.
+- Renamed `ecc_slot_t` to `lt_ecc_slot_t`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

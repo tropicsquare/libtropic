@@ -358,7 +358,7 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
  * @param curve       ECC curve type to use for key generation
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
+lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
  * @brief Decodes ECC_Key_Generate result payload.
@@ -381,7 +381,7 @@ lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
  * @param key         Ecc key to store, 32B length
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve,
+lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve,
                                const uint8_t *key);
 
 /**
@@ -403,7 +403,7 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
  * @param slot        ECC key slot to read key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
+lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot);
 
 /**
  * @brief Decodes ECC_Key_Read result payload.
@@ -428,7 +428,7 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
  * @param slot        ECC key slot to erase key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
+lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t slot);
 
 /**
  * @brief Decodes ECC_Key_Erase result payload.
@@ -451,7 +451,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
 
 /**
  * @brief Decodes ECDSA_Sign result payload.
@@ -475,7 +475,7 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len);
+lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len);
 
 /**
  * @brief Decodes EDDSA_Sign result payload.
