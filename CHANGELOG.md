@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Compiler and linker flags to delete unused sections.
 
 ### Fixed
+- `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
 
 ### Removed
 
