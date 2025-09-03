@@ -579,12 +579,12 @@ typedef struct lt_session_state_t {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
-typedef enum pairing_key_slot_t {
+typedef enum lt_pairing_key_slot_t {
     SH0PUB = 0,
     SH1PUB,
     SH2PUB,
     SH3PUB,
-} pairing_key_slot_t;
+} lt_pairing_key_slot_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
