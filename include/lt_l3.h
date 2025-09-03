@@ -269,7 +269,7 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
  * `R_MEM_DATA_SIZE_MAX`)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t size);
+lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size);
 
 /**
  * @brief Decodes R_Mem_Data_Write result payload.
