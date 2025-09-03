@@ -623,7 +623,7 @@ typedef enum lt_config_obj_addr_t {
  * @brief CONFIGURATION_OBJECTS_REGISTERS index map to lt_config_t.
  * @warning Must reflect the order in cfg_desc_table.
  */
-typedef enum CONFIGURATION_OBJECTS_REGS_IDX {
+typedef enum lt_config_obj_idx_t {
     CONFIGURATION_OBJECTS_CFG_START_UP_IDX = 0,
     CONFIGURATION_OBJECTS_CFG_SENSORS_IDX,
     CONFIGURATION_OBJECTS_CFG_DEBUG_IDX,
@@ -651,7 +651,7 @@ typedef enum CONFIGURATION_OBJECTS_REGS_IDX {
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_IDX,
     CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_IDX,
     CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_IDX,
-} CONFIGURATION_OBJECTS_REGS_IDX;
+} lt_config_obj_idx_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Minimal size of one data slot in bytes */
