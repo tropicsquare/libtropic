@@ -803,7 +803,7 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
     return LT_OK;
 }
 
-lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve)
+lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
     if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519))) {
         return LT_PARAM_ERR;
@@ -846,8 +846,8 @@ lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h)
     return LT_OK;
 }
 
-// lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
-lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve,
+// lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
+lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve,
                                const uint8_t *key)
 {
     if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519)) || !key) {
@@ -895,9 +895,9 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h)
     return LT_OK;
 }
 
-// lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t slot, uint8_t *key, const uint8_t keylen,
+// lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot, uint8_t *key, const uint8_t keylen,
 // lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin)
-lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot)
+lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot)
 {
     if (!h || (slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
@@ -959,9 +959,9 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
     return LT_OK;
 }
 
-// lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
+// lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t slot)
 
-lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot)
+lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t slot)
 {
     if (!h || (slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
@@ -1006,7 +1006,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len)
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len)
 {
     if (!h || (slot > ECC_SLOT_31) || !msg) {
         return LT_PARAM_ERR;
@@ -1063,7 +1063,7 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs)
     return LT_OK;
 }
 
-lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len)
+lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len)
 {
     if (!h || !msg || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot > ECC_SLOT_31)) {
         return LT_PARAM_ERR;
