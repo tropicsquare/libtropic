@@ -551,11 +551,11 @@ typedef enum lt_pkey_index_t {
 } lt_pkey_index_t;
 
 /** @brief Structure used to store variables used during establishment of a secure session */
-typedef struct session_state_t {
+typedef struct lt_session_state_t {
     uint8_t ehpriv[32];
     uint8_t ehpub[32];
     // lt_pkey_index_t pkey_index;
-} session_state_t;
+} lt_session_state_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */

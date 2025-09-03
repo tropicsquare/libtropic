@@ -60,7 +60,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
 
     //---------------------------------------------------------------------------------------//
     // Separated API calls for starting a secure session:
-    session_state_t state = {0};
+    lt_session_state_t state = {0};
 
     // Inicialize session from a server side by creating state->ehpriv and state->ehpub,
     // l2 request is prepared into handle's buffer (h->l2_buff)
