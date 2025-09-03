@@ -499,7 +499,7 @@ STATIC_ASSERT(
  * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
  * based on bootloader version. This header layout is returned by bootloader version v1.0.1
  */
-typedef struct header_boot_v2_t {
+typedef struct lt_header_boot_v2_t {
     /** @brief Currently only two types supported:
      * 1 == FW for RISCV coprocessor.
      * 2 == FW for SPECT coprocessor */
@@ -520,22 +520,22 @@ typedef struct header_boot_v2_t {
      * version.*/
     uint32_t pair_version;
 
-} __attribute__((packed)) header_boot_v2_t;
+} __attribute__((packed)) lt_header_boot_v2_t;
 
 // clang-format off
 /** \cond */
 STATIC_ASSERT(
-    ( sizeof(struct header_boot_v2_t) )
+    ( sizeof(struct lt_header_boot_v2_t) )
     ==
     (
-        MEMBER_SIZE(struct header_boot_v2_t, type) + 
-        MEMBER_SIZE(struct header_boot_v2_t, padding) + 
-        MEMBER_SIZE(struct header_boot_v2_t, header_version) + 
-        MEMBER_SIZE(struct header_boot_v2_t, ver) + 
-        MEMBER_SIZE(struct header_boot_v2_t, size) +
-        MEMBER_SIZE(struct header_boot_v2_t, git_hash) +
-        MEMBER_SIZE(struct header_boot_v2_t, hash) +
-        MEMBER_SIZE(struct header_boot_v2_t, pair_version)
+        MEMBER_SIZE(struct lt_header_boot_v2_t, type) + 
+        MEMBER_SIZE(struct lt_header_boot_v2_t, padding) + 
+        MEMBER_SIZE(struct lt_header_boot_v2_t, header_version) + 
+        MEMBER_SIZE(struct lt_header_boot_v2_t, ver) + 
+        MEMBER_SIZE(struct lt_header_boot_v2_t, size) +
+        MEMBER_SIZE(struct lt_header_boot_v2_t, git_hash) +
+        MEMBER_SIZE(struct lt_header_boot_v2_t, hash) +
+        MEMBER_SIZE(struct lt_header_boot_v2_t, pair_version)
     )
 )
 /** \endcond */

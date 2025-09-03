@@ -104,7 +104,7 @@ static void print_all_headers_v1(lt_handle_t *h)
 // This function prints the header in the new format used in bootloader version 2.0.1
 static void print_header_boot_v2_0_1(uint8_t *data, lt_bank_id_t bank_id)
 {
-    struct header_boot_v2_t *p_h = (struct header_boot_v2_t *)data;
+    struct lt_header_boot_v2_t *p_h = (struct lt_header_boot_v2_t *)data;
     switch (bank_id) {
         case FW_BANK_FW1:
             LT_LOG_INFO("    Firmware bank 1 header:");

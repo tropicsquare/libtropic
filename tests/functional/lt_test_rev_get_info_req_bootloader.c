@@ -16,7 +16,7 @@
 
 /** @brief Length of the buffers for certificates. */
 #define CERTS_BUF_LEN 700
-/** @brief Size of the buffer for printing the 32B hash from header_boot_v2_t. */
+/** @brief Size of the buffer for printing the 32B hash from lt_header_boot_v2_t. */
 #define BOOTLOADER_V2_0_1_HASH_PRINT_BUFF_SIZE (32 * 2 + 1)
 
 lt_handle_t *g_h;
@@ -39,7 +39,7 @@ static void print_fw_header_bootloader_v1_0_1(uint8_t *header)
 
 static void print_fw_header_bootloader_v2_0_1(uint8_t *header)
 {
-    struct header_boot_v2_t *p_h = (struct header_boot_v2_t *)header;
+    struct lt_header_boot_v2_t *p_h = (struct lt_header_boot_v2_t *)header;
     char hash_str[BOOTLOADER_V2_0_1_HASH_PRINT_BUFF_SIZE];
 
     LT_LOG_INFO("Calling lt_print_bytes()...");
