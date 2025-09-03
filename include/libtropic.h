@@ -134,7 +134,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @brief Read TROPIC01's firmware bank info
  *
  * @param h           Device's handle
- * @param bank_id     ID of firmware bank (one from enum bank_id_t)
+ * @param bank_id     ID of firmware bank (one from enum lt_bank_id_t)
  * @param header      Buffer to store fw header bytes into
  * @param max_len     Length of a buffer
  *
@@ -142,7 +142,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
 
 /**
  * @brief Establishes encrypted secure session between TROPIC01 and host MCU
@@ -212,13 +212,13 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
  * @brief Erase mutable firmware in one of banks
  *
  * @param h           Device's handle
- * @param bank_id     enum bank_id_t
+ * @param bank_id     enum lt_bank_id_t
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id);
 
 /**
  * @brief Update mutable firmware in one of banks
@@ -226,11 +226,11 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
  * @param h             Device's handle
  * @param fw_data       Array with firmware bytes
  * @param fw_data_size  Number of firmware's bytes in passed array
- * @param bank_id       enum bank_id_t
+ * @param bank_id       enum lt_bank_id_t
  * lt_ret_t             LT_OK            - SUCCESS
  *                      other parameters - ERROR, for verbose output pass return value to function lt_ret_verbose()
  */
-lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id);
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, lt_bank_id_t bank_id);
 
 #elif ACAB
 /** @brief Maximal size of update data */
@@ -748,7 +748,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
  * @return             LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
-                                 bank_id_t bank_id);
+                                 lt_bank_id_t bank_id);
 
 /** @} */  // end of libtropic_API_helpers group
 #endif

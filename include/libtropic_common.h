@@ -460,12 +460,12 @@ STATIC_ASSERT(
 #define LT_L2_GET_INFO_FW_HEADER_SIZE LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2
 
 /** @brief BANK ID */
-typedef enum bank_id_t {
+typedef enum lt_bank_id_t {
     FW_BANK_FW1 = 1,      // Firmware bank 1.
     FW_BANK_FW2 = 2,      // Firmware bank 2
     FW_BANK_SPECT1 = 17,  // SPECT bank 1.
     FW_BANK_SPECT2 = 18,  // SPECT bank 2
-} bank_id_t;
+} lt_bank_id_t;
 
 /**
  * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs

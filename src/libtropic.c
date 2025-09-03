@@ -334,7 +334,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
     return LT_OK;
 }
 
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len)
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len)
 {
     if (!h || !header || max_len < LT_L2_GET_INFO_FW_HEADER_SIZE
         || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
@@ -515,7 +515,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
 }
 
 #ifdef ABAB
-lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id)
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
 {
     if (!h
         || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
@@ -548,7 +548,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id)
     return LT_OK;
 }
 
-lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id)
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, lt_bank_id_t bank_id)
 {
     if (!h || !fw_data || fw_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX
         || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
@@ -1794,7 +1794,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
 }
 
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
-                                 bank_id_t bank_id)
+                                 lt_bank_id_t bank_id)
 {
 #ifdef ABAB
     if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX
