@@ -30,6 +30,7 @@
 #include "libtropic_port.h"
 
 #define READ_WRITE_DELAY 10
+#define SPI_TRANSFER_BUFF_SIZE_MAX ((LT_L1_LEN_MAX * 2) + 1)
 
 /**
  * @brief Writes data to a serial port (specified by fd).
@@ -228,7 +229,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     }
 
     // Bytes from handle which are about to be sent are encoded as chars and stored to buffered_chars.
-    uint8_t buffered_chars[512] = {0};
+    uint8_t buffered_chars[SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
     for (int i = 0; i < tx_data_length; i++) {
         sprintf((char *)(buffered_chars + i * 2), "%02" PRIX8, s2->buff[i + offset]);
     }
