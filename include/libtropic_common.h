@@ -543,18 +543,18 @@ STATIC_ASSERT(
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Pairing key indexes corresponds to S_HiPub */
-typedef enum pkey_index_t {
+typedef enum lt_pkey_index_t {
     PAIRING_KEY_SLOT_INDEX_0,
     PAIRING_KEY_SLOT_INDEX_1,
     PAIRING_KEY_SLOT_INDEX_2,
     PAIRING_KEY_SLOT_INDEX_3,
-} pkey_index_t;
+} lt_pkey_index_t;
 
 /** @brief Structure used to store variables used during establishment of a secure session */
 typedef struct session_state_t {
     uint8_t ehpriv[32];
     uint8_t ehpub[32];
-    // pkey_index_t pkey_index;
+    // lt_pkey_index_t pkey_index;
 } session_state_t;
 
 //--------------------------------------------------------------------------------------------------------------------//

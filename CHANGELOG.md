@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `bank_id_t` to `lt_bank_id_t`.
 - Renamed `header_boot_v1_t` to `lt_header_boot_v1_t`.
 - Renamed `header_boot_v2_t` to `lt_header_boot_v2_t`.
+- Renamed `pkey_index_t` to `lt_pkey_index_t`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.
