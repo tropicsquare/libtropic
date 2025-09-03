@@ -23,7 +23,7 @@ lt_handle_t *g_h;
 
 static void print_fw_header_bootloader_v1_0_1(uint8_t *header)
 {
-    struct header_boot_v1_t *p_h = (struct header_boot_v1_t *)header;
+    struct lt_header_boot_v1_t *p_h = (struct lt_header_boot_v1_t *)header;
 
     LT_LOG_INFO("Type:     0x%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8, p_h->type[3], p_h->type[2], p_h->type[1],
                 p_h->type[0]);

@@ -19,7 +19,7 @@
 
 static void print_header_boot_v1_0_1(uint8_t *data, lt_bank_id_t bank_id)
 {
-    struct header_boot_v1_t *p_h = (struct header_boot_v1_t *)data;
+    struct lt_header_boot_v1_t *p_h = (struct lt_header_boot_v1_t *)data;
     switch (bank_id) {
         case FW_BANK_FW1:
             LT_LOG_INFO("    Firmware bank 1 header:");

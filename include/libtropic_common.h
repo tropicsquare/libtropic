@@ -471,25 +471,25 @@ typedef enum lt_bank_id_t {
  * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
  * based on bootloader version. This header layout is returned by bootloader version v1.0.1
  */
-typedef struct header_boot_v1_t {
+typedef struct lt_header_boot_v1_t {
     uint8_t type[4];
     uint8_t version[4];
     uint8_t size[4];
     uint8_t git_hash[4];
     uint8_t hash[4];
-} __attribute__((packed)) header_boot_v1_t;
+} __attribute__((packed)) lt_header_boot_v1_t;
 
 // clang-format off
 /** \cond */
 STATIC_ASSERT(
-    ( sizeof(struct header_boot_v1_t) )
+    ( sizeof(struct lt_header_boot_v1_t) )
     ==
     (
-        MEMBER_SIZE(struct header_boot_v1_t, type) + 
-        MEMBER_SIZE(struct header_boot_v1_t, version) + 
-        MEMBER_SIZE(struct header_boot_v1_t, size) + 
-        MEMBER_SIZE(struct header_boot_v1_t, git_hash) + 
-        MEMBER_SIZE(struct header_boot_v1_t, hash)
+        MEMBER_SIZE(struct lt_header_boot_v1_t, type) + 
+        MEMBER_SIZE(struct lt_header_boot_v1_t, version) + 
+        MEMBER_SIZE(struct lt_header_boot_v1_t, size) + 
+        MEMBER_SIZE(struct lt_header_boot_v1_t, git_hash) + 
+        MEMBER_SIZE(struct lt_header_boot_v1_t, hash)
     )
 )
 /** \endcond */
