@@ -336,7 +336,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
+lt_ret_t lt_r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj);
 
 /**
  * @brief Reads configuration object specified by `addr`
@@ -350,7 +350,7 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
  * of returned value
  *
  */
-lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
+lt_ret_t lt_r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, uint32_t *obj);
 
 /**
  * @brief Erases all configuration objects
@@ -374,7 +374,7 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
+lt_ret_t lt_i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint8_t bit_index);
 
 /**
  * @brief Reads configuration object specified by `addr` from I-Config
@@ -387,7 +387,7 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
+lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, uint32_t *obj);
 
 /**
  * @brief Writes bytes into a given slot of the User Partition in the R memory
