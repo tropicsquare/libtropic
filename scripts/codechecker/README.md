@@ -30,3 +30,7 @@ There are 2 options to get reports:
     ```
 
     - Note: `<path to CodeChecker>` can be replaced with "CodeChecker" if the CodeChecker is available in your `$PATH`. Otherwise, you need to specify full path to the CodeChecker executable.
+
+## Remarks
+The current CodeChecker configuration is in YAML format, as it is more human-readable than JSON and also supports comments.  
+The configuration file enables some strict checkers, which may produce a lot of warnings. It is recommended to run the analysis using the full configuration at least once. After that, you can manually disable any checkers you find unnecessary.
