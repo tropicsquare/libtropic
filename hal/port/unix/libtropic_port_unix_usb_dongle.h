@@ -1,8 +1,8 @@
-#ifndef LT_PORT_UNIX_USB_DONGLE_H
-#define LT_PORT_UNIX_USB_DONGLE_H
+#ifndef LIBTROPIC_PORT_UNIX_USB_DONGLE_H
+#define LIBTROPIC_PORT_UNIX_USB_DONGLE_H
 
 /**
- * @file lt_port_unix_usb_dongle.h
+ * @file libtropic_port_unix_usb_dongle.h
  * @author Tropic Square s.r.o.
  * @brief Port for communication with USB UART Dongle (TS1302).
  *
@@ -31,4 +31,4 @@ typedef struct lt_dev_unix_usb_dongle_t {
     int fd;
 } lt_dev_unix_usb_dongle_t;
 
-#endif  // LT_PORT_UNIX_USB_DONGLE_H
+#endif  // LIBTROPIC_PORT_UNIX_USB_DONGLE_H
