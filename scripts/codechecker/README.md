@@ -12,7 +12,7 @@ There are 2 options to get reports:
     - Run following commands:
 
     ```sh
-    CodeChecker check -b "./scripts/codechecker/codechecker_build.sh" --config ./scripts/codechecker/codechecker_config.json --output ./.codechecker/reports
+    CodeChecker check -b "./scripts/codechecker/codechecker_build.sh" --config ./scripts/codechecker/codechecker_config.yml --output ./.codechecker/reports
     CodeChecker parse -e html ./.codechecker/reports -o ./.codechecker/reports_html
     ```
     
