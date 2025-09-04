@@ -13,7 +13,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "lt_l1_port_wrap.h"
-#include "lt_l2.h"
+#include "libtropic_l2.h"
 #include "lt_l2_api_structs.h"
 
 #define REBOOT_WAIT_ATTEMPTS 10
