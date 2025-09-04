@@ -573,7 +573,7 @@ typedef struct lt_session_state_t {
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
-#define TR01_PING_LEN_MAX TR01_L3_PING_CMD_DATA_IN_LEN_MAX
+#define TR01_PING_LEN_MAX 4096
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief ECC key slot indexes */
