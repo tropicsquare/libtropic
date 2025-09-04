@@ -1,5 +1,5 @@
-#ifndef LT_L2_H
-#define LT_L2_H
+#ifndef LIBTROPIC_L2_H
+#define LIBTROPIC_L2_H
 
 /**
  * @defgroup group_l2_functions Layer 2 functions
@@ -10,7 +10,7 @@
  */
 
 /**
- * @file lt_l2.h
+ * @file libtropic_l2.h
  * @brief Layer 2 functions declarations
  * @author Tropic Square s.r.o.
  *
@@ -87,4 +87,4 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
 /** @} */  // end of group_l2_functions
 
-#endif
+#endif // LIBTROPIC_L2_H
