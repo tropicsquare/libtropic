@@ -24,7 +24,7 @@ There are 2 options to get reports:
 
     ```json
     "codechecker.executor.executablePath": <path to CodeChecker>,
-    "codechecker.analyze.arguments": "--config ./scripts/codechecker/codechecker_config.json",
+    "codechecker.analyze.arguments": "--config ./scripts/codechecker/codechecker_config.yml",
     "codechecker.log.buildCommand": "./scripts/codechecker/codechecker_build.sh",
     "codechecker.backend.compilationDatabasePath": "${workspaceFolder}/.codechecker/compile_commands.json"
     ```
