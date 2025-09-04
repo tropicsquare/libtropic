@@ -566,7 +566,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
  *
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
- * @param mcounter_value  Value to set as an initial value (allowed range is 0-MCOUNTER_VALUE_MAX)
+ * @param mcounter_value  Value to set as an initial value (allowed range is 0-`TR01_MCOUNTER_VALUE_MAX`)
  *
  * @retval                LT_OK Function executed successfully
  * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
@@ -591,7 +591,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
  *
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
- * @param mcounter_value  Value of monotonic counter (from range 0-MCOUNTER_VALUE_MAX)
+ * @param mcounter_value  Value of monotonic counter (from range 0-`TR01_MCOUNTER_VALUE_MAX`)
  *
  * @retval                LT_OK Function executed successfully
  * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose

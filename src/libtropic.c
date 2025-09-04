@@ -1274,7 +1274,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
 {
-    if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15) || mcounter_value > MCOUNTER_VALUE_MAX) {
+    if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15) || mcounter_value > TR01_MCOUNTER_VALUE_MAX) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
