@@ -34,7 +34,7 @@
 #include "lt_sha256.h"
 #include "lt_x25519.h"
 
-#define TS_GET_INFO_BLOCK_LEN 128
+#define TR01_GET_INFO_BLOCK_LEN 128
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
@@ -47,7 +47,7 @@ lt_ret_t lt_init(lt_handle_t *h)
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
-    h->l3.session = SESSION_OFF;
+    h->l3.session = LT_SECURE_SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     if (ret != LT_OK) {
         return ret;
@@ -83,7 +83,7 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     // The byte used here must not be ID byte of some request, otherwise chip would be confused
     // and would return CRC error.
     // GET_RESP 0xAA works fine.
-    h->l2.buff[0] = GET_RESPONSE_REQ_ID;
+    h->l2.buff[0] = TR01_L1_GET_RESPONSE_REQ_ID;
 
     // Transfer just one byte to read CHIP_STATUS byte
     ret = lt_l1_spi_csn_low(&h->l2);
@@ -94,7 +94,7 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     ret = lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT);
     if (ret != LT_OK) {
         lt_ret_t ret_unused = lt_l1_spi_csn_high(&h->l2);
-        UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
+        LT_UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
         return ret;
     }
 
@@ -105,11 +105,11 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
 
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
-    if (h->l2.buff[0] & CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = LT_MODE_MAINTENANCE;
+    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
+        h->l2.mode = TR01_MODE_MAINTENANCE;
     }
     else {
-        h->l2.mode = LT_MODE_APP;
+        h->l2.mode = TR01_MODE_APP;
     }
 
     return LT_OK;
@@ -132,10 +132,10 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     uint8_t *cert_head = store->certs[curr_cert];
 
     // Worst case full ceert-store is read out
-    for (int i = 0; i < (LT_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TS_GET_INFO_BLOCK_LEN); i++) {
-        p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
-        p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
-        p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
+    for (int i = 0; i < (TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TR01_GET_INFO_BLOCK_LEN); i++) {
+        p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
+        p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
+        p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
         p_l2_req->block_index = i;
 
         lt_ret_t ret = lt_l2_send(&h->l2);
@@ -148,12 +148,12 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
             return ret;
         }
 
-        if (TS_GET_INFO_BLOCK_LEN != (p_l2_resp->rsp_len)) {
+        if (TR01_GET_INFO_BLOCK_LEN != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
         }
 
         uint8_t *head = ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object;
-        uint8_t *tail = head + TS_GET_INFO_BLOCK_LEN;
+        uint8_t *tail = head + TR01_GET_INFO_BLOCK_LEN;
 
         // Parse the header - Gets lengths and checks buffers are large enough
         if (i == 0) {
@@ -208,7 +208,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
 
         // Handle trailing rest of the next certificate
         if (available > to_copy) {
-            int trailer_len = TS_GET_INFO_BLOCK_LEN - to_copy;
+            int trailer_len = TR01_GET_INFO_BLOCK_LEN - to_copy;
             memcpy(cert_head, head, trailer_len);
             cert_head += trailer_len;
         }
@@ -226,7 +226,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
     uint8_t *head = store->certs[LT_CERT_KIND_DEVICE];
     uint16_t len = store->cert_len[LT_CERT_KIND_DEVICE];
 
-    return asn1der_find_object(head, len, OBJ_ID_CURVEX25519, stpub, stpub_len, ASN1DER_CROP_PREFIX);
+    return asn1der_find_object(head, len, LT_OBJ_ID_CURVEX25519, stpub, stpub_len, LT_ASN1DER_CROP_PREFIX);
 }
 
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
@@ -240,10 +240,10 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
-    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
-    p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID;
-    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+    p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
+    p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID;
+    p_l2_req->block_index = TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
@@ -255,11 +255,11 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
     }
 
     // Check incomming l3 length
-    if (LT_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, LT_L2_GET_INFO_CHIP_ID_SIZE);
+    memcpy(chip_id, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_CHIP_ID_SIZE);
 
     return LT_OK;
 }
@@ -275,10 +275,10 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
-    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
-    p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION;
-    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+    p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
+    p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION;
+    p_l2_req->block_index = TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
@@ -290,11 +290,11 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver)
     }
 
     // Check incomming l3 length
-    if (LT_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, LT_L2_GET_INFO_RISCV_FW_SIZE);
+    memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_RISCV_FW_SIZE);
 
     return LT_OK;
 }
@@ -310,10 +310,10 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
-    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
-    p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION;
-    p_l2_req->block_index = LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
+    p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
+    p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION;
+    p_l2_req->block_index = TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
@@ -325,20 +325,20 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
     }
 
     // Check incomming l3 length
-    if (LT_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, LT_L2_GET_INFO_SPECT_FW_SIZE);
+    memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_SPECT_FW_SIZE);
 
     return LT_OK;
 }
 
 lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len)
 {
-    if (!h || !header || max_len < LT_L2_GET_INFO_FW_HEADER_SIZE
-        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
-            && (bank_id != FW_BANK_SPECT2))) {
+    if (!h || !header || max_len < TR01_L2_GET_INFO_FW_HEADER_SIZE
+        || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) && (bank_id != TR01_FW_BANK_SPECT1)
+            && (bank_id != TR01_FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
     }
 
@@ -347,9 +347,9 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_GET_INFO_REQ_ID;
-    p_l2_req->req_len = LT_L2_GET_INFO_REQ_LEN;
-    p_l2_req->object_id = LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK;
+    p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
+    p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
+    p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK;
     p_l2_req->block_index = bank_id;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
@@ -362,9 +362,9 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
     }
 
     // Check incomming l3 length
-    if ((LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
-        && (LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
-        && (LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
+    if ((TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
+        && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
+        && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
@@ -376,7 +376,7 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
 lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
                           const uint8_t *shipriv, const uint8_t *shipub)
 {
-    if (!h || !stpub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3) || !shipriv || !shipub) {
+    if (!h || !stpub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3) || !shipriv || !shipub) {
         return LT_PARAM_ERR;
     }
 
@@ -419,8 +419,8 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_encrypted_session_abt_rsp_t *p_l2_resp = (struct lt_l2_encrypted_session_abt_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_ENCRYPTED_SESSION_ABT_ID;
-    p_l2_req->req_len = LT_L2_ENCRYPTED_SESSION_ABT_LEN;
+    p_l2_req->req_id = TR01_L2_ENCRYPTED_SESSION_ABT_ID;
+    p_l2_req->req_len = TR01_L2_ENCRYPTED_SESSION_ABT_LEN;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
@@ -432,7 +432,7 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
     }
 
     // Check incomming l3 length
-    if (LT_L2_ENCRYPTED_SESSION_ABT_RSP_LEN != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_ENCRYPTED_SESSION_ABT_RSP_LEN != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
@@ -441,7 +441,7 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
 
 lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
 {
-    if (!h || ((sleep_kind != LT_L2_SLEEP_KIND_SLEEP) && (sleep_kind != LT_L2_SLEEP_KIND_DEEP_SLEEP))) {
+    if (!h || ((sleep_kind != TR01_L2_SLEEP_KIND_SLEEP))) {
         return LT_PARAM_ERR;
     }
 
@@ -450,8 +450,8 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_startup_rsp_t *p_l2_resp = (struct lt_l2_startup_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_SLEEP_REQ_ID;
-    p_l2_req->req_len = LT_L2_SLEEP_REQ_LEN;
+    p_l2_req->req_id = TR01_L2_SLEEP_REQ_ID;
+    p_l2_req->req_len = TR01_L2_SLEEP_REQ_LEN;
     p_l2_req->startup_id = sleep_kind;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
@@ -464,7 +464,7 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
     }
 
     // Check incomming l3 length
-    if (LT_L2_SLEEP_RSP_LEN != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_SLEEP_RSP_LEN != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
@@ -473,7 +473,7 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
 
 lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
 {
-    if (!h || ((startup_id != LT_MODE_APP) && (startup_id != LT_MODE_MAINTENANCE))) {
+    if (!h || ((startup_id != TR01_MODE_APP) && (startup_id != TR01_MODE_MAINTENANCE))) {
         return LT_PARAM_ERR;
     }
 
@@ -482,8 +482,8 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_startup_rsp_t *p_l2_resp = (struct lt_l2_startup_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_STARTUP_REQ_ID;
-    p_l2_req->req_len = LT_L2_STARTUP_REQ_LEN;
+    p_l2_req->req_id = TR01_L2_STARTUP_REQ_ID;
+    p_l2_req->req_len = TR01_L2_STARTUP_REQ_LEN;
     p_l2_req->startup_id = startup_id;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
@@ -496,11 +496,11 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     }
 
     // Check incomming l3 length
-    if (LT_L2_STARTUP_RSP_LEN != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_STARTUP_RSP_LEN != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
-    ret = lt_l1_delay(&h->l2, LT_TROPIC01_REBOOT_DELAY_MS);
+    ret = lt_l1_delay(&h->l2, LT_TR01_REBOOT_DELAY_MS);
     if (ret != LT_OK) {
         return ret;
     }
@@ -518,8 +518,8 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
 lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
 {
     if (!h
-        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
-            && (bank_id != FW_BANK_SPECT2))) {
+        || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) && (bank_id != TR01_FW_BANK_SPECT1)
+            && (bank_id != TR01_FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
     }
 
@@ -528,8 +528,8 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_mutable_fw_erase_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_erase_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_MUTABLE_FW_ERASE_REQ_ID;
-    p_l2_req->req_len = LT_L2_MUTABLE_FW_ERASE_REQ_LEN;
+    p_l2_req->req_id = TR01_L2_MUTABLE_FW_ERASE_REQ_ID;
+    p_l2_req->req_len = TR01_L2_MUTABLE_FW_ERASE_REQ_LEN;
     p_l2_req->bank_id = bank_id;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
@@ -541,7 +541,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
         return ret;
     }
 
-    if (LT_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
@@ -550,9 +550,9 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
 
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, lt_bank_id_t bank_id)
 {
-    if (!h || !fw_data || fw_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX
-        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
-            && (bank_id != FW_BANK_SPECT2))) {
+    if (!h || !fw_data || fw_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX
+        || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) && (bank_id != TR01_FW_BANK_SPECT1)
+            && (bank_id != TR01_FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
     }
 
@@ -565,8 +565,8 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
     uint16_t rest = fw_data_size % 128;
 
     for (int16_t i = 0; i < loops; i++) {
-        p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
-        p_l2_req->req_len = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN + 128;
+        p_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_REQ_ID;
+        p_l2_req->req_len = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN + 128;
         p_l2_req->bank_id = bank_id;
         p_l2_req->offset = i * 128;
         memcpy(p_l2_req->data, fw_data + (i * 128), 128);
@@ -580,14 +580,14 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
             return ret;
         }
 
-        if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
         }
     }
 
     if (rest != 0) {
-        p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
-        p_l2_req->req_len = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN + rest;
+        p_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_REQ_ID;
+        p_l2_req->req_len = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN + rest;
         p_l2_req->bank_id = bank_id;
         p_l2_req->offset = loops * 128;
         memcpy(p_l2_req->data, fw_data + (loops * 128), rest);
@@ -601,7 +601,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
             return ret;
         }
 
-        if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
         }
     }
@@ -634,8 +634,8 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
     // Setup a pointer to incomming data
     struct data_format_t *data_p = (struct data_format_t *)(update_request);
 
-    p_l2_req->req_id = LT_L2_MUTABLE_FW_UPDATE_REQ_ID;
-    p_l2_req->req_len = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN;
+    p_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_REQ_ID;
+    p_l2_req->req_len = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN;
     memcpy(p_l2_req->signature, data_p->signature, 64);
     memcpy(p_l2_req->hash, data_p->hash, 32);
     p_l2_req->type = data_p->type;
@@ -652,7 +652,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
         return ret;
     }
 
-    if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+    if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
         return LT_FAIL;
     }
 
@@ -661,7 +661,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
 
 lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size)
 {
-    if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX) {
+    if (!h || !update_data || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX) {
         return LT_PARAM_ERR;
     }
 
@@ -672,11 +672,11 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
 
     // Data consist of "request" and "data" parts,
     // 'data' byte chunks are taken from following index:
-    int chunk_index = LT_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1;
+    int chunk_index = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1;
 
     do {
         uint8_t len = update_data[chunk_index];
-        p2_l2_req->req_id = TS_L2_MUTABLE_FW_UPDATE_DATA_REQ;
+        p2_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_DATA_REQ;
         memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, len + 1);
 
         lt_ret_t ret = lt_l2_send(&h->l2);
@@ -688,7 +688,7 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
             return ret;
         }
 
-        if (LT_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
+        if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
             return LT_FAIL;
         }
 
@@ -712,8 +712,8 @@ lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_log_rsp_t *p_l2_resp = (struct lt_l2_get_log_rsp_t *)h->l2.buff;
 
-    p_l2_req->req_id = LT_L2_GET_LOG_REQ_ID;
-    p_l2_req->req_len = LT_L2_GET_LOG_REQ_LEN;
+    p_l2_req->req_id = TR01_L2_GET_LOG_REQ_ID;
+    p_l2_req->req_len = TR01_L2_GET_LOG_REQ_LEN;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
@@ -732,10 +732,10 @@ lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
 
 lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
 {
-    if (!h || !msg_out || !msg_in || (len > PING_LEN_MAX)) {
+    if (!h || !msg_out || !msg_in || (len > TR01_PING_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -762,7 +762,7 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
     if (!h || !pairing_pub || (slot > 3)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -789,7 +789,7 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
     if (!h || !pairing_pub || (slot > 3)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -816,7 +816,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     if (!h || (slot > 3)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -843,7 +843,7 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const
     if (!h) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -870,7 +870,7 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
     if (!h || !obj) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -897,7 +897,7 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
     if (!h) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -924,7 +924,7 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
     if (!h || (bit_index > 31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -951,7 +951,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
     if (!h || !obj) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -975,10 +975,11 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
 
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size)
 {
-    if (!h || !data || size < R_MEM_DATA_SIZE_MIN || size > R_MEM_DATA_SIZE_MAX || (udata_slot > R_MEM_DATA_SLOT_MAX)) {
+    if (!h || !data || size < TR01_R_MEM_DATA_SIZE_MIN || size > TR01_R_MEM_DATA_SIZE_MAX
+        || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1002,10 +1003,10 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
 
 lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size)
 {
-    if (!h || !data || !size || (udata_slot > R_MEM_DATA_SLOT_MAX)) {
+    if (!h || !data || !size || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1029,10 +1030,10 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
 
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
 {
-    if (!h || (udata_slot > R_MEM_DATA_SLOT_MAX)) {
+    if (!h || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1056,10 +1057,10 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
 
 lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 {
-    if ((len > RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
+    if ((len > TR01_RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1083,10 +1084,10 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
 
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve)
 {
-    if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519))) {
+    if (!h || (slot > TR01_ECC_SLOT_31) || ((curve != TR01_CURVE_P256) && (curve != TR01_CURVE_ED25519))) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1110,10 +1111,10 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_
 
 lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key)
 {
-    if (!h || (slot > ECC_SLOT_31) || ((curve != CURVE_P256) && (curve != CURVE_ED25519)) || !key) {
+    if (!h || (slot > TR01_ECC_SLOT_31) || ((curve != TR01_CURVE_P256) && (curve != TR01_CURVE_ED25519)) || !key) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
     lt_ret_t ret = lt_out__ecc_key_store(h, slot, curve, key);
@@ -1137,10 +1138,10 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
 lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
                          lt_ecc_key_origin_t *origin)
 {
-    if (!h || (ecc_slot > ECC_SLOT_31) || !key || !curve || !origin) {
+    if (!h || (ecc_slot > TR01_ECC_SLOT_31) || !key || !curve || !origin) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1164,10 +1165,10 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot)
 {
-    if (!h || (ecc_slot > ECC_SLOT_31)) {
+    if (!h || (ecc_slot > TR01_ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1192,10 +1193,10 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot)
 lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint32_t msg_len,
                            uint8_t *rs)
 {
-    if (!h || !msg || !rs || (ecc_slot > ECC_SLOT_31)) {
+    if (!h || !msg || !rs || (ecc_slot > TR01_ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1233,10 +1234,10 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs)
 {
-    if (!h || !msg || !rs || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot > ECC_SLOT_31)) {
+    if (!h || !msg || !rs || (msg_len > TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot > TR01_ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1260,7 +1261,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
 
 lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    if (!msg || (msg_len > LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || !pubkey || !rs) {
+    if (!msg || (msg_len > TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || !pubkey || !rs) {
         return LT_PARAM_ERR;
     }
 
@@ -1273,10 +1274,10 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
 {
-    if (!h || (mcounter_index > MCOUNTER_INDEX_15) || mcounter_value > MCOUNTER_VALUE_MAX) {
+    if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15) || mcounter_value > MCOUNTER_VALUE_MAX) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1300,10 +1301,10 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
 
 lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index)
 {
-    if (!h || (mcounter_index > MCOUNTER_INDEX_15)) {
+    if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1327,10 +1328,10 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
 
 lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, uint32_t *mcounter_value)
 {
-    if (!h || (mcounter_index > MCOUNTER_INDEX_15) || !mcounter_value) {
+    if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15) || !mcounter_value) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1354,10 +1355,10 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
 
 lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in)
 {
-    if (!h || !data_out || !data_in || slot > MAC_AND_DESTROY_SLOT_127) {
+    if (!h || !data_out || !data_in || slot > TR01_MAC_AND_DESTROY_SLOT_127) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1431,35 +1432,34 @@ const char *lt_ret_verbose(lt_ret_t ret)
 //--------------------------------------------------------------------------------------------------------//
 #ifdef LT_HELPERS
 
-struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT] = {
-    {"CONFIGURATION_OBJECTS_CFG_START_UP                   ", CONFIGURATION_OBJECTS_CFG_START_UP_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_SENSORS                    ", CONFIGURATION_OBJECTS_CFG_SENSORS_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_DEBUG                      ", CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_GPO_ADDR                   ", CONFIGURATION_OBJECTS_CFG_GPO_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_SLEEP_MODE                 ", CONFIGURATION_OBJECTS_CFG_SLEEP_MODE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE      ", CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_WRITE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ       ", CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_READ_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE ",
-     CONFIGURATION_OBJECTS_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE   ", CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ          ", CONFIGURATION_OBJECTS_CFG_UAP_R_CONFIG_READ_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE         ", CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_WRITE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ          ", CONFIGURATION_OBJECTS_CFG_UAP_I_CONFIG_READ_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_PING                   ", CONFIGURATION_OBJECTS_CFG_UAP_PING_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE       ", CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_WRITE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ        ", CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_READ_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE       ", CONFIGURATION_OBJECTS_CFG_UAP_R_MEM_DATA_ERASE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET       ", CONFIGURATION_OBJECTS_CFG_UAP_RANDOM_VALUE_GET_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE       ", CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_GENERATE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE          ", CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_STORE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ           ", CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_READ_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE          ", CONFIGURATION_OBJECTS_CFG_UAP_ECC_KEY_ERASE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN             ", CONFIGURATION_OBJECTS_CFG_UAP_ECDSA_SIGN_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN             ", CONFIGURATION_OBJECTS_CFG_UAP_EDDSA_SIGN_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT          ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_INIT_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET           ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_GET_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE        ", CONFIGURATION_OBJECTS_CFG_UAP_MCOUNTER_UPDATE_ADDR},
-    {"CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY        ", CONFIGURATION_OBJECTS_CFG_UAP_MAC_AND_DESTROY_ADDR}};
+struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT]
+    = {{"TR01_CFG_START_UP                   ", TR01_CFG_START_UP_ADDR},
+       {"TR01_CFG_SENSORS                    ", TR01_CFG_SENSORS_ADDR},
+       {"TR01_CFG_DEBUG                      ", TR01_CFG_DEBUG_ADDR},
+       {"TR01_CFG_GPO_ADDR                   ", TR01_CFG_GPO_ADDR},
+       {"TR01_CFG_SLEEP_MODE                 ", TR01_CFG_SLEEP_MODE_ADDR},
+       {"TR01_CFG_UAP_PAIRING_KEY_WRITE      ", TR01_CFG_UAP_PAIRING_KEY_WRITE_ADDR},
+       {"TR01_CFG_UAP_PAIRING_KEY_READ       ", TR01_CFG_UAP_PAIRING_KEY_READ_ADDR},
+       {"TR01_CFG_UAP_PAIRING_KEY_INVALIDATE ", TR01_CFG_UAP_PAIRING_KEY_INVALIDATE_ADDR},
+       {"TR01_CFG_UAP_R_CONFIG_WRITE_ERASE   ", TR01_CFG_UAP_R_CONFIG_WRITE_ERASE_ADDR},
+       {"TR01_CFG_UAP_R_CONFIG_READ          ", TR01_CFG_UAP_R_CONFIG_READ_ADDR},
+       {"TR01_CFG_UAP_I_CONFIG_WRITE         ", TR01_CFG_UAP_I_CONFIG_WRITE_ADDR},
+       {"TR01_CFG_UAP_I_CONFIG_READ          ", TR01_CFG_UAP_I_CONFIG_READ_ADDR},
+       {"TR01_CFG_UAP_PING                   ", TR01_CFG_UAP_PING_ADDR},
+       {"TR01_CFG_UAP_R_MEM_DATA_WRITE       ", TR01_CFG_UAP_R_MEM_DATA_WRITE_ADDR},
+       {"TR01_CFG_UAP_R_MEM_DATA_READ        ", TR01_CFG_UAP_R_MEM_DATA_READ_ADDR},
+       {"TR01_CFG_UAP_R_MEM_DATA_ERASE       ", TR01_CFG_UAP_R_MEM_DATA_ERASE_ADDR},
+       {"TR01_CFG_UAP_RANDOM_VALUE_GET       ", TR01_CFG_UAP_RANDOM_VALUE_GET_ADDR},
+       {"TR01_CFG_UAP_ECC_KEY_GENERATE       ", TR01_CFG_UAP_ECC_KEY_GENERATE_ADDR},
+       {"TR01_CFG_UAP_ECC_KEY_STORE          ", TR01_CFG_UAP_ECC_KEY_STORE_ADDR},
+       {"TR01_CFG_UAP_ECC_KEY_READ           ", TR01_CFG_UAP_ECC_KEY_READ_ADDR},
+       {"TR01_CFG_UAP_ECC_KEY_ERASE          ", TR01_CFG_UAP_ECC_KEY_ERASE_ADDR},
+       {"TR01_CFG_UAP_ECDSA_SIGN             ", TR01_CFG_UAP_ECDSA_SIGN_ADDR},
+       {"TR01_CFG_UAP_EDDSA_SIGN             ", TR01_CFG_UAP_EDDSA_SIGN_ADDR},
+       {"TR01_CFG_UAP_MCOUNTER_INIT          ", TR01_CFG_UAP_MCOUNTER_INIT_ADDR},
+       {"TR01_CFG_UAP_MCOUNTER_GET           ", TR01_CFG_UAP_MCOUNTER_GET_ADDR},
+       {"TR01_CFG_UAP_MCOUNTER_UPDATE        ", TR01_CFG_UAP_MCOUNTER_UPDATE_ADDR},
+       {"TR01_CFG_UAP_MAC_AND_DESTROY        ", TR01_CFG_UAP_MAC_AND_DESTROY_ADDR}};
 
 lt_ret_t lt_read_whole_R_config(lt_handle_t *h, struct lt_config_t *config)
 {
@@ -1543,7 +1543,7 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
 
 lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
 {
-    if (!h || !shipriv || !shipub || (pkey_index > PAIRING_KEY_SLOT_INDEX_3)) {
+    if (!h || !shipriv || !shipub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3)) {
         return LT_PARAM_ERR;
     }
 
@@ -1557,29 +1557,29 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
     }
 
     // This is not used in this example, but let's read it anyway
-    uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
     ret = lt_get_info_riscv_fw_ver(h, riscv_fw_ver);
     if (ret != LT_OK) {
         return ret;
     }
 
     // This is not used in this example, but let's read it anyway
-    uint8_t spect_fw_ver[LT_L2_GET_INFO_SPECT_FW_SIZE] = {0};
+    uint8_t spect_fw_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE] = {0};
     ret = lt_get_info_spect_fw_ver(h, spect_fw_ver);
     if (ret != LT_OK) {
         return ret;
     }
 
     // Read certificate store
-    uint8_t cert_ese[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
-    uint8_t cert_xxxx[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
-    uint8_t cert_tr01[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
-    uint8_t cert_root[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+    uint8_t cert_ese[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+    uint8_t cert_xxxx[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+    uint8_t cert_tr01[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
+    uint8_t cert_root[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE] = {0};
 
     struct lt_cert_store_t cert_store
         = {.cert_len = {0, 0, 0, 0},
-           .buf_len = {LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
-                       LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE},
+           .buf_len = {TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
+                       TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE},
            .certs = {cert_ese, cert_xxxx, cert_tr01, cert_root}};
 
     ret = lt_get_info_cert_store(h, &cert_store);
@@ -1626,7 +1626,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
         return LT_PARAM_ERR;
     }
 
-    char print_bytes_buff[CHIP_ID_FIELD_MAX_SIZE];
+    char print_bytes_buff[LT_CHIP_ID_FIELD_MAX_SIZE];
 
     if (LT_OK
             != lt_print_bytes(chip_id->chip_id_ver, sizeof(chip_id->chip_id_ver), print_bytes_buff,
@@ -1669,11 +1669,11 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
     }
     char packg_type_id_str[17];
     switch (packg_type_id) {
-        case CHIP_PKG_BARE_SILICON_ID:
+        case TR01_CHIP_PKG_BARE_SILICON_ID:
             strcpy(packg_type_id_str, "Bare silicon die");
             break;
 
-        case CHIP_PKG_QFN32_ID:
+        case TR01_CHIP_PKG_QFN32_ID:
             strcpy(packg_type_id_str, "QFN32, 4x4mm");
             break;
 
@@ -1692,14 +1692,14 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
 
     uint16_t parsed_fab_id = ((chip_id->prov_ver_fab_id_pn[1] << 4) | (chip_id->prov_ver_fab_id_pn[2] >> 4)) & 0xfff;
     switch (parsed_fab_id) {
-        case FAB_ID_TROPIC_SQUARE_LAB:
+        case TR01_FAB_ID_TROPIC_SQUARE_LAB:
             if (0
                 > print_func("Fab ID                 = 0x%03" PRIX16 " (%s)\r\n", parsed_fab_id, "Tropic Square Lab")) {
                 return LT_FAIL;
             }
             break;
 
-        case FAB_ID_EPS_BRNO:
+        case TR01_FAB_ID_EPS_BRNO:
             if (0
                 > print_func("Fab ID                 = 0x%03" PRIX16 " (%s)\r\n", parsed_fab_id, "EPS Global - Brno")) {
                 return LT_FAIL;
@@ -1797,9 +1797,9 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, con
                                  lt_bank_id_t bank_id)
 {
 #ifdef ABAB
-    if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX
-        || ((bank_id != FW_BANK_FW1) && (bank_id != FW_BANK_FW2) && (bank_id != FW_BANK_SPECT1)
-            && (bank_id != FW_BANK_SPECT2))) {
+    if (!h || !update_data || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX
+        || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) && (bank_id != TR01_FW_BANK_SPECT1)
+            && (bank_id != TR01_FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
     }
     lt_ret_t ret = lt_mutable_fw_erase(h, bank_id);
@@ -1813,8 +1813,8 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, con
     }
 
 #elif ACAB
-    UNUSED(bank_id);  // bank_id is not used with ACAB, chip handles banks on its own
-    if (!h || !update_data || update_data_size > LT_MUTABLE_FW_UPDATE_SIZE_MAX) {
+    LT_UNUSED(bank_id);  // bank_id is not used with ACAB, chip handles banks on its own
+    if (!h || !update_data || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX) {
         return LT_PARAM_ERR;
     }
 

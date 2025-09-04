@@ -17,32 +17,32 @@
 #include "libtropic_common.h"
 
 /** @brief Request ID */
-#define LT_L2_GET_INFO_REQ_ID 0x01
+#define TR01_L2_GET_INFO_REQ_ID 0x01
 /** @brief Request length */
-#define LT_L2_GET_INFO_REQ_LEN 2u
+#define TR01_L2_GET_INFO_REQ_LEN 2u
 //------- Certificate -------------------------------------------------------------------------------------//
 /** @brief The X.509 chip certificate read from I-Memory and signed by Tropic Square (max length of 512B). */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0x00
+#define TR01_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE 0x00
 /** @brief Request for data bytes 0-127 of the object. */
-#define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127 0x00
+#define TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_0_127 0x00
 /** @brief Request for data bytes 128-255 of the object (only needed for the X.509 certificate). */
-#define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255 0x01
+#define TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_128_255 0x01
 /** @brief Request for data bytes 128-383 of object (only needed for the X.509 certificate). */
-#define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383 0x02
+#define TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_256_383 0x02
 /** @brief Request for data bytes 384-511 of object (only needed for the X.509 certificate). */
-#define LT_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511 0x03
+#define TR01_L2_GET_INFO_REQ_BLOCK_INDEX_DATA_CHUNK_384_511 0x03
 /** @brief The chip ID - the chip silicon revision and unique device ID (max length of 128B). */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 0x01
+#define TR01_L2_GET_INFO_REQ_OBJECT_ID_CHIP_ID 0x01
 /** @brief The RISCV current running FW version (4 Bytes) */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION 0x02
+#define TR01_L2_GET_INFO_REQ_OBJECT_ID_RISCV_FW_VERSION 0x02
 /** @brief The SPECT FW version (4 Bytes) */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION 0x04
+#define TR01_L2_GET_INFO_REQ_OBJECT_ID_SPECT_FW_VERSION 0x04
 //------- FW Bank -----------------------------------------------------------------------------------------//
 /** @brief The FW header read from the selected bank id (shown as an index). Supported only in Start-up mode. */
-#define LT_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 0xb0
+#define TR01_L2_GET_INFO_REQ_OBJECT_ID_FW_BANK 0xb0
 
 /** @brief Response length */
-#define LT_L2_GET_INFO_RSP_LEN_MIN 1u
+#define TR01_L2_GET_INFO_RSP_LEN_MIN 1u
 
 /**
  * @brief
@@ -70,14 +70,14 @@ struct lt_l2_get_info_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_get_info_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_get_info_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_get_info_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_get_info_req_t, object_id) +
-        MEMBER_SIZE(struct lt_l2_get_info_req_t, block_index) +
-        MEMBER_SIZE(struct lt_l2_get_info_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_get_info_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_req_t, object_id) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_req_t, block_index) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_req_t, crc)
     )
 )
 /** \endcond */
@@ -105,34 +105,25 @@ struct lt_l2_get_info_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_get_info_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, object) +
-        MEMBER_SIZE(struct lt_l2_get_info_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, object) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
-/** @brief Request ID */
-#define LT_L2_HANDSHAKE_REQ_ID 0x02
-/** @brief Request length */
-#define LT_L2_HANDSHAKE_REQ_LEN 33u
-/** @brief Corresponds to $S_{H0Pub}$. */
-#define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_0 0x00
-/** @brief Corresponds to $S_{H1Pub}$. */
-#define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_1 0x01
-/** @brief Corresponds to $S_{H2Pub}$. */
-#define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_2 0x02
-/** @brief Corresponds to $S_{H3Pub}$. */
-#define LT_L2_HANDSHAKE_REQ_PKEY_INDEX_PAIRING_KEY_SLOT_3 0x03
-
-/** @brief Response length */
-#define LT_L2_HANDSHAKE_RSP_LEN 48u
+/** @brief Handshake request ID. */
+#define TR01_L2_HANDSHAKE_REQ_ID 0x02
+/** @brief Handshake request length. */
+#define TR01_L2_HANDSHAKE_REQ_LEN 33u
+/** @brief Handshake response length. */
+#define TR01_L2_HANDSHAKE_RSP_LEN 48u
 
 /**
  * @brief
@@ -159,14 +150,14 @@ struct lt_l2_handshake_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_handshake_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
     )
 )
 /** \endcond */
@@ -196,30 +187,30 @@ struct lt_l2_handshake_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_handshake_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
-        MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define LT_L2_ENCRYPTED_CMD_REQ_ID 0x04
+#define TR01_L2_ENCRYPTED_CMD_REQ_ID 0x04
 /** @brief Request length */
-#define LT_L2_ENCRYPTED_CMD_REQ_LEN_MIN 19u
+#define TR01_L2_ENCRYPTED_CMD_REQ_LEN_MIN 19u
 /** Minimal length of field cmd_ciphertext */
-#define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MIN 1u
+#define TR01_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MIN 1u
 /** Maximal length of field cmd_ciphertext */
-#define LT_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MAX 4096u
+#define TR01_L2_ENCRYPTED_CMD_REQ_CMD_CIPHERTEXT_LEN_MAX 4096u
 
 /** @brief Response length */
-#define LT_L2_ENCRYPTED_CMD_RSP_LEN_MIN 19u
+#define TR01_L2_ENCRYPTED_CMD_RSP_LEN_MIN 19u
 
 /**
  * @brief
@@ -235,13 +226,13 @@ struct lt_l2_encrypted_cmd_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_cmd_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, l3_chunk) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, l3_chunk) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_req_t, crc)
     )
 )
 /** \endcond */
@@ -266,26 +257,26 @@ struct lt_l2_encrypted_cmd_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_cmd_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, l3_chunk) +
-        MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, l3_chunk) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_cmd_rsp_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define LT_L2_ENCRYPTED_SESSION_ABT_ID 0x08
+#define TR01_L2_ENCRYPTED_SESSION_ABT_ID 0x08
 /** @brief Request length */
-#define LT_L2_ENCRYPTED_SESSION_ABT_LEN 0u
+#define TR01_L2_ENCRYPTED_SESSION_ABT_LEN 0u
 
 /** @brief Response length */
-#define LT_L2_ENCRYPTED_SESSION_ABT_RSP_LEN 0u
+#define TR01_L2_ENCRYPTED_SESSION_ABT_RSP_LEN 0u
 
 /**
  * @brief
@@ -299,12 +290,12 @@ struct lt_l2_encrypted_session_abt_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_session_abt_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_req_t, crc)
     )
 )
 /** \endcond */
@@ -323,25 +314,25 @@ struct lt_l2_encrypted_session_abt_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_encrypted_session_abt_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_encrypted_session_abt_rsp_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define LT_L2_RESEND_REQ_ID 0x10
+#define TR01_L2_RESEND_REQ_ID 0x10
 /** @brief Request length */
-#define LT_L2_RESEND_REQ_LEN 0u
+#define TR01_L2_RESEND_REQ_LEN 0u
 
 /** @brief Response length */
-#define LT_L2_RESEND_RSP_LEN 0u
+#define TR01_L2_RESEND_RSP_LEN 0u
 
 /**
  * @brief
@@ -355,12 +346,12 @@ struct lt_l2_resend_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_resend_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_resend_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_resend_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_resend_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_resend_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_resend_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_resend_req_t, crc)
     )
 )
 /** \endcond */
@@ -379,29 +370,27 @@ struct lt_l2_resend_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_resend_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_resend_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_resend_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_resend_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_resend_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_resend_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_resend_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_resend_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_resend_rsp_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define LT_L2_SLEEP_REQ_ID 0x20
+#define TR01_L2_SLEEP_REQ_ID 0x20
 /** @brief Request length */
-#define LT_L2_SLEEP_REQ_LEN 1u
+#define TR01_L2_SLEEP_REQ_LEN 1u
 /** @brief Sleep Mode */
-#define LT_L2_SLEEP_REQ_SLEEP_KIND_SLEEP_MODE 0x05
-/** @brief Deep Sleep Mode */
-#define LT_L2_SLEEP_REQ_SLEEP_KIND_DEEP_SLEEP_MODE 0x0a
+#define TR01_L2_SLEEP_REQ_SLEEP_KIND_SLEEP_MODE 0x05
 
 /** @brief Response length */
-#define LT_L2_SLEEP_RSP_LEN 0u
+#define TR01_L2_SLEEP_RSP_LEN 0u
 
 /**
  * @brief
@@ -420,13 +409,13 @@ struct lt_l2_sleep_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_sleep_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_sleep_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_sleep_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_sleep_req_t, sleep_kind) +
-        MEMBER_SIZE(struct lt_l2_sleep_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_sleep_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_sleep_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_sleep_req_t, sleep_kind) +
+        LT_MEMBER_SIZE(struct lt_l2_sleep_req_t, crc)
     )
 )
 /** \endcond */
@@ -445,29 +434,29 @@ struct lt_l2_sleep_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_sleep_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_sleep_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_sleep_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_sleep_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_sleep_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_sleep_rsp_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define LT_L2_STARTUP_REQ_ID 0xb3
+#define TR01_L2_STARTUP_REQ_ID 0xb3
 /** @brief Request length */
-#define LT_L2_STARTUP_REQ_LEN 1u
+#define TR01_L2_STARTUP_REQ_LEN 1u
 /** @brief Restart, then initialize as if a power-cycle was applied. */
-#define LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT 0x01
+#define TR01_L2_STARTUP_REQ_STARTUP_ID_REBOOT 0x01
 /** @brief Restart, then initialize. Stay in Start-up mode and do not load the mutable FW from R-Memory. */
-#define LT_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT 0x03
+#define TR01_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT 0x03
 
 /** @brief Response length */
-#define LT_L2_STARTUP_RSP_LEN 0u
+#define TR01_L2_STARTUP_RSP_LEN 0u
 
 /**
  * @brief
@@ -482,13 +471,13 @@ struct lt_l2_startup_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_startup_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_startup_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_startup_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_startup_req_t, startup_id) +
-        MEMBER_SIZE(struct lt_l2_startup_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_startup_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_startup_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_startup_req_t, startup_id) +
+        LT_MEMBER_SIZE(struct lt_l2_startup_req_t, crc)
     )
 )
 /** \endcond */
@@ -507,13 +496,13 @@ struct lt_l2_startup_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_startup_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_startup_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_startup_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_startup_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_startup_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_startup_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_startup_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_startup_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_startup_rsp_t, crc)
     )
 )
 /** \endcond */
@@ -522,24 +511,24 @@ STATIC_ASSERT(
 // Firmware update API structs for ABAB silicon revision
 #ifdef ABAB
 /** @brief Request ID */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
 /** @brief Request min length */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN 3u
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN_MIN 3u
 /** Minimal length of field data */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MIN 4u
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MIN 4u
 /** Maximal length of field data */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MAX 248u
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_DATA_LEN_MAX 248u
 /** @brief Firmware bank 1. */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_FW1 0x01
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_FW1 0x01
 /** @brief Firmware bank 2 */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_FW2 0x02
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_FW2 0x02
 /** @brief SPECT bank 1. */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT1 0x11
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT1 0x11
 /** @brief SPECT bank 2 */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT2 0x12
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_BANK_ID_SPECT2 0x12
 
 /** @brief Response length */
-#define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
+#define TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
 
 /**
  * @brief
@@ -559,15 +548,15 @@ struct lt_l2_mutable_fw_update_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, bank_id) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, offset) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, data) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, bank_id) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, offset) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, data) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
     )
 )
 /** \endcond */
@@ -589,13 +578,13 @@ struct lt_l2_mutable_fw_update_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
     )
 )
 /** \endcond */
@@ -605,15 +594,15 @@ STATIC_ASSERT(
 // Firmware update API structs for ACAB silicon revision
 #ifdef ACAB
 /** @brief Request ID */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb0
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb0
 /** @brief Request min length */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_LEN 0x68
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN 0x68
 /** @brief Response length */
-#define LT_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
+#define TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN 0u
 /** @brief Firmware type for RISC-V main CPU*/
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_CPU 1
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_CPU 1
 /** @brief Firmware type for SPECT coprocessor */
-#define LT_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_SPECT 2
+#define TR01_L2_MUTABLE_FW_UPDATE_REQ_TYPE_FW_TYPE_SPECT 2
 
 /**
  * @brief
@@ -636,25 +625,25 @@ struct lt_l2_mutable_fw_update_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, signature) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, hash) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, type) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, padding) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, header_version) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, version) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, signature) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, hash) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, type) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, header_version) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, version) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_req_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define TS_L2_MUTABLE_FW_UPDATE_DATA_REQ 0xb1
+#define TR01_L2_MUTABLE_FW_UPDATE_DATA_REQ 0xb1
 
 /**
  * @brief Response on lt_l2_mutable_fw_update_req_t
@@ -668,13 +657,13 @@ struct lt_l2_mutable_fw_update_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_rsp_t, crc)
     )
 )
 /** \endcond */
@@ -695,15 +684,15 @@ struct lt_l2_mutable_fw_update_data_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_data_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, hash) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, offset) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, data) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, hash) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, offset) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, data) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, crc)
     )
 )
 /** \endcond */
@@ -721,13 +710,13 @@ struct lt_l2_mutable_fw_update_data_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_update_data_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_rsp_t, crc)
     )
 )
 /** \endcond */
@@ -735,20 +724,20 @@ STATIC_ASSERT(
 #endif
 
 /** @brief Request ID */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
+#define TR01_L2_MUTABLE_FW_ERASE_REQ_ID 0xb2
 /** @brief Request length */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_LEN 1u
+#define TR01_L2_MUTABLE_FW_ERASE_REQ_LEN 1u
 /** @brief Firmware bank 1. */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_FW1 0x01
+#define TR01_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_FW1 0x01
 /** @brief Firmware bank 2 */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_FW2 0x02
+#define TR01_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_FW2 0x02
 /** @brief SPECT bank 1. */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT1 0x11
+#define TR01_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT1 0x11
 /** @brief SPECT bank 2 */
-#define LT_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT2 0x12
+#define TR01_L2_MUTABLE_FW_ERASE_REQ_BANK_ID_SPECT2 0x12
 
 /** @brief Response length */
-#define LT_L2_MUTABLE_FW_ERASE_RSP_LEN 0u
+#define TR01_L2_MUTABLE_FW_ERASE_RSP_LEN 0u
 
 /**
  * @brief
@@ -764,13 +753,13 @@ struct lt_l2_mutable_fw_erase_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_erase_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, bank_id) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, bank_id) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_req_t, crc)
     )
 )
 /** \endcond */
@@ -790,25 +779,25 @@ struct lt_l2_mutable_fw_erase_rsp_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_mutable_fw_erase_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_mutable_fw_erase_rsp_t, crc)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Request ID */
-#define LT_L2_GET_LOG_REQ_ID 0xa2
+#define TR01_L2_GET_LOG_REQ_ID 0xa2
 /** @brief Request length */
-#define LT_L2_GET_LOG_REQ_LEN 0u
+#define TR01_L2_GET_LOG_REQ_LEN 0u
 
 /** @brief Response length */
-#define LT_L2_GET_LOG_RSP_LEN_MIN 0u
+#define TR01_L2_GET_LOG_RSP_LEN_MIN 0u
 
 /**
  * @brief
@@ -822,12 +811,12 @@ struct lt_l2_get_log_req_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_get_log_req_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_get_log_req_t, req_id) +
-        MEMBER_SIZE(struct lt_l2_get_log_req_t, req_len) +
-        MEMBER_SIZE(struct lt_l2_get_log_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_get_log_req_t, req_id) +
+        LT_MEMBER_SIZE(struct lt_l2_get_log_req_t, req_len) +
+        LT_MEMBER_SIZE(struct lt_l2_get_log_req_t, crc)
     )
 )
 /** \endcond */
@@ -838,23 +827,23 @@ STATIC_ASSERT(
  * Get log from FW running on RISCV CPU.
  */
 struct lt_l2_get_log_rsp_t {
-    uint8_t chip_status;                  /**< CHIP_STATUS byte */
-    uint8_t status;                       /**< L2 status byte */
-    uint8_t rsp_len;                      /**< Length of incoming data */
-    uint8_t log_msg[GET_LOG_MAX_MSG_LEN]; /**< Log message of RISC-V FW */
-    uint8_t crc[2];                       /**< Checksum */
+    uint8_t chip_status;                       /**< CHIP_STATUS byte */
+    uint8_t status;                            /**< L2 status byte */
+    uint8_t rsp_len;                           /**< Length of incoming data */
+    uint8_t log_msg[TR01_GET_LOG_MAX_MSG_LEN]; /**< Log message of RISC-V FW */
+    uint8_t crc[2];                            /**< Checksum */
 } __attribute__((packed));
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l2_get_log_rsp_t) ==
     (
-        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, chip_status) +
-        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, status) +
-        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, rsp_len) +
-        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, log_msg) +
-        MEMBER_SIZE(struct lt_l2_get_log_rsp_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_get_log_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_get_log_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_get_log_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_get_log_rsp_t, log_msg) +
+        LT_MEMBER_SIZE(struct lt_l2_get_log_rsp_t, crc)
     )
 )
 /** \endcond */

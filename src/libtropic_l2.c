@@ -21,7 +21,7 @@
  *  Divided by typical chunk length: (2 + 4096 + 16) / 128 => 32,
  *  with a few added loops it is set to 42
  */
-#define MAX_LOOPS 42
+#define LT_L2_RECV_ENC_RES_MAX_LOOPS 42
 
 lt_ret_t lt_l2_send(lt_l2_state_t *s2)
 {
@@ -40,15 +40,15 @@ lt_ret_t lt_l2_resend_response(lt_l2_state_t *s2)
 {
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct lt_l2_resend_req_t *p_l2_req = (struct lt_l2_resend_req_t *)s2->buff;
-    p_l2_req->req_id = LT_L2_RESEND_REQ_ID;
-    p_l2_req->req_len = LT_L2_RESEND_REQ_LEN;
+    p_l2_req->req_id = TR01_L2_RESEND_REQ_ID;
+    p_l2_req->req_len = TR01_L2_RESEND_REQ_LEN;
 
     lt_ret_t ret = lt_l2_send(s2);
     if (ret != LT_OK) {
         return ret;
     }
 
-    ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+    ret = lt_l1_read(s2, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
     if (ret != LT_OK) {
         return ret;
     }
@@ -62,7 +62,7 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
         return LT_PARAM_ERR;
     }
 
-    lt_ret_t ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+    lt_ret_t ret = lt_l1_read(s2, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
     if (ret != LT_OK) {
         return ret;
     }
@@ -89,7 +89,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 {
     if (!s2
         // Max len must be definitively smaller than size of l3 buffer
-        || max_len > L3_PACKET_MAX_SIZE || !buff) {
+        || max_len > TR01_L3_PACKET_MAX_SIZE || !buff) {
         return LT_PARAM_ERR;
     }
 
@@ -99,7 +99,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
     // First check how much data are to be send and if it actually fits into that buffer,
     // there must be a space for 2B of size value, ?B of command (ID + data) and 16B of TAG.
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)buff;
-    uint16_t packet_size = (L3_CMD_SIZE_SIZE + p_frame->cmd_size + L3_TAG_SIZE);
+    uint16_t packet_size = (TR01_L3_CMD_SIZE_SIZE + p_frame->cmd_size + TR01_L3_TAG_SIZE);
     // Prevent sending more data then is the size of compiled l3 buffer
     if (packet_size > max_len) {
         return LT_L3_DATA_LEN_ERROR;
@@ -110,24 +110,24 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
     // Calculate number of chunks to send.
     // First, get the number of full chunks.
-    uint16_t full_chunk_num = (packet_size / L2_CHUNK_MAX_DATA_SIZE);
+    uint16_t full_chunk_num = (packet_size / TR01_L2_CHUNK_MAX_DATA_SIZE);
     // Second, if packet_size is not divisible by the maximum chunk size, one additional smaller chunk will be created,
     // which we add to the total count.
-    uint16_t chunk_num = (packet_size % L2_CHUNK_MAX_DATA_SIZE) == 0 ? full_chunk_num : full_chunk_num + 1;
+    uint16_t chunk_num = (packet_size % TR01_L2_CHUNK_MAX_DATA_SIZE) == 0 ? full_chunk_num : full_chunk_num + 1;
     // Calculate the length of the last chunk
-    uint16_t last_chunk_len = packet_size - ((chunk_num - 1) * L2_CHUNK_MAX_DATA_SIZE);
+    uint16_t last_chunk_len = packet_size - ((chunk_num - 1) * TR01_L2_CHUNK_MAX_DATA_SIZE);
 
     // Split encrypted buffer into chunks and proceed them into l2 transfers:
     for (int i = 0; i < chunk_num; i++) {
-        req->req_id = LT_L2_ENCRYPTED_CMD_REQ_ID;
+        req->req_id = TR01_L2_ENCRYPTED_CMD_REQ_ID;
         // If the currently processed chunk is the last one, get its length (may be shorter than L2_CHUNK_MAX_DATA_SIZE)
         if (i == (chunk_num - 1)) {
             req->req_len = last_chunk_len;
         }
         else {
-            req->req_len = L2_CHUNK_MAX_DATA_SIZE;
+            req->req_len = TR01_L2_CHUNK_MAX_DATA_SIZE;
         }
-        memcpy(req->l3_chunk, buff + i * L2_CHUNK_MAX_DATA_SIZE, req->req_len);
+        memcpy(req->l3_chunk, buff + i * TR01_L2_CHUNK_MAX_DATA_SIZE, req->req_len);
 
         add_crc(req);
 
@@ -138,7 +138,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
         }
 
         // Read a response on this l2 request
-        ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+        ret = lt_l1_read(s2, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
         if (ret != LT_OK) {
             return ret;
         }
@@ -157,7 +157,7 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 {
     if (!s2
         // Max len must be definitively smaller than size of l3 buffer
-        || max_len > L3_PACKET_MAX_SIZE || !buff) {
+        || max_len > TR01_L3_PACKET_MAX_SIZE || !buff) {
         return LT_PARAM_ERR;
     }
 
@@ -172,7 +172,7 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
     do {
         /* Get one l2 frame of a device's response */
-        ret = lt_l1_read(s2, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
+        ret = lt_l1_read(s2, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT);
         if (ret != LT_OK) {
             return ret;
         }
@@ -199,7 +199,7 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
                 // Any other L2 packet's status is not expected
                 return ret;
         }
-    } while (loops < MAX_LOOPS);
+    } while (loops < LT_L2_RECV_ENC_RES_MAX_LOOPS);
 
     return LT_FAIL;
 }

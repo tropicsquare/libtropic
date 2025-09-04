@@ -62,7 +62,7 @@ void tearDown(void) {}
 void test___invalid_slot()
 {
     lt_handle_t h = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_3 + 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_invalidate(&h, TR01_PAIRING_KEY_SLOT_INDEX_3 + 1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -74,7 +74,7 @@ void test___no_session()
 {
     lt_handle_t h =  {0};
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_pairing_key_invalidate(&h, TR01_PAIRING_KEY_SLOT_INDEX_1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -88,7 +88,7 @@ void test___l3_cmd_fail()
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
+        TEST_ASSERT_EQUAL(rets[i], lt_pairing_key_invalidate(&h, TR01_PAIRING_KEY_SLOT_INDEX_1));
     }
 }
 
@@ -111,7 +111,7 @@ void test___len_mismatch()
 
     size_inject_value = 1+1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_invalidate(&h, TR01_PAIRING_KEY_SLOT_INDEX_1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -124,5 +124,5 @@ void test___correct()
 
     size_inject_value = 1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_invalidate(&h, PAIRING_KEY_SLOT_INDEX_1));
+    TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_invalidate(&h, TR01_PAIRING_KEY_SLOT_INDEX_1));
 }*/

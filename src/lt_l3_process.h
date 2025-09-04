@@ -20,28 +20,28 @@
 #include "libtropic_common.h"
 
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_OK 0xC3u
+#define TR01_L3_RESULT_OK 0xC3u
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_FAIL 0x3Cu
+#define TR01_L3_RESULT_FAIL 0x3Cu
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_UNAUTHORIZED 0x01u
+#define TR01_L3_RESULT_UNAUTHORIZED 0x01u
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_INVALID_CMD 0x02u
+#define TR01_L3_RESULT_INVALID_CMD 0x02u
 
 /** @brief L3 RESULT ﬁeld Value returned from ecc_key_read */
-#define L3_ECC_INVALID_KEY 0x12u
+#define TR01_L3_ECC_INVALID_KEY 0x12u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define L3_PAIRING_KEY_EMPTY 0x15u
+#define TR01_L3_PAIRING_KEY_EMPTY 0x15u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define L3_PAIRING_KEY_INVALID 0x16u
+#define TR01_L3_PAIRING_KEY_INVALID 0x16u
 /** @brief The slot is already written in */
-#define L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
+#define TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
 /** @brief The writing operation limit is reached for the slot. */
-#define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
+#define TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
 /** @brief Failure to update the specified Monotonic Counter. The Monotonic Counter is already at 0. */
-#define L3_MCOUNTER_UPDATE_ERROR 0x13
+#define TR01_L3_MCOUNTER_UPDATE_ERROR 0x13
 /** @brief The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
-#define L3_MCOUNTER_COUNTER_INVALID 0x14
+#define TR01_L3_MCOUNTER_COUNTER_INVALID 0x14
 
 /**
  * @brief Encrypts content of L3 buffer and fills it with cyphertext ready to be sent to TROPIC01.

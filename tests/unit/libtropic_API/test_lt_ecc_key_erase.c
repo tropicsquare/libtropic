@@ -50,7 +50,7 @@ void tearDown(void) {}
 //---------------------------------------------------------------------------------------------------------//
 
 // Test if function returns LT_PARAM_ERR on invalid handle
-void test__invalid_handle() { TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(NULL, ECC_SLOT_1)); }
+void test__invalid_handle() { TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(NULL, TR01_ECC_SLOT_1)); }
 
 //---------------------------------------------------------------------------------------------------------//
 
@@ -59,8 +59,8 @@ void test__invalid_handle() { TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(N
 //{
 //    lt_handle_t h = {0};
 //    h.session = SESSION_ON;
-//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_0 - 1));
-//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, ECC_SLOT_31 + 1));
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, TR01_ECC_SLOT_0 - 1));
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_erase(&h, TR01_ECC_SLOT_31 + 1));
 //}
 
 //---------------------------------------------------------------------------------------------------------//
@@ -72,7 +72,7 @@ void test__no_session()
 {
     lt_handle_t h = {0};
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, ECC_SLOT_1));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_erase(&h, TR01_ECC_SLOT_1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -86,7 +86,7 @@ void test__no_session()
 //    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
 //    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
 //        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-//        TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_erase(&h, ECC_SLOT_1));
+//        TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_erase(&h, TR01_ECC_SLOT_1));
 //    }
 //}
 
@@ -109,15 +109,15 @@ void test__no_session()
 //
 //    size_inject_value = 0;
 //    lt_l3_cmd_Stub(callback__lt_l3_cmd);
-//    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, ECC_SLOT_1));
+//    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, TR01_ECC_SLOT_1));
 //
 //    size_inject_value = 2;
 //    lt_l3_cmd_Stub(callback__lt_l3_cmd);
-//    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, ECC_SLOT_1));
+//    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, TR01_ECC_SLOT_1));
 //
-//    size_inject_value = (uint16_t)((rand() % (L3_CYPHERTEXT_MAX_SIZE - 2)) + 2);
+//    size_inject_value = (uint16_t)((rand() % (TR01_L3_CYPHERTEXT_MAX_SIZE - 2)) + 2);
 //    lt_l3_cmd_Stub(callback__lt_l3_cmd);
-//    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, ECC_SLOT_1));
+//    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_key_erase(&h, TR01_ECC_SLOT_1));
 //}
 
 //---------------------------------------------------------------------------------------------------------//
@@ -130,5 +130,5 @@ void test__no_session()
 //
 //    size_inject_value = 1;
 //    lt_l3_cmd_Stub(callback__lt_l3_cmd);
-//    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, ECC_SLOT_1));
+//    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_erase(&h, TR01_ECC_SLOT_1));
 //}

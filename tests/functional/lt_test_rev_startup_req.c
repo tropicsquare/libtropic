@@ -23,7 +23,7 @@ enum lt_tropic01_mode { STARTUP_MODE, APPLICATION_MODE, BUSY };
 
 static enum lt_tropic01_mode check_current_mode(void)
 {
-    uint8_t spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
+    uint8_t spect_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE];
     lt_ret_t ret;
 
     LT_LOG_INFO("Retrieving SPECT FW version...");
@@ -34,7 +34,7 @@ static enum lt_tropic01_mode check_current_mode(void)
         }
         else if (LT_L1_CHIP_BUSY == ret) {
             LT_LOG_INFO("Chip busy, waiting and trying again...");
-            LT_TEST_ASSERT(LT_OK, lt_l1_delay(&g_h->l2, LT_TROPIC01_REBOOT_DELAY_MS));
+            LT_TEST_ASSERT(LT_OK, lt_l1_delay(&g_h->l2, LT_TR01_REBOOT_DELAY_MS));
         }
     }
 
@@ -47,8 +47,8 @@ static enum lt_tropic01_mode check_current_mode(void)
     }
 
     LT_LOG_INFO("Spect version:");
-    hexdump_8byte(spect_ver, LT_L2_GET_INFO_SPECT_FW_SIZE);
-    if (0 == memcmp(spect_ver, "\x00\x00\x00\x80", LT_L2_GET_INFO_SPECT_FW_SIZE)) {
+    hexdump_8byte(spect_ver, TR01_L2_GET_INFO_SPECT_FW_SIZE);
+    if (0 == memcmp(spect_ver, "\x00\x00\x00\x80", TR01_L2_GET_INFO_SPECT_FW_SIZE)) {
         return STARTUP_MODE;
     }
     else {
@@ -61,7 +61,7 @@ static lt_ret_t lt_test_rev_startup_req_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Rebooting to the normal mode...");
-    ret = lt_reboot(g_h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT);
+    ret = lt_reboot(g_h, TR01_L2_STARTUP_REQ_STARTUP_ID_REBOOT);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the normal mode!");
         return ret;
@@ -94,24 +94,24 @@ void lt_test_rev_startup_req(lt_handle_t *h)
     LT_LOG_INFO("Checking we are in the normal mode...");
     LT_TEST_ASSERT(APPLICATION_MODE, check_current_mode());
     LT_LOG_INFO("Rebooting to the normal mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
     LT_LOG_INFO("Checking we are again in the normal mode...");
     LT_TEST_ASSERT(APPLICATION_MODE, check_current_mode());
 
     // Part 2: Try to reboot from normal to bootloader and from bootloader to bootloader.
     for (int i = 0; i < 2; i++) {
         LT_LOG_INFO("Rebooting to the bootloader mode (maintenance reboot)...");
-        LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT));
+        LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT));
         LT_LOG_INFO("Checking we are in the bootloader mode...");
         LT_TEST_ASSERT(STARTUP_MODE, check_current_mode());
         LT_LOG_INFO("Checking that the handshake does not work...");
 #ifdef ABAB
         LT_TEST_ASSERT(LT_L2_GEN_ERR,
-                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
 
 #elif ACAB
         LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ,
-                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
 #else
 #error "Undefined silicon revision. Please define either ABAB or ACAB."
 #endif
@@ -119,7 +119,7 @@ void lt_test_rev_startup_req(lt_handle_t *h)
 
     // Part 3: Try to reboot from bootloader to normal.
     LT_LOG_INFO("Rebooting to the normal mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_L2_STARTUP_REQ_STARTUP_ID_REBOOT));
     LT_LOG_INFO("Checking we are again in the normal mode...");
     LT_TEST_ASSERT(APPLICATION_MODE, check_current_mode());
 }

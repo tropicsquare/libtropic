@@ -54,7 +54,7 @@ void test__invalid_handle()
 {
     uint8_t msg[1] = {0};
     uint8_t rs[64] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(NULL, ECC_SLOT_1, msg, 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(NULL, TR01_ECC_SLOT_1, msg, 1, rs, 64));
 }
 /*
 //---------------------------------------------------------------------------------------------------------//
@@ -66,8 +66,8 @@ void test__invalid_slot()
     h.session = SESSION_ON;
     uint8_t msg[1] = {0};
     uint8_t rs[64] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_0 - 1, msg, 1, rs, 64));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_31 + 1, msg, 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_0 - 1, msg, 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_31 + 1, msg, 1, rs, 64));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -78,7 +78,7 @@ void test__invalid_msg()
     lt_handle_t h = {0};
     h.session = SESSION_ON;
     uint8_t rs[64];
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, NULL, 1, rs, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, NULL, 1, rs, 64));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -88,11 +88,11 @@ void test__invalid_msg_len()
 {
     lt_handle_t h = {0};
     h.session = SESSION_ON;
-    uint8_t msg[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1] = {0};
+    uint8_t msg[TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1] = {0};
     uint8_t rs[64] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1, rs,
-64)); TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN - 1, rs,
-64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1,
+rs, 64)); TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MIN -
+1, rs, 64));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -104,7 +104,7 @@ void test__invalid_rs()
     h.session = SESSION_ON;
     uint8_t msg[1] = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, 1, NULL, 64));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, 1, NULL, 64));
 }
 //---------------------------------------------------------------------------------------------------------//
 
@@ -117,7 +117,7 @@ void test__invalid_rs_len()
     uint8_t rs[64] = {0};
 
     for (int i = 0; i < 25; i++) {
-        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, 1, rs, rand() % 64));
+        TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, 1, rs, rand() % 64));
     }
 }
 
@@ -133,7 +133,7 @@ void test__no_session()
     uint8_t msg[10] = {0};
     uint8_t rs[64] = {0};
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -149,7 +149,7 @@ void test__lt_l3_cmd_fail()
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+        TEST_ASSERT_EQUAL(rets[i], lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
     }
 }
 
@@ -174,15 +174,15 @@ void test__res_size_mismatch()
 
     size_inject_value = 0;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 
     size_inject_value = 2;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 
-    size_inject_value = (uint16_t)((rand() % (L3_CYPHERTEXT_MAX_SIZE - 2)) + 2);
+    size_inject_value = (uint16_t)((rand() % (TR01_L3_CYPHERTEXT_MAX_SIZE - 2)) + 2);
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -197,6 +197,6 @@ void test__correct()
 
     size_inject_value = 0x50;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sign(&h, ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
+    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_eddsa_sign(&h, TR01_ECC_SLOT_1, msg, sizeof(msg), rs, sizeof(rs)));
 }
 */

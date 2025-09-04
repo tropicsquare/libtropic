@@ -21,16 +21,16 @@ static void print_header_boot_v1_0_1(uint8_t *data, lt_bank_id_t bank_id)
 {
     struct lt_header_boot_v1_t *p_h = (struct lt_header_boot_v1_t *)data;
     switch (bank_id) {
-        case FW_BANK_FW1:
+        case TR01_FW_BANK_FW1:
             LT_LOG_INFO("    Firmware bank 1 header:");
             break;
-        case FW_BANK_FW2:
+        case TR01_FW_BANK_FW2:
             LT_LOG_INFO("    Firmware bank 2 header:");
             break;
-        case FW_BANK_SPECT1:
+        case TR01_FW_BANK_SPECT1:
             LT_LOG_INFO("    SPECT bank 1 header:");
             break;
-        case FW_BANK_SPECT2:
+        case TR01_FW_BANK_SPECT2:
             LT_LOG_INFO("    SPECT bank 2 header:");
             break;
         default:
@@ -51,52 +51,52 @@ static void print_header_boot_v1_0_1(uint8_t *data, lt_bank_id_t bank_id)
 
 static void print_all_headers_v1(lt_handle_t *h)
 {
-    uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    uint8_t header[TR01_L2_GET_INFO_FW_HEADER_SIZE] = {0};
 
-    // Read header from FW_BANK_FW1
-    LT_LOG_INFO("Reading firmware headers in bank %d", (int)FW_BANK_FW1);
-    lt_ret_t ret = lt_get_info_fw_bank(h, FW_BANK_FW1, header, sizeof(header));
+    // Read header from TR01_FW_BANK_FW1
+    LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW1);
+    lt_ret_t ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW1, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v1_0_1(header, FW_BANK_FW1);
+        print_header_boot_v1_0_1(header, TR01_FW_BANK_FW1);
     }
     else {
-        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)FW_BANK_FW1, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)TR01_FW_BANK_FW1, lt_ret_verbose(ret));
         return;
     }
 
-    // Read header from FW_BANK_FW2
-    LT_LOG_INFO("Reading firmware headers in bank %d", (int)FW_BANK_FW2);
+    // Read header from TR01_FW_BANK_FW2
+    LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, FW_BANK_FW2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW2, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v1_0_1(header, FW_BANK_FW2);
+        print_header_boot_v1_0_1(header, TR01_FW_BANK_FW2);
     }
     else {
-        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)FW_BANK_FW2, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)TR01_FW_BANK_FW2, lt_ret_verbose(ret));
         return;
     }
 
-    // Read header from FW_BANK_SPECT1
-    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)FW_BANK_SPECT1);
+    // Read header from TR01_FW_BANK_SPECT1
+    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT1);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT1, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v1_0_1(header, FW_BANK_SPECT1);
+        print_header_boot_v1_0_1(header, TR01_FW_BANK_SPECT1);
     }
     else {
-        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)FW_BANK_SPECT1, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)TR01_FW_BANK_SPECT1, lt_ret_verbose(ret));
         return;
     }
 
-    // Read header from FW_BANK_SPECT2
-    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)FW_BANK_SPECT2);
+    // Read header from TR01_FW_BANK_SPECT2
+    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT2, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v1_0_1(header, FW_BANK_SPECT2);
+        print_header_boot_v1_0_1(header, TR01_FW_BANK_SPECT2);
     }
     else {
-        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)FW_BANK_SPECT2, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)TR01_FW_BANK_SPECT2, lt_ret_verbose(ret));
         return;
     }
 }
@@ -106,16 +106,16 @@ static void print_header_boot_v2_0_1(uint8_t *data, lt_bank_id_t bank_id)
 {
     struct lt_header_boot_v2_t *p_h = (struct lt_header_boot_v2_t *)data;
     switch (bank_id) {
-        case FW_BANK_FW1:
+        case TR01_FW_BANK_FW1:
             LT_LOG_INFO("    Firmware bank 1 header:");
             break;
-        case FW_BANK_FW2:
+        case TR01_FW_BANK_FW2:
             LT_LOG_INFO("    Firmware bank 2 header:");
             break;
-        case FW_BANK_SPECT1:
+        case TR01_FW_BANK_SPECT1:
             LT_LOG_INFO("    SPECT bank 1 header:");
             break;
-        case FW_BANK_SPECT2:
+        case TR01_FW_BANK_SPECT2:
             LT_LOG_INFO("    SPECT bank 2 header:");
             break;
         default:
@@ -139,52 +139,52 @@ static void print_header_boot_v2_0_1(uint8_t *data, lt_bank_id_t bank_id)
 
 static void print_all_fw_headers_v2(lt_handle_t *h)
 {
-    uint8_t header[LT_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    uint8_t header[TR01_L2_GET_INFO_FW_HEADER_SIZE] = {0};
 
-    // Read header from FW_BANK_FW1
-    LT_LOG_INFO("Reading firmware headers in bank %d", (int)FW_BANK_FW1);
-    lt_ret_t ret = lt_get_info_fw_bank(h, FW_BANK_FW1, header, sizeof(header));
+    // Read header from TR01_FW_BANK_FW1
+    LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW1);
+    lt_ret_t ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW1, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v2_0_1(header, FW_BANK_FW1);
+        print_header_boot_v2_0_1(header, TR01_FW_BANK_FW1);
     }
     else {
-        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)FW_BANK_FW1, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)TR01_FW_BANK_FW1, lt_ret_verbose(ret));
         return;
     }
 
-    // Read header from FW_BANK_FW2
-    LT_LOG_INFO("Reading firmware headers in bank %d", (int)FW_BANK_FW2);
+    // Read header from TR01_FW_BANK_FW2
+    LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, FW_BANK_FW2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW2, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v2_0_1(header, FW_BANK_FW2);
+        print_header_boot_v2_0_1(header, TR01_FW_BANK_FW2);
     }
     else {
-        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)FW_BANK_FW2, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get FW bank %d header, ret=%s", (int)TR01_FW_BANK_FW2, lt_ret_verbose(ret));
         return;
     }
 
-    // Read header from FW_BANK_SPECT1
-    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)FW_BANK_SPECT1);
+    // Read header from TR01_FW_BANK_SPECT1
+    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT1);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, FW_BANK_SPECT1, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT1, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v2_0_1(header, FW_BANK_SPECT1);
+        print_header_boot_v2_0_1(header, TR01_FW_BANK_SPECT1);
     }
     else {
-        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)FW_BANK_SPECT1, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)TR01_FW_BANK_SPECT1, lt_ret_verbose(ret));
         return;
     }
 
-    // Read header from FW_BANK_SPECT2
-    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)FW_BANK_SPECT2);
+    // Read header from TR01_FW_BANK_SPECT2
+    LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, FW_BANK_SPECT2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT2, header, sizeof(header));
     if (ret == LT_OK) {
-        print_header_boot_v2_0_1(header, FW_BANK_SPECT2);
+        print_header_boot_v2_0_1(header, TR01_FW_BANK_SPECT2);
     }
     else {
-        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)FW_BANK_SPECT2, lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get SPECT bank %d header, ret=%s", (int)TR01_FW_BANK_SPECT2, lt_ret_verbose(ret));
         return;
     }
 }
@@ -196,7 +196,7 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     LT_LOG_INFO("=============================================================");
 
     // This variable is reused on more places in this example to store different firmware versions
-    uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    uint8_t fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     lt_ret_t ret = lt_init(h);
     if (ret != LT_OK) {
@@ -209,14 +209,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     // If there are valid firmwares, chip will execute them on boot. In any case we will try to reboot into application,
     // in case chip would be in maintenance mode (executing bootloader)
     LT_LOG_INFO("Rebooting into APPLICATION mode to check FW versions");
-    ret = lt_reboot(h, LT_MODE_APP);
+    ret = lt_reboot(h, TR01_MODE_APP);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == LT_MODE_APP) {
+    if (h->l2.mode == TR01_MODE_APP) {
         // App runs so we can see what firmwares are running
         // Getting RISCV app firmware version
         LT_LOG_INFO("Reading RISC-V FW version");
@@ -251,14 +251,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into MAINTENANCE mode to check bootloader version and fw bank headers");
-    ret = lt_reboot(h, LT_MODE_MAINTENANCE);
+    ret = lt_reboot(h, TR01_MODE_MAINTENANCE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to reboot into MAINTENANCE mode, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == LT_MODE_MAINTENANCE) {
+    if (h->l2.mode == TR01_MODE_MAINTENANCE) {
         LT_LOG_INFO("Reading RISC-V FW version for bootloader version");
         ret = lt_get_info_riscv_fw_ver(h, fw_ver);
         if (ret != LT_OK) {

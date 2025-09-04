@@ -51,8 +51,8 @@ lt_ret_t lt_deinit(lt_handle_t *h);
 
 /**
  * @brief Update mode variable in handle.
- * Reads one byte from SPI, checks `CHIP_MODE_STARTUP_bit` and updates this information in `lt_l2_state_t` (part of the
- * handle).
+ * Reads one byte from SPI, checks `TR01_L1_CHIP_MODE_STARTUP_bit` and updates this information in `lt_l2_state_t` (part
+ * of the handle).
  *
  * Info from this bit is updated in handle on every L1 transaction anyway.
  * This function can be used to actualize it whenever user wants.
@@ -92,7 +92,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
-#define LT_L2_GET_INFO_CHIP_ID_SIZE 128
+#define TR01_L2_GET_INFO_CHIP_ID_SIZE 128
 
 /**
  * @brief Read TROPIC01's CHIP ID
@@ -110,7 +110,7 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
  * @brief Read TROPIC01's RISC-V firmware version
  *
  * @param h           Device's handle
- * @param ver Buffer for FW version bytes with size `LT_L2_GET_INFO_RISCV_FW_SIZE`
+ * @param ver Buffer for FW version bytes with size `TR01_L2_GET_INFO_RISCV_FW_SIZE`
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -122,7 +122,7 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @brief Read TROPIC01's SPECT firmware version
  *
  * @param h           Device's handle
- * @param ver Buffer for SPECT version bytes with size `LT_L2_GET_INFO_SPECT_FW_SIZE`
+ * @param ver Buffer for SPECT version bytes with size `TR01_L2_GET_INFO_SPECT_FW_SIZE`
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -207,7 +207,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
 
 #ifdef ABAB
 /** @brief Maximal size of update data */
-#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 25600
+#define TR01_MUTABLE_FW_UPDATE_SIZE_MAX 25600
 /**
  * @brief Erase mutable firmware in one of banks
  *
@@ -235,7 +235,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
 
 #elif ACAB
 /** @brief Maximal size of update data */
-#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 30720
+#define TR01_MUTABLE_FW_UPDATE_SIZE_MAX 30720
 
 /**
  * @brief Sends mutable firmware update L2 request to TROPIC01 with silicon revision ACAB
@@ -396,8 +396,8 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written (valid range given by macros `R_MEM_DATA_SIZE_MIN` and
- * `R_MEM_DATA_SIZE_MAX`)
+ * @param size        Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
+ * `TR01_R_MEM_DATA_SIZE_MAX`)
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -476,7 +476,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
  * @brief Reads ECC public key corresponding to a private key in the specified ECC key slot.
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
  * for P256), according to *curve*
  * @param curve       Will be filled by curve byte
@@ -493,7 +493,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
  * @brief Erases ECC key from the specified ECC key slot
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -505,7 +505,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot);
  * @brief Performs ECDSA sign of a message with a private ECC key stored in TROPIC01
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot containing a private key, TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param msg         Buffer containing a message
  * @param msg_len     Length of msg's buffer
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
@@ -536,7 +536,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  * @brief Performs EdDSA sign of a message with a private ECC key stored in TROPIC01
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot containing a private key, TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
@@ -627,7 +627,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, cons
  */
 
 /** @brief Upper bound for CHIP_ID fields as hex string (used in lt_print_chip_id()). */
-#define CHIP_ID_FIELD_MAX_SIZE 35
+#define LT_CHIP_ID_FIELD_MAX_SIZE 35
 
 /** @brief Helper structure, holding string name and address for each configuration object. */
 extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
@@ -745,7 +745,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
  * @param update_data  Pointer to the data to be written
  * @param update_data_size  Size of the data to be written
  * @param bank_id  Bank ID where the update should be applied, valid values are
- *                     For ABAB: FW_BANK_FW1, FW_BANK_FW2, FW_BANK_SPECT1, FW_BANK_SPECT2
+ *                     For ABAB: TR01_FW_BANK_FW1, TR01_FW_BANK_FW2, TR01_FW_BANK_SPECT1, TR01_FW_BANK_SPECT2
  *                     For ACAB: Parameter is ignored, chip is handling firmware banks on its own
  * @return             LT_OK if success, otherwise returns other error code.
  */

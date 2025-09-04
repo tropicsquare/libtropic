@@ -49,11 +49,12 @@ void test__fail_when_no_session()
 void test__lt_aesgcm_encrypt__LT_FAIL()
 {
     lt_handle_t h = {0};
-    h.l3.session = SESSION_ON;
+    h.l3.session = LT_SECURE_SESSION_ON;
 
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)&h.l3.buff;
-    lt_aesgcm_decrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
-                                      p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE, LT_FAIL);
+    lt_aesgcm_decrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
+                                      p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size,
+                                      TR01_L3_TAG_SIZE, LT_FAIL);
 
     int ret = lt_l3_decrypt_response(&h.l3);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
@@ -64,16 +65,16 @@ void test__lt_aesgcm_encrypt__LT_FAIL()
 void test__test_all_l3_results()
 {
     // Note: correct execution is tested at the end
-    uint8_t results[] = {L3_RESULT_FAIL,
-                         L3_RESULT_UNAUTHORIZED,
-                         L3_RESULT_INVALID_CMD,
-                         L3_PAIRING_KEY_EMPTY,
-                         L3_PAIRING_KEY_INVALID,
-                         L3_ECC_INVALID_KEY,
+    uint8_t results[] = {TR01_L3_RESULT_FAIL,
+                         TR01_L3_RESULT_UNAUTHORIZED,
+                         TR01_L3_RESULT_INVALID_CMD,
+                         TR01_L3_PAIRING_KEY_EMPTY,
+                         TR01_L3_PAIRING_KEY_INVALID,
+                         TR01_L3_ECC_INVALID_KEY,
                          0x99,
-                         L3_RESULT_OK,
-                         L3_R_MEM_DATA_WRITE_WRITE_FAIL,
-                         L3_R_MEM_DATA_WRITE_SLOT_EXPIRED};
+                         TR01_L3_RESULT_OK,
+                         TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL,
+                         TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED};
     uint8_t returned[] = {LT_L3_FAIL,
                           LT_L3_UNAUTHORIZED,
                           LT_L3_INVALID_CMD,
@@ -87,12 +88,12 @@ void test__test_all_l3_results()
 
     for (int i = 0; i < 10; i++) {
         lt_handle_t h = {0};
-        h.l3.session = SESSION_ON;
+        h.l3.session = LT_SECURE_SESSION_ON;
 
         struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)&h.l3.buff;
-        lt_aesgcm_decrypt_ExpectAndReturn(&h.l3.decrypt, h.l3.decryption_IV, L3_IV_SIZE, (uint8_t *)"", 0,
+        lt_aesgcm_decrypt_ExpectAndReturn(&h.l3.decrypt, h.l3.decryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
                                           p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size,
-                                          L3_TAG_SIZE, LT_OK);
+                                          TR01_L3_TAG_SIZE, LT_OK);
         p_frame->data[0] = results[i];
 
         int ret = lt_l3_decrypt_response(&h.l3);

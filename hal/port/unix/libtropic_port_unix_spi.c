@@ -163,7 +163,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
-    UNUSED(timeout_ms);
+    LT_UNUSED(timeout_ms);
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
 
     int ret = 0;
@@ -183,7 +183,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
     LT_LOG_DEBUG("-- Waiting for the target.");
 
     int ret = usleep(ms * 1000);
@@ -197,7 +197,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
 
     uint8_t *buff_ptr = buff;
     for (size_t i = 0; i < count; i++) {

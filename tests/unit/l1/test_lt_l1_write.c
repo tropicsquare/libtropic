@@ -28,23 +28,23 @@ void tearDown(void) {}
 // Test if function returns LT_PARAM_ERR on non valid handle
 void test__invalid_handle()
 {
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(NULL, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(NULL, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
 // Test if function returns LT_PARAM_ERR on non valid len
 // void test__invalid_len()
 //{
 //    lt_handle_t h = {0};
-//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
-//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, TR01_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, TR01_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
 //}
 //
 //// Test if function returns LT_PARAM_ERR on non valid timeout
 // void test__invalid_timeout()
 //{
 //     lt_handle_t h = {0};
-//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
-//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_write(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
 // }
 //
 ////---------------------------------------------------------------------------------------------------------//
