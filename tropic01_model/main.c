@@ -14,7 +14,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
-#include "lt_port_unix_tcp.h"
+#include "libtropic_port_unix_tcp.h"
 
 int main(void)
 {

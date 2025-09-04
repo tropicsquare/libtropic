@@ -1,5 +1,5 @@
 /**
- * @file lt_port_stm32_nucleo_f439zi.c
+ * @file libtropic_port_stm32_nucleo_f439zi.c
  * @author Tropic Square s.r.o.
  * @brief Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select).
  *
@@ -9,7 +9,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "lt_port_stm32_nucleo_f439zi.h"
+#include "libtropic_port_stm32_nucleo_f439zi.h"
 
 #include <stdint.h>
 #include <string.h>

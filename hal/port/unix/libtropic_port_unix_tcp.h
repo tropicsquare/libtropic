@@ -1,8 +1,8 @@
-#ifndef LT_PORT_UNIX_TCP_H
-#define LT_PORT_UNIX_TCP_H
+#ifndef LIBTROPIC_PORT_UNIX_TCP_H
+#define LIBTROPIC_PORT_UNIX_TCP_H
 
 /**
- * @file lt_port_unix_tcp.h
+ * @file libtropic_port_unix_tcp.h
  * @author Tropic Square s.r.o.
  * @brief Port for communication with the TROPIC01 Model using TCP.
  *
@@ -68,4 +68,4 @@ typedef struct lt_dev_unix_tcp_t {
     struct unix_tcp_buffer_t tx_buffer;
 } lt_dev_unix_tcp_t;
 
-#endif  // LT_PORT_UNIX_TCP_H
+#endif  // LIBTROPIC_PORT_UNIX_TCP_H
