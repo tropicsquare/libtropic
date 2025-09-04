@@ -708,7 +708,7 @@ typedef enum lt_ecc_key_origin_t { TR01_CURVE_GENERATED = 1, TR01_CURVE_STORED }
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal allowed value of the monotonic counter. */
-#define MCOUNTER_VALUE_MAX 0xFFFFFFFE
+#define TR01_MCOUNTER_VALUE_MAX 0xFFFFFFFE
 
 /** @brief Use to choose one from 16 counters */
 typedef enum lt_mcounter_index_t {
