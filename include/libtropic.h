@@ -162,8 +162,8 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index, const uint8_t *shipriv,
-                          const uint8_t *shipub);
+lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
+                          const uint8_t *shipriv, const uint8_t *shipub);
 
 /**
  * @brief Aborts encrypted secure session between TROPIC01 and host MCU
@@ -230,7 +230,8 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id);
  * lt_ret_t             LT_OK            - SUCCESS
  *                      other parameters - ERROR, for verbose output pass return value to function lt_ret_verbose()
  */
-lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, lt_bank_id_t bank_id);
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size,
+                              lt_bank_id_t bank_id);
 
 #elif ACAB
 /** @brief Maximal size of update data */
@@ -468,7 +469,8 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
+lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve,
+                          const uint8_t *key);
 
 /**
  * @brief Reads ECC public key corresponding to a private key in the specified ECC key slot.

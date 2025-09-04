@@ -475,7 +475,8 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len);
+lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg,
+                                const uint16_t msg_len);
 
 /**
  * @brief Decodes EDDSA_Sign result payload.
