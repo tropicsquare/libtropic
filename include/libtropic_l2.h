@@ -87,4 +87,4 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
 /** @} */  // end of group_l2_functions
 
-#endif // LIBTROPIC_L2_H
+#endif  // LIBTROPIC_L2_H

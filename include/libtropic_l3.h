@@ -582,4 +582,4 @@ lt_ret_t lt_in__mac_and_destroy(lt_handle_t *h, uint8_t *data_in);
 
 /** @} */  // end of group_libtropic_l3
 
-#endif // LIBTROPIC_L3_H
+#endif  // LIBTROPIC_L3_H
