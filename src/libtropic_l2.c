@@ -1,7 +1,8 @@
+#include "libtropic_l2.h"
+
 #include <string.h>
 
 #include "libtropic_common.h"
-#include "libtropic_l2.h"
 #include "lt_crc16.h"
 #include "lt_l1.h"
 #include "lt_l2_api_structs.h"
