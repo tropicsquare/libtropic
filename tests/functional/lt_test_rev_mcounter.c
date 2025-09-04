@@ -24,14 +24,14 @@ static lt_ret_t lt_test_rev_mcounter_cleanup(void)
 {
     lt_ret_t ret;
 
-    LT_LOG_INFO("Starting secure session with slot %d.", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting secure session with slot %d.", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
     }
 
-    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
+    for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Initializing monotonic counter %d to zero...", i);
         ret = lt_mcounter_init(g_h, i, 0);
         if (LT_OK != ret) {
@@ -69,8 +69,8 @@ void lt_test_rev_mcounter(lt_handle_t *h)
     LT_LOG_INFO("Initializing handle.");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d.", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d.", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     lt_test_cleanup_function = &lt_test_rev_mcounter_cleanup;
@@ -82,7 +82,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
 
     // Basic test: init to random value and try to decrement a few times.
     LT_LOG_INFO("Starting basic test...");
-    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
+    for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random init value...");
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &init_val, sizeof(init_val)));
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
@@ -108,7 +108,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
 
     // Decrement to zero test: set to random small value and try to decrement to 0.
     LT_LOG_INFO("Starting decrement to zero test...");
-    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
+    for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random small init value...");
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &init_val, sizeof(init_val)));
         init_val %= 100;
@@ -136,11 +136,11 @@ void lt_test_rev_mcounter(lt_handle_t *h)
     // whether any counter was not overwritten. This will test
     // that there are no indexing problems.
     LT_LOG_INFO("Starting assignment test...");
-    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
+    for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Initializing monotonic counter %d with %d...", i, i);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, i));
     }
-    for (int i = MCOUNTER_INDEX_0; i <= MCOUNTER_INDEX_15; i++) {
+    for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Reading mcounter %d value...", i);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_get(h, i, &mcounter_val));
         LT_LOG_INFO("Verifying mcounter value, should be: %d", i);

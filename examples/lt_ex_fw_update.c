@@ -22,13 +22,13 @@
  * @brief Defines the target firmware banks for this update example.
  *
  * This example is configured to update the following banks:
- * - Application (CPU) firmware: `FW_BANK_FW1`
- * - SPECT firmware:             `FW_BANK_SPECT1`
+ * - Application (CPU) firmware: `TR01_FW_BANK_FW1`
+ * - SPECT firmware:             `TR01_FW_BANK_SPECT1`
  *
  * @note Used only during ABAB update, ACAB update ignores firmware banks
  */
-#define FW_APP_UPDATE_BANK FW_BANK_FW1
-#define FW_SPECT_UPDATE_BANK FW_BANK_SPECT1
+#define FW_APP_UPDATE_BANK TR01_FW_BANK_FW1
+#define FW_SPECT_UPDATE_BANK TR01_FW_BANK_SPECT1
 
 int lt_ex_fw_update(lt_handle_t *h)
 {
@@ -47,18 +47,18 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
 
     // Reused variable
-    uint8_t fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    uint8_t fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     // For firmware update chip must be rebooted into MAINTENANCE mode.
     LT_LOG_INFO("Rebooting into Maintenance mode");
-    ret = lt_reboot(h, LT_MODE_MAINTENANCE);
+    ret = lt_reboot(h, TR01_MODE_MAINTENANCE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == LT_MODE_MAINTENANCE) {
+    if (h->l2.mode == TR01_MODE_MAINTENANCE) {
         LT_LOG_INFO("Chip is executing bootloader");
 
         LT_LOG_INFO("Updating RISC-V FW");
@@ -86,14 +86,14 @@ int lt_ex_fw_update(lt_handle_t *h)
 
     // To read firmware versions chip must be rebooted into application mode.
     LT_LOG_INFO("Rebooting into Application mode");
-    ret = lt_reboot(h, LT_MODE_APP);
+    ret = lt_reboot(h, TR01_MODE_APP);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == LT_MODE_APP) {
+    if (h->l2.mode == TR01_MODE_APP) {
         LT_LOG_INFO("Reading RISC-V FW version");
         ret = lt_get_info_riscv_fw_ver(h, fw_ver);
         if (ret == LT_OK) {

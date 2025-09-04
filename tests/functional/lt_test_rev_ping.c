@@ -1,6 +1,6 @@
 /**
  * @file lt_test_rev_ping.c
- * @brief Test Ping L3 command with random data of random length <= PING_LEN_MAX.
+ * @brief Test Ping L3 command with random data of random length <= TR01_PING_LEN_MAX.
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -24,22 +24,22 @@ void lt_test_rev_ping(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_ping()");
     LT_LOG_INFO("----------------------------------------------");
 
-    uint8_t ping_msg_out[PING_LEN_MAX], ping_msg_in[PING_LEN_MAX];
+    uint8_t ping_msg_out[TR01_PING_LEN_MAX], ping_msg_in[TR01_PING_LEN_MAX];
     uint16_t ping_msg_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Will send %d Ping commands with random data of random length", PING_MAX_LOOPS);
     for (uint16_t i = 0; i < PING_MAX_LOOPS; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Generating random data length <= %d...", (int)PING_LEN_MAX);
+        LT_LOG_INFO("Generating random data length <= %d...", (int)TR01_PING_LEN_MAX);
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &ping_msg_len, sizeof(ping_msg_len)));
-        ping_msg_len %= PING_LEN_MAX + 1;  // 0-4096
+        ping_msg_len %= TR01_PING_LEN_MAX + 1;  // 0-4096
 
         LT_LOG_INFO("Generating %" PRIu16 " random bytes...", ping_msg_len);
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, ping_msg_out, ping_msg_len));

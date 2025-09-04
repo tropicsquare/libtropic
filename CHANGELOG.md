@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `CONFIGURATION_OBJECTS_REGS_IDX` to `lt_config_obj_idx_t`.
 - Renamed `ecc_slot_t` to `lt_ecc_slot_t`.
 - Renamed `mac_and_destroy_slot_t` to `lt_mac_and_destroy_slot_t`.
+- Added prefix `TR01_` to all macros and enum values, if they directly relate to TROPIC01.
+- Added prefix `LT_` to all macros and enum values, if they directly relate to libtropic.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

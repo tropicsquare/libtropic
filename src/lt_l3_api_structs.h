@@ -17,16 +17,16 @@
 #include "libtropic_common.h"
 
 /** @brief Command ID */
-#define LT_L3_PING_CMD_ID 0x01
+#define TR01_L3_PING_CMD_ID 0x01
 /** @brief Command length */
-#define LT_L3_PING_CMD_SIZE_MIN 1u
+#define TR01_L3_PING_CMD_SIZE_MIN 1u
 /** Minimal length of field data_in */
-#define LT_L3_PING_CMD_DATA_IN_LEN_MIN 0u
+#define TR01_L3_PING_CMD_DATA_IN_LEN_MIN 0u
 /** Maximal length of field data_in */
-#define LT_L3_PING_CMD_DATA_IN_LEN_MAX 4096u
+#define TR01_L3_PING_CMD_DATA_IN_LEN_MAX 4096u
 
 /** @brief Result length */
-#define LT_L3_PING_RES_SIZE_MIN 1u
+#define TR01_L3_PING_RES_SIZE_MIN 1u
 
 /**
  * @brief
@@ -45,13 +45,13 @@ struct lt_l3_ping_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ping_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ping_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_ping_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_ping_cmd_t, data_in) +
-        MEMBER_SIZE(struct lt_l3_ping_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ping_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ping_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_ping_cmd_t, data_in) +
+        LT_MEMBER_SIZE(struct lt_l3_ping_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -74,33 +74,25 @@ struct lt_l3_ping_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ping_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ping_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_ping_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_ping_res_t, data_out) +
-        MEMBER_SIZE(struct lt_l3_ping_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ping_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ping_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_ping_res_t, data_out) +
+        LT_MEMBER_SIZE(struct lt_l3_ping_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_PAIRING_KEY_WRITE_CMD_ID 0x10
+#define TR01_L3_PAIRING_KEY_WRITE_CMD_ID 0x10
 /** @brief Command length */
-#define LT_L3_PAIRING_KEY_WRITE_CMD_SIZE 36u
-/** @brief Corresponds to $S_{H0Pub}$. */
-#define LT_L3_PAIRING_KEY_WRITE_CMD_SLOT_PAIRING_KEY_SLOT_0 0x00
-/** @brief Corresponds to $S_{H1Pub}$. */
-#define LT_L3_PAIRING_KEY_WRITE_CMD_SLOT_PAIRING_KEY_SLOT_1 0x01
-/** @brief Corresponds to $S_{H2Pub}$. */
-#define LT_L3_PAIRING_KEY_WRITE_CMD_SLOT_PAIRING_KEY_SLOT_2 0x02
-/** @brief Corresponds to $S_{H3Pub}$. */
-#define LT_L3_PAIRING_KEY_WRITE_CMD_SLOT_PAIRING_KEY_SLOT_3 0x03
+#define TR01_L3_PAIRING_KEY_WRITE_CMD_SIZE 36u
 
 /** @brief Result length */
-#define LT_L3_PAIRING_KEY_WRITE_RES_SIZE 1u
+#define TR01_L3_PAIRING_KEY_WRITE_RES_SIZE 1u
 
 /**
  * @brief
@@ -129,15 +121,15 @@ struct lt_l3_pairing_key_write_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_pairing_key_write_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, s_hipub) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, s_hipub) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -155,32 +147,24 @@ struct lt_l3_pairing_key_write_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_pairing_key_write_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_write_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_PAIRING_KEY_READ_CMD_ID 0x11
+#define TR01_L3_PAIRING_KEY_READ_CMD_ID 0x11
 /** @brief Command length */
-#define LT_L3_PAIRING_KEY_READ_CMD_SIZE 3u
-/** @brief Corresponds to $S_{H0Pub}$. */
-#define LT_L3_PAIRING_KEY_READ_CMD_SLOT_PAIRING_KEY_SLOT_0 0x00
-/** @brief Corresponds to $S_{H1Pub}$. */
-#define LT_L3_PAIRING_KEY_READ_CMD_SLOT_PAIRING_KEY_SLOT_1 0x01
-/** @brief Corresponds to $S_{H2Pub}$. */
-#define LT_L3_PAIRING_KEY_READ_CMD_SLOT_PAIRING_KEY_SLOT_2 0x02
-/** @brief Corresponds to $S_{H3Pub}$. */
-#define LT_L3_PAIRING_KEY_READ_CMD_SLOT_PAIRING_KEY_SLOT_3 0x03
+#define TR01_L3_PAIRING_KEY_READ_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_PAIRING_KEY_READ_RES_SIZE 36u
+#define TR01_L3_PAIRING_KEY_READ_RES_SIZE 36u
 
 /**
  * @brief
@@ -199,13 +183,13 @@ struct lt_l3_pairing_key_read_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_pairing_key_read_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -233,34 +217,26 @@ struct lt_l3_pairing_key_read_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_pairing_key_read_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, s_hipub) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, s_hipub) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_read_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_ID 0x12
+#define TR01_L3_PAIRING_KEY_INVALIDATE_CMD_ID 0x12
 /** @brief Command length */
-#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_SIZE 3u
-/** @brief Corresponds to $S_{H0Pub}$. */
-#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_SLOT_PAIRING_KEY_SLOT_0 0x00
-/** @brief Corresponds to $S_{H1Pub}$. */
-#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_SLOT_PAIRING_KEY_SLOT_1 0x01
-/** @brief Corresponds to $S_{H2Pub}$. */
-#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_SLOT_PAIRING_KEY_SLOT_2 0x02
-/** @brief Corresponds to $S_{H3Pub}$. */
-#define LT_L3_PAIRING_KEY_INVALIDATE_CMD_SLOT_PAIRING_KEY_SLOT_3 0x03
+#define TR01_L3_PAIRING_KEY_INVALIDATE_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_PAIRING_KEY_INVALIDATE_RES_SIZE 1u
+#define TR01_L3_PAIRING_KEY_INVALIDATE_RES_SIZE 1u
 
 /**
  * @brief
@@ -279,13 +255,13 @@ struct lt_l3_pairing_key_invalidate_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_pairing_key_invalidate_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -303,24 +279,24 @@ struct lt_l3_pairing_key_invalidate_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_pairing_key_invalidate_res_t) == 
     (
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_pairing_key_invalidate_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_R_CONFIG_WRITE_CMD_ID 0x20
+#define TR01_L3_R_CONFIG_WRITE_CMD_ID 0x20
 /** @brief Command length */
-#define LT_L3_R_CONFIG_WRITE_CMD_SIZE 8u
+#define TR01_L3_R_CONFIG_WRITE_CMD_SIZE 8u
 
 /** @brief Result length */
-#define LT_L3_R_CONFIG_WRITE_RES_SIZE 1u
+#define TR01_L3_R_CONFIG_WRITE_RES_SIZE 1u
 
 /**
  * @brief
@@ -349,15 +325,15 @@ struct lt_l3_r_config_write_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_config_write_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, address) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, value) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, address) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, value) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -375,24 +351,24 @@ struct lt_l3_r_config_write_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_config_write_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_config_write_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_r_config_write_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_write_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_R_CONFIG_READ_CMD_ID 0x21
+#define TR01_L3_R_CONFIG_READ_CMD_ID 0x21
 /** @brief Command length */
-#define LT_L3_R_CONFIG_READ_CMD_SIZE 3u
+#define TR01_L3_R_CONFIG_READ_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_R_CONFIG_READ_RES_SIZE 8u
+#define TR01_L3_R_CONFIG_READ_RES_SIZE 8u
 
 /**
  * @brief
@@ -411,13 +387,13 @@ struct lt_l3_r_config_read_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_config_read_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, address) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, address) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -445,26 +421,26 @@ struct lt_l3_r_config_read_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_config_read_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, value) +
-        MEMBER_SIZE(struct lt_l3_r_config_read_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_res_t, value) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_read_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_R_CONFIG_ERASE_CMD_ID 0x22
+#define TR01_L3_R_CONFIG_ERASE_CMD_ID 0x22
 /** @brief Command length */
-#define LT_L3_R_CONFIG_ERASE_CMD_SIZE 1u
+#define TR01_L3_R_CONFIG_ERASE_CMD_SIZE 1u
 
 /** @brief Result length */
-#define LT_L3_R_CONFIG_ERASE_RES_SIZE 1u
+#define TR01_L3_R_CONFIG_ERASE_RES_SIZE 1u
 
 /**
  * @brief
@@ -478,12 +454,12 @@ struct lt_l3_r_config_erase_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_config_erase_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_erase_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -501,24 +477,24 @@ struct lt_l3_r_config_erase_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_config_erase_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_r_config_erase_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_I_CONFIG_WRITE_CMD_ID 0x30
+#define TR01_L3_I_CONFIG_WRITE_CMD_ID 0x30
 /** @brief Command length */
-#define LT_L3_I_CONFIG_WRITE_CMD_SIZE 4u
+#define TR01_L3_I_CONFIG_WRITE_CMD_SIZE 4u
 
 /** @brief Result length */
-#define LT_L3_I_CONFIG_WRITE_RES_SIZE 1u
+#define TR01_L3_I_CONFIG_WRITE_RES_SIZE 1u
 
 /**
  * @brief
@@ -542,14 +518,14 @@ struct lt_l3_i_config_write_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_i_config_write_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, address) + 
-        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, bit_index) + 
-        MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, address) + 
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, bit_index) + 
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -567,24 +543,24 @@ struct lt_l3_i_config_write_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_i_config_write_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_i_config_write_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_i_config_write_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_i_config_write_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_write_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_I_CONFIG_READ_CMD_ID 0x31
+#define TR01_L3_I_CONFIG_READ_CMD_ID 0x31
 /** @brief Command length */
-#define LT_L3_I_CONFIG_READ_CMD_SIZE 3u
+#define TR01_L3_I_CONFIG_READ_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_I_CONFIG_READ_RES_SIZE 8u
+#define TR01_L3_I_CONFIG_READ_RES_SIZE 8u
 
 /**
  * @brief
@@ -603,13 +579,13 @@ struct lt_l3_i_config_read_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_i_config_read_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, address) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, address) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -637,30 +613,30 @@ struct lt_l3_i_config_read_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_i_config_read_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, value) +
-        MEMBER_SIZE(struct lt_l3_i_config_read_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_res_t, value) +
+        LT_MEMBER_SIZE(struct lt_l3_i_config_read_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_R_MEM_DATA_WRITE_CMD_ID 0x40
+#define TR01_L3_R_MEM_DATA_WRITE_CMD_ID 0x40
 /** @brief Command length */
-#define LT_L3_R_MEM_DATA_WRITE_CMD_SIZE_MIN 5u
+#define TR01_L3_R_MEM_DATA_WRITE_CMD_SIZE_MIN 5u
 /** Minimal length of field data */
-#define LT_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MIN 1u
+#define TR01_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MIN 1u
 /** Maximal length of field data */
-#define LT_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MAX 444u
+#define TR01_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MAX 444u
 
 /** @brief Result length */
-#define LT_L3_R_MEM_DATA_WRITE_RES_SIZE 1u
+#define TR01_L3_R_MEM_DATA_WRITE_RES_SIZE 1u
 
 /**
  * @brief
@@ -689,15 +665,15 @@ struct lt_l3_r_mem_data_write_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_mem_data_write_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, udata_slot) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, data) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, udata_slot) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, data) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -715,25 +691,25 @@ struct lt_l3_r_mem_data_write_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_mem_data_write_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_write_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_R_MEM_DATA_READ_CMD_ID 0x41
+#define TR01_L3_R_MEM_DATA_READ_CMD_ID 0x41
 /** @brief Command length */
-#define LT_L3_R_MEM_DATA_READ_CMD_SIZE 3u
+#define TR01_L3_R_MEM_DATA_READ_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_R_MEM_DATA_READ_RES_SIZE_MIN 4u
-#define LT_L3_R_MEM_DATA_READ_RES_SIZE_MAX 448u
+#define TR01_L3_R_MEM_DATA_READ_RES_SIZE_MIN 4u
+#define TR01_L3_R_MEM_DATA_READ_RES_SIZE_MAX 448u
 
 /**
  * @brief
@@ -752,13 +728,13 @@ struct lt_l3_r_mem_data_read_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_mem_data_read_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, udata_slot) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, udata_slot) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -786,26 +762,26 @@ struct lt_l3_r_mem_data_read_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_mem_data_read_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, data) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, data) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_read_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_R_MEM_DATA_ERASE_CMD_ID 0x42
+#define TR01_L3_R_MEM_DATA_ERASE_CMD_ID 0x42
 /** @brief Command length */
-#define LT_L3_R_MEM_DATA_ERASE_CMD_SIZE 3u
+#define TR01_L3_R_MEM_DATA_ERASE_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_R_MEM_DATA_ERASE_RES_SIZE 1u
+#define TR01_L3_R_MEM_DATA_ERASE_RES_SIZE 1u
 
 /**
  * @brief
@@ -824,13 +800,13 @@ struct lt_l3_r_mem_data_erase_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_mem_data_erase_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, udata_slot) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, udata_slot) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -848,24 +824,24 @@ struct lt_l3_r_mem_data_erase_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_r_mem_data_erase_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_r_mem_data_erase_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_RANDOM_VALUE_GET_CMD_ID 0x50
+#define TR01_L3_RANDOM_VALUE_GET_CMD_ID 0x50
 /** @brief Command length */
-#define LT_L3_RANDOM_VALUE_GET_CMD_SIZE 2u
+#define TR01_L3_RANDOM_VALUE_GET_CMD_SIZE 2u
 
 /** @brief Result length */
-#define LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN 4u
+#define TR01_L3_RANDOM_VALUE_GET_RES_SIZE_MIN 4u
 
 /**
  * @brief
@@ -884,13 +860,13 @@ struct lt_l3_random_value_get_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_random_value_get_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, n_bytes) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, n_bytes) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -918,30 +894,30 @@ struct lt_l3_random_value_get_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_random_value_get_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, random_data) +
-        MEMBER_SIZE(struct lt_l3_random_value_get_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_res_t, random_data) +
+        LT_MEMBER_SIZE(struct lt_l3_random_value_get_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_ECC_KEY_GENERATE_CMD_ID 0x60
+#define TR01_L3_ECC_KEY_GENERATE_CMD_ID 0x60
 /** @brief Command length */
-#define LT_L3_ECC_KEY_GENERATE_CMD_SIZE 4u
+#define TR01_L3_ECC_KEY_GENERATE_CMD_SIZE 4u
 /** @brief P256 Curve - 64-byte long public key. */
-#define LT_L3_ECC_KEY_GENERATE_CMD_CURVE_P256 0x01
+#define TR01_L3_ECC_KEY_GENERATE_CMD_CURVE_P256 0x01
 /** @brief Ed25519 Curve - 32-byte long public key. */
-#define LT_L3_ECC_KEY_GENERATE_CMD_CURVE_ED25519 0x02
+#define TR01_L3_ECC_KEY_GENERATE_CMD_CURVE_ED25519 0x02
 
 /** @brief Result length */
-#define LT_L3_ECC_KEY_GENERATE_RES_SIZE 1u
+#define TR01_L3_ECC_KEY_GENERATE_RES_SIZE 1u
 
 /**
  * @brief
@@ -965,14 +941,14 @@ struct lt_l3_ecc_key_generate_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_generate_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, curve) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, curve) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -990,28 +966,28 @@ struct lt_l3_ecc_key_generate_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_generate_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_generate_res_t, tag)
     )
 )
 /** \endcond */
 //clang-format on
 
 /** @brief Command ID */
-#define LT_L3_ECC_KEY_STORE_CMD_ID 0x61
+#define TR01_L3_ECC_KEY_STORE_CMD_ID 0x61
 /** @brief Command length */
-#define LT_L3_ECC_KEY_STORE_CMD_SIZE 48u
+#define TR01_L3_ECC_KEY_STORE_CMD_SIZE 48u
 /** @brief P256 Curve - 64-byte long public key. */
-#define LT_L3_ECC_KEY_STORE_CMD_CURVE_P256 0x01
+#define TR01_L3_ECC_KEY_STORE_CMD_CURVE_P256 0x01
 /** @brief Ed25519 Curve - 32-byte long public key. */
-#define LT_L3_ECC_KEY_STORE_CMD_CURVE_ED25519 0x02
+#define TR01_L3_ECC_KEY_STORE_CMD_CURVE_ED25519 0x02
 
 /** @brief Result length */
-#define LT_L3_ECC_KEY_STORE_RES_SIZE 1u
+#define TR01_L3_ECC_KEY_STORE_RES_SIZE 1u
 
 /**
  * @brief
@@ -1045,16 +1021,16 @@ struct lt_l3_ecc_key_store_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_store_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, curve) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, k) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, curve) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, k) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1072,32 +1048,32 @@ struct lt_l3_ecc_key_store_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_store_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_store_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_ECC_KEY_READ_CMD_ID 0x62
+#define TR01_L3_ECC_KEY_READ_CMD_ID 0x62
 /** @brief Command length */
-#define LT_L3_ECC_KEY_READ_CMD_SIZE 3u
+#define TR01_L3_ECC_KEY_READ_CMD_SIZE 3u
 /** @brief P256 Curve - 64-byte long public key. */
-#define LT_L3_ECC_KEY_READ_CMD_CURVE_P256 0x01
+#define TR01_L3_ECC_KEY_READ_CMD_CURVE_P256 0x01
 /** @brief Ed25519 Curve - 32-byte long public key. */
-#define LT_L3_ECC_KEY_READ_CMD_CURVE_ED25519 0x02
+#define TR01_L3_ECC_KEY_READ_CMD_CURVE_ED25519 0x02
 /** @brief The key is from key generation on the device. */
-#define LT_L3_ECC_KEY_READ_CMD_ORIGIN_ECC_KEY_GENERATE 0x01
+#define TR01_L3_ECC_KEY_READ_CMD_ORIGIN_ECC_KEY_GENERATE 0x01
 /** @brief The key is from key storage in the device. */
-#define LT_L3_ECC_KEY_READ_CMD_ORIGIN_ECC_KEY_STORE 0x02
+#define TR01_L3_ECC_KEY_READ_CMD_ORIGIN_ECC_KEY_STORE 0x02
 
 /** @brief Result length */
-#define LT_L3_ECC_KEY_READ_RES_SIZE_MIN 48u
+#define TR01_L3_ECC_KEY_READ_RES_SIZE_MIN 48u
 
 /**
  * @brief
@@ -1116,13 +1092,13 @@ struct lt_l3_ecc_key_read_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_read_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1160,28 +1136,28 @@ struct lt_l3_ecc_key_read_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_read_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, curve) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, origin) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, pub_key) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, curve) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, origin) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, pub_key) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_read_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_ECC_KEY_ERASE_CMD_ID 0x63
+#define TR01_L3_ECC_KEY_ERASE_CMD_ID 0x63
 /** @brief Command length */
-#define LT_L3_ECC_KEY_ERASE_CMD_SIZE 3u
+#define TR01_L3_ECC_KEY_ERASE_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_ECC_KEY_ERASE_RES_SIZE 1u
+#define TR01_L3_ECC_KEY_ERASE_RES_SIZE 1u
 
 /**
  * @brief
@@ -1200,13 +1176,13 @@ struct lt_l3_ecc_key_erase_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_erase_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1224,24 +1200,24 @@ struct lt_l3_ecc_key_erase_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecc_key_erase_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_ecc_key_erase_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_ECDSA_SIGN_CMD_ID 0x70
+#define TR01_L3_ECDSA_SIGN_CMD_ID 0x70
 /** @brief Command length */
-#define LT_L3_ECDSA_SIGN_CMD_SIZE 48u
+#define TR01_L3_ECDSA_SIGN_CMD_SIZE 48u
 
 /** @brief Result length */
-#define LT_L3_ECDSA_SIGN_RES_SIZE 80u
+#define TR01_L3_ECDSA_SIGN_RES_SIZE 80u
 
 /**
  * @brief
@@ -1270,15 +1246,15 @@ struct lt_l3_ecdsa_sign_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecdsa_sign_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, msg_hash) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, msg_hash) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1311,29 +1287,29 @@ struct lt_l3_ecdsa_sign_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_ecdsa_sign_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, r) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, s) +
-        MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, r) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, s) +
+        LT_MEMBER_SIZE(struct lt_l3_ecdsa_sign_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_EDDSA_SIGN_CMD_ID 0x71
+#define TR01_L3_EDDSA_SIGN_CMD_ID 0x71
 /** @brief Command length */
-#define LT_L3_EDDSA_SIGN_CMD_SIZE_MIN 17u
+#define TR01_L3_EDDSA_SIGN_CMD_SIZE_MIN 17u
 /** @brief Maximal length of field msg */
-#define LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX 4096u
+#define TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX 4096u
 
 /** @brief Result length */
-#define LT_L3_EDDSA_SIGN_RES_SIZE 80u
+#define TR01_L3_EDDSA_SIGN_RES_SIZE 80u
 
 /**
  * @brief
@@ -1362,15 +1338,15 @@ struct lt_l3_eddsa_sign_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_eddsa_sign_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, msg) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, msg) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1403,27 +1379,27 @@ struct lt_l3_eddsa_sign_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_eddsa_sign_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, r) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, s) +
-        MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, r) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, s) +
+        LT_MEMBER_SIZE(struct lt_l3_eddsa_sign_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_MCOUNTER_INIT_CMD_ID 0x80
+#define TR01_L3_MCOUNTER_INIT_CMD_ID 0x80
 /** @brief Command length */
-#define LT_L3_MCOUNTER_INIT_CMD_SIZE 8u
+#define TR01_L3_MCOUNTER_INIT_CMD_SIZE 8u
 
 /** @brief Result length */
-#define LT_L3_MCOUNTER_INIT_RES_SIZE 1u
+#define TR01_L3_MCOUNTER_INIT_RES_SIZE 1u
 
 /**
  * @brief
@@ -1452,15 +1428,15 @@ struct lt_l3_mcounter_init_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mcounter_init_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_index) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_val) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_index) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, mcounter_val) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1478,24 +1454,24 @@ struct lt_l3_mcounter_init_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mcounter_init_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_init_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_MCOUNTER_UPDATE_CMD_ID 0x81
+#define TR01_L3_MCOUNTER_UPDATE_CMD_ID 0x81
 /** @brief Command length */
-#define LT_L3_MCOUNTER_UPDATE_CMD_SIZE 3u
+#define TR01_L3_MCOUNTER_UPDATE_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_MCOUNTER_UPDATE_RES_SIZE 1u
+#define TR01_L3_MCOUNTER_UPDATE_RES_SIZE 1u
 
 /**
  * @brief
@@ -1514,13 +1490,13 @@ struct lt_l3_mcounter_update_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mcounter_update_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, mcounter_index) +
-        MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, mcounter_index) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1538,24 +1514,24 @@ struct lt_l3_mcounter_update_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mcounter_update_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_update_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_MCOUNTER_GET_CMD_ID 0x82
+#define TR01_L3_MCOUNTER_GET_CMD_ID 0x82
 /** @brief Command length */
-#define LT_L3_MCOUNTER_GET_CMD_SIZE 3u
+#define TR01_L3_MCOUNTER_GET_CMD_SIZE 3u
 
 /** @brief Result length */
-#define LT_L3_MCOUNTER_GET_RES_SIZE 8u
+#define TR01_L3_MCOUNTER_GET_RES_SIZE 8u
 
 /**
  * @brief
@@ -1574,13 +1550,13 @@ struct lt_l3_mcounter_get_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mcounter_get_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, mcounter_index) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, mcounter_index) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1608,26 +1584,26 @@ struct lt_l3_mcounter_get_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mcounter_get_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, mcounter_val) +
-        MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, mcounter_val) +
+        LT_MEMBER_SIZE(struct lt_l3_mcounter_get_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_MAC_AND_DESTROY_CMD_ID 0x90
+#define TR01_L3_MAC_AND_DESTROY_CMD_ID 0x90
 /** @brief Command length */
-#define LT_L3_MAC_AND_DESTROY_CMD_SIZE 36u
+#define TR01_L3_MAC_AND_DESTROY_CMD_SIZE 36u
 
 /** @brief Result length */
-#define LT_L3_MAC_AND_DESTROY_RES_SIZE 36u
+#define TR01_L3_MAC_AND_DESTROY_RES_SIZE 36u
 
 /**
  * @brief
@@ -1657,15 +1633,15 @@ struct lt_l3_mac_and_destroy_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mac_and_destroy_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, slot) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, padding) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, data_in) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, slot) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, data_in) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1693,26 +1669,26 @@ struct lt_l3_mac_and_destroy_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_mac_and_destroy_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, data_out) +
-        MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, data_out) +
+        LT_MEMBER_SIZE(struct lt_l3_mac_and_destroy_res_t, tag)
     )
 )
 /** \endcond */
 // clang-format on
 
 /** @brief Command ID */
-#define LT_L3_SERIAL_CODE_GET_CMD_ID 0xa0
+#define TR01_L3_SERIAL_CODE_GET_CMD_ID 0xa0
 /** @brief Command length */
-#define LT_L3_SERIAL_CODE_GET_CMD_SIZE 1u
+#define TR01_L3_SERIAL_CODE_GET_CMD_SIZE 1u
 
 /** @brief Result length */
-#define LT_L3_SERIAL_CODE_GET_RES_SIZE 36u
+#define TR01_L3_SERIAL_CODE_GET_RES_SIZE 36u
 
 /**
  * @brief
@@ -1726,12 +1702,12 @@ struct lt_l3_serial_code_get_cmd_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_serial_code_get_cmd_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_size) +
-        MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_id) +
-        MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_size) +
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, cmd_id) +
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_cmd_t, tag)
     )
 )
 /** \endcond */
@@ -1759,14 +1735,14 @@ struct lt_l3_serial_code_get_res_t {
 
 // clang-format off
 /** \cond */
-STATIC_ASSERT(
+LT_STATIC_ASSERT(
     sizeof(struct lt_l3_serial_code_get_res_t) ==
     (
-        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, res_size) +
-        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, result) +
-        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, padding) +
-        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, serial_code) +
-        MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, tag)
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, res_size) +
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, result) +
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, padding) +
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, serial_code) +
+        LT_MEMBER_SIZE(struct lt_l3_serial_code_get_res_t, tag)
     )
 )
 /** \endcond */

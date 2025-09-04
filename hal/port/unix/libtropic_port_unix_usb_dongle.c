@@ -29,9 +29,6 @@
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
 
-#define READ_WRITE_DELAY 10
-#define SPI_TRANSFER_BUFF_SIZE_MAX ((LT_L1_LEN_MAX * 2) + 1)
-
 /**
  * @brief Writes data to a serial port (specified by fd).
  *
@@ -167,7 +164,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
     int ret = usleep(ms * 1000);
     if (ret != 0) {
         LT_LOG_ERROR("usleep() failed: %s (%d)", strerror(errno), ret);
@@ -179,7 +176,7 @@ lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
 
     uint8_t *buff_ptr = buff;
     for (size_t i = 0; i < count; i++) {
@@ -192,7 +189,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
     // CS LOW is handled automatically when SPI transfer is executed.
     return LT_OK;
 }
@@ -220,16 +217,16 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
-    UNUSED(timeout_ms);
+    LT_UNUSED(timeout_ms);
 
     lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
 
-    if (offset + tx_data_length > LT_L1_LEN_MAX) {
+    if (offset + tx_data_length > TR01_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
 
     // Bytes from handle which are about to be sent are encoded as chars and stored to buffered_chars.
-    uint8_t buffered_chars[SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
+    uint8_t buffered_chars[LT_UNIX_USB_DONGLE_SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
     for (int i = 0; i < tx_data_length; i++) {
         sprintf((char *)(buffered_chars + i * 2), "%02" PRIX8, s2->buff[i + offset]);
     }
@@ -244,7 +241,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         return LT_L1_SPI_ERROR;
     }
 
-    lt_port_delay(s2, READ_WRITE_DELAY);
+    lt_port_delay(s2, LT_UNIX_USB_DONGLE_READ_WRITE_DELAY);
 
     int read_bytes = read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2);
     if (read_bytes != ((2 * tx_data_length) + 2)) {

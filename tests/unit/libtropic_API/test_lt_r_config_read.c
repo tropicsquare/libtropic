@@ -53,7 +53,7 @@ void tearDown(void) {}
 void test__invalid_handle()
 {
     uint32_t obj;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_read(NULL, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_read(NULL, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
 }
 
 /*// Test if function returns LT_PARAM_ERR on invalid addr
@@ -61,14 +61,14 @@ void test__invalid_addr()
 {
     lt_handle_t h = {0};
     uint32_t obj;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_read(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR +1, &obj));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_read(&h, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR +1, &obj));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid obj
 void test__invalid_obj()
 {
     lt_handle_t h = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_read(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR, NULL));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_r_config_read(&h, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR, NULL));
 }
 
 
@@ -82,7 +82,7 @@ void test___no_session()
     lt_handle_t h = {0};
     uint32_t obj;
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_r_config_read(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR,
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_r_config_read(&h, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR,
 &obj));
 }
 
@@ -98,7 +98,7 @@ void test___l3_cmd_fail()
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_r_config_read(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
+        TEST_ASSERT_EQUAL(rets[i], lt_r_config_read(&h, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
     }
 }
 
@@ -120,9 +120,9 @@ void test___len_mismatch()
     h.session = SESSION_ON;
     uint32_t obj;
 
-    size_inject_value = LT_L3_R_CONFIG_READ_RES_SIZE+1;
+    size_inject_value = TR01_L3_R_CONFIG_READ_RES_SIZE+1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_r_config_read(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_r_config_read(&h, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -134,8 +134,8 @@ void test___correct()
     h.session = SESSION_ON;
     uint32_t obj;
 
-    size_inject_value = LT_L3_R_CONFIG_READ_RES_SIZE;
+    size_inject_value = TR01_L3_R_CONFIG_READ_RES_SIZE;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_r_config_read(&h, CONFIGURATION_OBJECTS_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
+    TEST_ASSERT_EQUAL(LT_OK, lt_r_config_read(&h, TR01_CFG_UAP_SERIAL_CODE_GET_ADDR, &obj));
 }
 */

@@ -52,8 +52,8 @@ void tearDown(void) {}
 /*// Test if function returns LT_PARAM_ERROR when invalid handle is passed
 void test__invalid_handle()
 {
-    uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE];
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_riscv_fw_ver(NULL, riscv_fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE));
+    uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE];
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_riscv_fw_ver(NULL, riscv_fw_ver, TR01_L2_GET_INFO_RISCV_FW_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -64,7 +64,7 @@ void test__invalid_ver()
     lt_handle_t h = {0};
     h.session = SESSION_ON;
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_riscv_fw_ver(&h, NULL, LT_L2_GET_INFO_RISCV_FW_SIZE));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_riscv_fw_ver(&h, NULL, TR01_L2_GET_INFO_RISCV_FW_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -74,9 +74,9 @@ void test__invalid_max_len()
 {
     lt_handle_t h = {0};
     h.session = SESSION_ON;
-    uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_riscv_fw_ver(&h, riscv_fw_ver, LT_L2_GET_INFO_RISCV_FW_SIZE - 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_riscv_fw_ver(&h, riscv_fw_ver, TR01_L2_GET_INFO_RISCV_FW_SIZE - 1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -87,7 +87,7 @@ void test__invalid_max_len()
 void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
-    uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE,
 LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
@@ -114,7 +114,7 @@ lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int __attribute__((unused)) cm
 void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
-    uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
 
     inject_rsp_len = 4+1;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
@@ -129,7 +129,7 @@ void test__resp_size_mismatch()
 void test__correct()
 {
     lt_handle_t h = {0};
-    uint8_t riscv_fw_ver[LT_L2_GET_INFO_RISCV_FW_SIZE+1] = {0};
+    uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE+1] = {0};
 
     inject_rsp_len = 4;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);

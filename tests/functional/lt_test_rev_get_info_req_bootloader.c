@@ -58,50 +58,50 @@ static void print_fw_header_bootloader_v2_0_1(uint8_t *header)
 
 static void read_fw_banks_bootloader_v1_0_1(void)
 {
-    uint8_t fw_header[LT_L2_GET_INFO_FW_HEADER_SIZE];
+    uint8_t fw_header[TR01_L2_GET_INFO_FW_HEADER_SIZE];
 
-    LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW1, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW1);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW2, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW2);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT1);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT2);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 }
 
 static void read_fw_banks_bootloader_v2_0_1(void)
 {
-    uint8_t fw_header[LT_L2_GET_INFO_FW_HEADER_SIZE];
+    uint8_t fw_header[TR01_L2_GET_INFO_FW_HEADER_SIZE];
 
-    LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW1, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW1);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Reading FW bank %d...", (int)FW_BANK_FW2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_FW2, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW2);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT1);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Reading SPECT bank %d...", (int)FW_BANK_SPECT2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
+    LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT2);
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 }
@@ -111,7 +111,7 @@ static lt_ret_t lt_test_rev_get_info_req_bootloader_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Rebooting to the Application mode...");
-    ret = lt_reboot(g_h, LT_MODE_APP);
+    ret = lt_reboot(g_h, TR01_MODE_APP);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the Application mode!");
         return ret;
@@ -140,14 +140,14 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
     struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
                                     .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
 #endif
-    uint8_t riscv_ver[LT_L2_GET_INFO_RISCV_FW_SIZE], spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
+    uint8_t riscv_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE], spect_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE];
     struct lt_chip_id_t chip_id = {0};
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Rebooting into Maintenance mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_MAINTENANCE));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MODE_MAINTENANCE));
 
     lt_test_cleanup_function = &lt_test_rev_get_info_req_bootloader_cleanup;
 

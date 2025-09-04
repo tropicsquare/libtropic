@@ -20,11 +20,11 @@
 #include "libtropic_common.h"
 
 /** This bit in CHIP_STATUS byte signalizes that chip is ready to accept requests */
-#define CHIP_MODE_READY_bit 0x01
+#define TR01_L1_CHIP_MODE_READY_bit 0x01
 /** This bit in CHIP_STATUS byte signalizes that chip is in ALARM mode */
-#define CHIP_MODE_ALARM_bit 0x02
+#define TR01_L1_CHIP_MODE_ALARM_bit 0x02
 /** This bit in CHIP_STATUS byte signalizes that chip is in STARTUP mode */
-#define CHIP_MODE_STARTUP_bit 0x04
+#define TR01_L1_CHIP_MODE_STARTUP_bit 0x04
 
 /** Max number of GET_INFO requests when chip is not answering */
 #define LT_L1_READ_MAX_TRIES 50
@@ -39,7 +39,7 @@
 #define LT_L1_TIMEOUT_MS_MAX 150
 
 /** Get response request's ID */
-#define GET_RESPONSE_REQ_ID 0xAA
+#define TR01_L1_GET_RESPONSE_REQ_ID 0xAA
 
 /**
  * @brief Reads data from TROPIC01 into host platform

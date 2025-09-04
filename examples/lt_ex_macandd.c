@@ -30,7 +30,7 @@
 
 #if (MACANDD_ROUNDS > 12)
 #error \
-    "MACANDD_ROUNDS must be less than 12 here, or generally than MACANDD_ROUNDS_MAX. Read explanation at the beginning of this file"
+    "MACANDD_ROUNDS must be less than 12 here, or generally than TR01_MACANDD_ROUNDS_MAX. Read explanation at the beginning of this file"
 #endif
 
 /** @brief Minimal size of MAC-and-Destroy additional data */
@@ -79,7 +79,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
         || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !secret) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -230,7 +230,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
         || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !secret) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != SESSION_ON) {
+    if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -393,10 +393,10 @@ int lt_ex_macandd(lt_handle_t *h)
         return -1;
     }
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)PAIRING_KEY_SLOT_INDEX_0,
+        LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)TR01_PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;

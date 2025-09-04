@@ -74,7 +74,7 @@ void test__invalid_slot()
 {
     lt_handle_t h = {0};
     uint8_t pubkey[32] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(&h, pubkey, PAIRING_KEY_SLOT_INDEX_3 + 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_write(&h, pubkey, TR01_PAIRING_KEY_SLOT_INDEX_3 + 1));
 }
 
 //---------------------------------------------------------------------------------------------------------//

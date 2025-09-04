@@ -34,12 +34,12 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Getting Certificate Store from TROPIC01");
-    uint8_t cert1[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE], cert2[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE],
-        cert3[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE], cert4[LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE];
+    uint8_t cert1[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE], cert2[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE],
+        cert3[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE], cert4[TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE];
     struct lt_cert_store_t store
         = {.certs = {cert1, cert2, cert3, cert4},
-           .buf_len = {LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
-                       LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE}};
+           .buf_len = {TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE,
+                       TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE, TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE}};
     ret = lt_get_info_cert_store(h, &store);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get Certificate Store, ret=%s", lt_ret_verbose(ret));
@@ -65,7 +65,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     // Inicialize session from a server side by creating state->ehpriv and state->ehpub,
     // l2 request is prepared into handle's buffer (h->l2_buff)
     LT_LOG_INFO("Executing lt_out__session_start()...");
-    ret = lt_out__session_start(h, PAIRING_KEY_SLOT_INDEX_0, &state);
+    ret = lt_out__session_start(h, TR01_PAIRING_KEY_SLOT_INDEX_0, &state);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__session_start() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
@@ -96,7 +96,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
     LT_LOG_INFO("Executing lt_in__session_start()...");
-    ret = lt_in__session_start(h, stpub, PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
+    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);

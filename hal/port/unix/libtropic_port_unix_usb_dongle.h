@@ -13,6 +13,9 @@
 
 #include "libtropic_port.h"
 
+#define LT_UNIX_USB_DONGLE_READ_WRITE_DELAY 10
+#define LT_UNIX_USB_DONGLE_SPI_TRANSFER_BUFF_SIZE_MAX ((TR01_L1_LEN_MAX * 2) + 1)
+
 /**
  * @brief Device structure for Unix USB Dongle port.
  *
@@ -21,7 +24,7 @@
  */
 typedef struct lt_dev_unix_usb_dongle_t {
     /** @public @brief Path to USB UART device. */
-    char dev_path[DEVICE_PATH_MAX_LEN];
+    char dev_path[LT_DEVICE_PATH_MAX_LEN];
     /** @public @brief UART baudrate. */
     uint32_t baud_rate;
     /** @public @brief Seed for the platform's random number generator. */

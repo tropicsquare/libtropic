@@ -164,7 +164,7 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h);
 void lt_test_ire_pairing_key_slots(lt_handle_t *h);
 
 /**
- * @brief Test Ping L3 command with random data of random length <= PING_LEN_MAX.
+ * @brief Test Ping L3 command with random data of random length <= TR01_PING_LEN_MAX.
  *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.

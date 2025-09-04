@@ -53,7 +53,7 @@ void tearDown(void) {}
 /*void test__invalid_handle()
 {
     uint32_t mcounter_value;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(NULL, MCOUNTER_INDEX_0, &mcounter_value));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(NULL, TR01_MCOUNTER_INDEX_0, &mcounter_value));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -63,8 +63,8 @@ void test__invalid_mcounter_index()
 {
     lt_handle_t h = {0};
     uint32_t mcounter_value;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(&h, MCOUNTER_INDEX_0-1, &mcounter_value));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(&h, MCOUNTER_INDEX_15+1, &mcounter_value));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_0-1, &mcounter_value));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_15+1, &mcounter_value));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -73,7 +73,7 @@ void test__invalid_mcounter_index()
 void test__invalid_mcounter_value()
 {
     lt_handle_t h = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(&h, MCOUNTER_INDEX_0, NULL));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_0, NULL));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -86,7 +86,7 @@ void test__no_session()
     lt_handle_t h = {0};
     uint32_t mcounter_value;
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_mcounter_get(&h, MCOUNTER_INDEX_0, &mcounter_value));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_0, &mcounter_value));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -101,7 +101,7 @@ void test__lt_l3_cmd_fail()
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_mcounter_get(&h, MCOUNTER_INDEX_0, &mcounter_value));
+        TEST_ASSERT_EQUAL(rets[i], lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_0, &mcounter_value));
     }
 }
 
@@ -125,7 +125,7 @@ void test__res_size_mismatch()
 
     size_inject_value = 0x08+1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL,  lt_mcounter_get(&h, MCOUNTER_INDEX_0, &mcounter_value));
+    TEST_ASSERT_EQUAL(LT_FAIL,  lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_0, &mcounter_value));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -140,5 +140,5 @@ void test__correct()
     size_inject_value = 0x08;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
 
-    TEST_ASSERT_EQUAL(LT_OK, lt_mcounter_get(&h, MCOUNTER_INDEX_0, &mcounter_value));
+    TEST_ASSERT_EQUAL(LT_OK, lt_mcounter_get(&h, TR01_MCOUNTER_INDEX_0, &mcounter_value));
 }*/

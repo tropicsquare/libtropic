@@ -53,7 +53,7 @@ void tearDown(void) {}
 /*void test__invalid_handle()
 {
     uint8_t bit_index = 0;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_write(NULL, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR, bit_index));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_write(NULL, TR01_CFG_START_UP_ADDR, bit_index));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -63,7 +63,7 @@ void test__invalid_addr()
 {
     lt_handle_t h = {0};
     uint8_t bit_index = 0;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_write(&h, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR + 1, bit_index));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_write(&h, TR01_CFG_START_UP_ADDR + 1, bit_index));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -74,7 +74,7 @@ void test__invalid_bit_index()
     lt_handle_t h = {0};
     uint8_t bit_index = 32;
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_write(&h, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR, bit_index));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_i_config_write(&h, TR01_CFG_START_UP_ADDR, bit_index));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -87,7 +87,7 @@ void test__no_session()
     lt_handle_t h = {0};
     uint8_t bit_index = 31;
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_i_config_write(&h, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR, bit_index));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_i_config_write(&h, TR01_CFG_START_UP_ADDR, bit_index));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -102,7 +102,7 @@ void test__lt_l3_cmd_fail()
     lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
     for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i],  lt_i_config_write(&h, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR, bit_index));
+        TEST_ASSERT_EQUAL(rets[i],  lt_i_config_write(&h, TR01_CFG_START_UP_ADDR, bit_index));
     }
 }
 
@@ -125,7 +125,7 @@ void test__res_size_mismatch()
 
     size_inject_value = 1+1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_i_config_write(&h, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR, bit_index));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_i_config_write(&h, TR01_CFG_START_UP_ADDR, bit_index));
 }
 
 // Test if function returns LT_OK when executed correctly
@@ -137,5 +137,5 @@ void test__correct()
 
     size_inject_value = 1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_i_config_write(&h, CONFIGURATION_OBJECTS_CFG_START_UP_ADDR, bit_index));
+    TEST_ASSERT_EQUAL(LT_OK, lt_i_config_write(&h, TR01_CFG_START_UP_ADDR, bit_index));
 }*/

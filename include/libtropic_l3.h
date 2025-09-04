@@ -265,8 +265,8 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written (valid range given by macros `R_MEM_DATA_SIZE_MIN` and
- * `R_MEM_DATA_SIZE_MAX`)
+ * @param size        Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
+ * `TR01_R_MEM_DATA_SIZE_MAX`)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size);

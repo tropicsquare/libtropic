@@ -26,7 +26,7 @@ SPI_HandleTypeDef SpiHandle;
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
     size_t bytes_left = count;
     uint8_t *buff_ptr = buff;
     while (bytes_left) {
@@ -42,7 +42,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    LT_UNUSED(h);
 
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_RESET);
     while (HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN)) {
@@ -54,7 +54,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *h)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    LT_UNUSED(h);
 
     HAL_GPIO_WritePin(LT_SPI_CS_BANK, LT_SPI_CS_PIN, GPIO_PIN_SET);
     while (!HAL_GPIO_ReadPin(LT_SPI_CS_BANK, LT_SPI_CS_PIN)) {
@@ -66,7 +66,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *h)
 
 lt_ret_t lt_port_init(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    LT_UNUSED(h);
 
     // RNG
     rng.Instance = RNG;
@@ -110,7 +110,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *h)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 {
-    UNUSED(h);
+    LT_UNUSED(h);
 
     if (HAL_RNG_DeInit(&rng) != HAL_OK) {
         return LT_FAIL;
@@ -123,7 +123,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *h)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
-    if (offset + tx_data_length > LT_L1_LEN_MAX) {
+    if (offset + tx_data_length > TR01_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
     int ret = HAL_SPI_TransmitReceive(&SpiHandle, h->buff + offset, h->buff + offset, tx_data_length, timeout_ms);
@@ -136,7 +136,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *h, uint8_t offset, uint16_t tx_data
 
 lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t ms)
 {
-    UNUSED(h);
+    LT_UNUSED(h);
 
     HAL_Delay(ms);
 

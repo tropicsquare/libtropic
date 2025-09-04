@@ -25,7 +25,7 @@
 /**
  * @brief Max length of a path to a device in the device tree.
  */
-#define DEVICE_PATH_MAX_LEN 256
+#define LT_DEVICE_PATH_MAX_LEN 256
 
 /**
  * @brief Platform defined init function. Init resources and set pins as needed.

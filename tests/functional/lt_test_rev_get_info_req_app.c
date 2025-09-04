@@ -24,8 +24,8 @@ void lt_test_rev_get_info_req_app(lt_handle_t *h)
     LT_LOG_INFO("----------------------------------------------");
 
     uint8_t cert1[CERTS_BUF_LEN] = {0}, cert2[CERTS_BUF_LEN] = {0}, cert3[CERTS_BUF_LEN] = {0},
-            cert4[CERTS_BUF_LEN] = {0}, riscv_ver[LT_L2_GET_INFO_RISCV_FW_SIZE],
-            spect_ver[LT_L2_GET_INFO_SPECT_FW_SIZE];
+            cert4[CERTS_BUF_LEN] = {0}, riscv_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE],
+            spect_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE];
     struct lt_cert_store_t store = {.certs = {cert1, cert2, cert3, cert4},
                                     .buf_len = {CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN, CERTS_BUF_LEN}};
     struct lt_chip_id_t chip_id = {0};

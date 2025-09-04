@@ -23,9 +23,9 @@ typedef struct lt_dev_unix_spi_t {
     /** @public @brief SPI speed in Hz. */
     int spi_speed;
     /** @public @brief Path to the SPI device. */
-    char spi_dev[DEVICE_PATH_MAX_LEN];
+    char spi_dev[LT_DEVICE_PATH_MAX_LEN];
     /** @public @brief Path to the GPIO device. */
-    char gpio_dev[DEVICE_PATH_MAX_LEN];
+    char gpio_dev[LT_DEVICE_PATH_MAX_LEN];
     /** @public @brief Number of the GPIO pin to map chip select to. */
     int gpio_cs_num;
     /** @public @brief Seed for the platform's random number generator. */
