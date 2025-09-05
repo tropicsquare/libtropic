@@ -13,7 +13,7 @@
 
 lt_ret_t lt_l2_frame_check(const uint8_t *frame)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!frame) {
         return LT_PARAM_ERR;
     }
