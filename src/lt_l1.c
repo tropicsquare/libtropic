@@ -38,7 +38,7 @@ void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir)
 
 lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t timeout_ms)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -174,7 +174,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
 
 lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout_ms)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }

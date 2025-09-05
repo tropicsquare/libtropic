@@ -32,7 +32,7 @@
   # in order to add common defines:
   #  1) remove the trailing [] from the :common: section
   #  2) add entries to the :common: section (e.g. :test: has TEST defined)
-  :common: &common_defines [LIBT_DEBUG]
+  :common: &common_defines [LT_REDUNDANT_ARG_CHECK]
   :test:
     - *common_defines
     - TEST
