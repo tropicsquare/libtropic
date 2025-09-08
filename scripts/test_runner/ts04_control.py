@@ -171,12 +171,15 @@ def main():
     ts04control = TS04Control(args.port)
 
     if args.command == "identify":
-        sys.exit(ts04control.identify())
+        ret = ts04control.identify()
+        sys.exit(not ret) # OK (0) on True, 1 on False return value.
     elif args.command == "connect":
-        sys.exit(ts04control.connect(args.number))
+        ret = ts04control.connect(args.number)
+        sys.exit(not ret) # OK (0) on True, 1 on False return value.
     elif args.command == "power":
         power = 1 if args.state == "on" else 0
-        sys.exit(ts04control.power(power))
+        ret = ts04control.power(power)
+        sys.exit(not ret) # OK (0) on True, 1 on False return value.
     else:
         parser.print_help()
         sys.exit(1)
