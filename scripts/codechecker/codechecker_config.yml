@@ -1,0 +1,81 @@
+analyzer:
+    ################################################
+    # Configure skipfile to select which sources
+    # to check.
+    ################################################
+    - --skip=scripts/codechecker/codechecker.skip
+
+    ################################################
+    # Enable / disable checks
+    ################################################
+    # Built-in profiles (labels).
+    # Run 'CodeChecker checkers' to enumerate checkers and their profiles/labels.
+    - --enable=profile:sensitive
+    - --enable=profile:security
+    - --enable=profile:portability
+
+    # Finetuning Clang Static Analyzer (clangsa) checkers
+    # See: https://clang.llvm.org/docs/analyzer/checkers.html
+    
+    # Check for possible attack vectors related to memory exhaustion, code injections...
+    # - --enable=optin.taint
+    - --enable=optin.taint
+
+    # Checks for casts which would cause using values out of enum range.
+    - --enable=optin.core.EnumCastOutOfRange
+
+    # !!! Note: some of these experimental checks may be buggy.
+    #     I tried to enable only ones without known bugs/issues/false positives.
+
+    # Experimental: various security-related checks.
+    - --enable=alpha.security
+
+    # Experimental: various checks of string.h related API
+    - --enable=alpha.unix.cstring.BufferOverlap
+
+    # Experimental: Check for division by variable that is later compared against 0.
+    #               Either the comparison is useless or there is division by zero.
+    - --enable=alpha.core.TestAfterDivZero
+    
+    # Experimental: check whether there are no stores to const memory.
+    # - --enable=alpha.core.StoreToImmutable
+
+    # Disable unnecessary/noisy/irrelevant checkers.
+    - --disable=alpha.core.CastToStruct
+
+    ################################################
+    # Cross Translation Unit analysis
+    ################################################
+    - --ctu-all
+
+    ################################################
+    # Export setup
+    ################################################
+    - --output=.codechecker/reports
+
+    ################################################
+    # Checker selection
+    ################################################
+    # CodeChecker does not support specifying multiple checkers for now,
+    # so leaving this commented out, which activates all checkers
+    # available on the system.
+    # - --analyzers=clangsa clang-tidy
+
+    ################################################
+    # Analyzer configs
+    ################################################
+    # Configuration available for each analyzer can be listed using:
+    # 'CodeChecker analyzers --analyzer-config <analyzer>'
+    # where <analyzer> can be 'clangsa' or 'clang-tidy'.
+    # Remarks:
+    # - 'readability-*' can be omitted if obnoxious. It is purely a style checker.
+    # - -something means disable this check. We disable some C++/modernization-heavy stuff (which causes unwanted noise for C firmware)
+    - --analyzer-config=clang-tidy:Checks='clang-analyzer-*,clang-diagnostic-*,bugprone-*,cert-*,cppcoreguidelines-*,portability-*,readability-*,performance-*,-modernize-*,-fuchsia-*,-google-*'
+    - --analyzer-config=clang-tidy:WarningsAsErrors='clang-analyzer-*,cert-*,bugprone-*'
+
+    ################################################
+    # Misc configuration
+    ################################################
+    # Clean output directory and generate all reports again instead of just overwriting existing
+    # ones. This is useful when e.g. changing CodeChecker configuration.
+    - --clean
