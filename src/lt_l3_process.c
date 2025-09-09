@@ -20,7 +20,7 @@
 
 LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!nonce) {
         return LT_PARAM_ERR;
     }
@@ -57,7 +57,7 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
 
 lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s3) {
         return LT_PARAM_ERR;
     }
@@ -80,7 +80,7 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
 
 lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s3) {
         return LT_PARAM_ERR;
     }

@@ -446,7 +446,7 @@ target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 # applying it to the library target itself.
 target_link_options(tropic INTERFACE -Wl,--gc-sections)
 
-target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
+target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LT_REDUNDANT_ARG_CHECK>")
 
 # Propagate logging settings
 target_compile_definitions(tropic PUBLIC
