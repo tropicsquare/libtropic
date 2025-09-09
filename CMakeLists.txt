@@ -113,15 +113,28 @@ get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
 
 ###########################################################################
 #                                                                         #
+#   Define silicon revision. Default is ACAB (production chips).          #
+#   Allowed values are:                                                   #
+#           ABAB - Silicon revision B - Bootloader v1.0.1                 #
+#           ACAB - Silicon revision C - Bootloader v2.0.1                 #
+#                                                                         #
+#   Useful for firmware update and functional tests (as some behavior)    #
+#   differ between revisions.                                             #
+#                                                                         #
+###########################################################################
+
+if (NOT DEFINED LT_SILICON_REV)
+    set(LT_SILICON_REV "ACAB")
+endif()
+
+###########################################################################
+#                                                                         #
 #   Define files for firmware update.                                     #
 #                                                                         #
 #   For more info about firmware update go into                           #
 #   TROPIC01_fw_update_files/README.md                                    #
 #                                                                         #
-#   [1] Define LT_SILICON_REV, allowed                                    #
-#       values are:                                                       #
-#           ABAB - Silicon revision B - Bootloader v1.0.1                 #
-#           ACAB - Silicon revision C - Bootloader v2.0.1                 #
+#   [1] Define LT_SILICON_REV -- see above.                               #
 #                                                                         #
 #   [2] Define firmware files here, allowed values are:                   #
 #       APP: 1_0_0                                                        #
@@ -131,7 +144,6 @@ get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
 #                                                                         #
 ###########################################################################
 
-set(LT_SILICON_REV "ACAB")
 set(LT_CPU_FW_VERSION "1_0_0")
 
 ###########################################################################

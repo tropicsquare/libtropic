@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.
 - Compiler and linker flags to delete unused sections.
 - Macro `MCOUNTER_VALUE_MAX` for the maximal allowed value of monotonic counter.
+- CMake option for selecting silicon revision: `LT_SILICON_REV`.
 
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
