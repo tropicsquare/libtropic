@@ -57,3 +57,7 @@ markdown_extensions:
   - pymdownx.inlinehilite  # Inline code highlighting
   - pymdownx.superfences   # Fenced code blocks
   - pymdownx.tasklist      # Checklists
+
+extra:
+  version:
+    provider: mike
