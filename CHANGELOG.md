@@ -22,6 +22,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `CONFIGURATION_OBJECTS_REGS_IDX` to `lt_config_obj_idx_t`.
 - Renamed `ecc_slot_t` to `lt_ecc_slot_t`.
 - Renamed `mac_and_destroy_slot_t` to `lt_mac_and_destroy_slot_t`.
+- Renamed `CONFIGURATION_OBJECTS_CFG_xx` enums to `TR01_CFG_xx`
+- Renamed `PAIRING_KEY_SLOT_INDEX_x` to `TR01_PAIRING_KEY_SLOT_INDEX_x`
+- Renamed `ECC_SLOT_x` to `TR01_ECC_SLOT_x`
+- Renamed `CURVE_ED25519` to `TR01_CURVE_ED25519`
+- Renamed `SESSION_` to `LT_SECURE_SESSION_x`
+- Renamed `FW_BANK_x` to `TR01_FW_BANK_x`
+- Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE` to `TR01_L2_GET_INFO_FW_HEADER_SIZE`
+- Renamed `LT_L2_GET_INFO_RISCV_FW_SIZE` to `TR01_L2_GET_INFO_RISCV_FW_SIZE`
+- Renamed `LT_MODE_x` to `TR01_MODE_x`
+- Renamed `UNUSED(x)` to `LT_UNUSED(x)`
+- Renamed `LT_L1_LEN_MAX` to `TR01_L1_LEN_MAX`
+- Renamed `DEVICE_PATH_MAX_LEN` to `LT_DEVICE_PATH_MAX_LEN`
+- Renamed `unix_tcp_tag_t` to lt_unix_tcp_tag_t`
+- Renamed `unix_tcp_buffer_t` to `lt_unix_tcp_buffer_t`
+- Renamed `LT_L2_GET_INFO_CHIP_ID_SIZE` to `TR01_L2_GET_INFO_CHIP_ID_SIZE`
+- Renamed `LT_MUTABLE_FW_UPDATE_SIZE_MAX` to `TR01_MUTABLE_FW_UPDATE_SIZE_MAX`
+- Renamed `LT_MUTABLE_FW_UPDATE_SIZE_MAX` to `TR01_MUTABLE_FW_UPDATE_SIZE_MAX`
+- Renamed `R_MEM_DATA_SIZE_MIN` to `TR01_R_MEM_DATA_SIZE_MIN`
+- Renamed `R_MEM_DATA_SIZE_MAX` to `TR01_R_MEM_DATA_SIZE_MAX`
+- Renamed `MCOUNTER_VALUE_MAX` to `TR01_MCOUNTER_VALUE_MAX`
+- Renamed `CHIP_ID_FIELD_MAX_SIZE` to `LT_CHIP_ID_FIELD_MAX_SIZE`
+- Renamed `LT_TROPIC01_REBOOT_DELAY_MS` to `LT_TR01_REBOOT_DELAY_MS`
+- Renamed `LT_L2_GET_INFO_REQ_CERT_SIZE_x` to `TR01_L2_GET_INFO_REQ_CERT_SIZE_x`
+- Renamed `LT_L2_GET_INFO_CHIP_ID_SIZE` to `TR01_L2_GET_INFO_CHIP_ID_SIZE`
+- Renamed `SERIAL_CODE_SIZE` to `TR01_SERIAL_CODE_SIZE`
+- Renamed `TO_PAIRING_KEY_SH0` to `LT_TO_PAIRING_KEY_SH0`
+- Renamed `TO_LT_MCOUNTER_x` to `LT_TO_LT_MCOUNTER_x`
+- Renamed `TO_ECC_KEY_SLOT_x` to `LT_TO_ECC_KEY_SLOT_x`
+- Renamed `TO_MACANDD_SLOT_x` to `LT_TO_MACANDD_SLOT_x`
+- Renamed `SESSION_SH0_HAS_ACCESS` to `LT_SESSION_SH0_HAS_ACCESS`
+- Renamed `SESSION_SH1_HAS_ACCESS` to `LT_SESSION_SH1_HAS_ACCESS`
+- Renamed `SESSION_SH2_HAS_ACCESS` to `LT_SESSION_SH2_HAS_ACCESS`
+- Renamed `SESSION_SH3_HAS_ACCESS` to `LT_SESSION_SH3_HAS_ACCESS`
+- Renamed `PING_LEN_MAX` to `LT_PING_LEN_MAX`
+- Renamed `R_MEM_DATA_SIZE_x` to `TR01_R_MEM_DATA_SIZE_x`
+- Renamed various other macros and definitions used internally
 - Added prefix `TR01_` to all macros and enum values, if they directly relate to TROPIC01.
 - Added prefix `LT_` to all macros and enum values, if they directly relate to libtropic.
 
