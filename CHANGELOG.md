@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Changed prefixes of all platform HAL files to `libtropic_`.
+- `lt_l2.h`, `lt_l2.c`, `lt_l3.h`, `lt_l3.c`: change prefix to `libtropic_`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

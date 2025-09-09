@@ -1,5 +1,5 @@
-#ifndef LT_LIBTROPIC_SEPARATE_API_H
-#define LT_LIBTROPIC_SEPARATE_API_H
+#ifndef LIBTROPIC_L3_H
+#define LIBTROPIC_L3_H
 
 /**
  * @defgroup libtropic_l3 libtropic Layer 3 functions
@@ -16,8 +16,8 @@
  */
 
 /**
- * @file lt_l3.h
- * @brief libtropic library main API header file
+ * @file libtropic_l3.h
+ * @brief Layer 3 functions declarations
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -582,4 +582,4 @@ lt_ret_t lt_in__mac_and_destroy(lt_handle_t *h, uint8_t *data_in);
 
 /** @} */  // end of group_libtropic_l3
 
-#endif
+#endif  // LIBTROPIC_L3_H

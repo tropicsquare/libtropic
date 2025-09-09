@@ -1,4 +1,4 @@
-#include "lt_l2.h"
+#include "libtropic_l2.h"
 
 #include <string.h>
 
@@ -9,7 +9,7 @@
 #include "lt_l2_frame_check.h"
 
 /**
- * @file lt_l2.c
+ * @file libtropic_l2.c
  * @brief Layer 2 functions definitions
  * @author Tropic Square s.r.o.
  *

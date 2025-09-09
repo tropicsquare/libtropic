@@ -8,9 +8,9 @@
 
 #include "libtropic.h"
 #include "libtropic_examples.h"
+#include "libtropic_l2.h"
+#include "libtropic_l3.h"
 #include "libtropic_logging.h"
-#include "lt_l2.h"
-#include "lt_l3.h"
 
 /** @brief Message to send with Ping L3 command. */
 #define PING_MSG "This is Hello World message from TROPIC01!!"

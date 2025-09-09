@@ -1,5 +1,4 @@
-
-#include "lt_l3.h"
+#include "libtropic_l3.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -8,13 +7,13 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
+#include "libtropic_l2.h"
 #include "libtropic_port.h"
 #include "lt_aesgcm.h"
 #include "lt_ed25519.h"
 #include "lt_hkdf.h"
 #include "lt_l1.h"
 #include "lt_l1_port_wrap.h"
-#include "lt_l2.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l3_api_structs.h"
 #include "lt_l3_process.h"

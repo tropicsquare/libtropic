@@ -187,10 +187,10 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_l2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3_process.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_l3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
@@ -200,8 +200,8 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/lt_l2.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/lt_l3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l3.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h

@@ -14,9 +14,9 @@
 #include <string.h>
 
 #include "libtropic_common.h"
+#include "libtropic_l2.h"
 #include "lt_aesgcm.h"
 #include "lt_l1.h"
-#include "lt_l2.h"
 
 LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 {

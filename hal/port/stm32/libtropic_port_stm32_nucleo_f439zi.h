@@ -1,8 +1,8 @@
-#ifndef LT_PORT_STM32_NUCLEO_F439ZI_H
-#define LT_PORT_STM32_NUCLEO_F439ZI_H
+#ifndef LIBTROPIC_PORT_STM32_NUCLEO_F439ZI_H
+#define LIBTROPIC_PORT_STM32_NUCLEO_F439ZI_H
 
 /**
- * @file lt_port_stm32_nucleo_f439zi.h
+ * @file libtropic_port_stm32_nucleo_f439zi.h
  * @author Tropic Square s.r.o.
  * @brief Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select).
  *
@@ -48,4 +48,4 @@ typedef struct lt_dev_stm32_nucleo_f439zi {
     SPI_HandleTypeDef spi_handle;
 } lt_dev_stm32_nucleo_f439zi;
 
-#endif  // LT_PORT_STM32_NUCLEO_F439ZI_H
+#endif  // LIBTROPIC_PORT_STM32_NUCLEO_F439ZI_H

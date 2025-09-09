@@ -58,7 +58,7 @@ endif()
 
 set(SOURCES
     main.c
-    ${PATH_TO_LIBTROPIC}hal/port/unix/lt_port_unix_tcp.c
+    ${PATH_TO_LIBTROPIC}hal/port/unix/libtropic_port_unix_tcp.c
 )
 
 include_directories(
