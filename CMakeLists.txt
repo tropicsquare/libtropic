@@ -96,7 +96,7 @@ set(LT_SH0_PRIV_PATH
     "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)"
 )
 
-# Check whether compiling standalone (e.g. as a library or doc only) or as a child project (= has parent scope)
+# Check whether compiling standalone (e.g. as a library) or as a child project (= has parent scope)
 # and save result to HAS_PARENT_SCOPE.
 get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
 
@@ -134,20 +134,6 @@ endif()
 ###########################################################################
 
 set(LT_CPU_FW_VERSION "1_0_0")
-
-###########################################################################
-#                                                                         #
-#   Building documentation                                                #
-#                                                                         #
-###########################################################################
-
-if(LT_BUILD_DOCS)
-    find_package(Doxygen REQUIRED)
-    if(Doxygen_FOUND)
-        add_subdirectory(docs)
-        message(STATUS "Doxygen found, enabled documentation building.")
-    endif()
-endif()
 
 ###########################################################################
 #                                                                         #
