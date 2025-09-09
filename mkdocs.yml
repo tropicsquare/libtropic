@@ -1,0 +1,59 @@
+site_name: Libtropic SDK Documentation
+site_url: https://medexs.github.io/libtropic-fork/ # Important for deployment
+repo_url: https://github.com/medexs/libtropic-fork/
+site_description: Description
+site_author: Tropic Square
+site_dir: docs_build/
+
+# Theme configuration
+theme:
+  name: readthedocs
+
+# Navigation menu setup
+nav:
+  - Introduction: index.md
+  - API Reference:
+    - doxygen/build/html/index.html
+  - Examples:
+    - examples/index.md
+    - Reversible Examples: examples/reversible_examples.md
+    - Irreversible Examples: examples/irreversible_examples.md
+  - Tests:
+    - tests/index.md
+    - Functional Tests: tests/functional_tests.md
+    - Unit Tests: tests/unit_tests.md
+  - For Developers:
+    - for_developers/index.md
+    - Libtropic Architecture: for_developers/libtropic_architecture.md
+    - Adding New Embedded Platform: for_developers/adding_embedded_platform.md
+    - Adding New Cryptographic Backend: for_developers/adding_crypto_backend.md
+    - Compile libtropic as Static Archive: for_developers/compile_as_static_archive.md
+    - Debugging: for_developers/debugging.md
+    - Logging: for_developers/logging.md
+    - Randomization: for_developers/randomization.md
+    - Run Static Analysis: for_developers/static_analysis.md
+    - Code Formatter: for_developers/code_formatter.md
+  - Other:
+    - other/index.md
+    - TROPIC01 Model: other/tropic01_model.md
+    - Provisioning Data: other/provisioning_data.md
+
+plugins:
+  - search
+  - section-index
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - github-callouts  # Allows GitHub alerts in Markdown
+  # Following extensions can be used for wider Markdown syntax support
+  - admonition
+  - pymdownx.arithmatex    # For math rendering (optional)
+  - pymdownx.betterem      # Better emphasis handling
+  - pymdownx.caret         # Superscripts
+  - pymdownx.critic        # Suggestions / strike-through
+  - pymdownx.details       # Collapsible sections
+  - pymdownx.highlight     # Extra code highlighting
+  - pymdownx.inlinehilite  # Inline code highlighting
+  - pymdownx.superfences   # Fenced code blocks
+  - pymdownx.tasklist      # Checklists

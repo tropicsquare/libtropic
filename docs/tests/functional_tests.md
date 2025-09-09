@@ -1,16 +1,31 @@
-# Functional testing
+# Functional Tests
+Functional tests are implemented in `tests/functional_tests/`.
+
+Some tests may cause irreversible changes to the chip, so they are organized into two categories:
+
+- **reversible** (`lt_test_rev_*.c`): only reversible operations are executed on the TROPIC01 chip,
+- **irreversible** (`lt_test_ire_*.c`): irreversible operations are executed, so the TROPIC01 chip may get bricked.
+!!! note
+    Functional tests are not compiled by default. To compile functional tests, either
+
+    - pass `-DLT_BUILD_TESTS=1` to `cmake` during compilation, or
+    - in your CMake file, switch the option on: `set(LT_BUILD_TESTS ON)`.
+
+!!! note
+    During build, SH0 keypair is automatically chosen from `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`, this SH0 key is present in the majority of distributed TROPIC01 chips. In certain cases (first   engineering samples) it might be necessary to manually set it (in PEM or DER format) with following cmake switch: `-DLT_SH0_PRIV_PATH=<path to sh0_priv_engineering_sample01.pem>`
 
 ## Adding a new test
 To add a new test, you need to:
+
 1. Decide whether the test is reversible or not. See [below](#test-types-and-cleanup).
 2. Write the new test. Use the [template below](#test-template).
-3. Add the declaration together with Doxygen comment in the [`include/libtropic_functional_tests.h`](../../include/libtropic_functional_tests.h).
-4. Add the test to [`CMakeLists.txt`](../../CMakeLists.txt):
+3. Add the declaration together with a Doxygen comment to `include/libtropic_functional_tests.h`.
+4. Add the test to the root `CMakeLists.txt`:
     - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST`
       (it has to be the same as the name of the function which implements the test)
     - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
       with test source files. Add source file of your test here.
-5. Make sure your test works. Use the model: check out [`tests/model_based_project/README.md`](../model_based_project/README.md). If the test
+5. Make sure your test works. Use the model: check out [TROPIC01 Model](../other/tropic01_model.md) section. If the test
    fails, you either:
     - Did a mistake in the test. Fix it.
     - Or you found a bug -- if you are certain it is a bug and not a problem in your test,
