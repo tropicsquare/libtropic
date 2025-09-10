@@ -163,22 +163,34 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
-    UNUSED(timeout_ms);
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
 
-    int ret = 0;
+    if (offset + tx_data_length > LT_L1_LEN_MAX) {
+        LT_LOG_ERROR("Invalid data length!");
+        return LT_L1_DATA_LEN_ERROR;
+    }
+
     struct spi_ioc_transfer spi = {
         .tx_buf = (unsigned long)s2->buff + offset,
         .rx_buf = (unsigned long)s2->buff + offset,
         .len = tx_data_length,
         .delay_usecs = 0,
+        // This field was added in Linux 5.4. This will not compile on older kernels.
+        .timeout_usecs = timeout_ms * 1000,
     };
 
-    ret = ioctl(device->fd, SPI_IOC_MESSAGE(1), &spi);
-    if (ret >= 0) {
-        return LT_OK;
+    if (ioctl(device->fd, SPI_IOC_MESSAGE(1), &spi) < 0) {
+        if (errno == ETIMEDOUT) {
+            LT_LOG_ERROR("SPI transfer timed out.");
+            // There is no specific timeout error code for SPI, so we use the generic one.
+            return LT_L1_SPI_ERROR;
+        }
+
+        LT_LOG_ERROR("ioctl(SPI_IOC_MESSAGE) failed: %s", strerror(errno));
+        return LT_FAIL;
     }
-    return LT_FAIL;
+
+    return LT_OK;
 }
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
