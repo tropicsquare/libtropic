@@ -25,9 +25,9 @@ static uint16_t crc16_byte(uint8_t data, uint16_t crc)
 
     current_byte = data;
     crc ^= current_byte << 8;
-    i = 8;
+    i = 8; // Iterate over every bit in a byte.
     do {
-        if (crc & 0x8000) {
+        if (crc & 0x8000) { // Highest bit set -> carry -> add generator polynomial of finite field used in CRC calulation.
             crc <<= 1;
             crc ^= LT_CRC16_POLYNOMIAL;
         }
@@ -55,6 +55,9 @@ uint16_t crc16(const uint8_t *data, int16_t len)
 void add_crc(void *req)
 {
     uint8_t *p = (uint8_t *)req;
+    // CRC is calculated from REQ_DATA (its size is in p[1]), REQ_ID (+ 1 byte) and REQ_LEN (+ 1 byte),
+    // hence total length of data to calculate the CRC from is p[1] + 2.
+    // We use p[1], as the offset of the REQ_LEN is 1.
     uint16_t len = p[1] + 2;
 
     uint16_t crc = crc16(p, len);
