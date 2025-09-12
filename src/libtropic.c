@@ -388,8 +388,6 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
     }
 
     struct lt_l2_handshake_req_t *p_req = (struct lt_l2_handshake_req_t *)h->l2.buff;
-    uint8_t dbg[32];
-    memcpy(dbg, p_req->e_hpub, 32);
 
     ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
