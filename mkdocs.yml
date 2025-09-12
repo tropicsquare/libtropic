@@ -78,9 +78,6 @@ nav:
 
 plugins:
   - search
-  - mike:
-      alias_type: symlink  # better for GitHub Pages
-      redirect_template: null
 
 markdown_extensions:
   - toc:
