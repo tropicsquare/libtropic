@@ -557,6 +557,9 @@ typedef struct lt_session_state_t {
     // lt_pkey_index_t pkey_index;
 } lt_session_state_t;
 
+// ECDH uses X25519 function with Curve25519 -> 32 bytes
+#define TR01_ECDH_KEY_LEN 32
+
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
 #define TR01_L2_SLEEP_KIND_SLEEP 0x05
@@ -702,6 +705,9 @@ typedef enum lt_ecc_slot_t {
 
 /** @brief ECC key type */
 typedef enum lt_ecc_curve_type_t { TR01_CURVE_P256 = 1, TR01_CURVE_ED25519 } lt_ecc_curve_type_t;
+
+#define TR01_CURVE_P256_KEY_LEN 64
+#define TR01_CURVE_ED25519_KEY_LEN 32
 
 /** @brief ECC key origin */
 typedef enum lt_ecc_key_origin_t { TR01_CURVE_GENERATED = 1, TR01_CURVE_STORED } lt_ecc_key_origin_t;
