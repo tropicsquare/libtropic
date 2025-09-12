@@ -46,6 +46,7 @@ theme:
     - navigation.top
     - navigation.footer
     - search.suggest
+    - content.hash
 
 # Navigation menu setup
 nav:
