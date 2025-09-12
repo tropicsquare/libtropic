@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `FW_BANK_x` to `TR01_FW_BANK_x`
 - Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE` to `TR01_L2_GET_INFO_FW_HEADER_SIZE`
 - Renamed `LT_L2_GET_INFO_RISCV_FW_SIZE` to `TR01_L2_GET_INFO_RISCV_FW_SIZE`
+- Renamed `LT_L2_GET_INFO_SPECT_FW_SIZE` to `TR01_L2_GET_INFO_SPECT_FW_SIZE`
 - Renamed `LT_MODE_x` to `TR01_MODE_x`
 - Renamed `UNUSED(x)` to `LT_UNUSED(x)`
 - Renamed `LT_L1_LEN_MAX` to `TR01_L1_LEN_MAX`
