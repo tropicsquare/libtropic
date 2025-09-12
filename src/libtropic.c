@@ -634,8 +634,10 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
 
     p_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_REQ_ID;
     p_l2_req->req_len = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN;
-    memcpy(p_l2_req->signature, data_p->signature, 64);
-    memcpy(p_l2_req->hash, data_p->hash, 32);
+
+    memcpy(p_l2_req->signature, data_p->signature, sizeof(data_p->signature));
+    memcpy(p_l2_req->hash, data_p->hash, sizeof(data_p->hash));
+
     p_l2_req->type = data_p->type;
     p_l2_req->padding = data_p->padding;
     p_l2_req->header_version = data_p->header_version;
