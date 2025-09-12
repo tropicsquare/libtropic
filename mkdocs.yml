@@ -1,13 +1,51 @@
 site_name: Libtropic SDK Documentation
-site_url: https://medexs.github.io/libtropic-fork/ # Important for deployment
-repo_url: https://github.com/medexs/libtropic-fork/
-site_description: Description
+site_url: https://medexs.github.io/libtropic-fork/
+repo_url: https://github.com/tropicsquare/libtropic
+repo_name: tropicsquare/libtropic
+site_description: SDK for an application development with TROPIC01 secure element.
 site_author: Tropic Square
 site_dir: docs_build/
 
 # Theme configuration
 theme:
-  name: readthedocs
+  name: material
+  font:
+    text: Inter
+  icon:
+    repo: fontawesome/brands/github
+  logo: img/TS_logo_white_symbol.svg
+  favicon: img/tropic_symbol.ico
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: custom
+      # accent: pink
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      # accent: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      # accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+  features:
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
 
 # Navigation menu setup
 nav:
@@ -40,7 +78,6 @@ nav:
 
 plugins:
   - search
-  - section-index
   - mike:
       alias_type: symlink  # better for GitHub Pages
       redirect_template: null
@@ -48,6 +85,7 @@ plugins:
 markdown_extensions:
   - toc:
       permalink: true
+  - attr_list
   - github-callouts  # Allows GitHub alerts in Markdown
   # Following extensions can be used for wider Markdown syntax support
   - admonition
@@ -64,3 +102,13 @@ markdown_extensions:
 extra:
   version:
     provider: mike
+  social:
+    - icon: fontawesome/brands/x-twitter
+      link: https://twitter.com/tropicsquare
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/tropic-square-s-r-o
+    - icon: fontawesome/brands/github
+      link: https://github.com/tropicsquare/libtropic
+
+extra_css:
+  - stylesheets/extra.css

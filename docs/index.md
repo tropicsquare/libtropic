@@ -15,7 +15,7 @@ This documentation has the following structure:
 
 ## Getting TROPIC01
 
-![QFN32](img/QFN32.jpg)
+![TROPIC01](img/tropic01_chip.jpeg){ width="200" }
 
 `TROPIC01` is currently available in several form factors - heck out the [TROPIC01 repository](https://github.com/tropicsquare/TROPIC01), where you can find datasheets, documentation and ordering instructions.
 
