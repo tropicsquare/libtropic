@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `PAIRING_KEY_SLOT_INDEX_x` to `TR01_PAIRING_KEY_SLOT_INDEX_x`
 - Renamed `ECC_SLOT_x` to `TR01_ECC_SLOT_x`
 - Renamed `CURVE_ED25519` to `TR01_CURVE_ED25519`
-- Renamed `SESSION_` to `LT_SECURE_SESSION_x`
+- Renamed `SESSION_x` to `LT_SECURE_SESSION_x`
+- Renamed `L3_CYPHERTEXT_MAX_SIZE` to `TR01_L3_CYPHERTEXT_MAX_SIZE`
+- Renamed `L3_PACKET_MAX_SIZE` to `TR01_L3_PACKET_MAX_SIZE`
 - Renamed `FW_BANK_x` to `TR01_FW_BANK_x`
 - Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE` to `TR01_L2_GET_INFO_FW_HEADER_SIZE`
 - Renamed `LT_L2_GET_INFO_RISCV_FW_SIZE` to `TR01_L2_GET_INFO_RISCV_FW_SIZE`
