@@ -73,6 +73,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `SESSION_SH3_HAS_ACCESS` to `LT_SESSION_SH3_HAS_ACCESS`
 - Renamed `PING_LEN_MAX` to `LT_PING_LEN_MAX`
 - Renamed `R_MEM_DATA_SIZE_x` to `TR01_R_MEM_DATA_SIZE_x`
+- Renamed `L2_STATUS_REQUEST_OK` to `TR01_L2_STATUS_REQUEST_OK`
+- Renamed `L2_STATUS_RESULT_OK` to `TR01_L2_STATUS_RESULT_OK`
+- Renamed `L2_STATUS_REQUEST_CONT` to `TR01_L2_STATUS_REQUEST_CONT`
+- Renamed `L2_STATUS_RESULT_CONT` to `TR01_L2_STATUS_RESULT_CONT`
+- Renamed `L2_STATUS_RESP_DISABLED` to `TR01_L2_STATUS_RESP_DISABLED`
+- Renamed `L2_STATUS_HSK_ERR` to `TR01_L2_STATUS_HSK_ERR`
+- Renamed `L2_STATUS_NO_SESSION` to `TR01_L2_STATUS_NO_SESSION`
+- Renamed `L2_STATUS_TAG_ERR` to `TR01_L2_STATUS_TAG_ERR`
+- Renamed `L2_STATUS_CRC_ERR` to `TR01_L2_STATUS_CRC_ERR`
+- Renamed `L2_STATUS_UNKNOWN_ERR` to `TR01_L2_STATUS_UNKNOWN_ERR`
+- Renamed `L2_STATUS_GEN_ERR` to `TR01_L2_STATUS_GEN_ERR`
+- Renamed `L2_STATUS_NO_RESP` to `TR01_L2_STATUS_NO_RESP`
 - Renamed various other macros and definitions used internally
 - Added prefix `TR01_` to all macros and enum values, if they directly relate to TROPIC01.
 - Added prefix `LT_` to all macros and enum values, if they directly relate to libtropic.
