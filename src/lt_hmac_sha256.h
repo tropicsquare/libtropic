@@ -13,6 +13,11 @@
 #include <stdint.h>
 
 /**
+ * @brief Length of the hash produced by HMAC function based on SHA256.
+ */
+#define LT_HMAC_SHA256_HASH_LEN 32
+
+/**
  * @details This function computes HMAC SHA256 algorithm
  *
  * @param key     Key data buffer
