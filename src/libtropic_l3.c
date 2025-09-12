@@ -939,17 +939,17 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
 
     if (p_l3_res->curve == (uint8_t)TR01_CURVE_ED25519) {
         // Check incomming l3 length
-        if ((p_l3_res->res_size - 1 - 1 - 1 - 13) != 32) {
+        if ((p_l3_res->res_size - 1 - 1 - 1 - 13) != TR01_CURVE_ED25519_KEY_LEN) {
             return LT_FAIL;
         }
-        memcpy(key, p_l3_res->pub_key, 32);
+        memcpy(key, p_l3_res->pub_key, TR01_CURVE_ED25519_KEY_LEN);
     }
     else if (p_l3_res->curve == (uint8_t)TR01_CURVE_P256) {
         // Check incomming l3 length
-        if (((p_l3_res->res_size - 1 - 1 - 1 - 13) != 64)) {
+        if (((p_l3_res->res_size - 1 - 1 - 1 - 13) != TR01_CURVE_P256_KEY_LEN)) {
             return LT_FAIL;
         }
-        memcpy(key, p_l3_res->pub_key, 64);
+        memcpy(key, p_l3_res->pub_key, TR01_CURVE_P256_KEY_LEN);
     }
     else {
         // Unknown curve type
