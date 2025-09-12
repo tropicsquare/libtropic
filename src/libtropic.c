@@ -1588,8 +1588,8 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
     }
 
     // Extract STPub
-    uint8_t stpub[32] = {0};
-    ret = lt_get_st_pub(&cert_store, stpub, 32);
+    uint8_t stpub[TR01_ECDH_KEY_LEN] = {0};
+    ret = lt_get_st_pub(&cert_store, stpub, sizeof(stpub));
     if (ret != LT_OK) {
         return ret;
     }
