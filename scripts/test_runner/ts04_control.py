@@ -67,10 +67,14 @@ class TS04Control:
     def connect(self, target_id: int) -> bool:
         print(f"Connecting target {target_id}...")
         try:
-            print("Sending MUXALL...")
-            self.__send_command(f"MUXALL={target_id}")
-            print("Sending CON...")
+            # Disconnect all targets.
+            print("> Disconnecting all chips...")
+            self.__send_command(f"CON=0")
+            self.__send_command(f"MUXALL=0")
+            # Connect the target selected.
+            print(f"> Connecting #{target_id}...")
             self.__send_command(f"CON={target_id}")
+            # self.__send_command(f"MUX={target_id},15") # Not needed?
         except self.TS04SerialError:
             print("Error!")
             return False
