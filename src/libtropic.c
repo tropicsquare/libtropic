@@ -1667,7 +1667,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
                           sizeof(print_bytes_buff))) {
         return LT_FAIL;
     }
-    char packg_type_id_str[17];
+    char packg_type_id_str[17]; // Length of the longest possible string ("Bare silicon die") + \0.
     switch (packg_type_id) {
         case TR01_CHIP_PKG_BARE_SILICON_ID:
             strcpy(packg_type_id_str, "Bare silicon die");
