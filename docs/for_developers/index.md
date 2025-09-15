@@ -1,12 +1,8 @@
 # For Developers
-This section is for those who want to do something with the library itself.
+This section is for those who want to start developing with libtropic.
 
-- [Libtropic Architecture](libtropic_architecture.md)
-- [Adding New Embedded Platform](adding_embedded_platform.md)
-- [Adding New Cryptographic Backend](adding_crypto_backend.md)
-- [Compile libtropic as Static Archive](compile_as_static_archive.md)
-- [Debugging](debugging.md)
-- [Logging](logging.md)
+- [Adding a New Embedded Platform](adding_embedded_platform.md)
+- [Adding a New Cryptographic Backend](adding_crypto_backend.md)
 - [Randomization](randomization.md)
 - [Run Static Analysis](static_analysis.md)
 - [Code Formatter](code_formatter.md)

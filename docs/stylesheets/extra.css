@@ -4,6 +4,11 @@
   --md-primary-fg-color--dark:  #0032FF;
 }
 
+/* Dark mode link color */
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color: #6584ff; /* Replace with your preferred dark mode color */
+}
+
 .md-typeset h1,
 .md-typeset h2,
 .md-typeset h3,

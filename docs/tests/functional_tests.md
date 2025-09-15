@@ -14,7 +14,7 @@ Some tests may cause irreversible changes to the chip, so they are organized int
 !!! note
     During build, SH0 keypair is automatically chosen from `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`, this SH0 key is present in the majority of distributed TROPIC01 chips. In certain cases (first   engineering samples) it might be necessary to manually set it (in PEM or DER format) with following cmake switch: `-DLT_SH0_PRIV_PATH=<path to sh0_priv_engineering_sample01.pem>`
 
-## Adding a new test
+## Adding a New Test
 To add a new test, you need to:
 
 1. Decide whether the test is reversible or not. See [below](#test-types-and-cleanup).
@@ -31,7 +31,7 @@ To add a new test, you need to:
     - Or you found a bug -- if you are certain it is a bug and not a problem in your test,
       [open an issue](https://github.com/tropicsquare/libtropic/issues/new). Thanks!
 
-### Test types and cleanup
+### Test Types and Cleanup
 As the tests are also ran against real chips, we recognize two types of tests:
 
 1. Reversible -- this type of test shall not make any irreversible changes to the chip. It may
@@ -43,7 +43,7 @@ As the tests are also ran against real chips, we recognize two types of tests:
    modifications). Those test do not have to implement cleanup function, as the chip is always
    "destroyed" after running the test.
 
-#### Cleanup function
+#### Cleanup Function
 If the assert fails, the assert function checks whether the `lt_test_cleanup_function` function pointer
 is not `NULL`. If not, the cleanup function is called automatically before terminating the test. By default, the pointer is initialized to `NULL`.
 
@@ -53,7 +53,7 @@ at the right moment in the test (e.g. after you backed up data you would like to
 You can of course reuse your cleanup function at the end of the test, so you don't have
 to duplicate the cleanup code if it would be the same. If you wrap the function call in the `LT_TEST_ASSERT`, do not forget to set `lt_test_cleanup_function` back to `NULL` beforehands, otherwise the cleanup will be called twice.
 
-### Test template
+### Test Template
 Change the lines with `TODO`.
 
 ```c

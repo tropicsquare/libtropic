@@ -2,13 +2,14 @@ site_name: Libtropic SDK Documentation
 site_url: https://medexs.github.io/libtropic-fork/
 repo_url: https://github.com/tropicsquare/libtropic
 repo_name: tropicsquare/libtropic
-site_description: SDK for an application development with TROPIC01 secure element.
+site_description: Official SDK for the TROPIC01 secure element.
 site_author: Tropic Square
 site_dir: docs_build/
 
 # Theme configuration
 theme:
   name: material
+  custom_dir: docs/overrides
   font:
     text: Inter
   icon:
@@ -51,8 +52,13 @@ theme:
 # Navigation menu setup
 nav:
   - Introduction: index.md
-  - API Reference:
-    - doxygen/build/html/index.html
+  - Get Started:
+    - get_started/index.md
+    - Libtropic Architecture: get_started/libtropic_architecture.md
+    - Adding Libtropic to an Existing Project: get_started/adding_to_project.md
+    - Compile Libtropic as a Static Archive: get_started/compile_as_static_archive.md
+    - Logging: get_started/logging.md
+    - Debugging: get_started/debugging.md
   - Examples:
     - examples/index.md
     - Reversible Examples: examples/reversible_examples.md
@@ -63,12 +69,8 @@ nav:
     - Unit Tests: tests/unit_tests.md
   - For Developers:
     - for_developers/index.md
-    - Libtropic Architecture: for_developers/libtropic_architecture.md
-    - Adding New Embedded Platform: for_developers/adding_embedded_platform.md
-    - Adding New Cryptographic Backend: for_developers/adding_crypto_backend.md
-    - Compile libtropic as Static Archive: for_developers/compile_as_static_archive.md
-    - Debugging: for_developers/debugging.md
-    - Logging: for_developers/logging.md
+    - Adding a New Embedded Platform: for_developers/adding_embedded_platform.md
+    - Adding a New Cryptographic Backend: for_developers/adding_crypto_backend.md
     - Randomization: for_developers/randomization.md
     - Run Static Analysis: for_developers/static_analysis.md
     - Code Formatter: for_developers/code_formatter.md
@@ -76,6 +78,8 @@ nav:
     - other/index.md
     - TROPIC01 Model: other/tropic01_model.md
     - Provisioning Data: other/provisioning_data.md
+  - API Reference:
+    - doxygen/build/html/index.html
 
 plugins:
   - search
@@ -100,6 +104,7 @@ markdown_extensions:
 extra:
   version:
     provider: mike
+    default: test-build
   social:
     - icon: fontawesome/brands/x-twitter
       link: https://twitter.com/tropicsquare

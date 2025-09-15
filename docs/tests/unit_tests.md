@@ -1,16 +1,16 @@
-!!! warning
+!!! bug
     The unit tests are outdated and will be redone in the future.
 
-# Unit tests
+# Unit Tests
 Check whether function itself are behaving as should.
 
 ## Dependencies
 TODO
 
-## Test organization
+## Test Organization
 TODO
 
-## Run tests
+## Run Tests
 Unit tests files are in `tests/unit/` folder. They are written in [Ceedling](https://www.throwtheswitch.com) framework, install it like this:
 
 ```

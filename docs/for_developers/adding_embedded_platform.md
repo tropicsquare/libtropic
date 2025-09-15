@@ -1,4 +1,4 @@
-# Adding New Embedded Platform
+# Adding a New Embedded Platform
 To add a new embedded platform, follow these steps:
 
 1. Implement the necessary HAL (Hardware Abstraction Layer) functions, according to `include/libtropic_port.h`

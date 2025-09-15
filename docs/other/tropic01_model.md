@@ -1,5 +1,5 @@
 # TROPIC01 Model
-Code in this directory is meant to be compiled under Unix-like OS. This directory offers running libtropic's **functional tests** and **examples** against the TROPIC01's Python model, so no chip or external hardware is needed.
+Code in the `tropic01_model/` directory is meant to be compiled under Unix-like OS. This directory offers running libtropic's **functional tests** and **examples** against the TROPIC01's Python model, so no chip or external hardware is needed.
 
 - Functional testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
 - When running examples, you need to start the model manually and then execute the example binary in a separate terminal. This applies also for the tests, if they are not run using CTest.
@@ -10,12 +10,12 @@ Code in this directory is meant to be compiled under Unix-like OS. This director
 > 
 > - `lt_ex_fw_update`.
 
-## How it works?
+## How it Works?
 Both processes (tests/examples and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
 > [!NOTE]
 This functionality is implemented with the help of the Unix TCP HAL implemented in `hal/port/unix/lt_port_unix_tcp.c`.
 
-## Model setup
+## Model Setup
 First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
 
 Next, it is possible to initialize the model with some data, so it can behave like the real provisioned chip. To do that, it is neccesary to pass a YAML configuration file to the model - see sections [Model Server](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-server) and [Model Configuration](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration) in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository. To create such a YAML configuration, the script `tropic01_model/create_model_cfg.py` in libtropic repository is used (example usage follows).
@@ -32,7 +32,7 @@ python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
 ```
 where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside the `provisioning_data/`. As a result of running the script, a file `model_cfg.yml` is created, which can be passed directly to the model using the `-c` flag.
 
-## Running the examples
+## Running the Examples
 1. Switch to the `tropic01_model/` directory:
 ```shell
 cd tropic01_model/
@@ -68,7 +68,7 @@ As a result, the model now listens on TCP port 127.0.0.1:28992.
 ```
 As a result, you should see an output from the example in the original terminal and a log from the model in the separate terminal.
 
-## Running the tests
+## Running the Tests
 > [!NOTE]
 It is recommended to run the tests using CTest, but if it's needed to run the tests under GDB, they can be run exactly the same way as the examples.
 

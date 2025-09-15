@@ -1,4 +1,4 @@
-# Adding New Cryptographic Backend
+# Adding a New Cryptographic Backend
 As the libtropic was designed with extensibility in mind, it is possible to add a new backend
 for cryptographic operations.
 
@@ -37,7 +37,7 @@ To add a new backend (let's say mycrypto), you need to:
 4. Edit main CMakeLists --> see following section.
 5. Done. The new crypto backend can be enabled by passing `-DLT_CRYPTO_MYCRYPTO` to the CMake.
 
-### Editing CMakeLists
+### Editing CMakeLists.txt
 In the Setup section, add new option:
 ```cmake
 option(LT_CRYPTO_MYCRYPTO "Use mycrypto as a cryptography provider" OFF)
