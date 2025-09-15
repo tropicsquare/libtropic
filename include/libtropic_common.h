@@ -743,6 +743,9 @@ typedef enum lt_ecc_curve_type_t { TR01_CURVE_P256 = 1, TR01_CURVE_ED25519 } lt_
 /** @brief ECC key origin */
 typedef enum lt_ecc_key_origin_t { TR01_CURVE_GENERATED = 1, TR01_CURVE_STORED } lt_ecc_key_origin_t;
 
+/** @brief Length of the EC signature (RS) for both ECDSA and EDDSA. */
+#define TR01_ECDSA_EDDSA_SIGNATURE_LENGTH 64
+
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal allowed value of the monotonic counter. */
 #define TR01_MCOUNTER_VALUE_MAX 0xFFFFFFFE
