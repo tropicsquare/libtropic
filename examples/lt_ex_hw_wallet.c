@@ -20,7 +20,7 @@
 #define PING_MSG_SIZE 26
 
 /** @brief Attestation key for ECC slot 0. */
-uint8_t attestation_key[32]
+uint8_t attestation_key[TR01_CURVE_PRIVKEY_LEN]
     = {0x22, 0x57, 0xa8, 0x2f, 0x85, 0x8f, 0x13, 0x32, 0xfa, 0x0f, 0xf6, 0x0c, 0x76, 0x29, 0x42, 0x70,
        0xa9, 0x58, 0x9d, 0xfd, 0x47, 0xa5, 0x23, 0x78, 0x18, 0x4d, 0x2d, 0x38, 0xf0, 0xa7, 0xc4, 0x01};
 
@@ -470,7 +470,7 @@ static int session1(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    uint8_t dummy_key[32] = {0};
+    uint8_t dummy_key[TR01_SHIPUB_LEN] = {0};
     LT_LOG_INFO("Writing all pairing key slots (should fail):");
     for (uint8_t i = TR01_PAIRING_KEY_SLOT_INDEX_0; i <= TR01_PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("\tWriting pairing key slot %" PRIu8 "...", i);
@@ -536,7 +536,7 @@ static int session2(lt_handle_t *h)
     LT_LOG_INFO("Message received from TROPIC01:");
     LT_LOG_INFO("\t\"%s\"", recv_buf);
 
-    uint8_t dummy_key[32] = {0};
+    uint8_t dummy_key[TR01_CURVE_PRIVKEY_LEN] = {0};
     LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", (int)TR01_ECC_SLOT_0);
     ret = lt_ecc_key_store(h, TR01_ECC_SLOT_0, TR01_CURVE_ED25519, dummy_key);
     if (LT_L3_UNAUTHORIZED != ret) {
@@ -637,7 +637,7 @@ static int session3(lt_handle_t *h)
 
     LT_LOG_INFO("Signing with attestation key which was updated through pairing key slot 1");
     uint8_t msg[] = {'a', 'h', 'o', 'j'};
-    uint8_t rs[64];
+    uint8_t rs[TR01_ECDSA_EDDSA_SIGNATURE_LENGTH];
     ret = lt_ecc_eddsa_sign(h, TR01_ECC_SLOT_0, msg, 4, rs);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to sign, ret=%s", lt_ret_verbose(ret));
@@ -646,7 +646,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Reading ECC key slot %d...", (int)TR01_ECC_SLOT_0);
-    uint8_t slot_0_pubkey[64];
+    uint8_t slot_0_pubkey[64]; // Pubkey can be up to 64 bytes long (for P256 curve).
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
     ret = lt_ecc_key_read(h, TR01_ECC_SLOT_0, slot_0_pubkey, &curve, &origin);
@@ -722,7 +722,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    uint8_t dummy_key[32];
+    uint8_t dummy_key[TR01_CURVE_PRIVKEY_LEN];
     LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", (int)TR01_ECC_SLOT_0);
     ret = lt_ecc_key_store(h, TR01_ECC_SLOT_0, TR01_CURVE_ED25519, dummy_key);
     if (LT_L3_UNAUTHORIZED != ret) {
