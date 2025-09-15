@@ -1,31 +1,27 @@
 # Code Formatter
-Following instructions are applicable on linux based machines:
+For the code formatting, we use the [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) tool. Its installation varies dependening on the linux distribution.
 
-## Download `clang-format-17.0.6`
-
-Choose version for your OS [here](https://github.com/llvm/llvm-project/releases), download it and extract it.
-Then add its path into your `.bashrc` file:
-
-```
-export PATH="$PATH:/opt/clang+llvm-17.0.6-x86_64-linux-gnu-ubuntu-22.04/bin"
-```
-Reload `.bashrc` file:
-
-```
-$ source ~/.bashrc
+To check if `clang-format` is available on your machine, run:
+```shell
+clang-format --version
 ```
 
-Installed version might be checked like this:
+We use `clang-format` to check code format on pushes and PRs into the *master* and *develop* branches - this is implemented in the action `.github/clang_format_check.yml`. It only checks the format and does not fix it - that is the contributor's responsibility.
 
-```
-$ clang-format --version
-clang-format version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-```
+## How to Use It
+There are multiple ways to format the code using `clang-format`:
 
-For usage within VSCode, install `clang-format` extension for VSCode and restart IDE. You can then run formatter by right clicking on the code and choosing `Format document->Clang Format`.
-
-To format particular folder use following prompt:
-
+1. For each file with wrong formatting, run:
+```shell
+clang-format -i <path_to_the_file_to_format>
 ```
-clang-format -i -- src/*.c src/*.h
+2. If you are using [VSCode](https://code.visualstudio.com/) and the [`cpptools`](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) extension, you can create `.vscode/settings.json` with the following contents (if it does not already exist):
+```json
+{
+    "C_Cpp.formatting": "clangFormat",
+    "editor.formatOnSave": true
+}
 ```
+This will format the file on each save.
+3. There is also the [`git-clang-format`](https://clang.llvm.org/docs/ClangFormat.html#git-integration) tool, which integrates `clang-format` with `git`, but we have not used that yet.
+4. Possibly other ways...
