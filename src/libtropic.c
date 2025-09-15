@@ -848,7 +848,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     return lt_in__pairing_key_invalidate(h);
 }
 
-lt_ret_t lt_r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj)
+lt_ret_t lt_r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint32_t obj)
 {
     if (!h) {
         return LT_PARAM_ERR;
@@ -1364,7 +1364,8 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
     return lt_in__mcounter_get(h, mcounter_value);
 }
 
-lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in)
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot, const uint8_t *data_out,
+                            uint8_t *data_in)
 {
     if (!h || !data_out || !data_in || slot > TR01_MAC_AND_DESTROY_SLOT_127) {
         return LT_PARAM_ERR;
@@ -1552,7 +1553,8 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
     return LT_OK;
 }
 
-lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
+lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *shipriv, const uint8_t *shipub,
+                                                 const uint8_t pkey_index)
 {
     if (!h || !shipriv || !shipub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3)) {
         return LT_PARAM_ERR;
@@ -1613,7 +1615,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
     return LT_OK;
 }
 
-lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size)
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, const uint16_t out_buf_size)
 {
     if (!bytes || !out_buf || out_buf_size < (length * 2 + 1)) {
         // Write empty string if buffer too small
@@ -1805,7 +1807,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
 }
 
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
-                                 lt_bank_id_t bank_id)
+                                 const lt_bank_id_t bank_id)
 {
 #ifdef ABAB
     if (!h || !update_data || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX

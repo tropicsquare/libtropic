@@ -159,7 +159,7 @@ lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
  * @param obj         Content to be written
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj);
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint32_t obj);
 
 /**
  * @brief Decodes R_Config_Write result payload.

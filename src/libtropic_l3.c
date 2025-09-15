@@ -377,7 +377,7 @@ static bool conf_addr_valid(enum lt_config_obj_addr_t addr)
     return valid;
 }
 
-lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj)
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint32_t obj)
 {
     if (!h || !conf_addr_valid(addr)) {
         return LT_PARAM_ERR;
