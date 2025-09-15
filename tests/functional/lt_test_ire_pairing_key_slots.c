@@ -24,8 +24,8 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
 
     uint8_t *pub_keys[] = {sh0pub, sh1pub, sh2pub, sh3pub};
     uint8_t *priv_keys[] = {sh0priv, sh1priv, sh2priv, sh3priv};
-    uint8_t read_key[32] = {0};
-    uint8_t zeros[32] = {0};
+    uint8_t read_key[TR01_SHIPUB_LEN] = {0};
+    uint8_t zeros[TR01_SHIPUB_LEN] = {0};
     char print_buff[PRINT_BUFF_SIZE];
 
     LT_LOG_INFO("Initializing handle");
@@ -38,7 +38,7 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     // Read pairing keys (1,2,3 should be empty)
     LT_LOG_INFO("Reading pairing key slot %d...", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(h, read_key, TR01_PAIRING_KEY_SLOT_INDEX_0));
-    LT_TEST_ASSERT(LT_OK, lt_print_bytes(read_key, 32, print_buff, PRINT_BUFF_SIZE));
+    LT_TEST_ASSERT(LT_OK, lt_print_bytes(read_key, sizeof(read_key), print_buff, PRINT_BUFF_SIZE));
     LT_LOG_INFO("%s", print_buff);
     LT_LOG_INFO();
     for (uint8_t i = TR01_PAIRING_KEY_SLOT_INDEX_1; i <= TR01_PAIRING_KEY_SLOT_INDEX_3; i++) {
@@ -51,7 +51,7 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     // Write pairing keys into slot 1,2,3
     for (uint8_t i = TR01_PAIRING_KEY_SLOT_INDEX_1; i <= TR01_PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Writing to pairing key slot %" PRIu8 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_print_bytes(pub_keys[i], 32, print_buff, PRINT_BUFF_SIZE));
+        LT_TEST_ASSERT(LT_OK, lt_print_bytes(pub_keys[i], TR01_SHIPUB_LEN, print_buff, PRINT_BUFF_SIZE));
         LT_LOG_INFO("%s", print_buff);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_write(h, pub_keys[i], i));
         LT_LOG_INFO();
@@ -62,11 +62,11 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     for (uint8_t i = TR01_PAIRING_KEY_SLOT_INDEX_0; i <= TR01_PAIRING_KEY_SLOT_INDEX_3; i++) {
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(h, read_key, i));
-        LT_TEST_ASSERT(LT_OK, lt_print_bytes(read_key, 32, print_buff, PRINT_BUFF_SIZE));
+        LT_TEST_ASSERT(LT_OK, lt_print_bytes(read_key, sizeof(read_key), print_buff, PRINT_BUFF_SIZE));
         LT_LOG_INFO("%s", print_buff);
 
         LT_LOG_INFO("Comparing contents of written and read key...");
-        LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
+        LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, TR01_SHIPUB_LEN));
         LT_LOG_INFO();
     }
     LT_LOG_LINE();
@@ -96,11 +96,11 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
 
         LT_LOG_INFO("Reading pairing key slot %" PRIu8 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_pairing_key_read(h, read_key, i));
-        LT_TEST_ASSERT(LT_OK, lt_print_bytes(read_key, 32, print_buff, PRINT_BUFF_SIZE));
+        LT_TEST_ASSERT(LT_OK, lt_print_bytes(read_key, sizeof(read_key), print_buff, PRINT_BUFF_SIZE));
         LT_LOG_INFO("%s", print_buff);
 
         LT_LOG_INFO("Comparing contents of expected key and read key...");
-        LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, 32));
+        LT_TEST_ASSERT(0, memcmp(pub_keys[i], read_key, sizeof(read_key)));
         LT_LOG_INFO();
     }
     LT_LOG_LINE();
