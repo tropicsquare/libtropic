@@ -299,10 +299,11 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
  *
  * @param h           Device's handle
  * @param data        Buffer to receive data
- * @param size        Number of bytes read into data
+ * @param max_size    Size of the data buffer
+ * @param read_size   Number of bytes read into data
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size);
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t max_size, uint16_t *read_size);
 
 /**
  * @brief Encodes R_Mem_Data_Erase command payload.

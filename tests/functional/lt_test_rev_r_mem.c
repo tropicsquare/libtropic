@@ -42,7 +42,7 @@ static lt_ret_t lt_test_rev_r_mem_cleanup(void)
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
-        ret = lt_r_mem_data_read(g_h, i, r_mem_data, &read_data_size);
+        ret = lt_r_mem_data_read(g_h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size);
         if (LT_L3_R_MEM_DATA_READ_SLOT_EMPTY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_R_MEM_DATA_READ_SLOT_EMPTY.");
             return ret;
@@ -96,7 +96,8 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(h, i, r_mem_data, &read_data_size));
+        LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY,
+                       lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes (should be 0)...");
         LT_TEST_ASSERT(1, (read_data_size == 0));
@@ -116,7 +117,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, TR01_R_MEM_DATA_SIZE_MAX));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, &read_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_TEST_ASSERT(1, (read_data_size == TR01_R_MEM_DATA_SIZE_MAX));
@@ -129,7 +130,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
         read_data_size = 0;  // Set different value just in case
-        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, &read_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_TEST_ASSERT(1, (read_data_size == TR01_R_MEM_DATA_SIZE_MAX));
@@ -146,7 +147,8 @@ void lt_test_rev_r_mem(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_r_mem_data_erase(h, i));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY, lt_r_mem_data_read(h, i, r_mem_data, &read_data_size));
+        LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY,
+                       lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes (should be 0)...");
         LT_TEST_ASSERT(1, (read_data_size == 0));
@@ -169,8 +171,8 @@ void lt_test_rev_r_mem(lt_handle_t *h)
                             LT_L3_FAIL);
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT_COND(lt_r_mem_data_read(h, i, r_mem_data, &read_data_size), write_data_len != 0, LT_OK,
-                            LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
+        LT_TEST_ASSERT_COND(lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size),
+                            write_data_len != 0, LT_OK, LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_TEST_ASSERT(1, (read_data_size == write_data_len));

@@ -674,9 +674,9 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t max_size, uint16_t *read_size)
 {
-    if (!h || !data || !size) {
+    if (!h || !data || !read_size) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -699,14 +699,19 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
 
     // Get read data size
     // TODO: If FW implements fail error code on R_Mem_Data_Read from empty slot, this can be removed.
-    *size = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->padding);
+    *read_size = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->padding);
 
     // Check if slot is not empty
-    if (*size == 0) {
+    if (*read_size == 0) {
         return LT_L3_R_MEM_DATA_READ_SLOT_EMPTY;
     }
 
-    memcpy(data, p_l3_res->data, *size);
+    // Check if the output buffer for the read data is big enough
+    if (max_size < *read_size) {
+        return LT_PARAM_ERR;
+    }
+
+    memcpy(data, p_l3_res->data, *read_size);
 
     return LT_OK;
 }

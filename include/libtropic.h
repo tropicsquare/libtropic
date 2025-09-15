@@ -414,13 +414,15 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be read
  * @param data        Buffer to read data into
- * @param size        Number of bytes read into data
+ * @param max_size    Size of the data buffer
+ * @param read_size   Number of bytes read into data
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size);
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t max_size,
+                            uint16_t *read_size);
 
 /**
  * @brief Erases the given slot of the User Partition in the R memory
