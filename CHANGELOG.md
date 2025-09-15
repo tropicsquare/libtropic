@@ -109,6 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed type of the first parameter of `lt_random_bytes` to `lt_handle_t`.
 - Replaced various numeric constants with appropriate macro constants and sizeof operators.
 - `lt_get_info_fw_bank()`: Renamed parameter `max_len` to `max_size`.
+- `lt_get_log_req()`: Renamed parameter `log_msg_len` to `read_size`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.
@@ -120,6 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Constant for length of ECDSA/EDDSA signature.
 - Constants for lengths of L2 request fields (ID, LEN, CRC).
 - `lt_get_info_fw_bank()`: Parameter `read_size` to indicate the number of read bytes from the FW bank.
+- `lt_get_log_req()`: Parameter `max_size` to check whether the output buffer is big enough.
 
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.

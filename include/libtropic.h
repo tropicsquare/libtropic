@@ -267,13 +267,14 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
  *
  * @param h            Device's handle
  * @param log_msg      Buffer for the log message (atleast 255B)
- * @param log_msg_len  Length of the log message
+ * @param max_size     Size of the log message buffer
+ * @param read_size    Number of bytes read into the log message buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len);
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, const uint16_t max_size, uint16_t *read_size);
 
 /**
  * @brief A dummy command to check the Secure Channel Session communication by exchanging a message with TROPIC01, whish

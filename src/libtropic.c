@@ -706,9 +706,9 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
 #error "Undefined silicon revision. Please define either ABAB or ACAB."
 #endif
 
-lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, const uint16_t max_size, uint16_t *read_size)
 {
-    if (!h || !log_msg || !log_msg_len) {
+    if (!h || !log_msg || !read_size) {
         return LT_PARAM_ERR;
     }
 
@@ -729,7 +729,12 @@ lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
         return ret;
     }
 
-    *log_msg_len = p_l2_resp->rsp_len;
+    // Check if the output buffer for the log message is big enough
+    if (max_size < p_l2_resp->rsp_len) {
+        return LT_PARAM_ERR;
+    }
+
+    *read_size = p_l2_resp->rsp_len;
     memcpy(log_msg, p_l2_resp->log_msg, p_l2_resp->rsp_len);
 
     return LT_OK;
