@@ -69,74 +69,74 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     struct lt_crypto_sha256_ctx_t hctx = {0};
     lt_sha256_init(&hctx);
     lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, protocol_name, 32);
+    lt_sha256_update(&hctx, protocol_name, sizeof(protocol_name));
     lt_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||SHiPUB)
     lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, shipub, 32);
+    lt_sha256_update(&hctx, hash, sizeof(hash));
+    lt_sha256_update(&hctx, shipub, TR01_SHIPUB_LEN);
     lt_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||STPUB)
     lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, stpub, 32);
+    lt_sha256_update(&hctx, hash, sizeof(hash));
+    lt_sha256_update(&hctx, stpub, TR01_STPUB_LEN);
     lt_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||EHPUB)
     lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, state->ehpub, 32);
+    lt_sha256_update(&hctx, hash, sizeof(hash));
+    lt_sha256_update(&hctx, state->ehpub, TR01_EHPUB_LEN);
     lt_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||PKEY_INDEX)
     lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
+    lt_sha256_update(&hctx, hash, sizeof(hash));
     lt_sha256_update(&hctx, (uint8_t *)&pkey_index, 1);
     lt_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||ETPUB)
     lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, 32);
-    lt_sha256_update(&hctx, p_rsp->e_tpub, 32);
+    lt_sha256_update(&hctx, hash, sizeof(hash));
+    lt_sha256_update(&hctx, p_rsp->e_tpub, TR01_ETPUB_LEN);
     lt_sha256_finish(&hctx, hash);
 
     // ck = protocol_name
-    uint8_t output_1[33] = {0};
-    uint8_t output_2[32] = {0};
+    uint8_t output_1[33] = {0}; // Temp storage for ck, kcmd.
+    uint8_t output_2[32] = {0}; // Temp storage for kauth.
     // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
     uint8_t shared_secret[32] = {0};
     lt_X25519(state->ehpriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(protocol_name, 32, shared_secret, 32, 1, output_1, output_2);
+    lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
     // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
     lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(output_1, 32, shared_secret, 32, 1, output_1, output_2);
+    lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
     // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
     lt_X25519(state->ehpriv, stpub, shared_secret);
-    uint8_t kauth[32] = {0};
-    lt_hkdf(output_1, 32, shared_secret, 32, 2, output_1, kauth);
+    uint8_t kauth[TR01_AES256_KEY_LEN] = {0}; // AES256 key used for handshake authentication.
+    lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
     // kCMD, kRES = HKDF (ck, emptystring, 2)
-    uint8_t kcmd[32] = {0};
-    uint8_t kres[32] = {0};
-    lt_hkdf(output_1, 32, (uint8_t *)"", 0, 2, kcmd, kres);
+    uint8_t kcmd[TR01_AES256_KEY_LEN] = {0}; // AES256 key used for L3 command packet encryption/decryption.
+    uint8_t kres[TR01_AES256_KEY_LEN] = {0}; // AES256 key used for L3 result packet encryption/decryption.
+    lt_hkdf(output_1, sizeof(output_1), (uint8_t *)"", 0, 2, kcmd, kres);
 
-    lt_ret_t ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kauth, 32);
+    lt_ret_t ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kauth, sizeof(kauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_decrypt(&h->l3.decrypt, h->l3.decryption_IV, 12u, hash, 32, (uint8_t *)"", 0, p_rsp->t_tauth, 16u);
+    ret = lt_aesgcm_decrypt(&h->l3.decrypt, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash, sizeof(hash), (uint8_t *)"", 0, p_rsp->t_tauth, sizeof(p_rsp->t_tauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.encrypt, kcmd, 32);
+    ret = lt_aesgcm_init_and_key(&h->l3.encrypt, kcmd, sizeof(kcmd));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kres, 32);
+    ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kres, sizeof(kres));
     if (ret != LT_OK) {
         goto exit;
     }
@@ -147,8 +147,8 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
 
 // If something went wrong during session keys establishment, better clean up AES GCM contexts
 exit:
-    memset(h->l3.encrypt, 0, 352);
-    memset(h->l3.decrypt, 0, 352);
+    memset(h->l3.encrypt, 0, sizeof(h->l3.encrypt));
+    memset(h->l3.decrypt, 0, sizeof(h->l3.decrypt));
 
     return ret;
 }
@@ -216,7 +216,7 @@ lt_ret_t lt_out__pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, c
     p_l3_cmd->cmd_size = TR01_L3_PAIRING_KEY_WRITE_CMD_SIZE;
     p_l3_cmd->cmd_id = TR01_L3_PAIRING_KEY_WRITE_CMD_ID;
     p_l3_cmd->slot = slot;
-    memcpy(p_l3_cmd->s_hipub, pairing_pub, 32);
+    memcpy(p_l3_cmd->s_hipub, pairing_pub, sizeof(p_l3_cmd->s_hipub));
 
     return lt_l3_encrypt_request(&h->l3);
 }
@@ -288,7 +288,7 @@ lt_ret_t lt_in__pairing_key_read(lt_handle_t *h, uint8_t *pubkey)
         return LT_FAIL;
     }
 
-    memcpy(pubkey, p_l3_res->s_hipub, 32);
+    memcpy(pubkey, p_l3_res->s_hipub, TR01_SHIPUB_LEN);
 
     return LT_OK;
 }
@@ -866,7 +866,7 @@ lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const l
     p_l3_cmd->cmd_id = TR01_L3_ECC_KEY_STORE_CMD_ID;
     p_l3_cmd->slot = slot;
     p_l3_cmd->curve = curve;
-    memcpy(p_l3_cmd->k, key, 32);
+    memcpy(p_l3_cmd->k, key, TR01_CURVE_PRIVKEY_LEN);
 
     return lt_l3_encrypt_request(&h->l3);
 }
@@ -938,19 +938,20 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
     *curve = p_l3_res->curve;
     *origin = p_l3_res->origin;
 
+    size_t pubkey_size_in_result = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->curve) - sizeof(p_l3_res->origin) - sizeof(p_l3_res->padding);
     if (p_l3_res->curve == (uint8_t)TR01_CURVE_ED25519) {
-        // Check incomming l3 length
-        if ((p_l3_res->res_size - 1 - 1 - 1 - 13) != TR01_CURVE_ED25519_KEY_LEN) {
+        // Check incoming L3 length
+        if (pubkey_size_in_result != TR01_CURVE_ED25519_PUBKEY_LEN) {
             return LT_FAIL;
         }
-        memcpy(key, p_l3_res->pub_key, TR01_CURVE_ED25519_KEY_LEN);
+        memcpy(key, p_l3_res->pub_key, TR01_CURVE_ED25519_PUBKEY_LEN);
     }
     else if (p_l3_res->curve == (uint8_t)TR01_CURVE_P256) {
-        // Check incomming l3 length
-        if (((p_l3_res->res_size - 1 - 1 - 1 - 13) != TR01_CURVE_P256_KEY_LEN)) {
+        // Check incoming L3 length
+        if (pubkey_size_in_result != TR01_CURVE_P256_PUBKEY_LEN) {
             return LT_FAIL;
         }
-        memcpy(key, p_l3_res->pub_key, TR01_CURVE_P256_KEY_LEN);
+        memcpy(key, p_l3_res->pub_key, TR01_CURVE_P256_PUBKEY_LEN);
     }
     else {
         // Unknown curve type
@@ -1031,7 +1032,7 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const 
     p_l3_cmd->cmd_size = TR01_L3_ECDSA_SIGN_CMD_SIZE;
     p_l3_cmd->cmd_id = TR01_L3_ECDSA_SIGN_CMD_ID;
     p_l3_cmd->slot = slot;
-    memcpy(p_l3_cmd->msg_hash, msg_hash, 32);
+    memcpy(p_l3_cmd->msg_hash, msg_hash, sizeof(p_l3_cmd->msg_hash));
 
     return lt_l3_encrypt_request(&h->l3);
 }
@@ -1058,8 +1059,8 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs)
         return LT_FAIL;
     }
 
-    memcpy(rs, p_l3_res->r, 32);
-    memcpy(rs + 32, p_l3_res->s, 32);
+    memcpy(rs, p_l3_res->r, sizeof(p_l3_res->r));
+    memcpy(rs + sizeof(p_l3_res->r), p_l3_res->s, sizeof(p_l3_res->s));
 
     return LT_OK;
 }
@@ -1110,8 +1111,8 @@ lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs)
         return LT_FAIL;
     }
 
-    memcpy(rs, p_l3_res->r, 32);
-    memcpy(rs + 32, p_l3_res->s, 32);
+    memcpy(rs, p_l3_res->r, sizeof(p_l3_res->r));
+    memcpy(rs + sizeof(p_l3_res->r), p_l3_res->s, sizeof(p_l3_res->s));
 
     return LT_OK;
 }
