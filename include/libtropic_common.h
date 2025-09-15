@@ -606,15 +606,6 @@ typedef struct lt_session_state_t {
 #define TR01_PING_LEN_MAX 4096
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief ECC key slot indexes */
-typedef enum lt_pairing_key_slot_t {
-    TR01_SH0PUB = 0,
-    TR01_SH1PUB,
-    TR01_SH2PUB,
-    TR01_SH3PUB,
-} lt_pairing_key_slot_t;
-
-//--------------------------------------------------------------------------------------------------------------------//
 /** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
 typedef enum lt_config_obj_addr_t {
     TR01_CFG_START_UP_ADDR = BOOTLOADER_CO_CFG_START_UP_ADDR,
