@@ -85,7 +85,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
 
     // Clear variable for released secret so there is known data (zeroes) in case this function ended sooner then secret
     // was prepared
-    memset(secret, 0, MAC_AND_DESTROY_DATA_SIZE);
+    memset(secret, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
 
     // Variable used during a process of getting a encryption key k_i
     uint8_t v[32] = {0};
@@ -138,7 +138,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     lt_hmac_sha256((uint8_t*)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 32, kdf_input_buff, PIN_size+add_size, v);
 
     for (int i = 0; i < nvm.i; i++) {
-        uint8_t garbage[MAC_AND_DESTROY_DATA_SIZE] = {0};
+        uint8_t garbage[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
 
         // This call of a M&D sequence results in initialization of one slot
         LT_LOG_INFO("Doing M&D sequence to initialize a slot...");
@@ -236,7 +236,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
 
     // Clear variable for released secret so there is known data (zeroes) in case this function ended sooner then secret
     // was prepared
-    memset(secret, 0, MAC_AND_DESTROY_DATA_SIZE);
+    memset(secret, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
 
     // Variable used during a process of getting a decryption key k_i
     uint8_t v_[32] = {0};
@@ -335,7 +335,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"1", 1, u);
 
     for (int x = nvm.i; x < MACANDD_ROUNDS - 1; x++) {
-        uint8_t garbage[MAC_AND_DESTROY_DATA_SIZE] = {0};
+        uint8_t garbage[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
 
         LT_LOG_INFO("Doing M&D sequence...");
         ret = lt_mac_and_destroy(h, x, u, garbage);
@@ -403,7 +403,7 @@ int lt_ex_macandd(lt_handle_t *h)
     }
 
     // This variable stores secret which is released to the user after successful PIN check or PIN set
-    uint8_t secret[MAC_AND_DESTROY_DATA_SIZE] = {0};
+    uint8_t secret[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
 
     // Additional data passed by user besides PIN - this is optional, but recommended
     uint8_t additional_data[]
