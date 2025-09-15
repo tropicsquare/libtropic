@@ -557,8 +557,12 @@ typedef struct lt_session_state_t {
     // lt_pkey_index_t pkey_index;
 } lt_session_state_t;
 
-// ECDH uses X25519 function with Curve25519 -> 32 bytes
-#define TR01_ECDH_KEY_LEN 32
+// ECDH uses X25519 function with Curve25519 -> 32 bytes.
+// This is the same for stpub, ehpriv, ehpub.
+#define TR01_X25519_KEY_LEN 32
+#define TR01_STPUB_LEN TR01_X25519_KEY_LEN
+#define TR01_EHPRIV_LEN TR01_X25519_KEY_LEN
+#define TR01_EHPUB_LEN TR01_X25519_KEY_LEN
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
