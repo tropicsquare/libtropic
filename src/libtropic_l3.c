@@ -44,7 +44,8 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
 
     p_req->req_id = TR01_L2_HANDSHAKE_REQ_ID;
     p_req->req_len = TR01_L2_HANDSHAKE_REQ_LEN;
-    memcpy(p_req->e_hpub, state->ehpub, TR01_ECDH_KEY_LEN);
+    memcpy(p_req->e_hpub, state->ehpub, TR01_EHPUB_LEN);
+
     p_req->pkey_index = (uint8_t)pkey_index;
 
     return LT_OK;
