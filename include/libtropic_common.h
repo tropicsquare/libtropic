@@ -762,7 +762,7 @@ typedef enum lt_mcounter_index_t {
 } lt_mcounter_index_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief Maximal size of returned MAC-and-Destroy data */
+/** @brief The size of returned MAC-and-Destroy data (secret/key) */
 #define TR01_MAC_AND_DESTROY_DATA_SIZE 32u
 /** @brief Maximal number of Mac And Destroy tries possible with TROPIC01 */
 #define TR01_MACANDD_ROUNDS_MAX 128
