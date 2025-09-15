@@ -1,4 +1,7 @@
 # Randomization
+!!! bug
+    Redo this? This does not talk about the randomization for functional testing.
+
 Some tests use a rudimentary randomization mechanism using standard C functions. The PRNG is normally
 seeded with current time. Used seed is always printed to stdout. You can find the seed in logs
 (`build/gcov/results/...`).
