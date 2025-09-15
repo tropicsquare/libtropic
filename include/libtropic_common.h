@@ -121,6 +121,9 @@ typedef struct lt_l3_state_t {
     uint16_t buff_len; /**< Length of the buffer */
 } lt_l3_state_t;
 
+/** @brief Length of key used by AES256. */
+#define TR01_AES256_KEY_LEN 32
+
 /**
  * @details This structure holds data related to one physical chip.
  * Contains AESGCM contexts for encrypting and decrypting L3 commands, nonce and device void pointer, which can be used
@@ -557,13 +560,30 @@ typedef struct lt_session_state_t {
     // lt_pkey_index_t pkey_index;
 } lt_session_state_t;
 
-// ECDH uses X25519 function with Curve25519 -> 32 bytes.
-// This is the same for stpub, ehpriv, ehpub.
+/** @brief Length of key used in X25519 function.
+ * 
+ * ECDH uses X25519 function with Curve25519 -> 32 bytes. See "Variables" section in GLOSSARY in TROPIC01 datasheet.
+ * This is the same for stpub, ehpriv, ehpub.
+ */
 #define TR01_X25519_KEY_LEN 32
-#define TR01_STPUB_LEN TR01_X25519_KEY_LEN
-#define TR01_EHPRIV_LEN TR01_X25519_KEY_LEN
-#define TR01_EHPUB_LEN TR01_X25519_KEY_LEN
 
+/** @brief Length of TROPIC01 X25519 public key for a Secure Channel Handshake. */
+#define TR01_STPUB_LEN TR01_X25519_KEY_LEN
+/** @brief Length of TROPIC01 X25519 private key for a Secure Channel Handshake. */
+#define TR01_STPRIV_LEN TR01_X25519_KEY_LEN
+/** @brief Length of X25519 public key of the Host MCU to execute a Secure Channel Handshake on Pairing Key slot i. */
+#define TR01_SHIPUB_LEN TR01_X25519_KEY_LEN
+/** @brief Length of X25519 private key of the Host MCU to execute a Secure Channel Handshake on Pairing Key slot i. */
+#define TR01_SHIPRIV_LEN TR01_X25519_KEY_LEN
+
+/** @brief Length of TROPIC01 ephemeral private key. */
+#define TR01_ETPRIV_LEN TR01_X25519_KEY_LEN
+/** @brief Length of TROPIC01 ephemeral public key. */
+#define TR01_ETPUB_LEN TR01_X25519_KEY_LEN
+/** @brief Length of Host MCU ephemeral private key. */
+#define TR01_EHPRIV_LEN TR01_X25519_KEY_LEN
+/** @brief Length of Host MCU ephemeral public key */
+#define TR01_EHPUB_LEN TR01_X25519_KEY_LEN
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
 #define TR01_L2_SLEEP_KIND_SLEEP 0x05
@@ -710,8 +730,12 @@ typedef enum lt_ecc_slot_t {
 /** @brief ECC key type */
 typedef enum lt_ecc_curve_type_t { TR01_CURVE_P256 = 1, TR01_CURVE_ED25519 } lt_ecc_curve_type_t;
 
-#define TR01_CURVE_P256_KEY_LEN 64
-#define TR01_CURVE_ED25519_KEY_LEN 32
+/** @brief Length of public keys for P256 curve. */
+#define TR01_CURVE_P256_PUBKEY_LEN 64
+/** @brief Length of public keys for ED25519 curve. */
+#define TR01_CURVE_ED25519_PUBKEY_LEN 32
+/** @brief Common length of private keys for both P256 and ED25519 curves. */
+#define TR01_CURVE_PRIVKEY_LEN 32
 
 /** @brief ECC key origin */
 typedef enum lt_ecc_key_origin_t { TR01_CURVE_GENERATED = 1, TR01_CURVE_STORED } lt_ecc_key_origin_t;
