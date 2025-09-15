@@ -387,8 +387,6 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
         return ret;
     }
 
-    struct lt_l2_handshake_req_t *p_req = (struct lt_l2_handshake_req_t *)h->l2.buff;
-
     ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
         return ret;
