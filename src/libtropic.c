@@ -334,9 +334,10 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
     return LT_OK;
 }
 
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len)
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_size,
+                             uint16_t *read_size)
 {
-    if (!h || !header || max_len < TR01_L2_GET_INFO_FW_HEADER_SIZE
+    if (!h || !header || !read_size
         || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) && (bank_id != TR01_FW_BANK_SPECT1)
             && (bank_id != TR01_FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
@@ -368,7 +369,13 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
         return LT_FAIL;
     }
 
+    // Check if the output buffer for the header is big enough
+    if (max_size < p_l2_resp->rsp_len) {
+        return LT_PARAM_ERR;
+    }
+
     memcpy(header, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, p_l2_resp->rsp_len);
+    *read_size = p_l2_resp->rsp_len;
 
     return LT_OK;
 }

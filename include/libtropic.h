@@ -136,13 +136,15 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @param h           Device's handle
  * @param bank_id     ID of firmware bank (one from enum lt_bank_id_t)
  * @param header      Buffer to store fw header bytes into
- * @param max_len     Length of a buffer
+ * @param max_size    Size of the header buffer
+ * @param read_size   Number of bytes read into the header buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_size,
+                             uint16_t *read_size);
 
 /**
  * @brief Establishes encrypted secure session between TROPIC01 and host MCU

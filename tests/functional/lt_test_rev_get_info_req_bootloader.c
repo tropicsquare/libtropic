@@ -59,24 +59,27 @@ static void print_fw_header_bootloader_v2_0_1(uint8_t *header)
 static void read_fw_banks_bootloader_v1_0_1(void)
 {
     uint8_t fw_header[TR01_L2_GET_INFO_FW_HEADER_SIZE];
+    uint16_t read_header_size;
 
     LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW1, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW1, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 
     LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW2, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW2, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK,
+                   lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT1, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK,
+                   lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT2, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v1_0_1(fw_header);
     LT_LOG_INFO();
 }
@@ -84,24 +87,27 @@ static void read_fw_banks_bootloader_v1_0_1(void)
 static void read_fw_banks_bootloader_v2_0_1(void)
 {
     uint8_t fw_header[TR01_L2_GET_INFO_FW_HEADER_SIZE];
+    uint16_t read_header_size;
 
     LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW1, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW1, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 
     LT_LOG_INFO("Reading FW bank %d...", (int)TR01_FW_BANK_FW2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW2, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_FW2, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT1);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT1, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK,
+                   lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT1, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 
     LT_LOG_INFO("Reading SPECT bank %d...", (int)TR01_FW_BANK_SPECT2);
-    LT_TEST_ASSERT(LT_OK, lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT2, fw_header, sizeof(fw_header)));
+    LT_TEST_ASSERT(LT_OK,
+                   lt_get_info_fw_bank(g_h, TR01_FW_BANK_SPECT2, fw_header, sizeof(fw_header), &read_header_size));
     print_fw_header_bootloader_v2_0_1(fw_header);
     LT_LOG_INFO();
 }
