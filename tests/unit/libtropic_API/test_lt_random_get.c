@@ -72,7 +72,7 @@ void test__invalid_len()
     lt_handle_t h = {0};
     uint16_t len;
     for (int i = 0; i < 25; i++) {
-        len = RANDOM_VALUE_GET_LEN_MAX + 1;
+        len = TR01_RANDOM_VALUE_GET_LEN_MAX + 1;
         len += rand() % (UINT16_MAX - len);
         TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_random_get(&h, (uint8_t*)"", len));
     }
@@ -151,10 +151,10 @@ void test__correct()
 {
     lt_handle_t h =  {0};
     h.session = SESSION_ON;
-    uint8_t buff[RANDOM_VALUE_GET_LEN_MAX];
+    uint8_t buff[TR01_RANDOM_VALUE_GET_LEN_MAX];
 
-    size_inject_value = RANDOM_VALUE_GET_LEN_MAX + LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN;
+    size_inject_value = TR01_RANDOM_VALUE_GET_LEN_MAX + LT_L3_RANDOM_VALUE_GET_RES_SIZE_MIN;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
-    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, RANDOM_VALUE_GET_LEN_MAX));
+    TEST_ASSERT_EQUAL(LT_OK, lt_random_get(&h, buff, TR01_RANDOM_VALUE_GET_LEN_MAX));
 }
 */

@@ -49,11 +49,12 @@ void test__fail_when_no_session()
 void test__lt_aesgcm_encrypt__LT_FAIL()
 {
     lt_handle_t h = {0};
-    h.l3.session = SESSION_ON;
+    h.l3.session = LT_SECURE_SESSION_ON;
 
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)&h.l3.buff;
-    lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
-                                      p_frame->cmd_size, p_frame->data + p_frame->cmd_size, L3_TAG_SIZE, LT_FAIL);
+    lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
+                                      p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size,
+                                      TR01_L3_TAG_SIZE, LT_FAIL);
 
     int ret = lt_l3_encrypt_request(&h.l3);
     TEST_ASSERT_EQUAL(LT_FAIL, ret);
@@ -64,12 +65,12 @@ void test__correct()
 {
     for (int i = 0; i < 5; i++) {
         lt_handle_t h = {0};
-        h.l3.session = SESSION_ON;
+        h.l3.session = LT_SECURE_SESSION_ON;
 
         struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)&h.l3.buff;
-        lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, L3_IV_SIZE, (uint8_t *)"", 0,
+        lt_aesgcm_encrypt_ExpectAndReturn(&h.l3.encrypt, h.l3.encryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
                                           p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size,
-                                          L3_TAG_SIZE, LT_OK);
+                                          TR01_L3_TAG_SIZE, LT_OK);
 
         int ret = lt_l3_encrypt_request(&h.l3);
         TEST_ASSERT_EQUAL(LT_OK, ret);

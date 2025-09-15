@@ -20,7 +20,7 @@
 
 uint8_t kdf_key_zeros[256] = {0};
 
-static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, mac_and_destroy_slot_t slot,
+static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, lt_mac_and_destroy_slot_t slot,
                      uint8_t ciphertexts[128][32], uint8_t *t, uint8_t *s)
 {
     uint8_t v[32], w[32], k_i[32], t_[32];
@@ -60,16 +60,16 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Setup PIN");
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)MAC_AND_DESTROY_SLOT_127);
+    LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)TR01_MAC_AND_DESTROY_SLOT_127);
     LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &n, sizeof(n)));
-    n = (n % MAC_AND_DESTROY_SLOT_127) + 1;
+    n = (n % TR01_MAC_AND_DESTROY_SLOT_127) + 1;
 
     LT_LOG_INFO("Generating random 32B secret s...");
     LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, s, sizeof(s)));

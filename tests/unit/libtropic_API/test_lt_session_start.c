@@ -116,7 +116,7 @@ void test__invalid_shipub()
     static lt_crypto_sha256_ctx_t hctx = {0};
     static uint8_t protocol_name[32] =
 {'N','o','i','s','e','_','K','K','1','_','2','5','5','1','9','_','A','E','S','G','C','M','_','S','H','A','2','5','6',0x00,0x00,0x00};
-    static uint8_t hash[SHA256_DIGEST_LENGTH] = {0};
+    static uint8_t hash[LT_SHA256_DIGEST_LENGTH] = {0};
 
     // hctx is useful to check, because we need it blank (zeroed)
     lt_sha256_init_Expect(&hctx);
@@ -126,7 +126,7 @@ void test__invalid_shipub()
             lt_sha256_update_Expect(&hctx, hash, 32);
             lt_sha256_update_ExpectAnyArgs(); // not interested in exact pointer addresses
         } else {
-            lt_sha256_update_ExpectWithArray(&hctx, SHA256_DIGEST_LENGTH, protocol_name, 32, 32);
+            lt_sha256_update_ExpectWithArray(&hctx, LT_SHA256_DIGEST_LENGTH, protocol_name, 32, 32);
         }
         lt_sha256_finish_Expect(&hctx, hash);
     }

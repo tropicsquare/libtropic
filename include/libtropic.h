@@ -51,8 +51,8 @@ lt_ret_t lt_deinit(lt_handle_t *h);
 
 /**
  * @brief Update mode variable in handle.
- * Reads one byte from SPI, checks `CHIP_MODE_STARTUP_bit` and updates this information in `lt_l2_state_t` (part of the
- * handle).
+ * Reads one byte from SPI, checks `TR01_L1_CHIP_MODE_STARTUP_bit` and updates this information in `lt_l2_state_t` (part
+ * of the handle).
  *
  * Info from this bit is updated in handle on every L1 transaction anyway.
  * This function can be used to actualize it whenever user wants.
@@ -92,7 +92,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
-#define LT_L2_GET_INFO_CHIP_ID_SIZE 128
+#define TR01_L2_GET_INFO_CHIP_ID_SIZE 128
 
 /**
  * @brief Read TROPIC01's CHIP ID
@@ -110,7 +110,7 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id);
  * @brief Read TROPIC01's RISC-V firmware version
  *
  * @param h           Device's handle
- * @param ver Buffer for FW version bytes with size `LT_L2_GET_INFO_RISCV_FW_SIZE`
+ * @param ver Buffer for FW version bytes with size `TR01_L2_GET_INFO_RISCV_FW_SIZE`
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -122,7 +122,7 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @brief Read TROPIC01's SPECT firmware version
  *
  * @param h           Device's handle
- * @param ver Buffer for SPECT version bytes with size `LT_L2_GET_INFO_SPECT_FW_SIZE`
+ * @param ver Buffer for SPECT version bytes with size `TR01_L2_GET_INFO_SPECT_FW_SIZE`
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -134,7 +134,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @brief Read TROPIC01's firmware bank info
  *
  * @param h           Device's handle
- * @param bank_id     ID of firmware bank (one from enum bank_id_t)
+ * @param bank_id     ID of firmware bank (one from enum lt_bank_id_t)
  * @param header      Buffer to store fw header bytes into
  * @param max_len     Length of a buffer
  *
@@ -142,7 +142,7 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
 
 /**
  * @brief Establishes encrypted secure session between TROPIC01 and host MCU
@@ -162,8 +162,8 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const bank_id_t bank_id, uint8_t *h
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index, const uint8_t *shipriv,
-                          const uint8_t *shipub);
+lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
+                          const uint8_t *shipriv, const uint8_t *shipub);
 
 /**
  * @brief Aborts encrypted secure session between TROPIC01 and host MCU
@@ -207,18 +207,18 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
 
 #ifdef ABAB
 /** @brief Maximal size of update data */
-#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 25600
+#define TR01_MUTABLE_FW_UPDATE_SIZE_MAX 25600
 /**
  * @brief Erase mutable firmware in one of banks
  *
  * @param h           Device's handle
- * @param bank_id     enum bank_id_t
+ * @param bank_id     enum lt_bank_id_t
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
+lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id);
 
 /**
  * @brief Update mutable firmware in one of banks
@@ -226,15 +226,16 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const bank_id_t bank_id);
  * @param h             Device's handle
  * @param fw_data       Array with firmware bytes
  * @param fw_data_size  Number of firmware's bytes in passed array
- * @param bank_id       enum bank_id_t
+ * @param bank_id       enum lt_bank_id_t
  * lt_ret_t             LT_OK            - SUCCESS
  *                      other parameters - ERROR, for verbose output pass return value to function lt_ret_verbose()
  */
-lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size, bank_id_t bank_id);
+lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint16_t fw_data_size,
+                              lt_bank_id_t bank_id);
 
 #elif ACAB
 /** @brief Maximal size of update data */
-#define LT_MUTABLE_FW_UPDATE_SIZE_MAX 30720
+#define TR01_MUTABLE_FW_UPDATE_SIZE_MAX 30720
 
 /**
  * @brief Sends mutable firmware update L2 request to TROPIC01 with silicon revision ACAB
@@ -336,7 +337,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
+lt_ret_t lt_r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj);
 
 /**
  * @brief Reads configuration object specified by `addr`
@@ -350,7 +351,7 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr,
  * of returned value
  *
  */
-lt_ret_t lt_r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
+lt_ret_t lt_r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, uint32_t *obj);
 
 /**
  * @brief Erases all configuration objects
@@ -374,7 +375,7 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
+lt_ret_t lt_i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint8_t bit_index);
 
 /**
  * @brief Reads configuration object specified by `addr` from I-Config
@@ -387,7 +388,7 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, uint32_t *obj);
+lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, uint32_t *obj);
 
 /**
  * @brief Writes bytes into a given slot of the User Partition in the R memory
@@ -395,8 +396,8 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS 
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written (valid range given by macros `R_MEM_DATA_SIZE_MIN` and
- * `R_MEM_DATA_SIZE_MAX`)
+ * @param size        Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
+ * `TR01_R_MEM_DATA_SIZE_MAX`)
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -447,20 +448,20 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
  * @brief Generates ECC key in the specified ECC key slot
  *
  * @param h           Device's handle
- * @param slot        Slot number ecc_slot_t
+ * @param slot        Slot number lt_ecc_slot_t
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
+lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
  * @brief Stores ECC key to the specified ECC key slot
  *
  * @param h           Device's handle
- * @param slot        Slot number ecc_slot_t
+ * @param slot        Slot number lt_ecc_slot_t
  * @param curve       Type of ECC curve. Use L3_ECC_KEY_GENERATE_CURVE_ED25519 or L3_ECC_KEY_GENERATE_CURVE_P256
  * @param key         Key to store (only the first 32 bytes are stored)
  *
@@ -468,13 +469,14 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve, const uint8_t *key);
+lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve,
+                          const uint8_t *key);
 
 /**
  * @brief Reads ECC public key corresponding to a private key in the specified ECC key slot.
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
  * for P256), according to *curve*
  * @param curve       Will be filled by curve byte
@@ -484,26 +486,26 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_cu
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
-                         ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
+                         lt_ecc_key_origin_t *origin);
 
 /**
  * @brief Erases ECC key from the specified ECC key slot
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot number ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
+lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot);
 
 /**
  * @brief Performs ECDSA sign of a message with a private ECC key stored in TROPIC01
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot containing a private key, TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param msg         Buffer containing a message
  * @param msg_len     Length of msg's buffer
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
@@ -512,7 +514,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const ecc_slot_t ecc_slot);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint32_t msg_len,
+lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint32_t msg_len,
                            uint8_t *rs);
 
 /**
@@ -534,7 +536,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  * @brief Performs EdDSA sign of a message with a private ECC key stored in TROPIC01
  *
  * @param h           Device's handle
- * @param ecc_slot    Slot containing a private key, ECC_SLOT_0 - ECC_SLOT_31
+ * @param ecc_slot    Slot containing a private key, TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param msg         Buffer containing a message to sign, max length is 4096B
  * @param msg_len     Length of a message
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
@@ -543,7 +545,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
+lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs);
 
 /**
@@ -564,7 +566,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
  *
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
- * @param mcounter_value  Value to set as an initial value (allowed range is 0-MCOUNTER_VALUE_MAX)
+ * @param mcounter_value  Value to set as an initial value (allowed range is 0-`TR01_MCOUNTER_VALUE_MAX`)
  *
  * @retval                LT_OK Function executed successfully
  * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
@@ -589,7 +591,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
  *
  * @param h               Device's handle
  * @param mcounter_index  Index of monotonic counter
- * @param mcounter_value  Value of monotonic counter (from range 0-MCOUNTER_VALUE_MAX)
+ * @param mcounter_value  Value of monotonic counter (from range 0-`TR01_MCOUNTER_VALUE_MAX`)
  *
  * @retval                LT_OK Function executed successfully
  * @retval                other Function did not execute successully, you might use lt_ret_verbose() to get verbose
@@ -612,7 +614,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
 
 /** @} */  // end of libtropic_API group
 
@@ -625,7 +627,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const u
  */
 
 /** @brief Upper bound for CHIP_ID fields as hex string (used in lt_print_chip_id()). */
-#define CHIP_ID_FIELD_MAX_SIZE 35
+#define LT_CHIP_ID_FIELD_MAX_SIZE 35
 
 /** @brief Helper structure, holding string name and address for each configuration object. */
 extern struct lt_config_obj_desc_t cfg_desc_table[LT_CONFIG_OBJ_CNT];
@@ -743,12 +745,12 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
  * @param update_data  Pointer to the data to be written
  * @param update_data_size  Size of the data to be written
  * @param bank_id  Bank ID where the update should be applied, valid values are
- *                     For ABAB: FW_BANK_FW1, FW_BANK_FW2, FW_BANK_SPECT1, FW_BANK_SPECT2
+ *                     For ABAB: TR01_FW_BANK_FW1, TR01_FW_BANK_FW2, TR01_FW_BANK_SPECT1, TR01_FW_BANK_SPECT2
  *                     For ACAB: Parameter is ignored, chip is handling firmware banks on its own
  * @return             LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
-                                 bank_id_t bank_id);
+                                 lt_bank_id_t bank_id);
 
 /** @} */  // end of libtropic_API_helpers group
 #endif

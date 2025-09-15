@@ -10,14 +10,12 @@
  */
 
 /** @brief Wrapper for static assertion. */
-#define STATIC_ASSERT(x) _Static_assert((x), "Static assertion failed");
+#define LT_STATIC_ASSERT(x) _Static_assert((x), "Static assertion failed");
 
 /** @brief Get struct member size at compile-time. */
-#define MEMBER_SIZE(type, member) (sizeof(((type *)0)->member))
+#define LT_MEMBER_SIZE(type, member) (sizeof(((type *)0)->member))
 
 /** @brief Mark variable as unused to sanitize compiler warnings. */
-#ifndef UNUSED
-#define UNUSED(x) (void)(x)
-#endif
+#define LT_UNUSED(x) (void)(x)
 
 #endif  // LT_LIBTROPIC_MACROS

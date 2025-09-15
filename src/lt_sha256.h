@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 /** Length of sha256 digest */
-#define SHA256_DIGEST_LENGTH 32
+#define LT_SHA256_DIGEST_LENGTH 32
 
 /** sha256 context structure */
 struct lt_crypto_sha256_ctx_t {

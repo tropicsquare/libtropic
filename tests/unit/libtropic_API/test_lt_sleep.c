@@ -58,8 +58,8 @@ void test__invalid_sleep_kind()
     lt_handle_t h = {0};
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_DEEP_SLEEP + 1));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_DEEP_SLEEP - 1));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP + 1));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP - 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, TR01_L2_SLEEP_KIND_SLEEP + 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, TR01_L2_SLEEP_KIND_SLEEP - 1));
     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_sleep(&h, 0));
 }
 
@@ -78,7 +78,7 @@ LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
     for(uint32_t i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l2_send_ExpectAndReturn(&h, LT_OK);
         lt_l2_receive_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
+        TEST_ASSERT_EQUAL(rets[i], lt_sleep(&h, TR01_L2_SLEEP_KIND_SLEEP));
     }
 
     for(uint32_t i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
@@ -107,7 +107,7 @@ void test__resp_size_mismatch()
     inject_rsp_len = 0+1;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_sleep(&h, TR01_L2_SLEEP_KIND_SLEEP));
 
 }
 
@@ -121,6 +121,6 @@ void test__correct()
     inject_rsp_len = 0;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_OK, lt_sleep(&h, LT_L2_SLEEP_KIND_SLEEP));
+    TEST_ASSERT_EQUAL(LT_OK, lt_sleep(&h, TR01_L2_SLEEP_KIND_SLEEP));
 }
 */

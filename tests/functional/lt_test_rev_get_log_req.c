@@ -20,7 +20,7 @@ lt_handle_t *g_h;
 
 static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r_config_cfg_debug)
 {
-    uint8_t log_msg[GET_LOG_MAX_MSG_LEN + 1];
+    uint8_t log_msg[TR01_GET_LOG_MAX_MSG_LEN + 1];
     uint16_t log_msg_len;
     int fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK)
                     && (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
@@ -50,7 +50,7 @@ static lt_ret_t lt_test_rev_get_log_req_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    ret = lt_reboot(g_h, LT_MODE_APP);
+    ret = lt_reboot(g_h, TR01_MODE_APP);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the Application mode!");
         return ret;
@@ -80,16 +80,16 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_APP));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MODE_APP));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG_INFO("Reading CFG_DEBUG from I config...");
-    LT_TEST_ASSERT(LT_OK, lt_i_config_read(g_h, CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR, &i_config_cfg_debug));
+    LT_TEST_ASSERT(LT_OK, lt_i_config_read(g_h, TR01_CFG_DEBUG_ADDR, &i_config_cfg_debug));
 
     LT_LOG_INFO("Reading CFG_DEBUG from R config...");
-    LT_TEST_ASSERT(LT_OK, lt_r_config_read(g_h, CONFIGURATION_OBJECTS_CFG_DEBUG_ADDR, &r_config_cfg_debug));
+    LT_TEST_ASSERT(LT_OK, lt_r_config_read(g_h, TR01_CFG_DEBUG_ADDR, &r_config_cfg_debug));
 
     LT_LOG_INFO("Aborting Secure Session");
     LT_TEST_ASSERT(LT_OK, lt_session_abort(g_h));
@@ -99,7 +99,7 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into Maintenance mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_MAINTENANCE));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MODE_MAINTENANCE));
 
     lt_test_cleanup_function = &lt_test_rev_get_log_req_cleanup;
 

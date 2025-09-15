@@ -40,7 +40,7 @@
  * session establishment in lt_in__session_start().
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, session_state_t *state);
+lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, lt_session_state_t *state);
 
 /**
  * @brief Decodes TROPIC01's response during secure session's establishment.
@@ -58,8 +58,8 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const pkey_index_t pkey_index, se
  * establishment.
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const pkey_index_t pkey_index,
-                              const uint8_t *shipriv, const uint8_t *shipub, session_state_t *state);
+lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
+                              const uint8_t *shipriv, const uint8_t *shipub, lt_session_state_t *state);
 
 /**
  * @brief Encodes Ping command payload.
@@ -159,7 +159,7 @@ lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
  * @param obj         Content to be written
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum CONFIGURATION_OBJECTS_REGS addr, const uint32_t obj);
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj);
 
 /**
  * @brief Decodes R_Config_Write result payload.
@@ -180,7 +180,7 @@ lt_ret_t lt_in__r_config_write(lt_handle_t *h);
  * @param addr        Address to read configuration object from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
+lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr);
 
 /**
  * @brief Decodes R_Config_Read result payload.
@@ -223,7 +223,7 @@ lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
  * @param bit_index   Bit index to write in the configuration object
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr, const uint8_t bit_index);
+lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint8_t bit_index);
 
 /**
  * @brief Decodes I_Config_Write result payload.
@@ -244,7 +244,7 @@ lt_ret_t lt_in__i_config_write(lt_handle_t *h);
  * @param addr        Address to read configuration object from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum CONFIGURATION_OBJECTS_REGS addr);
+lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr);
 
 /**
  * @brief Decodes I_Config_Read result payload.
@@ -265,8 +265,8 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written (valid range given by macros `R_MEM_DATA_SIZE_MIN` and
- * `R_MEM_DATA_SIZE_MAX`)
+ * @param size        Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
+ * `TR01_R_MEM_DATA_SIZE_MAX`)
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size);
@@ -358,7 +358,7 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
  * @param curve       ECC curve type to use for key generation
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve);
+lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve);
 
 /**
  * @brief Decodes ECC_Key_Generate result payload.
@@ -381,7 +381,7 @@ lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
  * @param key         Ecc key to store, 32B length
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const ecc_slot_t slot, const lt_ecc_curve_type_t curve,
+lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve,
                                const uint8_t *key);
 
 /**
@@ -403,7 +403,7 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
  * @param slot        ECC key slot to read key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
+lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot);
 
 /**
  * @brief Decodes ECC_Key_Read result payload.
@@ -417,7 +417,7 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const ecc_slot_t slot);
  * @param origin      Will be filled by origin type
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, ecc_key_origin_t *origin);
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin);
 
 /**
  * @brief Encodes ECC_Key_Erase command payload.
@@ -428,7 +428,7 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
  * @param slot        ECC key slot to erase key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const ecc_slot_t slot);
+lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t slot);
 
 /**
  * @brief Decodes ECC_Key_Erase result payload.
@@ -451,7 +451,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
+lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const uint8_t *msg, const uint32_t msg_len);
 
 /**
  * @brief Decodes ECDSA_Sign result payload.
@@ -475,7 +475,8 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
  * @param msg_len     Length of the message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len);
+lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg,
+                                const uint16_t msg_len);
 
 /**
  * @brief Decodes EDDSA_Sign result payload.
@@ -567,7 +568,7 @@ lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value);
  * @param data_out    Data to be sent out, must be 32 bytes long
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, mac_and_destroy_slot_t slot, const uint8_t *data_out);
+lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out);
 
 /**
  * @brief Decodes MAC_And_Destroy result payload.

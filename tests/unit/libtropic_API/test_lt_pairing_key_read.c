@@ -74,7 +74,7 @@ void test__invalid_slot()
 {
     lt_handle_t h = {0};
     uint8_t pubkey[32] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(&h, pubkey, PAIRING_KEY_SLOT_INDEX_3+1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_pairing_key_read(&h, pubkey, TR01_PAIRING_KEY_SLOT_INDEX_3+1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -124,7 +124,7 @@ void test__len_mismatch()
     uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
 
-    size_inject_value = LT_L3_PAIRING_KEY_READ_RES_SIZE+1;
+    size_inject_value = TR01_L3_PAIRING_KEY_READ_RES_SIZE+1;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
 
     TEST_ASSERT_EQUAL(LT_FAIL, lt_pairing_key_read(&h, pubkey, slot));
@@ -140,7 +140,7 @@ void test__correct()
     uint8_t pubkey[32] = {0};
     uint8_t slot = 0;
 
-    size_inject_value = LT_L3_PAIRING_KEY_READ_RES_SIZE;
+    size_inject_value = TR01_L3_PAIRING_KEY_READ_RES_SIZE;
     lt_l3_cmd_Stub(callback__lt_l3_cmd);
 
     TEST_ASSERT_EQUAL(LT_OK, lt_pairing_key_read(&h, pubkey, slot));

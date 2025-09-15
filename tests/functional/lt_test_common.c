@@ -56,7 +56,7 @@ void hexdump_8byte(const uint8_t *data, uint16_t size)
 int chip_id_printf_wrapper(const char *format, ...)
 {
     int ret;
-    char buff[CHIP_ID_FIELD_MAX_SIZE * 3];
+    char buff[LT_CHIP_ID_FIELD_MAX_SIZE * 3];
     va_list args;
 
     // Format the message

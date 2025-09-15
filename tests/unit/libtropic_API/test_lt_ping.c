@@ -91,7 +91,7 @@ void test__invalid_len()
     uint16_t len;
 
     for (int i = 0; i < 25; i++) {
-        len = PING_LEN_MAX + 1;
+        len = TR01_PING_LEN_MAX + 1;
         len += rand() % (UINT16_MAX - len);
         TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ping(&h, &msg_out, &msg_in, len));
     }

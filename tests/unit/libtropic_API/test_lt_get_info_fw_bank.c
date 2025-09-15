@@ -52,8 +52,9 @@ void tearDown(void) {}
 /*// Test if function returns LT_PARAM_ERROR when invalid handle is passed
 void test__invalid_handle()
 {
-    uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(NULL, FW_BANK_FW1, fw_bank, LT_L2_GET_INFO_FW_HEADER_SIZE));
+    uint8_t fw_bank[TR01_L2_GET_INFO_FW_HEADER_SIZE];
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(NULL, TR01_FW_BANK_FW1, fw_bank,
+TR01_L2_GET_INFO_FW_HEADER_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -63,7 +64,7 @@ void test__invalid_header()
 {
     lt_handle_t h = {0};
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, FW_BANK_FW1, NULL, LT_L2_GET_INFO_FW_HEADER_SIZE));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, TR01_FW_BANK_FW1, NULL, TR01_L2_GET_INFO_FW_HEADER_SIZE));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -72,9 +73,10 @@ void test__invalid_header()
 void test__invalid_max_len()
 {
     lt_handle_t h = {0};
-    uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
+    uint8_t fw_bank[TR01_L2_GET_INFO_FW_HEADER_SIZE];
 
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, LT_L2_GET_INFO_FW_HEADER_SIZE - 1));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_get_info_fw_bank(&h, TR01_FW_BANK_FW1, fw_bank, TR01_L2_GET_INFO_FW_HEADER_SIZE -
+1));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -85,7 +87,7 @@ void test__invalid_max_len()
 void test__lt_l2_transfer_fail()
 {
     lt_handle_t h = {0};
-    uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
+    uint8_t fw_bank[TR01_L2_GET_INFO_FW_HEADER_SIZE];
 
     lt_ret_t rets[] = {LT_L1_SPI_ERROR, LT_L1_CHIP_BUSY, LT_L1_DATA_LEN_ERROR, LT_L1_CHIP_STARTUP_MODE,
 LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
@@ -93,7 +95,7 @@ LT_L1_CHIP_ALARM_MODE, LT_PARAM_ERR};
     for(unsigned int i=0; i<(sizeof(rets)/sizeof(rets[0])); i++) {
         lt_l2_send_ExpectAndReturn(&h, LT_OK);
         lt_l2_receive_ExpectAndReturn(&h, rets[i]);
-        TEST_ASSERT_EQUAL(rets[i], lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
+        TEST_ASSERT_EQUAL(rets[i], lt_get_info_fw_bank(&h, TR01_FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
     }
 }
 
@@ -112,12 +114,12 @@ lt_ret_t callback__lt_l2_transfer(lt_handle_t *h, int __attribute__((unused)) cm
 void test__resp_size_mismatch()
 {
     lt_handle_t h = {0};
-    uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE];
+    uint8_t fw_bank[TR01_L2_GET_INFO_FW_HEADER_SIZE];
 
     inject_rsp_len = 20+1;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
+    TEST_ASSERT_EQUAL(LT_FAIL, lt_get_info_fw_bank(&h, TR01_FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
 
 }
 
@@ -128,10 +130,10 @@ void test__correct()
 {
     lt_handle_t h = {0};
     h.session = SESSION_ON;
-    uint8_t fw_bank[LT_L2_GET_INFO_FW_HEADER_SIZE+1];
+    uint8_t fw_bank[TR01_L2_GET_INFO_FW_HEADER_SIZE+1];
 
     inject_rsp_len = 20;
     lt_l2_send_ExpectAndReturn(&h, LT_OK);
     lt_l2_receive_StubWithCallback(callback__lt_l2_transfer);
-    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_fw_bank(&h, FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
+    TEST_ASSERT_EQUAL(LT_OK, lt_get_info_fw_bank(&h, TR01_FW_BANK_FW1, fw_bank, sizeof(fw_bank)));
 }*/

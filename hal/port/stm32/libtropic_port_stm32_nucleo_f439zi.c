@@ -149,7 +149,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 {
     lt_dev_stm32_nucleo_f439zi *device = (lt_dev_stm32_nucleo_f439zi *)(s2->device);
 
-    if (offset + tx_data_length > LT_L1_LEN_MAX) {
+    if (offset + tx_data_length > TR01_L1_LEN_MAX) {
         LT_LOG_ERROR("Invalid data length!");
         return LT_L1_DATA_LEN_ERROR;
     }
@@ -165,7 +165,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 
 lt_ret_t lt_port_delay(lt_l2_state_t *s2, uint32_t ms)
 {
-    UNUSED(s2);
+    LT_UNUSED(s2);
 
     HAL_Delay(ms);
 

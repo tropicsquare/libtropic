@@ -52,19 +52,19 @@ void tearDown(void) {}
 /*// Test if function returns LT_PARAM_ERR on invalid handle
 void test_lt_ecc_key_erase__invalid_handle()
 {
-    lt_ecc_curve_type_t curve = CURVE_ED25519;
+    lt_ecc_curve_type_t curve = TR01_CURVE_ED25519;
     uint8_t key[32] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(NULL, ECC_SLOT_0, curve, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(NULL, TR01_ECC_SLOT_0, curve, key));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid slot
 void test_lt_ecc_key_erase__invalid_slot()
 {
     lt_handle_t h = {0};
-    lt_ecc_curve_type_t curve = CURVE_ED25519;
+    lt_ecc_curve_type_t curve = TR01_CURVE_ED25519;
     uint8_t key[32] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0 - 1, curve, key));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_31 + 1, curve, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, TR01_ECC_SLOT_0 - 1, curve, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, TR01_ECC_SLOT_31 + 1, curve, key));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid curve
@@ -72,16 +72,16 @@ void test_lt_ecc_key_erase__invalid_curve()
 {
     lt_handle_t h = {0};
     uint8_t key[32] = {0};
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 0, key));
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, 3, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, TR01_ECC_SLOT_0, 0, key));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, TR01_ECC_SLOT_0, 3, key));
 }
 
 // Test if function returns LT_PARAM_ERR on invalid key
 void test_lt_ecc_key_erase__invalid_key()
 {
     lt_handle_t h = {0};
-    lt_ecc_curve_type_t curve = CURVE_ED25519;
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, ECC_SLOT_0, curve, NULL));
+    lt_ecc_curve_type_t curve = TR01_CURVE_ED25519;
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_ecc_key_store(&h, TR01_ECC_SLOT_0, curve, NULL));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -92,10 +92,10 @@ void test_lt_ecc_key_erase__invalid_key()
 void test_lt_ecc_key_erase__no_session()
 {
     lt_handle_t h = {0};
-    lt_ecc_curve_type_t curve = CURVE_P256;
+    lt_ecc_curve_type_t curve = LT_CURVE_P256;
     uint8_t key[32] = {0};
 
-    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
+    TEST_ASSERT_EQUAL(LT_HOST_NO_SESSION, lt_ecc_key_store(&h, TR01_ECC_SLOT_0, curve, key));
 }
 
 //---------------------------------------------------------------------------------------------------------//
@@ -105,13 +105,13 @@ void test_lt_ecc_key_erase__no_session()
 //{
 //    lt_handle_t h =  {0};
 //    h.session = SESSION_ON;
-//    lt_ecc_curve_type_t curve = CURVE_ED25519;
+//    lt_ecc_curve_type_t curve = TR01_CURVE_ED25519;
 //    uint8_t key[32] = {0};
 //
 //    lt_ret_t rets[] = {LT_L3_FAIL, LT_L3_UNAUTHORIZED, LT_L3_INVALID_CMD, LT_FAIL};
 //    for (size_t i = 0; i < (sizeof(rets)/sizeof(rets[0])); i++) {
 //        lt_l3_cmd_ExpectAndReturn(&h, rets[i]);
-//        TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
+//        TEST_ASSERT_EQUAL(rets[i], lt_ecc_key_store(&h, TR01_ECC_SLOT_0, curve, key));
 //    }
 //}
 
@@ -131,11 +131,11 @@ lt_ret_t callback_lt_ecc_key_store_lt_l3_cmd(lt_handle_t *h, int __attribute__((
 //{
 //    lt_handle_t h =  {0};
 //    h.session = SESSION_ON;
-//    lt_ecc_curve_type_t curve = CURVE_ED25519;
+//    lt_ecc_curve_type_t curve = TR01_CURVE_ED25519;
 //    uint8_t key[32] = {0};
 //
 //    lt_l3_cmd_Stub(callback_lt_ecc_key_store_lt_l3_cmd);
-//    TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
+//    TEST_ASSERT_EQUAL(LT_FAIL, lt_ecc_key_store(&h, TR01_ECC_SLOT_0, curve, key));
 //}
 
 //---------------------------------------------------------------------------------------------------------//
@@ -144,11 +144,11 @@ lt_ret_t callback_lt_ecc_key_store_lt_l3_cmd(lt_handle_t *h, int __attribute__((
 //{
 //    lt_handle_t h =  {0};
 //    h.session = SESSION_ON;
-//    lt_ecc_curve_type_t curve = CURVE_ED25519;
+//    lt_ecc_curve_type_t curve = TR01_CURVE_ED25519;
 //    uint8_t key[32] = {0};
 //
 //    size_mock = 1;
 //    lt_l3_cmd_Stub(callback_lt_ecc_key_store_lt_l3_cmd);
-//    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_store(&h, ECC_SLOT_0, curve, key));
+//    TEST_ASSERT_EQUAL(LT_OK, lt_ecc_key_store(&h, TR01_ECC_SLOT_0, curve, key));
 //}
 */

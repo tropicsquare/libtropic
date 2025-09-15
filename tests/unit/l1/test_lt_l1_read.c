@@ -28,7 +28,7 @@ void tearDown(void) {}
 // Test if function returns LT_PARAM_ERR on non valid input parameter
 void test_lt_l1_read___NULL_h()
 {
-    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(NULL, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(NULL, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 }
 
 // Test if function returns LT_PARAM_ERR on non valid input parameter
@@ -36,7 +36,7 @@ void test_lt_l1_read___NULL_h()
 //{
 //    lt_handle_t h = {0};
 //
-//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
+//    TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, TR01_L1_LEN_MIN-1, LT_L1_TIMEOUT_MS_DEFAULT));
 //}
 //
 //// Test if function returns LT_PARAM_ERR on non valid input parameter
@@ -44,7 +44,7 @@ void test_lt_l1_read___NULL_h()
 //{
 //     lt_handle_t h = {0};
 //
-//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, TR01_L1_LEN_MAX+1, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// Test if function returns LT_PARAM_ERR on non valid input parameter
@@ -52,7 +52,7 @@ void test_lt_l1_read___NULL_h()
 //{
 //     lt_handle_t h = {0};
 //
-//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MIN-1));
 // }
 //
 //// Test if function returns LT_PARAM_ERR on non valid input parameter
@@ -60,7 +60,7 @@ void test_lt_l1_read___NULL_h()
 //{
 //     lt_handle_t h = {0};
 //
-//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
+//     TEST_ASSERT_EQUAL(LT_PARAM_ERR, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_MAX+1));
 // }
 //
 ////---------------------------------------------------------------------------------------------------------//
@@ -89,7 +89,7 @@ void test_lt_l1_read___NULL_h()
 //         lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //         lt_l1_delay_ExpectAndReturn(&h, LT_L1_READ_RETRY_DELAY, LT_OK);
 //     }
-//     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// Test if lt_l1_read() function returns LT_L1_SPI_ERROR if spi transfer returns LT_FAIL
@@ -101,7 +101,7 @@ void test_lt_l1_read___NULL_h()
 //     lt_l1_spi_transfer_ExpectAndReturn(&h, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT, LT_FAIL);
 //     lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //
-//     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// Used to force l2_buff[0] to contain ALARM bit
@@ -111,7 +111,7 @@ void test_lt_l1_read___NULL_h()
 //                                               uint32_t __attribute__((unused)) timeout,
 //                                               int __attribute__((unused)) cmock_num_calls)
 //{
-//     h->l2_buff[0] = CHIP_MODE_ALARM_bit;
+//     h->l2_buff[0] = TR01_L1_CHIP_MODE_ALARM_bit;
 //     return LT_OK;
 // }
 //
@@ -124,7 +124,7 @@ void test_lt_l1_read___NULL_h()
 //     lt_l1_spi_transfer_StubWithCallback(callback_LT_L1_CHIP_ALARM_MOD);
 //     lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //
-//     TEST_ASSERT_EQUAL(LT_L1_CHIP_ALARM_MODE, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_CHIP_ALARM_MODE, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// Used to force transfer function to return LT_FAIL during second transfer
@@ -135,7 +135,7 @@ void test_lt_l1_read___NULL_h()
 //                                              int cmock_num_calls)
 //{
 //     if(cmock_num_calls == 0) {
-//         h->l2_buff[0] = CHIP_MODE_READY_bit;
+//         h->l2_buff[0] = TR01_L1_CHIP_MODE_READY_bit;
 //         return LT_OK;
 //     }
 //     if(cmock_num_calls == 1) {
@@ -155,7 +155,7 @@ void test_lt_l1_read___NULL_h()
 //     lt_l1_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_bit);
 //     lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //
-//     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// Used to force values into response buffer, so fpga looks busy and resp handling is always called
@@ -166,7 +166,7 @@ void test_lt_l1_read___NULL_h()
 //                                                       int cmock_num_calls)
 //{
 //     if(cmock_num_calls % 2 == 0) {
-//         h->l2_buff[0] = CHIP_MODE_READY_bit;
+//         h->l2_buff[0] = TR01_L1_CHIP_MODE_READY_bit;
 //         return LT_OK;
 //     }
 //     if(cmock_num_calls % 2 == 1) {
@@ -189,10 +189,10 @@ void test_lt_l1_read___NULL_h()
 //         lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //         lt_l1_delay_ExpectAndReturn(&h, LT_L1_READ_RETRY_DELAY, LT_OK);
 //     }
-//     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_CHIP_BUSY, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
-//// Used to force values into buffer so LT_L1_LEN_MAX is returned
+//// Used to force values into buffer so TR01_L1_LEN_MAX is returned
 // static lt_ret_t callback_CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR(lt_handle_t* h,
 //                                                               uint8_t __attribute__((unused)) offset,
 //                                                               uint16_t __attribute__((unused)) tx_len,
@@ -200,12 +200,12 @@ void test_lt_l1_read___NULL_h()
 //                                                               int cmock_num_calls)
 //{
 //     if(cmock_num_calls == 0) {
-//         h->l2_buff[0] = CHIP_MODE_READY_bit;
+//         h->l2_buff[0] = TR01_L1_CHIP_MODE_READY_bit;
 //         return LT_OK;
 //     }
 //     if(cmock_num_calls == 1) {
 //         h->l2_buff[1] = 0;
-//         h->l2_buff[2] = LT_L1_LEN_MAX - 2;
+//         h->l2_buff[2] = TR01_L1_LEN_MAX - 2;
 //         return LT_OK;
 //     }
 //
@@ -222,7 +222,7 @@ void test_lt_l1_read___NULL_h()
 //     lt_l1_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_LT_L1_DATA_LEN_ERROR);
 //     lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //
-//     TEST_ASSERT_EQUAL(LT_L1_DATA_LEN_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_DATA_LEN_ERROR, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// Used to force values so second LT_L1_SPI_ERROR is returned
@@ -233,7 +233,7 @@ void test_lt_l1_read___NULL_h()
 //                                                            int cmock_num_calls)
 //{
 //     if(cmock_num_calls == 0) {
-//         h->l2_buff[0] = CHIP_MODE_READY_bit;
+//         h->l2_buff[0] = TR01_L1_CHIP_MODE_READY_bit;
 //         return LT_OK;
 //     }
 //     if(cmock_num_calls == 1) {
@@ -258,7 +258,7 @@ void test_lt_l1_read___NULL_h()
 //     lt_l1_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_LT_L1_SPI_ERROR_2);
 //     lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //
-//     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_L1_SPI_ERROR, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
 //// TESTING CALLBACK:
@@ -270,7 +270,7 @@ void test_lt_l1_read___NULL_h()
 //                                                int cmock_num_calls)
 //{
 //     if(cmock_num_calls == 0) {
-//         h->l2_buff[0] = CHIP_MODE_READY_bit;
+//         h->l2_buff[0] = TR01_L1_CHIP_MODE_READY_bit;
 //         return LT_OK;
 //     }
 //     if(cmock_num_calls == 1) {
@@ -295,6 +295,6 @@ void test_lt_l1_read___NULL_h()
 //     lt_l1_spi_transfer_StubWithCallback(callback_CHIP_MODE_READY_LT_OK);
 //     lt_l1_spi_csn_high_ExpectAndReturn(&h, LT_OK);
 //
-//     TEST_ASSERT_EQUAL(LT_OK, lt_l1_read(&h, LT_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
+//     TEST_ASSERT_EQUAL(LT_OK, lt_l1_read(&h, TR01_L1_LEN_MAX, LT_L1_TIMEOUT_MS_DEFAULT));
 // }
 //
