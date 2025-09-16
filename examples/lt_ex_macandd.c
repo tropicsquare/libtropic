@@ -50,7 +50,7 @@
 struct lt_macandd_nvm_t {
     uint8_t i;
     uint8_t ci[MACANDD_ROUNDS * 32];
-    uint8_t t[32];
+    uint8_t t[LT_HMAC_SHA256_HASH_LEN];
 } __attribute__((__packed__));
 
 /**
@@ -88,15 +88,15 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memset(secret, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
 
     // Variable used during a process of getting a encryption key k_i
-    uint8_t v[32] = {0};
+    uint8_t v[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Variable used during a process of getting a encryption key k_i
-    uint8_t w[32] = {0};
+    uint8_t w[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
     // Encryption key
-    uint8_t k_i[32] = {0};
+    uint8_t k_i[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Random secret
-    uint8_t s[32] = {0};
+    uint8_t s[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
     // Variable used to initialize slot(s)
-    uint8_t u[32] = {0};
+    uint8_t u[LT_HMAC_SHA256_HASH_LEN] = {0};
 
     // This organizes data which will be stored into nvm
     struct lt_macandd_nvm_t nvm = {0};
@@ -239,17 +239,17 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     memset(secret, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
 
     // Variable used during a process of getting a decryption key k_i
-    uint8_t v_[32] = {0};
+    uint8_t v_[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Variable used during a process of getting a decryption key k_i
-    uint8_t w_[32] = {0};
+    uint8_t w_[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
     // Decryption key
-    uint8_t k_i[32] = {0};
+    uint8_t k_i[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Secret
-    uint8_t s_[32] = {0};
+    uint8_t s_[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
     // Tag
-    uint8_t t_[32] = {0};
+    uint8_t t_[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Value used to initialize Mac And Destroy's slot after a correct PIN try
-    uint8_t u[32] = {0};
+    uint8_t u[LT_HMAC_SHA256_HASH_LEN] = {0};
 
     // This organizes data which will be read from nvm
     struct lt_macandd_nvm_t nvm = {0};
