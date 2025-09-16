@@ -20,7 +20,7 @@ lt_handle_t *g_h;
 
 static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r_config_cfg_debug)
 {
-    uint8_t log_msg[TR01_GET_LOG_MAX_MSG_LEN + 1];
+    uint8_t log_msg[TR01_GET_LOG_MAX_MSG_LEN + 1];  // +1 for '\0' added later
     uint16_t log_msg_len;
     int fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK)
                     && (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
