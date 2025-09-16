@@ -558,7 +558,7 @@ static int session2(lt_handle_t *h)
 
     uint32_t mcounter_value = 0x000000ff;
     LT_LOG_INFO("Initializing mcounter 0 (should fail)...");
-    ret = lt_mcounter_init(h, 0, mcounter_value);
+    ret = lt_mcounter_init(h, TR01_MCOUNTER_INDEX_0, mcounter_value);
     if (LT_L3_UNAUTHORIZED != ret) {
         LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -566,7 +566,7 @@ static int session2(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Updating mcounter 0 (should fail)...");
-    ret = lt_mcounter_update(h, 0);
+    ret = lt_mcounter_update(h, TR01_MCOUNTER_INDEX_0);
     if (LT_L3_UNAUTHORIZED != ret) {
         LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -574,7 +574,7 @@ static int session2(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Getting mcounter 0 (should fail)...");
-    ret = lt_mcounter_get(h, 0, &mcounter_value);
+    ret = lt_mcounter_get(h, TR01_MCOUNTER_INDEX_0, &mcounter_value);
     if (LT_L3_UNAUTHORIZED != ret) {
         LT_LOG_ERROR("Return value is not LT_L3_UNAUTHORIZED, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -657,7 +657,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Verifying with lt_ecc_eddsa_sig_verify()...");
-    ret = lt_ecc_eddsa_sig_verify(msg, 4, slot_0_pubkey, rs);
+    ret = lt_ecc_eddsa_sig_verify(msg, sizeof(msg), slot_0_pubkey, rs);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to verify, ret%s", lt_ret_verbose(ret));
         return -1;
@@ -699,7 +699,7 @@ static int session3(lt_handle_t *h)
 
     uint32_t mcounter_value = 0x000000ff;
     LT_LOG_INFO("Initializing mcounter 0...");
-    ret = lt_mcounter_init(h, 0, mcounter_value);
+    ret = lt_mcounter_init(h, TR01_MCOUNTER_INDEX_0, mcounter_value);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize mcounter, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -707,7 +707,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Updating mcounter 0...");
-    ret = lt_mcounter_update(h, 0);
+    ret = lt_mcounter_update(h, TR01_MCOUNTER_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to update mcounter, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -715,7 +715,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Getting mcounter 0...");
-    ret = lt_mcounter_get(h, 0, &mcounter_value);
+    ret = lt_mcounter_get(h, TR01_MCOUNTER_INDEX_0, &mcounter_value);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get mcounter, ret=%s", lt_ret_verbose(ret));
         return -1;
