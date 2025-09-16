@@ -104,7 +104,9 @@ markdown_extensions:
 extra:
   version:
     provider: mike
-    default: test-build
+    default: latest  # We use the 'latest' alias here, because we don't know the name of the latest version,
+                     # but if we always give the latest version the 'latest' alias,
+                     # we don't have to know its name here
   social:
     - icon: fontawesome/brands/x-twitter
       link: https://twitter.com/tropicsquare
