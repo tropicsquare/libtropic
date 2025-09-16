@@ -17,7 +17,7 @@
 /**
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
- * @param s2          Structure holding l2 state
+ * @param h           Device's handle
  * @param buff        Buffer to be filled
  * @param count       Number of random bytes
  * @return lt_ret_t
