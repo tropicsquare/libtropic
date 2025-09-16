@@ -41,5 +41,5 @@ jobs:
 
       - name: Generate MkDocs documentation and deploy
         run: |
-            mike deploy --push --update-aliases master
+            mike deploy --push --update-aliases master latest
             mike set-default --push master
