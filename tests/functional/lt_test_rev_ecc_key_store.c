@@ -139,7 +139,7 @@ void lt_test_rev_ecc_key_store(lt_handle_t *h)
         LT_TEST_ASSERT(1, (origin == TR01_CURVE_STORED));
 
         LT_LOG_INFO("Comparing the public key to the pre-generated one...");
-        LT_TEST_ASSERT(0, memcmp(p256_pub_test_key, read_pub_key, 64));
+        LT_TEST_ASSERT(0, memcmp(p256_pub_test_key, read_pub_key, sizeof(p256_pub_test_key)));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
@@ -173,7 +173,7 @@ void lt_test_rev_ecc_key_store(lt_handle_t *h)
         LT_TEST_ASSERT(1, (origin == TR01_CURVE_STORED));
 
         LT_LOG_INFO("Comparing the public key to the pre-generated one...");
-        LT_TEST_ASSERT(0, memcmp(ed25519_pub_test_key, read_pub_key, 32));
+        LT_TEST_ASSERT(0, memcmp(ed25519_pub_test_key, read_pub_key, sizeof(ed25519_pub_test_key)));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
