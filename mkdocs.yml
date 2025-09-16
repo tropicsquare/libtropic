@@ -107,6 +107,7 @@ extra:
     default: latest  # We use the 'latest' alias here, because we don't know the name of the latest version,
                      # but if we always give the latest version the 'latest' alias,
                      # we don't have to know its name here
+    alias: true
   social:
     - icon: fontawesome/brands/x-twitter
       link: https://twitter.com/tropicsquare
