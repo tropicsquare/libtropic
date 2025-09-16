@@ -561,7 +561,7 @@ typedef struct lt_session_state_t {
 } lt_session_state_t;
 
 /** @brief Length of key used in X25519 function.
- * 
+ *
  * ECDH uses X25519 function with Curve25519 -> 32 bytes. See "Variables" section in GLOSSARY in TROPIC01 datasheet.
  * This is the same for stpub, ehpriv, ehpub.
  */
@@ -572,9 +572,9 @@ typedef struct lt_session_state_t {
 /** @brief Length of TROPIC01 X25519 private key for a Secure Channel Handshake. */
 #define TR01_STPRIV_LEN TR01_X25519_KEY_LEN
 /** @brief Length of X25519 public key of the Host MCU to execute a Secure Channel Handshake on Pairing Key slot i.
- * 
+ *
  * @note In other words, SHiPUB is also a length of the key that is stored in pairing key slots in TROPIC01.
-*/
+ */
 #define TR01_SHIPUB_LEN TR01_X25519_KEY_LEN
 /** @brief Length of X25519 private key of the Host MCU to execute a Secure Channel Handshake on Pairing Key slot i. */
 #define TR01_SHIPRIV_LEN TR01_X25519_KEY_LEN

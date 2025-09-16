@@ -39,7 +39,7 @@ void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size,
     lt_hmac_sha256(tmp, sizeof(tmp), &one, 1, output_1);
 
     uint8_t helper[33] = {0};
-    memcpy(helper, output_1, 32); // The output of SHA256 HMAC is always 32 bytes.
+    memcpy(helper, output_1, 32);  // The output of SHA256 HMAC is always 32 bytes.
     helper[32] = 2;
 
     lt_hmac_sha256(tmp, sizeof(tmp), helper, sizeof(helper), output_2);
