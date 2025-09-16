@@ -638,7 +638,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("Signing with attestation key which was updated through pairing key slot 1");
     uint8_t msg[] = {'a', 'h', 'o', 'j'};
     uint8_t rs[TR01_ECDSA_EDDSA_SIGNATURE_LENGTH];
-    ret = lt_ecc_eddsa_sign(h, TR01_ECC_SLOT_0, msg, 4, rs);
+    ret = lt_ecc_eddsa_sign(h, TR01_ECC_SLOT_0, msg, sizeof(msg), rs);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to sign, ret=%s", lt_ret_verbose(ret));
         return -1;
