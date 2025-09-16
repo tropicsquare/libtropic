@@ -29,7 +29,10 @@ lt_handle_t *g_h;
 static lt_ret_t lt_test_rev_ecdsa_sign_cleanup(void)
 {
     lt_ret_t ret;
-    uint8_t read_pub_key[64];
+    uint8_t read_pub_key[TR01_CURVE_P256_PUBKEY_LEN];  // The read key can have 32B or 64B, depending on the used curve,
+                                                       // and we work with both curves here, so let's use one buffer for
+                                                       // both for simplification and assume the size of pubkey on the
+                                                       // P256 curve to be safe.
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
 
@@ -84,7 +87,8 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
     // Making the handle accessible to the cleanup function.
     g_h = h;
 
-    uint8_t read_pub_key[64], msg_to_sign[MSG_TO_SIGN_LEN_MAX], rs[64];
+    uint8_t read_pub_key[TR01_CURVE_P256_PUBKEY_LEN], msg_to_sign[MSG_TO_SIGN_LEN_MAX],
+        rs[TR01_ECDSA_EDDSA_SIGNATURE_LENGTH];
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
     uint32_t msg_to_sign_len;
