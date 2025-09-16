@@ -108,7 +108,7 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     memcpy(kdf_input_buff + PIN_size, add, add_size);
 
     LT_LOG_INFO("Generating random secret s...");
-    lt_ret_t ret = lt_random_bytes(&h->l2, s, sizeof(s));
+    lt_ret_t ret = lt_random_bytes(h, s, sizeof(s));
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to get random bytes, ret=%s", lt_ret_verbose(ret));
         goto exit;

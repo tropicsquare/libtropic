@@ -84,7 +84,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
     LT_LOG_INFO("Starting basic test...");
     for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random init value...");
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &init_val, sizeof(init_val)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &init_val, sizeof(init_val)));
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
         LT_TEST_ASSERT_COND(lt_mcounter_init(h, i, init_val), (init_val <= TR01_MCOUNTER_VALUE_MAX), LT_OK,
                             LT_PARAM_ERR);
@@ -112,7 +112,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
     LT_LOG_INFO("Starting decrement to zero test...");
     for (int i = TR01_MCOUNTER_INDEX_0; i <= TR01_MCOUNTER_INDEX_15; i++) {
         LT_LOG_INFO("Generating random small init value...");
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &init_val, sizeof(init_val)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &init_val, sizeof(init_val)));
         init_val %= 100;
         LT_LOG_INFO("Initializing monotonic counter %d with %" PRIu32 "...", i, init_val);
         LT_TEST_ASSERT(LT_OK, lt_mcounter_init(h, i, init_val));

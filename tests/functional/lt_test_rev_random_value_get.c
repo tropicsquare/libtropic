@@ -38,7 +38,7 @@ void lt_test_rev_random_value_get(lt_handle_t *h)
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length <= %d (with lt_random_bytes())...",
                     (int)TR01_RANDOM_VALUE_GET_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &random_data_len, sizeof(random_data_len)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &random_data_len, sizeof(random_data_len)));
         random_data_len %= TR01_RANDOM_VALUE_GET_LEN_MAX + 1;  // 0-255
 
         LT_LOG_INFO("Getting %" PRIu16 " random numbers from TROPIC01...", random_data_len);

@@ -110,7 +110,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data for slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, write_data, sizeof(write_data)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, write_data, sizeof(write_data)));
 
         LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, TR01_R_MEM_DATA_SIZE_MAX));
@@ -157,12 +157,12 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length < %d...", (int)TR01_R_MEM_DATA_SIZE_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &write_data_len, sizeof(write_data_len)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &write_data_len, sizeof(write_data_len)));
         write_data_len %= TR01_R_MEM_DATA_SIZE_MAX - 1;  // 0-442
         write_data_len += 1;                             // 1-443
 
         LT_LOG_INFO("Generating %" PRIu16 " random bytes for slot #%" PRIu16 "...", write_data_len, i);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, write_data, write_data_len));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, write_data, write_data_len));
 
         LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
         LT_TEST_ASSERT_COND(lt_r_mem_data_write(h, i, write_data, write_data_len), write_data_len != 0, LT_OK,

@@ -104,11 +104,11 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
         LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
         LT_LOG_INFO("Generating random message length <= %d...", MSG_TO_SIGN_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &msg_to_sign_len, sizeof(msg_to_sign_len)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &msg_to_sign_len, sizeof(msg_to_sign_len)));
         msg_to_sign_len %= MSG_TO_SIGN_LEN_MAX + 1;  // 0-MSG_TO_SIGN_LEN_MAX
 
         LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", msg_to_sign_len);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, msg_to_sign, msg_to_sign_len));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_ecdsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
@@ -139,11 +139,11 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
         LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
         LT_LOG_INFO("Generating random message length <= %d...", MSG_TO_SIGN_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &msg_to_sign_len, sizeof(msg_to_sign_len)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &msg_to_sign_len, sizeof(msg_to_sign_len)));
         msg_to_sign_len %= MSG_TO_SIGN_LEN_MAX + 1;  // 0-MSG_TO_SIGN_LEN_MAX
 
         LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", msg_to_sign_len);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, msg_to_sign, msg_to_sign_len));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_ecdsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
