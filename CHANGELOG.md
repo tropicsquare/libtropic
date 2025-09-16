@@ -106,6 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `L3_MCOUNTER_UPDATE_ERROR` to `TR01_L3_MCOUNTER_UPDATE_ERROR`
 - Renamed `L3_MCOUNTER_COUNTER_INVALID` to `TR01_L3_MCOUNTER_COUNTER_INVALID`
 - Renamed other macros and definitions used internally.
+- Changed type of the first parameter of `lt_random_bytes` to `lt_handle_t`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.
