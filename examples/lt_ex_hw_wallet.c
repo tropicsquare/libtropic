@@ -646,7 +646,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Reading ECC key slot %d...", (int)TR01_ECC_SLOT_0);
-    uint8_t slot_0_pubkey[64]; // Pubkey can be up to 64 bytes long (for P256 curve).
+    uint8_t slot_0_pubkey[64];  // Pubkey can be up to 64 bytes long (for P256 curve).
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
     ret = lt_ecc_key_read(h, TR01_ECC_SLOT_0, slot_0_pubkey, &curve, &origin);

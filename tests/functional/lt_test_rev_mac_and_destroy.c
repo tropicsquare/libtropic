@@ -21,9 +21,11 @@
 uint8_t kdf_key_zeros[256] = {0};
 
 static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, lt_mac_and_destroy_slot_t slot,
-                     uint8_t ciphertexts[128][32], uint8_t t[LT_HMAC_SHA256_HASH_LEN], uint8_t s[TR01_MAC_AND_DESTROY_DATA_SIZE])
+                     uint8_t ciphertexts[128][32], uint8_t t[LT_HMAC_SHA256_HASH_LEN],
+                     uint8_t s[TR01_MAC_AND_DESTROY_DATA_SIZE])
 {
-    uint8_t v[LT_HMAC_SHA256_HASH_LEN], w[TR01_MAC_AND_DESTROY_DATA_SIZE], k_i[LT_HMAC_SHA256_HASH_LEN], t_[LT_HMAC_SHA256_HASH_LEN];
+    uint8_t v[LT_HMAC_SHA256_HASH_LEN], w[TR01_MAC_AND_DESTROY_DATA_SIZE], k_i[LT_HMAC_SHA256_HASH_LEN],
+        t_[LT_HMAC_SHA256_HASH_LEN];
 
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
     lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v);
@@ -53,7 +55,9 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_mac_and_destroy()");
     LT_LOG_INFO("----------------------------------------------");
 
-    uint8_t n, wrong_attempts, s[TR01_MAC_AND_DESTROY_DATA_SIZE], t[LT_HMAC_SHA256_HASH_LEN], u[LT_HMAC_SHA256_HASH_LEN], v[LT_HMAC_SHA256_HASH_LEN], w[TR01_MAC_AND_DESTROY_DATA_SIZE], k_from_setup[LT_HMAC_SHA256_HASH_LEN], k_from_check[LT_HMAC_SHA256_HASH_LEN], k_i[LT_HMAC_SHA256_HASH_LEN],
+    uint8_t n, wrong_attempts, s[TR01_MAC_AND_DESTROY_DATA_SIZE], t[LT_HMAC_SHA256_HASH_LEN],
+        u[LT_HMAC_SHA256_HASH_LEN], v[LT_HMAC_SHA256_HASH_LEN], w[TR01_MAC_AND_DESTROY_DATA_SIZE],
+        k_from_setup[LT_HMAC_SHA256_HASH_LEN], k_from_check[LT_HMAC_SHA256_HASH_LEN], k_i[LT_HMAC_SHA256_HASH_LEN],
         ignored[TR01_MAC_AND_DESTROY_DATA_SIZE], pin[PIN_LEN_MAX], pin_wrong[PIN_LEN_MAX], ciphertexts[128][32];
     uint16_t pin_len;
 
