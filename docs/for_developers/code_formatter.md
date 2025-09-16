@@ -17,10 +17,13 @@ clang-format -i <path_to_the_file_to_format>
 ```
 2. If you are using [VSCode](https://code.visualstudio.com/) and the [`cpptools`](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) extension, you can create `.vscode/settings.json` with the following contents (if it does not already exist):
 ```json
-{
-    "C_Cpp.formatting": "clangFormat",
-    "editor.formatOnSave": true
-}
+{ // Add this bracket only if your settings.json file is empty
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true
+    },
+    "C_Cpp.formatting": "clangFormat"
+} // Add this bracket only if your settings.json file is empty
 ```
 This will format the file on each save.
 3. There is also the [`git-clang-format`](https://clang.llvm.org/docs/ClangFormat.html#git-integration) tool, which integrates `clang-format` with `git`, but we have not used that yet.
