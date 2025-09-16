@@ -33,7 +33,7 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
     memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
 
     // Create ephemeral host keys
-    lt_ret_t ret = lt_random_bytes(&h->l2, state->ehpriv, sizeof(state->ehpriv));
+    lt_ret_t ret = lt_random_bytes(h, state->ehpriv, sizeof(state->ehpriv));
     if (ret != LT_OK) {
         return ret;
     }

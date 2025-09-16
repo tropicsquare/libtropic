@@ -68,18 +68,18 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO();
 
     LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)TR01_MAC_AND_DESTROY_SLOT_127);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &n, sizeof(n)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &n, sizeof(n)));
     n = (n % TR01_MAC_AND_DESTROY_SLOT_127) + 1;
 
     LT_LOG_INFO("Generating random 32B secret s...");
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, s, sizeof(s)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, s, sizeof(s)));
 
     LT_LOG_INFO("Generating random length from {1...%d} for the PIN...", PIN_LEN_MAX);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &pin_len, sizeof(pin_len)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &pin_len, sizeof(pin_len)));
     pin_len = (pin_len % PIN_LEN_MAX) + 1;
 
     LT_LOG_INFO("Generating random PIN with length %" PRIu16 "...", pin_len);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, pin, sizeof(pin)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, pin, sizeof(pin)));
 
     LT_LOG_INFO("Computing t = KDF(s, \"0\")...");
     lt_hmac_sha256(s, 32, (uint8_t *)"0", 1, t);
@@ -118,7 +118,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO();
 
     LT_LOG_INFO("Generating a random number of wrong attempts from {0...n-1=%" PRIu8 "}...", n - 1);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &wrong_attempts, sizeof(wrong_attempts)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &wrong_attempts, sizeof(wrong_attempts)));
     wrong_attempts %= n;
 
     memcpy(pin_wrong, pin, pin_len);
