@@ -317,7 +317,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     //
     // For getting s[n] again, they are decrypted here by XORing ci[n] with k_i[n]
     // Discuss more propriate method with experts on cryptography.
-    for (int j = 0; j < sizeof(s_); j++) {
+    for (unsigned int j = 0; j < sizeof(s_); j++) {
         s_[j] = *(nvm.ci + (nvm.i * 32 + j)) ^ k_i[j];
     }
 
