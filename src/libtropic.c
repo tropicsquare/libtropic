@@ -217,7 +217,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     return LT_OK;
 }
 
-lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len)
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub)
 {
     if (!store || !stpub) {
         return LT_PARAM_ERR;
@@ -226,7 +226,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
     uint8_t *head = store->certs[LT_CERT_KIND_DEVICE];
     uint16_t len = store->cert_len[LT_CERT_KIND_DEVICE];
 
-    return asn1der_find_object(head, len, LT_OBJ_ID_CURVEX25519, stpub, stpub_len, LT_ASN1DER_CROP_PREFIX);
+    return asn1der_find_object(head, len, LT_OBJ_ID_CURVEX25519, stpub, TR01_STPUB_LEN, LT_ASN1DER_CROP_PREFIX);
 }
 
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
@@ -1602,7 +1602,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *
 
     // Extract STPub
     uint8_t stpub[TR01_STPUB_LEN] = {0};
-    ret = lt_get_st_pub(&cert_store, stpub, sizeof(stpub));
+    ret = lt_get_st_pub(&cert_store, stpub);
     if (ret != LT_OK) {
         return ret;
     }

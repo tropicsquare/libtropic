@@ -50,7 +50,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     // Get only stpub, we don't verify certificate chain here
     LT_LOG_INFO("Getting stpub key from Certificate Store");
     uint8_t stpub[TR01_STPUB_LEN];
-    ret = lt_get_st_pub(&store, stpub, sizeof(stpub));
+    ret = lt_get_st_pub(&store, stpub);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to get stpub key, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);

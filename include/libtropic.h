@@ -81,14 +81,13 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
  * @brief Extracts ST_Pub from TROPIC01's Certificate Store
  *
  * @param store       Certificate store handle
- * @param stpub       TROPIC01 STPUB to be filled, unique for each device
- * @param stpub_len   Length of buffer for STPub
+ * @param stpub       TROPIC01 STPUB to be filled with size `TR01_STPUB_LEN`, unique for each device
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len);
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
