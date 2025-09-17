@@ -107,18 +107,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `L3_MCOUNTER_COUNTER_INVALID` to `TR01_L3_MCOUNTER_COUNTER_INVALID`
 - Renamed other macros and definitions used internally.
 - Changed type of the first parameter of `lt_random_bytes` to `lt_handle_t`.
+- Replaced various numeric constants with appropriate macro constants and sizeof operators.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.
 - Compiler and linker flags to delete unused sections.
 - Macro `MCOUNTER_VALUE_MAX` for the maximal allowed value of monotonic counter.
 - CMake option for selecting silicon revision: `LT_SILICON_REV`.
+- Constants for length of Secure Channel handshake/pairing keys, ephemeral keys and AES256 key.
+- Constants for length of P256 and ED25519 private and public keys.
+- Constant for length of ECDSA/EDDSA signature.
+- Constants for lengths of L2 request fields (ID, LEN, CRC).
 
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
 - `lt_mcounter_init()`: Allow `mcounter_value` only from range 0-`MCOUNTER_VALUE_MAX`.
 
 ### Removed
+- Unused `pairing_key_slot_t` enum.
 
 ## [1.0.0]
 

@@ -38,7 +38,7 @@ void lt_test_rev_get_info_req_app(lt_handle_t *h)
     LT_LOG_INFO();
 
     uint8_t *cert;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < LT_NUM_CERTIFICATES; i++) {
         cert = store.certs[i];
         LT_LOG_INFO("Certificate number: %d", i);
         LT_LOG_INFO("Checking if size of certificate is not zero");

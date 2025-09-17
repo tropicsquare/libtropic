@@ -387,10 +387,6 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
         return ret;
     }
 
-    struct lt_l2_handshake_req_t *p_req = (struct lt_l2_handshake_req_t *)h->l2.buff;
-    uint8_t dbg[32];
-    memcpy(dbg, p_req->e_hpub, 32);
-
     ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
         return ret;
@@ -636,8 +632,10 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
 
     p_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_REQ_ID;
     p_l2_req->req_len = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN;
-    memcpy(p_l2_req->signature, data_p->signature, 64);
-    memcpy(p_l2_req->hash, data_p->hash, 32);
+
+    memcpy(p_l2_req->signature, data_p->signature, sizeof(data_p->signature));
+    memcpy(p_l2_req->hash, data_p->hash, sizeof(data_p->hash));
+
     p_l2_req->type = data_p->type;
     p_l2_req->padding = data_p->padding;
     p_l2_req->header_version = data_p->header_version;
@@ -1588,8 +1586,8 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
     }
 
     // Extract STPub
-    uint8_t stpub[32] = {0};
-    ret = lt_get_st_pub(&cert_store, stpub, 32);
+    uint8_t stpub[TR01_STPUB_LEN] = {0};
+    ret = lt_get_st_pub(&cert_store, stpub, sizeof(stpub));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1667,7 +1665,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
                           sizeof(print_bytes_buff))) {
         return LT_FAIL;
     }
-    char packg_type_id_str[17];
+    char packg_type_id_str[17];  // Length of the longest possible string ("Bare silicon die") + \0.
     switch (packg_type_id) {
         case TR01_CHIP_PKG_BARE_SILICON_ID:
             strcpy(packg_type_id_str, "Bare silicon die");

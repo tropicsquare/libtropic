@@ -41,7 +41,9 @@ lt_handle_t *g_h;
 static lt_ret_t lt_test_rev_ecc_key_store_cleanup(void)
 {
     lt_ret_t ret;
-    uint8_t read_pub_key[64];
+    uint8_t read_pub_key[TR01_CURVE_P256_PUBKEY_LEN];  // The read key can have 32B or 64B, depending on the used curve,
+                                                       // but we don't know what is stored in the slot, so to be safe,
+                                                       // let's assume the size of pubkey on the P256 curve.
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
 
@@ -96,7 +98,10 @@ void lt_test_rev_ecc_key_store(lt_handle_t *h)
     // Making the handle accessible to the cleanup function.
     g_h = h;
 
-    uint8_t read_pub_key[64];
+    uint8_t read_pub_key[TR01_CURVE_P256_PUBKEY_LEN];  // The read key can have 32B or 64B, depending on the used curve,
+                                                       // and we work with both curves here, so let's use one buffer for
+                                                       // both for simplification and assume the size of pubkey on the
+                                                       // P256 curve to be safe.
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
 
@@ -139,7 +144,7 @@ void lt_test_rev_ecc_key_store(lt_handle_t *h)
         LT_TEST_ASSERT(1, (origin == TR01_CURVE_STORED));
 
         LT_LOG_INFO("Comparing the public key to the pre-generated one...");
-        LT_TEST_ASSERT(0, memcmp(p256_pub_test_key, read_pub_key, 64));
+        LT_TEST_ASSERT(0, memcmp(p256_pub_test_key, read_pub_key, sizeof(p256_pub_test_key)));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
@@ -173,7 +178,7 @@ void lt_test_rev_ecc_key_store(lt_handle_t *h)
         LT_TEST_ASSERT(1, (origin == TR01_CURVE_STORED));
 
         LT_LOG_INFO("Comparing the public key to the pre-generated one...");
-        LT_TEST_ASSERT(0, memcmp(ed25519_pub_test_key, read_pub_key, 32));
+        LT_TEST_ASSERT(0, memcmp(ed25519_pub_test_key, read_pub_key, sizeof(ed25519_pub_test_key)));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));

@@ -21,10 +21,32 @@
 #define LT_STATIC
 #endif
 
-/** @brief This particular value means that secure session was successfully established and it is currently ON */
-#define LT_SECURE_SESSION_ON 0xA5A55A5A
-/** @brief This particular value means that secure session is currently OFF */
-#define LT_SECURE_SESSION_OFF 0x0
+/** @brief Size of CHIP_STATUS field */
+#define TR01_L1_CHIP_STATUS_SIZE 1u
+/** @brief Maximal number of data bytes in one L1 transfer */
+#define TR01_L1_LEN_MIN TR01_L1_CHIP_STATUS_SIZE
+/** @brief Maximal number of data bytes in one L1 transfer */
+#define TR01_L1_LEN_MAX (TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE)
+
+/** @brief Size of REQ_ID field */
+#define TR01_L2_REQ_ID_SIZE 1u
+/** @brief Size of REQ_LEN or RSP_LEN field */
+#define TR01_L2_REQ_RSP_LEN_SIZE 1u
+/** @brief Offset of REQ_LEN or RSP_LEN field */
+#define TR01_L2_REQ_RSP_LEN_OFFSET 1u
+/** @brief Size of REQ_CRC or RSP_CRC field */
+#define TR01_L2_REQ_RSP_CRC_SIZE 2u
+/** @brief Size of STATUS field */
+#define TR01_L2_STATUS_SIZE 1u
+/** @brief Maximal size of data field in one L2 transfer */
+#define TR01_L2_CHUNK_MAX_DATA_SIZE 252u
+/**
+ * @brief Maximal size of one l2 frame
+ * @note This macro corresponds to both L2 Request and Response frame, so for the first addend, we could also use
+ * TR01_L2_REQ_ID_SIZE.
+ */
+#define TR01_L2_MAX_FRAME_SIZE \
+    (TR01_L2_STATUS_SIZE + TR01_L2_REQ_RSP_LEN_SIZE + TR01_L2_CHUNK_MAX_DATA_SIZE + TR01_L2_REQ_RSP_CRC_SIZE)
 
 /** @brief Size of l3 ID field */
 #define TR01_L3_ID_SIZE 1u
@@ -38,18 +60,9 @@
 /** @brief Size of CMD_SIZE field */
 #define TR01_L3_CMD_SIZE_SIZE 2
 /** @brief Size of l3 CMD_ID field */
-#define TR01_L3_CMD_ID_SIZE (1)
+#define TR01_L3_CMD_ID_SIZE 1
 /** @brief Maximal size of l3 RES/RSP DATA field */
-#define TR01_L3_CMD_DATA_SIZE_MAX (4111)
-
-/** @brief Maximal size of data field in one L2 transfer */
-#define TR01_L2_CHUNK_MAX_DATA_SIZE 252u
-/** @brief Maximal size of one l2 frame */
-#define TR01_L2_MAX_FRAME_SIZE (1 + 1 + TR01_L2_CHUNK_MAX_DATA_SIZE + 2)
-/** @brief Maximal number of data bytes in one L1 transfer */
-#define TR01_L1_LEN_MIN 1
-/** @brief Maximal number of data bytes in one L1 transfer */
-#define TR01_L1_LEN_MAX (1 + 1 + 1 + TR01_L2_CHUNK_MAX_DATA_SIZE + 2)
+#define TR01_L3_CMD_DATA_SIZE_MAX 4111
 
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define TR01_L3_CYPHERTEXT_MAX_SIZE (TR01_L3_CMD_ID_SIZE + TR01_L3_CMD_DATA_SIZE_MAX)
@@ -89,7 +102,7 @@ LT_STATIC_ASSERT(
 typedef struct lt_l2_state_t {
     void *device;
     uint8_t mode;
-    uint8_t buff[1 + TR01_L2_MAX_FRAME_SIZE];
+    uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
 } lt_l2_state_t;
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
@@ -97,8 +110,17 @@ typedef struct lt_l2_state_t {
 #define LT_SIZE_OF_L3_BUFF TR01_L3_PACKET_MAX_SIZE
 #endif
 
+/**
+ * @brief Used to indicate whether the Secure Session is on.
+ *
+ */
+typedef enum lt_secure_session_state_t {
+    LT_SECURE_SESSION_ON = 0x5A5A5A5A,
+    LT_SECURE_SESSION_OFF = 0
+} lt_secure_session_state_t;
+
 typedef struct lt_l3_state_t {
-    uint32_t session;
+    enum lt_secure_session_state_t session;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
 #if LT_USE_TREZOR_CRYPTO
@@ -120,6 +142,9 @@ typedef struct lt_l3_state_t {
 #endif
     uint16_t buff_len; /**< Length of the buffer */
 } lt_l3_state_t;
+
+/** @brief Length of key used by AES256. */
+#define TR01_AES256_KEY_LEN 32
 
 /**
  * @details This structure holds data related to one physical chip.
@@ -557,6 +582,33 @@ typedef struct lt_session_state_t {
     // lt_pkey_index_t pkey_index;
 } lt_session_state_t;
 
+/** @brief Length of key used in X25519 function.
+ *
+ * ECDH uses X25519 function with Curve25519 -> 32 bytes. See "Variables" section in GLOSSARY in TROPIC01 datasheet.
+ * This is the same for stpub, ehpriv, ehpub.
+ */
+#define TR01_X25519_KEY_LEN 32
+
+/** @brief Length of TROPIC01 X25519 public key for a Secure Channel Handshake. */
+#define TR01_STPUB_LEN TR01_X25519_KEY_LEN
+/** @brief Length of TROPIC01 X25519 private key for a Secure Channel Handshake. */
+#define TR01_STPRIV_LEN TR01_X25519_KEY_LEN
+/** @brief Length of X25519 public key of the Host MCU to execute a Secure Channel Handshake on Pairing Key slot i.
+ *
+ * @note In other words, SHiPUB is also a length of the key that is stored in pairing key slots in TROPIC01.
+ */
+#define TR01_SHIPUB_LEN TR01_X25519_KEY_LEN
+/** @brief Length of X25519 private key of the Host MCU to execute a Secure Channel Handshake on Pairing Key slot i. */
+#define TR01_SHIPRIV_LEN TR01_X25519_KEY_LEN
+
+/** @brief Length of TROPIC01 ephemeral private key. */
+#define TR01_ETPRIV_LEN TR01_X25519_KEY_LEN
+/** @brief Length of TROPIC01 ephemeral public key. */
+#define TR01_ETPUB_LEN TR01_X25519_KEY_LEN
+/** @brief Length of Host MCU ephemeral private key. */
+#define TR01_EHPRIV_LEN TR01_X25519_KEY_LEN
+/** @brief Length of Host MCU ephemeral public key */
+#define TR01_EHPUB_LEN TR01_X25519_KEY_LEN
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
 #define TR01_L2_SLEEP_KIND_SLEEP 0x05
@@ -574,15 +626,6 @@ typedef struct lt_session_state_t {
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of Ping command message */
 #define TR01_PING_LEN_MAX 4096
-
-//--------------------------------------------------------------------------------------------------------------------//
-/** @brief ECC key slot indexes */
-typedef enum lt_pairing_key_slot_t {
-    TR01_SH0PUB = 0,
-    TR01_SH1PUB,
-    TR01_SH2PUB,
-    TR01_SH3PUB,
-} lt_pairing_key_slot_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief CONFIGURATION_OBJECTS_REGISTERS memory map */
@@ -703,8 +746,18 @@ typedef enum lt_ecc_slot_t {
 /** @brief ECC key type */
 typedef enum lt_ecc_curve_type_t { TR01_CURVE_P256 = 1, TR01_CURVE_ED25519 } lt_ecc_curve_type_t;
 
+/** @brief Length of public keys for P256 curve. */
+#define TR01_CURVE_P256_PUBKEY_LEN 64
+/** @brief Length of public keys for ED25519 curve. */
+#define TR01_CURVE_ED25519_PUBKEY_LEN 32
+/** @brief Common length of private keys for both P256 and ED25519 curves. */
+#define TR01_CURVE_PRIVKEY_LEN 32
+
 /** @brief ECC key origin */
 typedef enum lt_ecc_key_origin_t { TR01_CURVE_GENERATED = 1, TR01_CURVE_STORED } lt_ecc_key_origin_t;
+
+/** @brief Length of the EC signature (RS) for both ECDSA and EDDSA. */
+#define TR01_ECDSA_EDDSA_SIGNATURE_LENGTH 64
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal allowed value of the monotonic counter. */
@@ -731,7 +784,7 @@ typedef enum lt_mcounter_index_t {
 } lt_mcounter_index_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief Maximal size of returned MAC-and-Destroy data */
+/** @brief The size of returned MAC-and-Destroy data (secret/key) */
 #define TR01_MAC_AND_DESTROY_DATA_SIZE 32u
 /** @brief Maximal number of Mac And Destroy tries possible with TROPIC01 */
 #define TR01_MACANDD_ROUNDS_MAX 128
