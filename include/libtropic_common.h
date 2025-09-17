@@ -21,10 +21,32 @@
 #define LT_STATIC
 #endif
 
-/** @brief This particular value means that secure session was successfully established and it is currently ON */
-#define LT_SECURE_SESSION_ON 0xA5A55A5A
-/** @brief This particular value means that secure session is currently OFF */
-#define LT_SECURE_SESSION_OFF 0x0
+/** @brief Size of CHIP_STATUS field */
+#define TR01_L1_CHIP_STATUS_SIZE 1u
+/** @brief Maximal number of data bytes in one L1 transfer */
+#define TR01_L1_LEN_MIN TR01_L1_CHIP_STATUS_SIZE
+/** @brief Maximal number of data bytes in one L1 transfer */
+#define TR01_L1_LEN_MAX (TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE)
+
+/** @brief Size of REQ_ID field */
+#define TR01_L2_REQ_ID_SIZE 1u
+/** @brief Size of REQ_LEN or RSP_LEN field */
+#define TR01_L2_REQ_RSP_LEN_SIZE 1u
+/** @brief Offset of REQ_LEN or RSP_LEN field */
+#define TR01_L2_REQ_RSP_LEN_OFFSET 1u
+/** @brief Size of REQ_CRC or RSP_CRC field */
+#define TR01_L2_REQ_RSP_CRC_SIZE 2u
+/** @brief Size of STATUS field */
+#define TR01_L2_STATUS_SIZE 1u
+/** @brief Maximal size of data field in one L2 transfer */
+#define TR01_L2_CHUNK_MAX_DATA_SIZE 252u
+/**
+ * @brief Maximal size of one l2 frame
+ * @note This macro corresponds to both L2 Request and Response frame, so for the first addend, we could also use
+ * TR01_L2_REQ_ID_SIZE.
+ */
+#define TR01_L2_MAX_FRAME_SIZE \
+    (TR01_L2_STATUS_SIZE + TR01_L2_REQ_RSP_LEN_SIZE + TR01_L2_CHUNK_MAX_DATA_SIZE + TR01_L2_REQ_RSP_CRC_SIZE)
 
 /** @brief Size of l3 ID field */
 #define TR01_L3_ID_SIZE 1u
@@ -38,25 +60,9 @@
 /** @brief Size of CMD_SIZE field */
 #define TR01_L3_CMD_SIZE_SIZE 2
 /** @brief Size of l3 CMD_ID field */
-#define TR01_L3_CMD_ID_SIZE (1)
+#define TR01_L3_CMD_ID_SIZE 1
 /** @brief Maximal size of l3 RES/RSP DATA field */
-#define TR01_L3_CMD_DATA_SIZE_MAX (4111)
-
-/** @brief Size of REQ_ID field */
-#define TR01_L2_REQ_ID_SIZE 1u
-/** @brief Size of REQ_LEN field */
-#define TR01_L2_REQ_LEN_SIZE 1u
-/** @brief Size of REQ_CRC field */
-#define TR01_L2_REQ_CRC_SIZE 2u
-
-/** @brief Maximal size of data field in one L2 transfer */
-#define TR01_L2_CHUNK_MAX_DATA_SIZE 252u
-/** @brief Maximal size of one l2 frame */
-#define TR01_L2_MAX_FRAME_SIZE (1 + 1 + TR01_L2_CHUNK_MAX_DATA_SIZE + 2)
-/** @brief Maximal number of data bytes in one L1 transfer */
-#define TR01_L1_LEN_MIN 1
-/** @brief Maximal number of data bytes in one L1 transfer */
-#define TR01_L1_LEN_MAX (1 + 1 + 1 + TR01_L2_CHUNK_MAX_DATA_SIZE + 2)
+#define TR01_L3_CMD_DATA_SIZE_MAX 4111
 
 /** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
 #define TR01_L3_CYPHERTEXT_MAX_SIZE (TR01_L3_CMD_ID_SIZE + TR01_L3_CMD_DATA_SIZE_MAX)
@@ -96,7 +102,7 @@ LT_STATIC_ASSERT(
 typedef struct lt_l2_state_t {
     void *device;
     uint8_t mode;
-    uint8_t buff[1 + TR01_L2_MAX_FRAME_SIZE];
+    uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
 } lt_l2_state_t;
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
@@ -104,8 +110,17 @@ typedef struct lt_l2_state_t {
 #define LT_SIZE_OF_L3_BUFF TR01_L3_PACKET_MAX_SIZE
 #endif
 
+/**
+ * @brief Used to indicate whether the Secure Session is on.
+ *
+ */
+typedef enum lt_secure_session_state_t {
+    LT_SECURE_SESSION_ON = 0xA5A55A5A,
+    LT_SECURE_SESSION_OFF = 0
+} lt_secure_session_state_t;
+
 typedef struct lt_l3_state_t {
-    uint32_t session;
+    enum lt_secure_session_state_t session;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
 #if LT_USE_TREZOR_CRYPTO
