@@ -38,11 +38,11 @@ void lt_test_rev_ping(lt_handle_t *h)
     for (uint16_t i = 0; i < PING_MAX_LOOPS; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data length <= %d...", (int)TR01_PING_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &ping_msg_len, sizeof(ping_msg_len)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &ping_msg_len, sizeof(ping_msg_len)));
         ping_msg_len %= TR01_PING_LEN_MAX + 1;  // 0-4096
 
         LT_LOG_INFO("Generating %" PRIu16 " random bytes...", ping_msg_len);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, ping_msg_out, ping_msg_len));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, ping_msg_out, ping_msg_len));
 
         LT_LOG_INFO("Sending Ping command #%" PRIu16 "...", i);
         LT_TEST_ASSERT(LT_OK, lt_ping(h, ping_msg_out, ping_msg_in, ping_msg_len));

@@ -90,7 +90,7 @@ void lt_test_rev_write_r_config(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Creating randomized R config for testing");
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, r_config_random.obj, sizeof(r_config_random.obj)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, r_config_random.obj, sizeof(r_config_random.obj)));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
