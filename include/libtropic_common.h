@@ -115,7 +115,7 @@ typedef struct lt_l2_state_t {
  *
  */
 typedef enum lt_secure_session_state_t {
-    LT_SECURE_SESSION_ON = 0xA5A55A5A,
+    LT_SECURE_SESSION_ON = 0x5A5A5A5A,
     LT_SECURE_SESSION_OFF = 0
 } lt_secure_session_state_t;
 
