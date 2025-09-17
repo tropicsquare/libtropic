@@ -49,7 +49,7 @@
  */
 struct lt_macandd_nvm_t {
     uint8_t i;
-    uint8_t ci[MACANDD_ROUNDS * 32];
+    uint8_t ci[MACANDD_ROUNDS * TR01_MAC_AND_DESTROY_DATA_SIZE];
     uint8_t t[LT_HMAC_SHA256_HASH_LEN];
 } __attribute__((__packed__));
 
@@ -135,7 +135,8 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
     lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
 
     // Compute v = KDF(0, PIN||A) where 0 is all zeroes key
-    lt_hmac_sha256((uint8_t*)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 32, kdf_input_buff, PIN_size+add_size, v);
+    const uint8_t zeros[32] = {0};
+    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size, v);
 
     for (int i = 0; i < nvm.i; i++) {
         uint8_t garbage[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
@@ -177,8 +178,8 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
         // Warning: All s[n] are encrypted here using k_i[n] as a key, results are stored into ci[n].
         // Because size of the 'message s' is the same as a size of the 'key k_i', simple XOR is used here - discuss
         // more apropriate method with experts on cryptography.
-        for (int j = 0; j < 32; j++) {
-            *(nvm.ci + (i * 32 + j)) = k_i[j] ^ s[j];
+        for (unsigned int j = 0; j < TR01_MAC_AND_DESTROY_DATA_SIZE; j++) {
+            *(nvm.ci + (i * TR01_MAC_AND_DESTROY_DATA_SIZE + j)) = k_i[j] ^ s[j];
         }
     }
 
@@ -297,7 +298,8 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     LT_LOG_INFO("\tOK");
 
     // Compute v’ = KDF(0, PIN’||A).
-    lt_hmac_sha256((uint8_t*)"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 32, kdf_input_buff, PIN_size + add_size, v_);
+    const uint8_t zeros[32] = {0};
+    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size, v_);
 
     // Execute w’ = MACANDD(i, v’)
     LT_LOG_INFO("Doing M&D sequence...");
@@ -318,7 +320,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     // For getting s[n] again, they are decrypted here by XORing ci[n] with k_i[n]
     // Discuss more propriate method with experts on cryptography.
     for (unsigned int j = 0; j < sizeof(s_); j++) {
-        s_[j] = *(nvm.ci + (nvm.i * 32 + j)) ^ k_i[j];
+        s_[j] = *(nvm.ci + (nvm.i * TR01_MAC_AND_DESTROY_DATA_SIZE + j)) ^ k_i[j];
     }
 
     // Compute tag t = KDF(s, "0x00")
