@@ -649,7 +649,7 @@ static int session3(lt_handle_t *h)
     uint8_t ed25519_pubkey[TR01_CURVE_ED25519_PUBKEY_LEN];
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
-    ret = lt_ecc_key_read(h, TR01_ECC_SLOT_0, ed25519_pubkey, &curve, &origin);
+    ret = lt_ecc_key_read(h, TR01_ECC_SLOT_0, ed25519_pubkey, sizeof(ed25519_pubkey), &curve, &origin);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to read ECC slot, ret=%s", lt_ret_verbose(ret));
         return -1;

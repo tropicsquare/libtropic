@@ -484,6 +484,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
  * @param ecc_slot    Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
  * for P256), according to *curve*
+ * @param max_size    Size of the key buffer
  * @param curve       Will be filled by curve byte
  * @param origin      Will be filled by origin byte
  *
@@ -491,8 +492,8 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
-                         lt_ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, const uint8_t max_size,
+                         lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin);
 
 /**
  * @brief Erases ECC key from the specified ECC key slot

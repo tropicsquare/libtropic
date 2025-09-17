@@ -54,7 +54,7 @@ static lt_ret_t lt_test_rev_ecdsa_sign_cleanup(void)
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
-        ret = lt_ecc_key_read(g_h, i, read_pub_key, &curve, &origin);
+        ret = lt_ecc_key_read(g_h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
             return ret;
@@ -121,7 +121,7 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(h, i, TR01_CURVE_P256, priv_test_key));
 
         LT_LOG_INFO("Reading the stored public key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
@@ -156,7 +156,7 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(h, i, TR01_CURVE_P256));
 
         LT_LOG_INFO("Reading the generated public key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));

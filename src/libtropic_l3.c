@@ -924,7 +924,8 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin)
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t max_size, lt_ecc_curve_type_t *curve,
+                             lt_ecc_key_origin_t *origin)
 {
     if (!h || !key || !curve || !origin) {
         return LT_PARAM_ERR;
@@ -951,6 +952,12 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
         if (pubkey_size_in_result != TR01_CURVE_ED25519_PUBKEY_LEN) {
             return LT_FAIL;
         }
+
+        // Check if the output buffer for the key is big enough
+        if (max_size < TR01_CURVE_ED25519_PUBKEY_LEN) {
+            return LT_PARAM_ERR;
+        }
+
         memcpy(key, p_l3_res->pub_key, TR01_CURVE_ED25519_PUBKEY_LEN);
     }
     else if (p_l3_res->curve == (uint8_t)TR01_CURVE_P256) {
@@ -958,6 +965,12 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
         if (pubkey_size_in_result != TR01_CURVE_P256_PUBKEY_LEN) {
             return LT_FAIL;
         }
+
+        // Check if the output buffer for the key is big enough
+        if (max_size < TR01_CURVE_P256_PUBKEY_LEN) {
+            return LT_PARAM_ERR;
+        }
+
         memcpy(key, p_l3_res->pub_key, TR01_CURVE_P256_PUBKEY_LEN);
     }
     else {
