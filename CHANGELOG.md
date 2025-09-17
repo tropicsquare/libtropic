@@ -117,6 +117,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Constants for length of Secure Channel handshake/pairing keys, ephemeral keys and AES256 key.
 - Constants for length of P256 and ED25519 private and public keys.
 - Constant for length of ECDSA/EDDSA signature.
+- Constants for lengths of L2 request fields (ID, LEN, CRC).
 
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.

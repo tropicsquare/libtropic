@@ -42,6 +42,13 @@
 /** @brief Maximal size of l3 RES/RSP DATA field */
 #define TR01_L3_CMD_DATA_SIZE_MAX (4111)
 
+/** @brief Size of REQ_ID field */
+#define TR01_L2_REQ_ID_SIZE 1u
+/** @brief Size of REQ_LEN field */
+#define TR01_L2_REQ_LEN_SIZE 1u
+/** @brief Size of REQ_CRC field */
+#define TR01_L2_REQ_CRC_SIZE 2u
+
 /** @brief Maximal size of data field in one L2 transfer */
 #define TR01_L2_CHUNK_MAX_DATA_SIZE 252u
 /** @brief Maximal size of one l2 frame */
