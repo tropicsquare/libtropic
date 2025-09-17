@@ -37,44 +37,19 @@ $extrastylesheet
 <!--END FULL_SIDEBAR-->
 
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-
+  
 <!--BEGIN TITLEAREA-->
-<div id="titlearea">
-<table cellspacing="0" cellpadding="0">
- <tbody>
- <tr id="projectrow">
-  <!--BEGIN PROJECT_LOGO-->
-  <td id="projectlogo"><img alt="Logo" src="$relpath^$projectlogo"$logosize/></td>
-  <!--END PROJECT_LOGO-->
-  <!--BEGIN PROJECT_NAME-->
-  <td id="projectalign">
-   <div id="projectname">$projectname<!--BEGIN PROJECT_NUMBER--><span id="projectnumber">&#160;$projectnumber</span><!--END PROJECT_NUMBER-->
-   </div>
-   <!--BEGIN PROJECT_BRIEF--><div id="projectbrief">$projectbrief</div><!--END PROJECT_BRIEF-->
-  </td>
-  <!--END PROJECT_NAME-->
-  <!--BEGIN !PROJECT_NAME-->
-   <!--BEGIN PROJECT_BRIEF-->
-    <td>
-    <div id="projectbrief">$projectbrief</div>
-    </td>
-   <!--END PROJECT_BRIEF-->
-  <!--END !PROJECT_NAME-->
-  <!--BEGIN DISABLE_INDEX-->
-   <!--BEGIN SEARCHENGINE-->
-     <!--BEGIN !FULL_SIDEBAR-->
-    <td>$searchbox</td>
-     <!--END !FULL_SIDEBAR-->
-   <!--END SEARCHENGINE-->
-  <!--END DISABLE_INDEX-->
- </tr>
-  <!--BEGIN SEARCHENGINE-->
-   <!--BEGIN FULL_SIDEBAR-->
-   <tr><td colspan="2">$searchbox</td></tr>
-   <!--END FULL_SIDEBAR-->
-  <!--END SEARCHENGINE-->
- </tbody>
-</table>
-</div>
+<section id="titlearea">
+  <section id="projectrow">
+    <img id="projectlogo" alt="Logo" src="$relpath^$projectlogo"$logosize/>
+    <section id="projecttitle">
+      <div id="projectname">$projectname</div>
+      <div id="projectbrief">$projectbrief</div>
+    </section>
+  </section>
+  <section id="projectnumberrow">
+    <div id="projectnumber">Version: $projectnumber</div>
+  </section>
+</section>
 <!--END TITLEAREA-->
 <!-- end header part -->

@@ -35,7 +35,7 @@ SOFTWARE.
     --side-nav-fixed-width: 335px;
     --menu-display: none;
 
-    --top-height: 120px;
+    --top-height: 150px;
     --toc-sticky-top: -25px;
     --toc-max-height: calc(100vh - 2 * var(--spacing-medium) - 25px);
 }

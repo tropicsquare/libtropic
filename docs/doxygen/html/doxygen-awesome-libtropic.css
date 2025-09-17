@@ -24,6 +24,8 @@ html {
     --param-color: #0032FF;
 
     --side-nav-fixed-width: 300px;
+
+    --search-menu-hover-color: #3c63ff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -64,8 +66,8 @@ html.dark-mode {
     --param-color: #6584ff;
 }
 
-a:link, a:visited, a:hover, a:focus, a:active {
-    color: var(--link-color) !important;
+.sm-dox a {
+    color: white !important;
 }
 
 .paramname {
@@ -79,10 +81,6 @@ dl.section dd, dl.bug dd, dl.deprecated dd {
 /* adjust top and title to ~match Sphinx docs */
 #top {
     background: var(--side-nav-background);
-}
-
-#titlearea {
-    padding-bottom: 0;
 }
 
 #titlearea table {
