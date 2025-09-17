@@ -646,10 +646,10 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Reading ECC key slot %d...", (int)TR01_ECC_SLOT_0);
-    uint8_t slot_0_pubkey[64];  // Pubkey can be up to 64 bytes long (for P256 curve).
+    uint8_t ed25519_pubkey[TR01_CURVE_ED25519_PUBKEY_LEN];
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
-    ret = lt_ecc_key_read(h, TR01_ECC_SLOT_0, slot_0_pubkey, &curve, &origin);
+    ret = lt_ecc_key_read(h, TR01_ECC_SLOT_0, ed25519_pubkey, &curve, &origin);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to read ECC slot, ret=%s", lt_ret_verbose(ret));
         return -1;
@@ -657,7 +657,7 @@ static int session3(lt_handle_t *h)
     LT_LOG_INFO("\tOK");
 
     LT_LOG_INFO("Verifying with lt_ecc_eddsa_sig_verify()...");
-    ret = lt_ecc_eddsa_sig_verify(msg, sizeof(msg), slot_0_pubkey, rs);
+    ret = lt_ecc_eddsa_sig_verify(msg, sizeof(msg), ed25519_pubkey, rs);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to verify, ret%s", lt_ret_verbose(ret));
         return -1;
