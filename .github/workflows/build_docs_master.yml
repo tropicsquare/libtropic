@@ -36,7 +36,7 @@ jobs:
       - name: Generate Doxygen HTML documentation
         run: |
             pushd docs/doxygen/
-            doxygen Doxyfile.in
+            sed "s|^\(PROJECT_NUMBER\s*=\s*\).*|\1 master (latest)|" Doxyfile.in | doxygen -
             popd
 
       - name: Generate MkDocs documentation and deploy
