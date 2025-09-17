@@ -106,7 +106,7 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     uint8_t output_1[33] = {0};  // Temp storage for ck, kcmd.
     uint8_t output_2[32] = {0};  // Temp storage for kauth.
     // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
-    uint8_t shared_secret[32] = {0};
+    uint8_t shared_secret[TR01_X25519_KEY_LEN] = {0};
     lt_X25519(state->ehpriv, p_rsp->e_tpub, shared_secret);
     lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
     // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
