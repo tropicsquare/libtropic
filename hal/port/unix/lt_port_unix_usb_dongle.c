@@ -251,7 +251,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         return LT_L1_SPI_ERROR;
     }
 
-    for (size_t count = 0; count < 2 * tx_data_length; count++) {
+    for (size_t count = 0; count < tx_data_length; count++) {
         sscanf((char *)&buffered_chars[count * 2], "%02" SCNx8, &s2->buff[count + offset]);
     }
 
