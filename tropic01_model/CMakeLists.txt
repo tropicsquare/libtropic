@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.21.0)
 
+###########################################################################
+#                                                                         #
+#   Options                                                               #
+#                                                                         #
+###########################################################################
+
+# LT_VALGRIND - as Valgrind does not have to be compiled/linked together with libtropic as ASAN, this switch does not do anything if not using the model.
+# If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
+option(LT_VALGRIND "Enable Valgrind" OFF)
+
 
 ###########################################################################
 #                                                                         #

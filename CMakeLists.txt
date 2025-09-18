@@ -24,7 +24,6 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
-option(LT_VALGRIND "Enable Valgrind" OFF)
 # Logging options
 option(LT_LOG_LVL "Set log level" OFF)
 
