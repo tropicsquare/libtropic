@@ -68,10 +68,10 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
  *
  * @param h           Device's handle
  * @param msg_out     Ping message going out
- * @param len         Length of sent message
+ * @param msg_len     Length of sent message
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len);
+lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t msg_len);
 
 /**
  * @brief Decodes Ping result payload.
@@ -80,10 +80,10 @@ lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len
  *
  * @param h           Device's handle
  * @param msg_in      Buffer to receive ping message
- * @param len         Expected length of received message, the same as sent in lt_out__ping()
+ * @param msg_len     Expected length of received message, the same as sent in lt_out__ping()
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len);
+lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t msg_len);
 
 /**
  * @brief Encodes Pairing_Key_Write command payload.
@@ -265,11 +265,12 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
+ * @param data_size   Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
  * `TR01_R_MEM_DATA_SIZE_MAX`)
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size);
+lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data,
+                                  const uint16_t data_size);
 
 /**
  * @brief Decodes R_Mem_Data_Write result payload.
@@ -297,13 +298,13 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
- * @param data        Buffer to receive data
- * @param max_size    Size of the data buffer
- * @param read_size   Number of bytes read into data buffer
+ * @param h                Device's handle
+ * @param data             Buffer to receive data
+ * @param data_max_size    Size of the data buffer
+ * @param data_read_size   Number of bytes read into data buffer
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t max_size, uint16_t *read_size);
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t data_max_size, uint16_t *data_read_size);
 
 /**
  * @brief Encodes R_Mem_Data_Erase command payload.
@@ -331,23 +332,23 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
- * @param len         Length of random data to get (255 bytes is the maximum)
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h               Device's handle
+ * @param rnd_bytes_cnt   Number of random bytes to get (255 bytes is the maximum)
+ * @return                LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len);
+lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t rnd_bytes_cnt);
 
 /**
  * @brief Decodes Random_Value_Get result payload.
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
- * @param buff        Buffer to receive random data
- * @param len         Length of random data to get, must be the same as sent in lt_out__random_value_get()
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h                 Device's handle
+ * @param rnd_bytes         Buffer for the random bytes
+ * @param rnd_bytes_cnt     Number of random bytes to get (255 bytes is the maximum)
+ * @return                  LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
+lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t rnd_bytes_cnt);
 
 /**
  * @brief Encodes ECC_Key_Generate command payload.
@@ -411,15 +412,15 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
- * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
- * for P256), according to *curve*
- * @param max_size    Size of the key buffer
- * @param curve       Will be filled by curve type
- * @param origin      Will be filled by origin type
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h              Device's handle
+ * @param key            Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519,
+ * 64B for P256), according to *curve*
+ * @param key_max_size   Size of the key buffer
+ * @param curve          Will be filled by curve type
+ * @param origin         Will be filled by origin type
+ * @return               LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t max_size, lt_ecc_curve_type_t *curve,
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max_size, lt_ecc_curve_type_t *curve,
                              lt_ecc_key_origin_t *origin);
 
 /**
