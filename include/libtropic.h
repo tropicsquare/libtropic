@@ -414,7 +414,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
  * @param udata_slot  Memory's slot to be read
  * @param data        Buffer to read data into
  * @param max_size    Size of the data buffer
- * @param read_size   Number of bytes read into data
+ * @param read_size   Number of bytes read into data buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
