@@ -122,6 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
 - `lt_mcounter_init()`: Allow `mcounter_value` only from range 0-`MCOUNTER_VALUE_MAX`.
+- Overflow bug in `hal/port/unix/libtropic_port_unix_usb_dongle.c`.
 
 ### Removed
 - Unused `pairing_key_slot_t` enum.
