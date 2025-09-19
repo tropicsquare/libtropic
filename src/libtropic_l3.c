@@ -154,9 +154,9 @@ exit:
     return ret;
 }
 
-lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len)
+lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t msg_len)
 {
-    if (!h || !msg_out || (len > TR01_PING_LEN_MAX)) {
+    if (!h || !msg_out || (msg_len > TR01_PING_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -167,16 +167,16 @@ lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t len
     struct lt_l3_ping_cmd_t *p_l3_cmd = (struct lt_l3_ping_cmd_t *)h->l3.buff;
 
     // Fill l3 buffer
-    p_l3_cmd->cmd_size = len + TR01_L3_PING_CMD_SIZE_MIN;
+    p_l3_cmd->cmd_size = msg_len + TR01_L3_PING_CMD_SIZE_MIN;
     p_l3_cmd->cmd_id = TR01_L3_PING_CMD_ID;
-    memcpy(p_l3_cmd->data_in, msg_out, len);
+    memcpy(p_l3_cmd->data_in, msg_out, msg_len);
 
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len)
+lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t msg_len)
 {
-    if (!h || !msg_in || (len > TR01_PING_LEN_MAX)) {
+    if (!h || !msg_in || (msg_len > TR01_PING_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -192,11 +192,11 @@ lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t len)
     struct lt_l3_ping_res_t *p_l3_res = (struct lt_l3_ping_res_t *)h->l3.buff;
 
     // Check incomming l3 length
-    if ((TR01_L3_PING_CMD_SIZE_MIN + len) != (p_l3_res->res_size)) {
+    if ((TR01_L3_PING_CMD_SIZE_MIN + msg_len) != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
-    memcpy(msg_in, p_l3_res->data_out, len);
+    memcpy(msg_in, p_l3_res->data_out, msg_len);
 
     return LT_OK;
 }
@@ -377,7 +377,7 @@ static bool conf_addr_valid(enum lt_config_obj_addr_t addr)
     return valid;
 }
 
-lt_ret_t lt_out__r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj)
+lt_ret_t lt_out__r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint32_t obj)
 {
     if (!h || !conf_addr_valid(addr)) {
         return LT_PARAM_ERR;
@@ -607,9 +607,10 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj)
     return LT_OK;
 }
 
-lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size)
+lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data,
+                                  const uint16_t data_size)
 {
-    if (!h || !data || size < TR01_R_MEM_DATA_SIZE_MIN || size > TR01_R_MEM_DATA_SIZE_MAX
+    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > TR01_R_MEM_DATA_SIZE_MAX
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
@@ -621,10 +622,10 @@ lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, con
     struct lt_l3_r_mem_data_write_cmd_t *p_l3_cmd = (struct lt_l3_r_mem_data_write_cmd_t *)h->l3.buff;
 
     // Fill l3 buffer
-    p_l3_cmd->cmd_size = size + 4;
+    p_l3_cmd->cmd_size = data_size + 4;
     p_l3_cmd->cmd_id = TR01_L3_R_MEM_DATA_WRITE_CMD_ID;
     p_l3_cmd->udata_slot = udata_slot;
-    memcpy(p_l3_cmd->data, data, size);
+    memcpy(p_l3_cmd->data, data, data_size);
 
     return lt_l3_encrypt_request(&h->l3);
 }
@@ -674,9 +675,9 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
+lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t data_max_size, uint16_t *data_read_size)
 {
-    if (!h || !data || !size) {
+    if (!h || !data || !data_read_size) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -699,14 +700,19 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, uint16_t *size)
 
     // Get read data size
     // TODO: If FW implements fail error code on R_Mem_Data_Read from empty slot, this can be removed.
-    *size = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->padding);
+    *data_read_size = p_l3_res->res_size - sizeof(p_l3_res->result) - sizeof(p_l3_res->padding);
 
     // Check if slot is not empty
-    if (*size == 0) {
+    if (*data_read_size == 0) {
         return LT_L3_R_MEM_DATA_READ_SLOT_EMPTY;
     }
 
-    memcpy(data, p_l3_res->data, *size);
+    // Check if the output buffer for the read data is big enough
+    if (data_max_size < *data_read_size) {
+        return LT_PARAM_ERR;
+    }
+
+    memcpy(data, p_l3_res->data, *data_read_size);
 
     return LT_OK;
 }
@@ -756,9 +762,9 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len)
+lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t rnd_bytes_cnt)
 {
-    if ((len > TR01_RANDOM_VALUE_GET_LEN_MAX) || !h) {
+    if ((rnd_bytes_cnt > TR01_RANDOM_VALUE_GET_LEN_MAX) || !h) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -771,14 +777,14 @@ lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t len)
     // Fill l3 buffer
     p_l3_cmd->cmd_size = TR01_L3_RANDOM_VALUE_GET_CMD_SIZE;
     p_l3_cmd->cmd_id = TR01_L3_RANDOM_VALUE_GET_CMD_ID;
-    p_l3_cmd->n_bytes = len;
+    p_l3_cmd->n_bytes = rnd_bytes_cnt;
 
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
+lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t rnd_bytes_cnt)
 {
-    if ((len > TR01_RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
+    if (!h || !rnd_bytes || (rnd_bytes_cnt > TR01_RANDOM_VALUE_GET_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -795,13 +801,13 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t l
 
     // Check incoming L3 length. The size is always equal to the number of requested random bytes + 4,
     // where '4' is padding (3 bytes) + result status (1 byte).
-    if (TR01_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + len != (p_l3_res->res_size)) {
+    if (TR01_L3_RANDOM_VALUE_GET_RES_SIZE_MIN + rnd_bytes_cnt != (p_l3_res->res_size)) {
         return LT_FAIL;
     }
 
     // Here we copy only random bytes, excluding padding and result status, hence using len from the
     // parameter. Note: p_l3_res->res_size could be used as well if we subtract TR01_L3_RANDOM_VALUE_GET_RES_SIZE_MIN.
-    memcpy(buff, p_l3_res->random_data, len);
+    memcpy(rnd_bytes, p_l3_res->random_data, rnd_bytes_cnt);
 
     return LT_OK;
 }
@@ -919,7 +925,8 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot)
     return lt_l3_encrypt_request(&h->l3);
 }
 
-lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin)
+lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max_size, lt_ecc_curve_type_t *curve,
+                             lt_ecc_key_origin_t *origin)
 {
     if (!h || !key || !curve || !origin) {
         return LT_PARAM_ERR;
@@ -946,6 +953,12 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
         if (pubkey_size_in_result != TR01_CURVE_ED25519_PUBKEY_LEN) {
             return LT_FAIL;
         }
+
+        // Check if the output buffer for the key is big enough
+        if (key_max_size < TR01_CURVE_ED25519_PUBKEY_LEN) {
+            return LT_PARAM_ERR;
+        }
+
         memcpy(key, p_l3_res->pub_key, TR01_CURVE_ED25519_PUBKEY_LEN);
     }
     else if (p_l3_res->curve == (uint8_t)TR01_CURVE_P256) {
@@ -953,6 +966,12 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, lt_ecc_curve_type_t *
         if (pubkey_size_in_result != TR01_CURVE_P256_PUBKEY_LEN) {
             return LT_FAIL;
         }
+
+        // Check if the output buffer for the key is big enough
+        if (key_max_size < TR01_CURVE_P256_PUBKEY_LEN) {
+            return LT_PARAM_ERR;
+        }
+
         memcpy(key, p_l3_res->pub_key, TR01_CURVE_P256_PUBKEY_LEN);
     }
     else {

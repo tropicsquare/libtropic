@@ -52,10 +52,11 @@ static void print_header_boot_v1_0_1(uint8_t *data, lt_bank_id_t bank_id)
 static void print_all_headers_v1(lt_handle_t *h)
 {
     uint8_t header[TR01_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    uint16_t read_header_size;
 
     // Read header from TR01_FW_BANK_FW1
     LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW1);
-    lt_ret_t ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW1, header, sizeof(header));
+    lt_ret_t ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW1, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v1_0_1(header, TR01_FW_BANK_FW1);
     }
@@ -67,7 +68,7 @@ static void print_all_headers_v1(lt_handle_t *h)
     // Read header from TR01_FW_BANK_FW2
     LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW2, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v1_0_1(header, TR01_FW_BANK_FW2);
     }
@@ -79,7 +80,7 @@ static void print_all_headers_v1(lt_handle_t *h)
     // Read header from TR01_FW_BANK_SPECT1
     LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT1);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT1, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT1, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v1_0_1(header, TR01_FW_BANK_SPECT1);
     }
@@ -91,7 +92,7 @@ static void print_all_headers_v1(lt_handle_t *h)
     // Read header from TR01_FW_BANK_SPECT2
     LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT2, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v1_0_1(header, TR01_FW_BANK_SPECT2);
     }
@@ -140,10 +141,11 @@ static void print_header_boot_v2_0_1(uint8_t *data, lt_bank_id_t bank_id)
 static void print_all_fw_headers_v2(lt_handle_t *h)
 {
     uint8_t header[TR01_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    uint16_t read_header_size;
 
     // Read header from TR01_FW_BANK_FW1
     LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW1);
-    lt_ret_t ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW1, header, sizeof(header));
+    lt_ret_t ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW1, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v2_0_1(header, TR01_FW_BANK_FW1);
     }
@@ -155,7 +157,7 @@ static void print_all_fw_headers_v2(lt_handle_t *h)
     // Read header from TR01_FW_BANK_FW2
     LT_LOG_INFO("Reading firmware headers in bank %d", (int)TR01_FW_BANK_FW2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_FW2, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v2_0_1(header, TR01_FW_BANK_FW2);
     }
@@ -167,7 +169,7 @@ static void print_all_fw_headers_v2(lt_handle_t *h)
     // Read header from TR01_FW_BANK_SPECT1
     LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT1);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT1, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT1, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v2_0_1(header, TR01_FW_BANK_SPECT1);
     }
@@ -179,7 +181,7 @@ static void print_all_fw_headers_v2(lt_handle_t *h)
     // Read header from TR01_FW_BANK_SPECT2
     LT_LOG_INFO("Reading SPECT headers in bank %d", (int)TR01_FW_BANK_SPECT2);
     memset(header, 0, sizeof(header));
-    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT2, header, sizeof(header));
+    ret = lt_get_info_fw_bank(h, TR01_FW_BANK_SPECT2, header, sizeof(header), &read_header_size);
     if (ret == LT_OK) {
         print_header_boot_v2_0_1(header, TR01_FW_BANK_SPECT2);
     }

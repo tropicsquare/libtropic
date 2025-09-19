@@ -264,7 +264,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     // Load M&D data from TROPIC01's R memory
     LT_LOG_INFO("Reading M&D data from R_Mem User slot %d...", R_MEM_DATA_SLOT_MACANDD);
     uint16_t read_size;
-    lt_ret_t ret = lt_r_mem_data_read(h, R_MEM_DATA_SLOT_MACANDD, (uint8_t *)&nvm, &read_size);
+    lt_ret_t ret = lt_r_mem_data_read(h, R_MEM_DATA_SLOT_MACANDD, (uint8_t *)&nvm, sizeof(nvm), &read_size);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to read User slot, ret=%s", lt_ret_verbose(ret));
         goto exit;

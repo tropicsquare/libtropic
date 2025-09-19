@@ -217,7 +217,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     return LT_OK;
 }
 
-lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len)
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub)
 {
     if (!store || !stpub) {
         return LT_PARAM_ERR;
@@ -226,7 +226,7 @@ lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int 
     uint8_t *head = store->certs[LT_CERT_KIND_DEVICE];
     uint16_t len = store->cert_len[LT_CERT_KIND_DEVICE];
 
-    return asn1der_find_object(head, len, LT_OBJ_ID_CURVEX25519, stpub, stpub_len, LT_ASN1DER_CROP_PREFIX);
+    return asn1der_find_object(head, len, LT_OBJ_ID_CURVEX25519, stpub, TR01_STPUB_LEN, LT_ASN1DER_CROP_PREFIX);
 }
 
 lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
@@ -334,9 +334,10 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
     return LT_OK;
 }
 
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len)
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header,
+                             const uint16_t header_max_size, uint16_t *header_read_size)
 {
-    if (!h || !header || max_len < TR01_L2_GET_INFO_FW_HEADER_SIZE
+    if (!h || !header || !header_read_size
         || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) && (bank_id != TR01_FW_BANK_SPECT1)
             && (bank_id != TR01_FW_BANK_SPECT2))) {
         return LT_PARAM_ERR;
@@ -368,7 +369,14 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
         return LT_FAIL;
     }
 
+    // Check if the output buffer for the header is big enough
+    if (header_max_size < p_l2_resp->rsp_len) {
+        *header_read_size = 0;
+        return LT_PARAM_ERR;
+    }
+
     memcpy(header, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, p_l2_resp->rsp_len);
+    *header_read_size = p_l2_resp->rsp_len;
 
     return LT_OK;
 }
@@ -699,9 +707,9 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
 #error "Undefined silicon revision. Please define either ABAB or ACAB."
 #endif
 
-lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, const uint16_t log_msg_max_size, uint16_t *log_msg_read_size)
 {
-    if (!h || !log_msg || !log_msg_len) {
+    if (!h || !log_msg || !log_msg_read_size) {
         return LT_PARAM_ERR;
     }
 
@@ -722,22 +730,28 @@ lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
         return ret;
     }
 
-    *log_msg_len = p_l2_resp->rsp_len;
+    // Check if the output buffer for the log message is big enough
+    if (log_msg_max_size < p_l2_resp->rsp_len) {
+        *log_msg_read_size = 0;
+        return LT_PARAM_ERR;
+    }
+
+    *log_msg_read_size = p_l2_resp->rsp_len;
     memcpy(log_msg, p_l2_resp->log_msg, p_l2_resp->rsp_len);
 
     return LT_OK;
 }
 
-lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len)
+lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t msg_len)
 {
-    if (!h || !msg_out || !msg_in || (len > TR01_PING_LEN_MAX)) {
+    if (!h || !msg_out || !msg_in || (msg_len > TR01_PING_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_out__ping(h, msg_out, len);
+    lt_ret_t ret = lt_out__ping(h, msg_out, msg_len);
     if (ret != LT_OK) {
         return ret;
     }
@@ -752,7 +766,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return ret;
     }
 
-    return lt_in__ping(h, msg_in, len);
+    return lt_in__ping(h, msg_in, msg_len);
 }
 
 lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const uint8_t slot)
@@ -836,7 +850,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     return lt_in__pairing_key_invalidate(h);
 }
 
-lt_ret_t lt_r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj)
+lt_ret_t lt_r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint32_t obj)
 {
     if (!h) {
         return LT_PARAM_ERR;
@@ -971,9 +985,9 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
     return lt_in__i_config_read(h, obj);
 }
 
-lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size)
+lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t data_size)
 {
-    if (!h || !data || size < TR01_R_MEM_DATA_SIZE_MIN || size > TR01_R_MEM_DATA_SIZE_MAX
+    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > TR01_R_MEM_DATA_SIZE_MAX
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
@@ -981,7 +995,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_out__r_mem_data_write(h, udata_slot, data, size);
+    lt_ret_t ret = lt_out__r_mem_data_write(h, udata_slot, data, data_size);
     if (ret != LT_OK) {
         return ret;
     }
@@ -999,9 +1013,10 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
     return lt_in__r_mem_data_write(h);
 }
 
-lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size)
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t data_max_size,
+                            uint16_t *data_read_size)
 {
-    if (!h || !data || !size || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
+    if (!h || !data || !data_read_size || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -1023,7 +1038,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return ret;
     }
 
-    return lt_in__r_mem_data_read(h, data, size);
+    return lt_in__r_mem_data_read(h, data, data_max_size, data_read_size);
 }
 
 lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
@@ -1053,16 +1068,16 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
     return lt_in__r_mem_data_erase(h);
 }
 
-lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
+lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t rnd_bytes_cnt)
 {
-    if ((len > TR01_RANDOM_VALUE_GET_LEN_MAX) || !h || !buff) {
+    if (!h || !rnd_bytes || (rnd_bytes_cnt > TR01_RANDOM_VALUE_GET_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    lt_ret_t ret = lt_out__random_value_get(h, len);
+    lt_ret_t ret = lt_out__random_value_get(h, rnd_bytes_cnt);
     if (ret != LT_OK) {
         return ret;
     }
@@ -1077,7 +1092,7 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len)
         return ret;
     }
 
-    return lt_in__random_value_get(h, buff, len);
+    return lt_in__random_value_get(h, rnd_bytes, rnd_bytes_cnt);
 }
 
 lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc_curve_type_t curve)
@@ -1133,8 +1148,8 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
     return lt_in__ecc_key_store(h);
 }
 
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
-                         lt_ecc_key_origin_t *origin)
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, const uint8_t key_max_size,
+                         lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin)
 {
     if (!h || (ecc_slot > TR01_ECC_SLOT_31) || !key || !curve || !origin) {
         return LT_PARAM_ERR;
@@ -1158,7 +1173,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
         return ret;
     }
 
-    return lt_in__ecc_key_read(h, key, curve, origin);
+    return lt_in__ecc_key_read(h, key, key_max_size, curve, origin);
 }
 
 lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot)
@@ -1351,7 +1366,8 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
     return lt_in__mcounter_get(h, mcounter_value);
 }
 
-lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in)
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot, const uint8_t *data_out,
+                            uint8_t *data_in)
 {
     if (!h || !data_out || !data_in || slot > TR01_MAC_AND_DESTROY_SLOT_127) {
         return LT_PARAM_ERR;
@@ -1539,7 +1555,8 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
     return LT_OK;
 }
 
-lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index)
+lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *shipriv, const uint8_t *shipub,
+                                                 const uint8_t pkey_index)
 {
     if (!h || !shipriv || !shipub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3)) {
         return LT_PARAM_ERR;
@@ -1587,7 +1604,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
 
     // Extract STPub
     uint8_t stpub[TR01_STPUB_LEN] = {0};
-    ret = lt_get_st_pub(&cert_store, stpub, sizeof(stpub));
+    ret = lt_get_st_pub(&cert_store, stpub);
     if (ret != LT_OK) {
         return ret;
     }
@@ -1600,9 +1617,9 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
     return LT_OK;
 }
 
-lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size)
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *out_buf, const uint16_t out_buf_size)
 {
-    if (!bytes || !out_buf || out_buf_size < (length * 2 + 1)) {
+    if (!bytes || !out_buf || out_buf_size < (bytes_cnt * 2 + 1)) {
         // Write empty string if buffer too small
         if (out_buf && out_buf_size > 0) {
             out_buf[0] = '\0';
@@ -1610,10 +1627,10 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_b
         return LT_FAIL;
     }
 
-    for (uint16_t i = 0; i < length; i++) {
+    for (uint16_t i = 0; i < bytes_cnt; i++) {
         sprintf(&out_buf[i * 2], "%02" PRIX8, bytes[i]);
     }
-    out_buf[length * 2] = '\0';
+    out_buf[bytes_cnt * 2] = '\0';
 
     return LT_OK;
 }
@@ -1792,7 +1809,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
 }
 
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
-                                 lt_bank_id_t bank_id)
+                                 const lt_bank_id_t bank_id)
 {
 #ifdef ABAB
     if (!h || !update_data || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX

@@ -81,14 +81,14 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
  * @brief Extracts ST_Pub from TROPIC01's Certificate Store
  *
  * @param store       Certificate store handle
- * @param stpub       TROPIC01 STPUB to be filled, unique for each device
- * @param stpub_len   Length of buffer for STPub
+ * @param stpub       When the function executes successfully, TROPIC01's STPUB of length `TR01_STPUB_LEN` will be
+ * written into this buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub, int stpub_len);
+lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub);
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of returned CHIP ID */
@@ -133,16 +133,18 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
 /**
  * @brief Read TROPIC01's firmware bank info
  *
- * @param h           Device's handle
- * @param bank_id     ID of firmware bank (one from enum lt_bank_id_t)
- * @param header      Buffer to store fw header bytes into
- * @param max_len     Length of a buffer
+ * @param h                  Device's handle
+ * @param bank_id            ID of firmware bank (one from enum lt_bank_id_t)
+ * @param header             Buffer to store fw header bytes into
+ * @param header_max_size    Size of the header buffer
+ * @param header_read_size   Number of bytes read into the header buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header, const uint16_t max_len);
+lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t *header,
+                             const uint16_t header_max_size, uint16_t *header_read_size);
 
 /**
  * @brief Establishes encrypted secure session between TROPIC01 and host MCU
@@ -263,15 +265,16 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
  * @note RISC-V FW logging can be disabled in the I/R-Config and for the production chips, it **will** be disabled. This
  * function is used mainly for internal debugging and not expected to be used by the user.
  *
- * @param h            Device's handle
- * @param log_msg      Buffer for the log message (atleast 255B)
- * @param log_msg_len  Length of the log message
+ * @param h                    Device's handle
+ * @param log_msg              Buffer for the log message (atleast 255B)
+ * @param log_msg_max_size     Size of the log message buffer
+ * @param log_msg_read_size    Number of bytes read into the log message buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len);
+lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, const uint16_t log_msg_max_size, uint16_t *log_msg_read_size);
 
 /**
  * @brief A dummy command to check the Secure Channel Session communication by exchanging a message with TROPIC01, whish
@@ -280,13 +283,13 @@ lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, uint16_t *log_msg_len)
  * @param h           Device's handle
  * @param msg_out     Ping message going out
  * @param msg_in      Ping message going in
- * @param len         Length of both messages (msg_out and msg_in)
+ * @param msg_len     Length of both messages (msg_out and msg_in)
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t len);
+lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const uint16_t msg_len);
 
 /**
  * @brief Writes pairing public key into TROPIC01's pairing key slot 0-3
@@ -337,7 +340,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_r_config_write(lt_handle_t *h, enum lt_config_obj_addr_t addr, const uint32_t obj);
+lt_ret_t lt_r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr, const uint32_t obj);
 
 /**
  * @brief Reads configuration object specified by `addr`
@@ -396,28 +399,30 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
  * @param h           Device's handle
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
- * @param size        Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
+ * @param data_size   Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
  * `TR01_R_MEM_DATA_SIZE_MAX`)
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t size);
+lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t data_size);
 
 /**
  * @brief Reads bytes from a given slot of the User Partition in the R memory
  *
- * @param h           Device's handle
- * @param udata_slot  Memory's slot to be read
- * @param data        Buffer to read data into
- * @param size        Number of bytes read into data
+ * @param h                Device's handle
+ * @param udata_slot       Memory's slot to be read
+ * @param data             Buffer to read data into
+ * @param data_max_size    Size of the data buffer
+ * @param data_read_size   Number of bytes read into data buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, uint16_t *size);
+lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *data, const uint16_t data_max_size,
+                            uint16_t *data_read_size);
 
 /**
  * @brief Erases the given slot of the User Partition in the R memory
@@ -434,15 +439,15 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
 /**
  * @brief Gets random bytes from TROPIC01's Random Number Generator.
  *
- * @param h           Device's handle
- * @param buff        Buffer
- * @param len         Number of random bytes (255 bytes is the maximum)
+ * @param h                 Device's handle
+ * @param rnd_bytes         Buffer for the random bytes
+ * @param rnd_bytes_cnt     Number of random bytes to get (255 bytes is the maximum)
  *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
- * of returned value
+ * @retval                  LT_OK Function executed successfully
+ * @retval                  other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value
  */
-lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *buff, const uint16_t len);
+lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t rnd_bytes_cnt);
 
 /**
  * @brief Generates ECC key in the specified ECC key slot
@@ -475,19 +480,21 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
 /**
  * @brief Reads ECC public key corresponding to a private key in the specified ECC key slot.
  *
- * @param h           Device's handle
- * @param ecc_slot    Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
- * @param key         Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519, 64B
- * for P256), according to *curve*
- * @param curve       Will be filled by curve byte
- * @param origin      Will be filled by origin byte
+ * @param h              Device's handle
+ * @param ecc_slot       Slot number TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
+ * @param key            Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519,
+ * 64B for P256), according to *curve*
+ * @param key_max_size   Size of the key buffer
+ * @param curve          When the function executes successfully, the type of elliptic curve public key will be written
+ * @param origin         When the function executes successfully, the origin of the public key (generated/stored) will
+ * be written
  *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
- * of returned value
+ * @retval               LT_OK Function executed successfully
+ * @retval               other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value
  */
-lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, lt_ecc_curve_type_t *curve,
-                         lt_ecc_key_origin_t *origin);
+lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *key, const uint8_t key_max_size,
+                         lt_ecc_curve_type_t *curve, lt_ecc_key_origin_t *origin);
 
 /**
  * @brief Erases ECC key from the specified ECC key slot
@@ -507,7 +514,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot);
  * @param h           Device's handle
  * @param ecc_slot    Slot containing a private key, TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param msg         Buffer containing a message
- * @param msg_len     Length of msg's buffer
+ * @param msg_len     Length of the message
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
  *
  * @retval            LT_OK Function executed successfully
@@ -521,7 +528,7 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
  * @brief Verifies ECDSA signature. Host side only, does not require TROPIC01.
  *
  * @param msg         Message
- * @param msg_len     Length of message
+ * @param msg_len     Length of the message
  * @param pubkey      Public key related to private key which signed the message (64B)
  * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
  *
@@ -538,7 +545,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  * @param h           Device's handle
  * @param ecc_slot    Slot containing a private key, TR01_ECC_SLOT_0 - TR01_ECC_SLOT_31
  * @param msg         Buffer containing a message to sign, max length is 4096B
- * @param msg_len     Length of a message
+ * @param msg_len     Length of the message
  * @param rs          Buffer for storing a signature in a form of R and S bytes (should always have length 64B)
  *
  * @retval            LT_OK Function executed successfully
@@ -552,7 +559,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
  * @brief Verifies EdDSA signature. Host side only, does not require TROPIC01.
  *
  * @param msg         Message
- * @param msg_len     Length of message. Max length is 4095
+ * @param msg_len     Length of the message (max length is 4095)
  * @param pubkey      Public key related to private key which signed the message (32B)
  * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
  * lt_ret_t           LT_OK          - success
@@ -614,7 +621,8 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot, const uint8_t *data_out, uint8_t *data_in);
+lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot, const uint8_t *data_out,
+                            uint8_t *data_in);
 
 /** @} */  // end of libtropic_API group
 
@@ -710,13 +718,14 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipriv, uint8_t *shipub, uint8_t pkey_index);
+lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *shipriv, const uint8_t *shipub,
+                                                 const uint8_t pkey_index);
 
 /**
  * @brief Prints bytes in hex format to the given output buffer.
  *
  * @param   bytes         Bytes to print
- * @param   length        Length of `bytes`
+ * @param   bytes_cnt     Number of bytes to print
  * @param   out_buf       Output buffer to print to
  * @param   out_buf_size  Size of `out_buf`
  *
@@ -724,7 +733,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, uint8_t *shipri
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t length, char *out_buf, uint16_t out_buf_size);
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *out_buf, const uint16_t out_buf_size);
 
 /**
  * @brief Interprets fields of CHIP_ID and prints them using the passed printf-like function.
@@ -741,16 +750,16 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
 /**
  * @brief Performs mutable firmware update on ABAB and ACAB silicon revisions.
  *
- * @param h          Device's handle
- * @param update_data  Pointer to the data to be written
+ * @param h                 Device's handle
+ * @param update_data       Pointer to the data to be written
  * @param update_data_size  Size of the data to be written
- * @param bank_id  Bank ID where the update should be applied, valid values are
- *                     For ABAB: TR01_FW_BANK_FW1, TR01_FW_BANK_FW2, TR01_FW_BANK_SPECT1, TR01_FW_BANK_SPECT2
- *                     For ACAB: Parameter is ignored, chip is handling firmware banks on its own
- * @return             LT_OK if success, otherwise returns other error code.
+ * @param bank_id           Bank ID where the update should be applied, valid values are
+ *                             For ABAB: TR01_FW_BANK_FW1, TR01_FW_BANK_FW2, TR01_FW_BANK_SPECT1, TR01_FW_BANK_SPECT2
+ *                             For ACAB: Parameter is ignored, chip is handling firmware banks on its own
+ * @return                  LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size,
-                                 lt_bank_id_t bank_id);
+                                 const lt_bank_id_t bank_id);
 
 /** @} */  // end of libtropic_API_helpers group
 #endif
