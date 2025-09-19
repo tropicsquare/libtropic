@@ -70,6 +70,7 @@ nav:
     - for_developers/index.md
     - Adding a New Embedded Platform: for_developers/adding_embedded_platform.md
     - Adding a New Cryptographic Backend: for_developers/adding_crypto_backend.md
+    - Building the Documentation: for_developers/building_documentation.md
     - Randomization: for_developers/randomization.md
     - Run Static Analysis: for_developers/static_analysis.md
     - Code Formatter: for_developers/code_formatter.md
