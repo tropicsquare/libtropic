@@ -416,8 +416,9 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot);
  * @param key            Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519,
  * 64B for P256), according to *curve*
  * @param key_max_size   Size of the key buffer
- * @param curve          Will be filled by curve type
- * @param origin         Will be filled by origin type
+ * @param curve          When the function executes successfully, the type of elliptic curve public key will be written
+ * @param origin         When the function executes successfully, the origin of the public key (generated/stored) will
+ * be written
  * @return               LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max_size, lt_ecc_curve_type_t *curve,

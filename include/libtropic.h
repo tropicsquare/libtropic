@@ -81,7 +81,8 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store);
  * @brief Extracts ST_Pub from TROPIC01's Certificate Store
  *
  * @param store       Certificate store handle
- * @param stpub       Buffer for the TROPIC01's STPUB (with size `TR01_STPUB_LEN`), unique for each device
+ * @param stpub       When the function executes successfully, TROPIC01's STPUB of length `TR01_STPUB_LEN` will be
+ * written into this buffer
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
@@ -484,8 +485,9 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
  * @param key            Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519,
  * 64B for P256), according to *curve*
  * @param key_max_size   Size of the key buffer
- * @param curve          Will be filled by curve byte
- * @param origin         Will be filled by origin byte
+ * @param curve          When the function executes successfully, the type of elliptic curve public key will be written
+ * @param origin         When the function executes successfully, the origin of the public key (generated/stored) will
+ * be written
  *
  * @retval               LT_OK Function executed successfully
  * @retval               other Function did not execute successully, you might use lt_ret_verbose() to get verbose
