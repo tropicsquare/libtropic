@@ -44,9 +44,6 @@ For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_sh
 * `tropic01_model/` Project for the TROPIC01's model, utilizing the Unix TCP port
 * `vendor/` Third party libraries and tools
 
-> [!TIP]
-> See READMEs in some of these directories for more info.
-
 ## Get started!
 
 Platform repositories, showing example usage of libtropic on known platforms:
