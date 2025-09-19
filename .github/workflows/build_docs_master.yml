@@ -41,4 +41,8 @@ jobs:
 
       - name: Generate MkDocs documentation and deploy
         run: |
+            git checkout gh-pages
+            git fetch origin gh-pages
+            git reset --hard origin/gh-pages
+            git checkout -
             mike deploy --push --update-aliases master latest
