@@ -92,10 +92,3 @@ dl.section dd, dl.bug dd, dl.deprecated dd {
         padding-top: calc(var(--top-height) - 180px);
     }
 }
-
-/* style for re-injected version */
-#projectversion {
-    color: var(--side-nav-foreground);
-    padding-top: 25px;
-    text-align: center;
-}
