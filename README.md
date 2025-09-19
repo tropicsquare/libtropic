@@ -7,6 +7,7 @@ TROPIC01's SDK written in C. Contributors, please follow [guidelines](https://gi
 
 For more information about TROPIC01 chip and its **datasheet** or **User API**, check out developers resources in the [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
 
+Libtropic documentation is available [here](https://tropicsquare.github.io/libtropic/latest/). The default version is generated from the latest version of the master branch, but release versions are also available (via the version selector at the top of the page).
 
 ## Compatibility with TROPIC01 firmware versions
 
@@ -35,7 +36,7 @@ For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_sh
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
 * `include/` Public API header files
 * `keys/` Default pairing keys for slots 1, 2, 3 (used in examples and functional tests)
-* `provisioning_data/` Contains pairing key for slot 0; this data can be used to "provision" the TROPIC01 model (more info [here](tropic01_model/README.md) and [here](provisioning_data/README.md))
+* `provisioning_data/` Contains pairing key for slot 0; this data can be used to "provision" the TROPIC01 model (more info [here](https://tropicsquare.github.io/libtropic/latest/other/provisioning_data/))
 * `scripts/` Build and config scripts
 * `src/` Library's source files
 * `tests/` Functional and unit tests
@@ -52,22 +53,6 @@ Platform repositories, showing example usage of libtropic on known platforms:
 * [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32)
 * [libtropic-linux](https://github.com/tropicsquare/libtropic-linux)
 * [libtropic-util](https://github.com/tropicsquare/libtropic-util)
-
-
-## Documentation
-
-HTML documentation for the latest master version is available [here](https://tropicsquare.github.io/libtropic/).
-
-The documentation can be built manually as follows:
-```sh
-mkdir build
-cd build
-cmake -DLT_BUILD_DOCS=1 ..
-make doc_doxygen
-```
-
-The documentation will be available in the `build/docs/doxygen/html/`.
-Open [index.html](build/docs/doxygen/html/index.html) with your favorite web browser.
 
 ## License
 
