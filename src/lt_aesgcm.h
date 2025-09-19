@@ -14,6 +14,10 @@
 #include "aes/aesgcm.h"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** AES-GCM context structure */
 struct lt_crypto_aes_gcm_ctx_t {
 #if LT_USE_TREZOR_CRYPTO
@@ -75,4 +79,8 @@ int lt_aesgcm_decrypt(void *ctx, const uint8_t *iv, uint32_t iv_len, const uint8
  */
 int lt_aesgcm_end(void *ctx) __attribute__((warn_unused_result));
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_AES_GCM_H

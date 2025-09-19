@@ -10,6 +10,10 @@
 
 #include "bits.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* BOOTLOADER_CO_REGISTERS memory map */
 enum BOOTLOADER_CO_REGS {
     BOOTLOADER_CO_CFG_START_UP_ADDR = 0X0,
@@ -92,4 +96,8 @@ enum BOOTLOADER_CO_REGS {
 #define BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK BIT(0)
 #define BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_POS 0
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // __BOOTLOADER_CO_REGISTER_MAP__

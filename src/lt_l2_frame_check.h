@@ -21,6 +21,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @brief STATUS ﬁeld value */
 #define TR01_L2_STATUS_REQUEST_OK 0x01
 /** @brief STATUS ﬁeld value */
@@ -56,4 +60,8 @@ lt_ret_t lt_l2_frame_check(const uint8_t *frame) __attribute__((warn_unused_resu
 
 /** @} */  // end of group_l2_frame_check_functions
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_L2_FRAME_CHECK_H

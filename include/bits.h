@@ -9,6 +9,10 @@
 #ifndef BITS_H
 #define BITS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define BITS_PER_LONG 32
 
 // ## allows token concatenation
@@ -77,5 +81,9 @@
         _reg &= ~_mask;                  \
         _reg |= FIELD_PREP(_mask, _val); \
     }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // ! BITS_H

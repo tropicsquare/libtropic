@@ -13,6 +13,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define LT_UNIX_TCP_TAG_AND_LENGTH_SIZE (sizeof(uint8_t) + sizeof(uint16_t))
 #define LT_UNIX_TCP_MAX_PAYLOAD_LEN TR01_L2_MAX_FRAME_SIZE
 #define LT_UNIX_TCP_MAX_BUFFER_LEN (LT_UNIX_TCP_TAG_AND_LENGTH_SIZE + LT_UNIX_TCP_MAX_PAYLOAD_LEN)
@@ -67,5 +71,9 @@ typedef struct lt_dev_unix_tcp_t {
     /** @private @brief Emission buffer. */
     struct lt_unix_tcp_buffer_t tx_buffer;
 } lt_dev_unix_tcp_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // LIBTROPIC_PORT_UNIX_TCP_H

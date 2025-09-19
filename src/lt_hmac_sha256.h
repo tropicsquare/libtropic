@@ -12,6 +12,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Length of the hash produced by HMAC function based on SHA256.
  */
@@ -28,4 +32,8 @@
  */
 void lt_hmac_sha256(const uint8_t *key, size_t keylen, const uint8_t *input, size_t ilen, uint8_t *output);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_HMAC_SHA256_H

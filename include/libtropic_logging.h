@@ -12,6 +12,10 @@
 #include <assert.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Only info-level loggers and decorators.
 // This has no effect, test runner just simply copies these lines to the log.
 #define LT_LOG(f_, ...) LT_LOG_INFO(f_, ##__VA_ARGS__)
@@ -91,4 +95,8 @@
         assert(_exp_ == _val_);                                                    \
     }
 
-#endif /* LT_LIBTROPIC_LOGGING_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif // LT_LIBTROPIC_LOGGING_H

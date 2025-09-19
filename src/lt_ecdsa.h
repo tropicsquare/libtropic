@@ -11,6 +11,10 @@
 
 #include "stdint.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief  Checks if ECDSA signature is correct
  *
@@ -23,4 +27,8 @@
 int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
     __attribute__((warn_unused_result));
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_ECDSA_H

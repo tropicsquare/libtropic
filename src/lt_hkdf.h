@@ -12,6 +12,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @details The HMAC key derivation function as described in datasheet
  *
@@ -26,4 +30,8 @@
 void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1,
              uint8_t *output_2);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_HKDF_H

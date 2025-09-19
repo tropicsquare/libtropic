@@ -12,6 +12,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Length of sha256 digest */
 #define LT_SHA256_DIGEST_LENGTH 32
 
@@ -51,4 +55,8 @@ void lt_sha256_update(void *ctx, const uint8_t *input, size_t len);
  */
 void lt_sha256_finish(void *ctx, uint8_t *output);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_SHA256_H

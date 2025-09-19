@@ -19,6 +19,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Initializes handle and L1.
  * @note This is wrapper for platform defined function.
@@ -88,4 +92,8 @@ lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_
 
 /** @} */  // end of group_l1_functions
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // LT_L1_PORT_WRAP_H

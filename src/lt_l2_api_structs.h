@@ -16,6 +16,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @brief Request ID */
 #define TR01_L2_GET_INFO_REQ_ID 0x01
 /** @brief Request length */
@@ -849,4 +853,8 @@ LT_STATIC_ASSERT(
 /** \endcond */
 // clang-format on
 
-#endif  // !LT_L2_API_STRUCTS_H
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // LT_L2_API_STRUCTS_H
