@@ -1,0 +1,122 @@
+site_name: Libtropic SDK Documentation
+site_url: https://tropicsquare.github.io/libtropic
+repo_url: https://github.com/tropicsquare/libtropic
+repo_name: tropicsquare/libtropic
+site_description: Official SDK for the TROPIC01 secure element.
+site_author: Tropic Square
+site_dir: docs_build/
+
+# Theme configuration
+theme:
+  name: material
+  custom_dir: docs/overrides
+  font:
+    text: Inter
+  icon:
+    repo: fontawesome/brands/github
+  logo: img/TS_logo_white_symbol.svg
+  favicon: img/tropic_symbol.ico
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: custom
+      # accent: pink
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      # accent: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      # accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+  features:
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+
+# Navigation menu setup
+nav:
+  - Introduction: index.md
+  - Get Started:
+    - get_started/index.md
+    - Libtropic Architecture: get_started/libtropic_architecture.md
+    - Adding Libtropic to an Existing Project: get_started/adding_to_project.md
+    - Compile Libtropic as a Static Archive: get_started/compile_as_static_archive.md
+    - Debugging: get_started/debugging.md
+  - Examples:
+    - examples/index.md
+    - Reversible Examples: examples/reversible_examples.md
+    - Irreversible Examples: examples/irreversible_examples.md
+  - Tests:
+    - tests/index.md
+    - Functional Tests: tests/functional_tests.md
+    - Unit Tests: tests/unit_tests.md
+  - For Contributors:
+    - for_contributors/index.md
+    - Adding a New Embedded Platform: for_contributors/adding_embedded_platform.md
+    - Adding a New Cryptographic Backend: for_contributors/adding_crypto_backend.md
+    - Run Static Analysis: for_contributors/static_analysis.md
+    - Code Formatter: for_contributors/code_formatter.md
+  - Other:
+    - other/index.md
+    - TROPIC01 Model: other/tropic01_model.md
+    - Provisioning Data: other/provisioning_data.md
+  - API Reference:
+    - doxygen/build/html/index.html
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      cache_safe: true
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - attr_list
+  - github-callouts  # Allows GitHub alerts in Markdown
+  # Following extensions can be used for wider Markdown syntax support
+  - admonition
+  - pymdownx.arithmatex    # For math rendering (optional)
+  - pymdownx.betterem      # Better emphasis handling
+  - pymdownx.caret         # Superscripts
+  - pymdownx.critic        # Suggestions / strike-through
+  - pymdownx.details       # Collapsible sections
+  - pymdownx.highlight     # Extra code highlighting
+  - pymdownx.inlinehilite  # Inline code highlighting
+  - pymdownx.superfences   # Fenced code blocks
+  - pymdownx.tasklist      # Checklists
+
+extra:
+  version:
+    provider: mike
+    default: latest  # We use the 'latest' alias here, because we don't know the name of the latest version,
+                     # but if we always give the latest version the 'latest' alias,
+                     # we don't have to know its name here
+    alias: true
+  social:
+    - icon: fontawesome/brands/x-twitter
+      link: https://twitter.com/tropicsquare
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/tropic-square-s-r-o
+    - icon: fontawesome/brands/github
+      link: https://github.com/tropicsquare/libtropic
+
+extra_css:
+  - stylesheets/extra.css

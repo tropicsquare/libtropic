@@ -10,7 +10,6 @@ include(cmake/strict_compile_flags.cmake)
 
 option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
 option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
-option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
@@ -47,7 +46,6 @@ set(LT_SH0_PRIV_PATH
 
 # Check if cryptography provider is defined
 if(
-    (NOT LT_BUILD_DOCS)        AND
     (NOT LT_USE_TREZOR_CRYPTO) AND
     (NOT LT_CRYPTO_MBEDTLS)
 )
@@ -76,20 +74,6 @@ endif()
 
 set(LT_SILICON_REV "ACAB")
 set(LT_CPU_FW_VERSION "1_0_0")
-
-###########################################################################
-#                                                                         #
-#   Building documentation                                                #
-#                                                                         #
-###########################################################################
-
-if(LT_BUILD_DOCS)
-    find_package(Doxygen REQUIRED)
-    if(Doxygen_FOUND)
-        add_subdirectory(docs)
-        message(STATUS "Doxygen found, enabled documentation building.")
-    endif()
-endif()
 
 ###########################################################################
 #                                                                         #
