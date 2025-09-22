@@ -1,7 +1,7 @@
+# Unit Tests
 !!! bug
     The unit tests are outdated and will be redone in the future.
 
-# Unit Tests
 Check whether function itself are behaving as should.
 
 ## Run Tests
