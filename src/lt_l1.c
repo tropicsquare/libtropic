@@ -20,7 +20,7 @@
 #include "stdio.h"
 #define LT_L1_SPI_DIR_MISO 0
 #define LT_L1_SPI_DIR_MOSI 1
-void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir)
+static void print_hex_chunks(const uint8_t *data, uint8_t len, uint8_t dir)
 {
     if ((!data) || (len == 0)) {
         return;
