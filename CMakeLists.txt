@@ -488,7 +488,8 @@ endif()
 ###########################################################################
 
 # Supported crypto providers
-set(CRYPTO_PROVIDERS "trezor_crypto" "mbedtls")
+# set(CRYPTO_PROVIDERS "trezor_crypto" "mbedtls") # mbedtls is WIP
+set(CRYPTO_PROVIDERS "trezor_crypto")
 
 # These are internal macros for crypto providers
 set(LT_CRYPTO_TREZOR  0 CACHE INTERNAL "")
