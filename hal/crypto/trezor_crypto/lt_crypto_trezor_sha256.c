@@ -10,8 +10,6 @@
 #include <string.h>
 
 #include "hasher.h"
-#include "hmac.h"
-#include "lt_hmac_sha256.h"
 #include "lt_sha256.h"
 
 void lt_sha256_init(void *ctx)
@@ -36,10 +34,5 @@ void lt_sha256_finish(void *ctx, uint8_t *output)
 {
     Hasher *h = (Hasher *)ctx;
     hasher_Final(h, output);
-}
-
-void lt_hmac_sha256(const uint8_t *key, size_t keylen, const uint8_t *input, size_t ilen, uint8_t *output)
-{
-    hmac_sha256(key, keylen, input, ilen, output);
 }
 #endif

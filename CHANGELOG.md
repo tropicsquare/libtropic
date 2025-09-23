@@ -125,6 +125,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `lt_get_log_req()`: Parameter `max_size` to check whether the output buffer is big enough.
 - `lt_r_mem_data_read()`: Parameter `max_size` to check whether the output buffer is big enough.
 - `lt_ecc_key_read()`: Parameter `max_size` to check whether the output buffer is big enough.
+- Created `lt_crypto_trezor_hmac_sha256.c` and moved definition of `lt_hmac_sha256()` there.
 
 ### Fixed
 - `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
