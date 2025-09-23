@@ -71,7 +71,7 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
     // if the chip started to reboot. See errata xy.
     //
     // If the reboot was successful, we only check the frame up to the first CRC frame.
-    if (s2->startup_req_sent && s2->buff[1] == 0x01 && s2->buff[2] == 0x00 && s2->buff[3] == 0x80) {
+    if (s2->startup_req_sent && s2->buff[1] == 0x01 && s2->buff[2] == 0x00 && s2->buff[3] == 0x03) {
         return LT_OK;
     }
 
