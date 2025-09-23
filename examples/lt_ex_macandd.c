@@ -54,6 +54,34 @@ struct lt_macandd_nvm_t {
 } __attribute__((__packed__));
 
 /**
+ * @brief Simple XOR "encryption" function. Replace with another encryption algorithm if needed.
+ *
+ * @param data         32B of data to be encrypted
+ * @param key          32B key used for encryption
+ * @param destination  Buffer into which 32B of encrypted data will be placed
+ */
+static void encrypt(const uint8_t *data, const uint8_t *key, uint8_t *destination)
+{
+    for (uint8_t i = 0; i < 32; i++) {
+        destination[i] = data[i] ^ key[i];
+    }
+}
+
+/**
+ * @brief Simple XOR "decryption" function. Replace with another decryption algorithm if needed.
+ *
+ * @param data         32B of data to be decrypted
+ * @param key          32B key used for decryption
+ * @param destination  Buffer into which 32B of decrypted data will be placed
+ */
+static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destination)
+{
+    for (uint8_t i = 0; i < 32; i++) {
+        destination[i] = data[i] ^ key[i];  //*(data + i) ^= *(key + i);
+    }
+}
+
+/**
  * @brief Example function for setting PIN with Mac And Destroy.
  *
  * @details There are more ways how to implement Mac And Destroy 'PIN set' functionality, differences could be in way of
@@ -160,18 +188,11 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *master_secret, const u
         }
         LT_LOG_INFO("\tOK");
 
-        // Derive k_i = KDF(w, PIN||A)
-        // This key will be used to encrypt master_secret
+        // Derive k_i = KDF(w, PIN||A); k_i will be used to encrypt master_secret
         lt_hmac_sha256(w, sizeof(w), kdf_input_buff, PIN_size + add_size, k_i);
 
-        // Encrypt s using k_i as a key
-        //
-        // Warning: All s[n] are encrypted here using k_i[n] as a key, results are stored into ci[n].
-        // Because size of the 'message s' is the same as a size of the 'key k_i', simple XOR is used here - discuss
-        // more apropriate method with experts on cryptography.
-        for (unsigned int j = 0; j < TR01_MAC_AND_DESTROY_DATA_SIZE; j++) {
-            *(nvm.ci + (i * TR01_MAC_AND_DESTROY_DATA_SIZE + j)) = k_i[j] ^ master_secret[j];
-        }
+        // Encrypt master_secret using k_i as a key and store ciphertext into non volatile storage
+        encrypt(master_secret, k_i, nvm.ci + (i * TR01_MAC_AND_DESTROY_DATA_SIZE));
     }
 
     // Persistently save nvm data into TROPIC01's R memory slot
@@ -304,15 +325,9 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     // Compute k’_i = KDF(w’, PIN’||A)
     lt_hmac_sha256(w_, sizeof(w_), kdf_input_buff, PIN_size + add_size, k_i);
 
-    // Read the ciphertext c_i and tag t from NVM, decrypt c_i with k’_i as the key and obtain s_
-
-    // Warning: All ci[n] arrays were during PIN set phase encrypted by XORing k_i[n] and a key s[n].
-    //
-    // For getting s[n] again, they are decrypted here by XORing ci[n] with k_i[n]
-    // Discuss more propriate method with experts on cryptography.
-    for (unsigned int j = 0; j < sizeof(s_); j++) {
-        s_[j] = *(nvm.ci + (nvm.i * TR01_MAC_AND_DESTROY_DATA_SIZE + j)) ^ k_i[j];
-    }
+    // Read the ciphertext c_i and tag t from NVM, 
+    // decrypt c_i with k’_i as the key and obtain s_
+    decrypt(nvm.ci + (nvm.i * TR01_MAC_AND_DESTROY_DATA_SIZE), k_i, s_);
 
     // Compute tag t = KDF(s, "0x00")
     lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"0", 1, t_);
