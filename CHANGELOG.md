@@ -111,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `lt_get_info_fw_bank()`: Renamed parameter `max_len` to `max_size`.
 - `lt_get_log_req()`: Renamed parameter `log_msg_len` to `read_size`.
 - `lt_r_mem_data_read()`: Renamed parameter `size` to `read_size`.
+- Added new CMake option `LT_CRYPTO` for selecing crypto provider with a string, renamed `LT_USE_TREZOR_CRYPTO` to `LT_CRYPTO_TREZOR`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

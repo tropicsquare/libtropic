@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#if LT_USE_TREZOR_CRYPTO
+#if LT_CRYPTO_TREZOR
 #include "blake256.h"
 #include "blake2b.h"
 #include "groestl.h"
@@ -20,7 +20,7 @@
 #include "ripemd160.h"
 #include "sha2.h"
 #include "sha3.h"
-#elif USE_MBEDTLS
+#elif LT_CRYPTO_MBEDTLS
 // TBD
 #endif
 
