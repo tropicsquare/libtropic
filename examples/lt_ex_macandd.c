@@ -69,23 +69,23 @@ struct lt_macandd_nvm_t {
  * @param add         Additional data to be used in M&D sequence (size between MAC_AND_DESTROY_ADD_SIZE_MIN and
  * MAC_AND_DESTROY_ADD_SIZE_MAX)
  * @param add_size    Length of additional data
- * @param secret      Buffer into which secret will be placed when all went successfully
+ * @param final_key      Buffer into which secret will be placed when all went successfully
  * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
  */
 static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN_size, const uint8_t *add,
-                           const uint8_t add_size, uint8_t *secret)
+                           const uint8_t add_size, uint8_t *final_key)
 {
     if (!h || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN) || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || !add
-        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !secret) {
+        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !final_key) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
-    // Clear variable for released secret so there is known data (zeroes) in case this function ended sooner then secret
+    // Clear variable for released final_key so there is known data (zeroes) in case this function ended sooner then final_key
     // was prepared
-    memset(secret, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
+    memset(final_key, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
 
     // Variable used during a process of getting a encryption key k_i
     uint8_t v[LT_HMAC_SHA256_HASH_LEN] = {0};
@@ -191,8 +191,8 @@ static lt_ret_t lt_PIN_set(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN
         goto exit;
     }
 
-    // Final secret is released to the caller
-    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, secret);
+    // final_key is released to the caller
+    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, final_key);
 
 // Cleanup all sensitive data from memory
 exit:
@@ -221,14 +221,14 @@ exit:
  * @param add         Additional data to be used in M&D sequence (size between MAC_AND_DESTROY_ADD_SIZE_MIN and
  * MAC_AND_DESTROY_ADD_SIZE_MAX)
  * @param add_size    Length of additional data
- * @param secret      Buffer ito which secret will be saved
+ * @param final_key   Buffer into which final_key will be saved
  * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
  */
 static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t PIN_size, const uint8_t *add,
-                             const uint8_t add_size, uint8_t *secret)
+                             const uint8_t add_size, uint8_t *final_key)
 {
     if (!h || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN) || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || !add
-        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !secret) {
+        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !final_key) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session != LT_SECURE_SESSION_ON) {
@@ -237,7 +237,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
 
     // Clear variable for released secret so there is known data (zeroes) in case this function ended sooner then secret
     // was prepared
-    memset(secret, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
+    memset(final_key, 0, TR01_MAC_AND_DESTROY_DATA_SIZE);
 
     // Variable used during a process of getting a decryption key k_i
     uint8_t v_[LT_HMAC_SHA256_HASH_LEN] = {0};
@@ -366,8 +366,8 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     }
     LT_LOG_INFO("\tOK");
 
-    // Calculate secret and store it into passed array
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"2", 1, secret);
+    // Calculate final_key and store it into passed array
+    lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"2", 1, final_key);
 
 // Cleanup all sensitive data from memory
 exit:
