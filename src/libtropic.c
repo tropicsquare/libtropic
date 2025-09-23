@@ -49,6 +49,7 @@ lt_ret_t lt_init(lt_handle_t *h)
 #endif
     h->l3.session = LT_SECURE_SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
+    h->l2.startup_req_sent = false;
     if (ret != LT_OK) {
         return ret;
     }
@@ -491,10 +492,13 @@ lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
     p_l2_req->startup_id = startup_id;
 
     lt_ret_t ret = lt_l2_send(&h->l2);
+    h->l2.startup_req_sent = true;
     if (ret != LT_OK) {
+        h->l2.startup_req_sent = false;
         return ret;
     }
     ret = lt_l2_receive(&h->l2);
+    h->l2.startup_req_sent = false;
     if (ret != LT_OK) {
         return ret;
     }

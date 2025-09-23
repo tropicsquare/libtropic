@@ -8,6 +8,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <stdbool.h>
 #include "libtropic_macros.h"
 #include "stdint.h"
 #include "tropic01_application_co.h"
@@ -103,6 +104,7 @@ typedef struct lt_l2_state_t {
     void *device;
     uint8_t mode;
     uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
+    bool startup_req_sent;
 } lt_l2_state_t;
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
