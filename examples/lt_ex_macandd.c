@@ -325,7 +325,7 @@ static lt_ret_t lt_PIN_check(lt_handle_t *h, const uint8_t *PIN, const uint8_t P
     // Compute k’_i = KDF(w’, PIN’||A)
     lt_hmac_sha256(w_, sizeof(w_), kdf_input_buff, PIN_size + add_size, k_i);
 
-    // Read the ciphertext c_i and tag t from NVM, 
+    // Read the ciphertext c_i and tag t from NVM,
     // decrypt c_i with k’_i as the key and obtain s_
     decrypt(nvm.ci + (nvm.i * TR01_MAC_AND_DESTROY_DATA_SIZE), k_i, s_);
 
