@@ -186,7 +186,7 @@ class lt_test_runner:
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
-            await self.platform.set_platform_power(True)
+            await self.platform.set_platform_power(True) # Power should be already on (by default value in OpenOCD config)
             await self.platform.set_spi_en(True)
 
             await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
