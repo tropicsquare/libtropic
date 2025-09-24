@@ -59,7 +59,7 @@ void add_crc(void *req)
 {
     uint8_t *p = (uint8_t *)req;
     // CRC is calculated from REQ_DATA, REQ_ID and REQ_LEN.
-    uint16_t len = p[TR01_L2_REQ_RSP_LEN_OFFSET] + TR01_L2_REQ_ID_SIZE + TR01_L2_REQ_RSP_LEN_SIZE;
+    uint16_t len = p[TR01_L2_REQ_LEN_OFFSET] + TR01_L2_REQ_ID_SIZE + TR01_L2_REQ_RSP_LEN_SIZE;
 
     uint16_t crc = crc16(p, len);
 

@@ -30,12 +30,26 @@
 /** @brief Maximal number of data bytes in one L1 transfer */
 #define TR01_L1_LEN_MAX (TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE)
 
+/** @brief Offset of REQ_ID field */
+#define TR01_L2_REQ_ID_OFFSET 0u
+/** @brief Offset of REQ_LEN field */
+#define TR01_L2_REQ_LEN_OFFSET 1u
+/** @brief Offset of REQ_DATA field or REQ_CRC field in case of zero data length */
+#define TR01_L2_REQ_DATA_REQ_CRC_OFFSET 2u
+
+/** @brief Offset of CHIP_STATUS field */
+#define TR01_L2_CHIP_STATUS_OFFSET 0u
+/** @brief Offset of STATUS field */
+#define TR01_L2_STATUS_OFFSET 1u
+/** @brief Offset of RSP_LEN field */
+#define TR01_L2_RSP_LEN_OFFSET 2u
+/** @brief Offset of RSP_DATA field or RSP_CRC field in case of zero data length */
+#define TR01_L2_RSP_DATA_RSP_CRC_OFFSET 3u
+
 /** @brief Size of REQ_ID field */
 #define TR01_L2_REQ_ID_SIZE 1u
 /** @brief Size of REQ_LEN or RSP_LEN field */
 #define TR01_L2_REQ_RSP_LEN_SIZE 1u
-/** @brief Offset of REQ_LEN or RSP_LEN field */
-#define TR01_L2_REQ_RSP_LEN_OFFSET 1u
 /** @brief Size of REQ_CRC or RSP_CRC field */
 #define TR01_L2_REQ_RSP_CRC_SIZE 2u
 /** @brief Size of STATUS field */
