@@ -9,14 +9,13 @@
  * @license For the license see file LICENSE.md file in the root directory of this source tree.
  */
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /** @brief Wrapper for static assertion. */
 // #define LT_STATIC_ASSERT(x) _Static_assert((x), "Static assertion failed");
-#define LT_STATIC_ASSERT(x) 
+#define LT_STATIC_ASSERT(x)
 
 /** @brief Get struct member size at compile-time. */
 #define LT_MEMBER_SIZE(type, member) (sizeof(((type *)0)->member))

@@ -96,4 +96,4 @@ lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_
 }
 #endif
 
-#endif // LT_L1_PORT_WRAP_H
+#endif  // LT_L1_PORT_WRAP_H

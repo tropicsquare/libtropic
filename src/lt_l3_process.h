@@ -92,4 +92,4 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3);
 }
 #endif
 
-#endif // LT_L3_TRANSFER_H
+#endif  // LT_L3_TRANSFER_H

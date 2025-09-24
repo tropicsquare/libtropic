@@ -64,4 +64,4 @@ lt_ret_t lt_l2_frame_check(const uint8_t *frame) __attribute__((warn_unused_resu
 }
 #endif
 
-#endif // LT_L2_FRAME_CHECK_H
+#endif  // LT_L2_FRAME_CHECK_H

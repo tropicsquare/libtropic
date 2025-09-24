@@ -59,4 +59,4 @@ void lt_sha256_finish(void *ctx, uint8_t *output);
 }
 #endif
 
-#endif // LT_SHA256_H
+#endif  // LT_SHA256_H

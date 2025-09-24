@@ -319,4 +319,4 @@ enum APPLICATION_CO_REGS {
 }
 #endif
 
-#endif // __APPLICATION_CO_REGISTER_MAP__
+#endif  // __APPLICATION_CO_REGISTER_MAP__

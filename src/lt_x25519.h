@@ -35,4 +35,4 @@ void lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk);
 }
 #endif
 
-#endif // LT_X25519_H
+#endif  // LT_X25519_H

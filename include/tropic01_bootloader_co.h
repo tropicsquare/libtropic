@@ -100,4 +100,4 @@ enum BOOTLOADER_CO_REGS {
 }
 #endif
 
-#endif // __BOOTLOADER_CO_REGISTER_MAP__
+#endif  // __BOOTLOADER_CO_REGISTER_MAP__

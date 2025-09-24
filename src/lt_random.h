@@ -32,4 +32,4 @@ lt_ret_t lt_random_bytes(lt_handle_t *h, void *buff, size_t count) __attribute__
 }
 #endif
 
-#endif // LT_RANDOM_H
+#endif  // LT_RANDOM_H

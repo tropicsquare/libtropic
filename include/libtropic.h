@@ -772,4 +772,4 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, con
 }
 #endif
 
-#endif // LT_LIBTROPIC_H
+#endif  // LT_LIBTROPIC_H

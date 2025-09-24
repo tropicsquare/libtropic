@@ -34,4 +34,4 @@ void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size,
 }
 #endif
 
-#endif // LT_HKDF_H
+#endif  // LT_HKDF_H

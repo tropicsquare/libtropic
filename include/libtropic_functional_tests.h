@@ -457,4 +457,4 @@ void lt_test_rev_get_log_req(lt_handle_t *h);
 }
 #endif
 
-#endif // LT_LIBTROPIC_FUNC_TESTS_H
+#endif  // LT_LIBTROPIC_FUNC_TESTS_H

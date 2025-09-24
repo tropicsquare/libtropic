@@ -31,4 +31,4 @@ int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *p
 }
 #endif
 
-#endif // LT_ECDSA_H
+#endif  // LT_ECDSA_H

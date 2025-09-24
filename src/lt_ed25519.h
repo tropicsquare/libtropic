@@ -31,4 +31,4 @@ int lt_ed25519_sign_open(const uint8_t *msg, const uint16_t msg_len, const uint8
 }
 #endif
 
-#endif // LT_ED25519_H
+#endif  // LT_ED25519_H

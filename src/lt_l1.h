@@ -73,4 +73,4 @@ lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeo
 }
 #endif
 
-#endif // LT_L1_H
+#endif  // LT_L1_H

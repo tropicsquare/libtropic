@@ -36,4 +36,4 @@ void lt_hmac_sha256(const uint8_t *key, size_t keylen, const uint8_t *input, siz
 }
 #endif
 
-#endif // LT_HMAC_SHA256_H
+#endif  // LT_HMAC_SHA256_H

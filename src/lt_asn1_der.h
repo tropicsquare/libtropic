@@ -59,4 +59,4 @@ lt_ret_t asn1der_find_object(const uint8_t *stream, uint16_t len, int32_t obj_id
 }
 #endif
 
-#endif // LT_ASN1_DER_H
+#endif  // LT_ASN1_DER_H

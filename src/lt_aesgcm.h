@@ -83,4 +83,4 @@ int lt_aesgcm_end(void *ctx) __attribute__((warn_unused_result));
 }
 #endif
 
-#endif // LT_AES_GCM_H
+#endif  // LT_AES_GCM_H

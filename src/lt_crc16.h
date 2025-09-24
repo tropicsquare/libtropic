@@ -37,4 +37,4 @@ void add_crc(void *req);
 }
 #endif
 
-#endif // LT_CRC16_H
+#endif  // LT_CRC16_H

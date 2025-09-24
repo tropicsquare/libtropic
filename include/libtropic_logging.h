@@ -99,4 +99,4 @@ extern "C" {
 }
 #endif
 
-#endif // LT_LIBTROPIC_LOGGING_H
+#endif  // LT_LIBTROPIC_LOGGING_H

@@ -994,4 +994,4 @@ typedef struct lt_config_t {
 }
 #endif
 
-#endif // LT_LIBTROPIC_COMMON_H
+#endif  // LT_LIBTROPIC_COMMON_H

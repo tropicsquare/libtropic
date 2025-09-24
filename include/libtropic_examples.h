@@ -143,4 +143,4 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
 }
 #endif
 
-#endif // LT_LIBTROPIC_EXAMPLES_H
+#endif  // LT_LIBTROPIC_EXAMPLES_H
