@@ -8,12 +8,13 @@ Code in the `tropic01_model/` directory is meant to be compiled under Unix-like 
 > [!WARNING]
 > There are some examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those will always fail against the model. Namely:
 > 
-> - `lt_ex_fw_update`.
+> - `lt_ex_fw_update`,
+> - `lt_ex_show_chip_id_and_fwver` (model does not implement Bootloader mode, so you can use `tests/functional/lt_test_rev_get_info_req_app.c` to get this info from the Application mode atleast).
 
 ## How it Works?
 Both processes (tests/examples and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
 > [!NOTE]
-This functionality is implemented with the help of the Unix TCP HAL implemented in `hal/port/unix/lt_port_unix_tcp.c`.
+This functionality is implemented with the help of the Unix TCP HAL implemented in `hal/port/unix/libtropic_port_unix_tcp.c`.
 
 ## Model Setup
 First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
@@ -46,7 +47,7 @@ make
 ```
 As a result, executables for each example are built in the `tropic01_model/build/` directory.
 > [!TIP]
-To enable debugging symbols (e.g. to use GDB) and debug logging, add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
+To enable debugging symbols (e.g. to use GDB), add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
 >
 > To use AddressSanitizer (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 
@@ -85,7 +86,7 @@ make
 ```
 As a result, executables for each test are built in the `tropic01_model/build/` directory.
 > [!TIP]
-To enable debugging symbols (e.g. to use GDB) and debug logging, add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
+To enable debugging symbols (e.g. to use GDB), add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
 >
 > To use AddressSanitizer (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 >

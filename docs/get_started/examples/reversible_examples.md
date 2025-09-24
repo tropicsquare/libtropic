@@ -1,7 +1,4 @@
 # Reversible Examples
-!!! bug
-    Add more info.
-
 List of reversible examples.
 
 ## lt_ex_hello_world.c

@@ -1,7 +1,4 @@
 # Irreversible Examples
-!!! bug
-    Add more info.
-
 List of irreversible examples.
 
 ## lt_ex_hw_wallet.c

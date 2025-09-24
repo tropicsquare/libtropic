@@ -51,11 +51,11 @@ mkdocs serve
 ```
 In the terminal, you should see the address of the server. While holding CTRL, left-click the address to open it in your browser (or just manually copy it).
 
-!!! tip
-    Each time you edit some files inside `docs/`, the server does not have to be stopped and run again - the server content will be automatically reloaded on each file save.
-
 !!! warning
     MkDocs does not rebuilt the Doxygen documentation automatically - to rebuild it, repeat the steps from section [Building with Doxygen](#building-with-doxygen).
+
+!!! tip
+    Each time you edit some files inside `docs/`, the server does not have to be stopped and run again - the server content will be automatically reloaded on each file save.
 
 ## Versioned Documentation
 When you build the documentation using the steps from the section [Building with MkDocs](#building-with-mkdocs), the version selector in the page header is not visible as it is on our [GitHub Pages](https://tropicsquare.github.io/libtropic/latest/). That is because for the versioning, we use the [mike](https://github.com/jimporter/mike) plugin for MkDocs. This plugin maintains the `gh-pages` branch, from which the [GitHub Pages](https://tropicsquare.github.io/libtropic/latest/) are deployed.

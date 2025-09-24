@@ -54,32 +54,33 @@ nav:
   - Get Started:
     - get_started/index.md
     - Libtropic Architecture: get_started/libtropic_architecture.md
-    - Adding Libtropic to an Existing Project: get_started/adding_to_project.md
-    - Compile Libtropic as a Static Archive: get_started/compile_as_static_archive.md
+    - Integrating Libtropic:
+      - get_started/integrating_libtropic/index.md
+      - Integration Examples: get_started/integrating_libtropic/integration_examples.md
+      - Adding to an Existing Project: get_started/integrating_libtropic/adding_to_project.md
+      - Compiling as a Static Archive: get_started/integrating_libtropic/compile_as_static_archive.md
+    - Examples:
+      - get_started/examples/index.md
+      - Reversible Examples: get_started/examples/reversible_examples.md
+      - Irreversible Examples: get_started/examples/irreversible_examples.md
     - Logging: get_started/logging.md
     - Debugging: get_started/debugging.md
-  - Examples:
-    - examples/index.md
-    - Reversible Examples: examples/reversible_examples.md
-    - Irreversible Examples: examples/irreversible_examples.md
-  - Tests:
-    - tests/index.md
-    - Functional Tests: tests/functional_tests.md
-    - Unit Tests: tests/unit_tests.md
-  - For Developers:
-    - for_developers/index.md
-    - Adding a New Embedded Platform: for_developers/adding_embedded_platform.md
-    - Adding a New Cryptographic Backend: for_developers/adding_crypto_backend.md
-    - Building the Documentation: for_developers/building_documentation.md
-    - Randomization: for_developers/randomization.md
-    - Run Static Analysis: for_developers/static_analysis.md
-    - Code Formatter: for_developers/code_formatter.md
+  - API Reference:
+    - doxygen/build/html/index.html
+  - For Contributors:
+    - for_contributors/index.md
+    - Contributing Guide: for_contributors/contributing_guide.md
+    - Tests:
+      - for_contributors/tests/index.md
+      - Functional Tests: for_contributors/tests/functional_tests.md
+      - Unit Tests: for_contributors/tests/unit_tests.md
+    - Adding a New Embedded Platform: for_contributors/adding_embedded_platform.md
+    - Adding a New Cryptographic Backend: for_contributors/adding_crypto_backend.md
+    - Building the Documentation: for_contributors/building_documentation.md
   - Other:
     - other/index.md
     - TROPIC01 Model: other/tropic01_model.md
     - Provisioning Data: other/provisioning_data.md
-  - API Reference:
-    - doxygen/build/html/index.html
 
 plugins:
   - search
@@ -94,6 +95,9 @@ markdown_extensions:
       permalink: true
   - attr_list
   - github-callouts  # Allows GitHub alerts in Markdown
+  - pymdownx.snippets:  # Allows to render Markdowns from other directories
+      base_path: [!relative $config_dir]
+      check_paths: true
   # Following extensions can be used for wider Markdown syntax support
   - admonition
   - pymdownx.arithmatex    # For math rendering (optional)

@@ -16,8 +16,8 @@ set(LT_BUILD_EXAMPLES ON)
 set(LT_BUILD_TESTS ON)
 
 # It is necessary to set provider of cryptography functions.
-# You can use trezor_crypto as the cryptography provider.
-set(LT_USE_TREZOR_CRYPTO ON)
+# You can use e.g. trezor_crypto as the cryptography provider.
+set(LT_CRYPTO "trezor_crypto")
 
 # Add path to the libtropic's repository root folder
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
@@ -29,11 +29,16 @@ target_link_options(produced_binary PRIVATE <your_linker_flags>)
 
 
 !!! note
-    The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to the [Platform Repositories](../index.md#platform-repositories) section.
+    The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to the [Integration Examples](integration_examples.md) section.
 
 !!! note
     We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
 
 
 ## Do You Use Makefile Instead of CMake?
-In this case, you have to list all libtropic `*.c` and `*.h` files manually inside your Makefile and then for every CMake option you need (located in the libtropic's root `CMakelists.txt`), you add the `-D` switch when building with Make. The same has to be done for the cryptographic provider library, for example in `vendor/trezor_crypto/`.
+In this case, you have to:
+
+1. list all libtropic `*.c` and `*.h` files manually inside your Makefile,
+2. for every CMake option `<CMAKE_OPTION>` you need (located in the libtropic's root `CMakelists.txt`), add the `-D<CMAKE_OPTION>` switch when building with Make.
+
+The same has to be done for the cryptographic provider library, for example in `vendor/trezor_crypto/`.
