@@ -9,6 +9,7 @@
  */
 
 #include <stdbool.h>
+
 #include "libtropic_macros.h"
 #include "stdint.h"
 #include "tropic01_application_co.h"
