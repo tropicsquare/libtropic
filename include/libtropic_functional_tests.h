@@ -2,7 +2,7 @@
 #define LT_LIBTROPIC_FUNC_TESTS_H
 
 /**
- * @defgroup libtropic_funct_tests libtropic functional tests
+ * @defgroup libtropic_funct_tests 3. Functional Tests
  * @brief Test all libtropic main API functions.
  * @{
  */

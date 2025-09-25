@@ -2,7 +2,7 @@
 #define LT_LIBTROPIC_PORT_H
 
 /**
- * @defgroup group_port_functions Layer 1 port specific functions
+ * @defgroup group_port_functions 6.2. Layer 1: Port Interface
  * @brief Defined for each supported platform.
  * @details Function used by host platform during l1 operations. Check 'hal/port/' folder to see what is supported.
  *          All of these functions have to be impemented by the port for libtropic to work.

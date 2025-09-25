@@ -2,7 +2,7 @@
 #define LT_L2_FRAME_CHECK_H
 
 /**
- * @defgroup group_l2_frame_check_functions Layer 2 frame check functions
+ * @defgroup group_l2_frame_check_functions 5.1. Layer 2: Frame Check
  * @brief Used internally
  * @details Functions for L2 frame checking
  *

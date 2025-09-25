@@ -2,7 +2,7 @@
 #define LT_LIBTROPIC_EXAMPLES_H
 
 /**
- * @defgroup libtropic_examples libtropic examples
+ * @defgroup libtropic_examples 2. Examples
  * @brief Show simple example usage of libtropic.
  * @{
  */

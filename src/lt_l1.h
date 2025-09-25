@@ -2,7 +2,7 @@
 #define LT_L1_H
 
 /**
- * @defgroup group_l1_functions Layer 1 functions
+ * @defgroup group_l1_functions 6. Layer 1
  * @brief Used internally
  * @details Function used internally by libtropic during l1 operation.
  *
