@@ -62,7 +62,7 @@ set(SDK_SRCS ${SDK_SRCS}
 )
 ```
 
-At the end of `CMakeLists.txt`, where the code is guarded with `# LT_CRYPTO handling begin` and `# LT_CRYPTO handling end`, do the following:
+At the end of `CMakeLists.txt`, in the section `# LT_CRYPTO handling` do the following:
 
 1. Add the new provider to the `CRYPTO_PROVIDERS` list:
 ```cmake
