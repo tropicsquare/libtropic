@@ -11,6 +11,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef enum lt_asn1der_obj_kind_t {
     LT_ASN1DER_BOOLEAN = 0x01,
     LT_ASN1DER_INTEGER = 0x02,
@@ -51,4 +55,8 @@ typedef enum lt_asn1der_crop_kind_t { LT_ASN1DER_CROP_SUFFIX, LT_ASN1DER_CROP_PR
 lt_ret_t asn1der_find_object(const uint8_t *stream, uint16_t len, int32_t obj_id, uint8_t *buf, int buf_len,
                              enum lt_asn1der_crop_kind_t crop_kind) __attribute__((warn_unused_result));
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_ASN1_DER_H

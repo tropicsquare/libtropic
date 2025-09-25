@@ -19,6 +19,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** This bit in CHIP_STATUS byte signalizes that chip is ready to accept requests */
 #define TR01_L1_CHIP_MODE_READY_bit 0x01
 /** This bit in CHIP_STATUS byte signalizes that chip is in ALARM mode */
@@ -65,4 +69,8 @@ lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeo
 
 /** @} */  // end of group_l1_functions
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_L1_H

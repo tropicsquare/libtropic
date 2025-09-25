@@ -22,6 +22,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Max length of a path to a device in the device tree.
  */
@@ -119,4 +123,8 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
 
 /** @} */  // end of group_port_functions
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_LIBTROPIC_PORT_H

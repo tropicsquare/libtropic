@@ -11,6 +11,10 @@
 
 #include "stdint.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @details This function computes x25519 shared secret
  * @param priv   Private key 32B long
@@ -27,4 +31,8 @@ void lt_X25519(const uint8_t *priv, const uint8_t *pub, uint8_t *secret);
  */
 void lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_X25519_H

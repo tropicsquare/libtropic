@@ -28,6 +28,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Initiates secure session.
  *
@@ -587,5 +591,9 @@ lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot,
 lt_ret_t lt_in__mac_and_destroy(lt_handle_t *h, uint8_t *data_in);
 
 /** @} */  // end of group_libtropic_l3
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // LIBTROPIC_L3_H

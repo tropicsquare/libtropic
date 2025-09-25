@@ -19,6 +19,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef LT_EXAMPLE_TEST_KEYS_DECLARED
 #define LT_EXAMPLE_TEST_KEYS_DECLARED
 extern uint8_t sh0priv[];
@@ -135,4 +139,8 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
 
 /** @} */  // end of libtropic_examples group
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_LIBTROPIC_EXAMPLES_H

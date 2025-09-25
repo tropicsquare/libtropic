@@ -21,6 +21,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Initialize handle and transport layer
  *
@@ -764,4 +768,8 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, con
 /** @} */  // end of libtropic_API_helpers group
 #endif
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_LIBTROPIC_H

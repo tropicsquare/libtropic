@@ -19,6 +19,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @brief L3 RESULT ﬁeld Value */
 #define TR01_L3_RESULT_OK 0xC3u
 /** @brief L3 RESULT ﬁeld Value */
@@ -84,4 +88,8 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3);
 
 /** @} */  // end of group_l3_functions group
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_L3_TRANSFER_H

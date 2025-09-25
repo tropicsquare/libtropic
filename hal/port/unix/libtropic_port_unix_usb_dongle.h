@@ -13,6 +13,10 @@
 
 #include "libtropic_port.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define LT_UNIX_USB_DONGLE_READ_WRITE_DELAY 10
 #define LT_UNIX_USB_DONGLE_SPI_TRANSFER_BUFF_SIZE_MAX ((TR01_L1_LEN_MAX * 2) + 1)
 
@@ -33,5 +37,9 @@ typedef struct lt_dev_unix_usb_dongle_t {
     /** @private @brief UART device file descriptor. */
     int fd;
 } lt_dev_unix_usb_dongle_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // LIBTROPIC_PORT_UNIX_USB_DONGLE_H

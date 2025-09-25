@@ -13,6 +13,10 @@
 
 #include "libtropic_port.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Device structure for Unix SPI port.
  *
@@ -40,5 +44,9 @@ typedef struct lt_dev_unix_spi_t {
     /** @private @brief SPI mode. */
     uint32_t mode;
 } lt_dev_unix_spi_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // LIBTROPIC_PORT_UNIX_SPI_H

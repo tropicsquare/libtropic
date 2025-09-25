@@ -10,6 +10,10 @@
 
 #include "bits.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* APPLICATION_CO_REGISTERS memory map */
 enum APPLICATION_CO_REGS {
     APPLICATION_CO_CFG_GPO_ADDR = 0X14,
@@ -311,4 +315,8 @@ enum APPLICATION_CO_REGS {
 #define APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_MACANDD_96_127_MASK GENMASK(31, 24)
 #define APPLICATION_CO_CFG_UAP_MAC_AND_DESTROY_MACANDD_96_127_POS 24
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // __APPLICATION_CO_REGISTER_MAP__

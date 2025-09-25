@@ -16,6 +16,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @brief Command ID */
 #define TR01_L3_PING_CMD_ID 0x01
 /** @brief Command length */
@@ -1748,4 +1752,8 @@ LT_STATIC_ASSERT(
 /** \endcond */
 // clang-format on
 
-#endif  // !LT_L3_API_STRUCTS_H
+#ifdef __cplusplus
+}
+#endif
+
+#endif  // LT_L3_API_STRUCTS_H

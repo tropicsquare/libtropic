@@ -19,6 +19,10 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern lt_ret_t (*lt_test_cleanup_function)(void);
 
 /**
@@ -449,4 +453,8 @@ void lt_test_rev_get_log_req(lt_handle_t *h);
 
 /** @} */  // end of libtropic_funct_tests group
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_LIBTROPIC_FUNC_TESTS_H

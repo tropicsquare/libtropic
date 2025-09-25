@@ -13,6 +13,10 @@
 #include "tropic01_application_co.h"
 #include "tropic01_bootloader_co.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // This macro is used to change static functions into exported one, when compiling unit tests.
 // It allows to unit test static functions.
 #ifndef TEST
@@ -986,4 +990,8 @@ typedef struct lt_config_t {
     uint32_t obj[LT_CONFIG_OBJ_CNT];
 } lt_config_t;
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_LIBTROPIC_COMMON_H
