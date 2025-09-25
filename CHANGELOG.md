@@ -138,6 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unused `pairing_key_slot_t` enum.
 - `lt_get_st_pub()`: Parameter `stpub_len`.
 - Building the documentation from the root `CMakeLists.txt`.
+- Ceedling unit tests.
+- `LT_STATIC` macro.
 
 ## [1.0.0]
 

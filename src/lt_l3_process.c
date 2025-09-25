@@ -18,7 +18,7 @@
 #include "lt_aesgcm.h"
 #include "lt_l1.h"
 
-LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
+static lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 {
 #ifdef LT_REDUNDANT_ARG_CHECK
     if (!nonce) {

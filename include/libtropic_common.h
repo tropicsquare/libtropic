@@ -17,14 +17,6 @@
 extern "C" {
 #endif
 
-// This macro is used to change static functions into exported one, when compiling unit tests.
-// It allows to unit test static functions.
-#ifndef TEST
-#define LT_STATIC static
-#else
-#define LT_STATIC
-#endif
-
 /** @brief Size of CHIP_STATUS field */
 #define TR01_L1_CHIP_STATUS_SIZE 1u
 /** @brief Maximal number of data bytes in one L1 transfer */

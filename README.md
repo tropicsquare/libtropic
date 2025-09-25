@@ -1,6 +1,6 @@
 # libtropic
 
-![](https://github.com/tropicsquare/libtropic/actions/workflows/unit_tests.yml/badge.svg) ![](https://github.com/tropicsquare/libtropic/actions/workflows/integration_tests.yml/badge.svg) ![](https://github.com/tropicsquare/libtropic/actions/workflows/build_docs.yml/badge.svg) ![](https://tropic-gitlab.corp.sldev.cz/internal/sw-design/libtropic/badges/master/coverage.svg)
+![](https://github.com/tropicsquare/libtropic/actions/workflows/integration_tests.yml/badge.svg) ![](https://github.com/tropicsquare/libtropic/actions/workflows/build_docs_master.yml/badge.svg) ![](https://tropic-gitlab.corp.sldev.cz/internal/sw-design/libtropic/badges/master/coverage.svg)
 
 TROPIC01's SDK written in C. Contributors, please follow [guidelines](https://github.com/tropicsquare/libtropic/blob/master/CONTRIBUTING.md).
 
@@ -39,7 +39,7 @@ For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_sh
 * `provisioning_data/` Contains pairing key for slot 0; this data can be used to "provision" the TROPIC01 model (more info [here](https://tropicsquare.github.io/libtropic/latest/other/provisioning_data/))
 * `scripts/` Build and config scripts
 * `src/` Library's source files
-* `tests/` Functional and unit tests
+* `tests/` Functional tests
 * `TROPIC01_fw_update_files/` Files used for updating TROPIC01's firmware
 * `tropic01_model/` Project for the TROPIC01's model, utilizing the Unix TCP port
 * `vendor/` Third party libraries and tools
