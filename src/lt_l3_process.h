@@ -67,18 +67,6 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3) __attribute__((warn_unused_res
  */
 lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3) __attribute__((warn_unused_result));
 
-#ifdef TEST
-/**
- * @brief Used to increase nonce
- *
- * @param nonce       4B long number used as nonce inside of Noise protocol
- *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully
- */
-LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce) __attribute__((warn_unused_result));
-#endif
-
 /**
  * @brief Invalidates host's session data
  *

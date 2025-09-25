@@ -14,6 +14,3 @@ ts-python-env 0.8
 
 # Tropic flow tools
 ts-latex-lib v0.19
-
-# Testing
-ceedling v0.31.1

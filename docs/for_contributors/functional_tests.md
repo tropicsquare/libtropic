@@ -1,5 +1,5 @@
 # Functional Tests
-Functional tests are implemented in `tests/functional/`.
+Functional tests are used to verify the libtropic core API and are implemented in `tests/functional/`. In the `libtropic` repository, these tests are run against the [TROPIC01 Model](../other/tropic01_model.md) only. Testing aganist the TROPIC01 model is also utilized in a CI job, triggered for the `master` and `develop` branches (pushes and pull requests). The tests can also be run in the [libtropic platform repositories](https://github.com/tropicsquare/libtropic#get-started).
 
 The functional tests are organized into two categories, as some of them may cause irreversible changes to the chip:
 
@@ -25,7 +25,7 @@ To add a new test, you need to:
       (it has to be the same as the name of the function which implements the test)
     - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
       with test source files. Add the source file of your test here.
-5. Make sure your test works - you can run it against the [TROPIC01 Model](../../other/tropic01_model.md). If the test
+5. Make sure your test works - you can run it against the [TROPIC01 Model](../other/tropic01_model.md). If the test
    fails, you either:
     - Did a mistake in the test. Fix it.
     - Or you found a bug - if you are certain it is a bug and not a problem in your test,
