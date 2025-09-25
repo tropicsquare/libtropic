@@ -1,4 +1,4 @@
-# Compile Libtropic as a Static Archive
+# Compiling as a Static Archive
 When compiling libtropic as a static archive, a cryptography provider must always be defined, either in your CMakeLists.txt file or via the CMake command line arguments.
 
 To compile `libtropic` as a static archive on an Unix-like system, do:

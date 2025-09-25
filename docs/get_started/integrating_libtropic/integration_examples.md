@@ -4,15 +4,7 @@ We offer so-called *platform repositories*, where libtropic is utilized as a sub
 - [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32),
 - [libtropic-linux](https://github.com/tropicsquare/libtropic-linux).
 
-All of these repositories consist of:
+!!! tip
+    These repositories include quick start guides to help you get started quickly with one of the supported platforms.
 
-- libtropic as a git submodule,
-- directories for supported platforms:
-    - `CMakeLists.txt`,
-    - include directory,
-    - source directory with `main.c`,
-    - additional files (readme, scripts, ...).
-
-For more detailed info, refer to the aforementioned platform repositories.
-
-Beside these platform repositories, we offer the [libtropic-util](https://github.com/tropicsquare/libtropic-util) repository, which implements a CLI based utility for executing TROPIC01's commands.
+Beside these repositories, we offer the [libtropic-util](https://github.com/tropicsquare/libtropic-util) repository, which implements a CLI based utility for executing TROPIC01's commands.

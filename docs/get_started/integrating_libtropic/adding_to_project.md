@@ -1,4 +1,4 @@
-# Adding Libtropic to an Existing Project
+# Adding to an Existing Project
 We recommend adding libtropic to an existing project as a *git submodule*. Libtropic uses CMake build system, therefore it could be added to compilation of existing CMake projects in a following way:
 
 ```cmake
