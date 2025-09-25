@@ -748,6 +748,16 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *ou
 lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(const char *format, ...));
 
 /**
+ * @brief Prints interpreted firmware header of the given bank using the passed printf-like function.
+ *
+ * @param h            Device's handle
+ * @param bank_id      Bank ID whose header should be printed
+ * @param print_func   printf-like function to use for printing
+ * @retval             LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*print_func)(const char *format, ...));
+
+/**
  * @brief Performs mutable firmware update on ABAB and ACAB silicon revisions.
  *
  * @param h                 Device's handle
