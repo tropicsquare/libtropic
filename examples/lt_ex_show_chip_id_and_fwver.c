@@ -95,8 +95,8 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
             return -1;
         }
 
-        LT_LOG_INFO("Bootloader version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 "    (+ .%02" PRIX8 ")",
-                        fw_ver[3] & 0x7f, fw_ver[2], fw_ver[1], fw_ver[0]);
+        LT_LOG_INFO("Bootloader version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 "    (+ .%02" PRIX8 ")", fw_ver[3] & 0x7f,
+                    fw_ver[2], fw_ver[1], fw_ver[0]);
         LT_LOG_LINE();
 
         LT_LOG_INFO("Reading and printing headers of all 4 FW banks:");
