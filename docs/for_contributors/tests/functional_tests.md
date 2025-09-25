@@ -1,44 +1,59 @@
-# Functional testing
+# Functional Tests
+Functional tests are implemented in `tests/functional/`.
 
-## Adding a new test
+The functional tests are organized into two categories, as some of them may cause irreversible changes to the chip:
+
+- **Reversible** (`lt_test_rev_*.c`): only reversible operations are executed on the TROPIC01 chip.
+- **Irreversible** (`lt_test_ire_*.c`): irreversible operations are executed - the state or contents of the TROPIC01 chip **cannot** be reverted.
+!!! note
+    Functional tests are not compiled by default. To compile functional tests, either
+
+    - pass `-DLT_BUILD_TESTS=1` to `cmake` during compilation, or
+    - in your CMake file, switch the option on: `set(LT_BUILD_TESTS ON)`.
+
+!!! note
+    During build, SH0 keypair is automatically chosen from `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`, this SH0 key is present in the majority of distributed TROPIC01 chips. In certain cases (first   engineering samples) it might be necessary to manually set it (in PEM or DER format) with following cmake switch: `-DLT_SH0_PRIV_PATH=<path to sh0_priv_engineering_sample01.pem>`
+
+## Adding a New Test
 To add a new test, you need to:
-1. Decide whether the test is reversible or not. See [below](#test-types-and-cleanup).
-2. Write the new test. Use the [template below](#test-template).
-3. Add the declaration together with Doxygen comment in the [`include/libtropic_functional_tests.h`](../../include/libtropic_functional_tests.h).
-4. Add the test to [`CMakeLists.txt`](../../CMakeLists.txt):
+
+1. Decide whether the test is reversible or not (see [Test Types and Cleanup](#test-types-and-cleanup) if you are not sure).
+2. Write the new test (see [Test Template](#test-template)).
+3. Add the declaration together with a Doxygen comment to `include/libtropic_functional_tests.h`.
+4. Add the test to the root `CMakeLists.txt`:
     - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST`
       (it has to be the same as the name of the function which implements the test)
     - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
-      with test source files. Add source file of your test here.
-5. Make sure your test works. Use the model: check out [`tests/model_based_project/README.md`](../model_based_project/README.md). If the test
+      with test source files. Add the source file of your test here.
+5. Make sure your test works - you can run it against the [TROPIC01 Model](../../other/tropic01_model.md). If the test
    fails, you either:
     - Did a mistake in the test. Fix it.
-    - Or you found a bug -- if you are certain it is a bug and not a problem in your test,
+    - Or you found a bug - if you are certain it is a bug and not a problem in your test,
       [open an issue](https://github.com/tropicsquare/libtropic/issues/new). Thanks!
 
-### Test types and cleanup
-As the tests are also ran against real chips, we recognize two types of tests:
+### Test Types and Cleanup
+As the tests are also ran against the real chips, we recognize two types of tests:
 
-1. Reversible -- this type of test shall not make any irreversible changes to the chip. It may
-   happen that the test is interrupted by a failed assert. For this cases there is a possibility
-   to define a cleanup function, which is called on every failed assert before test termination.
-   Every test that do some changes which require cleanup afterwards for the test to be truly reversible
-   MUST contain the cleanup function.
-2. Irreversible -- this type of test causes changes which are not reversible by nature (e.g. I-config
-   modifications). Those test do not have to implement cleanup function, as the chip is always
-   "destroyed" after running the test.
+1. *Reversible*. This type of test shall not make any irreversible changes to the chip. It may
+   happen that the test is interrupted by a failed assert. For these cases, there is a possibility
+   to define a cleanup function, which is called on every failed assert before the test termination.
+   If the test does some changes to the chip, which should be reverted after the end of the test,
+   the cleanup function for the test **must** be implemented, to make the test truly reversible.
+2. *Irreversible*. This type of test causes changes which are not reversible by nature (e.g. I-Config
+   modifications). These tests do not have to implement the cleanup function, as the chip state or
+   contents cannot be reverted after the test ends.
 
-#### Cleanup function
+#### Cleanup Function
 If the assert fails, the assert function checks whether the `lt_test_cleanup_function` function pointer
 is not `NULL`. If not, the cleanup function is called automatically before terminating the test. By default, the pointer is initialized to `NULL`.
 
-If you need cleanup function, please create the function and assign the `lt_test_cleanup_function`
+If you need a cleanup function, please create the function and assign the `lt_test_cleanup_function`
 at the right moment in the test (e.g. after you backed up data you would like to restore).
 
 You can of course reuse your cleanup function at the end of the test, so you don't have
 to duplicate the cleanup code if it would be the same. If you wrap the function call in the `LT_TEST_ASSERT`, do not forget to set `lt_test_cleanup_function` back to `NULL` beforehands, otherwise the cleanup will be called twice.
 
-### Test template
+### Test Template
 Change the lines with `TODO`.
 
 ```c
@@ -60,7 +75,7 @@ Change the lines with `TODO`.
 lt_handle_t *g_h;
 
 // TODO: REMOVE OR EDIT
-lt_ret_t lt_new_test_cleanup(void)
+static lt_ret_t lt_new_test_cleanup(void)
 {
     LT_LOG_INFO("Starting secure session with slot %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
     ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);

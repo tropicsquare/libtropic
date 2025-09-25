@@ -1,0 +1,48 @@
+name: Build docs on master branch and release to GitHub Pages
+on:
+  push:
+    branches:
+      - 'master'
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Fetch gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+
+      - name: Configure git credentials
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+            sudo apt-get install doxygen graphviz
+            pip install -r docs/requirements.txt
+
+      - name: Generate Doxygen HTML documentation
+        run: |
+            pushd docs/doxygen/
+            sed "s|^\(PROJECT_NUMBER\s*=\s*\).*|\1 master (latest)|" Doxyfile.in | doxygen -
+            popd
+
+      - name: Generate MkDocs documentation and deploy
+        run: |
+            git checkout gh-pages
+            git fetch origin gh-pages
+            git reset --hard origin/gh-pages
+            git checkout -
+            mike deploy --push --update-aliases master latest

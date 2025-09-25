@@ -6,7 +6,7 @@ on:
 
 jobs:
   check_tag_branch:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       do_release: ${{ steps.check_tag_is_on_master.outputs.DO_RELEASE }}
 
@@ -26,9 +26,9 @@ jobs:
               echo "DO_RELEASE=false" >> $GITHUB_OUTPUT
             fi
 
-  create_release:
+  create_release_and_deploy_docs:
     needs: check_tag_branch
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: ${{ needs.check_tag_branch.outputs.do_release == 'true' }}  # Skip release if tag is not on master
 
     steps:
@@ -54,3 +54,36 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+
+      - name: Configure git credentials
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+            sudo apt-get install doxygen graphviz
+            pip install -r docs/requirements.txt
+
+      - name: Generate Doxygen HTML documentation
+        run: |
+            pushd docs/doxygen/
+            sed "s|^\(PROJECT_NUMBER\s*=\s*\).*|\1 $TAG_NAME|" Doxyfile.in | doxygen -
+            popd
+
+      - name: Generate MkDocs documentation and deploy
+        run: |
+            git checkout gh-pages
+            git fetch origin gh-pages
+            git reset --hard origin/gh-pages
+            git checkout -
+            mike deploy --push $TAG_NAME

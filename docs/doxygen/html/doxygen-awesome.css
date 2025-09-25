@@ -27,11 +27,15 @@ SOFTWARE.
 
 */
 
+
+/* load Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 html {
     /* primary theme color. This will affect the entire websites color scheme: links, arrows, labels, ... */
-    --primary-color: #1779c4;
-    --primary-dark-color: #335c80;
-    --primary-light-color: #70b1e9;
+    --primary-color: #0032FF;
+    --primary-dark-color: #0032FF;
+    --primary-light-color: #0032FF;
 
     /* page base colors */
     --page-background-color: #ffffff;
@@ -60,7 +64,7 @@ html {
      * font-family: the normal font for text, headlines, menus
      * font-family-monospace: used for preformatted text in memtitle, code, fragments
      */
-    --font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+    --font-family: "Inter", sans-serif;
     --font-family-monospace: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
 
     /* font sizes */
@@ -113,7 +117,7 @@ html {
      */
     --menu-display: block;
 
-    --menu-focus-foreground: var(--page-background-color);
+    --menu-focus-foreground: var(--search-menu-hover-color);
     --menu-focus-background: var(--primary-color);
     --menu-selected-background: rgba(0,0,0,.05);
 
@@ -187,9 +191,9 @@ html {
     html:not(.light-mode) {
         color-scheme: dark;
 
-        --primary-color: #1982d2;
-        --primary-dark-color: #86a9c4;
-        --primary-light-color: #4779ac;
+        --primary-color: #0032FF;
+        --primary-dark-color: #0032FF;
+        --primary-light-color: #0032FF;
 
         --box-shadow: 0 2px 8px 0 rgba(0,0,0,.35);
 
@@ -308,6 +312,7 @@ body {
     color: var(--page-foreground-color);
     background-color: var(--page-background-color);
     font-size: var(--page-font-size);
+    box-sizing: border-box;
 }
 
 body, table, div, p, dl, #nav-tree .label, .title,
@@ -332,7 +337,7 @@ p.reference, p.definition {
 }
 
 a:link, a:visited, a:hover, a:focus, a:active {
-    color: var(--primary-color) !important;
+    color: var(--link-color) !important;
     font-weight: 500;
     background: none;
 }
@@ -366,11 +371,28 @@ a.anchor {
 }
 
 #titlearea {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+
     width: auto;
-    padding: var(--spacing-medium) var(--spacing-large);
+    padding: var(--spacing-large);
+    padding-bottom: var(--spacing-small);
     background: none;
     color: var(--header-foreground);
     border-bottom: none;
+}
+
+#projectrow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#projecttitle {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -379,32 +401,34 @@ a.anchor {
     }
 }
 
-#titlearea table tbody tr {
-    height: auto !important;
-}
-
 #projectname {
     font-size: var(--title-font-size);
     font-weight: 600;
+    color: white;
+}
+
+#projectnumberrow {
+    margin-top: .5em;
 }
 
 #projectnumber {
     font-family: inherit;
-    font-size: 60%;
+    font-size: 80%;
+    color: white;
+
+    margin-left: calc(20% + 1rem);
 }
 
 #projectbrief {
     font-family: inherit;
     font-size: 80%;
+    color: white;
+    line-height: normal;
 }
 
 #projectlogo {
-    vertical-align: middle;
-}
-
-#projectlogo img {
-    max-height: calc(var(--title-font-size) * 2);
-    margin-right: var(--spacing-small);
+    max-height: 80%;
+    width: 20%;
 }
 
 .sm-dox, .tabs, .tabs2, .tabs3 {
@@ -418,7 +442,7 @@ a.anchor {
 }
 
 .main-menu-btn-icon, .main-menu-btn-icon:before, .main-menu-btn-icon:after {
-    background: var(--page-secondary-foreground-color);
+    background: white;
 }
 
 @media screen and (max-width: 767px) {
