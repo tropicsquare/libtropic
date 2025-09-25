@@ -13,6 +13,7 @@
 #include <stdint.h>
 
 #include "libtropic_common.h"
+#include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "lt_l1_port_wrap.h"
 
@@ -77,6 +78,8 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
         if (s2->buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
             lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
             LT_UNUSED(ret_unused);  // We don't care about it, we return LT_L1_CHIP_ALARM_MODE anyway.
+
+            LT_LOG_DEBUG("CHIP_STATUS: 0x%x", s2->buff[0]);
             return LT_L1_CHIP_ALARM_MODE;
         }
 
