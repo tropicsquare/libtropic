@@ -127,10 +127,10 @@ typedef struct lt_l3_state_t {
     enum lt_secure_session_state_t session;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
-#if LT_USE_TREZOR_CRYPTO
+#if LT_CRYPTO_TREZOR
     uint8_t encrypt[352] __attribute__((aligned(16)));  // Because sizeof(lt_aes_gcm_ctx_t) == 352;
     uint8_t decrypt[352] __attribute__((aligned(16)));
-#elif USE_MBEDTLS
+#elif LT_CRYPTO_MBEDTLS
 #warning "Warning: MBED Tls is not implemented yet";
 #else
     // Default size of gcm context structures are set to reflect sizes used in trezor_crypto library

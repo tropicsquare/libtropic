@@ -21,9 +21,9 @@ extern "C" {
 
 /** sha256 context structure */
 struct lt_crypto_sha256_ctx_t {
-#ifdef USE_MBEDTLS
+#if LT_CRYPTO_MBEDTLS
     uint32_t space[32];
-#elif LT_USE_TREZOR_CRYPTO
+#elif LT_CRYPTO_TREZOR
     uint32_t space[256];
 #endif
 };

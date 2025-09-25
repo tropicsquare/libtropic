@@ -8,8 +8,7 @@ cmake_minimum_required(VERSION 3.21.0)
 
 include(cmake/strict_compile_flags.cmake)
 
-option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
-option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
+option(LT_CRYPTO "Set a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
@@ -96,15 +95,6 @@ set(LT_SH0_PRIV_PATH
     CACHE FILEPATH
     "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)"
 )
-
-# Check if cryptography provider is defined
-if(
-    (NOT LT_BUILD_DOCS)        AND
-    (NOT LT_USE_TREZOR_CRYPTO) AND
-    (NOT LT_CRYPTO_MBEDTLS)
-)
-    message(FATAL_ERROR "No cryptography provider is defined.")
-endif()
 
 # Check whether compiling standalone (e.g. as a library or doc only) or as a child project (= has parent scope)
 # and save result to HAS_PARENT_SCOPE.
@@ -491,6 +481,53 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
 
 endif()
 
+###########################################################################
+#                                                                         #
+#   LT_CRYPTO handling                                                    #
+#                                                                         #
+###########################################################################
+
+# Supported crypto providers
+# set(CRYPTO_PROVIDERS "trezor_crypto" "mbedtls") # mbedtls is WIP
+set(CRYPTO_PROVIDERS "trezor_crypto")
+
+# These are internal macros for crypto providers
+set(LT_CRYPTO_TREZOR  0 CACHE INTERNAL "")
+set(LT_CRYPTO_MBEDTLS 0 CACHE INTERNAL "")
+
+# Handle LT_CRYPTO
+if(LT_CRYPTO STREQUAL "trezor_crypto")
+    
+    message(STATUS "Crypto provider set to trezor_crypto")
+    set(LT_CRYPTO_TREZOR 1)
+
+    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
+    target_link_libraries(tropic PRIVATE trezor_crypto)
+
+elseif(LT_CRYPTO STREQUAL "mbedtls")
+
+    message(STATUS "Crypto provider set to mbedtls")
+    set(LT_CRYPTO_MBEDTLS 1)
+
+else()
+
+    string(REPLACE ";" ", " ALLOWED_PROVIDERS_STR "${CRYPTO_PROVIDERS}")    
+    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${ALLOWED_PROVIDERS_STR}")
+    
+endif()
+
+# Propagate crypto provider internal switches
+target_compile_definitions(tropic PUBLIC
+    LT_CRYPTO_TREZOR=${LT_CRYPTO_TREZOR}
+    LT_CRYPTO_MBEDTLS=${LT_CRYPTO_MBEDTLS}
+)
+
+###########################################################################
+#                                                                         #
+#   Other options handling                                                #
+#                                                                         #
+###########################################################################
 
 if (LT_SILICON_REV STREQUAL "ABAB")
     target_compile_definitions(tropic PRIVATE ABAB)
@@ -500,13 +537,6 @@ endif()
 
 if(LT_PRINT_SPI_DATA)
     target_compile_definitions(tropic PRIVATE LT_PRINT_SPI_DATA)
-endif()
-
-if(LT_USE_TREZOR_CRYPTO)
-    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
-    target_link_libraries(tropic PRIVATE trezor_crypto)
-    target_compile_definitions(tropic PRIVATE LT_USE_TREZOR_CRYPTO)
 endif()
 
 if(LT_HELPERS)

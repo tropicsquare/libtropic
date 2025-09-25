@@ -39,7 +39,7 @@ project(tropic01_model
 ###########################################################################
 
 # Use trezor crypto as a source of backend cryptography code
-set(LT_USE_TREZOR_CRYPTO ON)
+set(LT_CRYPTO "trezor_crypto")
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")

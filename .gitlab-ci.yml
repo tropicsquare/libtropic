@@ -38,7 +38,7 @@ build_library:
     - rm -rf build/
     - mkdir build
     - cd build
-    - cmake -DLT_USE_TREZOR_CRYPTO=1 ..
+    - cmake -DLT_CRYPTO=trezor_crypto ..
     - make
 
 build_integration_tests:
@@ -50,7 +50,7 @@ build_integration_tests:
     - cd tests/integration/
     - mkdir build
     - cd build
-    - cmake -DLT_USE_TREZOR_CRYPTO=1 ..
+    - cmake -DLT_CRYPTO=trezor_crypto ..
     - make
 
 LT_BUILD_DOCS:
