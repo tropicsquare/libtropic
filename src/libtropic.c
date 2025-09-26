@@ -1863,19 +1863,19 @@ lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*pr
 
     switch (bank_id) {
         case TR01_FW_BANK_FW1:
-            print_func("    Reading header of firmware bank 1:\r\n");
+            print_func("    Reading header from Application's firmware bank 1:\r\n");
             break;
         case TR01_FW_BANK_FW2:
-            print_func("    Reading header of firmware bank 2:\r\n");
+            print_func("    Reading header from Application's firmware bank 2:\r\n");
             break;
         case TR01_FW_BANK_SPECT1:
-            print_func("    Reading header of SPECT bank 1:\r\n");
+            print_func("    Reading header from SPECT's firmware bank 1:\r\n");
             break;
         case TR01_FW_BANK_SPECT2:
-            print_func("    Reading header of SPECT bank 2:\r\n");
+            print_func("    Reading header from SPECT's foirmware bank 2:\r\n");
             break;
         default:
-            LT_LOG_ERROR("    Reading header: Unknown bank ID: %d\r\n", (int)bank_id);
+            print_func("    Reading header: Unknown bank ID: %d\r\n", (int)bank_id);
             return LT_FAIL;
     }
 
@@ -1922,7 +1922,7 @@ lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*pr
         print_func("    No firmware present in a given bank\r\n");
     }
     else {
-        LT_LOG_ERROR("Unexpected header size %" PRIu16 "\r\n", read_header_size);
+        print_func("Unexpected header size %" PRIu16 "\r\n", read_header_size);
         return LT_FAIL;
     }
 
