@@ -73,9 +73,7 @@ int lt_ex_fw_update(lt_handle_t *h)
             lt_deinit(h);
             return -1;
         }
-        else {
-            LT_LOG_INFO("OK");
-        }
+        LT_LOG_INFO("OK");
     }
     else {
         LT_LOG_ERROR("Chip couldn't get into MAINTENANCE mode");
