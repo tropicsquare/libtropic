@@ -1854,7 +1854,7 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, con
 
 lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*print_func)(const char *format, ...))
 {
-    if (!bank_id || !print_func) {
+    if (!h || !print_func) {
         return LT_PARAM_ERR;
     }
 
