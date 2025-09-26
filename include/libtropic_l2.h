@@ -2,9 +2,8 @@
 #define LIBTROPIC_L2_H
 
 /**
- * @defgroup group_l2_functions Layer 2 functions
- * @brief Used internally
- * @details Function used during L2 operation.
+ * @defgroup group_l2_functions 5. Layer 2
+ * @brief Functions for communication on Layer 2 (used internally)
  *
  * @{
  */

@@ -2,7 +2,7 @@
 #define LIBTROPIC_L3_H
 
 /**
- * @defgroup libtropic_l3 libtropic Layer 3 functions
+ * @defgroup libtropic_l3 4. Layer 3
  * @brief Expected to be used by an application when using separate calls for L3 data out and L3 data in
  * @details This module provides functions for separate L3 communication with TROPIC01. Function prepended with
  * 'lt_out__' are used to prepare data for sending to TROPIC01, while functions prepended with 'lt_in__' are used to

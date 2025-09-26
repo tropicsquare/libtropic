@@ -2,9 +2,8 @@
 #define LT_L3_TRANSFER_H
 
 /**
- * @defgroup group_l3_functions Layer 3 transfer functions
- * @brief Used internally
- * @details Function used during l3 operation.
+ * @defgroup group_l3_functions 4.1. Layer 3: Encrypt/Decrypt
+ * @brief Functions for Layer 3 packet encrypting/decrypting
  *
  * @{
  */

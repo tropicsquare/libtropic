@@ -2,7 +2,7 @@
 #define LT_LIBTROPIC_H
 
 /**
- * @defgroup libtropic_API libtropic API functions
+ * @defgroup libtropic_API 1. Libtropic API
  * @brief Expected to be used by an application
  * @details Dear users, please use this API. It contains all functions you need to interface with TROPIC01 device.
  * @{
@@ -632,7 +632,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot
 
 #ifdef LT_HELPERS
 /**
- * @defgroup libtropic_API_helpers libtropic API helpers
+ * @defgroup libtropic_API_helpers 1.1. Libtropic API: Helpers
  * @brief These functions are usually wrappers around one or more TROPIC01 commands, beside `lt_ret_verbose()` and
  * `lt_print_bytes()`.
  * @{
