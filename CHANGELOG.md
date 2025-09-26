@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Mac And Destroy example - lt_PIN_set() accepts master secret, example provides separate interfaces for encrypt() and decrypt() operations
+- Mac And Destroy example - lt_PIN_set renamed to lt_new_PIN_setup() and accepts master secret, example provides separate interfaces for encrypt() and decrypt() operations, lt_PIN_check renamed to lt_PIN_entry_check() to reflect naming in app note, MAc And Destroy example refactored
 - Changed prefixes of all platform HAL files to `libtropic_`.
 - `lt_l2.h`, `lt_l2.c`, `lt_l3.h`, `lt_l3.c`: change prefix to `libtropic_`.
 - Renamed `LIBT_DEBUG` to `LT_REDUNDANT_ARG_CHECK`, as it is used only for the redundant argument checks.
