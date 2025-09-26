@@ -1922,7 +1922,7 @@ lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*pr
         print_func("    No firmware present in a given bank\r\n");
     }
     else {
-        LT_LOG_ERROR("Unexpected header size %d\r\n", read_header_size);
+        LT_LOG_ERROR("Unexpected header size %" PRIu16 "\r\n", read_header_size);
         return LT_FAIL;
     }
 
