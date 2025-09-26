@@ -114,6 +114,8 @@ class lt_test_runner:
                     elif "ERROR" in line:
                         logger_platform.error(f"{line}")
                         err_count += 1
+                    elif "DEBUG" in line:
+                        logger_platform.debug(f"{line}")
                     else:
                         logger_platform.info(f"{line}")
                         logger_runner.error("Received unknown message type!")
