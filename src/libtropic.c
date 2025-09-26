@@ -1886,7 +1886,7 @@ lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*pr
     }
 
     if (read_header_size == TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1) {
-        print_func("    Bootloader v1.0.1 detected, reading 20B header\r\n");
+        print_func("    Bootloader v1.0.1 detected, reading %dB header\r\n", TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1);
         struct lt_header_boot_v1_t *p_h = (struct lt_header_boot_v1_t *)header;
 
         print_func("      Type:      %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "\r\n", p_h->type[3], p_h->type[2],
