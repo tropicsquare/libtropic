@@ -67,6 +67,15 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
         return ret;
     }
 
+    // Fix of the chip FW bug, where several last bits of the frame may be missing
+    // if the chip started to reboot. See Erratum CI_TR01_ERR_2025091800.
+    //
+    // If the reboot was successful, we only check the frame up to the first CRC byte.
+    if (s2->startup_req_sent && s2->buff[TR01_L2_STATUS_OFFSET] == TR01_L2_STATUS_REQUEST_OK
+        && s2->buff[TR01_L2_RSP_LEN_OFFSET] == 0x00 && s2->buff[TR01_L2_RSP_DATA_RSP_CRC_OFFSET] == 0x03) {
+        return LT_OK;
+    }
+
     ret = lt_l2_frame_check(s2->buff);
 
     if ((ret == LT_L2_CRC_ERR) || (ret == LT_L2_GEN_ERR)) {

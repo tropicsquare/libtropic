@@ -8,6 +8,8 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <stdbool.h>
+
 #include "libtropic_macros.h"
 #include "stdint.h"
 #include "tropic01_application_co.h"
@@ -24,12 +26,26 @@ extern "C" {
 /** @brief Maximal number of data bytes in one L1 transfer */
 #define TR01_L1_LEN_MAX (TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE)
 
+/** @brief Offset of REQ_ID field */
+#define TR01_L2_REQ_ID_OFFSET 0u
+/** @brief Offset of REQ_LEN field */
+#define TR01_L2_REQ_LEN_OFFSET 1u
+/** @brief Offset of REQ_DATA field or REQ_CRC field in case of zero data length */
+#define TR01_L2_REQ_DATA_REQ_CRC_OFFSET 2u
+
+/** @brief Offset of CHIP_STATUS field */
+#define TR01_L2_CHIP_STATUS_OFFSET 0u
+/** @brief Offset of STATUS field */
+#define TR01_L2_STATUS_OFFSET 1u
+/** @brief Offset of RSP_LEN field */
+#define TR01_L2_RSP_LEN_OFFSET 2u
+/** @brief Offset of RSP_DATA field or RSP_CRC field in case of zero data length */
+#define TR01_L2_RSP_DATA_RSP_CRC_OFFSET 3u
+
 /** @brief Size of REQ_ID field */
 #define TR01_L2_REQ_ID_SIZE 1u
 /** @brief Size of REQ_LEN or RSP_LEN field */
 #define TR01_L2_REQ_RSP_LEN_SIZE 1u
-/** @brief Offset of REQ_LEN or RSP_LEN field */
-#define TR01_L2_REQ_RSP_LEN_OFFSET 1u
 /** @brief Size of REQ_CRC or RSP_CRC field */
 #define TR01_L2_REQ_RSP_CRC_SIZE 2u
 /** @brief Size of STATUS field */
@@ -99,6 +115,7 @@ typedef struct lt_l2_state_t {
     void *device;
     uint8_t mode;
     uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
+    bool startup_req_sent;
 } lt_l2_state_t;
 
 // #define LT_SIZE_OF_L3_BUFF (1000)
