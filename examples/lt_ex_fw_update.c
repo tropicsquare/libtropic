@@ -25,6 +25,7 @@
  * It is recommended to update both Application and SPECT firmware banks with the same firmware.
  *
  * @param h Pointer to lt_handle_t structure
+ * @returns 0 on success, -1 otherwise
  */
 
 int lt_ex_fw_update(lt_handle_t *h)
