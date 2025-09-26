@@ -6,7 +6,7 @@ When debugging, some additional compiler flags are needed to produce debugging i
 
 After this, you can use debugging tools of your choice, e.g. [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html) or [Valgrind](https://valgrind.org/). Refer to each tool's documentation for the installation instructions.
 
-However, if you were to use e.g. [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), you would have to add more compiler flags. That is why we added the `LT_ASAN` option into our main `CMakeLists.txt`, along with the `LT_ASAN_COMPILE_FLAGS` and `LT_ASAN_LINK_FLAGS` variables. If your project is using CMake, you could add the following lines into your `CMakeLists.txt` file:
+If you want to use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), you have to add more compiler flags. That is why we added the `LT_ASAN` option into our main `CMakeLists.txt`, along with the `LT_ASAN_COMPILE_FLAGS` and `LT_ASAN_LINK_FLAGS` variables. If your project is using CMake, you can add the following lines into your `CMakeLists.txt` file:
 ```cmake
 if(LT_ASAN)
     message(STATUS "AddressSanitizer (ASan) is enabled for the entire project.")
