@@ -14,4 +14,7 @@ if(LT_ASAN)
     add_link_options(${LT_ASAN_LINK_FLAGS})
 endif()
 ```
-and be able to link the static version of [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), if `LT_ASAN` is set either via the command line or directly in `CMakeLists.txt`. These lines were taken from the project for the [TROPIC01 Model](../other/tropic01_model.md), located in `tropic01_model/`. If you are debugging on any Unix-like operating system, you do not have to make any changes and can directly debug with the [TROPIC01 Model](../other/tropic01_model.md), where the environment for debugging is already prepared (the section provides all information on how to do that).
+After that, you will be able to link the static version of [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), if `LT_ASAN` is set either via the command line or directly in `CMakeLists.txt`.
+
+> [!NOTE]
+If you are debugging on any Unix-like operating system, you do not have to make any changes and can directly debug with the [TROPIC01 Model](../other/tropic01_model.md), where the environment for debugging is already prepared (the section provides all information on how to do that).
