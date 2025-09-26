@@ -68,7 +68,7 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
     }
 
     // Fix of the chip FW bug, where several last bits of the frame may be missing
-    // if the chip started to reboot. See Errata CI_TR01_ERR_2025091800.
+    // if the chip started to reboot. See Erratum CI_TR01_ERR_2025091800.
     //
     // If the reboot was successful, we only check the frame up to the first CRC byte.
     if (s2->startup_req_sent && s2->buff[TR01_L2_STATUS_OFFSET] == TR01_L2_STATUS_REQUEST_OK
