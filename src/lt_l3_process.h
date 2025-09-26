@@ -3,8 +3,7 @@
 
 /**
  * @defgroup group_l3_functions 4.1. Layer 3: Encrypt/Decrypt
- * @brief Used internally
- * @details Function used during l3 operation.
+ * @brief Functions for Layer 3 packet encrypting/decrypting
  *
  * @{
  */

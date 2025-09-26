@@ -3,8 +3,7 @@
 
 /**
  * @defgroup group_l2_functions 5. Layer 2
- * @brief Used internally
- * @details Function used during L2 operation.
+ * @brief Functions for communication on Layer 2 (used internally)
  *
  * @{
  */

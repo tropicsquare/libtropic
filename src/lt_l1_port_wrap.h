@@ -3,8 +3,7 @@
 
 /**
  * @defgroup group_l1_port_wrap_functions 6.1. Layer 1: Port Wrappers
- * @brief Used internally
- * @details Function used internally by libtropic during L1 operation.
+ * @brief Functions that call port specific functions (used internally)
  *
  * @{
  */

@@ -3,7 +3,7 @@
 
 /**
  * @defgroup group_l2_frame_check_functions 5.1. Layer 2: Frame Check
- * @brief Used internally
+ * @brief Functions for checking Layer 2 frames
  * @details Functions for L2 frame checking
  *
  * @{

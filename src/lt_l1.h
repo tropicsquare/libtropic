@@ -3,8 +3,7 @@
 
 /**
  * @defgroup group_l1_functions 6. Layer 1
- * @brief Used internally
- * @details Function used internally by libtropic during l1 operation.
+ * @brief Functions for communication on Layer 1 (used internally)
  *
  * @{
  */
