@@ -4,7 +4,7 @@ When debugging, some additional compiler flags are needed to produce debugging i
 1. specifying `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake` in the command line,
 2. putting `set(CMAKE_BUILD_TYPE "Debug")` into *yours* or the *libtropic's* main `CMakeLists.txt`.
 
-After this, you can use debugging tools of your choice, e.g. [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html) or [Valgrind](https://valgrind.org/), which are available straight from the command line by writing `gdb` or `valgrind` before the name of the binary.
+After this, you can use debugging tools of your choice, e.g. [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html) or [Valgrind](https://valgrind.org/). Refer to each tool's documentation for the installation instructions.
 
 However, if you were to use e.g. [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), you would have to add more compiler flags. That is why we added the `LT_ASAN` option into our main `CMakeLists.txt`, along with the `LT_ASAN_COMPILE_FLAGS` and `LT_ASAN_LINK_FLAGS` variables. If your project is using CMake, you could add the following lines into your `CMakeLists.txt` file:
 ```cmake
