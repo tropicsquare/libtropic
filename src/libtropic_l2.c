@@ -70,7 +70,7 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
     // Fix of the chip FW bug, where several last bits of the frame may be missing
     // if the chip started to reboot. See Errata TODO NUMBER.
     //
-    // If the reboot was successful, we only check the frame up to the first CRC frame.
+    // If the reboot was successful, we only check the frame up to the first CRC byte.
     if (s2->startup_req_sent && s2->buff[TR01_L2_STATUS_OFFSET] == TR01_L2_STATUS_REQUEST_OK
         && s2->buff[TR01_L2_RSP_LEN_OFFSET] == 0x00 && s2->buff[TR01_L2_RSP_DATA_RSP_CRC_OFFSET] == 0x03) {
         return LT_OK;
