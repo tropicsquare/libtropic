@@ -117,6 +117,23 @@ class TS04Control:
         print(f"ID: \'{id}\'")
         print(f"Version: \'{ver}\'")
         return True
+    
+    def status(self) -> bool:
+        print("Getting TS04 status...")
+
+        try:
+            pwr  = self.__send_command("PWR").rstrip("OK\r\n")
+            con  = self.__send_command("CON").rstrip("OK\r\n")
+            mode = self.__send_command("MODE").rstrip("OK\r\n")
+        except self.TS04SerialError:
+            print("Error!")
+            return False
+    
+        print("Current TS04 status:")
+        print(f"[PWR]  {pwr}")
+        print(f"[CON]  {con}")
+        print(f"[MODE] {mode}")
+        
 
 def valid_serial_port(path_str: str) -> Path:
     """Validate that the given path exists and is a file/character device."""
@@ -169,6 +186,11 @@ def main():
         help="Power state: 'on' or 'off'"
     )
 
+    # Command "status"
+    subparsers.add_parser(
+        "status", help="Get TS04 status"
+    )
+
     args = parser.parse_args()
 
     # Command handling
@@ -183,6 +205,9 @@ def main():
     elif args.command == "power":
         power = 1 if args.state == "on" else 0
         ret = ts04control.power(power)
+        sys.exit(not ret) # OK (0) on True, 1 on False return value.
+    elif args.command == "status":
+        ret = ts04control.status()
         sys.exit(not ret) # OK (0) on True, 1 on False return value.
     else:
         parser.print_help()
