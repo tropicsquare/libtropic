@@ -64,9 +64,7 @@ int lt_ex_fw_update(lt_handle_t *h)
             lt_deinit(h);
             return -1;
         }
-        else {
-            LT_LOG_INFO("OK");
-        }
+        LT_LOG_INFO("OK");
 
         LT_LOG_INFO("Updating SPECT FW");
         ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT1);
