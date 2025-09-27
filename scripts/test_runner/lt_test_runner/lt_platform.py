@@ -24,7 +24,7 @@ class lt_platform(ABC):
     def __del__(self):
         pass
 
-    async def openocd_connect(self) -> bool:
+    async def openocd_connect(self, timeout: float = 10) -> bool:
         logger.info("Opening connection to OpenOCD...")
 
         try:
@@ -32,7 +32,7 @@ class lt_platform(ABC):
         except ConnectionRefusedError:
             return False
 
-        await self.ocd_reader.readuntil(">".encode('ascii'))
+        await asyncio.wait_for(self.ocd_reader.readuntil(">".encode('ascii')), timeout)
         logger.info("OpenOCD ready!")
         return True
 
