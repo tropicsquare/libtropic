@@ -27,4 +27,4 @@ Libtropic consists of:
 7. *L1 Layer API*. Functions called by the *L2 Layer API* and wrapping port-specific L1 Layer functions, which are implemented by the HALs (Hardware Abstract Layers) in `hal/port/`. These HALs are initialized using the *Libtropic Public API* and can be used to communicate with multiple TROPIC01 chips, as shown in the figure above.
 
 !!! tip
-    For more information about Libtropic's functions, refer to the [API Reference](../../doxygen/build/html/index.html).
+    For more information about Libtropic's functions, refer to the [API Reference](../doxygen/build/html/index.html).
