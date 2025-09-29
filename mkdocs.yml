@@ -58,7 +58,7 @@ nav:
       - get_started/integrating_libtropic/index.md
       - Integration Examples: get_started/integrating_libtropic/integration_examples.md
       - Adding to an Existing Project: get_started/integrating_libtropic/adding_to_project.md
-      - Compiling as a Static Archive: get_started/integrating_libtropic/compile_as_static_archive.md
+      - Compiling as a Static Library: get_started/integrating_libtropic/compile_as_static_library.md
     - Examples:
       - get_started/examples/index.md
       - Reversible Examples: get_started/examples/reversible_examples.md
