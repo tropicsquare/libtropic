@@ -784,8 +784,6 @@ typedef enum lt_mcounter_index_t {
 } lt_mcounter_index_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
-/** @brief The size of random data passed during MAC-and-Destroy PIN set */
-#define TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE 32u
 /** @brief The size of returned MAC-and-Destroy data (secret/key) */
 #define TR01_MAC_AND_DESTROY_DATA_SIZE 32u
 /** @brief Maximal number of Mac And Destroy tries possible with TROPIC01 */

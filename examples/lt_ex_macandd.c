@@ -21,6 +21,8 @@
 
 /** @brief Last slot in User memory used for storing of M&D related data (only in this example). */
 #define R_MEM_DATA_SLOT_MACANDD (511)
+/** @brief The size of random data passed during MAC-and-Destroy PIN set */
+#define TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE 32u
 
 /** @brief Size of the print buffer. */
 #define PRINT_BUFF_SIZE 196
