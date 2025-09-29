@@ -119,8 +119,8 @@ static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destinatio
 static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, const uint8_t *PIN,
                                  const uint8_t PIN_size, const uint8_t *add, const uint8_t add_size, uint8_t *final_key)
 {
-    if (!h || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN) || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX)
-        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !final_key) {
+    if (!h || !master_secret || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN)
+        || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !final_key) {
         return LT_PARAM_ERR;
     }
     uint8_t add_size_checked;
