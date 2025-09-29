@@ -130,7 +130,7 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     else {
         add_size_checked = add_size;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -275,7 +275,7 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     else {
         add_size_checked = add_size;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 

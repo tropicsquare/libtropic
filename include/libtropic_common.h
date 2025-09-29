@@ -124,16 +124,16 @@ typedef struct lt_l2_state_t {
 #endif
 
 /**
- * @brief Used to indicate whether the Secure Session is on.
+ * @brief Used to indicate whether the Secure Session is on or off.
  *
  */
-typedef enum lt_secure_session_state_t {
+typedef enum lt_secure_session_status_t {
     LT_SECURE_SESSION_ON = 0x5A5A5A5A,
     LT_SECURE_SESSION_OFF = 0
-} lt_secure_session_state_t;
+} lt_secure_session_status_t;
 
 typedef struct lt_l3_state_t {
-    enum lt_secure_session_state_t session;
+    enum lt_secure_session_status_t session_status;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
 #if LT_CRYPTO_TREZOR
@@ -588,12 +588,11 @@ typedef enum lt_pkey_index_t {
     TR01_PAIRING_KEY_SLOT_INDEX_3,
 } lt_pkey_index_t;
 
-/** @brief Structure used to store variables used during establishment of a secure session */
-typedef struct lt_session_state_t {
-    uint8_t ehpriv[32];
-    uint8_t ehpub[32];
-    // lt_pkey_index_t pkey_index;
-} lt_session_state_t;
+/** @brief Stores Host MCU ephemeral keys. */
+typedef struct lt_host_eph_keys_t {
+    uint8_t ehpriv[32]; /**< Host MCU ephemeral private key. */
+    uint8_t ehpub[32];  /**< Host MCU ephemeral public key. */
+} lt_host_eph_keys_t;
 
 /** @brief Length of key used in X25519 function.
  *

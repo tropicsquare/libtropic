@@ -43,7 +43,7 @@ static lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 
 void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
 {
-    s3->session = LT_SECURE_SESSION_OFF;
+    s3->session_status = LT_SECURE_SESSION_OFF;
     memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
     memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
     memset(s3->encrypt, 0, sizeof(s3->encrypt));
@@ -62,7 +62,7 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
         return LT_PARAM_ERR;
     }
 #endif
-    if (s3->session != LT_SECURE_SESSION_ON) {
+    if (s3->session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -85,7 +85,7 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
         return LT_PARAM_ERR;
     }
 #endif
-    if (s3->session != LT_SECURE_SESSION_ON) {
+    if (s3->session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
