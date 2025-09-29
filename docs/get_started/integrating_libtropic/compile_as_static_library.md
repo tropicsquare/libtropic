@@ -32,8 +32,8 @@ add_executable(my_app source1.c source2.c etc.c)
 target_link_libraries(my_app <absolute path to library file>)
 ```
 
-> [!NOTE]
-> There are other options for linking the library (e.g., imported targets). Refer to the CMake documentation for more information.
+!!! note
+    There are other options for linking the library (e.g., imported targets). Refer to the CMake documentation for more information.
 
 ## Linking in a Make Project
 If you are using `make` with a Makefile, you can include the static library by adding the following lines to your Makefile:
@@ -43,5 +43,5 @@ LDFLAGS += -L<directory where the static library file is located>
 LDLIBS  += -ltropic
 ```
 
-> [!NOTE]
-> Refer to the [GNU Make documentation](https://www.gnu.org/software/make/manual/html_node/index.html) for more information about linking external libraries.
+!!! note
+    Refer to the [GNU Make documentation](https://www.gnu.org/software/make/manual/html_node/index.html) for more information about linking external libraries.
