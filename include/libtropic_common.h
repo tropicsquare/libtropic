@@ -124,13 +124,13 @@ typedef struct lt_l2_state_t {
 #endif
 
 /**
- * @brief Used to indicate whether the Secure Session is on.
+ * @brief Used to indicate whether the Secure Session is on or off.
  *
  */
-typedef enum lt_secure_session_state_t {
+typedef enum lt_secure_session_status_t {
     LT_SECURE_SESSION_ON = 0x5A5A5A5A,
     LT_SECURE_SESSION_OFF = 0
-} lt_secure_session_state_t;
+} lt_secure_session_status_t;
 
 typedef struct lt_l3_state_t {
     enum lt_secure_session_state_t session;
