@@ -1,10 +1,10 @@
 # Compiling as a Static Library
-Apart from building the libtropic during your project's build process, you can build the libtropic separately as a static library (also known as static archive on Linux) and link it later.
+Apart from building the Libtropic during your project's build process, you can build the Libtropic separately as a static library (also known as static archive on Linux) and link it later.
 
 ## Compilation
-When compiling libtropic as a static library, a cryptography provider must always be defined, either in your `CMakeLists.txt` file or via the CMake command-line arguments.
+When compiling Libtropic as a static library, a cryptography provider must always be defined, either in your `CMakeLists.txt` file or via the CMake command-line arguments.
 
-To compile `libtropic` as a static library on a Unix-like system, do:
+To compile Libtropic as a static library on a Unix-like system, do:
 
 ```shell
 $ mkdir build
@@ -13,7 +13,7 @@ $ cmake -DLT_CRYPTO=trezor_crypto .. # providing the crypto backend
 $ make
 ```
 
-To cross-compile `libtropic` as a static library on a Unix-like system, you need a toolchain configuration file and a linker script. Both should be provided by the vendor of your platform. You can see an example of the toolchain configuration and the linker script in the [libtropic-stm32 repository](https://github.com/tropicsquare/libtropic-stm32).
+To cross-compile `Libtropic` as a static library on a Unix-like system, you need a toolchain configuration file and a linker script. Both should be provided by the vendor of your platform. You can see an example of the toolchain configuration and the linker script in the [libtropic-stm32 repository](https://github.com/tropicsquare/libtropic-stm32).
 
 After acquiring both the toolchain configuration and the linker script, do:
 
