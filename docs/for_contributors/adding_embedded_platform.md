@@ -51,7 +51,7 @@ These members are usually physical pin numbers, SPI handles or other information
 
 ### Use the New HAL
 
-1. add the new HAL files inside your `CMakeLists.txt` or `Makefile` - see [Adding to an Existing Project](../get_started/integrating_libtropic/adding_to_project.md) section for an inspiration.
+1. Add the new HAL files inside your `CMakeLists.txt` or `Makefile` - see [Adding to an Existing Project](../get_started/integrating_libtropic/adding_to_project.md) section for an inspiration.
 2. Initialize and use the new HAL in your code:
 ```c
 #include "libtropic_port_newplatform_<additional_info>.h"
