@@ -90,7 +90,7 @@ void lt_test_rev_startup_req(lt_handle_t *h)
 
     lt_test_cleanup_function = &lt_test_rev_startup_req_cleanup;
 
-    // Part 1: Try to reboot from app mode to app mode twice. First time to make sure we are in 
+    // Part 1: Try to reboot from app mode to app mode twice. First time to make sure we are in
     // the app mode, second time to try rebooting to the app mode from the app mode.
     for (int i = 0; i < 2; i++) {
         LT_LOG_INFO("Rebooting to the app mode...");
