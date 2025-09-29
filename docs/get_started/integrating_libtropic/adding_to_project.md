@@ -1,35 +1,34 @@
 # Adding to an Existing Project
-We recommend adding libtropic to an existing project as a *git submodule*. Libtropic uses CMake build system, therefore it could be added to compilation of existing CMake projects in a following way:
+We recommend adding libtropic to an existing project as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). Libtropic uses CMake build system, therefore it could be added to compilation of existing CMake projects in a following way:
 
 ```cmake
 # Your CMakeLists.txt file
 
-# Set path of to the libtropic submodule
-set(PATH_LIBTROPIC "libtropic/")
-
-# This switch will expose not only core library functions, but also helper functions (recommended)
-set(LT_HELPERS ON)
-
-# These switches add functional tests and examples to the build process.
-# Might be a good starting point. Comment out if not needed.
-set(LT_BUILD_EXAMPLES ON)
-set(LT_BUILD_TESTS ON)
+# Set path to the libtropic submodule. For example:
+set(PATH_LIBTROPIC ${CMAKE_CURRENT_SOURCE_DIR}/../libtropic/)
 
 # It is necessary to set provider of cryptography functions.
 # You can use e.g. trezor_crypto as the cryptography provider.
 set(LT_CRYPTO "trezor_crypto")
 
-# Add path to the libtropic's repository root folder
+# Add path to the libtropic's repository root folder.
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 
-# Linking
-target_link_options(produced_binary PRIVATE <your_linker_flags>)
+# Add HAL functions to sources and includes depending on your platform.
+# For example, to include Linux SPI HAL to MY_PROJECTS_SOURCES source list:
+set(MY_PROJECT_SOURCES
+    ${PATH_LIBTROPIC}/hal/port/unix/libtropic_port_unix_spi.c
+)
+include_directories(
+    ${PATH_LIBTROPIC}/hal/port/unix
+)
 
+# Link libtropic with your binary.
+target_link_libraries(my_binary_name PRIVATE tropic)
 ```
 
-
 !!! note
-    The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to the [Integration Examples](integration_examples.md) section.
+    The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to the [Integration Examples](integration_examples.md) section and the [CMake Documentation](https://cmake.org/cmake/help/latest/index.html).
 
 !!! note
     We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
