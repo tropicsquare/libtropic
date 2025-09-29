@@ -116,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reworked the documentation using the MkDocs framework.
 - Renamed `lt_session_state_t` to `lt_host_eph_keys_t`.
 - Renamed `lt_secure_session_state_t` to `lt_secure_session_status_t`.
+- Renamed `lt_l3_state_t.session` to `lt_l3_state_t.session_status`.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

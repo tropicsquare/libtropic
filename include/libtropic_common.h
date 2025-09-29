@@ -133,7 +133,7 @@ typedef enum lt_secure_session_status_t {
 } lt_secure_session_status_t;
 
 typedef struct lt_l3_state_t {
-    enum lt_secure_session_state_t session;
+    enum lt_secure_session_status_t session_status;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
 #if LT_CRYPTO_TREZOR

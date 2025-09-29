@@ -768,7 +768,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h)
     LT_LOG_LINE();
     LT_LOG_INFO("Initial session with pairing key slot 0");
     if (session_initial(h) == -1) {
-        if (h->l3.session == LT_SECURE_SESSION_ON) lt_session_abort(h);
+        if (h->l3.session_status == LT_SECURE_SESSION_ON) lt_session_abort(h);
         lt_deinit(h);
         return -1;
     }
@@ -776,7 +776,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h)
 
     LT_LOG_INFO("Session with pairing key slot 0");
     if (session0(h) == -1) {
-        if (h->l3.session == LT_SECURE_SESSION_ON) lt_session_abort(h);
+        if (h->l3.session_status == LT_SECURE_SESSION_ON) lt_session_abort(h);
         lt_deinit(h);
         return -1;
     }
@@ -784,7 +784,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h)
 
     LT_LOG_INFO("Session with pairing key slot 1");
     if (session1(h) == -1) {
-        if (h->l3.session == LT_SECURE_SESSION_ON) lt_session_abort(h);
+        if (h->l3.session_status == LT_SECURE_SESSION_ON) lt_session_abort(h);
         lt_deinit(h);
         return -1;
     }
@@ -792,7 +792,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h)
 
     LT_LOG_INFO("Session with pairing key slot 2");
     if (session2(h) == -1) {
-        if (h->l3.session == LT_SECURE_SESSION_ON) lt_session_abort(h);
+        if (h->l3.session_status == LT_SECURE_SESSION_ON) lt_session_abort(h);
         lt_deinit(h);
         return -1;
     }
@@ -800,7 +800,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h)
 
     LT_LOG_INFO("Session with pairing key slot 3");
     if (session3(h) == -1) {
-        if (h->l3.session == LT_SECURE_SESSION_ON) lt_session_abort(h);
+        if (h->l3.session_status == LT_SECURE_SESSION_ON) lt_session_abort(h);
         lt_deinit(h);
         return -1;
     }

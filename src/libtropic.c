@@ -47,7 +47,7 @@ lt_ret_t lt_init(lt_handle_t *h)
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
-    h->l3.session = LT_SECURE_SESSION_OFF;
+    h->l3.session_status = LT_SECURE_SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
     if (ret != LT_OK) {
@@ -751,7 +751,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
     if (!h || !msg_out || !msg_in || (msg_len > TR01_PING_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -778,7 +778,7 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
     if (!h || !pairing_pub || (slot > 3)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -805,7 +805,7 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
     if (!h || !pairing_pub || (slot > 3)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -832,7 +832,7 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
     if (!h || (slot > 3)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -859,7 +859,7 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
     if (!h) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -886,7 +886,7 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
     if (!h || !obj) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -913,7 +913,7 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
     if (!h) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -940,7 +940,7 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
     if (!h || (bit_index > 31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -967,7 +967,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
     if (!h || !obj) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -995,7 +995,7 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1023,7 +1023,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
     if (!h || !data || !data_read_size || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1050,7 +1050,7 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
     if (!h || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1077,7 +1077,7 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t 
     if (!h || !rnd_bytes || (rnd_bytes_cnt > TR01_RANDOM_VALUE_GET_LEN_MAX)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1104,7 +1104,7 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_
     if (!h || (slot > TR01_ECC_SLOT_31) || ((curve != TR01_CURVE_P256) && (curve != TR01_CURVE_ED25519))) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1131,7 +1131,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
     if (!h || (slot > TR01_ECC_SLOT_31) || ((curve != TR01_CURVE_P256) && (curve != TR01_CURVE_ED25519)) || !key) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
     lt_ret_t ret = lt_out__ecc_key_store(h, slot, curve, key);
@@ -1158,7 +1158,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
     if (!h || (ecc_slot > TR01_ECC_SLOT_31) || !key || !curve || !origin) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1185,7 +1185,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot)
     if (!h || (ecc_slot > TR01_ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1213,7 +1213,7 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
     if (!h || !msg || !rs || (ecc_slot > TR01_ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1254,7 +1254,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
     if (!h || !msg || !rs || (msg_len > TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || (ecc_slot > TR01_ECC_SLOT_31)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1294,7 +1294,7 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
     if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15) || mcounter_value > TR01_MCOUNTER_VALUE_MAX) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1321,7 +1321,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
     if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15)) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1348,7 +1348,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
     if (!h || (mcounter_index > TR01_MCOUNTER_INDEX_15) || !mcounter_value) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
@@ -1376,7 +1376,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot
     if (!h || !data_out || !data_in || slot > TR01_MAC_AND_DESTROY_SLOT_127) {
         return LT_PARAM_ERR;
     }
-    if (h->l3.session != LT_SECURE_SESSION_ON) {
+    if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
     }
 
