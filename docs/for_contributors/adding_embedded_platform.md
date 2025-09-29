@@ -12,7 +12,7 @@ To create a new HAL:
 ### Create and Implement the Necessary Files
 1. Inside `hal/port/`, create a new directory, for example called `newplatform`.
 > [!NOTE]
-> The platform directory inside `hal/port/` might already exist, so you do not have to create a new one, just switch to the existing one (e.g. `stm32`).
+> The platform directory inside `hal/port/` might already exist, so you do not have to create a new one, just use the existing one (e.g. `stm32`).
 2. Inside `hal/port/newplatform`, create two new files, where `<additional_info>` can be a name of the board or the protocol name used (e.g. `spi`, `tcp`, ...):
     - `libtropic_port_newplatform_<additional_info>.h`,
     - `libtropic_port_newplatform_<additional_info>.c`.
