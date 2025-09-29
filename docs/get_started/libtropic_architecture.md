@@ -24,7 +24,7 @@ Libtropic consists of:
 4. *[Functional Tests](../for_contributors/functional_tests.md)*. Used to verify the libtropic core API, using both the *Libtropic API* and *Helpers*.
 5. *L3 Layer API*. Functions called by the *Libtropic Public API* during *Encrypted Communication*.
 6. *L2 Layer API*. Functions called by the *Libtropic Public API* during *Unencrypted Communication*.
-7. *L1 Layer API*. Functions called by the *L2 Layer API* and wrapping port-specific L1 Layer functions, which are implemented by the HALs (Hardware Abstract Layers) in `hal/port/`. These HALs are initialized using the *Libtropic Public API* and can be used to communicate with multiple TROPIC01 chips, as shown in the figure above.
+7. *L1 Layer API*. Functions called by the *L2 Layer API* and wrapping port-specific L1 Layer functions, which are implemented by the HALs (Hardware Abstract Layers) in `hal/port/`. These HALs are initialized using the *Libtropic Public API*. The library can be compiled with support for only one hardware abstraction layer (HAL) at a time, but the HAL allows communication with multiple chips.
 
 !!! tip
     For more information about Libtropic's functions, refer to the [API Reference](../doxygen/build/html/index.html).
