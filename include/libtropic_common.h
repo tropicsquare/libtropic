@@ -125,7 +125,7 @@ typedef enum lt_tr01_mode_t {
 //--------------------------------------------------------------------------------------------------------------------//
 typedef struct lt_l2_state_t {
     void *device;
-    lt_tr01_mode_t mode;
+    enum lt_tr01_mode_t mode;
     uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
     bool startup_req_sent;
 } lt_l2_state_t;
