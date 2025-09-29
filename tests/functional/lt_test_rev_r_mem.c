@@ -92,9 +92,12 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Checking if all slots are empty...");
+    LT_LOG_INFO("Erasing all slots...");
     for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
+        LT_LOG_INFO("Erasing slot #%" PRIu16 "...", i);
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_erase(h, i));
+
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY,
                        lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
