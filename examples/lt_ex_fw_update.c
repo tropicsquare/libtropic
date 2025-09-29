@@ -22,7 +22,8 @@
  * @brief Example how to update TROPIC01 firmware. Process is described in detail in 'ODN_TR01_app_007_fw_update.pdf'
  * Application Note.
  *
- * It is recommended to update both banks for Application firmware and both banks for SPECT firmware with the same firmware.
+ * It is recommended to update both banks for Application firmware and both banks for SPECT firmware with the same
+ * firmware.
  *
  * @param h Pointer to lt_handle_t structure
  * @returns 0 on success, -1 otherwise
