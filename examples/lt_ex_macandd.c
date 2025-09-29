@@ -552,7 +552,6 @@ int lt_ex_macandd(lt_handle_t *h)
     ret = lt_session_abort(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to abort Secure Session, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(h);
         lt_deinit(h);
         return -1;
     }
@@ -561,8 +560,6 @@ int lt_ex_macandd(lt_handle_t *h)
     ret = lt_deinit(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to deinitialize handle, ret=%s", lt_ret_verbose(ret));
-        lt_session_abort(h);
-        lt_deinit(h);
         return -1;
     }
 
