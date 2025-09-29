@@ -1560,7 +1560,7 @@ lt_ret_t lt_write_whole_I_config(lt_handle_t *h, const struct lt_config_t *confi
 }
 
 lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *shipriv, const uint8_t *shipub,
-                                                 const uint8_t pkey_index)
+                                                 const lt_pkey_index_t pkey_index)
 {
     if (!h || !shipriv || !shipub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3)) {
         return LT_PARAM_ERR;
