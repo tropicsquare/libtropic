@@ -33,7 +33,7 @@ typedef struct lt_dev_newplatform_<additional_info> {
 ```
 These members are usually physical pin numbers, SPI handles or other information needed in the HAL functions, handling the platform-specific interface on the L1 Layer.
     2. additional macros or types you will need in `libtropic_port_newplatform_<additional_info>.c`.
-4. Inside `libtropic_port_newplatform_<additional_info>.c`, define:
+4. Inside `libtropic_port_newplatform_<additional_info>.c`, implement:
     1. all functions declared in `include/libtropic_port.h`. All of the port functions have an instance of `lt_l2_state_t` as one of the parameters, where your device structure from 3.a. will be saved, so you can get it in a following way:
     ```c
     // one of the functions from include/libtropic_port.h
