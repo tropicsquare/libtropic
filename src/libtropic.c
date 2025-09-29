@@ -107,10 +107,10 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
     if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = TR01_MODE_MAINTENANCE;
+        h->l2.mode = LT_TR01_MAINTENANCE_MODE;
     }
     else {
-        h->l2.mode = TR01_MODE_APP;
+        h->l2.mode = LT_TR01_APP_MODE;
     }
 
     return LT_OK;
@@ -476,9 +476,9 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
     return LT_OK;
 }
 
-lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id)
+lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
 {
-    if (!h || ((startup_id != TR01_MODE_APP) && (startup_id != TR01_MODE_MAINTENANCE))) {
+    if (!h || ((startup_id != TR01_REBOOT) && (startup_id != TR01_MAINTENANCE_REBOOT))) {
         return LT_PARAM_ERR;
     }
 

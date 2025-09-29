@@ -37,14 +37,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     // If there are valid firmwares, chip will execute them on boot. In any case we will try to reboot into application,
     // in case chip would be in maintenance mode (executing bootloader)
     LT_LOG_INFO("Rebooting into APPLICATION mode to check FW versions");
-    ret = lt_reboot(h, TR01_MODE_APP);
+    ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == TR01_MODE_APP) {
+    if (h->l2.mode == LT_TR01_APP_MODE) {
         // App runs so we can see what firmwares are running
         // Getting RISCV app firmware version
         LT_LOG_INFO("Reading RISC-V FW version");
@@ -79,14 +79,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into MAINTENANCE mode to check bootloader version and fw bank headers");
-    ret = lt_reboot(h, TR01_MODE_MAINTENANCE);
+    ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to reboot into MAINTENANCE mode, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == TR01_MODE_MAINTENANCE) {
+    if (h->l2.mode == LT_TR01_MAINTENANCE_MODE) {
         LT_LOG_INFO("Reading RISC-V FW version (during maintenance chip actually returns bootloader version):");
         ret = lt_get_info_riscv_fw_ver(h, fw_ver);
         if (ret != LT_OK) {
