@@ -1855,4 +1855,81 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *update_data, con
 
     return LT_OK;
 }
+
+lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*print_func)(const char *format, ...))
+{
+    if (!h || !print_func) {
+        return LT_PARAM_ERR;
+    }
+
+    uint8_t header[TR01_L2_GET_INFO_FW_HEADER_SIZE] = {0};
+    uint16_t read_header_size;
+
+    switch (bank_id) {
+        case TR01_FW_BANK_FW1:
+            print_func("    Reading header from Application's firmware bank 1:\r\n");
+            break;
+        case TR01_FW_BANK_FW2:
+            print_func("    Reading header from Application's firmware bank 2:\r\n");
+            break;
+        case TR01_FW_BANK_SPECT1:
+            print_func("    Reading header from SPECT's firmware bank 1:\r\n");
+            break;
+        case TR01_FW_BANK_SPECT2:
+            print_func("    Reading header from SPECT's foirmware bank 2:\r\n");
+            break;
+        default:
+            print_func("    Reading header: Unknown bank ID: %d\r\n", (int)bank_id);
+            return LT_FAIL;
+    }
+
+    lt_ret_t ret = lt_get_info_fw_bank(h, bank_id, header, sizeof(header), &read_header_size);
+    if (ret != LT_OK) {
+        print_func("Failed to read FW header, error: %s\r\n", lt_ret_verbose(ret));
+        return ret;
+    }
+
+    if (read_header_size == TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1) {
+        print_func("    Bootloader v1.0.1 detected, reading %dB header\r\n", TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1);
+        struct lt_header_boot_v1_t *p_h = (struct lt_header_boot_v1_t *)header;
+
+        print_func("      Type:      %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "\r\n", p_h->type[3], p_h->type[2],
+                   p_h->type[1], p_h->type[0]);
+        print_func("      Version:   %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "\r\n", p_h->version[3],
+                   p_h->version[2], p_h->version[1], p_h->version[0]);
+        print_func("      Size:      %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "\r\n", p_h->size[3], p_h->size[2],
+                   p_h->size[1], p_h->size[0]);
+        print_func("      Git hash:  %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "\r\n", p_h->git_hash[3],
+                   p_h->git_hash[2], p_h->git_hash[1], p_h->git_hash[0]);
+        print_func("      FW hash:   %02" PRIX8 "%02" PRIX8 "%02" PRIX8 "%02" PRIX8 "\r\n", p_h->hash[3], p_h->hash[2],
+                   p_h->hash[1], p_h->hash[0]);
+    }
+    else if (read_header_size == TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2) {
+        print_func("    Bootloader v2.0.1 detected, reading %dB header\r\n", TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2);
+        struct lt_header_boot_v2_t *p_h = (struct lt_header_boot_v2_t *)header;
+
+        print_func("      Type:               %04" PRIX16 "\r\n", p_h->type);
+        print_func("      Padding:            %02" PRIX8 "\r\n", p_h->padding);
+        print_func("      FW header version:  %02" PRIX8 "\r\n", p_h->header_version);
+        print_func("      Version:            %08" PRIX32 "\r\n", p_h->ver);
+        print_func("      Size:               %08" PRIX32 "\r\n", p_h->size);
+        print_func("      Git hash:           %08" PRIX32 "\r\n", p_h->git_hash);
+        // Hash str has 32B
+        char hash_str[32 * 2 + 1] = {0};
+        for (int i = 0; i < 32; i++) {
+            snprintf(hash_str + i * 2, sizeof(hash_str) - i * 2, "%02" PRIX8, p_h->hash[i]);
+        }
+        print_func("      Hash:          %s\r\n", hash_str);
+        print_func("      Pair version:  %08" PRIX32 "\r\n", p_h->pair_version);
+    }
+    else if (read_header_size == TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK) {
+        print_func("    No firmware present in a given bank\r\n");
+    }
+    else {
+        print_func("Unexpected header size %" PRIu16 "\r\n", read_header_size);
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
 #endif
