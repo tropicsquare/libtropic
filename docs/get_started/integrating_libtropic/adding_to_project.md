@@ -35,10 +35,14 @@ target_link_options(produced_binary PRIVATE <your_linker_flags>)
     We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
 
 
-## Do You Use Makefile Instead of CMake?
-In this case, you have to:
+## Do You Use a Makefile Instead of CMake?
+If you use a Makefile instead of CMake, you need to:
 
-1. list all libtropic `*.c` and `*.h` files manually inside your Makefile,
-2. for every CMake option `<CMAKE_OPTION>` you need (located in the libtropic's root `CMakelists.txt`), add the `-D<CMAKE_OPTION>` switch when building with Make.
+1. Manually list all `*.c` and `*.h` files from libtropic in your Makefile.
+2. For each CMake option `<CMAKE_OPTION>` you need (found in the root `CMakeLists.txt` of libtropic), add the `-D<CMAKE_OPTION>` flag when building with Make.
 
-The same has to be done for the cryptographic provider library, for example in `vendor/trezor_crypto/`.
+You must also follow the same steps for the cryptographic provider library, such as the one located in `vendor/trezor_crypto/`.
+
+!!! note
+    You can compile libtropic as a static library using CMake separately and include only the resulting library file in your Makefile.
+    This approach eliminates the need to compile the entire libtropic library and its dependencies in your Makefile. For more details, see [Compiling as a Static Library](./compile_as_static_library.md).
