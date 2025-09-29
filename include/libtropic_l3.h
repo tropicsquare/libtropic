@@ -38,13 +38,12 @@ extern "C" {
  * After successful execution, `h->l2->buff` will contain data for L2 handshake request.
  * @note For more information read info at the top of this file.
  *
- * @param h           Device's handle
- * @param pkey_index  Index of pairing public key
- * @param state       Structure holding session state, will be filled by this function. Content is used to finish secure
- * session establishment in lt_in__session_start().
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h              Device's handle
+ * @param pkey_index     Index of pairing public key
+ * @param host_eph_keys  Host MCU ephemeral keys, used to finish secure session establishment in lt_in__session_start().
+ * @return               LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, lt_session_state_t *state);
+lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, lt_host_eph_keys_t *host_eph_keys);
 
 /**
  * @brief Decodes TROPIC01's response during secure session's establishment.
@@ -53,17 +52,17 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
  * @note Secure session will be established after successful execution. For more information read info at the top of
  * this file.
  *
- * @param h           Device's handle
- * @param stpub       STPUB from device's certificate
- * @param pkey_index  Index of pairing public key
- * @param shipriv     Secure host private key
- * @param shipub      Secure host public key
- * @param state       Content must be filled with lt_out__session_start and is used to finish secure session
- * establishment.
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param h              Device's handle
+ * @param stpub          STPUB from device's certificate
+ * @param pkey_index     Index of pairing public key
+ * @param shipriv        Secure host private key
+ * @param shipub         Secure host public key
+ * @param host_eph_keys  Host MCU ephemeral keys, must be filled by lt_out__session_start() and used to finish secure
+ * session establishment.
+ * @return               LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
-                              const uint8_t *shipriv, const uint8_t *shipub, lt_session_state_t *state);
+                              const uint8_t *shipriv, const uint8_t *shipub, lt_host_eph_keys_t *host_eph_keys);
 
 /**
  * @brief Encodes Ping command payload.

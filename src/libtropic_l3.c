@@ -21,9 +21,9 @@
 #include "lt_sha256.h"
 #include "lt_x25519.h"
 
-lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, lt_session_state_t *state)
+lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index, lt_host_eph_keys_t *host_eph_keys)
 {
-    if (!h || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3) || !state) {
+    if (!h || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3) || !host_eph_keys) {
         return LT_PARAM_ERR;
     }
 
@@ -33,18 +33,18 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
     memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
 
     // Create ephemeral host keys
-    lt_ret_t ret = lt_random_bytes(h, state->ehpriv, sizeof(state->ehpriv));
+    lt_ret_t ret = lt_random_bytes(h, host_eph_keys->ehpriv, sizeof(host_eph_keys->ehpriv));
     if (ret != LT_OK) {
         return ret;
     }
-    lt_X25519_scalarmult(state->ehpriv, state->ehpub);
+    lt_X25519_scalarmult(host_eph_keys->ehpriv, host_eph_keys->ehpub);
 
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct lt_l2_handshake_req_t *p_req = (struct lt_l2_handshake_req_t *)h->l2.buff;
 
     p_req->req_id = TR01_L2_HANDSHAKE_REQ_ID;
     p_req->req_len = TR01_L2_HANDSHAKE_REQ_LEN;
-    memcpy(p_req->e_hpub, state->ehpub, TR01_EHPUB_LEN);
+    memcpy(p_req->e_hpub, host_eph_keys->ehpub, TR01_EHPUB_LEN);
 
     p_req->pkey_index = (uint8_t)pkey_index;
 
@@ -52,9 +52,9 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
 }
 
 lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_index_t pkey_index,
-                              const uint8_t *shipriv, const uint8_t *shipub, lt_session_state_t *state)
+                              const uint8_t *shipriv, const uint8_t *shipub, lt_host_eph_keys_t *host_eph_keys)
 {
-    if (!h || !stpub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3) || !shipriv || !shipub || !state) {
+    if (!h || !stpub || (pkey_index > TR01_PAIRING_KEY_SLOT_INDEX_3) || !shipriv || !shipub || !host_eph_keys) {
         return LT_PARAM_ERR;
     }
 
@@ -87,7 +87,7 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     // h = SHA256(h||EHPUB)
     lt_sha256_start(&hctx);
     lt_sha256_update(&hctx, hash, sizeof(hash));
-    lt_sha256_update(&hctx, state->ehpub, TR01_EHPUB_LEN);
+    lt_sha256_update(&hctx, host_eph_keys->ehpub, TR01_EHPUB_LEN);
     lt_sha256_finish(&hctx, hash);
 
     // h = SHA256(h||PKEY_INDEX)
@@ -107,13 +107,13 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     uint8_t output_2[32] = {0};  // Temp storage for kauth.
     // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
     uint8_t shared_secret[TR01_X25519_KEY_LEN] = {0};
-    lt_X25519(state->ehpriv, p_rsp->e_tpub, shared_secret);
+    lt_X25519(host_eph_keys->ehpriv, p_rsp->e_tpub, shared_secret);
     lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
     // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
     lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
     lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
     // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
-    lt_X25519(state->ehpriv, stpub, shared_secret);
+    lt_X25519(host_eph_keys->ehpriv, stpub, shared_secret);
     uint8_t kauth[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for handshake authentication.
     lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
     // kCMD, kRES = HKDF (ck, emptystring, 2)

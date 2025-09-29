@@ -60,12 +60,12 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
 
     //---------------------------------------------------------------------------------------//
     // Separated API calls for starting a secure session:
-    lt_session_state_t state = {0};
+    lt_host_eph_keys_t host_eph_keys = {0};
 
-    // Inicialize session from a server side by creating state->ehpriv and state->ehpub,
+    // Initialize session from a server side by creating host_eph_keys->ehpriv and host_eph_keys->ehpub,
     // l2 request is prepared into handle's buffer (h->l2_buff)
     LT_LOG_INFO("Executing lt_out__session_start()...");
-    ret = lt_out__session_start(h, TR01_PAIRING_KEY_SLOT_INDEX_0, &state);
+    ret = lt_out__session_start(h, TR01_PAIRING_KEY_SLOT_INDEX_0, &host_eph_keys);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_out__session_start() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
@@ -96,7 +96,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
     LT_LOG_INFO("Executing lt_in__session_start()...");
-    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &state);
+    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &host_eph_keys);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);

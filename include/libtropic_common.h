@@ -588,12 +588,11 @@ typedef enum lt_pkey_index_t {
     TR01_PAIRING_KEY_SLOT_INDEX_3,
 } lt_pkey_index_t;
 
-/** @brief Structure used to store variables used during establishment of a secure session */
-typedef struct lt_session_state_t {
-    uint8_t ehpriv[32];
-    uint8_t ehpub[32];
-    // lt_pkey_index_t pkey_index;
-} lt_session_state_t;
+/** @brief Stores Host MCU ephemeral keys. */
+typedef struct lt_host_eph_keys_t {
+    uint8_t ehpriv[32]; /**< Host MCU ephemeral private key. */
+    uint8_t ehpub[32];  /**< Host MCU ephemeral public key. */
+} lt_host_eph_keys_t;
 
 /** @brief Length of key used in X25519 function.
  *

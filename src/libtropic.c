@@ -389,9 +389,9 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
         return LT_PARAM_ERR;
     }
 
-    lt_session_state_t state = {0};
+    lt_host_eph_keys_t host_eph_keys = {0};
 
-    lt_ret_t ret = lt_out__session_start(h, pkey_index, &state);
+    lt_ret_t ret = lt_out__session_start(h, pkey_index, &host_eph_keys);
     if (ret != LT_OK) {
         return ret;
     }
@@ -405,8 +405,8 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
         return ret;
     }
 
-    ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &state);
-    memset(&state, 0, sizeof(lt_session_state_t));
+    ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &host_eph_keys);
+    memset(&host_eph_keys, 0, sizeof(lt_host_eph_keys_t));
 
     return ret;
 }
