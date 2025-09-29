@@ -454,11 +454,6 @@ LT_STATIC_ASSERT(
 #define TR01_L2_STARTUP_REQ_ID 0xb3
 /** @brief Request length */
 #define TR01_L2_STARTUP_REQ_LEN 1u
-/** @brief Restart, then initialize as if a power-cycle was applied. */
-#define TR01_L2_STARTUP_REQ_STARTUP_ID_REBOOT 0x01
-/** @brief Restart, then initialize. Stay in Start-up mode and do not load the mutable FW from R-Memory. */
-#define TR01_L2_STARTUP_REQ_STARTUP_ID_MAINTENANCE_REBOOT 0x03
-
 /** @brief Response length */
 #define TR01_L2_STARTUP_RSP_LEN 0u
 
