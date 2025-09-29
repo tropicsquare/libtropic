@@ -342,10 +342,10 @@ void lt_test_rev_sleep_req(lt_handle_t *h);
  * @brief Test L2 Startup Request.
  *
  * Test steps:
- *  1. Check the chip is in the normal mode.
- *  2. Reboot to normal mode and check -- verify that standard reboot is working.
+ *  1. Reboot to normal mode and check.
+ *  2. Reboot to normal mode again and check.
  *  3. Reboot to bootloader mode and check.
- *  4. Reboot to bootloader mode again.
+ *  4. Reboot to bootloader mode again and check.
  *  5. Reboot to normal mode and check.
  *
  * After each reboot before mode check, the test will wait until the chip is ready.

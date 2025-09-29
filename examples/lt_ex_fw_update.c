@@ -49,14 +49,14 @@ int lt_ex_fw_update(lt_handle_t *h)
     LT_LOG_LINE();
     LT_LOG_INFO("Updating TR01_FW_BANK_FW1 and TR01_FW_BANK_SPECT1");
     LT_LOG_INFO("Rebooting into Maintenance mode");
-    ret = lt_reboot(h, TR01_MODE_MAINTENANCE);
+    ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == TR01_MODE_MAINTENANCE) {
+    if (h->l2.mode == LT_TR01_MAINTENANCE_MODE) {
         LT_LOG_INFO("Chip is in maintenance mode, executing bootloader");
         LT_LOG_INFO("Updating RISC-V FW");
         ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW1);
@@ -86,14 +86,14 @@ int lt_ex_fw_update(lt_handle_t *h)
     // The chip must be rebooted into MAINTENANCE mode to perform a firmware update.
     LT_LOG_INFO("Updating TR01_FW_BANK_FW2 and TR01_FW_BANK_SPECT2");
     LT_LOG_INFO("Rebooting into Maintenance mode");
-    ret = lt_reboot(h, TR01_MODE_MAINTENANCE);
+    ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == TR01_MODE_MAINTENANCE) {
+    if (h->l2.mode == LT_TR01_MAINTENANCE_MODE) {
         LT_LOG_INFO("Chip is in maintenance mode, executing bootloader");
         LT_LOG_INFO("Updating RISC-V FW");
         ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW2);
@@ -150,14 +150,14 @@ int lt_ex_fw_update(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into Application mode");
-    ret = lt_reboot(h, TR01_MODE_APP);
+    ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
 
-    if (h->l2.mode == TR01_MODE_APP) {
+    if (h->l2.mode == LT_TR01_APP_MODE) {
         LT_LOG_INFO("Chip is executing firmwares of following versions:");
         LT_LOG_INFO("Reading RISC-V FW version");
         // This variable is reused on more places in this block to store different firmware versions

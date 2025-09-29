@@ -373,7 +373,7 @@ static int session_initial(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Rebooting TROPIC01 to apply changes...");
-    ret = lt_reboot(h, TR01_MODE_APP);
+    ret = lt_reboot(h, TR01_REBOOT);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to reboot, ret=%s", lt_ret_verbose(ret));
         return -1;

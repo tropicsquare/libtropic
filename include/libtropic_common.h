@@ -110,10 +110,22 @@ LT_STATIC_ASSERT(
 // clang-format on
 
 //--------------------------------------------------------------------------------------------------------------------//
+/** @brief Values for the Startup_Req command, which TROPIC01 uses to determine the mode to reboot into. */
+typedef enum lt_startup_id_t {
+    TR01_REBOOT = 0x01,            /**< @brief Reboot TROPIC01 into Application mode. */
+    TR01_MAINTENANCE_REBOOT = 0x03 /**< @brief Reboot TROPIC01 into Maintenance mode. */
+} lt_startup_id_t;
 
+/** @brief Libtropic's internal values to track the mode TROPIC01 is currently in. */
+typedef enum lt_tr01_mode_t {
+    LT_TR01_APP_MODE,        /**< TROPIC01 is in Application mode. */
+    LT_TR01_MAINTENANCE_MODE /**< TROPIC01 is in Maintenance mode. */
+} lt_tr01_mode_t;
+
+//--------------------------------------------------------------------------------------------------------------------//
 typedef struct lt_l2_state_t {
     void *device;
-    uint8_t mode;
+    enum lt_tr01_mode_t mode;
     uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
     bool startup_req_sent;
 } lt_l2_state_t;
@@ -624,12 +636,6 @@ typedef struct lt_host_eph_keys_t {
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Basic sleep mode */
 #define TR01_L2_SLEEP_KIND_SLEEP 0x05
-
-//--------------------------------------------------------------------------------------------------------------------//
-/** @brief Reboot TROPIC01 chip */
-#define TR01_MODE_APP 0x01
-/** @brief Reboot TROPIC01 chip and stay in maintenance mode */
-#define TR01_MODE_MAINTENANCE 0x03
 
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal length of TROPIC01's log message */

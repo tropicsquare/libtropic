@@ -203,13 +203,13 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind);
  * @brief Reboots TROPIC01
  *
  * @param h           Device's handle
- * @param startup_id  Startup ID
+ * @param startup_id  Startup ID (determines into which mode will TROPIC01 reboot)
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_reboot(lt_handle_t *h, const uint8_t startup_id);
+lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id);
 
 #ifdef ABAB
 /** @brief Maximal size of update data */

@@ -86,10 +86,10 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
         // Check and save STARTUP bit of CHIP_STATUS to signalize whether device operates in bootloader or in
         // application
         if (s2->buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-            s2->mode = TR01_MODE_MAINTENANCE;
+            s2->mode = LT_TR01_MAINTENANCE_MODE;
         }
         else {
-            s2->mode = TR01_MODE_APP;
+            s2->mode = LT_TR01_APP_MODE;
         }
 
         // Proceed further in case CHIP_STATUS contains READY bit, signalizing that chip is ready to receive request
@@ -146,7 +146,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             if (ret != LT_OK) {
                 return ret;
             }
-            if (s2->mode == TR01_MODE_MAINTENANCE) {
+            if (s2->mode == LT_TR01_MAINTENANCE_MODE) {
                 // Chip is in bootloader mode and INT pin is not implemented in bootloader mode
                 // So we wait a bit before we poll again for CHIP_STATUS
                 // printf("x\n");

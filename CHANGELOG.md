@@ -117,6 +117,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `lt_session_state_t` to `lt_host_eph_keys_t`.
 - Renamed `lt_secure_session_state_t` to `lt_secure_session_status_t`.
 - Renamed `lt_l3_state_t.session` to `lt_l3_state_t.session_status`.
+- Added `enum lt_startup_id_t` for the purpose of `lt_reboot()` -> renamed `TR01_MODE_APP` to `TR01_REBOOT` and `TR01_MODE_MAINTENANCE` to `TR01_MAINTENANCE_REBOOT` (to be more compliant with User API).
+- Added `enum lt_tr01_mode_t` to track the current mode TROPIC01 is in.
 
 ### Added
 - CMake option for setting logging verbosity level: `LT_LOG_LVL`.

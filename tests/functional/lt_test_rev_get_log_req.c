@@ -51,7 +51,7 @@ static lt_ret_t lt_test_rev_get_log_req_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    ret = lt_reboot(g_h, TR01_MODE_APP);
+    ret = lt_reboot(g_h, TR01_REBOOT);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the Application mode!");
         return ret;
@@ -81,7 +81,7 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MODE_APP));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_REBOOT));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
     LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
@@ -100,7 +100,7 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into Maintenance mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MODE_MAINTENANCE));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MAINTENANCE_REBOOT));
 
     lt_test_cleanup_function = &lt_test_rev_get_log_req_cleanup;
 
