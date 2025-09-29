@@ -15,7 +15,7 @@ set(LT_CRYPTO "trezor_crypto")
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 
 # Add HAL functions to sources and includes depending on your platform.
-# For example to include Linux SPI HAL to MY_PROJECTS_SOURCES source list:
+# For example, to include Linux SPI HAL to MY_PROJECTS_SOURCES source list:
 set(MY_PROJECT_SOURCES
     ${PATH_LIBTROPIC}/hal/port/unix/libtropic_port_unix_spi.c
 )
