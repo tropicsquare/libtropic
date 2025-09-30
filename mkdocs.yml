@@ -102,6 +102,9 @@ markdown_extensions:
   - pymdownx.caret         # Superscripts
   - pymdownx.critic        # Suggestions / strike-through
   - pymdownx.details       # Collapsible sections
+  - pymdownx.emoji:        # Inline icons and emojis
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight     # Extra code highlighting
   - pymdownx.inlinehilite  # Inline code highlighting
   - pymdownx.superfences   # Fenced code blocks
