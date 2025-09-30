@@ -23,8 +23,8 @@ In this example, you will:
 - Understand how the R-config is structured and how permissions are managed using the R-config.
 - Learn how the R-config can be modified using the libtropic API:
     - `lt_r_config_erase()`: L3 command to erase the R-config.
-    - `lt_write_whole_R_config()`: L3 command to write the R-config.
-    - `lt_read_whole_R_config()`: L3 command to read the R-config.
+    - `lt_write_whole_R_config()`: helper function to write the whole R-config with an instance of `struct lt_config_t`.
+    - `lt_read_whole_R_config()`: helper function to read the whole R-config into an instance of `struct lt_config_t`.
 - Learn how to manage pairing keys:
     - `lt_pairing_key_write()`: L3 command to write a pairing key.
     - `lt_pairing_key_invalidate()`: L3 command to invalidate a pairing key.
