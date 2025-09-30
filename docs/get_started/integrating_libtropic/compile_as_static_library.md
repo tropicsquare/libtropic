@@ -13,7 +13,7 @@ $ cmake -DLT_CRYPTO=trezor_crypto .. # providing the crypto backend
 $ make
 ```
 
-To cross-compile `Libtropic` as a static library on a Unix-like system, you need a toolchain configuration file and a linker script. Both should be provided by the vendor of your platform. You can see an example of the toolchain configuration and the linker script in the [libtropic-stm32 repository](https://github.com/tropicsquare/libtropic-stm32).
+To cross-compile Libtropic as a static library on a Unix-like system, you need a toolchain configuration file and a linker script. Both should be provided by the vendor of your platform. You can see an example of the toolchain configuration and the linker script in the [libtropic-stm32 repository](https://github.com/tropicsquare/libtropic-stm32).
 
 After acquiring both the toolchain configuration and the linker script, do:
 
