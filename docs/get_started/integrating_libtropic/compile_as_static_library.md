@@ -24,7 +24,7 @@ $ cmake -DLT_CRYPTO=trezor_crypto -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolcha
 $ make
 ```
 
-## Linking in a CMake project
+## Linking in a CMake Project
 To link the compiled static library to your application, use [`target_link_libraries`](https://cmake.org/cmake/help/latest/command/target_link_libraries.html). For example:
 
 ```cmake
