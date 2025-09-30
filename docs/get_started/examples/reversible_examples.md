@@ -1,6 +1,6 @@
 # Reversible Examples
 
-For better orientation, we highlight specific properties of each example, namely:
+To provide better orientation, we highlight specific properties of each example, namely:
 
 - Reversibility,
 - Model compatibility,
@@ -13,7 +13,7 @@ The source code for the examples can be found in the `examples/` directory and a
 
 ## lt_ex_hello_world.c
 - ✅ Reversible
-- ✅ Compatible with model
+- ✅ Compatible with the model
 - 🐣 Level: Basic
 
 This example demonstrates the basic libtropic API and can be used to verify that the chip works correctly.
@@ -32,7 +32,7 @@ In this example, you will learn about the following functions:
 
 ## lt_ex_show_chip_id_and_fwver.c
 - ✅ Reversible
-- ✅ Compatible with model
+- ✅ Compatible with the model
 - 🐣 Level: Basic
 
 Demonstrates how to read and display the chip’s unique ID and firmware version information (bootloader, application and SPECT firmware versions). You will learn about following functions:
@@ -48,7 +48,7 @@ Demonstrates how to read and display the chip’s unique ID and firmware version
 
 ## lt_ex_hello_world_separate_API.c
 - ✅ Reversible
-- ✅ Compatible with model
+- ✅ Compatible with the model
 - 🐤 Level: Moderate
 
 Functionally similar to `lt_ex_hello_world.c`, but it uses distinct API calls for incoming and outgoing data. This approach is useful for secure, tunneled communication, such as during chip provisioning in a factory.
@@ -67,7 +67,7 @@ You will learn about low-level API functions used to process outgoing and incomi
 
 ## lt_ex_macandd.c
 - ✅ Reversible
-- ✅ Compatible with model
+- ✅ Compatible with the model
 - 🐓 Level: Advanced
 
 This example illustrates the MAC-and-destroy feature. You will learn about the following functions:
