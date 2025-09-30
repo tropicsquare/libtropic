@@ -25,6 +25,8 @@ In this example, you will:
     - `lt_r_config_erase()`: L3 command to erase the R-config.
     - `lt_write_whole_R_config()`: helper function to write the whole R-config with an instance of `struct lt_config_t`.
     - `lt_read_whole_R_config()`: helper function to read the whole R-config into an instance of `struct lt_config_t`.
+    > [!NOTE]
+    > If you need to modify only one entry in the R-config, you can use `lt_r_config_write()` or `lt_r_config_read()`.
 - Learn how to manage pairing keys:
     - `lt_pairing_key_write()`: L3 command to write a pairing key.
     - `lt_pairing_key_invalidate()`: L3 command to invalidate a pairing key.
