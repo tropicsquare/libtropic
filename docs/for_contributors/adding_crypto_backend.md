@@ -17,7 +17,10 @@ The new cryptographic backend has to support the following schemes:
     - multiplication on both arbitrary and base point
 
 ## Guide
-To add a new cryptographic backend (let's say `mycrypto`), [Create and Implement the Necessary Files](#create-and-implement-the-necessary-files) first and then [Edit the Main CMakeLists.txt](#edit-the-main-cmakeliststxt).
+To add a new cryptographic backend (let's say `mycrypto`):
+
+1. [Create and Implement the Necessary Files](#create-and-implement-the-necessary-files),
+2. [Edit the Main CMakeLists.txt](#edit-the-main-cmakeliststxt).
 
 ### Create and Implement the Necessary Files
 1. Inside `hal/crypto/`, create a new directory called `mycrypto`.

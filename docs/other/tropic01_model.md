@@ -14,7 +14,7 @@ Code in the `tropic01_model/` directory is meant to be compiled under Unix-like 
 ## How it Works?
 Both processes (tests/examples and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
 > [!NOTE]
-This functionality is implemented with the help of the Unix TCP HAL implemented in `hal/port/unix/lt_port_unix_tcp.c`.
+This functionality is implemented with the help of the Unix TCP HAL implemented in `hal/port/unix/libtropic_port_unix_tcp.c`.
 
 ## Model Setup
 First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
@@ -47,9 +47,9 @@ make
 ```
 As a result, executables for each example are built in the `tropic01_model/build/` directory.
 > [!TIP]
-To enable debugging symbols (e.g. to use GDB) and debug logging, add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
+To enable debugging symbols (e.g. to use [GDB](https://www.gnu.org/software/gdb/gdb.html)), add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
 >
-> To use AddressSanitizer (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
+> To use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer) (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 
 3. Create a YAML configuration for the model from one of the lab batch packages:
 ```shell
@@ -71,7 +71,7 @@ As a result, you should see an output from the example in the original terminal 
 
 ## Running the Tests
 > [!NOTE]
-It is recommended to run the tests using CTest, but if it's needed to run the tests under GDB, they can be run exactly the same way as the examples.
+It is recommended to run the tests using CTest, but if it's needed to run the tests under [GDB](https://www.gnu.org/software/gdb/gdb.html), they can be run exactly the same way as the examples.
 
 1. Switch to the `tropic01_model/` directory:
 ```shell
@@ -86,11 +86,11 @@ make
 ```
 As a result, executables for each test are built in the `tropic01_model/build/` directory.
 > [!TIP]
-To enable debugging symbols (e.g. to use GDB) and debug logging, add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
+To enable debugging symbols (e.g. to use [GDB](https://www.gnu.org/software/gdb/gdb.html)), add switch `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake`.
 >
-> To use AddressSanitizer (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
+> To use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer) (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 >
-> To execute the tests with Valgrind, add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_VALGRIND=1` when executing `cmake`. Note that Valgrind will be executed automatically only when using CTest!
+> To execute the tests with [Valgrind](https://valgrind.org/), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_VALGRIND=1` when executing `cmake`. Note that [Valgrind](https://valgrind.org/) will be executed automatically only when using CTest!
 
 3. Now, the tests can be run using CTest. To see available tests, run:
 ```shell
