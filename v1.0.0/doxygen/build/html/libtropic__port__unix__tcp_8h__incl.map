@@ -1,0 +1,13 @@
+<map id="libtropic_port_unix_tcp.h" name="libtropic_port_unix_tcp.h">
+<area shape="rect" id="Node000001" title="Port for communication with the TROPIC01 Model using TCP." alt="" coords="55,5,198,50"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,98,101,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,52,77,88,73,84,105,49"/>
+<area shape="rect" id="Node000003" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="124,98,275,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="148,49,180,84,176,88,144,52"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="23,174,104,201"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="177,129,102,168,100,164,174,124"/>
+<area shape="rect" id="Node000005" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="129,174,270,201"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="202,126,202,158,197,158,197,126"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="294,174,364,201"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="224,124,294,164,292,168,221,129"/>
+</map>

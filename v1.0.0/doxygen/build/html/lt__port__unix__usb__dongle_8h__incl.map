@@ -1,0 +1,15 @@
+<map id="lt_port_unix_usb_dongle.h" name="lt_port_unix_usb_dongle.h">
+<area shape="rect" id="Node000001" title="Port for communication with USB UART Dongle (TS1302)." alt="" coords="24,5,215,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,103,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,35,77,71,73,68,106,32"/>
+<area shape="rect" id="Node000003" href="$libtropic__port_8h.html" title="Header file with layer 1 interfaces which are defined based on host platform." alt="" coords="126,81,246,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="133,32,166,68,162,71,129,35"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="85,157,154,184"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="176,111,143,147,139,143,172,107"/>
+<area shape="rect" id="Node000005" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="178,157,328,184"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="200,107,233,143,229,147,196,111"/>
+<area shape="rect" id="Node000006" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="117,232,258,260"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="243,187,211,223,207,219,239,183"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="282,232,352,260"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="266,183,297,219,293,222,262,187"/>
+</map>

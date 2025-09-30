@@ -1,0 +1,11 @@
+<map id="lt_random.h" name="lt_random.h">
+<area shape="rect" id="Node000001" title="Declarations of functions related to random number generator." alt="" coords="57,5,156,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,75,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,35,64,71,60,68,93,32"/>
+<area shape="rect" id="Node000003" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="98,81,248,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="121,32,153,68,149,71,117,35"/>
+<area shape="rect" id="Node000004" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="37,157,179,184"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="164,111,131,147,127,143,160,107"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="202,157,272,184"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="187,107,218,143,214,147,183,111"/>
+</map>
