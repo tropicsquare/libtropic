@@ -120,7 +120,8 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
                                  const uint8_t PIN_size, const uint8_t *add, const uint8_t add_size, uint8_t *final_key)
 {
     if (!h || !master_secret || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN)
-        || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !add || !final_key) {
+        || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !add
+        || !final_key) {
         return LT_PARAM_ERR;
     }
     if (h->l3.session_status != LT_SECURE_SESSION_ON) {
