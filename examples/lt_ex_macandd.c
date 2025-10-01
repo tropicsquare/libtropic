@@ -111,7 +111,7 @@ static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destinatio
  * representing PIN
  * @param PIN_size    Length of the PIN field
  * @param add         Additional data to be used in M&D sequence (size between MAC_AND_DESTROY_ADD_SIZE_MIN and
- * MAC_AND_DESTROY_ADD_SIZE_MAX). If NULL is passed, add_size is set to 0.
+ * MAC_AND_DESTROY_ADD_SIZE_MAX). If NULL is passed, internal variable add_size_checked is set to 0.
  * @param add_size    Length of additional data
  * @param final_key      Buffer into which final key will be placed when all went successfully
  * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
@@ -154,8 +154,9 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     // Both arrays are concatenated and used together as an input for KDF
     uint8_t kdf_input_buff[MAC_AND_DESTROY_PIN_SIZE_MAX + MAC_AND_DESTROY_ADD_SIZE_MAX];
     memcpy(kdf_input_buff, PIN, PIN_size);
-    memcpy(kdf_input_buff + PIN_size, add, add_size_checked);
-
+    if (!add_size_checked) {
+        memcpy(kdf_input_buff + PIN_size, add, add_size_checked);
+    }
     // Erase a slot in R memory, which will be used as a storage for NVM data
     LT_LOG_INFO("Erasing R_Mem User slot %d...", R_MEM_DATA_SLOT_MACANDD);
     lt_ret_t ret = lt_r_mem_data_erase(h, R_MEM_DATA_SLOT_MACANDD);
@@ -256,7 +257,7 @@ exit:
  * representing PIN
  * @param PIN_size    Length of the PIN field
  * @param add         Additional data to be used in M&D sequence (size between MAC_AND_DESTROY_ADD_SIZE_MIN and
- * MAC_AND_DESTROY_ADD_SIZE_MAX). If NULL is passed, add_size is set to 0.
+ * MAC_AND_DESTROY_ADD_SIZE_MAX). If NULL is passed, internal variable add_size_checked is set to 0.
  * @param add_size    Length of additional data
  * @param final_key   Buffer into which final_key will be saved
  * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
@@ -303,8 +304,9 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     // Both arrays are concatenated and used together as an input for KDF
     uint8_t kdf_input_buff[MAC_AND_DESTROY_PIN_SIZE_MAX + MAC_AND_DESTROY_ADD_SIZE_MAX];
     memcpy(kdf_input_buff, PIN, PIN_size);
-    memcpy(kdf_input_buff + PIN_size, add, add_size_checked);
-
+    if (!add_size_checked) {
+        memcpy(kdf_input_buff + PIN_size, add, add_size_checked);
+    }
     // Load M&D data from TROPIC01's R memory
     LT_LOG_INFO("Reading M&D data from R_Mem User slot %d...", R_MEM_DATA_SLOT_MACANDD);
     uint16_t read_size;
