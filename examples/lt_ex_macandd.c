@@ -111,7 +111,7 @@ static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destinatio
  * representing PIN
  * @param PIN_size    Length of the PIN field
  * @param add         Additional data to be used in M&D sequence (size between MAC_AND_DESTROY_ADD_SIZE_MIN and
- * MAC_AND_DESTROY_ADD_SIZE_MAX). If NULL is passed, internal variable add_size_checked is set to 0.
+ * MAC_AND_DESTROY_ADD_SIZE_MAX).
  * @param add_size    Length of additional data
  * @param final_key      Buffer into which final key will be placed when all went successfully
  * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
@@ -120,15 +120,8 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
                                  const uint8_t PIN_size, const uint8_t *add, const uint8_t add_size, uint8_t *final_key)
 {
     if (!h || !master_secret || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN)
-        || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !final_key) {
+        || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX) || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !add || !final_key) {
         return LT_PARAM_ERR;
-    }
-    uint8_t add_size_checked;
-    if (!add) {
-        add_size_checked = 0;
-    }
-    else {
-        add_size_checked = add_size;
     }
     if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
@@ -154,9 +147,8 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     // Both arrays are concatenated and used together as an input for KDF
     uint8_t kdf_input_buff[MAC_AND_DESTROY_PIN_SIZE_MAX + MAC_AND_DESTROY_ADD_SIZE_MAX];
     memcpy(kdf_input_buff, PIN, PIN_size);
-    if (!add_size_checked) {
-        memcpy(kdf_input_buff + PIN_size, add, add_size_checked);
-    }
+    memcpy(kdf_input_buff + PIN_size, add, add_size);
+
     // Erase a slot in R memory, which will be used as a storage for NVM data
     LT_LOG_INFO("Erasing R_Mem User slot %d...", R_MEM_DATA_SLOT_MACANDD);
     lt_ret_t ret = lt_r_mem_data_erase(h, R_MEM_DATA_SLOT_MACANDD);
@@ -178,7 +170,7 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
 
     // Compute v = KDF(0, PIN||A) where 0 is all zeroes key
     const uint8_t zeros[32] = {0};
-    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v);
+    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size, v);
 
     for (int i = 0; i < nvm.i; i++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
@@ -212,7 +204,7 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
         LT_LOG_INFO("\tOK");
 
         // Derive k_i = KDF(w_i, PIN||A); k_i will be used to encrypt master_secret
-        lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+        lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size, k_i);
 
         // Encrypt master_secret using k_i as a key and store ciphertext into non volatile storage
         encrypt(master_secret, k_i, nvm.ci + (i * TR01_MAC_AND_DESTROY_DATA_SIZE));
@@ -231,7 +223,7 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
 
 // Cleanup all sensitive data from memory
 exit:
-    memset(kdf_input_buff, 0, PIN_size + add_size_checked);
+    memset(kdf_input_buff, 0, PIN_size + add_size);
     memset(u, 0, sizeof(u));
     memset(v, 0, sizeof(v));
     memset(w_i, 0, sizeof(w_i));
@@ -257,7 +249,7 @@ exit:
  * representing PIN
  * @param PIN_size    Length of the PIN field
  * @param add         Additional data to be used in M&D sequence (size between MAC_AND_DESTROY_ADD_SIZE_MIN and
- * MAC_AND_DESTROY_ADD_SIZE_MAX). If NULL is passed, internal variable add_size_checked is set to 0.
+ * MAC_AND_DESTROY_ADD_SIZE_MAX).
  * @param add_size    Length of additional data
  * @param final_key   Buffer into which final_key will be saved
  * @return lt_ret_t   LT_OK if correct, otherwise LT_FAIL
@@ -266,15 +258,8 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
                                    const uint8_t add_size, uint8_t *final_key)
 {
     if (!h || !PIN || (PIN_size < MAC_AND_DESTROY_PIN_SIZE_MIN) || (PIN_size > MAC_AND_DESTROY_PIN_SIZE_MAX)
-        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !final_key) {
+        || (add_size > MAC_AND_DESTROY_ADD_SIZE_MAX) || !add || !final_key) {
         return LT_PARAM_ERR;
-    }
-    uint8_t add_size_checked;
-    if (!add) {
-        add_size_checked = 0;
-    }
-    else {
-        add_size_checked = add_size;
     }
     if (h->l3.session_status != LT_SECURE_SESSION_ON) {
         return LT_HOST_NO_SESSION;
@@ -304,9 +289,8 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     // Both arrays are concatenated and used together as an input for KDF
     uint8_t kdf_input_buff[MAC_AND_DESTROY_PIN_SIZE_MAX + MAC_AND_DESTROY_ADD_SIZE_MAX];
     memcpy(kdf_input_buff, PIN, PIN_size);
-    if (!add_size_checked) {
-        memcpy(kdf_input_buff + PIN_size, add, add_size_checked);
-    }
+    memcpy(kdf_input_buff + PIN_size, add, add_size);
+
     // Load M&D data from TROPIC01's R memory
     LT_LOG_INFO("Reading M&D data from R_Mem User slot %d...", R_MEM_DATA_SLOT_MACANDD);
     uint16_t read_size;
@@ -345,7 +329,7 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
 
     // Compute v’ = KDF(0, PIN’||A).
     const uint8_t zeros[32] = {0};
-    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v_);
+    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size, v_);
 
     // Execute w’ = MACANDD(i, v’)
     LT_LOG_INFO("Doing M&D sequence...");
@@ -357,7 +341,7 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Compute k’_i = KDF(w’, PIN’||A)
-    lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+    lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size, k_i);
 
     // Read the ciphertext c_i and tag t from NVM,
     // decrypt c_i with k’_i as the key and obtain s_
@@ -411,7 +395,7 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
 
 // Cleanup all sensitive data from memory
 exit:
-    memset(kdf_input_buff, 0, PIN_size + add_size_checked);
+    memset(kdf_input_buff, 0, PIN_size + add_size);
     memset(w_i, 0, sizeof(w_i));
     memset(k_i, 0, sizeof(k_i));
     memset(v_, 0, sizeof(v_));
