@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.21.0)
 
+###########################################################################
+#                                                                         #
+#   Options                                                               #
+#                                                                         #
+###########################################################################
+
+# LT_VALGRIND - as Valgrind does not have to be compiled/linked together with libtropic as ASAN, this switch does not do anything if not using the model.
+# If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
+option(LT_VALGRIND "Enable Valgrind" OFF)
+
 
 ###########################################################################
 #                                                                         #
@@ -29,7 +39,7 @@ project(tropic01_model
 ###########################################################################
 
 # Use trezor crypto as a source of backend cryptography code
-set(LT_USE_TREZOR_CRYPTO ON)
+set(LT_CRYPTO "trezor_crypto")
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
@@ -58,7 +68,7 @@ endif()
 
 set(SOURCES
     main.c
-    ${PATH_TO_LIBTROPIC}hal/port/unix/lt_port_unix_tcp.c
+    ${PATH_TO_LIBTROPIC}hal/port/unix/libtropic_port_unix_tcp.c
 )
 
 include_directories(

@@ -24,11 +24,11 @@ void lt_test_rev_sleep_req(lt_handle_t *h)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG_INFO("Sending Sleep_Req...");
-    LT_TEST_ASSERT(LT_OK, lt_sleep(h, LT_L2_SLEEP_KIND_SLEEP));
+    LT_TEST_ASSERT(LT_OK, lt_sleep(h, TR01_L2_SLEEP_KIND_SLEEP));
 
     LT_LOG_INFO("Verifying we are not in Secure Session...");
     LT_TEST_ASSERT(LT_L2_NO_SESSION, lt_ping(h, msg_out, msg_in, sizeof(msg_out)));

@@ -11,9 +11,9 @@
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
+#include "libtropic_l2.h"
 #include "libtropic_logging.h"
 #include "lt_l1.h"
-#include "lt_l2.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
 
@@ -35,9 +35,9 @@ static void lt_test_rev_resend_req_body(void)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)g_h->l2.buff;
     // Check incomming l3 length
-    LT_TEST_ASSERT(LT_L2_GET_INFO_CHIP_ID_SIZE, p_l2_resp->rsp_len);
+    LT_TEST_ASSERT(TR01_L2_GET_INFO_CHIP_ID_SIZE, p_l2_resp->rsp_len);
     // Compare contents.
-    LT_TEST_ASSERT(0, memcmp(&prev_chip_id, p_l2_resp->object, LT_L2_GET_INFO_CHIP_ID_SIZE));
+    LT_TEST_ASSERT(0, memcmp(&prev_chip_id, p_l2_resp->object, TR01_L2_GET_INFO_CHIP_ID_SIZE));
 }
 
 static lt_ret_t lt_test_rev_resend_req_cleanup(void)
@@ -45,7 +45,7 @@ static lt_ret_t lt_test_rev_resend_req_cleanup(void)
     lt_ret_t ret;
 
     LT_LOG_INFO("Rebooting to the Application mode...");
-    ret = lt_reboot(g_h, LT_MODE_APP);
+    ret = lt_reboot(g_h, TR01_REBOOT);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Couldn't reboot to the Application mode!");
         return ret;
@@ -73,13 +73,13 @@ void lt_test_rev_resend_req(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Rebooting into Application mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_APP));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_REBOOT));
 
     lt_test_rev_resend_req_body();
     LT_LOG_LINE();
 
     LT_LOG_INFO("Rebooting into Maintenance mode...");
-    LT_TEST_ASSERT(LT_OK, lt_reboot(h, LT_MODE_MAINTENANCE));
+    LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_MAINTENANCE_REBOOT));
 
     lt_test_cleanup_function = &lt_test_rev_resend_req_cleanup;
 

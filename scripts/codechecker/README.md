@@ -12,7 +12,7 @@ There are 2 options to get reports:
     - Run following commands:
 
     ```sh
-    CodeChecker check -b "./scripts/codechecker/codechecker_build.sh" --config ./scripts/codechecker/codechecker_config.json --output ./.codechecker/reports
+    CodeChecker check -b "./scripts/codechecker/codechecker_build.sh" --config ./scripts/codechecker/codechecker_config.yml --output ./.codechecker/reports
     CodeChecker parse -e html ./.codechecker/reports -o ./.codechecker/reports_html
     ```
     
@@ -24,9 +24,13 @@ There are 2 options to get reports:
 
     ```json
     "codechecker.executor.executablePath": <path to CodeChecker>,
-    "codechecker.analyze.arguments": "--config ./scripts/codechecker/codechecker_config.json",
+    "codechecker.analyze.arguments": "--config ./scripts/codechecker/codechecker_config.yml",
     "codechecker.log.buildCommand": "./scripts/codechecker/codechecker_build.sh",
     "codechecker.backend.compilationDatabasePath": "${workspaceFolder}/.codechecker/compile_commands.json"
     ```
 
     - Note: `<path to CodeChecker>` can be replaced with "CodeChecker" if the CodeChecker is available in your `$PATH`. Otherwise, you need to specify full path to the CodeChecker executable.
+
+## Remarks
+The current CodeChecker configuration is in YAML format, as it is more human-readable than JSON and also supports comments.  
+The configuration file enables some strict checkers, which may produce a lot of warnings. It is recommended to run the analysis using the full configuration at least once. After that, you can manually disable any checkers you find unnecessary.

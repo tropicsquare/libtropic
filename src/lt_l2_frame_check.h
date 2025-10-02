@@ -2,8 +2,8 @@
 #define LT_L2_FRAME_CHECK_H
 
 /**
- * @defgroup group_l2_frame_check_functions Layer 2 frame check functions
- * @brief Used internally
+ * @defgroup group_l2_frame_check_functions 5.1. Layer 2: Frame Check
+ * @brief Functions for checking Layer 2 frames
  * @details Functions for L2 frame checking
  *
  * @{
@@ -21,30 +21,34 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_REQUEST_OK 0x01
+#define TR01_L2_STATUS_REQUEST_OK 0x01
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_RESULT_OK 0x02
+#define TR01_L2_STATUS_RESULT_OK 0x02
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_REQUEST_CONT 0x03
+#define TR01_L2_STATUS_REQUEST_CONT 0x03
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_RESULT_CONT 0x04
+#define TR01_L2_STATUS_RESULT_CONT 0x04
 /** @brief STATUS field value */
-#define L2_STATUS_RESP_DISABLED 0x78
+#define TR01_L2_STATUS_RESP_DISABLED 0x78
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_HSK_ERR 0x79
+#define TR01_L2_STATUS_HSK_ERR 0x79
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_NO_SESSION 0x7A
+#define TR01_L2_STATUS_NO_SESSION 0x7A
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_TAG_ERR 0x7B
+#define TR01_L2_STATUS_TAG_ERR 0x7B
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_CRC_ERR 0x7C
+#define TR01_L2_STATUS_CRC_ERR 0x7C
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_UNKNOWN_ERR 0x7E
+#define TR01_L2_STATUS_UNKNOWN_ERR 0x7E
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_GEN_ERR 0x7F
+#define TR01_L2_STATUS_GEN_ERR 0x7F
 /** @brief STATUS ﬁeld value */
-#define L2_STATUS_NO_RESP 0xFF
+#define TR01_L2_STATUS_NO_RESP 0xFF
 
 /**
  * @brief Checks if incomming L2 frame is valid
@@ -56,4 +60,8 @@ lt_ret_t lt_l2_frame_check(const uint8_t *frame) __attribute__((warn_unused_resu
 
 /** @} */  // end of group_l2_frame_check_functions
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_L2_FRAME_CHECK_H

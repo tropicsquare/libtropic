@@ -5,6 +5,148 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Mac And Destroy example - lt_PIN_set renamed to lt_new_PIN_setup() and accepts master secret, example provides separate interfaces for encrypt() and decrypt() operations, lt_PIN_check renamed to lt_PIN_entry_check() to reflect naming in app note, MAc And Destroy example refactored
+- Changed prefixes of all platform HAL files to `libtropic_`.
+- `lt_l2.h`, `lt_l2.c`, `lt_l3.h`, `lt_l3.c`: change prefix to `libtropic_`.
+- Renamed `LIBT_DEBUG` to `LT_REDUNDANT_ARG_CHECK`, as it is used only for the redundant argument checks.
+- Changed/added prefix `TR01_` to all macros and enum values, if they directly relate to TROPIC01 (see below).
+- Changed/added prefix `LT_` to all macros and enum values, if they directly relate to libtropic (see below).
+- Renamed `ecc_key_origin_t` to `lt_ecc_key_origin_t`.
+- Renamed `bank_id_t` to `lt_bank_id_t`.
+- Renamed `header_boot_v1_t` to `lt_header_boot_v1_t`.
+- Renamed `header_boot_v2_t` to `lt_header_boot_v2_t`.
+- Renamed `pkey_index_t` to `lt_pkey_index_t`.
+- Renamed `session_state_t` to `lt_session_state_t`.
+- Renamed `LT_L2_SLEEP_KIND_SLEEP` to `TR01_L2_SLEEP_KIND_SLEEP`.
+- Renamed `LT_MODE_APP` to `TR01_MODE_APP`.
+- Renamed `LT_MODE_APP` to `TR01_MODE_APP`.
+- Renamed `LT_MODE_MAINTENANCE` to `TR01_MODE_MAINTENANCE`.
+- Renamed `GET_LOG_MAX_MSG_LEN` to `TR01_GET_LOG_MAX_MSG_LEN`.
+- Renamed `RANDOM_VALUE_GET_LEN_MAX` to `TR01_RANDOM_VALUE_GET_LEN_MAX`.
+- Renamed `MCOUNTER_INDEX_x` to `TR01_MCOUNTER_INDEX_x`.
+- Renamed `MAC_AND_DESTROY_SLOT_x` to `TR01_MAC_AND_DESTROY_SLOT_x`.
+- Renamed `SERIAL_CODE_SIZE` to `TR01_SERIAL_CODE_SIZE`.
+- Renamed `CHIP_MODE_READY_bit` to `TR01_L1_CHIP_MODE_READY_bit`.
+- Renamed `CHIP_MODE_ALARM_bit` to `TR01_L1_CHIP_MODE_ALARM_bit`.
+- Renamed `CHIP_MODE_STARTUP_bit` to `TR01_L1_CHIP_MODE_STARTUP_bit`.
+- Renamed `GET_RESPONSE_REQ_ID` to `TR01_L1_GET_RESPONSE_REQ_ID`.
+- Renamed `pairing_key_slot_t` to `lt_pairing_key_slot_t`.
+- Renamed `CONFIGURATION_OBJECTS_REGS` to `lt_config_obj_addr_t`.
+- Renamed `CONFIGURATION_OBJECTS_REGS_IDX` to `lt_config_obj_idx_t`.
+- Renamed `ecc_slot_t` to `lt_ecc_slot_t`.
+- Renamed `mac_and_destroy_slot_t` to `lt_mac_and_destroy_slot_t`.
+- Renamed `CONFIGURATION_OBJECTS_CFG_xx` enums to `TR01_CFG_xx`.
+- Renamed `PAIRING_KEY_SLOT_INDEX_x` to `TR01_PAIRING_KEY_SLOT_INDEX_x`.
+- Renamed `ECC_SLOT_x` to `TR01_ECC_SLOT_x`.
+- Renamed `CURVE_ED25519` to `TR01_CURVE_ED25519`.
+- Renamed `SESSION_x` to `LT_SECURE_SESSION_x`.
+- Renamed `L3_CYPHERTEXT_MAX_SIZE` to `TR01_L3_CYPHERTEXT_MAX_SIZE`.
+- Renamed `L3_PACKET_MAX_SIZE` to `TR01_L3_PACKET_MAX_SIZE`.
+- Renamed `FW_BANK_x` to `TR01_FW_BANK_x`.
+- Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE` to `TR01_L2_GET_INFO_FW_HEADER_SIZE`.
+- Renamed `LT_L2_GET_INFO_RISCV_FW_SIZE` to `TR01_L2_GET_INFO_RISCV_FW_SIZE`.
+- Renamed `LT_L2_GET_INFO_SPECT_FW_SIZE` to `TR01_L2_GET_INFO_SPECT_FW_SIZE`.
+- Renamed `LT_MODE_x` to `TR01_MODE_x`.
+- Renamed `UNUSED(x)` to `LT_UNUSED(x)`.
+- Renamed `LT_L1_LEN_MAX` to `TR01_L1_LEN_MAX`.
+- Renamed `DEVICE_PATH_MAX_LEN` to `LT_DEVICE_PATH_MAX_LEN`.
+- Renamed `unix_tcp_tag_t` to `lt_unix_tcp_tag_t`.
+- Renamed `unix_tcp_buffer_t` to `lt_unix_tcp_buffer_t`.
+- Renamed `LT_L2_GET_INFO_CHIP_ID_SIZE` to `TR01_L2_GET_INFO_CHIP_ID_SIZE`.
+- Renamed `CHIP_PKG_BARE_SILICON_ID` to `TR01_CHIP_PKG_BARE_SILICON_ID`
+- Renamed `CHIP_PKG_QFN32_ID` to `TR01_CHIP_PKG_QFN32_ID`
+- Renamed `FAB_ID_TROPIC_SQUARE_LAB` to `TR01_FAB_ID_TROPIC_SQUARE_LAB`
+- Renamed `FAB_ID_EPS_BRNO` to `TR01_FAB_ID_EPS_BRNO`
+- Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1` to `TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1`
+- Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2` to `TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2`
+- Renamed `LT_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK` to `TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK`
+- Renamed `LT_MUTABLE_FW_UPDATE_SIZE_MAX` to `TR01_MUTABLE_FW_UPDATE_SIZE_MAX`.
+- Renamed `LT_MUTABLE_FW_UPDATE_SIZE_MAX` to `TR01_MUTABLE_FW_UPDATE_SIZE_MAX`.
+- Renamed `R_MEM_DATA_SIZE_MIN` to `TR01_R_MEM_DATA_SIZE_MIN`.
+- Renamed `R_MEM_DATA_SIZE_MAX` to `TR01_R_MEM_DATA_SIZE_MAX`.
+- Renamed `MCOUNTER_VALUE_MAX` to `TR01_MCOUNTER_VALUE_MAX`.
+- Renamed `CHIP_ID_FIELD_MAX_SIZE` to `LT_CHIP_ID_FIELD_MAX_SIZE`.
+- Renamed `LT_TROPIC01_REBOOT_DELAY_MS` to `LT_TR01_REBOOT_DELAY_MS`.
+- Renamed `LT_L2_GET_INFO_REQ_CERT_SIZE_SINGLE` to `TR01_L2_GET_INFO_REQ_CERT_SIZE_SINGLE`.
+- Renamed `LT_L2_GET_INFO_CHIP_ID_SIZE` to `TR01_L2_GET_INFO_CHIP_ID_SIZE`.
+- Renamed `SERIAL_CODE_SIZE` to `TR01_SERIAL_CODE_SIZE`.
+- Renamed `TO_PAIRING_KEY_SH0` to `LT_TO_PAIRING_KEY_SH0`.
+- Renamed `TO_LT_MCOUNTER_x` to `LT_TO_LT_MCOUNTER_x`.
+- Renamed `TO_ECC_KEY_SLOT_x` to `LT_TO_ECC_KEY_SLOT_x`.
+- Renamed `TO_MACANDD_SLOT_x` to `LT_TO_MACANDD_SLOT_x`.
+- Renamed `SESSION_SH0_HAS_ACCESS` to `LT_SESSION_SH0_HAS_ACCESS`.
+- Renamed `SESSION_SH1_HAS_ACCESS` to `LT_SESSION_SH1_HAS_ACCESS`.
+- Renamed `SESSION_SH2_HAS_ACCESS` to `LT_SESSION_SH2_HAS_ACCESS`.
+- Renamed `SESSION_SH3_HAS_ACCESS` to `LT_SESSION_SH3_HAS_ACCESS`.
+- Renamed `PING_LEN_MAX` to `LT_PING_LEN_MAX`.
+- Renamed `R_MEM_DATA_SIZE_x` to `TR01_R_MEM_DATA_SIZE_x`.
+- Renamed `L2_STATUS_REQUEST_OK` to `TR01_L2_STATUS_REQUEST_OK`.
+- Renamed `L2_STATUS_RESULT_OK` to `TR01_L2_STATUS_RESULT_OK`.
+- Renamed `L2_STATUS_REQUEST_CONT` to `TR01_L2_STATUS_REQUEST_CONT`.
+- Renamed `L2_STATUS_RESULT_CONT` to `TR01_L2_STATUS_RESULT_CONT`.
+- Renamed `L2_STATUS_RESP_DISABLED` to `TR01_L2_STATUS_RESP_DISABLED`.
+- Renamed `L2_STATUS_HSK_ERR` to `TR01_L2_STATUS_HSK_ERR`.
+- Renamed `L2_STATUS_NO_SESSION` to `TR01_L2_STATUS_NO_SESSION`.
+- Renamed `L2_STATUS_TAG_ERR` to `TR01_L2_STATUS_TAG_ERR`.
+- Renamed `L2_STATUS_CRC_ERR` to `TR01_L2_STATUS_CRC_ERR`.
+- Renamed `L2_STATUS_UNKNOWN_ERR` to `TR01_L2_STATUS_UNKNOWN_ERR`.
+- Renamed `L2_STATUS_GEN_ERR` to `TR01_L2_STATUS_GEN_ERR`.
+- Renamed `L2_STATUS_NO_RESP` to `TR01_L2_STATUS_NO_RESP`.
+- Renamed `L3_RESULT_OK` to `TR01_L3_RESULT_OK`
+- Renamed `L3_RESULT_FAIL` to `TR01_L3_RESULT_FAIL`
+- Renamed `L3_RESULT_UNAUTHORIZED` to `TR01_L3_RESULT_UNAUTHORIZED`
+- Renamed `L3_RESULT_INVALID_CMD` to `TR01_L3_RESULT_INVALID_CMD`
+- Renamed `L3_ECC_INVALID_KEY` to `TR01_L3_ECC_INVALID_KEY`
+- Renamed `L3_PAIRING_KEY_EMPTY` to `TR01_L3_PAIRING_KEY_EMPTY`
+- Renamed `L3_PAIRING_KEY_INVALID` to `TR01_L3_PAIRING_KEY_INVALID`
+- Renamed `L3_R_MEM_DATA_WRITE_WRITE_FAIL` to `TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL`
+- Renamed `L3_R_MEM_DATA_WRITE_SLOT_EXPIRED` to `TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED`
+- Renamed `L3_MCOUNTER_UPDATE_ERROR` to `TR01_L3_MCOUNTER_UPDATE_ERROR`
+- Renamed `L3_MCOUNTER_COUNTER_INVALID` to `TR01_L3_MCOUNTER_COUNTER_INVALID`
+- Renamed other macros and definitions used internally.
+- Changed type of the first parameter of `lt_random_bytes` to `lt_handle_t`.
+- Replaced various numeric constants with appropriate macro constants and sizeof operators.
+- `lt_get_info_fw_bank()`: Renamed parameter `max_len` to `max_size`.
+- `lt_get_log_req()`: Renamed parameter `log_msg_len` to `read_size`.
+- `lt_r_mem_data_read()`: Renamed parameter `size` to `read_size`.
+- Added new CMake option `LT_CRYPTO` for selecing crypto provider with a string, renamed `LT_USE_TREZOR_CRYPTO` to `LT_CRYPTO_TREZOR`.
+- Reworked the documentation using the MkDocs framework.
+- Renamed `lt_session_state_t` to `lt_host_eph_keys_t`.
+- Renamed `lt_secure_session_state_t` to `lt_secure_session_status_t`.
+- Renamed `lt_l3_state_t.session` to `lt_l3_state_t.session_status`.
+- Added `enum lt_startup_id_t` for the purpose of `lt_reboot()` -> renamed `TR01_MODE_APP` to `TR01_REBOOT` and `TR01_MODE_MAINTENANCE` to `TR01_MAINTENANCE_REBOOT` (to be more compliant with User API).
+- Added `enum lt_tr01_mode_t` to track the current mode TROPIC01 is in.
+
+### Added
+- CMake option for setting logging verbosity level: `LT_LOG_LVL`.
+- Compiler and linker flags to delete unused sections.
+- Macro `MCOUNTER_VALUE_MAX` for the maximal allowed value of monotonic counter.
+- CMake option for selecting silicon revision: `LT_SILICON_REV`.
+- Constants for length of Secure Channel handshake/pairing keys, ephemeral keys and AES256 key.
+- Constants for length of P256 and ED25519 private and public keys.
+- Constant for length of ECDSA/EDDSA signature.
+- Constants for lengths of L2 request fields (ID, LEN, CRC).
+- `lt_get_info_fw_bank()`: Parameter `read_size` to indicate the number of read bytes from the FW bank.
+- `lt_get_log_req()`: Parameter `max_size` to check whether the output buffer is big enough.
+- `lt_r_mem_data_read()`: Parameter `max_size` to check whether the output buffer is big enough.
+- `lt_ecc_key_read()`: Parameter `max_size` to check whether the output buffer is big enough.
+- Created `lt_crypto_trezor_hmac_sha256.c` and moved definition of `lt_hmac_sha256()` there.
+
+### Fixed
+- `lt_r_mem_data_write()`, `lt_out__r_mem_data_write()`: Mark `data` as `const`.
+- `lt_mcounter_init()`: Allow `mcounter_value` only from range 0-`MCOUNTER_VALUE_MAX`.
+- Overflow bug in `hal/port/unix/libtropic_port_unix_usb_dongle.c`.
+
+### Removed
+- Unused `pairing_key_slot_t` enum.
+- `lt_get_st_pub()`: Parameter `stpub_len`.
+- Building the documentation from the root `CMakeLists.txt`.
+- Ceedling unit tests.
+- `LT_STATIC` macro.
+
 ## [1.0.0]
 
 ### Changed

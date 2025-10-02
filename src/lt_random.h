@@ -14,14 +14,22 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
- * @param s2          Structure holding l2 state
+ * @param h           Device's handle
  * @param buff        Buffer to be filled
  * @param count       Number of random bytes
  * @return lt_ret_t
  */
-lt_ret_t lt_random_bytes(lt_l2_state_t *s2, void *buff, size_t count) __attribute__((warn_unused_result));
+lt_ret_t lt_random_bytes(lt_handle_t *h, void *buff, size_t count) __attribute__((warn_unused_result));
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_RANDOM_H

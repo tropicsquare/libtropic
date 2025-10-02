@@ -2,9 +2,8 @@
 #define LT_L1_PORT_WRAP_H
 
 /**
- * @defgroup group_l1_functions Layer 1 functions
- * @brief Used internally
- * @details Function used internally by libtropic during L1 operation.
+ * @defgroup group_l1_port_wrap_functions 6.1. Layer 1: Port Wrappers
+ * @brief Functions that call port specific functions (used internally)
  *
  * @{
  */
@@ -18,6 +17,10 @@
  */
 
 #include "libtropic_common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief Initializes handle and L1.
@@ -88,4 +91,8 @@ lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_
 
 /** @} */  // end of group_l1_functions
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_L1_PORT_WRAP_H

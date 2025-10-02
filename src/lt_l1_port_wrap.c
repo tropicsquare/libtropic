@@ -17,7 +17,7 @@
 
 lt_ret_t lt_l1_init(lt_l2_state_t *s2)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -27,7 +27,7 @@ lt_ret_t lt_l1_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_l1_deinit(lt_l2_state_t *s2)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -37,7 +37,7 @@ lt_ret_t lt_l1_deinit(lt_l2_state_t *s2)
 
 lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s2)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -47,7 +47,7 @@ lt_ret_t lt_l1_spi_csn_low(lt_l2_state_t *s2)
 
 lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -57,7 +57,7 @@ lt_ret_t lt_l1_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout_ms)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -67,7 +67,7 @@ lt_ret_t lt_l1_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, 
 
 lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }
@@ -79,7 +79,7 @@ lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms)
 
 lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 {
-#ifdef LIBT_DEBUG
+#ifdef LT_REDUNDANT_ARG_CHECK
     if (!s2) {
         return LT_PARAM_ERR;
     }

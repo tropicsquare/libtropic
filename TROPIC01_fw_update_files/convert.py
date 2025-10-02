@@ -9,15 +9,18 @@ import sys
 import os
 import re
 
-def binary_to_c_array(path_to_fw_folder, filename, version_name):
+def binary_to_c_array(path_to_fw_folder, filename, type):
     print(path_to_fw_folder)
     with open(path_to_fw_folder + filename, 'rb') as f:
         data = f.read()
 
-    header_file_name = path_to_fw_folder + version_name + ".h"
+    header_file_name = path_to_fw_folder + "fw_" + type + ".h"
     with open(header_file_name, 'w') as header:
         header.write("#pragma once\n")
-        header.write("const uint8_t " + version_name + "[] = {\n")
+        header.write("/**\n")
+        header.write(f" * @brief {type} firmware version {filename} for bootloader v1.0.1\n")
+        header.write(" */\n")
+        header.write("const uint8_t " + "fw_" + type + "[] = {\n")
         for i, byte in enumerate(data):
             if i % 16 == 0:
                 header.write("    ")
@@ -96,10 +99,10 @@ if __name__ == "__main__":
         spect_version = parse_version_from_filename(spect_fw_filename)
         if spect_version:
             print(f"Parsed SPECT FW version: {spect_version}")
-            binary_to_c_array(sys.argv[1], spect_fw_filename,  "fw_SPECT_" + spect_version)
+            binary_to_c_array(sys.argv[1], spect_fw_filename, "SPECT")
 
         cpu_version = parse_version_from_filename(cpu_fw_filename)
         if cpu_version:
             print(f"Parsed CPU FW version: {cpu_version}")
-            binary_to_c_array(sys.argv[1], cpu_fw_filename, "fw_CPU_" + cpu_version)
+            binary_to_c_array(sys.argv[1], cpu_fw_filename, "CPU")
 

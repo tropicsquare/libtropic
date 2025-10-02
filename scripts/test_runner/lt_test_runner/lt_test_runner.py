@@ -114,6 +114,8 @@ class lt_test_runner:
                     elif "ERROR" in line:
                         logger_platform.error(f"{line}")
                         err_count += 1
+                    elif "DEBUG" in line:
+                        logger_platform.debug(f"{line}")
                     else:
                         logger_platform.info(f"{line}")
                         logger_runner.error("Received unknown message type!")
@@ -151,11 +153,13 @@ class lt_test_runner:
         if err_count > 0 or warn_count > 0 or assert_fail_count > 0 or comm_error_count > 0:
             logger.error("There were errors or warnings, test unsuccessful!")
             await self.platform.set_disco_led(lt_platform.lt_led_color.RED)
+            await self.platform.set_spi_en(False)
             await self.platform.set_platform_power(False)
             self.platform.openocd_disconnect()
             return self.lt_test_result.TEST_FAILED
 
         await self.platform.set_disco_led(lt_platform.lt_led_color.GREEN)
+        await self.platform.set_spi_en(False)
         await self.platform.set_platform_power(False)
         self.platform.openocd_disconnect()
         return self.lt_test_result.TEST_PASSED
@@ -184,8 +188,8 @@ class lt_test_runner:
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
+            # await self.platform.set_platform_power(True) # Power should be already on (by default value in OpenOCD config)
             await self.platform.set_spi_en(True)
-            await self.platform.set_platform_power(True)
 
             await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
             await self.platform.set_disco_led(lt_platform.lt_led_color.WHITE)
@@ -194,6 +198,7 @@ class lt_test_runner:
                 await self.platform.load_elf(elf_path)
             except TimeoutError:
                 logger.error("Communication with OpenOCD timed out while loading firmware!")
+                await self.platform.set_spi_en(False)
                 await self.platform.set_platform_power(False)
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED

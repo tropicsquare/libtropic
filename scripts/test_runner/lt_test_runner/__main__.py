@@ -130,6 +130,9 @@ async def main() -> lt_test_runner.lt_test_result:
         except FileNotFoundError:
             logger.error("Couldn't initialize OpenOCD.")
             return lt_test_runner.lt_test_result.TEST_FAILED
+        except asyncio.exceptions.TimeoutError:
+            logger.error(f"Received timeout!")
+            return lt_test_runner.lt_test_result.TEST_FAILED
         except:
             logger.info("Received unexpected exception or termination request. Shutting down.")
             raise

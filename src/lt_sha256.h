@@ -12,14 +12,18 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Length of sha256 digest */
-#define SHA256_DIGEST_LENGTH 32
+#define LT_SHA256_DIGEST_LENGTH 32
 
 /** sha256 context structure */
 struct lt_crypto_sha256_ctx_t {
-#ifdef USE_MBEDTLS
+#if LT_CRYPTO_MBEDTLS
     uint32_t space[32];
-#elif LT_USE_TREZOR_CRYPTO
+#elif LT_CRYPTO_TREZOR
     uint32_t space[256];
 #endif
 };
@@ -51,4 +55,8 @@ void lt_sha256_update(void *ctx, const uint8_t *input, size_t len);
  */
 void lt_sha256_finish(void *ctx, uint8_t *output);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_SHA256_H

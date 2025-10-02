@@ -2,7 +2,7 @@
 #define LT_LIBTROPIC_FUNC_TESTS_H
 
 /**
- * @defgroup libtropic_funct_tests libtropic functional tests
+ * @defgroup libtropic_funct_tests 3. Functional Tests
  * @brief Test all libtropic main API functions.
  * @{
  */
@@ -18,6 +18,10 @@
 #include <stdint.h>
 
 #include "libtropic_common.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern lt_ret_t (*lt_test_cleanup_function)(void);
 
@@ -164,7 +168,7 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h);
 void lt_test_ire_pairing_key_slots(lt_handle_t *h);
 
 /**
- * @brief Test Ping L3 command with random data of random length <= PING_LEN_MAX.
+ * @brief Test Ping L3 command with random data of random length <= TR01_PING_LEN_MAX.
  *
  * Test steps:
  *  1. Start Secure Session with pairing key slot 0.
@@ -338,10 +342,10 @@ void lt_test_rev_sleep_req(lt_handle_t *h);
  * @brief Test L2 Startup Request.
  *
  * Test steps:
- *  1. Check the chip is in the normal mode.
- *  2. Reboot to normal mode and check -- verify that standard reboot is working.
+ *  1. Reboot to normal mode and check.
+ *  2. Reboot to normal mode again and check.
  *  3. Reboot to bootloader mode and check.
- *  4. Reboot to bootloader mode again.
+ *  4. Reboot to bootloader mode again and check.
  *  5. Reboot to normal mode and check.
  *
  * After each reboot before mode check, the test will wait until the chip is ready.
@@ -449,4 +453,8 @@ void lt_test_rev_get_log_req(lt_handle_t *h);
 
 /** @} */  // end of libtropic_funct_tests group
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_LIBTROPIC_FUNC_TESTS_H

@@ -44,3 +44,13 @@ add_library(trezor_crypto ${TREZOR_CRYPTO_SRCS})
 target_include_directories(trezor_crypto PUBLIC
                             ${CMAKE_CURRENT_SOURCE_DIR}/
                             )
+
+# Compiler flags: These are an internal implementation detail.
+# They are needed to build the library's own object files correctly.
+# 'PRIVATE' applies them only to the 'trezor_crypto' target itself.
+target_compile_options(trezor_crypto PRIVATE -ffunction-sections -fdata-sections)
+# Linker flags: This is a usage requirement for any consumer.
+# The final executable that links against 'trezor_crypto' needs this flag.
+# 'INTERFACE' propagates this requirement to the consumer without
+# applying it to the library target itself.
+target_link_options(trezor_crypto INTERFACE -Wl,--gc-sections)

@@ -8,8 +8,7 @@ cmake_minimum_required(VERSION 3.21.0)
 
 include(cmake/strict_compile_flags.cmake)
 
-option(LT_USE_TREZOR_CRYPTO "Use trezor_crypto as a cryptography provider" OFF)
-option(LT_CRYPTO_MBEDTLS "Use mbedtls as a cryptography provider" OFF)
+option(LT_CRYPTO "Set a cryptography provider" OFF)
 option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
@@ -24,7 +23,59 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
-option(LT_VALGRIND "Enable Valgrind" OFF)
+# Logging options
+option(LT_LOG_LVL "Set log level" OFF)
+
+# Use INFO logging level when building tests/examples
+if(LT_BUILD_TESTS OR LT_BUILD_EXAMPLES)
+    if(NOT LT_LOG_LVL)
+        message(STATUS "No logging level specified, defaulting to INFO for tests/examples.")
+        set(LT_LOG_LVL "Info" CACHE BOOL "Set log level to INFO." FORCE)
+    endif()
+endif()
+
+# These are internal macros for enabling the logging macros
+# Default: all logging disabled
+set(LT_LOG_ENABLE_INFO  0 CACHE INTERNAL "")
+set(LT_LOG_ENABLE_WARN  0 CACHE INTERNAL "")
+set(LT_LOG_ENABLE_ERROR 0 CACHE INTERNAL "")
+set(LT_LOG_ENABLE_DEBUG 0 CACHE INTERNAL "")
+
+# Set logging ENABLE flags based on selected logging level
+if(LT_LOG_LVL STREQUAL "Debug")
+    message(STATUS "Log level set to DEBUG")
+    set(LT_LOG_ENABLE_DEBUG 1)
+    set(LT_LOG_ENABLE_INFO  1)
+    set(LT_LOG_ENABLE_WARN  1)
+    set(LT_LOG_ENABLE_ERROR 1)
+
+elseif(LT_LOG_LVL STREQUAL "Info")
+    message(STATUS "Log level set to INFO")
+    set(LT_LOG_ENABLE_DEBUG 0)
+    set(LT_LOG_ENABLE_INFO  1)
+    set(LT_LOG_ENABLE_WARN  1)
+    set(LT_LOG_ENABLE_ERROR 1)
+
+elseif(LT_LOG_LVL STREQUAL "Warning")
+    message(STATUS "Log level set to WARNING")
+    set(LT_LOG_ENABLE_DEBUG 0)
+    set(LT_LOG_ENABLE_INFO  0)
+    set(LT_LOG_ENABLE_WARN  1)
+    set(LT_LOG_ENABLE_ERROR 1)
+
+elseif(LT_LOG_LVL STREQUAL "Error")
+    message(STATUS "Log level set to ERROR")
+    set(LT_LOG_ENABLE_DEBUG 0)
+    set(LT_LOG_ENABLE_INFO  0)
+    set(LT_LOG_ENABLE_WARN  0)
+    set(LT_LOG_ENABLE_ERROR 1)
+elseif(LT_LOG_LVL STREQUAL "None")
+    message(STATUS "Log level set to NONE (logging is disabled)")
+elseif(NOT LT_LOG_LVL)
+    message(STATUS "No logging level specified, defaulting to NONE (logging is disabled)")
+else()
+    message(WARNING "Incorrect logging level specified: '${LT_LOG_LVL}'. Defaulting to NONE!")
+endif()
 
 # Define the ASAN flags here so they are not duplicated.
 set(LT_ASAN_COMPILE_FLAGS "-fsanitize=address,leak,undefined;-fno-omit-frame-pointer;-g"
@@ -45,13 +96,24 @@ set(LT_SH0_PRIV_PATH
     "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)"
 )
 
-# Check if cryptography provider is defined
-if(
-    (NOT LT_BUILD_DOCS)        AND
-    (NOT LT_USE_TREZOR_CRYPTO) AND
-    (NOT LT_CRYPTO_MBEDTLS)
-)
-    message(FATAL_ERROR "No cryptography provider is defined.")
+# Check whether compiling standalone (e.g. as a library) or as a child project (= has parent scope)
+# and save result to HAS_PARENT_SCOPE.
+get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
+
+###########################################################################
+#                                                                         #
+#   Define silicon revision. Default is ACAB (production chips).          #
+#   Allowed values are:                                                   #
+#           ABAB - Silicon revision B - Bootloader v1.0.1                 #
+#           ACAB - Silicon revision C - Bootloader v2.0.1                 #
+#                                                                         #
+#   Useful for firmware update and functional tests (as some behavior)    #
+#   differ between revisions.                                             #
+#                                                                         #
+###########################################################################
+
+if (NOT DEFINED LT_SILICON_REV)
+    set(LT_SILICON_REV "ACAB")
 endif()
 
 ###########################################################################
@@ -61,10 +123,7 @@ endif()
 #   For more info about firmware update go into                           #
 #   TROPIC01_fw_update_files/README.md                                    #
 #                                                                         #
-#   [1] Define LT_SILICON_REV, allowed                                    #
-#       values are:                                                       #
-#           ABAB - Silicon revision B - Bootloader v1.0.1                 #
-#           ACAB - Silicon revision C - Bootloader v2.0.1                 #
+#   [1] Define LT_SILICON_REV -- see above.                               #
 #                                                                         #
 #   [2] Define firmware files here, allowed values are:                   #
 #       APP: 1_0_0                                                        #
@@ -74,22 +133,7 @@ endif()
 #                                                                         #
 ###########################################################################
 
-set(LT_SILICON_REV "ACAB")
 set(LT_CPU_FW_VERSION "1_0_0")
-
-###########################################################################
-#                                                                         #
-#   Building documentation                                                #
-#                                                                         #
-###########################################################################
-
-if(LT_BUILD_DOCS)
-    find_package(Doxygen REQUIRED)
-    if(Doxygen_FOUND)
-        add_subdirectory(docs)
-        message(STATUS "Doxygen found, enabled documentation building.")
-    endif()
-endif()
 
 ###########################################################################
 #                                                                         #
@@ -116,6 +160,7 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ecdsa.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_hmac_sha256.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
 )
 
@@ -130,10 +175,10 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_l2.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3_process.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_l3.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
@@ -143,8 +188,8 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/lt_l2.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/lt_l3.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l2.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l3.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
@@ -197,8 +242,10 @@ set(LIBTROPIC_EXAMPLE_LIST
     lt_ex_fw_update
 )
 
-# Export example list to parent project (usually platform-specific implementation).
-set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+# Export example list to parent project (usually platform-specific implementation) if parent project exists.
+if (HAS_PARENT_SCOPE)
+    set(LIBTROPIC_EXAMPLE_LIST ${LIBTROPIC_EXAMPLE_LIST} PARENT_SCOPE)
+endif()
 
 if(LT_BUILD_EXAMPLES)
     set(SDK_SRCS ${SDK_SRCS}
@@ -270,8 +317,10 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_get_log_req
 )
 
-# Export test list to parent project (usually platform-specific implementation).
-set(LIBTROPIC_TEST_LIST ${LIBTROPIC_TEST_LIST} PARENT_SCOPE)
+# Export test list to parent project (usually platform-specific implementation) if parent project exists.
+if (HAS_PARENT_SCOPE)
+    set(LIBTROPIC_TEST_LIST ${LIBTROPIC_TEST_LIST} PARENT_SCOPE)
+endif()
 
 # Create a test registry based on the test list above. This test registry is then included
 # in platform-specific main.c.
@@ -375,7 +424,25 @@ add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
 target_include_directories(tropic PUBLIC ${SDK_DIRS_PUB})
 
-target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LIBT_DEBUG>")
+# Compiler flags: These are an internal implementation detail.
+# They are needed to build the library's own object files correctly.
+# 'PRIVATE' applies them only to the 'tropic' target itself.
+target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
+# Linker flags: This is a usage requirement for any consumer.
+# The final executable that links against 'tropic' needs this flag.
+# 'INTERFACE' propagates this requirement to the consumer without
+# applying it to the library target itself.
+target_link_options(tropic INTERFACE -Wl,--gc-sections)
+
+target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LT_REDUNDANT_ARG_CHECK>")
+
+# Propagate logging settings
+target_compile_definitions(tropic PUBLIC
+    LT_LOG_ENABLE_DEBUG=${LT_LOG_ENABLE_DEBUG}
+    LT_LOG_ENABLE_ERROR=${LT_LOG_ENABLE_ERROR}
+    LT_LOG_ENABLE_WARN=${LT_LOG_ENABLE_WARN}
+    LT_LOG_ENABLE_INFO=${LT_LOG_ENABLE_INFO}
+)
 
 ###########################################################################
 #                                                                         #
@@ -400,6 +467,53 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
 
 endif()
 
+###########################################################################
+#                                                                         #
+#   LT_CRYPTO handling                                                    #
+#                                                                         #
+###########################################################################
+
+# Supported crypto providers
+# set(CRYPTO_PROVIDERS "trezor_crypto" "mbedtls") # mbedtls is WIP
+set(CRYPTO_PROVIDERS "trezor_crypto")
+
+# These are internal macros for crypto providers
+set(LT_CRYPTO_TREZOR  0 CACHE INTERNAL "")
+set(LT_CRYPTO_MBEDTLS 0 CACHE INTERNAL "")
+
+# Handle LT_CRYPTO
+if(LT_CRYPTO STREQUAL "trezor_crypto")
+    
+    message(STATUS "Crypto provider set to trezor_crypto")
+    set(LT_CRYPTO_TREZOR 1)
+
+    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
+    target_link_libraries(tropic PRIVATE trezor_crypto)
+
+elseif(LT_CRYPTO STREQUAL "mbedtls")
+
+    message(STATUS "Crypto provider set to mbedtls")
+    set(LT_CRYPTO_MBEDTLS 1)
+
+else()
+
+    string(REPLACE ";" ", " ALLOWED_PROVIDERS_STR "${CRYPTO_PROVIDERS}")    
+    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${ALLOWED_PROVIDERS_STR}")
+    
+endif()
+
+# Propagate crypto provider internal switches
+target_compile_definitions(tropic PUBLIC
+    LT_CRYPTO_TREZOR=${LT_CRYPTO_TREZOR}
+    LT_CRYPTO_MBEDTLS=${LT_CRYPTO_MBEDTLS}
+)
+
+###########################################################################
+#                                                                         #
+#   Other options handling                                                #
+#                                                                         #
+###########################################################################
 
 if (LT_SILICON_REV STREQUAL "ABAB")
     target_compile_definitions(tropic PRIVATE ABAB)
@@ -409,13 +523,6 @@ endif()
 
 if(LT_PRINT_SPI_DATA)
     target_compile_definitions(tropic PRIVATE LT_PRINT_SPI_DATA)
-endif()
-
-if(LT_USE_TREZOR_CRYPTO)
-    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
-    target_link_libraries(tropic PRIVATE trezor_crypto)
-    target_compile_definitions(tropic PRIVATE LT_USE_TREZOR_CRYPTO)
 endif()
 
 if(LT_HELPERS)

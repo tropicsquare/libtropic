@@ -20,28 +20,30 @@
 
 uint8_t kdf_key_zeros[256] = {0};
 
-static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, mac_and_destroy_slot_t slot,
-                     uint8_t ciphertexts[128][32], uint8_t *t, uint8_t *s)
+static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, lt_mac_and_destroy_slot_t slot,
+                     uint8_t ciphertexts[TR01_MACANDD_ROUNDS_MAX][TR01_MAC_AND_DESTROY_DATA_SIZE],
+                     uint8_t t[LT_HMAC_SHA256_HASH_LEN], uint8_t s[TR01_MAC_AND_DESTROY_DATA_SIZE])
 {
-    uint8_t v[32], w[32], k_i[32], t_[32];
+    uint8_t v[LT_HMAC_SHA256_HASH_LEN], w[TR01_MAC_AND_DESTROY_DATA_SIZE], k_i[LT_HMAC_SHA256_HASH_LEN],
+        t_[LT_HMAC_SHA256_HASH_LEN];
 
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
-    lt_hmac_sha256(kdf_key_zeros, 256, pin, pin_len, v);
+    lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v);
 
     LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%d...", (int)slot);
     LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, slot, v, w));
 
     LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
-    lt_hmac_sha256(w, 32, pin, pin_len, k_i);
+    lt_hmac_sha256(w, sizeof(w), pin, pin_len, k_i);
 
     LT_LOG_INFO("Decrypting (XOR) c_i using k_i...");
-    for (uint8_t j = 0; j < 32; j++) s[j] = ciphertexts[slot][j] ^ k_i[j];
+    for (uint8_t j = 0; j < TR01_MAC_AND_DESTROY_DATA_SIZE; j++) s[j] = ciphertexts[slot][j] ^ k_i[j];
 
     LT_LOG_INFO("Computing t' = KDF(s, \"0\")...");
-    lt_hmac_sha256(s, 32, (uint8_t *)"0", 1, t_);
+    lt_hmac_sha256(s, TR01_MAC_AND_DESTROY_DATA_SIZE, (uint8_t *)"0", 1, t_);
 
     LT_LOG_INFO("Checking if t' != t...");
-    for (uint8_t i = 0; i < 32; i++)
+    for (uint8_t i = 0; i < sizeof(t_); i++)
         if (t_[i] != t[i]) return 1;
 
     return 0;
@@ -53,42 +55,45 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_mac_and_destroy()");
     LT_LOG_INFO("----------------------------------------------");
 
-    uint8_t n, wrong_attempts, s[32], t[32], u[32], v[32], w[32], k_from_setup[32], k_from_check[32], k_i[32],
-        ignored[32], pin[PIN_LEN_MAX], pin_wrong[PIN_LEN_MAX], ciphertexts[128][32];
+    uint8_t n, wrong_attempts, s[TR01_MAC_AND_DESTROY_DATA_SIZE], t[LT_HMAC_SHA256_HASH_LEN],
+        u[LT_HMAC_SHA256_HASH_LEN], v[LT_HMAC_SHA256_HASH_LEN], w[TR01_MAC_AND_DESTROY_DATA_SIZE],
+        k_from_setup[LT_HMAC_SHA256_HASH_LEN], k_from_check[LT_HMAC_SHA256_HASH_LEN], k_i[LT_HMAC_SHA256_HASH_LEN],
+        ignored[TR01_MAC_AND_DESTROY_DATA_SIZE], pin[PIN_LEN_MAX], pin_wrong[PIN_LEN_MAX],
+        ciphertexts[TR01_MACANDD_ROUNDS_MAX][TR01_MAC_AND_DESTROY_DATA_SIZE];
     uint16_t pin_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Setup PIN");
     LT_LOG_INFO();
 
-    LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)MAC_AND_DESTROY_SLOT_127);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &n, sizeof(n)));
-    n = (n % MAC_AND_DESTROY_SLOT_127) + 1;
+    LT_LOG_INFO("Generating random number of max attempts n from {1...%d}...", (int)TR01_MAC_AND_DESTROY_SLOT_127);
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &n, sizeof(n)));
+    n = (n % TR01_MAC_AND_DESTROY_SLOT_127) + 1;
 
     LT_LOG_INFO("Generating random 32B secret s...");
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, s, sizeof(s)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, s, sizeof(s)));
 
     LT_LOG_INFO("Generating random length from {1...%d} for the PIN...", PIN_LEN_MAX);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &pin_len, sizeof(pin_len)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &pin_len, sizeof(pin_len)));
     pin_len = (pin_len % PIN_LEN_MAX) + 1;
 
     LT_LOG_INFO("Generating random PIN with length %" PRIu16 "...", pin_len);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, pin, sizeof(pin)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, pin, sizeof(pin)));
 
     LT_LOG_INFO("Computing t = KDF(s, \"0\")...");
-    lt_hmac_sha256(s, 32, (uint8_t *)"0", 1, t);
+    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"0", 1, t);
 
     LT_LOG_INFO("Computing u = KDF(s, \"1\")...");
-    lt_hmac_sha256(s, 32, (uint8_t *)"1", 1, u);
+    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
 
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
-    lt_hmac_sha256(kdf_key_zeros, 256, pin, pin_len, v);
+    lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v);
 
     LT_LOG_INFO("Starting n=%" PRIu8 " blocks of MAC_And_Destroy sequences", n);
     for (uint8_t i = 0; i < n; i++) {
@@ -103,22 +108,22 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, i, u, ignored));
 
         LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
-        lt_hmac_sha256(w, 32, pin, pin_len, k_i);
+        lt_hmac_sha256(w, sizeof(w), pin, pin_len, k_i);
 
         LT_LOG_INFO("Encrypting (XOR) s using k_i...");
-        for (uint8_t j = 0; j < 32; j++) {
+        for (uint8_t j = 0; j < sizeof(ciphertexts[i]); j++) {
             ciphertexts[i][j] = s[j] ^ k_i[j];
         }
     }
     LT_LOG_LINE();
     // Compute the cryptographic key k
-    lt_hmac_sha256(s, 32, (uint8_t *)"2", 1, k_from_setup);
+    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_setup);
 
     LT_LOG_INFO("Check PIN");
     LT_LOG_INFO();
 
     LT_LOG_INFO("Generating a random number of wrong attempts from {0...n-1=%" PRIu8 "}...", n - 1);
-    LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &wrong_attempts, sizeof(wrong_attempts)));
+    LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &wrong_attempts, sizeof(wrong_attempts)));
     wrong_attempts %= n;
 
     memcpy(pin_wrong, pin, pin_len);
@@ -137,8 +142,8 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
 
     LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
     // Compute the cryptographic key k
-    lt_hmac_sha256(s, 32, (uint8_t *)"2", 1, k_from_check);
-    for (uint8_t i = 0; i < 32; i++) {
+    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_check);
+    for (uint8_t i = 0; i < sizeof(k_from_setup); i++) {
         LT_TEST_ASSERT(1, (k_from_setup[i] == k_from_check[i]));
     }
     LT_LOG_LINE();
@@ -146,7 +151,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO("Starting a restoration of destroyed slots");
     LT_LOG_INFO();
     LT_LOG_INFO("Computing u = KDF(s, \"1\")...");
-    lt_hmac_sha256(s, 32, (uint8_t *)"1", 1, u);
+    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
 
     for (uint8_t i = 0; i <= wrong_attempts; i++) {
         LT_LOG_INFO("Restoring slot #%" PRIu8 "...", i);
@@ -162,8 +167,8 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
 
         LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
         // Compute the cryptographic key k
-        lt_hmac_sha256(s, 32, (uint8_t *)"2", 1, k_from_check);
-        for (uint8_t j = 0; j < 32; j++) {
+        lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_check);
+        for (uint8_t j = 0; j < sizeof(k_from_setup); j++) {
             LT_TEST_ASSERT(1, (k_from_setup[j] == k_from_check[j]));
         }
     }

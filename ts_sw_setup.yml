@@ -7,13 +7,10 @@ doxygen 1.10.0
 # RISC-V tools
 openocd v0.12.0
 cmake 3.23.2
-cppcheck 2.6
+# cppcheck 2.6 # cppcheck is not working for now
 
 # Python environment packages
 ts-python-env 0.8
 
 # Tropic flow tools
 ts-latex-lib v0.19
-
-# Testing
-ceedling v0.31.1

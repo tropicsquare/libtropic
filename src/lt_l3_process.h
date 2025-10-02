@@ -2,9 +2,8 @@
 #define LT_L3_TRANSFER_H
 
 /**
- * @defgroup group_l3_functions Layer 3 transfer functions
- * @brief Used internally
- * @details Function used during l3 operation.
+ * @defgroup group_l3_functions 4.1. Layer 3: Encrypt/Decrypt
+ * @brief Functions for Layer 3 packet encrypting/decrypting
  *
  * @{
  */
@@ -19,29 +18,33 @@
 
 #include "libtropic_common.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_OK 0xC3u
+#define TR01_L3_RESULT_OK 0xC3u
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_FAIL 0x3Cu
+#define TR01_L3_RESULT_FAIL 0x3Cu
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_UNAUTHORIZED 0x01u
+#define TR01_L3_RESULT_UNAUTHORIZED 0x01u
 /** @brief L3 RESULT ﬁeld Value */
-#define L3_RESULT_INVALID_CMD 0x02u
+#define TR01_L3_RESULT_INVALID_CMD 0x02u
 
 /** @brief L3 RESULT ﬁeld Value returned from ecc_key_read */
-#define L3_ECC_INVALID_KEY 0x12u
+#define TR01_L3_ECC_INVALID_KEY 0x12u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define L3_PAIRING_KEY_EMPTY 0x15u
+#define TR01_L3_PAIRING_KEY_EMPTY 0x15u
 /** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define L3_PAIRING_KEY_INVALID 0x16u
+#define TR01_L3_PAIRING_KEY_INVALID 0x16u
 /** @brief The slot is already written in */
-#define L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
+#define TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
 /** @brief The writing operation limit is reached for the slot. */
-#define L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
+#define TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
 /** @brief Failure to update the specified Monotonic Counter. The Monotonic Counter is already at 0. */
-#define L3_MCOUNTER_UPDATE_ERROR 0x13
+#define TR01_L3_MCOUNTER_UPDATE_ERROR 0x13
 /** @brief The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
-#define L3_MCOUNTER_COUNTER_INVALID 0x14
+#define TR01_L3_MCOUNTER_COUNTER_INVALID 0x14
 
 /**
  * @brief Encrypts content of L3 buffer and fills it with cyphertext ready to be sent to TROPIC01.
@@ -63,18 +66,6 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3) __attribute__((warn_unused_res
  */
 lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3) __attribute__((warn_unused_result));
 
-#ifdef TEST
-/**
- * @brief Used to increase nonce
- *
- * @param nonce       4B long number used as nonce inside of Noise protocol
- *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully
- */
-LT_STATIC lt_ret_t lt_l3_nonce_increase(uint8_t *nonce) __attribute__((warn_unused_result));
-#endif
-
 /**
  * @brief Invalidates host's session data
  *
@@ -84,4 +75,8 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3);
 
 /** @} */  // end of group_l3_functions group
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif  // LT_L3_TRANSFER_H

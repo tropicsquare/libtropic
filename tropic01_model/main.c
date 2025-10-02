@@ -14,7 +14,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
-#include "lt_port_unix_tcp.h"
+#include "libtropic_port_unix_tcp.h"
 
 int main(void)
 {
@@ -26,7 +26,7 @@ int main(void)
 
     lt_handle_t __lt_handle__ = {0};
 #if LT_SEPARATE_L3_BUFF
-    uint8_t l3_buffer[L3_PACKET_MAX_SIZE] __attribute__((aligned(16))) = {0};
+    uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
     __lt_handle__.l3.buff = l3_buffer;
     __lt_handle__.l3.buff_len = sizeof(l3_buffer);
 #endif

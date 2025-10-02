@@ -27,19 +27,22 @@ lt_handle_t *g_h;
 static lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
 {
     lt_ret_t ret;
-    uint8_t read_pub_key[64];
+    uint8_t read_pub_key[TR01_CURVE_P256_PUBKEY_LEN];  // The read key can have 32B or 64B, depending on the used curve,
+                                                       // and we work with both curves here, so let's use one buffer for
+                                                       // both for simplification and assume the size of pubkey on the
+                                                       // P256 curve to be safe.
     lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_key_origin_t origin;
 
-    LT_LOG_INFO("Starting secure session with slot %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0);
+    LT_LOG_INFO("Starting secure session with slot %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
     }
 
     LT_LOG_INFO("Erasing all ECC key slots");
-    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = TR01_ECC_SLOT_0; i <= TR01_ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Erasing slot #%" PRIu8, i);
         ret = lt_ecc_key_erase(g_h, i);
@@ -49,7 +52,7 @@ static lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
-        ret = lt_ecc_key_read(g_h, i, read_pub_key, &curve, &origin);
+        ret = lt_ecc_key_read(g_h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin);
         if (LT_L3_ECC_INVALID_KEY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
             return ret;
@@ -82,40 +85,41 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
     // Making the handle accessible to the cleanup function.
     g_h = h;
 
-    uint8_t read_pub_key[32], msg_to_sign[LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX], rs[64];
+    uint8_t read_pub_key[TR01_CURVE_ED25519_PUBKEY_LEN], msg_to_sign[TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX],
+        rs[TR01_ECDSA_EDDSA_SIGNATURE_LENGTH];
     lt_ecc_curve_type_t curve;
-    ecc_key_origin_t origin;
+    lt_ecc_key_origin_t origin;
     uint32_t msg_to_sign_len;
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     lt_test_cleanup_function = &lt_test_rev_eddsa_sign_cleanup;
 
     LT_LOG_INFO("Test EDDSA_Sign with stored key...");
-    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = TR01_ECC_SLOT_0; i <= TR01_ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
-        LT_LOG_INFO("Generating random message length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &msg_to_sign_len, sizeof(msg_to_sign_len)));
-        msg_to_sign_len %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
+        LT_LOG_INFO("Generating random message length <= %d...", (int)TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &msg_to_sign_len, sizeof(msg_to_sign_len)));
+        msg_to_sign_len %= TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
 
         LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", msg_to_sign_len);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, msg_to_sign, msg_to_sign_len));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(h, i, CURVE_ED25519, priv_test_key));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(h, i, TR01_CURVE_ED25519, priv_test_key));
 
         LT_LOG_INFO("Reading the stored public key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
@@ -132,25 +136,25 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Test EDDSA_Sign with generated key...");
-    for (uint8_t i = ECC_SLOT_0; i <= ECC_SLOT_31; i++) {
+    for (uint8_t i = TR01_ECC_SLOT_0; i <= TR01_ECC_SLOT_31; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Testing signing with ECC key slot #%" PRIu8 "...", i);
 
-        LT_LOG_INFO("Generating random message length <= %d...", (int)LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, &msg_to_sign_len, sizeof(msg_to_sign_len)));
-        msg_to_sign_len %= LT_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
+        LT_LOG_INFO("Generating random message length <= %d...", (int)TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX);
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &msg_to_sign_len, sizeof(msg_to_sign_len)));
+        msg_to_sign_len %= TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1;  // 0-4096
 
         LT_LOG_INFO("Generating random message with length %" PRIu32 " for signing...", msg_to_sign_len);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(&h->l2, msg_to_sign, msg_to_sign_len));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
         LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Generating private key using Ed25519 curve...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(h, i, CURVE_ED25519));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(h, i, TR01_CURVE_ED25519));
 
         LT_LOG_INFO("Reading the generated public key...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, &curve, &origin));
+        LT_TEST_ASSERT(LT_OK, lt_ecc_key_read(h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin));
 
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
