@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0]
 
 ### Changed
 - Mac And Destroy example - lt_PIN_set renamed to lt_new_PIN_setup() and accepts master secret, example provides separate interfaces for encrypt() and decrypt() operations, lt_PIN_check renamed to lt_PIN_entry_check() to reflect naming in app note, MAc And Destroy example refactored
