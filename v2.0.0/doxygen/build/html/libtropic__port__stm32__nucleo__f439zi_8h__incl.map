@@ -1,0 +1,17 @@
+<map id="libtropic_port_stm32_nucleo_f439zi.h" name="libtropic_port_stm32_nucleo_f439zi.h">
+<area shape="rect" id="Node000001" title="Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select)." alt="" coords="113,5,269,45"/>
+<area shape="rect" id="Node000002" href="$libtropic__port_8h.html" title="Header file with layer 1 interfaces which are defined based on host platform." alt="" coords="56,93,176,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="175,47,139,85,135,81,171,44"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="200,93,331,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="211,44,247,81,243,85,207,47"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="14,167,85,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="107,121,71,158,68,155,103,117"/>
+<area shape="rect" id="Node000004" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="109,167,259,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="129,117,165,155,161,158,125,121"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,240,88,265"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="163,194,82,236,80,231,161,190"/>
+<area shape="rect" id="Node000006" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="113,240,255,265"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="187,192,187,226,181,226,181,192"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="279,240,350,265"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="206,190,283,231,280,236,204,194"/>
+</map>
