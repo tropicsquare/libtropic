@@ -147,7 +147,7 @@ set(LT_CPU_FW_VERSION "1_0_0")
 ###########################################################################
 
 project(libtropic_SDK
-        VERSION 1.0.0
+        VERSION 2.0.0
         DESCRIPTION "TROPIC01 software development kit"
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
