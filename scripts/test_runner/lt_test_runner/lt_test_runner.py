@@ -194,6 +194,16 @@ class lt_test_runner:
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
             
+            logger.info("Enabling SPI...")
+            spi_en_state = False
+            for _ in range(2):
+                if not await self.platform.set_spi_en(spi_en_state):
+                    logger.error("Failed!")
+                    self.platform.set_spi_en(False)
+                    self.platform.openocd_disconnect()
+                    return self.lt_test_result.TEST_FAILED
+                spi_en_state = not spi_en_state
+
             await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
             await self.platform.set_disco_led(lt_platform.lt_led_color.WHITE)
 
