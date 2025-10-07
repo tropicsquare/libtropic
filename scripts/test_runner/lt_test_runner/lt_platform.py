@@ -32,7 +32,7 @@ class lt_platform(ABC):
         except ConnectionRefusedError:
             return False
 
-        await asyncio.wait_for(self.ocd_reader.readuntil(">".encode('ascii')), timeout)
+        await asyncio.wait_for(self.ocd_reader.readuntil("> ".encode('ascii')), timeout)
         logger.info("OpenOCD ready!")
         return True
 
@@ -55,17 +55,30 @@ class lt_platform(ABC):
             ocd_line = await asyncio.wait_for(self.ocd_reader.readline(), timeout)
         return ocd_line
     
+    async def openocd_command(self, command_str : str) -> bool:
+        try:
+            await self.openocd_send(command_str)
+        except:
+            logging.error("Timeout when sending command!")
+            return False
+        
+        try:
+            output = await self.openocd_recv_match(command_str)
+        except asyncio.exceptions.TimeoutError:
+            logging.debug(f"Command response check failed, response: '{output}'")
+            return False
+        
+        return True
+
     ####################################################
     # Common OpenOCD functions
     ####################################################
     async def set_disco_led(self, color: lt_led_color):
         # Get state of each LED for requested color and convert to 0 (off) or 1 (on).
         # This int(bool()) stuff is just to get 0 or 1 from the masked value (instead of shifting).
-        await self.openocd_send(f"ftdi set_signal LED_R {int(bool(color.value & 0x1))}\n")
-        await self.openocd_send(f"ftdi set_signal LED_G {int(bool(color.value & 0x2))}\n")
-        await self.openocd_send(f"ftdi set_signal LED_B {int(bool(color.value & 0x4))}\n")
-        # Wait for the values to propagate.
-        await asyncio.sleep(0.001)
+        await self.openocd_command(f"ftdi set_signal LED_R {int(bool(color.value & 0x1))}\r\n")
+        await self.openocd_command(f"ftdi set_signal LED_G {int(bool(color.value & 0x2))}\r\n")
+        await self.openocd_command(f"ftdi set_signal LED_B {int(bool(color.value & 0x4))}\r\n")
 
     async def blink_disco_led(self, color: lt_led_color, count = 3):
         for _ in range(count):
@@ -74,19 +87,18 @@ class lt_platform(ABC):
             await self.set_disco_led(self.lt_led_color.BLACK)
             await asyncio.sleep(0.1)        
 
-    async def initialize(self):
-        await self.openocd_send("init\n")
+    async def initialize(self) -> bool:
+        return await self.openocd_command("init\r\n")
 
-    async def set_spi_en(self, state: bool):
-        await self.openocd_send(f"ftdi set_signal SPI_EN {int(state)}\n")
+    async def set_spi_en(self, state: bool) -> bool:
+        return await self.openocd_command(f"ftdi set_signal SPI_EN {int(state)}\r\n")
 
-    async def is_spi_bus_free(self) -> bool:
-        await self.openocd_send(f"ftdi get_signal SPI_EN_BUS\n")
-        openocd_response = await self.openocd_recv_match("Signal SPI_EN_BUS =", 30)
-        return ("Signal SPI_EN_BUS = 000000" in openocd_response)
+    async def is_spi_bus_free(self):
+        return await self.openocd_command(f"ftdi get_signal SPI_EN_BUS\r\n")
 
     async def set_platform_power(self, state: bool):
-        await self.openocd_send(f"ftdi set_signal PLTF_PWR_EN {int(state)}\n")
+        return await self.openocd_command(f"ftdi set_signal PLTF_PWR_EN {int(state)}\r\n")
+            
     ####################################################
     # Platform-specific OpenOCD functions
     # 
