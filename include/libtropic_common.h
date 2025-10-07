@@ -716,7 +716,7 @@ typedef enum lt_config_obj_idx_t {
 /** @brief Minimal size of one data slot in bytes */
 #define TR01_R_MEM_DATA_SIZE_MIN (1)
 /** @brief Maximal size of one data slot in bytes */
-#define TR01_R_MEM_DATA_SIZE_MAX (444)
+#define TR01_R_MEM_DATA_SIZE_MAX (475)
 /** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511. */
 #define TR01_R_MEM_DATA_SLOT_MAX (511)
 
