@@ -11,6 +11,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 
+#include "libtropic_logging.h"
 #include "libtropic_port.h"
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
@@ -18,9 +19,9 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
     LT_LOG_DEBUG("Initializing SPI...\n");
-    pinMode(device->cs_pin, OUTPUT);
-    digitalWrite(device->cs_pin, HIGH);
-    device->spi.begin();
+    pinMode(device->spi_cs_pin, OUTPUT);
+    digitalWrite(device->spi_cs_pin, HIGH);
+    device->spi->begin();
 
     LT_LOG_DEBUG("Initializing RNG...\n");
     randomSeed(device->rng_seed);
@@ -32,8 +33,8 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
-    digitalWrite(device->cs_pin, HIGH);
-    device->spi.end();
+    digitalWrite(device->spi_cs_pin, HIGH);
+    device->spi->end();
 
     return LT_OK;
 }
@@ -42,7 +43,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
-    digitalWrite(device->cs_pin, LOW);
+    digitalWrite(device->spi_cs_pin, LOW);
 
     return LT_OK;
 }
@@ -51,7 +52,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
-    digitalWrite(device->cs_pin, HIGH);
+    digitalWrite(device->spi_cs_pin, HIGH);
 
     return LT_OK;
 }
@@ -61,9 +62,9 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     LT_UNUSED(timeout_ms);
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
-    device->spi.beginTransaction(device->spi_settings);
-    device->spi.transfer(s2->buff + offset, tx_len);
-    device->spi.endTransaction();
+    device->spi->beginTransaction(device->spi_settings);
+    device->spi->transfer(s2->buff + offset, tx_len);
+    device->spi->endTransaction();
 
     return LT_OK;
 }
@@ -92,7 +93,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
     LT_UNUSED(s2);
 
     for (size_t i = 0; i < count; i++) {
-        (uint8_t *)buff[i] = random(0, 256)  // Generate a random byte (0-255)
+        ((uint8_t *)buff)[i] = random(0, 256);  // Generate a random byte (0-255)
     }
 
     return LT_OK;
