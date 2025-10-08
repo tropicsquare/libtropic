@@ -20,8 +20,14 @@
  */
 typedef struct lt_dev_arduino_t {
     /** @public @brief TODO */
-    uint8_t cs_pin;
+    uint16_t spi_cs_pin;
+#ifdef LT_USE_INT_PIN
+    /** @public @brief TODO */
+    uint16_t int_gpio_pin;
+#endif
+    /** @public @brief TODO */
     SPISettings spi_settings;
+    /** @public @brief TODO */
     unsigned int rng_seed;
 
     /** @private @brief TODO */
