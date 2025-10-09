@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+### Added
+
+### Fixed
+- Handling of `add` argument in the Mac-And-Destroy example (`lt_ex_macandd.c`): `NULL` can be passed, `memcpy()` will not be called with `NULL` argument and no additional data will be used in the M&D sequence
+
+### Removed
+
+
 ## [2.0.0]
 
 ### Changed
