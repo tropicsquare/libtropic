@@ -120,20 +120,16 @@ endif()
 #                                                                         #
 #   Define files for firmware update.                                     #
 #                                                                         #
-#   For more info about firmware update go into                           #
-#   TROPIC01_fw_update_files/README.md                                    #
-#                                                                         #
 #   [1] Define LT_SILICON_REV -- see above.                               #
 #                                                                         #
-#   [2] Define firmware files here, allowed values are:                   #
-#       APP: 1_0_0                                                        #
-#       SPECT: Use version in folder next to application firmware update  #
+#   [2] Define firmware files here. Available versions can be seen in the #
+#       compatibility table in the main README.md.                        #
 #                                                                         #
 #    Always use bundled versions from "TROPIC01_fw_update_files" folder!  #
 #                                                                         #
 ###########################################################################
 
-set(LT_CPU_FW_VERSION "1_0_0")
+set(LT_CPU_FW_VERSION "1_0_1")
 
 ###########################################################################
 #                                                                         #
