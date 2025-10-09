@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Mentioned compatibility of libtropic 2.0.0 and 2.0.1 with FW 1.0.0 and Bootloader v2.0.1 in the main README.md compatibility table.
 - Row in the compatibility table for libtropic 2.0.1.
+- Section about TROPIC01 firmware in the documentation.
 
 ### Fixed
 - Handling of `add` argument in the Mac-And-Destroy example (`lt_ex_macandd.c`): `NULL` can be passed, `memcpy()` will not be called with `NULL` argument and no additional data will be used in the M&D sequence.
