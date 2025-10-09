@@ -12,10 +12,13 @@ from enum import Enum, IntEnum
 from abc import ABC, abstractmethod
 from pathlib import Path
 from argparse import ArgumentParser
+import time
 
 from .lt_test_runner import lt_test_runner
 from .lt_platform_factory import lt_platform_factory
 from .lt_lock_device import lt_lock_device
+from .lt_openocd_launcher import lt_openocd_launcher
+from .lt_environment_tools import lt_environment_tools
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +67,13 @@ async def main() -> lt_test_runner.lt_test_result:
     )
 
     parser.add_argument(
+        "--adapter_shutdown_config",
+        help    = "Path to the adapter OpenOCD config file used when shutting down.",
+        type    = Path,
+        default = Path(__file__).parent / "ts11-jtag-shutdown.cfg"
+    )
+
+    parser.add_argument(
         "-v", "--verbose",
         help    = "Enable debug logging.",
         action  = "store_true"
@@ -101,7 +111,10 @@ async def main() -> lt_test_runner.lt_test_result:
     if not args.adapter_config.is_file():
         logger.error("Invalid path to adapter config!")
         return
-    
+    if not args.adapter_shutdown_config.is_file():
+        logger.error("Invalid path to dapter shutdown config!")
+        return
+
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
     else:
@@ -138,6 +151,16 @@ async def main() -> lt_test_runner.lt_test_result:
             raise
         else:
             return test_result
+        finally: # Always run proper shutdown configuration on OpenOCD to set ports to correct values.
+            logger.info("Connecting to FTDI to shut down platform power gracefully...")
+            adapter_id = lt_environment_tools.get_adapter_id_from_mapping(args.platform_id, args.mapping_config)
+            if adapter_id is None:
+                logger.error(f"Selected platform has not its adapter ID assigned yet in the config file. Assign the ID in {args.mapping_config} (or select correct config file) and try again.")
+                raise ValueError
+            with lt_openocd_launcher(["-f", args.adapter_shutdown_config, "-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"]) as oocd:
+                time.sleep(5)
+                if oocd.is_running():
+                    logger.info("Platform board shut down.")
 
 if __name__ == "__main__":
     try:
