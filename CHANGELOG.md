@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
-- Mentioned compatibility of libtropic 2.0.0 and 2.0.1 with FW 1.0.0 and Bootloader v2.0.1 in the main README.md compatibility table
+- Mentioned compatibility of libtropic 2.0.0 and 2.0.1 with FW 1.0.0 and Bootloader v2.0.1 in the main README.md compatibility table.
 - Row in the compatibility table for libtropic 2.0.1.
 
 ### Fixed
