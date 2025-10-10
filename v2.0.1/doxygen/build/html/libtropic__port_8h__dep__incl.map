@@ -1,0 +1,9 @@
+<map id="libtropic_port.h" name="libtropic_port.h">
+<area shape="rect" id="Node000001" title="Header file with layer 1 interfaces which are defined based on host platform." alt="" coords="197,5,317,31"/>
+<area shape="rect" id="Node000002" href="$libtropic__port__stm32__nucleo__f439zi_8h.html" title="Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select)." alt="" coords="5,79,161,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="220,39,126,81,124,76,218,34"/>
+<area shape="rect" id="Node000003" href="$libtropic__port__unix__spi_8h.html" title="Port for communication using Generic SPI and GPIO Linux UAPI." alt="" coords="185,79,328,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,44,259,79,254,79,254,44"/>
+<area shape="rect" id="Node000004" href="$libtropic__port__unix__usb__dongle_8h.html" title="Port for communication with USB UART Dongle (TS1302)." alt="" coords="352,79,495,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="294,34,384,76,382,81,292,39"/>
+</map>
