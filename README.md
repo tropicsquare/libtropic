@@ -1,4 +1,4 @@
-# libtropic
+# Libtropic
 
 ![](https://github.com/tropicsquare/libtropic/actions/workflows/integration_tests.yml/badge.svg) ![](https://github.com/tropicsquare/libtropic/actions/workflows/build_docs_master.yml/badge.svg) ![](https://tropic-gitlab.corp.sldev.cz/internal/sw-design/libtropic/badges/master/coverage.svg)
 
@@ -11,19 +11,19 @@ Libtropic documentation is available [here](https://tropicsquare.github.io/libtr
 
 ## Compatibility with TROPIC01 firmware versions
 
-For the `libtropic` library to function correctly with the TROPIC01 secure element, the versions of three key components must be compatible:
+For the Libtropic library to function correctly with the TROPIC01 secure element, the versions of three key components must be compatible:
 
-1.  **`libtropic` SDK**: The version of this library.
+1.  **Libtropic SDK**: The version of this library.
 2.  **Application Firmware**: The main firmware running on the TROPIC01 chip.
 3.  **SPECT Firmware**: The co-processor firmware on the TROPIC01 chip.
 
 The following table outlines the tested and supported compatibility between released versions:
 
-| API document version                                                                                   | `libtropic`         | Application            | SPECT            |  Bootloader |  Tests                                     |
-| :----------------------------------------------------------------------------------------------------: |:-------------------:|:----------------------:|:----------------:|  :-------:  |  :---------------------------------------: |
-| [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 1.0.0               | 1.0.0                  | 1.0.0            |  v1.0.1     |  <code style="color : green">Passed</code> |
-| [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 1.0.0, 2.0.0, 2.0.1 | 1.0.0                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> |
-| [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       | 2.0.1               | 1.0.1                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> |
+| Libtropic         | Application            | SPECT            |  Bootloader |  Tests                                     | API document version                                                                                   |
+|:-------------------:|:----------------------:|:----------------:|  :-------:  |  :---------------------------------------: | :----------------------------------------------------------------------------------------------------: |
+| 1.0.0               | 1.0.0                  | 1.0.0            |  v1.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       |
+| 2.0.0               | 1.0.0–1.0.1                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       |
+| 2.0.1               | 1.0.0–1.0.1                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf) |
 
 Using mismatched versions of the components may result in unpredictable behavior or errors. It is strongly advised to use the latest compatible versions of all components to ensure proper functionality.  
 
