@@ -8,8 +8,6 @@ cmake_minimum_required(VERSION 3.21.0)
 
 include(cmake/strict_compile_flags.cmake)
 
-option(LT_CRYPTO "Set a cryptography provider" OFF)
-option(LT_BUILD_DOCS "Build documentation" OFF)
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
 # This switch controls if helper utilities are compiled in. In most cases this should be ON,
@@ -23,8 +21,15 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
+
+# Crypto provider
+set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
+# set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls")  # uncomment this after mbedtls is ready
+set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto")              # delete this after mbedtls is ready
+
 # Logging options
-option(LT_LOG_LVL "Set log level" OFF)
+set(LT_LOG_LVL "" CACHE STRING "Set log level")
+set_property(CACHE LT_LOG_LVL PROPERTY STRINGS "None" "Error" "Warning" "Info" "Debug")
 
 # Use INFO logging level when building tests/examples
 if(LT_BUILD_TESTS OR LT_BUILD_EXAMPLES)
@@ -74,7 +79,8 @@ elseif(LT_LOG_LVL STREQUAL "None")
 elseif(NOT LT_LOG_LVL)
     message(STATUS "No logging level specified, defaulting to NONE (logging is disabled)")
 else()
-    message(WARNING "Incorrect logging level specified: '${LT_LOG_LVL}'. Defaulting to NONE!")
+    get_property(lt_log_lvl_choices CACHE LT_LOG_LVL PROPERTY STRINGS)
+    message(FATAL_ERROR "Incorrect logging level specified: '${LT_LOG_LVL}'\nAvailable logging levels: ${lt_log_lvl_choices}")
 endif()
 
 # Define the ASAN flags here so they are not duplicated.
@@ -469,10 +475,6 @@ endif()
 #                                                                         #
 ###########################################################################
 
-# Supported crypto providers
-# set(CRYPTO_PROVIDERS "trezor_crypto" "mbedtls") # mbedtls is WIP
-set(CRYPTO_PROVIDERS "trezor_crypto")
-
 # These are internal macros for crypto providers
 set(LT_CRYPTO_TREZOR  0 CACHE INTERNAL "")
 set(LT_CRYPTO_MBEDTLS 0 CACHE INTERNAL "")
@@ -494,8 +496,8 @@ elseif(LT_CRYPTO STREQUAL "mbedtls")
 
 else()
 
-    string(REPLACE ";" ", " ALLOWED_PROVIDERS_STR "${CRYPTO_PROVIDERS}")    
-    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${ALLOWED_PROVIDERS_STR}")
+    get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)
+    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${lt_crypto_choices}")
     
 endif()
 
