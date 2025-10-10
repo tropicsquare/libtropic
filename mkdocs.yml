@@ -63,6 +63,7 @@ nav:
       - get_started/examples/index.md
       - Reversible Examples: get_started/examples/reversible_examples.md
       - Irreversible Examples: get_started/examples/irreversible_examples.md
+    - TROPIC01 Firmware: get_started/tropic01_fw.md
     - Logging: get_started/logging.md
     - Debugging: get_started/debugging.md
   - API Reference:
@@ -76,7 +77,6 @@ nav:
     - Building the Documentation: for_contributors/building_documentation.md
   - Other:
     - other/index.md
-    - TROPIC01 Firmware: other/tropic01_fw.md
     - TROPIC01 Model: other/tropic01_model.md
     - Provisioning Data: other/provisioning_data.md
 

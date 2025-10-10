@@ -53,7 +53,7 @@ This example explains the firmware update process for both ABAB and ACAB silicon
 - How to update the firmware using `lt_do_mutable_fw_update()`.
 
 !!! tip
-    For more information about the firmware itself, refer to the [TROPIC01 Firmware](../../other/tropic01_fw.md) section.
+    For more information about the firmware itself, refer to the [TROPIC01 Firmware](../tropic01_fw.md) section.
 
 ??? example "Source code"
     ```c { .copy }

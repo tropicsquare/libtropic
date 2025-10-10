@@ -17,7 +17,7 @@ There are multiple kinds of FW running in TROPIC01:
 Libtropic provides not only implementation of the FW update L2 commands, but also the necessary files for updating both the RISC-V and SPECT FW. Refer to:
 
 1. [Firmware Update Files](#firmware-update-files) section for more information about the `TROPIC01_fw_update_files/` directory.
-2. [lt_ex_fw_update.c](../get_started/examples/irreversible_examples.md#lt_ex_fw_updatec) section (in the [Irreversible Examples](../get_started/examples/irreversible_examples.md) documentation page) for a practical example, showing how to update TROPIC01's FW using Libtropic.
+2. [lt_ex_fw_update.c](./examples/irreversible_examples.md#lt_ex_fw_updatec) section (in the [Irreversible Examples](./examples/irreversible_examples.md) documentation page) for a practical example, showing how to update TROPIC01's FW using Libtropic.
 
 ### Firmware Update Files
 The `TROPIC01_fw_update_files/` directory provides TROPIC01 FW update files in two formats:
