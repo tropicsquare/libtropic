@@ -63,6 +63,7 @@ nav:
       - get_started/examples/index.md
       - Reversible Examples: get_started/examples/reversible_examples.md
       - Irreversible Examples: get_started/examples/irreversible_examples.md
+    - TROPIC01 Firmware: get_started/tropic01_fw.md
     - Logging: get_started/logging.md
     - Debugging: get_started/debugging.md
   - API Reference:

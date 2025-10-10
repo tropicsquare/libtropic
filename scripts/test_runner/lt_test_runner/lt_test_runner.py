@@ -61,7 +61,7 @@ class lt_test_runner:
         
         self.openocd_launch_params = ["-f", adapter_config_path] + ["-c", f"ftdi vid_pid {adapter_id.vid:#x} {adapter_id.pid:#x}"] + self.platform.get_openocd_launch_params() 
 
-    async def __parse_output(self, message_timeout: int, total_timeout: int) -> lt_test_result:
+    async def __parse_output(self, message_timeout: int, total_timeout: int, no_format_check: bool) -> lt_test_result:
         err_count = 0
         warn_count = 0
         assert_fail_count = 0
@@ -73,6 +73,7 @@ class lt_test_runner:
 
         start_time = time.time()
         
+        logger.info("Opening serial connection...")
         with serial.Serial(self.serial_port, baudrate = 115200, timeout=message_timeout, inter_byte_timeout=None, exclusive=True) as s:
             await self.platform.reset()
         
@@ -118,8 +119,9 @@ class lt_test_runner:
                         logger_platform.debug(f"{line}")
                     else:
                         logger_platform.info(f"{line}")
-                        logger_runner.error("Received unknown message type!")
-                        comm_error_count += 1
+                        if not no_format_check:
+                            logger_runner.error("Received unknown message type!")
+                            comm_error_count += 1
 
                     # Identifying special messages.
                     if "ASSERT FAILED!" in line:
@@ -154,17 +156,15 @@ class lt_test_runner:
             logger.error("There were errors or warnings, test unsuccessful!")
             await self.platform.set_disco_led(lt_platform.lt_led_color.RED)
             await self.platform.set_spi_en(False)
-            await self.platform.set_platform_power(False)
             self.platform.openocd_disconnect()
             return self.lt_test_result.TEST_FAILED
 
         await self.platform.set_disco_led(lt_platform.lt_led_color.GREEN)
         await self.platform.set_spi_en(False)
-        await self.platform.set_platform_power(False)
         self.platform.openocd_disconnect()
         return self.lt_test_result.TEST_PASSED
 
-    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int) -> lt_test_result:
+    async def run(self, elf_path: Path, message_timeout: int, total_timeout: int, no_format_check: bool) -> lt_test_result:
         
         if message_timeout == 0:
             # pyserial expects None for no timeout, 0 sets non-blocking mode
@@ -175,32 +175,44 @@ class lt_test_runner:
             time.sleep(2)
             if not oocd.is_running():
                 logger.error("Couldn't launch OpenOCD. Hint: run with higher verbosity (-v) to check OpenOCD output.")
+                self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
             if not await self.platform.openocd_connect():
                 logger.error("Couldn't connect to OpenOCD!")
+                self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
-            await self.platform.initialize()
+            logger.info("Initializing platform...")
+            if not await self.platform.initialize():
+                logger.error("Failed!")
+                self.platform.openocd_disconnect()
+                return self.lt_test_result.TEST_FAILED
 
+            logger.info("Checking availability of SPI bus...")
             if not await self.platform.is_spi_bus_free():
                 logger.error("SPI bus is already occupied! Check if all other platform boards disabled SPI access!")
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
-
-            # await self.platform.set_platform_power(True) # Power should be already on (by default value in OpenOCD config)
-            await self.platform.set_spi_en(True)
+            
+            logger.info("Enabling SPI...")
+            spi_en_state = False
+            for _ in range(2):
+                if not await self.platform.set_spi_en(spi_en_state):
+                    logger.error("Failed!")
+                    self.platform.set_spi_en(False)
+                    self.platform.openocd_disconnect()
+                    return self.lt_test_result.TEST_FAILED
+                spi_en_state = not spi_en_state
 
             await self.platform.blink_disco_led(lt_platform.lt_led_color.WHITE)
             await self.platform.set_disco_led(lt_platform.lt_led_color.WHITE)
 
-            try:
-                await self.platform.load_elf(elf_path)
-            except TimeoutError:
-                logger.error("Communication with OpenOCD timed out while loading firmware!")
+            logger.info("Loading firmware...")
+            if not await self.platform.load_elf(elf_path):
+                logger.error("Error in loading firmware!")
                 await self.platform.set_spi_en(False)
-                await self.platform.set_platform_power(False)
                 self.platform.openocd_disconnect()
                 return self.lt_test_result.TEST_FAILED
 
-            return await self.__parse_output(message_timeout, total_timeout)
+            return await self.__parse_output(message_timeout, total_timeout, no_format_check)
