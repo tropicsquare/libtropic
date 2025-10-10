@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Handling of `add` argument in the Mac-And-Destroy example (`lt_ex_macandd.c`): `NULL` can be passed, `memcpy()` will not be called with `NULL` argument and no additional data will be used in the M&D sequence.
 - Set newest available FW version in CMakeLists.txt.
+- CMakeLists.txt: use `set()` for string options, enhance validating of their values
 
 ### Removed
 
