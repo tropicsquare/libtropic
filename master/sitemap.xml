@@ -2,90 +2,94 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/doxygen/mainpage/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/for_contributors/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/for_contributors/adding_crypto_backend/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/for_contributors/adding_embedded_platform/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/for_contributors/building_documentation/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/for_contributors/contributing_guide/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/for_contributors/functional_tests/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/debugging/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/libtropic_architecture/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/logging/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
+    </url>
+    <url>
+         <loc>https://tropicsquare.github.io/libtropic/master/get_started/tropic01_fw/</loc>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/examples/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/examples/irreversible_examples/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/examples/reversible_examples/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/integrating_libtropic/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/integrating_libtropic/adding_to_project/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/integrating_libtropic/compile_as_static_library/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/get_started/integrating_libtropic/integration_examples/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/other/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/other/provisioning_data/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
     <url>
          <loc>https://tropicsquare.github.io/libtropic/master/other/tropic01_model/</loc>
-         <lastmod>2025-10-02</lastmod>
+         <lastmod>2025-10-10</lastmod>
     </url>
 </urlset>
