@@ -6,24 +6,22 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "libtropic_port_arduino.h"
-
 #include <Arduino.h>
 #include <SPI.h>
 
-#include "libtropic_logging.h"
+#include "libtropic_port_arduino.h"
 #include "libtropic_port.h"
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
-    LT_LOG_DEBUG("Initializing SPI...\n");
+    Serial.println("Initializing SPI...");
     pinMode(device->spi_cs_pin, OUTPUT);
     digitalWrite(device->spi_cs_pin, HIGH);
     device->spi->begin();
 
-    LT_LOG_DEBUG("Initializing RNG...\n");
+    Serial.println("Initializing RNG...\n");
     randomSeed(device->rng_seed);
 
     return LT_OK;
