@@ -15,22 +15,23 @@
 #include "libtropic_port.h"
 
 /**
- * @brief TODO
+ * @brief Device structure for Arduino port.
  *
+ * @note Initializing this structure is handled by the Tropic01.begin() method.
  */
 typedef struct lt_dev_arduino_t {
-    /** @public @brief TODO */
+    /** @public @brief SPI chip select pin. */
     uint16_t spi_cs_pin;
 #ifdef LT_USE_INT_PIN
-    /** @public @brief TODO */
-    uint16_t int_gpio_pin;
+    /** @public @brief Pin to which TROPIC01's GPO or interrupt pin is connected to. */
+    uint16_t int_gpo_pin;
 #endif
-    /** @public @brief TODO */
+    /** @public @brief SPI settings. */
     SPISettings spi_settings;
-    /** @public @brief TODO */
+    /** @public @brief Seed for random number generator. */
     unsigned int rng_seed;
 
-    /** @private @brief TODO */
+    /** @private @brief Pointer to the SPI class. */
     SPIClass *spi;
 } lt_dev_arduino_t;
 
