@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `enum lt_ret_t`:
   - `LT_L3_RESULT_UNKNOWN` for unknown L3 result values from TROPIC01.
   - `LT_L3_HARDWARE_FAIL` to reflect the new L3 result value from TROPIC01.
+- HAL port for Arduino framework.
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
