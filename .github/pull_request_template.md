@@ -27,7 +27,7 @@ Before submitting, please confirm that you have completed the following:
 
 - [ ] I opened the Pull Request to the **develop** branch
 - [ ] I followed the project's [**code guidelines**](https://github.com/tropicsquare/libtropic/blob/develop/CONTRIBUTING.md)  
-- [ ] I formatted the code using **clang-format** with the recommended configuration  
+- [ ] I formatted the code using **clang-format** with the [recommended configuration](https://github.com/tropicsquare/libtropic/blob/develop/CONTRIBUTING.md)
 - [ ] I updated the [**changelog**](https://github.com/tropicsquare/libtropic/blob/develop/CHANGELOG.md), or this change does not require it (e.g., internal or non-functional update)  
 - [ ] The project **builds without errors or warnings**  
 - [ ] I have **verified the functionality against the hardware/model** as applicable  
