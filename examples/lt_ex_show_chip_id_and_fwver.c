@@ -150,6 +150,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     }
     LT_LOG_LINE();
 
+    LT_LOG_INFO("Rebooting back into APPLICATION mode");
+    ret = lt_reboot(h, TR01_REBOOT);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+
     LT_LOG_INFO("Deinitializing handle");
     ret = lt_deinit(h);
     if (LT_OK != ret) {
