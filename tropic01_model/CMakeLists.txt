@@ -10,6 +10,8 @@ cmake_minimum_required(VERSION 3.21.0)
 # If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
 option(LT_VALGRIND "Enable Valgrind" OFF)
 
+# Enables compilation with coverage enabled and O0 for functional tests.
+option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
 
 ###########################################################################
 #                                                                         #
@@ -18,7 +20,7 @@ option(LT_VALGRIND "Enable Valgrind" OFF)
 ###########################################################################
 
 if(NOT DEFINED PATH_TO_LIBTROPIC)
-    set(PATH_TO_LIBTROPIC "../")
+    set(PATH_TO_LIBTROPIC "libtropic/")
 endif()
 
 ###########################################################################
@@ -154,6 +156,10 @@ if(LT_BUILD_TESTS)
         lt_test_rev_get_info_req_bootloader
     )
 
+    if(LT_TEST_COVERAGE)
+        message(STATUS "Enabling converage and compiling with -O0!")
+    endif()
+
     # Loop through tests defined in libtropic and prepare environment.
     foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
     
@@ -170,6 +176,17 @@ if(LT_BUILD_TESTS)
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
+
+        if (LT_TEST_COVERAGE)
+            add_compile_options(
+                --coverage
+                -g
+                -O0
+            )
+            add_link_options(
+                --coverage
+            )
+        endif()
 
         # Make sure model configuration exists before building this test
         add_dependencies(${exe_name} generate_model_cfg)
@@ -213,4 +230,6 @@ if(LT_BUILD_TESTS)
             ENVIRONMENT "${TEST_ENVIRONMENT}"
         )
     endforeach()
+
+    include(CTest)
 endif()
