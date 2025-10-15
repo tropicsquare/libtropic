@@ -6,8 +6,8 @@ on:
       - 'develop'
 
 jobs:
-  measure_coverage:
-    name: Get test coverage
+  check_if_enabled:
+    name: Check if coverage collection is enabled
     runs-on: ubuntu-latest
     steps:
       - name: Check PR body for trigger string
@@ -19,14 +19,12 @@ jobs:
             const prBody = context.payload.pull_request.body || "";
             core.exportVariable("SHOULD_RUN", prBody.includes(trigger) ? "true" : "false");
 
-      - name: Exit if trigger string is not present
-        if: env.SHOULD_RUN == 'false'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh run cancel ${{ github.run_id }}
-          gh run watch ${{ github.run_id }}
-
+  measure_coverage:
+    name: Get test coverage
+    needs: check_if_enabled
+    if: env.SHOULD_RUN == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
 
