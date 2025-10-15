@@ -54,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            sudo apt-get install cmake build-essential gcov
+            sudo apt-get install cmake build-essential
             pip install ${{ env.WHEEL_FILE_NAME }}
             pip install gcovr
 
