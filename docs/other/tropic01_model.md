@@ -128,13 +128,9 @@ The model is automatically started for each test separately, so it behaves like 
 > When `-DLT_BUILD_EXAMPLES=1` or `-DLT_BUILD_TESTS=1` are passed to CMake, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.
 
 ### Running the Tests with Coverage
-We support coverage collection for testing against model. Steps are similar to testing without coverage
-with a few differences:
-
-- Invoke CMake with `-DLT_TEST_COVERAGE=1`:
-    - `cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 ..`
-
-After the CTest is finished, you can use gcovr to export results:
+We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
+```shell
+cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 ..
 ```shell
 # Execute this from the tropic01_model directory.
 gcovr --txt coverage_report.txt --gcov-exclude '.*lt_test.*|.*main\.c.*'
