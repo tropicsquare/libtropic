@@ -17,7 +17,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const trigger = "!bot Measure Test Coverage";
+            const trigger = "- [x] Measure Test Coverage";
             const prBody = context.payload.pull_request.body || "";
             core.info(`PR body: ${prBody}`)
             const should_run = prBody.includes(trigger) ? true : false
@@ -33,9 +33,47 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
 
-      - name: Create dummy report
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Download ts-tvl wheel
         run: |
-            echo "# Dummy report #3" >tropic01_model/coverage_report.md
+          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+          
+          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
+          if [ -z "$WHEEL_URL" ]; then
+            echo "No .whl file found in latest release." >&2
+            exit 1
+          fi
+
+          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
+          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
+          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
+
+      - name: Install dependencies
+        run: |
+            sudo apt-get install cmake build-essential gcov
+            pip install ${{ env.WHEEL_FILE_NAME }}
+            pip install gcovr
+
+      - name: Compile libtropic with tests and coverage enabled
+        run: |
+            cd tropic01_model/
+            cmake ./ -B build -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1
+            cd build/
+            make
+
+      - name: Execute tests with CTest
+        run: |
+            cd tropic01_model/build/
+            ctest -V -R lt_test_rev_handshake_req
+
+      - name: Export Markdown report
+        run: |
+            cd tropic01_model
+            gcovr --markdown coverage_report.md --gcov-exclude '.*lt_test.*|.*main\.c.*'
 
       - name: Post or update PR comment
         uses: actions/github-script@v7
@@ -86,53 +124,4 @@ jobs:
               });
               core.info("💬 Created new coverage comment.");
             }
-
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.8'
-
-      # - name: Download ts-tvl wheel
-      #   run: |
-      #     curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
-          
-      #     WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-      #     if [ -z "$WHEEL_URL" ]; then
-      #       echo "No .whl file found in latest release." >&2
-      #       exit 1
-      #     fi
-
-      #     WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-      #     echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-      #     curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
-
-      # - name: Install dependencies
-      #   run: |
-      #       sudo apt-get install cmake build-essential
-      #       pip install ${{ env.WHEEL_FILE_NAME }}
-      #       pip install gcovr
-
-      # - name: Compile libtropic with tests and coverage enabled
-      #   run: |
-      #       cd tropic01_model/
-      #       cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1 -DLT_TEST_COVERAGE=1
-      #       cd build/
-      #       make
-
-      # - name: Execute tests with CTest
-      #   run: |
-      #       cd tropic01_model/build/
-      #       ctest -V
-
-      # - name: Export Markdown report
-      #   run: |
-      #       gcovr --markdown coverage_report.md --gcov-exclude '.*lt_test.*|.*main\.c.*'
-
-      # - name: Create comment
-      
-      # - name: Upload run logs
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: valgrind_run_logs
-      #     path: tropic01_model/build/run_logs/
+ 
