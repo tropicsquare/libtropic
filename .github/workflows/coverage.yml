@@ -20,12 +20,12 @@ jobs:
             core.info(`PR body: ${prBody}`)
             const should_run = prBody.includes(trigger) ? "true" : "false"
             core.info(`Should run: ${should_run}`)
-            core.setOutput("SHOULD_RUN", should_run);
+            core.setOutput("should_run", should_run);
 
   measure_coverage:
     name: Get test coverage
     needs: check_if_enabled
-    if: ${{ needs.check_if_enabled.outputs.SHOULD_RUN == 'true' }}
+    if: ${{ needs.check_if_enabled.outputs.should_run == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
