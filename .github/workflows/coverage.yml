@@ -5,6 +5,7 @@ on:
       - 'master'
       - 'develop'
 
+jobs:
   check_if_enabled:
     name: Check if test coverage measurement is required
     runs-on: ubuntu-latest
