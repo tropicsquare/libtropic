@@ -17,7 +17,9 @@ jobs:
           script: |
             const trigger = "!bot Measure Test Coverage";
             const prBody = context.payload.pull_request.body || "";
-            core.setOutput("SHOULD_RUN", prBody.includes(trigger) ? "true" : "false");
+            const should_run = prBody.includes(trigger) ? "true" : "false"
+            core.info(`Should run: ${should_run}`)
+            core.setOutput("SHOULD_RUN", should_run);
 
   measure_coverage:
     name: Get test coverage

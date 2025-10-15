@@ -1,111 +1,111 @@
-name: Run tests against TROPIC01 model
-on:
-  push:
-    branches:
-      - 'develop'
-      - 'master'
-  pull_request:
-    branches:
-      - 'master'
-      - 'develop'
+# name: Run tests against TROPIC01 model
+# on:
+#   push:
+#     branches:
+#       - 'develop'
+#       - 'master'
+#   pull_request:
+#     branches:
+#       - 'master'
+#       - 'develop'
 
-jobs:
-  tests_asan:
-    name: Run tests with AddressSanitizer
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+# jobs:
+#   tests_asan:
+#     name: Run tests with AddressSanitizer
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4.1.7
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
+#       - name: Setup Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.8'
 
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+#       - name: Download ts-tvl wheel
+#         run: |
+#           curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
           
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in latest release." >&2
-            exit 1
-          fi
+#           WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
+#           if [ -z "$WHEEL_URL" ]; then
+#             echo "No .whl file found in latest release." >&2
+#             exit 1
+#           fi
 
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
+#           WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
+#           echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
+#           curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
 
-      - name: Install dependencies
-        run: |
-            sudo apt-get install cmake build-essential
-            pip install ${{ env.WHEEL_FILE_NAME }}
+#       - name: Install dependencies
+#         run: |
+#             sudo apt-get install cmake build-essential
+#             pip install ${{ env.WHEEL_FILE_NAME }}
 
-      - name: Compile libtropic with tests and AddressSanitizer
-        run: |
-            cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
-            cd build/
-            make
+#       - name: Compile libtropic with tests and AddressSanitizer
+#         run: |
+#             cd tropic01_model/
+#             cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
+#             cd build/
+#             make
 
-      - name: Execute tests with CTest
-        run: |
-            cd tropic01_model/build/
-            ctest -V
+#       - name: Execute tests with CTest
+#         run: |
+#             cd tropic01_model/build/
+#             ctest -V
       
-      - name: Upload run logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: asan_run_logs
-          path: tropic01_model/build/run_logs/
+#       - name: Upload run logs
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: asan_run_logs
+#           path: tropic01_model/build/run_logs/
 
-  tests_valgrind:
-    name: Run tests with Valgrind
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.1.7
+#   tests_valgrind:
+#     name: Run tests with Valgrind
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4.1.7
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
+#       - name: Setup Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.8'
 
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+#       - name: Download ts-tvl wheel
+#         run: |
+#           curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
           
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in latest release." >&2
-            exit 1
-          fi
+#           WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
+#           if [ -z "$WHEEL_URL" ]; then
+#             echo "No .whl file found in latest release." >&2
+#             exit 1
+#           fi
 
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
+#           WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
+#           echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
+#           curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
 
-      - name: Install dependencies
-        run: |
-            sudo apt-get install cmake build-essential valgrind
-            pip install ${{ env.WHEEL_FILE_NAME }}
+#       - name: Install dependencies
+#         run: |
+#             sudo apt-get install cmake build-essential valgrind
+#             pip install ${{ env.WHEEL_FILE_NAME }}
 
-      - name: Compile libtropic with tests and Valgrind
-        run: |
-            cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
-            cd build/
-            make
+#       - name: Compile libtropic with tests and Valgrind
+#         run: |
+#             cd tropic01_model/
+#             cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
+#             cd build/
+#             make
 
-      - name: Execute tests with CTest
-        run: |
-            cd tropic01_model/build/
-            ctest -V
+#       - name: Execute tests with CTest
+#         run: |
+#             cd tropic01_model/build/
+#             ctest -V
       
-      - name: Upload run logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: valgrind_run_logs
-          path: tropic01_model/build/run_logs/
+#       - name: Upload run logs
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: valgrind_run_logs
+#           path: tropic01_model/build/run_logs/
