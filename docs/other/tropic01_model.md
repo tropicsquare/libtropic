@@ -131,15 +131,19 @@ The model is automatically started for each test separately, so it behaves like 
 We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
 ```shell
 cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 ..
+```
+
+After CTest finishes, you can use [gcovr](https://github.com/gcovr/gcovr) to export results:
 ```shell
 # Execute this from the tropic01_model directory.
 gcovr --txt coverage_report.txt --gcov-exclude '.*lt_test.*|.*main\.c.*'
 ```
 
-We use following parameters:
+We use the following parameters:
+
 - `--gcov-exclude` excludes selected files from report - we are not interested in measuring coverage of the tests themselves,
 - `--txt` chooses text output format.
 
-!!! note
+!!! tip
     You can use `--html` or `--html-details` output options to export in a HTML format or `--markdown` to export in a Markdown format.
     Check out [gcovr user guide](https://gcovr.com/en/latest/guide.html).
