@@ -17,12 +17,12 @@ jobs:
           script: |
             const trigger = "!bot Measure Test Coverage";
             const prBody = context.payload.pull_request.body || "";
-            core.exportVariable("SHOULD_RUN", prBody.includes(trigger) ? "true" : "false");
+            core.setOutput("SHOULD_RUN", prBody.includes(trigger) ? "true" : "false");
 
   measure_coverage:
     name: Get test coverage
     needs: check_if_enabled
-    if: env.SHOULD_RUN == 'true'
+    if: needs.check_if_enabled.outputs.SHOULD_RUN == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
