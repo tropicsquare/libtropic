@@ -68,7 +68,7 @@ jobs:
       - name: Execute tests with CTest
         run: |
             cd tropic01_model/build/
-            ctest -V -R lt_test_rev_handshake_req
+            ctest -V
 
       - name: Export Markdown report
         run: |
@@ -86,7 +86,7 @@ jobs:
             let commentBody;
             try {
               const content = fs.readFileSync(path, "utf8");
-              commentBody = `${marker}\n **Test Coverage Report**\n\n <details><summary>Results</summary>\n\n${content}</details>`;
+              commentBody = `${marker}\n **Test Coverage Report**\n\n <details><summary>Results</summary>\n\n ${content} </details>`;
             } catch (err) {
               commentBody = `${marker}\n Could not read coverage file at \`${path}\`.\n\nError: ${err.message}`;
             }
