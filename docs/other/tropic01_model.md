@@ -133,22 +133,17 @@ with a few differences:
 
 - Invoke CMake with `-DLT_TEST_COVERAGE=1`:
     - `cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 ..`
-- Run CTest with `-T Test -T Coverage`, for example:
-    - `ctest -V -T Test -T Coverage`
 
 After the CTest is finished, you can use gcovr to export results:
 ```shell
-# Execute this from the tropic01_model/build directory.
-gcovr -r .. --txt ../coverage_report.txt -g -k --gcov-exclude '.*lt_test.*|.*main\.c.*'
+# Execute this from the tropic01_model directory.
+gcovr --txt coverage_report.txt --gcov-exclude '.*lt_test.*|.*main\.c.*'
 ```
 
 We use following parameters:
-
-- `-g` instructs the tool to use gcov files (prepared by CTest),
-- `-k` tells the tool to not remove gcov files after processing,
 - `--gcov-exclude` excludes selected files from report - we are not interested in measuring coverage of the tests themselves,
 - `--txt` chooses text output format.
 
 !!! note
-    You can use `--html` or `--html-details` output options to export in a HTML format. Check out
-    [gcovr user guide](https://gcovr.com/en/latest/guide.html).
+    You can use `--html` or `--html-details` output options to export in a HTML format or `--markdown` to export in a Markdown format.
+    Check out [gcovr user guide](https://gcovr.com/en/latest/guide.html).

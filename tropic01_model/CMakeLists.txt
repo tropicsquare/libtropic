@@ -178,14 +178,8 @@ if(LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
 
         if (LT_TEST_COVERAGE)
-            add_compile_options(
-                --coverage
-                -g
-                -O0
-            )
-            add_link_options(
-                --coverage
-            )
+            target_compile_options(${exe_name} PRIVATE --coverage -g -O0)
+            target_link_options(${exe_name} PRIVATE --coverage)
         endif()
 
         # Make sure model configuration exists before building this test
@@ -230,6 +224,4 @@ if(LT_BUILD_TESTS)
             ENVIRONMENT "${TEST_ENVIRONMENT}"
         )
     endforeach()
-
-    include(CTest)
 endif()
