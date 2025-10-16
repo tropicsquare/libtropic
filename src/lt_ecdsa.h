@@ -9,22 +9,24 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "stdint.h"
+#include <stdint.h>
+
+#include "libtropic_common.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * @brief  Checks if ECDSA signature is correct
+ * @brief Verifies ECDSA signature.
  *
- * @param msg        Message to be checked
+ * @param msg        Message to be verified
  * @param msg_len    Length of the message
  * @param pubkey     Signer's public key (64B)
  * @param rs         R and S part of the message's signature (64B)
- * @return int       0 if signature is valid, otherwise 1
+ * @return           LT_OK if success, otherwise returns other error code.
  */
-int lt_ecdsa_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
+lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
     __attribute__((warn_unused_result));
 
 #ifdef __cplusplus

@@ -1240,11 +1240,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
         return LT_PARAM_ERR;
     }
 
-    if (lt_ecdsa_verify(msg, msg_len, pubkey, rs) != 0) {
-        return LT_FAIL;
-    }
-
-    return LT_OK;
+    return lt_ecdsa_sign_verify(msg, msg_len, pubkey, rs);
 }
 
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
