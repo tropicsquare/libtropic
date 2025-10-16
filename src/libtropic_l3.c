@@ -109,17 +109,29 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     uint8_t shared_secret[TR01_X25519_KEY_LEN] = {0};
     lt_X25519(host_eph_keys->ehpriv, p_rsp->e_tpub, shared_secret);
     lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
+    ret = lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
+    if (ret != LT_OK) {
+        return ret;
+    }
     // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
-    lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
+    ret = lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
+    if (ret != LT_OK) {
+        return ret;
+    }
     // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
     lt_X25519(host_eph_keys->ehpriv, stpub, shared_secret);
     uint8_t kauth[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for handshake authentication.
-    lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
+    ret = lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
+    if (ret != LT_OK) {
+        return ret;
+    }
     // kCMD, kRES = HKDF (ck, emptystring, 2)
     uint8_t kcmd[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for L3 command packet encryption/decryption.
     uint8_t kres[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for L3 result packet encryption/decryption.
-    lt_hkdf(output_1, sizeof(output_1), (uint8_t *)"", 0, 2, kcmd, kres);
+    ret = lt_hkdf(output_1, sizeof(output_1), (uint8_t *)"", 0, 2, kcmd, kres);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     lt_ret_t ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kauth, sizeof(kauth));
     if (ret != LT_OK) {
