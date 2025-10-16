@@ -37,7 +37,11 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
     if (ret != LT_OK) {
         return ret;
     }
-    lt_X25519_scalarmult(host_eph_keys->ehpriv, host_eph_keys->ehpub);
+
+    ret = lt_X25519_scalarmult(host_eph_keys->ehpriv, host_eph_keys->ehpub);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct lt_l2_handshake_req_t *p_req = (struct lt_l2_handshake_req_t *)h->l2.buff;
@@ -181,19 +185,28 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     uint8_t output_2[32] = {0};  // Temp storage for kauth.
     // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
     uint8_t shared_secret[TR01_X25519_KEY_LEN] = {0};
-    lt_X25519(host_eph_keys->ehpriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
+    ret = lt_X25519(host_eph_keys->ehpriv, p_rsp->e_tpub, shared_secret);
+    if (ret != LT_OK) {
+        return ret;
+    }
     ret = lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
     if (ret != LT_OK) {
         return ret;
     }
     // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
+    ret = lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
+    if (ret != LT_OK) {
+        return ret;
+    }
     ret = lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
     if (ret != LT_OK) {
         return ret;
     }
     // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
-    lt_X25519(host_eph_keys->ehpriv, stpub, shared_secret);
+    ret = lt_X25519(host_eph_keys->ehpriv, stpub, shared_secret);
+    if (ret != LT_OK) {
+        return ret;
+    }
     uint8_t kauth[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for handshake authentication.
     ret = lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
     if (ret != LT_OK) {
