@@ -1277,11 +1277,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
         return LT_PARAM_ERR;
     }
 
-    if (lt_ed25519_sign_open(msg, msg_len, pubkey, rs) != 0) {
-        return LT_FAIL;
-    }
-
-    return LT_OK;
+    return lt_ed25519_sign_verify(msg, msg_len, pubkey, rs);
 }
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
