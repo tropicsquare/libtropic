@@ -46,8 +46,8 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
     s3->session_status = LT_SECURE_SESSION_OFF;
     memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
     memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
-    memset(s3->encrypt, 0, sizeof(s3->encrypt));
-    memset(s3->decrypt, 0, sizeof(s3->decrypt));
+    memset(&s3->aesgcm_encrypt_ctx, 0, sizeof(s3->aesgcm_encrypt_ctx));
+    memset(&s3->aesgcm_decrypt_ctx, 0, sizeof(s3->aesgcm_decrypt_ctx));
 #if LT_SEPARATE_L3_BUFF
     memset(s3->buff, 0, s3->buff_len);
 #else
@@ -68,8 +68,8 @@ lt_ret_t lt_l3_encrypt_request(lt_l3_state_t *s3)
 
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)s3->buff;
 
-    int ret = lt_aesgcm_encrypt(&s3->encrypt, s3->encryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
-                                p_frame->cmd_size, p_frame->data + p_frame->cmd_size, TR01_L3_TAG_SIZE);
+    int ret = lt_aesgcm_encrypt(&s3->aesgcm_encrypt_ctx, s3->encryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
+                                p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, TR01_L3_TAG_SIZE);
     if (ret != LT_OK) {
         lt_l3_invalidate_host_session_data(s3);
         return ret;
@@ -91,8 +91,9 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
 
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)s3->buff;
 
-    lt_ret_t ret = lt_aesgcm_decrypt(&s3->decrypt, s3->decryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0, p_frame->data,
-                                     p_frame->cmd_size, p_frame->data + p_frame->cmd_size, TR01_L3_TAG_SIZE);
+    lt_ret_t ret
+        = lt_aesgcm_decrypt(&s3->aesgcm_decrypt_ctx, s3->decryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
+                            p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, TR01_L3_TAG_SIZE);
     if (ret != LT_OK) {
         lt_l3_invalidate_host_session_data(s3);
         return ret;

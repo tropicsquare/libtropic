@@ -133,23 +133,23 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
         return ret;
     }
 
-    lt_ret_t ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kauth, sizeof(kauth));
+    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_decrypt_ctx, kauth, sizeof(kauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_decrypt(&h->l3.decrypt, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash, sizeof(hash),
-                            (uint8_t *)"", 0, p_rsp->t_tauth, sizeof(p_rsp->t_tauth));
+    ret = lt_aesgcm_decrypt(&h->l3.aesgcm_decrypt_ctx, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash,
+                            sizeof(hash), (uint8_t *)"", 0, p_rsp->t_tauth, sizeof(p_rsp->t_tauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.encrypt, kcmd, sizeof(kcmd));
+    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_encrypt_ctx, kcmd, sizeof(kcmd));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kres, sizeof(kres));
+    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_decrypt_ctx, kres, sizeof(kres));
     if (ret != LT_OK) {
         goto exit;
     }
@@ -160,8 +160,8 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
 
 // If something went wrong during session keys establishment, better clean up AES GCM contexts
 exit:
-    memset(h->l3.encrypt, 0, sizeof(h->l3.encrypt));
-    memset(h->l3.decrypt, 0, sizeof(h->l3.decrypt));
+    memset(&h->l3.aesgcm_encrypt_ctx, 0, sizeof(h->l3.aesgcm_encrypt_ctx));
+    memset(&h->l3.aesgcm_decrypt_ctx, 0, sizeof(h->l3.aesgcm_decrypt_ctx));
 
     return ret;
 }

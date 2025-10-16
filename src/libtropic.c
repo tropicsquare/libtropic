@@ -20,7 +20,6 @@
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
-#include "lt_aesgcm.h"
 #include "lt_asn1_der.h"
 #include "lt_ecdsa.h"
 #include "lt_ed25519.h"
