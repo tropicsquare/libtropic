@@ -178,8 +178,8 @@ if(LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
 
         if (LT_TEST_COVERAGE)
-            target_compile_options(${exe_name} PRIVATE --coverage -g -O0)
-            target_link_options(${exe_name} PRIVATE --coverage)
+            # Add coverage-related flags from common config.
+            target_link_libraries(${exe_name} PRIVATE libtropic::coverage_flags)
         endif()
 
         # Make sure model configuration exists before building this test
