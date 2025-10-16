@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Refactored crypto HAL.
+- Refactored `trezor_crypto` backend.
 
 ### Added
 
