@@ -15,7 +15,7 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
 {
     int ret = gcm_init_and_key(key, key_len, ctx);
     if (ret != RETURN_GOOD) {
-        return LT_FAIL;
+        return LT_CRYPTO_ERR;
     }
     return LT_OK;
 }
@@ -26,7 +26,7 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
 {
     int ret = gcm_encrypt_message(iv, iv_len, add, add_len, msg, msg_len, tag, tag_len, ctx);
     if (ret != RETURN_GOOD) {
-        return LT_FAIL;
+        return LT_CRYPTO_ERR;
     }
 
     return LT_OK;
@@ -38,7 +38,7 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
 {
     int ret = gcm_decrypt_message(iv, iv_len, add, add_len, msg, msg_len, tag, tag_len, ctx);
     if (ret != RETURN_GOOD) {
-        return LT_FAIL;
+        return LT_CRYPTO_ERR;
     }
 
     return LT_OK;
@@ -48,7 +48,7 @@ lt_ret_t lt_aesgcm_end(LT_CRYPTO_AES_GCM_CTX_T *ctx)
 {
     int ret = gcm_end(ctx);
     if (ret != RETURN_GOOD) {
-        return LT_FAIL;
+        return LT_CRYPTO_ERR;
     }
     return LT_OK;
 }

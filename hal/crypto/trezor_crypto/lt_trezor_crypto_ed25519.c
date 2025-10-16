@@ -14,7 +14,7 @@ lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, cons
 {
     int ret = ed25519_sign_open(msg, msg_len, pubkey, rs);
     if (ret != RETURN_GOOD) {
-        return LT_FAIL;
+        return LT_CRYPTO_ERR;
     }
     return LT_OK;
 }

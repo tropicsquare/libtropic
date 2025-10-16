@@ -23,7 +23,7 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
 
     int ret = ecdsa_verify(&nist256p1, HASHER_SHA2, pubkey_with_prefix, rs, msg, msg_len);
     if (ret != RETURN_GOOD) {
-        return LT_FAIL;
+        return LT_CRYPTO_ERR;
     }
     return LT_OK;
 }
