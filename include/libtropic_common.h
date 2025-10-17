@@ -272,47 +272,54 @@ typedef enum lt_ret_t {
     LT_L3_INVALID_CMD = 22,
     /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR = 23,
+    /** @brief L3 response RES_SIZE have an invalid size.
+     * @details This can be cause by an attack or a bug in the chip's firmware.
+    */
+    LT_L3_RES_SIZE_ERROR = 24,
+    /** @brief L3 buffer is too small to parse this L3 command. */
+    LT_L3_BUFFER_TOO_SMALL = 25,
+
 
     // Return values based on STATUS field
     /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 24,
+    LT_L2_IN_CRC_ERR = 26,
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 25,
+    LT_L2_REQ_CONT = 27,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 26,
+    LT_L2_RES_CONT = 28,
     /** @brief The L2 Request frame is disabled and can’t be executed */
-    LT_L2_RESP_DISABLED = 27,
+    LT_L2_RESP_DISABLED = 29,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 28,
+    LT_L2_HSK_ERR = 30,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 29,
+    LT_L2_NO_SESSION = 31,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 30,
+    LT_L2_TAG_ERR = 32,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 31,
+    LT_L2_CRC_ERR = 33,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 32,
+    LT_L2_GEN_ERR = 34,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 33,
+    LT_L2_NO_RESP = 35,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 34,
+    LT_L2_UNKNOWN_REQ = 36,
     /** @brief Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED = 35,
+    LT_L2_STATUS_NOT_RECOGNIZED = 37,
     /** @brief L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR = 36,
+    LT_L2_DATA_LEN_ERROR = 38,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 37,
+    LT_CERT_STORE_INVALID = 39,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 38,
+    LT_CERT_UNSUPPORTED = 40,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 39,
+    LT_CERT_ITEM_NOT_FOUND = 41,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 40,
+    LT_NONCE_OVERFLOW = 42,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 41
+    LT_RET_T_LAST_VALUE = 43
 } lt_ret_t;
 
 #define LT_TR01_REBOOT_DELAY_MS 250
