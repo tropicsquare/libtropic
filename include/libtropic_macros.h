@@ -23,6 +23,25 @@ extern "C" {
 /** @brief Mark variable as unused to sanitize compiler warnings. */
 #define LT_UNUSED(x) (void)(x)
 
+/** @brief Get max value.
+ *  @details This macro uses "statement expressions", which prevent double evaluation in contrast
+ *           to standard macros.
+ *  @note This uses GCC/Clang compatible-extension.
+ */
+#define lt_max(a,b)             \
+__extension__ ({                           \
+    __typeof__ (a) ___a = (a); \
+    __typeof__ (b) ___b = (b); \
+    ___a > ___b ? ___a : ___b;       \
+})
+
+#define lt_min(a,b)             \
+__extension__ ({                           \
+    __typeof__ (a) ___a = (a); \
+    __typeof__ (b) ___b = (b); \
+    ___a < ___b ? ___a : ___b;       \
+})
+
 #ifdef __cplusplus
 }
 #endif
