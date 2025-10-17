@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Added
+- Possibility to measure test coverage with the TROPIC01 model.
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.

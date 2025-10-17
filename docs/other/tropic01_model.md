@@ -11,6 +11,11 @@ Code in the `tropic01_model/` directory is meant to be compiled under Unix-like 
 > - `lt_ex_fw_update`,
 > - `lt_ex_show_chip_id_and_fwver` (model does not implement Bootloader mode, so you can use `tests/functional/lt_test_rev_get_info_req_app.c` to get this info from the Application mode atleast).
 
+!!! note
+    There is a symlink to a parent directory in the `tropic01_model` directory. This is required
+    for coverage collection to work, as CMake does not include any files above the source directory
+    to the coverage.
+
 ## How it Works?
 Both processes (tests/examples and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
 > [!NOTE]
@@ -121,3 +126,24 @@ The model is automatically started for each test separately, so it behaves like 
 
 > [!IMPORTANT]
 > When `-DLT_BUILD_EXAMPLES=1` or `-DLT_BUILD_TESTS=1` are passed to CMake, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.
+
+### Running the Tests with Coverage
+We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
+```shell
+cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 ..
+```
+
+After CTest finishes, you can use [gcovr](https://github.com/gcovr/gcovr) to export results:
+```shell
+# Execute this from the tropic01_model directory.
+gcovr --txt coverage_report.txt --gcov-exclude '.*lt_test.*|.*main\.c.*'
+```
+
+We use the following parameters:
+
+- `--gcov-exclude` excludes selected files from report - we are not interested in measuring coverage of the tests themselves,
+- `--txt` chooses text output format.
+
+!!! tip
+    You can use `--html` or `--html-details` output options to export in a HTML format or `--markdown` to export in a Markdown format.
+    Check out [gcovr user guide](https://gcovr.com/en/latest/guide.html).

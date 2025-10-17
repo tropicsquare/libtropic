@@ -36,6 +36,13 @@ Before submitting, please confirm that you have completed the following:
 
 ---
 
+## Optional Checks
+You can enable optional CI jobs by checking following boxes. For example, coverage job is useful when modifying or implementing new tests.
+
+- [ ] Measure Test Coverage
+
+---
+
 ## Notes for Reviewers
 
 (Optional) Add any additional context, known limitations, or areas you'd like reviewers to focus on. If not applicable, you can delete this section.

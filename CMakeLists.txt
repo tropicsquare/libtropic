@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 3.21.0)
 ###########################################################################
 
 include(cmake/strict_compile_flags.cmake)
+include(cmake/coverage_flags.cmake)
 
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
 option(LT_BUILD_TESTS "Compile functional tests' code as part of libtropic library" OFF)
@@ -460,6 +461,11 @@ if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
         set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags for libtropic" FORCE)
     endif()
 
+endif()
+
+if(LT_TEST_COVERAGE)
+    message(STATUS "Enabling coverage collection for libtropic")
+    target_link_libraries(tropic PRIVATE libtropic::coverage_flags)
 endif()
 
 ###########################################################################
