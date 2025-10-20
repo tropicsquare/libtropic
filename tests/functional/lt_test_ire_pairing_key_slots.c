@@ -52,8 +52,8 @@ void lt_test_ire_pairing_key_slots(lt_handle_t *h)
     LT_LOG_INFO("lt_test_ire_pairing_key_slots()");
     LT_LOG_INFO("----------------------------------------------");
 
-    const uint8_t* pub_keys[] = {LT_TEST_SH0_PUB, sh1pub, sh2pub, sh3pub};
-    const uint8_t* priv_keys[] = {LT_TEST_SH0_PRIV, sh1priv, sh2priv, sh3priv};
+    const uint8_t *pub_keys[] = {LT_TEST_SH0_PUB, sh1pub, sh2pub, sh3pub};
+    const uint8_t *priv_keys[] = {LT_TEST_SH0_PRIV, sh1priv, sh2priv, sh3priv};
     uint8_t read_key[TR01_SHIPUB_LEN] = {0};
     uint8_t zeros[TR01_SHIPUB_LEN] = {0};
     char print_buff[PRINT_BUFF_SIZE];

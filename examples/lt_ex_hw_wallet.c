@@ -320,7 +320,7 @@ static int session_initial(lt_handle_t *h)
 {
     lt_ret_t ret;
     struct lt_config_t r_config;
-    const uint8_t* pub_keys[] = {LT_EX_SH0_PUB, sh1pub, sh2pub, sh3pub};
+    const uint8_t *pub_keys[] = {LT_EX_SH0_PUB, sh1pub, sh2pub, sh3pub};
 
     LT_LOG_INFO("Initializing handle");
     ret = lt_init(h);
