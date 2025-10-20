@@ -42,6 +42,12 @@ __extension__ ({                           \
     ___a < ___b ? ___a : ___b;       \
 })
 
+/**
+ * @brief Get max value from compile-time constants at compile-time.
+ */
+#define LT_COMPTIME_MAX(a, b) \
+    __builtin_choose_expr((a) > (b), a, b)
+
 #ifdef __cplusplus
 }
 #endif
