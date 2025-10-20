@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored crypto HAL.
 - Refactored `trezor_crypto` HAL.
+- Reworked handling of pairing keys:
+  - all default pairing keys for slot 0 are always available from `libtropic_common.h` - thanks to this, dependency on Python's `cryptography` package was removed,
+  - keys for other slots (that are used by examples and tests) are defined only in examples/tests that need it,
+  - `provisioning_data/` moved to `tropic01_model/`, as it is not needed anymore when not working with the model.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
