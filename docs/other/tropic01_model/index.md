@@ -29,21 +29,21 @@ Next, it is possible to initialize the model with some data, so it can behave li
 > [!IMPORTANT]
 In the case of running tests using CTest, no manual steps for creating the model configuration or initializing the model are necessary - CTest handles this by itself. In the case of running examples (or tests without CTest), the model has to be started manually by the user and some configuration has to be applied to the model, so atleast the pairing key slot 0 is written to be able to establish a secure session.
 
-Data, from which the `tropic01_model/create_model_cfg.py` script creates the YAML configuration file for the model, can be found in `provisioning_data/` directory - see [Provisioning Data](provisioning_data.md) section for more information about the directory structure.
+Data, from which the `tropic01_model/create_model_cfg.py` script creates the YAML configuration file for the model, can be found in `tropic01_model/provisioning_data/` directory - see [Provisioning Data](provisioning_data.md) section for more information about the directory structure.
 
 To create a model configuration that will initialize the model to the state which is almost identical to the provisioned chip, the `tropic01_model/create_model_cfg.py` script is run as:
 ```shell
 cd tropic01_model/
 python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
 ```
-where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside the `provisioning_data/`. As a result of running the script, a file `model_cfg.yml` is created, which can be passed directly to the model using the `-c` flag.
+where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside the `tropic01_model/provisioning_data/`. As a result of running the script, a file `model_cfg.yml` is created, which can be passed directly to the model using the `-c` flag.
 
 ## Running the Examples
 1. Switch to the `tropic01_model/` directory:
 ```shell
 cd tropic01_model/
 ```
-2. Compile the examples:
+1. Compile the examples:
 ```shell
 mkdir build
 cd build
@@ -56,19 +56,19 @@ To enable debugging symbols (e.g. to use [GDB](https://www.gnu.org/software/gdb/
 >
 > To use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer) (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 
-3. Create a YAML configuration for the model from one of the lab batch packages:
+1. Create a YAML configuration for the model from one of the lab batch packages:
 ```shell
-python3 ../create_model_cfg.py --pkg-dir ../../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
+python3 ../create_model_cfg.py --pkg-dir ../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
 ```
 As a result, `model_cfg.yml` is created.
 
-4. In a separate terminal, start the model server (which was previously installed in a Python virtual environment) and configure it:
+1. In a separate terminal, start the model server (which was previously installed in a Python virtual environment) and configure it:
 ```shell
 model_server tcp -c model_cfg.yml
 ```
 As a result, the model now listens on TCP port 127.0.0.1:28992.
 
-5. In the original terminal, execute one of the built examples:
+1. In the original terminal, execute one of the built examples:
 ```shell
 ./lt_ex_hello_world
 ```
@@ -124,8 +124,8 @@ After CTest finishes, it informs about the results and saves all output to the `
 > [!NOTE]
 The model is automatically started for each test separately, so it behaves like a fresh TROPIC01 straight out of factory. All this and other handling is done by the script `scripts/model_test_runner.py`, which is called by CTest.
 
-> [!IMPORTANT]
-> When `-DLT_BUILD_EXAMPLES=1` or `-DLT_BUILD_TESTS=1` are passed to CMake, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.
+!!! warning
+    Based on the TROPIC01 model configuration, you may encounter issues with tests or examples that establish a Secure Session. If you configured the model's pairing key slot 0 with engineering sample keys, you have to pass `-DLT_SH0_KEYS="eng_sample"` to `cmake` during the build. In the case of configuring the model's pairing key slot 0 with the production keys, no additional actions are needed (the correct key is set by default).
 
 ### Running the Tests with Coverage
 We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:

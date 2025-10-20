@@ -17,12 +17,21 @@ Examples can be compiled using the `LT_BUILD_EXAMPLES` flag. You can enable the 
 - During compilation by passing `-DLT_BUILD_EXAMPLES=1` to `cmake`, or
 - in your project's `CMakeLists.txt`: `set(LT_BUILD_EXAMPLES ON)`.
 
-It is recommended to try the examples in one of our [platform repositories](../integrating_libtropic/integration_examples.md) using a real TROPIC01 chip on one of our supported platforms, or on a [TROPIC01 model](../../other/tropic01_model.md) directly on your computer.  
+It is recommended to try the examples in one of our [platform repositories](../integrating_libtropic/integration_examples.md) using a real TROPIC01 chip on one of our supported platforms, or on a [TROPIC01 model](../../other/tropic01_model/index.md) directly on your computer.  
 Both the platform repositories and the model contain detailed guides on example compilation.
 
-!!! note
-    During the build process, you may encounter issues with pairing keys. Although the default (production) key is present in the majority of distributed TROPIC01 chips, the first chip revisions (engineering samples) might contain a different key. This key must be selected manually during the build using the following CMake switch: `-DLT_SH0_PRIV_PATH=<path to sh0_priv_engineering_sample01.pem>`.  
-    Check out the platform repositories or the TROPIC01 model for more information.
+!!! warning
+    You may encounter issues with examples that establish a Secure Session. Although the default (production) key is present in the majority of distributed TROPIC01 chips, the first chip revisions (engineering samples) might contain a different key. To successfully establish a Secure Session with one of the engineering samples, pass `-DLT_SH0_KEYS="eng_sample"` to `cmake` during the build. In the case of the production chips, no additional actions are needed (the correct key is set by default).
+
+??? tip "Tip: Running an Example with Custom Pairing Key"
+    If you want to execute one of the examples (that uses a Secure Session) with your custom pairing key, define the arrays for private and public key as global and after `#include libtropic_examples.h`, do the following:
+    ```c
+    #undef LT_EX_SH0_PRIV
+    #define LT_EX_SH0_PRIV <var_name_with_your_private_pairing_key>
+
+    #undef LT_EX_SH0_PUB
+    #define LT_EX_SH0_PUB <var_name_with_your_public_pairing_key>
+    ```
 
 ## Should I Use the Model or a Real Chip?
 All of the examples are compatible with the TROPIC01 chip, and the majority of them are also compatible with the TROPIC01 model. It is highly recommended to try the model first, especially for irreversible examples, as they make irreversible changes to the real chip.

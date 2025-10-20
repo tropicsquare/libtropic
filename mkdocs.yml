@@ -77,8 +77,9 @@ nav:
     - Building the Documentation: for_contributors/building_documentation.md
   - Other:
     - other/index.md
-    - TROPIC01 Model: other/tropic01_model.md
-    - Provisioning Data: other/provisioning_data.md
+    - TROPIC01 Model:
+      - other/tropic01_model/index.md
+      - Provisioning Data: other/tropic01_model/provisioning_data.md
 
 plugins:
   - search

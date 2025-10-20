@@ -36,8 +36,6 @@ For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_sh
 * `examples/` A few examples of how libtropic might be used
 * `hal/` Support code for various platforms - transport layer, delay function and RNG
 * `include/` Public API header files
-* `keys/` Default pairing keys for slots 1, 2, 3 (used in examples and functional tests)
-* `provisioning_data/` Contains pairing key for slot 0; this data can be used to "provision" the TROPIC01 model (more info [here](https://tropicsquare.github.io/libtropic/latest/other/provisioning_data/))
 * `scripts/` Build and config scripts
 * `src/` Library's source files
 * `tests/` Functional tests
