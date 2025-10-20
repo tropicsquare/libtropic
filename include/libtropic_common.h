@@ -86,6 +86,43 @@ extern "C" {
  */
 #define TR01_L3_PACKET_MAX_SIZE (TR01_L3_RES_SIZE_SIZE + TR01_L3_CYPHERTEXT_MAX_SIZE + 13 + TR01_L3_TAG_SIZE)
 
+/**
+ * @brief Host MCU's X25519 private key to execute a Secure Channel Handshake on Pairing Key slot 0 of the engineering
+ * (pre-production) TROPIC01 samples.
+ *
+ * @note This key should be used for the first Secure Channel Handshake and we recommend invalidating the slot 0 after
+ * you write your own pairing key to another slot. Refer to the section 5.4 (Security Lifecycle Management) in the
+ * datasheet for more information.
+ */
+extern const uint8_t sh0priv_eng_sample[];
+/**
+ * @brief Host MCU's X25519 public key (stored in TROPIC01) to execute a Secure Channel Handshake on Pairing Key slot 0
+ * of the engineering (pre-production) TROPIC01 samples.
+ *
+ * @note This key should be used for the first Secure Channel Handshake and we recommend invalidating the slot 0 after
+ * you write your own pairing key to another slot. Refer to the section 5.4 (Security Lifecycle Management) in the
+ * datasheet for more information.
+ */
+extern const uint8_t sh0pub_eng_sample[];
+/**
+ * @brief Host MCU's X25519 private key to execute a Secure Channel Handshake on Pairing Key slot 0 of the production
+ * TROPIC01 chips.
+ *
+ * @note This key should be used for the first Secure Channel Handshake and we recommend invalidating the slot 0 after
+ * you write your own pairing key to another slot. Refer to the section 5.4 (Security Lifecycle Management) in the
+ * datasheet for more information.
+ */
+extern const uint8_t sh0priv_prod0[];
+/**
+ * @brief Host MCU's X25519 public key (stored in TROPIC01) to execute a Secure Channel Handshake on Pairing Key slot 0
+ * of the production TROPIC01 chips.
+ *
+ * @note This key should be used for the first Secure Channel Handshake and we recommend invalidating the slot 0 after
+ * you write your own pairing key to another slot. Refer to the section 5.4 (Security Lifecycle Management) in the
+ * datasheet for more information.
+ */
+extern const uint8_t sh0pub_prod0[];
+
 //--------------------------------------------------------------------------------------------------------------------//
 
 /** @brief Generic L3 command and result frame */

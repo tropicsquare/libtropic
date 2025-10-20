@@ -23,6 +23,32 @@ option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low 
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
 
+# Select pairing keys written during manufacturing into your TROPIC01
+set(LT_SH0_KEYS "prod0" CACHE STRING "Choose which pairing keys in slot 0 will be used in examples/tests")
+set_property(CACHE LT_SH0_KEYS PROPERTY STRINGS "eng_sample" "prod0")
+
+if(LT_BUILD_TESTS OR LT_BUILD_EXAMPLES)
+    # These are internal macros for selecting SH0 keys (examples/tests)
+    set(LT_USE_SH0_ENG_SAMPLE 0 CACHE INTERNAL "")
+    set(LT_USE_SH0_PROD0      0 CACHE INTERNAL "")
+
+    # Define SH0 macros based on selected string (examples/tests)
+    if(LT_SH0_KEYS STREQUAL "eng_sample")
+        message(STATUS "Using Engineering sample keys in examples/tests")
+        set(LT_USE_SH0_ENG_SAMPLE 1)
+        set(LT_USE_SH0_PROD0      0)
+    elseif(LT_SH0_KEYS STREQUAL "prod0")
+        message(STATUS "Using Production 0 keys in examples/tests")
+        set(LT_USE_SH0_ENG_SAMPLE 0)
+        set(LT_USE_SH0_PROD0      1)
+    else()
+        get_property(lt_sh0_keys_choices CACHE LT_SH0_KEYS PROPERTY STRINGS)
+        message(FATAL_ERROR "Incorrect SH0 keys for examples/tests specified: '${LT_SH0_KEYS}'\nAvailable SH0 keys: ${lt_sh0_keys_choices}")
+    endif()
+else()
+    message(STATUS "Skipping SH0 key selection (examples/tests not enabled)")
+endif()
+
 # TROPIC01 silicon revision: useful for firmware update and functional tests
 # (as some behavior) differ between revisions.
 set(LT_SILICON_REV "ACAB" CACHE STRING "Set TROPIC01 silicon revision")
@@ -114,18 +140,6 @@ set(LT_ASAN_COMPILE_FLAGS "-fsanitize=address,leak,undefined;-fno-omit-frame-poi
 set(LT_ASAN_LINK_FLAGS "-fsanitize=address,leak,undefined;-static-libasan"
     CACHE INTERNAL "Link flags for Sanitizers (ASan, LSan, UBSan)")
 
-set(DEFAULT_LAB_BATCH_PKG_DIR
-    "2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
-    CACHE STRING
-    "Default lab batch package directory"
-)
-set(LT_SH0_PRIV_PATH_DEFAULT "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/${DEFAULT_LAB_BATCH_PKG_DIR}sh0_key_pair/sh_x25519_private_key_2025-03-24T09-15-15Z.pem")
-set(LT_SH0_PRIV_PATH
-    "${LT_SH0_PRIV_PATH_DEFAULT}"
-    CACHE FILEPATH
-    "Path to file with SH0 private key in PEM or DER format (only used when LT_BUILD_EXAMPLES or LT_BUILD_TESTS set)"
-)
-
 # Check whether compiling standalone (e.g. as a library) or as a child project (= has parent scope)
 # and save result to HAS_PARENT_SCOPE.
 get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
@@ -151,7 +165,6 @@ project(libtropic_SDK
 # Libtropic core functions                                                #
 ###########################################################################
 set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/keys/keys.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1_port_wrap.c
@@ -371,47 +384,6 @@ if(LT_BUILD_TESTS)
     )
 endif()
 
-# Only add key generation logic if examples or tests are being compiled
-if (LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
-
-    if (LT_SH0_PRIV_PATH STREQUAL "")
-        message(FATAL_ERROR "LT_SH0_PRIV_PATH must be set when LT_BUILD_EXAMPLES or LT_BUILD_TESTS is enabled.")
-    endif()
-
-    if (LT_SH0_PRIV_PATH STREQUAL LT_SH0_PRIV_PATH_DEFAULT)
-        message(STATUS "Using default LT_SH0_PRIV_PATH:\n${LT_SH0_PRIV_PATH}")
-    endif()
-
-    set(SH0_PRIV_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_priv.bin")
-    set(SH0_PUB_RAW_FILE "${CMAKE_BINARY_DIR}/sh0_pub.bin")
-    set(KEYS_C_FILE "${CMAKE_BINARY_DIR}/sh0_keys.c")
-    set(EXTRACT_KEY_DATA_PYTHON_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/extract_x25519_key_data.py")
-
-    add_custom_command(
-        OUTPUT ${SH0_PRIV_RAW_FILE} ${SH0_PUB_RAW_FILE}
-        COMMAND python3 ${EXTRACT_KEY_DATA_PYTHON_SCRIPT} --priv-key ${LT_SH0_PRIV_PATH} --priv-out ${SH0_PRIV_RAW_FILE} --pub-out ${SH0_PUB_RAW_FILE}
-        DEPENDS "${EXTRACT_KEY_DATA_PYTHON_SCRIPT}" "${LT_SH0_PRIV_PATH}"
-        COMMENT "Extracting raw data from X25519 private key"
-        VERBATIM
-    )
-
-    add_custom_command(
-        OUTPUT "${KEYS_C_FILE}"
-        COMMAND ${CMAKE_COMMAND}
-                -DSH0_PRIV_RAW_PATH=${SH0_PRIV_RAW_FILE}
-                -DSH0_PUB_RAW_PATH=${SH0_PUB_RAW_FILE}
-                -DOUTPUT_C_FILE=${KEYS_C_FILE}
-                -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_sh0_keys.cmake"
-        DEPENDS "${SH0_PRIV_RAW_FILE}" "${SH0_PUB_RAW_FILE}"
-        COMMENT "Generating sh0_keys.c from DER files"
-        VERBATIM
-    )
-
-
-    # Ensure the tropic target depends on the generated file
-    list(APPEND SDK_SRCS "${KEYS_C_FILE}")
-endif()
-
 add_library(tropic ${SDK_SRCS} ${SDK_INCS})
 
 target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
@@ -428,6 +400,14 @@ target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 target_link_options(tropic INTERFACE -Wl,--gc-sections)
 
 target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LT_REDUNDANT_ARG_CHECK>")
+
+# Propagate SH0 macros (examples/tests)
+if(LT_BUILD_TESTS OR LT_BUILD_EXAMPLES)
+    target_compile_definitions(tropic PUBLIC
+        LT_USE_SH0_ENG_SAMPLE=${LT_USE_SH0_ENG_SAMPLE}
+        LT_USE_SH0_PROD0=${LT_USE_SH0_PROD0}
+    )
+endif()
 
 # Propagate logging settings
 target_compile_definitions(tropic PUBLIC

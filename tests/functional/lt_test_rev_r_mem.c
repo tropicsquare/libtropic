@@ -25,7 +25,8 @@ static lt_ret_t lt_test_rev_r_mem_cleanup(void)
     uint16_t read_data_size;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(g_h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                  TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session.");
         return ret;
@@ -89,7 +90,8 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                                  TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Erasing all slots...");

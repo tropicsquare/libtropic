@@ -13,6 +13,12 @@ option(LT_VALGRIND "Enable Valgrind" OFF)
 # Enables compilation with coverage enabled and O0 for functional tests.
 option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
 
+set(LAB_BATCH_PKG_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
+    CACHE STRING
+    "Lab batch package directory to configure the model with"
+)
+
 ###########################################################################
 #                                                                         #
 #   Paths and setup                                                       #
@@ -132,7 +138,6 @@ if(LT_BUILD_TESTS)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/libtropic)
 
     # Set some paths
-    set(LAB_BATCH_PKG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${PATH_TO_LIBTROPIC}/provisioning_data/${DEFAULT_LAB_BATCH_PKG_DIR}")
     set(MODEL_CFG_PATH "${CMAKE_CURRENT_BINARY_DIR}/model_cfg.yml")
     set(RUN_LOGS_DIR "${CMAKE_CURRENT_BINARY_DIR}/run_logs/")
 

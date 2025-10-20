@@ -107,12 +107,12 @@ void lt_test_rev_startup_req(lt_handle_t *h)
         LT_TEST_ASSERT(MAINTENANCE_MODE, check_current_state());
         LT_LOG_INFO("Checking that the handshake does not work...");
 #ifdef ABAB
-        LT_TEST_ASSERT(LT_L2_GEN_ERR,
-                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+        LT_TEST_ASSERT(LT_L2_GEN_ERR, lt_verify_chip_and_start_secure_session(h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                                              TR01_PAIRING_KEY_SLOT_INDEX_0));
 
 #elif ACAB
-        LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ,
-                       lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+        LT_TEST_ASSERT(LT_L2_UNKNOWN_REQ, lt_verify_chip_and_start_secure_session(h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                                                  TR01_PAIRING_KEY_SLOT_INDEX_0));
 #else
 #error "Undefined silicon revision. Please define either ABAB or ACAB."
 #endif

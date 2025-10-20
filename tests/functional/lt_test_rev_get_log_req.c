@@ -84,7 +84,8 @@ void lt_test_rev_get_log_req(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_reboot(h, TR01_REBOOT));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(g_h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                                  TR01_PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG_INFO("Reading CFG_DEBUG from I config...");
     LT_TEST_ASSERT(LT_OK, lt_i_config_read(g_h, TR01_CFG_DEBUG_ADDR, &i_config_cfg_debug));

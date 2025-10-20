@@ -96,7 +96,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
     LT_LOG_INFO("Executing lt_in__session_start()...");
-    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &host_eph_keys);
+    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, &host_eph_keys);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
