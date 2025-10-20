@@ -474,9 +474,9 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PUBLIC trezor_crypto)
 
-elseif(LT_CRYPTO STREQUAL "mbedtls")
+# elseif(LT_CRYPTO STREQUAL "mbedtls")
 
-    message(STATUS "Crypto provider set to mbedtls")
+#     message(STATUS "Crypto provider set to mbedtls")
 
 else()
 
