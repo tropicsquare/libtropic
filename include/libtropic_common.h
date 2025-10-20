@@ -273,10 +273,13 @@ typedef enum lt_ret_t {
     /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR = 23,
     /** @brief L3 response RES_SIZE have an invalid size.
-     * @details This can be cause by an attack or a bug in the chip's firmware.
+     * @details This can be cause by an attack or a bug.
     */
     LT_L3_RES_SIZE_ERROR = 24,
-    /** @brief L3 buffer is too small to parse this L3 command. */
+    /** @brief L3 buffer is too small to parse this L3 command.
+     * @details If this error is raised, either the buffer is too small to accept the result,
+     * or RES_SIZE field in the response is invalid (attack or a bug).
+    */
     LT_L3_BUFFER_TOO_SMALL = 25,
 
 
