@@ -108,7 +108,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
     // First check how much data are to be send and if it actually fits into that buffer,
     // there must be a space for 2B of size value, ?B of command (ID + data) and 16B of TAG.
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)buff;
-    uint16_t packet_size = (TR01_L3_CMD_SIZE_SIZE + p_frame->cmd_size + TR01_L3_TAG_SIZE);
+    uint16_t packet_size = (TR01_L3_SIZE_SIZE + p_frame->cmd_size + TR01_L3_TAG_SIZE);
     // Prevent sending more data then is the size of compiled l3 buffer
     if (packet_size > max_len) {
         return LT_L3_DATA_LEN_ERROR;

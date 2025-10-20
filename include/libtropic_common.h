@@ -61,30 +61,36 @@ extern "C" {
 #define TR01_L2_MAX_FRAME_SIZE \
     (TR01_L2_STATUS_SIZE + TR01_L2_REQ_RSP_LEN_SIZE + TR01_L2_CHUNK_MAX_DATA_SIZE + TR01_L2_REQ_RSP_CRC_SIZE)
 
-/** @brief Size of l3 ID field */
-#define TR01_L3_ID_SIZE 1u
-/** @brief Size of l3 TAG field */
-#define TR01_L3_TAG_SIZE 16u
 /** @brief Size of IV */
 #define TR01_L3_IV_SIZE 12u
 
-/** @brief Size of RES_SIZE field */
-#define TR01_L3_RES_SIZE_SIZE 2
-/** @brief Size of CMD_SIZE field */
-#define TR01_L3_CMD_SIZE_SIZE 2
-/** @brief Size of l3 CMD_ID field */
-#define TR01_L3_CMD_ID_SIZE 1
-/** @brief Maximal size of l3 RES/RSP DATA field */
-#define TR01_L3_CMD_DATA_SIZE_MAX 4111
+/** @brief Size of CMD_SIZE and RES_SIZE fields. */
+#define TR01_L3_SIZE_SIZE 2u
+/** @brief Size of CMD_TAG and RES_TAG fields. */
+#define TR01_L3_TAG_SIZE 16u
 
-/** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
-#define TR01_L3_CYPHERTEXT_MAX_SIZE (TR01_L3_CMD_ID_SIZE + TR01_L3_CMD_DATA_SIZE_MAX)
+/** @brief Size of L3 CMD_ID field. */
+#define TR01_L3_CMD_ID_SIZE 1u
+/** @brief Maximal size of L3 Command CMD_DATA field. */
+#define TR01_L3_CMD_DATA_SIZE_MAX 4111u
+
+/** @brief Size of the RESULT field in L3 Result. */
+#define TR01_L3_RESULT_SIZE 1u
+/** @brief Maximal size of L3 Result RES_DATA field. */
+#define TR01_L3_RES_DATA_SIZE_MAX 4096u
+
+/** @brief Max size of L3 Command ciphertext. */
+#define TR01_L3_CMD_CIPHERTEXT_MAX_SIZE (TR01_L3_CMD_ID_SIZE + TR01_L3_CMD_DATA_SIZE_MAX)
+/** @brief Max size of L3 Result ciphertext. */
+#define TR01_L3_RES_CIPHERTEXT_MAX_SIZE (TR01_L3_RESULT_SIZE + TR01_L3_RES_DATA_SIZE_MAX)
+/** @brief Max size of ciphertext of both L3 Command and L3 Response.
+*/
+#define TR01_L3_CIPHERTEXT_MAX_SIZE LT_COMPTIME_MAX(TR01_L3_CMD_CIPHERTEXT_MAX_SIZE, TR01_L3_RES_CIPHERTEXT_MAX_SIZE)
+
 /**
- * @brief Max size of one unit of transport on l3 layer
- *
- * The number 13 is given by the longest possible padding, which is given by the EDDSA_Sign command.
+ * @brief Max size of one unit of transport on L3.
  */
-#define TR01_L3_PACKET_MAX_SIZE (TR01_L3_RES_SIZE_SIZE + TR01_L3_CYPHERTEXT_MAX_SIZE + 13 + TR01_L3_TAG_SIZE)
+#define TR01_L3_PACKET_MAX_SIZE (TR01_L3_SIZE_SIZE + TR01_L3_CIPHERTEXT_MAX_SIZE + TR01_L3_TAG_SIZE)
 
 /**
  * @brief Host MCU's X25519 private key to execute a Secure Channel Handshake on Pairing Key slot 0 of the engineering
@@ -129,8 +135,8 @@ extern const uint8_t sh0pub_prod0[];
 typedef struct lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
-    /** @brief Command or result data including ID and TAG */
-    uint8_t data[TR01_L3_PACKET_MAX_SIZE - TR01_L3_RES_SIZE_SIZE];
+    /** @brief Command or result ciphertext + tag */
+    uint8_t data[TR01_L3_CIPHERTEXT_MAX_SIZE + TR01_L3_TAG_SIZE];
 } __attribute__((packed)) lt_l3_gen_frame_t;
 
 // clang-format off
