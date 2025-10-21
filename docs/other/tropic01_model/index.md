@@ -6,7 +6,7 @@ Code in the `tropic01_model/` directory is meant to be compiled under Unix-like 
 - Both of these points are discussed further in this text.
 
 > [!WARNING]
-> There are some examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those will always fail against the model. Namely:
+> There are some examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those would always fail against the model and thus `tropic01_model/CMakeLists.txt` excludes them. Namely:
 > 
 > - `lt_ex_fw_update`,
 > - `lt_ex_show_chip_id_and_fwver` (model does not implement Bootloader mode, so you can use `tests/functional/lt_test_rev_get_info_req_app.c` to get this info from the Application mode atleast).
