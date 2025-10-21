@@ -147,20 +147,6 @@ project(libtropic_SDK
         HOMEPAGE_URL "www.tropicsquare.com"
         LANGUAGES C)
 
-##########
-# CRYPTO #
-##########
-set(SDK_SRCS ${SDK_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_aesgcm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ed25519.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_ecdsa.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_hmac_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/trezor_crypto/lt_crypto_trezor_x25519.c
-)
-
-# --- add new crypto sources above this line ---
-
 ###########################################################################
 # Libtropic core functions                                                #
 ###########################################################################
@@ -177,6 +163,13 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
+    # Crypto backend implementation files
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_ecdsa.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_hmac_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_x25519.c
 )
 
 set(SDK_INCS ${SDK_INCS}
@@ -193,12 +186,16 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.h
+    # Crypto backend header for required macros
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_crypto_macros.h
 )
 set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    # Add the crypto backend directory to the public include paths
+    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}
 )
 
 
@@ -474,24 +471,18 @@ endif()
 #                                                                         #
 ###########################################################################
 
-# These are internal macros for crypto providers
-set(LT_CRYPTO_TREZOR  0 CACHE INTERNAL "")
-set(LT_CRYPTO_MBEDTLS 0 CACHE INTERNAL "")
-
 # Handle LT_CRYPTO
 if(LT_CRYPTO STREQUAL "trezor_crypto")
     
     message(STATUS "Crypto provider set to trezor_crypto")
-    set(LT_CRYPTO_TREZOR 1)
 
     add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
-    target_link_libraries(tropic PRIVATE trezor_crypto)
+    target_link_libraries(tropic PUBLIC trezor_crypto)
 
-elseif(LT_CRYPTO STREQUAL "mbedtls")
+# elseif(LT_CRYPTO STREQUAL "mbedtls")
 
-    message(STATUS "Crypto provider set to mbedtls")
-    set(LT_CRYPTO_MBEDTLS 1)
+#     message(STATUS "Crypto provider set to mbedtls")
 
 else()
 
@@ -499,12 +490,6 @@ else()
     message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${lt_crypto_choices}")
     
 endif()
-
-# Propagate crypto provider internal switches
-target_compile_definitions(tropic PUBLIC
-    LT_CRYPTO_TREZOR=${LT_CRYPTO_TREZOR}
-    LT_CRYPTO_MBEDTLS=${LT_CRYPTO_MBEDTLS}
-)
 
 ###########################################################################
 #                                                                         #

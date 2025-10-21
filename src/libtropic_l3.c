@@ -37,7 +37,11 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
     if (ret != LT_OK) {
         return ret;
     }
-    lt_X25519_scalarmult(host_eph_keys->ehpriv, host_eph_keys->ehpub);
+
+    ret = lt_X25519_scalarmult(host_eph_keys->ehpriv, host_eph_keys->ehpub);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
     struct lt_l2_handshake_req_t *p_req = (struct lt_l2_handshake_req_t *)h->l2.buff;
@@ -65,79 +69,174 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     uint8_t protocol_name[32] = {'N', 'o', 'i', 's', 'e', '_', 'K', 'K', '1', '_', '2', '5', '5', '1',  '9',  '_',
                                  'A', 'E', 'S', 'G', 'C', 'M', '_', 'S', 'H', 'A', '2', '5', '6', 0x00, 0x00, 0x00};
     uint8_t hash[LT_SHA256_DIGEST_LENGTH] = {0};
+    LT_CRYPTO_SHA256_CTX_T sha256_ctx;
+    lt_ret_t ret;
+
     // h = SHA_256(protocol_name)
-    struct lt_crypto_sha256_ctx_t hctx = {0};
-    lt_sha256_init(&hctx);
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, protocol_name, sizeof(protocol_name));
-    lt_sha256_finish(&hctx, hash);
+    ret = lt_sha256_init(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, protocol_name, sizeof(protocol_name));
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // h = SHA256(h||SHiPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, sizeof(hash));
-    lt_sha256_update(&hctx, shipub, TR01_SHIPUB_LEN);
-    lt_sha256_finish(&hctx, hash);
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, shipub, TR01_SHIPUB_LEN);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // h = SHA256(h||STPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, sizeof(hash));
-    lt_sha256_update(&hctx, stpub, TR01_STPUB_LEN);
-    lt_sha256_finish(&hctx, hash);
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, stpub, TR01_STPUB_LEN);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // h = SHA256(h||EHPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, sizeof(hash));
-    lt_sha256_update(&hctx, host_eph_keys->ehpub, TR01_EHPUB_LEN);
-    lt_sha256_finish(&hctx, hash);
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, host_eph_keys->ehpub, TR01_EHPUB_LEN);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // h = SHA256(h||PKEY_INDEX)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, sizeof(hash));
-    lt_sha256_update(&hctx, (uint8_t *)&pkey_index, 1);
-    lt_sha256_finish(&hctx, hash);
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, (uint8_t *)&pkey_index, 1);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // h = SHA256(h||ETPUB)
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, hash, sizeof(hash));
-    lt_sha256_update(&hctx, p_rsp->e_tpub, TR01_ETPUB_LEN);
-    lt_sha256_finish(&hctx, hash);
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, p_rsp->e_tpub, TR01_ETPUB_LEN);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // ck = protocol_name
     uint8_t output_1[33] = {0};  // Temp storage for ck, kcmd.
     uint8_t output_2[32] = {0};  // Temp storage for kauth.
     // ck = HKDF (ck, X25519(EHPRIV, ETPUB), 1)
     uint8_t shared_secret[TR01_X25519_KEY_LEN] = {0};
-    lt_X25519(host_eph_keys->ehpriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
+    ret = lt_X25519(host_eph_keys->ehpriv, p_rsp->e_tpub, shared_secret);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_hkdf(protocol_name, sizeof(protocol_name), shared_secret, sizeof(shared_secret), 1, output_1, output_2);
+    if (ret != LT_OK) {
+        return ret;
+    }
     // ck = HKDF (ck, X25519(SHiPRIV, ETPUB), 1)
-    lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
-    lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
+    ret = lt_X25519(shipriv, p_rsp->e_tpub, shared_secret);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(output_2), 1, output_1, output_2);
+    if (ret != LT_OK) {
+        return ret;
+    }
     // ck, kAUTH = HKDF (ck, X25519(EHPRIV, STPUB), 2)
-    lt_X25519(host_eph_keys->ehpriv, stpub, shared_secret);
+    ret = lt_X25519(host_eph_keys->ehpriv, stpub, shared_secret);
+    if (ret != LT_OK) {
+        return ret;
+    }
     uint8_t kauth[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for handshake authentication.
-    lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
+    ret = lt_hkdf(output_1, sizeof(output_1), shared_secret, sizeof(shared_secret), 2, output_1, kauth);
+    if (ret != LT_OK) {
+        return ret;
+    }
     // kCMD, kRES = HKDF (ck, emptystring, 2)
     uint8_t kcmd[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for L3 command packet encryption/decryption.
     uint8_t kres[TR01_AES256_KEY_LEN] = {0};  // AES256 key used for L3 result packet encryption/decryption.
-    lt_hkdf(output_1, sizeof(output_1), (uint8_t *)"", 0, 2, kcmd, kres);
+    ret = lt_hkdf(output_1, sizeof(output_1), (uint8_t *)"", 0, 2, kcmd, kres);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
-    lt_ret_t ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kauth, sizeof(kauth));
+    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_decrypt_ctx, kauth, sizeof(kauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_decrypt(&h->l3.decrypt, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash, sizeof(hash),
-                            (uint8_t *)"", 0, p_rsp->t_tauth, sizeof(p_rsp->t_tauth));
+    ret = lt_aesgcm_decrypt(&h->l3.aesgcm_decrypt_ctx, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash,
+                            sizeof(hash), (uint8_t *)"", 0, p_rsp->t_tauth, sizeof(p_rsp->t_tauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.encrypt, kcmd, sizeof(kcmd));
+    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_encrypt_ctx, kcmd, sizeof(kcmd));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.decrypt, kres, sizeof(kres));
+    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_decrypt_ctx, kres, sizeof(kres));
     if (ret != LT_OK) {
         goto exit;
     }
@@ -148,8 +247,8 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
 
 // If something went wrong during session keys establishment, better clean up AES GCM contexts
 exit:
-    memset(h->l3.encrypt, 0, sizeof(h->l3.encrypt));
-    memset(h->l3.decrypt, 0, sizeof(h->l3.decrypt));
+    memset(&h->l3.aesgcm_encrypt_ctx, 0, sizeof(h->l3.aesgcm_encrypt_ctx));
+    memset(&h->l3.aesgcm_decrypt_ctx, 0, sizeof(h->l3.aesgcm_decrypt_ctx));
 
     return ret;
 }
@@ -1040,11 +1139,25 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const 
 
     // Prepare hash of a message
     uint8_t msg_hash[32] = {0};
-    struct lt_crypto_sha256_ctx_t hctx = {0};
-    lt_sha256_init(&hctx);
-    lt_sha256_start(&hctx);
-    lt_sha256_update(&hctx, (uint8_t *)msg, msg_len);
-    lt_sha256_finish(&hctx, msg_hash);
+    LT_CRYPTO_SHA256_CTX_T sha256_ctx;
+    lt_ret_t ret;
+
+    ret = lt_sha256_init(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_start(&sha256_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_update(&sha256_ctx, (uint8_t *)msg, msg_len);
+    if (ret != LT_OK) {
+        return ret;
+    }
+    ret = lt_sha256_finish(&sha256_ctx, msg_hash);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     // Pointer to access l3 buffer when it contains command data
     struct lt_l3_ecdsa_sign_cmd_t *p_l3_cmd = (struct lt_l3_ecdsa_sign_cmd_t *)h->l3.buff;

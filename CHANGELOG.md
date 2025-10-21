@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Refactored crypto HAL.
+- Refactored `trezor_crypto` HAL.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.

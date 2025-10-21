@@ -11,6 +11,7 @@
 #include <stdbool.h>
 
 #include "libtropic_macros.h"
+#include "lt_crypto_macros.h"
 #include "stdint.h"
 #include "tropic01_application_co.h"
 #include "tropic01_bootloader_co.h"
@@ -148,16 +149,8 @@ typedef struct lt_l3_state_t {
     enum lt_secure_session_status_t session_status;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
-#if LT_CRYPTO_TREZOR
-    uint8_t encrypt[352] __attribute__((aligned(16)));  // Because sizeof(lt_aes_gcm_ctx_t) == 352;
-    uint8_t decrypt[352] __attribute__((aligned(16)));
-#elif LT_CRYPTO_MBEDTLS
-#warning "Warning: MBED Tls is not implemented yet";
-#else
-    // Default size of gcm context structures are set to reflect sizes used in trezor_crypto library
-    uint8_t encrypt[352] __attribute__((aligned(16)));
-    uint8_t decrypt[352] __attribute__((aligned(16)));
-#endif
+    LT_CRYPTO_AES_GCM_CTX_T aesgcm_encrypt_ctx;
+    LT_CRYPTO_AES_GCM_CTX_T aesgcm_decrypt_ctx;
 #if LT_SEPARATE_L3_BUFF
     /** User shall define buffer's array and store its pointer into handle */
     uint8_t *buff __attribute__((aligned(16)));

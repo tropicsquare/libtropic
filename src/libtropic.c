@@ -20,7 +20,6 @@
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
-#include "lt_aesgcm.h"
 #include "lt_asn1_der.h"
 #include "lt_ecdsa.h"
 #include "lt_ed25519.h"
@@ -1241,11 +1240,7 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
         return LT_PARAM_ERR;
     }
 
-    if (lt_ecdsa_verify(msg, msg_len, pubkey, rs) != 0) {
-        return LT_FAIL;
-    }
-
-    return LT_OK;
+    return lt_ecdsa_sign_verify(msg, msg_len, pubkey, rs);
 }
 
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
@@ -1282,11 +1277,7 @@ lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, con
         return LT_PARAM_ERR;
     }
 
-    if (lt_ed25519_sign_open(msg, msg_len, pubkey, rs) != 0) {
-        return LT_FAIL;
-    }
-
-    return LT_OK;
+    return lt_ed25519_sign_verify(msg, msg_len, pubkey, rs);
 }
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)

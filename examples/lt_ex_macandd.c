@@ -173,15 +173,27 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     nvm.i = MACANDD_ROUNDS;
     // Compute tag t = KDF(s, 0x00), save into nvm struct
     // Tag will be later used during lt_PIN_entry_check() to verify validity of final_key
-    lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x00}, 1, nvm.t);
+    ret = lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x00}, 1, nvm.t);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("t = KDF(s, 0x00) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Compute u = KDF(s, 0x01)
     // This value will be sent through M&D sequence to initialize a slot
-    lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x01}, 1, u);
+    ret = lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x01}, 1, u);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("u = KDF(s, 0x01) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Compute v = KDF(0, PIN||A) where 0 is all zeroes key
     const uint8_t zeros[32] = {0};
-    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v);
+    ret = lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("v = KDF(0, PIN||A) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     for (int i = 0; i < nvm.i; i++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
@@ -215,7 +227,11 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
         LT_LOG_INFO("\tOK");
 
         // Derive k_i = KDF(w_i, PIN||A); k_i will be used to encrypt master_secret
-        lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+        ret = lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+        if (ret != LT_OK) {
+            LT_LOG_ERROR("k_i = KDF(w_i, PIN||A) failed, ret=%s", lt_ret_verbose(ret));
+            goto exit;
+        }
 
         // Encrypt master_secret using k_i as a key and store ciphertext into non volatile storage
         encrypt(master_secret, k_i, nvm.ci + (i * TR01_MAC_AND_DESTROY_DATA_SIZE));
@@ -230,7 +246,11 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     }
 
     // final_key is released to the caller
-    lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t *)"2", 1, final_key);
+    ret = lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t *)"2", 1, final_key);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Fail during last computation of final_key, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
 // Cleanup all sensitive data from memory
 exit:
@@ -351,7 +371,11 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
 
     // Compute v’ = KDF(0, PIN’||A).
     const uint8_t zeros[32] = {0};
-    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v_);
+    ret = lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v_);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("v' = KDF(0, PIN'||A) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Execute w’ = MACANDD(i, v’)
     LT_LOG_INFO("Doing M&D sequence...");
@@ -363,14 +387,22 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Compute k’_i = KDF(w’, PIN’||A)
-    lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+    ret = lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("k'_i = KDF(w', PIN'||A) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Read the ciphertext c_i and tag t from NVM,
     // decrypt c_i with k’_i as the key and obtain s_
     decrypt(nvm.ci + (nvm.i * TR01_MAC_AND_DESTROY_DATA_SIZE), k_i, s_);
 
     // Compute tag t = KDF(s_, "0x00")
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x00}, 1, t_);
+    ret = lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x00}, 1, t_);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("t = KDF(s_, \"0x00\") failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // If t’ != t: FAIL
     if (memcmp(nvm.t, t_, sizeof(t_)) != 0) {
@@ -380,7 +412,11 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
 
     // Pin is correct, now initialize macandd slots again:
     // Compute u = KDF(s’, "0x01")
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x01}, 1, u);
+    ret = lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x01}, 1, u);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("u = KDF(s', \"0x01\") failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     for (int x = nvm.i; x < MACANDD_ROUNDS - 1; x++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
@@ -413,7 +449,11 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Calculate final_key and store it into passed array
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"2", 1, final_key);
+    ret = lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"2", 1, final_key);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Fail during last computation of final_key, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
 // Cleanup all sensitive data from memory
 exit:

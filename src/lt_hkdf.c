@@ -6,41 +6,36 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include "lt_hkdf.h"
+
 #include <stdint.h>
 #include <string.h>
 
-#if LT_CRYPTO_TREZOR
-#include "blake256.h"
-#include "blake2b.h"
-#include "groestl.h"
-#include "hasher.h"
-#include "hmac.h"
+#include "libtropic_common.h"
 #include "lt_hmac_sha256.h"
-#include "memzero.h"
-#include "ripemd160.h"
-#include "sha2.h"
-#include "sha3.h"
-#elif LT_CRYPTO_MBEDTLS
-// TBD
-#endif
 
-#include "libtropic_macros.h"
-#include "lt_hkdf.h"
-
-void lt_hkdf(uint8_t *ck, uint32_t ck_size, uint8_t *input, uint32_t input_size, uint8_t nouts, uint8_t *output_1,
-             uint8_t *output_2)
+lt_ret_t lt_hkdf(const uint8_t *ck, const uint32_t ck_len, const uint8_t *input, const uint32_t input_len,
+                 const uint8_t nouts, uint8_t *output_1, uint8_t *output_2)
 {
     LT_UNUSED(nouts);
 
     uint8_t tmp[LT_HMAC_SHA256_HASH_LEN] = {0};
     uint8_t one = 0x01;
+    lt_ret_t ret;
 
-    lt_hmac_sha256(ck, ck_size, input, input_size, tmp);
-    lt_hmac_sha256(tmp, sizeof(tmp), &one, 1, output_1);
+    ret = lt_hmac_sha256(ck, ck_len, input, input_len, tmp);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_hmac_sha256(tmp, sizeof(tmp), &one, 1, output_1);
+    if (ret != LT_OK) {
+        return ret;
+    }
 
     uint8_t helper[33] = {0};
     memcpy(helper, output_1, LT_HMAC_SHA256_HASH_LEN);  // Copy whole output of SHA256 HMAC.
     helper[32] = 2;
 
-    lt_hmac_sha256(tmp, sizeof(tmp), helper, sizeof(helper), output_2);
+    return lt_hmac_sha256(tmp, sizeof(tmp), helper, sizeof(helper), output_2);
 }
