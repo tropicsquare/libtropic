@@ -12,6 +12,7 @@
 
 #include "libtropic_macros.h"
 #include "lt_crypto_macros.h"
+#include "lt_l3_api_structs.h"
 #include "stdint.h"
 #include "tropic01_application_co.h"
 #include "tropic01_bootloader_co.h"
