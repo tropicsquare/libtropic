@@ -61,7 +61,7 @@ extern "C" {
 #define TR01_L2_MAX_FRAME_SIZE \
     (TR01_L2_STATUS_SIZE + TR01_L2_REQ_RSP_LEN_SIZE + TR01_L2_CHUNK_MAX_DATA_SIZE + TR01_L2_REQ_RSP_CRC_SIZE)
 
-/** @brief Size of IV */
+/** @brief Size of IV. */
 #define TR01_L3_IV_SIZE 12u
 
 /** @brief Size of CMD_SIZE and RES_SIZE fields. */
@@ -69,14 +69,14 @@ extern "C" {
 /** @brief Size of CMD_TAG and RES_TAG fields. */
 #define TR01_L3_TAG_SIZE 16u
 
-/** @brief Size of L3 CMD_ID field. */
+/** @brief Size of CMD_ID field. */
 #define TR01_L3_CMD_ID_SIZE 1u
-/** @brief Maximal size of L3 Command CMD_DATA field. */
+/** @brief Maximal size of CMD_DATA field. */
 #define TR01_L3_CMD_DATA_SIZE_MAX 4111u
 
 /** @brief Size of the RESULT field in L3 Result. */
 #define TR01_L3_RESULT_SIZE 1u
-/** @brief Maximal size of L3 Result RES_DATA field. */
+/** @brief Maximal size of RES_DATA field. */
 #define TR01_L3_RES_DATA_SIZE_MAX 4096u
 
 /** @brief Max size of L3 Command ciphertext. */
@@ -279,7 +279,7 @@ typedef enum lt_ret_t {
     /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR = 23,
     /** @brief L3 response RES_SIZE have an invalid size.
-     * @details This can be cause by an attack or a bug.
+     * @details This can be caused by an attack or a bug.
      */
     LT_L3_RES_SIZE_ERROR = 24,
     /** @brief L3 buffer is too small to parse this L3 command.
