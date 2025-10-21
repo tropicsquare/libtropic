@@ -313,8 +313,8 @@ typedef enum lt_ret_t {
     LT_L2_UNKNOWN_REQ = 36,
     /** @brief Returned status byte is not recognized at all */
     LT_L2_STATUS_NOT_RECOGNIZED = 37,
-    /** @brief L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR = 38,
+    /** @brief L2 data does not have an expected length (invalid value in RSP_LEN field) */
+    LT_L2_RSP_LEN_ERROR = 38,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */

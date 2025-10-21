@@ -155,7 +155,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
         }
 
         if (TR01_GET_INFO_BLOCK_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
 
         uint8_t *head = ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object;
@@ -260,9 +260,8 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(chip_id, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_CHIP_ID_SIZE);
@@ -295,9 +294,8 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_RISCV_FW_SIZE);
@@ -330,9 +328,8 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_SPECT_FW_SIZE);
@@ -368,11 +365,10 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
         return ret;
     }
 
-    // Check incomming l3 length
     if ((TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
         && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
         && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     // Check if the output buffer for the header is big enough
@@ -441,9 +437,8 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_ENCRYPTED_SESSION_ABT_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -473,9 +468,8 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_SLEEP_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -508,9 +502,8 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_STARTUP_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     ret = lt_l1_delay(&h->l2, LT_TR01_REBOOT_DELAY_MS);
@@ -555,7 +548,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
     }
 
     if (TR01_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -594,7 +587,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
     }
 
@@ -615,7 +608,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
     }
 
@@ -668,7 +661,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
     }
 
     if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -704,7 +697,7 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
 
         chunk_index += len + 1;

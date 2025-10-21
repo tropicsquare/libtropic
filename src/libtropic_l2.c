@@ -188,7 +188,7 @@ lt_ret_t lt_l2_recv_encrypted_res(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
 
         // Prevent receiving more data then is compiled size of l3 buffer
         if (offset + resp->rsp_len > max_len) {
-            return LT_L3_DATA_LEN_ERROR;
+            return LT_L2_RSP_LEN_ERROR;
         }
 
         // Check status byte of this frame
