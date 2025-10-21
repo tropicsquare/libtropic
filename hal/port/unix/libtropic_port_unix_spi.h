@@ -3,7 +3,7 @@
 
 /**
  * @file libtropic_port_unix_spi.h
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.

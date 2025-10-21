@@ -1,7 +1,7 @@
 /**
  * @file lt_test_rev_ecc_key_generate.c
  * @brief Test ECC_Key_Generate command, along with ECC_Key_Read and ECC_Key_Erase.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

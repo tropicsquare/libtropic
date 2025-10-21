@@ -1,7 +1,7 @@
 /**
  * @file lt_test_rev_erase_r_config.c
  * @brief Backs up R-Config, erases it and then restores it.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

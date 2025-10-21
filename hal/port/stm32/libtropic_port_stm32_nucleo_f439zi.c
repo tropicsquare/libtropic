@@ -1,6 +1,6 @@
 /**
  * @file libtropic_port_stm32_nucleo_f439zi.c
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select).
  *
  * Most of this SPI code is inspired by https://github.com/STMicroelectronics/STM32CubeF4:

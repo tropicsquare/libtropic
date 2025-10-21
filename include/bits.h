@@ -1,7 +1,7 @@
 /**
  * @file bits.h
  * @brief Struct and function declarations for dealing with bit assignment.
- * @author Ondrej Ille
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

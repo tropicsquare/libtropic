@@ -1,7 +1,7 @@
 /**
  * @file lt_test_rev_mcounter.c
  * @brief Test monotonic counter API - lt_mcounter_init, lt_mcounter_get, lt_mcounter_update.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

@@ -10,7 +10,7 @@
 /**
  * @file libtropic_functional_tests.h
  * @brief Functions with functional tests used internally for testing behaviour of TROPIC01 chip
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

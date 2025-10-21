@@ -2,7 +2,7 @@
  * @file lt_ex_macandd.c
  * @brief Example usage of TROPIC01 flagship feature - 'Mac And Destroy' PIN verification engine.
  * For more info please refer to ODN_TR01_app_002_pin_verif.pdf
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
