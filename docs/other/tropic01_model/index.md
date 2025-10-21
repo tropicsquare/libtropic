@@ -122,7 +122,7 @@ where `<test_regex>` is a regular expression for the test names from the list.
 
 After CTest finishes, it informs about the results and saves all output to the `tropic01_model/build/run_logs/` directory. Output from the tests and responses from the model are saved.
 > [!NOTE]
-The model is automatically started for each test separately, so it behaves like a fresh TROPIC01 straight out of factory. All this and other handling is done by the script `scripts/model_test_runner.py`, which is called by CTest.
+The model is automatically started for each test separately, so it behaves like a fresh TROPIC01 straight out of factory. All this and other handling is done by the script `scripts/model_runner.py`, which is called by CTest.
 
 ??? warning "Problems with Secure Channel Session Due to Custom Model Configuration"
     Based on the TROPIC01 model configuration, you may encounter issues with tests or examples that establish a Secure Session. Examples and tests use production keys by default - see [Default Pairing Keys in Libtropic](../../get_started/default_pairing_keys.md#default-pairing-keys-in-libtropic) for more information.
