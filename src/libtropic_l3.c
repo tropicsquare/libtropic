@@ -1240,9 +1240,7 @@ lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, co
     struct lt_l3_eddsa_sign_cmd_t *p_l3_cmd = (struct lt_l3_eddsa_sign_cmd_t *)h->l3.buff;
 
     // Fill l3 buffer
-    p_l3_cmd->cmd_size
-        = TR01_L3_EDDSA_SIGN_CMD_SIZE_MIN + msg_len
-          - 1;  // -1 Because the TR01_L3_EDDSA_SIGN_CMD_SIZE_MIN already includes minimal message size 1B
+    p_l3_cmd->cmd_size = TR01_L3_EDDSA_SIGN_CMD_SIZE_MIN + msg_len;
     p_l3_cmd->cmd_id = TR01_L3_EDDSA_SIGN_CMD_ID;
     p_l3_cmd->slot = ecc_slot;
     memcpy(p_l3_cmd->msg, msg, msg_len);
