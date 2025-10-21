@@ -56,7 +56,8 @@ lt_ret_t lt_init(lt_handle_t *h)
 
     if (h->l3.buff_len < LT_SIZE_OF_L3_BUFF) {
         return LT_L3_BUFFER_TOO_SMALL;
-    } else {
+    }
+    else {
         return LT_OK;
     }
 }
@@ -850,7 +851,8 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_INVALIDATE_PACKET_SIZE));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_INVALIDATE_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1095,7 +1097,8 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_RANDOM_VALUE_GET_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_RANDOM_VALUE_GET_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }

@@ -84,7 +84,7 @@ extern "C" {
 /** @brief Max size of L3 Result ciphertext. */
 #define TR01_L3_RES_CIPHERTEXT_MAX_SIZE (TR01_L3_RESULT_SIZE + TR01_L3_RES_DATA_SIZE_MAX)
 /** @brief Max size of ciphertext of both L3 Command and L3 Response.
-*/
+ */
 #define TR01_L3_CIPHERTEXT_MAX_SIZE LT_COMPTIME_MAX(TR01_L3_CMD_CIPHERTEXT_MAX_SIZE, TR01_L3_RES_CIPHERTEXT_MAX_SIZE)
 
 /**
@@ -280,14 +280,13 @@ typedef enum lt_ret_t {
     LT_L3_DATA_LEN_ERROR = 23,
     /** @brief L3 response RES_SIZE have an invalid size.
      * @details This can be cause by an attack or a bug.
-    */
+     */
     LT_L3_RES_SIZE_ERROR = 24,
     /** @brief L3 buffer is too small to parse this L3 command.
      * @details If this error is raised, either the buffer is too small to accept the result,
      * or RES_SIZE field in the response is invalid (attack or a bug).
-    */
+     */
     LT_L3_BUFFER_TOO_SMALL = 25,
-
 
     // Return values based on STATUS field
     /** @brief l2 response frame contains CRC error */

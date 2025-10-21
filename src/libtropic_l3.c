@@ -1068,7 +1068,6 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max
                                    - sizeof(p_l3_res->origin) - sizeof(p_l3_res->padding);
 
     if (p_l3_res->curve == (uint8_t)TR01_CURVE_ED25519) {
-
         // Check whether RES_SIZE was set correctly.
         if (pubkey_size_in_result != TR01_CURVE_ED25519_PUBKEY_LEN) {
             lt_l3_invalidate_host_session_data(&h->l3);
@@ -1083,7 +1082,6 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max
         memcpy(key, p_l3_res->pub_key, TR01_CURVE_ED25519_PUBKEY_LEN);
     }
     else if (p_l3_res->curve == (uint8_t)TR01_CURVE_P256) {
-
         // Check whether RES_SIZE was set correctly.
         if (pubkey_size_in_result != TR01_CURVE_P256_PUBKEY_LEN) {
             lt_l3_invalidate_host_session_data(&h->l3);
@@ -1096,7 +1094,8 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max
         }
 
         memcpy(key, p_l3_res->pub_key, TR01_CURVE_P256_PUBKEY_LEN);
-    } else {
+    }
+    else {
         // Unknown curve type.
         return LT_FAIL;
     }
@@ -1456,7 +1455,7 @@ lt_ret_t lt_in__mac_and_destroy(lt_handle_t *h, uint8_t *data_in)
     if (ret != LT_OK) {
         return ret;
     }
-    
+
     // Pointer to access L3 buffer with result's data.
     struct lt_l3_mac_and_destroy_res_t *p_l3_res = (struct lt_l3_mac_and_destroy_res_t *)h->l3.buff;
 
