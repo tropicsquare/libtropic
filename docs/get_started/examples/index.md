@@ -21,10 +21,10 @@ It is recommended to try the examples in one of our [platform repositories](../i
 Both the platform repositories and the model contain detailed guides on example compilation.
 
 !!! warning
-    You may encounter issues with examples that establish a Secure Session. Although the default (production) key is present in the majority of distributed TROPIC01 chips, the first chip revisions (engineering samples) might contain a different key. To successfully establish a Secure Session with one of the engineering samples, pass `-DLT_SH0_KEYS="eng_sample"` to `cmake` during the build. In the case of the production chips, no additional actions are needed (the correct key is set by default).
+    You may encounter issues with examples that establish a Secure Session - refer to [Establishing Your First Secure Channel Session](../default_pairing_keys.md#establishing-your-first-secure-channel-session) section for more information.
 
-??? tip "Tip: Running an Example with Custom Pairing Key"
-    If you want to execute one of the examples (that uses a Secure Session) with your custom pairing key, define the arrays for private and public key as global and after `#include libtropic_examples.h`, do the following:
+??? tip "Advanced Tip: Running an Example With Your Own Pairing Key"
+    If you have already written your own public key to one of the available slots and want to execute one of the examples (that uses a Secure Session), define the arrays for your private and public key as global and after `#include libtropic_examples.h`, do the following:
     ```c
     #undef LT_EX_SH0_PRIV
     #define LT_EX_SH0_PRIV <var_name_with_your_private_pairing_key>

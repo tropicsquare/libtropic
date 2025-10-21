@@ -124,8 +124,21 @@ After CTest finishes, it informs about the results and saves all output to the `
 > [!NOTE]
 The model is automatically started for each test separately, so it behaves like a fresh TROPIC01 straight out of factory. All this and other handling is done by the script `scripts/model_test_runner.py`, which is called by CTest.
 
-!!! warning
-    Based on the TROPIC01 model configuration, you may encounter issues with tests or examples that establish a Secure Session. If you configured the model's pairing key slot 0 with engineering sample keys, you have to pass `-DLT_SH0_KEYS="eng_sample"` to `cmake` during the build. In the case of configuring the model's pairing key slot 0 with the production keys, no additional actions are needed (the correct key is set by default).
+??? warning "Problems with Secure Channel Session Due to Custom Model Configuration"
+    Based on the TROPIC01 model configuration, you may encounter issues with tests or examples that establish a Secure Session. Examples and tests use production keys by default - see [Default Pairing Keys in Libtropic](../../get_started/default_pairing_keys.md#default-pairing-keys-in-libtropic) for more information.
+    
+    If you configured the model's pairing key slot 0 with engineering sample keys, you have to pass `-DLT_SH0_KEYS="eng_sample"` to `cmake` during the build.
+    
+    If you configured the model's pairing key slot 0 with some other keys, define the arrays for your private and public key as global and after `#include libtropic_examples.h` (or `#include libtropic_functional_tests.h`), do the following:
+    ```c
+    // Substitute LT_EX_SH0_PRIV for LT_TEST_SH0_PRIV in the case of test source file
+    #undef LT_EX_SH0_PRIV
+    #define LT_EX_SH0_PRIV <var_name_with_your_private_pairing_key>
+
+    // Substitute LT_EX_SH0_PUB for LT_TEST_SH0_PUB in the case of test source file
+    #undef LT_EX_SH0_PUB
+    #define LT_EX_SH0_PUB <var_name_with_your_public_pairing_key>
+    ```
 
 ### Running the Tests with Coverage
 We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
+- Documentation: section **Default Pairing Keys for a Secure Channel Handshake** in Get Started
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.

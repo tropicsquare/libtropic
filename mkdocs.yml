@@ -64,6 +64,7 @@ nav:
       - Reversible Examples: get_started/examples/reversible_examples.md
       - Irreversible Examples: get_started/examples/irreversible_examples.md
     - TROPIC01 Firmware: get_started/tropic01_fw.md
+    - Default Pairing Keys for a Secure Channel Handshake: get_started/default_pairing_keys.md
     - Logging: get_started/logging.md
     - Debugging: get_started/debugging.md
   - API Reference:
@@ -99,7 +100,8 @@ markdown_extensions:
       check_paths: true
   # Following extensions can be used for wider Markdown syntax support
   - admonition
-  - pymdownx.arithmatex    # For math rendering (optional)
+  - pymdownx.arithmatex:    # For math rendering (optional)
+      generic: true
   - pymdownx.betterem      # Better emphasis handling
   - pymdownx.caret         # Superscripts
   - pymdownx.critic        # Suggestions / strike-through
@@ -129,3 +131,7 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
