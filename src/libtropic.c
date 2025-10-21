@@ -46,6 +46,7 @@ lt_ret_t lt_init(lt_handle_t *h)
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
+
     h->l3.session_status = LT_SECURE_SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
@@ -53,7 +54,11 @@ lt_ret_t lt_init(lt_handle_t *h)
         return ret;
     }
 
-    return LT_OK;
+    if (h->l3.buff_len < LT_SIZE_OF_L3_BUFF) {
+        return LT_L3_BUFFER_TOO_SMALL;
+    } else {
+        return LT_OK;
+    }
 }
 
 lt_ret_t lt_deinit(lt_handle_t *h)
