@@ -26,7 +26,7 @@ extern "C" {
 /** @brief Get max value.
  *  @details This macro uses "statement expressions", which prevent double evaluation in contrast
  *           to standard macros.
- *  @note This uses GCC/Clang compatible-extension.
+ *  @note This uses GCC/Clang compatible extension.
  */
 #define lt_max(a, b)               \
     __extension__({                \
