@@ -192,8 +192,8 @@ if(LT_BUILD_TESTS)
 
         # Define the test command
         set(TEST_COMMAND
-            "python3" "-m" "model_test_runner"
-            "-t" "${CMAKE_CURRENT_BINARY_DIR}/${exe_name}"
+            "python3" "-m" "model_runner"
+            "-e" "${CMAKE_CURRENT_BINARY_DIR}/${exe_name}"
             "-c" "${MODEL_CFG_PATH}"
             ${VALGRIND_ARG}
             "-o" "${RUN_LOGS_DIR}"

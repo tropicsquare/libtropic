@@ -21,7 +21,7 @@ def wait_for_server_start(host="127.0.0.1", port=28992, retry_interval=0.2, max_
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog = "test_runner.py",
+        prog = "model_runner.py",
         description = "Runs the given executable against TROPIC01 model and saves all output to the specified directory."
     )
 
