@@ -763,7 +763,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PING_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PING_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1036,7 +1036,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_READ_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1091,7 +1091,7 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t 
     }
 
     ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
-                                   lt_min(h->l3.buff_len, TR01_L3_RANDOM_VALUE_GET_PACKET_SIZE_MAX));
+                                   lt_min(h->l3.buff_len, TR01_L3_RANDOM_VALUE_GET_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1172,7 +1172,7 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_READ_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
