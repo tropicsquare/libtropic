@@ -790,7 +790,8 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_WRITE_RES_PACKET_SIZE));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -817,7 +818,8 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_READ_RES_PACKET_SIZE));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1008,7 +1010,8 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_WRITE_RES_PACKET_SIZE));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1064,7 +1067,8 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_ERASE_RES_PACKET_SIZE));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1119,7 +1123,8 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_GENERATE_RES_PACKET_SIZE));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_GENERATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
