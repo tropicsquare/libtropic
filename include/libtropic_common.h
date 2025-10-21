@@ -71,24 +71,24 @@ extern "C" {
 
 /** @brief Size of CMD_ID field. */
 #define TR01_L3_CMD_ID_SIZE 1u
-/** @brief Maximal size of CMD_DATA field. */
-#define TR01_L3_CMD_DATA_SIZE_MAX 4111u
 
 /** @brief Size of the RESULT field in L3 Result. */
 #define TR01_L3_RESULT_SIZE 1u
-/** @brief Maximal size of RES_DATA field. */
-#define TR01_L3_RES_DATA_SIZE_MAX 4096u
 
-/** @brief Max size of L3 Command ciphertext. */
-#define TR01_L3_CMD_CIPHERTEXT_MAX_SIZE (TR01_L3_CMD_ID_SIZE + TR01_L3_CMD_DATA_SIZE_MAX)
-/** @brief Max size of L3 Result ciphertext. */
-#define TR01_L3_RES_CIPHERTEXT_MAX_SIZE (TR01_L3_RESULT_SIZE + TR01_L3_RES_DATA_SIZE_MAX)
-/** @brief Max size of ciphertext of both L3 Command and L3 Response.
+/** @brief Max size of L3 Command ciphertext.
+ * @details Currently the max size has the EDDSA_Sign Command.
+*/
+#define TR01_L3_CMD_CIPHERTEXT_MAX_SIZE TR01_L3_EDDSA_SIGN_CMD_SIZE_MAX
+/** @brief Max size of L3 Result ciphertext.
+ * @details Currently the max size has the Ping Result.
+*/
+#define TR01_L3_RES_CIPHERTEXT_MAX_SIZE TR01_L3_PING_RES_SIZE_MAX
+/** @brief Max size of ciphertext for both L3 Commands and L3 Responses.
  */
 #define TR01_L3_CIPHERTEXT_MAX_SIZE LT_COMPTIME_MAX(TR01_L3_CMD_CIPHERTEXT_MAX_SIZE, TR01_L3_RES_CIPHERTEXT_MAX_SIZE)
 
 /**
- * @brief Max size of one unit of transport on L3.
+ * @brief Max possible size of one unit of transport on L3 (for both Commands and Responses).
  */
 #define TR01_L3_PACKET_MAX_SIZE (TR01_L3_SIZE_SIZE + TR01_L3_CIPHERTEXT_MAX_SIZE + TR01_L3_TAG_SIZE)
 

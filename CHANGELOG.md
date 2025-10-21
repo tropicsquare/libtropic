@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced `TR01_L3_RES_SIZE_SIZE` and `TR01_L3_CMD_SIZE_SIZE` with `TR01_L3_SIZE_SIZE`.
 - Renamed `TR01_L3_CYPHERTEXT_MAX_SIZE` to `TR01_L3_CIPHERTEXT_MAX_SIZE`.
 - Renamed `LT_L2_DATA_LEN_ERROR` to `LT_L2_RSP_LEN_ERROR`.
-- New generic size macros: `TR01_L3_RESULT_SIZE`, `TR01_L3_RES_DATA_SIZE_MAX`, `TR01_L3_CMD_CIPHERTEXT_MAX_SIZE`, `TR01_L3_RES_CIPHERTEXT_MAX_SIZE`.
+- New generic size macros: `TR01_L3_RESULT_SIZE`, `TR01_L3_CMD_CIPHERTEXT_MAX_SIZE`, `TR01_L3_RES_CIPHERTEXT_MAX_SIZE`.
 - Size macros for L3 results.
 - New return values (`lt_ret_t`): `LT_L3_RES_SIZE_ERROR`, `LT_L3_BUFFER_TOO_SMALL`.
 - L3 buffer size check  to `lt_init` and internal functions.
