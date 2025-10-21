@@ -14,6 +14,8 @@
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  */
 
+#include <stdint.h>
+
 #include "libtropic_common.h"
 
 #ifdef __cplusplus
