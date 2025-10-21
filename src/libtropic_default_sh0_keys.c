@@ -1,6 +1,6 @@
 /**
- * @file libtropic_sh0_keys.c
- * @brief Definitions of provisioned SH0 keys
+ * @file libtropic_default_sh0_keys.c
+ * @brief Definitions of default SH0 keys
  * @author Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
