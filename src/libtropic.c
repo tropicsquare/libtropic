@@ -1036,7 +1036,8 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_READ_RES_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1172,7 +1173,8 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_READ_RES_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }

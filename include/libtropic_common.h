@@ -77,11 +77,11 @@ extern "C" {
 
 /** @brief Max size of L3 Command ciphertext.
  * @details Currently the max size has the EDDSA_Sign Command.
-*/
+ */
 #define TR01_L3_CMD_CIPHERTEXT_MAX_SIZE TR01_L3_EDDSA_SIGN_CMD_SIZE_MAX
 /** @brief Max size of L3 Result ciphertext.
  * @details Currently the max size has the Ping Result.
-*/
+ */
 #define TR01_L3_RES_CIPHERTEXT_MAX_SIZE TR01_L3_PING_RES_SIZE_MAX
 /** @brief Max size of ciphertext for both L3 Commands and L3 Responses.
  */
