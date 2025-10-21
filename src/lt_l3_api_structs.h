@@ -29,9 +29,9 @@ extern "C" {
 /** Maximal length of field data_in */
 #define TR01_L3_PING_CMD_DATA_IN_LEN_MAX 4096u
 
-/** @brief Result min length */
+/** @brief Result min length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_PING_RES_SIZE_MIN 1u
-/** @brief Result max length */
+/** @brief Result max length (fields: RESULT + RES_DATA) */
 #define TR01_L3_PING_RES_SIZE_MAX 4097u
 /** @brief Max packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_PING_PACKET_SIZE_MAX TR01_L3_SIZE_SIZE + TR01_L3_PING_RES_SIZE_MAX + TR01_L3_TAG_SIZE
@@ -99,7 +99,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_PAIRING_KEY_WRITE_CMD_SIZE 36u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_PAIRING_KEY_WRITE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_PAIRING_KEY_WRITE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_PAIRING_KEY_WRITE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -173,7 +173,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_PAIRING_KEY_READ_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_PAIRING_KEY_READ_RES_SIZE 36u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_PAIRING_KEY_READ_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_PAIRING_KEY_READ_RES_SIZE + TR01_L3_TAG_SIZE
@@ -247,7 +247,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_PAIRING_KEY_INVALIDATE_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_PAIRING_KEY_INVALIDATE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_PAIRING_KEY_INVALIDATE_PACKET_SIZE \
@@ -310,7 +310,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_R_CONFIG_WRITE_CMD_SIZE 8u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_R_CONFIG_WRITE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_R_CONFIG_WRITE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_R_CONFIG_WRITE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -384,7 +384,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_R_CONFIG_READ_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_R_CONFIG_READ_RES_SIZE 8u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_R_CONFIG_READ_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_R_CONFIG_READ_RES_SIZE + TR01_L3_TAG_SIZE
@@ -458,7 +458,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_R_CONFIG_ERASE_CMD_SIZE 1u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_R_CONFIG_ERASE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_R_CONFIG_ERASE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_R_CONFIG_ERASE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -514,7 +514,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_I_CONFIG_WRITE_CMD_SIZE 4u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_I_CONFIG_WRITE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_I_CONFIG_WRITE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_I_CONFIG_WRITE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -582,7 +582,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_I_CONFIG_READ_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_I_CONFIG_READ_RES_SIZE 8u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_I_CONFIG_READ_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_I_CONFIG_READ_RES_SIZE + TR01_L3_TAG_SIZE
@@ -660,7 +660,7 @@ LT_STATIC_ASSERT(
 /** Maximal length of field data */
 #define TR01_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MAX 444u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_R_MEM_DATA_WRITE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_R_MEM_DATA_WRITE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_R_MEM_DATA_WRITE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -734,9 +734,9 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_R_MEM_DATA_READ_CMD_SIZE 3u
 
-/** @brief Result min length */
+/** @brief Result min length (fields: RESULT + RES_DATA) */
 #define TR01_L3_R_MEM_DATA_READ_RES_SIZE_MIN 4u
-/** @brief Result max length */
+/** @brief Result max length (fields: RESULT + RES_DATA) */
 #define TR01_L3_R_MEM_DATA_READ_RES_SIZE_MAX 448u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_R_MEM_DATA_READ_PACKET_SIZE_MAX \
@@ -811,7 +811,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_R_MEM_DATA_ERASE_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_R_MEM_DATA_ERASE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_R_MEM_DATA_ERASE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_R_MEM_DATA_ERASE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -873,9 +873,9 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_RANDOM_VALUE_GET_CMD_SIZE 2u
 
-/** @brief Result min length */
+/** @brief Result min length (fields: RESULT + RES_DATA) */
 #define TR01_L3_RANDOM_VALUE_GET_RES_SIZE_MIN 4u
-/** @brief Result max length */
+/** @brief Result max length (fields: RESULT + RES_DATA) */
 #define TR01_L3_RANDOM_VALUE_GET_RES_SIZE_MAX 259u
 /** @brief Max packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_RANDOM_VALUE_GET_PACKET_SIZE_MAX \
@@ -954,7 +954,7 @@ LT_STATIC_ASSERT(
 /** @brief Ed25519 Curve - 32-byte long public key. */
 #define TR01_L3_ECC_KEY_GENERATE_CMD_CURVE_ED25519 0x02
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_ECC_KEY_GENERATE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_ECC_KEY_GENERATE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_ECC_KEY_GENERATE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1026,7 +1026,7 @@ LT_STATIC_ASSERT(
 /** @brief Ed25519 Curve - 32-byte long public key. */
 #define TR01_L3_ECC_KEY_STORE_CMD_CURVE_ED25519 0x02
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_ECC_KEY_STORE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_ECC_KEY_STORE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_ECC_KEY_STORE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1114,9 +1114,9 @@ LT_STATIC_ASSERT(
 /** @brief The key is from key storage in the device. */
 #define TR01_L3_ECC_KEY_READ_CMD_ORIGIN_ECC_KEY_STORE 0x02
 
-/** @brief Result min length */
+/** @brief Result min length (fields: RESULT + RES_DATA) */
 #define TR01_L3_ECC_KEY_READ_RES_SIZE_MIN 48u
-/** @brief Result max length */
+/** @brief Result max length (fields: RESULT + RES_DATA) */
 #define TR01_L3_ECC_KEY_READ_RES_SIZE_MAX 80u
 /** @brief Max packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_ECC_KEY_READ_PACKET_SIZE_MAX TR01_L3_SIZE_SIZE + TR01_L3_ECC_KEY_READ_RES_SIZE_MAX + TR01_L3_TAG_SIZE
@@ -1202,7 +1202,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_ECC_KEY_ERASE_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_ECC_KEY_ERASE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_ECC_KEY_ERASE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_ECC_KEY_ERASE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1264,7 +1264,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_ECDSA_SIGN_CMD_SIZE 48u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_ECDSA_SIGN_RES_SIZE 80u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_ECDSA_SIGN_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_ECDSA_SIGN_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1358,7 +1358,7 @@ LT_STATIC_ASSERT(
 /** @brief Maximal length of field msg */
 #define TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX 4096u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_EDDSA_SIGN_RES_SIZE 80u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_EDDSA_SIGN_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_EDDSA_SIGN_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1450,7 +1450,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_MCOUNTER_INIT_CMD_SIZE 8u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_MCOUNTER_INIT_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_MCOUNTER_INIT_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_MCOUNTER_INIT_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1524,7 +1524,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_MCOUNTER_UPDATE_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_MCOUNTER_UPDATE_RES_SIZE 1u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_MCOUNTER_UPDATE_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_MCOUNTER_UPDATE_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1586,7 +1586,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_MCOUNTER_GET_CMD_SIZE 3u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_MCOUNTER_GET_RES_SIZE 8u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_MCOUNTER_GET_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_MCOUNTER_GET_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1660,7 +1660,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_MAC_AND_DESTROY_CMD_SIZE 36u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_MAC_AND_DESTROY_RES_SIZE 36u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_MAC_AND_DESTROY_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_MAC_AND_DESTROY_RES_SIZE + TR01_L3_TAG_SIZE
@@ -1747,7 +1747,7 @@ LT_STATIC_ASSERT(
 /** @brief Command length */
 #define TR01_L3_SERIAL_CODE_GET_CMD_SIZE 1u
 
-/** @brief Result length */
+/** @brief Result length (fields: RESULT + RES_DATA) */
 #define TR01_L3_SERIAL_CODE_GET_RES_SIZE 36u
 /** @brief Packet length (incl. RES_SIZE and TAG) */
 #define TR01_L3_SERIAL_CODE_GET_PACKET_SIZE TR01_L3_SIZE_SIZE + TR01_L3_SERIAL_CODE_GET_RES_SIZE + TR01_L3_TAG_SIZE
