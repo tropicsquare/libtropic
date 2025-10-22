@@ -3,7 +3,6 @@
  * @name Show chip ID and firmware versions
  * @brief This example shows how to read TROPIC01's chip ID and firmware versions
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
- *
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.

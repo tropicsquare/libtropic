@@ -2,7 +2,6 @@
  * @file lt_ex_fw_update.c
  * @name Firmware update
  * @brief This code performs firmware update of TROPIC01 chip, works on both ABAB and ACAB silicon revisions.
- *
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
