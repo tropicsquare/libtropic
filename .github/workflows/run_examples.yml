@@ -50,7 +50,7 @@ jobs:
 
       - name: Create configuration for the model
         run: |
-            LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^DEFAULT_LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
+            LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
             echo "LAB_BATCH_PKG_DIR=$LAB_BATCH_PKG_DIR" >> $GITHUB_ENV
             python3 ../create_model_cfg.py --pkg-dir "$LAB_BATCH_PKG_DIR" --model-cfg ./model_cfg.yml
 
@@ -113,7 +113,7 @@ jobs:
 
       - name: Create configuration for the model
         run: |
-            LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^DEFAULT_LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
+            LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
             echo "LAB_BATCH_PKG_DIR=$LAB_BATCH_PKG_DIR" >> $GITHUB_ENV
             python3 ../create_model_cfg.py --pkg-dir "$LAB_BATCH_PKG_DIR" --model-cfg ./model_cfg.yml
 
