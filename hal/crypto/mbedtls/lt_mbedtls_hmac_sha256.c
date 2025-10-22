@@ -13,6 +13,7 @@
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
 #include "lt_hmac_sha256.h"
+#include "libtropic_logging.h"
 
 // PSA Crypto initialization state
 static uint8_t psa_crypto_initialized = 0;
@@ -23,6 +24,7 @@ static lt_ret_t ensure_psa_crypto_init(void)
     if (!psa_crypto_initialized) {
         psa_status_t status = psa_crypto_init();
         if (status != PSA_SUCCESS) {
+            LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
         psa_crypto_initialized = 1;
@@ -40,6 +42,7 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
 
     // Ensure PSA Crypto is initialized
     if (ensure_psa_crypto_init() != LT_OK) {
+        LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }
 
@@ -53,6 +56,7 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't import HMAC key, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -65,6 +69,7 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("HMAC-SHA256 computation failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 

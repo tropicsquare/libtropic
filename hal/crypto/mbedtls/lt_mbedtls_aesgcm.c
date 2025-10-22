@@ -16,6 +16,7 @@
 #include "libtropic_common.h"
 #include "lt_aesgcm.h"
 #include "lt_crypto_macros.h"
+#include "libtropic_logging.h"
 
 // PSA Crypto initialization state
 static uint8_t psa_crypto_initialized = 0;
@@ -26,6 +27,7 @@ static lt_ret_t ensure_psa_crypto_init(void)
     if (!psa_crypto_initialized) {
         psa_status_t status = psa_crypto_init();
         if (status != PSA_SUCCESS) {
+            LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
         psa_crypto_initialized = 1;
@@ -40,6 +42,7 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
 
     // Ensure PSA Crypto is initialized
     if (ensure_psa_crypto_init() != LT_OK) {
+        LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }
 
@@ -57,6 +60,7 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't import AES-GCM key, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -72,6 +76,7 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     size_t output_length;
 
     if (!ctx->key_set) {
+        LT_LOG_ERROR("AES-GCM context key not set!");
         return LT_CRYPTO_ERR;
     }
 
@@ -83,6 +88,7 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
                               msg, msg_len + tag_len, &output_length);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("AES-GCM encryption failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -91,6 +97,7 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     if (output_length >= tag_len) {
         memcpy(tag, msg + msg_len, tag_len);
     } else {
+        LT_LOG_ERROR("AES-GCM encryption output length insufficient");
         return LT_CRYPTO_ERR;
     }
 
@@ -107,12 +114,14 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     size_t ciphertext_with_tag_len = msg_len + tag_len;
 
     if (!ctx->key_set) {
+        LT_LOG_ERROR("AES-GCM context key not set!");
         return LT_CRYPTO_ERR;
     }
 
     // PSA expects ciphertext and tag concatenated
     ciphertext_with_tag = (uint8_t *)malloc(ciphertext_with_tag_len);
     if (ciphertext_with_tag == NULL) {
+        LT_LOG_ERROR("Memory allocation failed for AES-GCM decrypt buffer");
         return LT_CRYPTO_ERR;
     }
 
@@ -129,6 +138,7 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     free(ciphertext_with_tag);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("AES-GCM decryption failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 

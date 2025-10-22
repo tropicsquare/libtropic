@@ -13,6 +13,7 @@
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
 #include "lt_ed25519.h"
+#include "libtropic_logging.h"
 
 // PSA Crypto initialization state
 static uint8_t psa_crypto_initialized = 0;
@@ -23,6 +24,7 @@ static lt_ret_t ensure_psa_crypto_init(void)
     if (!psa_crypto_initialized) {
         psa_status_t status = psa_crypto_init();
         if (status != PSA_SUCCESS) {
+            LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
         psa_crypto_initialized = 1;
@@ -38,6 +40,7 @@ lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, cons
 
     // Ensure PSA Crypto is initialized
     if (ensure_psa_crypto_init() != LT_OK) {
+        LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }
 
@@ -52,6 +55,7 @@ lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, cons
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't import Ed25519 public key, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -62,6 +66,7 @@ lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, cons
     psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Ed25519 signature verification failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
