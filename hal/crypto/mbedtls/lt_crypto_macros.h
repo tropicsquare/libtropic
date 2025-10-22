@@ -1,7 +1,10 @@
 #ifndef LT_CRYPTO_MACROS_H
 #define LT_CRYPTO_MACROS_H
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wredundant-decls"
 #include "psa/crypto.h"
+#pragma GCC diagnostic pop
 
 /** @brief Type of AES-GCM context for MbedTLS PSA Crypto. 
  * 

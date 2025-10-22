@@ -9,7 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wredundant-decls"
 #include "psa/crypto.h"
+#pragma GCC diagnostic pop
 #include "libtropic_common.h"
 #include "lt_aesgcm.h"
 #include "lt_crypto_macros.h"

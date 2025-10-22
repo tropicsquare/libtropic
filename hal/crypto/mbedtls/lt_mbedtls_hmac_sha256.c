@@ -7,7 +7,10 @@
 
 #include <stdint.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wredundant-decls"
 #include "psa/crypto.h"
+#pragma GCC diagnostic pop
 #include "libtropic_common.h"
 #include "lt_hmac_sha256.h"
 
