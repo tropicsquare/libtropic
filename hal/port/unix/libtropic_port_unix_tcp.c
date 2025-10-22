@@ -24,6 +24,10 @@
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
 
+#if LT_USE_INT_PIN
+#error "Interrupt PIN not supported in the TCP port!"
+#endif
+
 static lt_ret_t connect_to_server(lt_dev_unix_tcp_t *dev)
 {
     struct sockaddr_in server;
