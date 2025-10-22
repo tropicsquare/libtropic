@@ -14,10 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All default pairing keys for slot 0 are now available from `libtropic_common.h`. As a result, a dependency on Python `cryptography` package was removed.
   - Keys for other slots (that are used by examples and tests) are defined only in examples/tests that need them.
   - `provisioning_data/` moved to `tropic01_model/`, as they are not needed anymore when not working with the model.
+- `tropic01_model/`: don't compile unsupported examples.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
 - Documentation: section **Default Pairing Keys for a Secure Channel Handshake** in Get Started
+- GitHub action to run examples against TROPIC01 model (only the supported ones).
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
