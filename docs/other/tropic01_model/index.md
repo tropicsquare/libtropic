@@ -62,7 +62,7 @@ python3 ../create_model_cfg.py --pkg-dir ../provisioning_data/2025-06-27T07-51-2
 ```
 As a result, `model_cfg.yml` is created.
 
-1. In a separate terminal, start the model server (which was previously installed in a Python virtual environment) and configure it:
+4. In a separate terminal, start the model server (which was previously installed in a Python virtual environment) and configure it:
 ```shell
 model_server tcp -c model_cfg.yml
 ```
