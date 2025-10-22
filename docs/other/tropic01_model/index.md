@@ -43,7 +43,7 @@ where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab 
 ```shell
 cd tropic01_model/
 ```
-1. Compile the examples:
+2. Compile the examples:
 ```shell
 mkdir build
 cd build
