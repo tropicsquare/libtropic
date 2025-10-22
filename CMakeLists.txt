@@ -74,8 +74,7 @@ endif()
 
 # Crypto provider
 set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
-# set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls")  # uncomment this after mbedtls is ready
-set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto")              # delete this after mbedtls is ready
+set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls")
 
 # Logging options
 set(LT_LOG_LVL "" CACHE STRING "Set log level")
@@ -461,9 +460,12 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PUBLIC trezor_crypto)
 
-# elseif(LT_CRYPTO STREQUAL "mbedtls")
+elseif(LT_CRYPTO STREQUAL "mbedtls")
 
-#     message(STATUS "Crypto provider set to mbedtls")
+    message(STATUS "Crypto provider set to mbedtls")
+
+    add_subdirectory(vendor/mbedtls/ "mbedtls")
+    target_link_libraries(tropic PUBLIC mbedtls)  
 
 else()
 
