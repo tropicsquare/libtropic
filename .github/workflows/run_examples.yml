@@ -11,7 +11,7 @@ on:
 
 jobs:
   examples_asan:
-    name: Run examples (supported by the model) with AddressSanitizer
+    name: Run examples with AddressSanitizer
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -50,6 +50,7 @@ jobs:
 
       - name: Create configuration for the model
         run: |
+            cd tropic01_model/build/
             LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
             echo "LAB_BATCH_PKG_DIR=$LAB_BATCH_PKG_DIR" >> $GITHUB_ENV
             python3 ../create_model_cfg.py --pkg-dir "$LAB_BATCH_PKG_DIR" --model-cfg ./model_cfg.yml
@@ -74,7 +75,7 @@ jobs:
           path: tropic01_model/build/run_logs/
 
   examples_valgrind:
-    name: Run examples (supported by the model) with Valgrind
+    name: Run examples with Valgrind
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -113,6 +114,7 @@ jobs:
 
       - name: Create configuration for the model
         run: |
+            cd tropic01_model/build/
             LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
             echo "LAB_BATCH_PKG_DIR=$LAB_BATCH_PKG_DIR" >> $GITHUB_ENV
             python3 ../create_model_cfg.py --pkg-dir "$LAB_BATCH_PKG_DIR" --model-cfg ./model_cfg.yml
