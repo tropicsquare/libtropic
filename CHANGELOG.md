@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored `trezor_crypto` HAL.
 - Reworked handling of pairing keys:
   - All default pairing keys for slot 0 are now available from `libtropic_common.h`. As a result, a dependency on Python `cryptography` package was removed.
-  - keys for other slots (that are used by examples and tests) are defined only in examples/tests that need it,
+  - Keys for other slots (that are used by examples and tests) are defined only in examples/tests that need them.
   - `provisioning_data/` moved to `tropic01_model/`, as it is not needed anymore when not working with the model.
 
 ### Added
