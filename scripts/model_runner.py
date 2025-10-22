@@ -16,18 +16,18 @@ def wait_for_server_start(host="127.0.0.1", port=28992, retry_interval=0.2, max_
                 return True
             except (ConnectionRefusedError, socket.timeout):
                 time.sleep(retry_interval)
-                print(f"Waiting on server, attempt #{i}")
+                print(f"Waiting on server, attempt #{i+1}")
     return False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog = "test_runner.py",
-        description = "Runs the specified test against TROPIC01 model and saves all output to specified directory."
+        prog="model_runner.py",
+        description="Runs the given executable against TROPIC01 model and saves all output to the specified directory."
     )
 
     parser.add_argument(
-        "-t", "--test",
-        help="Path to the test executable.",
+        "-e", "--exe",
+        help="Path to the executable to run against the model.",
         type=pathlib.Path,
         required=True
     )
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--use-valgrind",
-        help="Runs the test with Valgrind.",
+        help="Runs the executable with Valgrind.",
         action="store_true"
     )
 
@@ -54,12 +54,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Save args
-    test_path: pathlib.Path = args.test
-    model_cfg_path: pathlib.Path = args.model_cfg
+    # Resolve all paths relative to current working directory
+    exe_path: pathlib.Path = args.exe.resolve()
+    model_cfg_path: pathlib.Path = args.model_cfg.resolve()
+    output_path: pathlib.Path = args.output_dir.resolve()
     use_valgrind: bool = args.use_valgrind
-    output_path: pathlib.Path = args.output_dir
-    test_name = test_path.stem
+    exe_name = exe_path.stem
 
     # Create destination directory if it doesn't exist yet
     output_path.mkdir(parents=True, exist_ok=True)
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     model_log_cfg = yaml.safe_load(dump_logging_cfg_res.stdout)
     # Change the default handler to a file
     model_log_cfg["handlers"]["default"]["class"] = "logging.FileHandler"
-    model_log_cfg["handlers"]["default"]["filename"] = str(output_path.joinpath(f"{test_name}_model_response").with_suffix(".log"))
+    model_log_cfg["handlers"]["default"]["filename"] = str(output_path / f"{exe_name}_model_response.log")
     model_log_cfg["handlers"]["default"]["mode"] = "w"
     model_log_cfg["handlers"]["default"]["encoding"] = "utf8"
     # Change logging level to DEBUG
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     # Disable colors to prevent weird symbols in the .log file
     model_log_cfg["formatters"]["default"]["use_colors"] = False
 
-    model_log_cfg_path = pathlib.Path("model_log_cfg_path.yml")
+    model_log_cfg_path = output_path / "model_log_cfg_path.yml"
     with model_log_cfg_path.open("w") as f:
         yaml.dump(model_log_cfg, f, default_flow_style=False)
     
@@ -92,36 +92,39 @@ if __name__ == "__main__":
     model_process = subprocess.Popen(
         [
             "model_server", "tcp",
-            "-c", f"{str(model_cfg_path)}",
-            "-l", f"{str(model_log_cfg_path)}"
+            "-c", str(model_cfg_path),
+            "-l", str(model_log_cfg_path)
         ],
         env=os.environ
     )
 
     # Wait for model server to start
-    if wait_for_server_start() == False:
+    if not wait_for_server_start():
         print("Server did not start.")
         sys.exit(1)
 
-    # Execute the test
+    # Run the executable
     ret = 0
-    with output_path.joinpath(test_name).with_suffix(".log").open("w") as f:
-        try: 
-            test_cmd = []
+    exe_log_path = output_path / f"{exe_name}.log"
+    with exe_log_path.open("w") as f:
+        try:
+            exe_cmd = []
             if use_valgrind:
-                valgrind_log_path = output_path.joinpath(f"{test_name}_valgrind_report").with_suffix(".log")
-                test_cmd += ["valgrind",
-                             "--leak-check=full",
-                             "--show-leak-kinds=all",
-                             "--track-origins=yes",
-                             "--verbose",
-                             "--error-exitcode=1",
-                             f"--log-file={str(valgrind_log_path)}",
-                             "--child-silent-after-fork=yes"]
-            test_cmd += [str(test_path)]
+                valgrind_log_path = output_path / f"{exe_name}_valgrind_report.log"
+                exe_cmd += [
+                    "valgrind",
+                    "--leak-check=full",
+                    "--show-leak-kinds=all",
+                    "--track-origins=yes",
+                    "--verbose",
+                    "--error-exitcode=1",
+                    f"--log-file={valgrind_log_path}",
+                    "--child-silent-after-fork=yes"
+                ]
+            exe_cmd += [str(exe_path)]
 
             subprocess.run(
-                args=test_cmd,
+                args=exe_cmd,
                 stdout=f, stderr=f,
                 env=os.environ,
                 check=True

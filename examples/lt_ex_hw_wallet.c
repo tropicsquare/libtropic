@@ -752,7 +752,7 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    uint8_t dummy_key[TR01_CURVE_PRIVKEY_LEN];
+    uint8_t dummy_key[TR01_CURVE_PRIVKEY_LEN] = {0};
     LT_LOG_INFO("Trying to store key into ECC slot %d (should fail)", (int)TR01_ECC_SLOT_0);
     ret = lt_ecc_key_store(h, TR01_ECC_SLOT_0, TR01_CURVE_ED25519, dummy_key);
     if (LT_L3_UNAUTHORIZED != ret) {

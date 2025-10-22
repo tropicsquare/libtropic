@@ -94,6 +94,12 @@ if (LT_BUILD_EXAMPLES)
     # So we can include preprocessed example registry (lt_ex_registry.c.inc).
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/libtropic)
 
+    # Remove examples that are not supported by the model
+    list(REMOVE_ITEM LIBTROPIC_EXAMPLE_LIST
+        lt_ex_show_chip_id_and_fwver
+        lt_ex_fw_update
+    )
+
     # Loop through examples defined in libtropic and prepare environment.
     foreach(example_name IN LISTS LIBTROPIC_EXAMPLE_LIST)
 
@@ -192,8 +198,8 @@ if(LT_BUILD_TESTS)
 
         # Define the test command
         set(TEST_COMMAND
-            "python3" "-m" "model_test_runner"
-            "-t" "${CMAKE_CURRENT_BINARY_DIR}/${exe_name}"
+            "python3" "-m" "model_runner"
+            "-e" "${CMAKE_CURRENT_BINARY_DIR}/${exe_name}"
             "-c" "${MODEL_CFG_PATH}"
             ${VALGRIND_ARG}
             "-o" "${RUN_LOGS_DIR}"
