@@ -108,7 +108,7 @@ jobs:
       - name: Compile libtropic with examples
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_examples=1 -DCMAKE_BUILD_TYPE=Debug
+            cmake ./ -B build -DLT_BUILD_EXAMPLES=1 -DCMAKE_BUILD_TYPE=Debug
             cd build/
             make
 
