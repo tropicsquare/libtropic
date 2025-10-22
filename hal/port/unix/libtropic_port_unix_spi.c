@@ -20,6 +20,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <linux/gpio.h>
+#include <poll.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -44,6 +45,9 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     LT_LOG_DEBUG("SPI device: %s", device->spi_dev);
     LT_LOG_DEBUG("GPIO device: %s", device->gpio_dev);
     LT_LOG_DEBUG("GPIO CS pin: %d", device->gpio_cs_num);
+#if LT_USE_INT_PIN
+    LT_LOG_DEBUG("GPIO interrupt pin: %d", device->gpio_int_num);
+#endif
 
     device->mode = SPI_MODE_0;
     device->fd = open(device->spi_dev, O_RDWR);
@@ -97,21 +101,40 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     LT_LOG_DEBUG("- info.label = \"%s\"", info.label);
     LT_LOG_DEBUG("- info.lines = \"%u\"", info.lines);
 
-    memset(&device->gpioreq, 0, sizeof(device->gpioreq));
-    device->gpioreq.offsets[0] = device->gpio_cs_num;
-    device->gpioreq.num_lines = 1;
-    device->gpioreq.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
-    device->gpioreq.config.num_attrs = 1;
-    device->gpioreq.config.attrs[0].attr.id = GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES;
-    device->gpioreq.config.attrs[0].mask = 1;
-    device->gpioreq.config.attrs[0].attr.values = 1;  // initial value = 1
-    if (ioctl(device->gpio_fd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq) < 0) {
-        LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL error!");
+    // Setup for CS pin (OUTPUT)
+    memset(&device->gpioreq_cs, 0, sizeof(device->gpioreq_cs));
+    device->gpioreq_cs.offsets[0] = device->gpio_cs_num;
+    device->gpioreq_cs.num_lines = 1;
+    device->gpioreq_cs.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
+    device->gpioreq_cs.config.num_attrs = 1;
+    device->gpioreq_cs.config.attrs[0].attr.id = GPIO_V2_LINE_ATTR_ID_OUTPUT_VALUES;
+    device->gpioreq_cs.config.attrs[0].mask = 1;
+    device->gpioreq_cs.config.attrs[0].attr.values = 1;  // initial value = 1
+    if (ioctl(device->gpio_fd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq_cs) < 0) {
+        LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL (CS pin) error!");
         LT_LOG_ERROR("Error string: %s", strerror(errno));
         close(device->fd);
         close(device->gpio_fd);
         return LT_FAIL;
     }
+
+#if LT_USE_INT_PIN
+    // Setup for INT pin (INPUT, RISING EDGE)
+    memset(&device->gpioreq_int, 0, sizeof(device->gpioreq_int));
+    device->gpioreq_int.offsets[0] = device->gpio_int_num;
+    device->gpioreq_int.num_lines = 1;
+    // Configure as input with rising edge detection
+    device->gpioreq_int.config.flags = GPIO_V2_LINE_FLAG_INPUT | GPIO_V2_LINE_FLAG_EDGE_RISING;
+
+    if (ioctl(device->gpio_fd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq_int) < 0) {
+        LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL (INT pin) error!");
+        LT_LOG_ERROR("Error string: %s", strerror(errno));
+        close(device->gpioreq_cs.fd);  // Clean up the CS pin FD
+        close(device->fd);
+        close(device->gpio_fd);
+        return LT_FAIL;
+    }
+#endif
 
     return LT_OK;
 }
@@ -120,14 +143,28 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
 
-    // We want to attempt to close both, even if one of them fails, hence storing the return val
-    // and checking later.
+    // We want to attempt to close all, even if one of them fails.
+    int cs_close_ret = close(device->gpioreq_cs.fd);
+#if LT_USE_INT_PIN
+    int int_close_ret = close(device->gpioreq_int.fd);
+#endif
     int gpio_close_ret = close(device->gpio_fd);
     int spi_close_ret = close(device->fd);
 
-    if (gpio_close_ret || spi_close_ret) {
+    if (cs_close_ret
+#if LT_USE_INT_PIN
+        || int_close_ret
+#endif
+        || gpio_close_ret || spi_close_ret) {
+        if (cs_close_ret) LT_LOG_ERROR("Failed to close CS pin fd: %s", strerror(errno));
+#if LT_USE_INT_PIN
+        if (int_close_ret) LT_LOG_ERROR("Failed to close INT pin fd: %s", strerror(errno));
+#endif
+        if (gpio_close_ret) LT_LOG_ERROR("Failed to close GPIO chip fd: %s", strerror(errno));
+        if (spi_close_ret) LT_LOG_ERROR("Failed to close SPI dev fd: %s", strerror(errno));
         return LT_FAIL;
     }
+
     return LT_OK;
 }
 
@@ -138,7 +175,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 
     values.mask = 1;
     values.bits = 0;
-    if (ioctl(device->gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
+    if (ioctl(device->gpioreq_cs.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
         LT_LOG_ERROR("GPIO_V2_LINE_SET_VALUES_IOCTL error!");
         LT_LOG_ERROR("Error string: %s", strerror(errno));
         return LT_FAIL;
@@ -153,7 +190,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
     values.mask = 1;
     values.bits = 1;
-    if (ioctl(device->gpioreq.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
+    if (ioctl(device->gpioreq_cs.fd, GPIO_V2_LINE_SET_VALUES_IOCTL, &values) < 0) {
         LT_LOG_ERROR("GPIO_V2_LINE_SET_VALUES_IOCTL error!");
         LT_LOG_ERROR("Error string: %s", strerror(errno));
         return LT_FAIL;
@@ -207,3 +244,58 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
     return LT_OK;
 }
+
+#if LT_USE_INT_PIN
+lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
+{
+    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    struct pollfd pfd;
+    int ret;
+
+    // Set up the poll structure
+    pfd.fd = device->gpioreq_int.fd;
+    pfd.events = POLLIN | POLLPRI;  // Wait for data or priority event (GPIO edge)
+    pfd.revents = 0;
+
+    LT_LOG_DEBUG("Polling on INT pin (fd: %d) for %u ms...\n", pfd.fd, ms);
+
+    // Wait for the event or timeout
+    ret = poll(&pfd, 1, (int)ms);
+
+    if (ret < 0) {
+        LT_LOG_ERROR("poll() failed: %s", strerror(errno));
+        return LT_FAIL;
+    }
+
+    if (ret == 0) {
+        LT_LOG_WARN("Timeout waiting for INT pin.");
+        return LT_L1_INT_TIMEOUT;
+    }
+
+    // Event occurred, check if it's the right type
+    if (pfd.revents & (POLLIN | POLLPRI)) {
+        // Event is ready. We MUST read it to consume it, otherwise poll()
+        // will return immediately on the next call.
+        struct gpio_v2_line_event event;
+        ret = read(pfd.fd, &event, sizeof(event));
+
+        if (ret < 0) {
+            LT_LOG_ERROR("read() on INT pin failed: %s", strerror(errno));
+            return LT_FAIL;
+        }
+
+        if (ret != sizeof(event)) {
+            LT_LOG_ERROR("read() on INT pin returned unexpected size: %d", ret);
+            return LT_FAIL;
+        }
+
+        // Since we only configured for RISING_EDGE, any event is the one we want.
+        // event.id == GPIO_V2_LINE_EVENT_RISING_EDGE
+        LT_LOG_DEBUG("Interrupt received!");
+        return LT_OK;
+    }
+
+    LT_LOG_ERROR("Poll returned positive but no expected revents.");
+    return LT_FAIL;
+}
+#endif
