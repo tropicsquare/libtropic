@@ -56,7 +56,7 @@ To enable debugging symbols (e.g. to use [GDB](https://www.gnu.org/software/gdb/
 >
 > To use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer) (ASan), add switches `-DCMAKE_BUILD_TYPE=Debug` and `-DLT_ASAN=1` when executing `cmake`.
 
-1. Create a YAML configuration for the model from one of the lab batch packages:
+3. Create a YAML configuration for the model from one of the lab batch packages:
 ```shell
 python3 ../create_model_cfg.py --pkg-dir ../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
 ```
