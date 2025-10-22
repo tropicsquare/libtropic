@@ -464,6 +464,8 @@ elseif(LT_CRYPTO STREQUAL "mbedtls")
 
     message(STATUS "Crypto provider set to mbedtls")
 
+    set(ENABLE_TESTING OFF)  # Disable mbedtls test building.
+    set(ENABLE_PROGRAMS OFF) # Disable mbedtls examples building.
     add_subdirectory(vendor/mbedtls/ "mbedtls")
     target_link_libraries(tropic PUBLIC mbedtls)  
 
