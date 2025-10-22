@@ -68,7 +68,7 @@ model_server tcp -c model_cfg.yml
 ```
 As a result, the model now listens on TCP port 127.0.0.1:28992.
 
-1. In the original terminal, execute one of the built examples:
+5. In the original terminal, execute one of the built examples:
 ```shell
 ./lt_ex_hello_world
 ```
