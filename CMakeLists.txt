@@ -493,7 +493,7 @@ if(LT_HELPERS)
 endif()
 
 if(LT_USE_INT_PIN)
-    target_compile_definitions(tropic PRIVATE LT_USE_INT_PIN)
+    target_compile_definitions(tropic PUBLIC LT_USE_INT_PIN)
 endif()
 
 if(LT_SEPARATE_L3_BUFF)

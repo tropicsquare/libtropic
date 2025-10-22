@@ -158,7 +158,7 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             else {
                 // We are in application. IF INT pin is enabled, wait for it to go low
 #if LT_USE_INT_PIN
-                ret = lt_l1_delay_on_int(h, LT_L1_TIMEOUT_MS_MAX);
+                ret = lt_l1_delay_on_int(s2, LT_L1_TIMEOUT_MS_MAX);
                 if (ret != LT_OK) {
                     return ret;
                 }
