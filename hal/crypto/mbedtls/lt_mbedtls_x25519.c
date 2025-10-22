@@ -6,110 +6,102 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 
-#include "mbedtls/ecdh.h"
-#include "mbedtls/ecp.h"
+#include "psa/crypto.h"
 #include "libtropic_common.h"
 #include "lt_x25519.h"
 
+/* PSA Crypto initialization state */
+static uint8_t psa_crypto_initialized = 0;
+
+/* Initialize PSA Crypto library if not already done */
+static lt_ret_t ensure_psa_crypto_init(void)
+{
+    if (!psa_crypto_initialized) {
+        psa_status_t status = psa_crypto_init();
+        if (status != PSA_SUCCESS) {
+            return LT_CRYPTO_ERR;
+        }
+        psa_crypto_initialized = 1;
+    }
+    return LT_OK;
+}
+
 lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secret)
 {
-    int ret;
-    mbedtls_ecp_group grp;
-    mbedtls_ecp_point Q;
-    mbedtls_mpi d, z;
+    psa_status_t status;
+    psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
+    psa_key_id_t key_id = 0;
+    size_t secret_length;
 
-    // Initialize structures
-    mbedtls_ecp_group_init(&grp);
-    mbedtls_ecp_point_init(&Q);
-    mbedtls_mpi_init(&d);
-    mbedtls_mpi_init(&z);
-
-    // Load Curve25519 parameters
-    ret = mbedtls_ecp_group_load(&grp, MBEDTLS_ECP_DP_CURVE25519);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Import private key (32 bytes)
-    ret = mbedtls_mpi_read_binary(&d, privkey, 32);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Import public key (32 bytes) as X coordinate (Curve25519 uses x-only coordinates)
-    ret = mbedtls_mpi_read_binary(&Q.X, pubkey, 32);
-    if (ret != 0) {
-        goto cleanup;
-    }
-    
-    // For Curve25519, we only use the X coordinate
-    ret = mbedtls_mpi_lset(&Q.Z, 1);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Perform scalar multiplication: z = d * Q
-    ret = mbedtls_ecdh_compute_shared(&grp, &z, &Q, &d, NULL, NULL);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Export the shared secret (X coordinate of the result)
-    ret = mbedtls_mpi_write_binary(&z, secret, 32);
-
-cleanup:
-    mbedtls_ecp_group_free(&grp);
-    mbedtls_ecp_point_free(&Q);
-    mbedtls_mpi_free(&d);
-    mbedtls_mpi_free(&z);
-
-    if (ret != 0) {
+    /* Ensure PSA Crypto is initialized */
+    if (ensure_psa_crypto_init() != LT_OK) {
         return LT_CRYPTO_ERR;
     }
+
+    /* Set up key attributes for X25519 private key */
+    psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_DERIVE);
+    psa_set_key_algorithm(&attributes, PSA_ALG_ECDH);
+    psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_MONTGOMERY));
+    psa_set_key_bits(&attributes, 255);
+
+    /* Import the private key (32 bytes) */
+    status = psa_import_key(&attributes, privkey, 32, &key_id);
+    psa_reset_key_attributes(&attributes);
+
+    if (status != PSA_SUCCESS) {
+        return LT_CRYPTO_ERR;
+    }
+
+    /* Perform X25519 key agreement to compute shared secret */
+    status = psa_raw_key_agreement(PSA_ALG_ECDH, key_id, pubkey, 32, secret, 32, &secret_length);
+
+    /* Clean up */
+    psa_destroy_key(key_id);
+
+    if (status != PSA_SUCCESS || secret_length != 32) {
+        return LT_CRYPTO_ERR;
+    }
+
     return LT_OK;
 }
 
 lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
 {
-    int ret;
-    mbedtls_ecp_group grp;
-    mbedtls_ecp_point R;
-    mbedtls_mpi d;
+    psa_status_t status;
+    psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
+    psa_key_id_t key_id = 0;
+    size_t pubkey_length;
 
-    // Initialize structures
-    mbedtls_ecp_group_init(&grp);
-    mbedtls_ecp_point_init(&R);
-    mbedtls_mpi_init(&d);
-
-    // Load Curve25519 parameters
-    ret = mbedtls_ecp_group_load(&grp, MBEDTLS_ECP_DP_CURVE25519);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Import private key (32 bytes)
-    ret = mbedtls_mpi_read_binary(&d, sk, 32);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Perform scalar multiplication with base point: R = d * G
-    ret = mbedtls_ecp_mul(&grp, &R, &d, &grp.G, NULL, NULL);
-    if (ret != 0) {
-        goto cleanup;
-    }
-
-    // Export the public key (X coordinate)
-    ret = mbedtls_mpi_write_binary(&R.X, pk, 32);
-
-cleanup:
-    mbedtls_ecp_group_free(&grp);
-    mbedtls_ecp_point_free(&R);
-    mbedtls_mpi_free(&d);
-
-    if (ret != 0) {
+    /* Ensure PSA Crypto is initialized */
+    if (ensure_psa_crypto_init() != LT_OK) {
         return LT_CRYPTO_ERR;
     }
+
+    /* Set up key attributes for X25519 private key */
+    psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_EXPORT);
+    psa_set_key_algorithm(&attributes, PSA_ALG_ECDH);
+    psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_MONTGOMERY));
+    psa_set_key_bits(&attributes, 255);
+
+    /* Import the private key (32 bytes) */
+    status = psa_import_key(&attributes, sk, 32, &key_id);
+    psa_reset_key_attributes(&attributes);
+
+    if (status != PSA_SUCCESS) {
+        return LT_CRYPTO_ERR;
+    }
+
+    /* Export the public key (scalar multiplication with base point) */
+    status = psa_export_public_key(key_id, pk, 32, &pubkey_length);
+
+    /* Clean up */
+    psa_destroy_key(key_id);
+
+    if (status != PSA_SUCCESS || pubkey_length != 32) {
+        return LT_CRYPTO_ERR;
+    }
+
     return LT_OK;
 }
