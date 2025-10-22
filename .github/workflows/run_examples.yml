@@ -105,10 +105,10 @@ jobs:
             sudo apt-get install cmake build-essential valgrind
             pip install ${{ env.WHEEL_FILE_NAME }}
 
-      - name: Compile libtropic with examples and Valgrind
+      - name: Compile libtropic with examples
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_examples=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
+            cmake ./ -B build -DLT_BUILD_examples=1 -DCMAKE_BUILD_TYPE=Debug
             cd build/
             make
 
@@ -127,7 +127,8 @@ jobs:
                 python3 ../../scripts/model_runner.py \
                   -e "$exe" \
                   -c model_cfg.yml \
-                  -o run_logs/
+                  -o run_logs/ \
+                  --use-valgrind
               fi
             done
       
