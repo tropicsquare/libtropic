@@ -34,7 +34,7 @@ typedef struct lt_dev_stm32_nucleo_f439zi {
     /** @brief @public GPIO bank of the pin used for chip select. Use STM32 macro (GPIOX). */
     GPIO_TypeDef *spi_cs_gpio_bank;
 
-#ifdef LT_USE_INT_PIN
+#if LT_USE_INT_PIN
     /** @brief @public GPIO pin used for interrupts. Use STM32 macro (GPIO_PIN_XX). */
     uint16_t int_gpio_pin;
     /** @brief @public GPIO bank of the pin used for interrupts. Use STM32 macro (GPIOX). */
