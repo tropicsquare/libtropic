@@ -11,7 +11,7 @@
 /**
  * @file lt_l2_api_structs.h
  * @brief Layer 2 structure declaration
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  */
 
 #include "libtropic_common.h"

@@ -1,7 +1,7 @@
 /**
  * @file lt_ex_hw_wallet.c
  * @brief Example usage of TROPIC01 chip in a generic *hardware wallet* project.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

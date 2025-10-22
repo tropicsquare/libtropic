@@ -5,7 +5,7 @@
 /**
  * @file lt_random.h
  * @brief Declarations of functions related to random number generator
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

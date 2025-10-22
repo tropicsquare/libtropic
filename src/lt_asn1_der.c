@@ -2,7 +2,7 @@
  * @file asn1_der.c
  * @brief ASN1 DER parser
  * @note Implements subset of ASN1 DER parsing needed to extract STPub from
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

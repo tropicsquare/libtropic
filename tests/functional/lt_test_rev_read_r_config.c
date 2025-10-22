@@ -1,7 +1,7 @@
 /**
  * @file lt_test_rev_read_r_config.c
  * @brief Reads contents of R-Config and prints it to the log.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

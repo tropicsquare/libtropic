@@ -1,7 +1,7 @@
 /**
  * @file lt_ex_hello_world.c
  * @brief Establishes Secure Session and executes Ping L3 command.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

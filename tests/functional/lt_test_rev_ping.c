@@ -1,7 +1,7 @@
 /**
  * @file lt_test_rev_ping.c
  * @brief Test Ping L3 command with random data of random length <= TR01_PING_LEN_MAX.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

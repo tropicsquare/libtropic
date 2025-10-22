@@ -1,7 +1,7 @@
 /**
  * @file lt_test_ire_pairing_key_slots.c
  * @brief Test Pairing_Key_Read, Pairing_Key_Write and Pairing_Key_Invalidate on all slots.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
