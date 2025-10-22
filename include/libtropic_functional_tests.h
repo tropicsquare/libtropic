@@ -76,20 +76,13 @@ void lt_assert_fail_handler(void);
         LT_LOG_INFO("TEST FINISHED!"); \
     }
 
-#ifndef LT_EXAMPLE_TEST_KEYS_DECLARED
-#define LT_EXAMPLE_TEST_KEYS_DECLARED
-extern uint8_t sh0priv[];
-extern uint8_t sh0pub[];
-
-extern uint8_t sh1priv[];
-extern uint8_t sh1pub[];
-
-extern uint8_t sh2priv[];
-extern uint8_t sh2pub[];
-
-extern uint8_t sh3priv[];
-extern uint8_t sh3pub[];
-#endif  // LT_EXAMPLE_TEST_KEYS_DECLARED
+#if LT_USE_SH0_ENG_SAMPLE
+#define LT_TEST_SH0_PRIV sh0priv_eng_sample
+#define LT_TEST_SH0_PUB sh0pub_eng_sample
+#elif LT_USE_SH0_PROD0
+#define LT_TEST_SH0_PRIV sh0priv_prod0
+#define LT_TEST_SH0_PUB sh0pub_prod0
+#endif
 
 /**
  * @brief Non-test function to dump bytes in 8 byte rows.

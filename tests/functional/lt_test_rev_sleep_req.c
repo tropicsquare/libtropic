@@ -25,7 +25,8 @@ void lt_test_rev_sleep_req(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                                  TR01_PAIRING_KEY_SLOT_INDEX_0));
 
     LT_LOG_INFO("Sending Sleep_Req...");
     LT_TEST_ASSERT(LT_OK, lt_sleep(h, TR01_L2_SLEEP_KIND_SLEEP));

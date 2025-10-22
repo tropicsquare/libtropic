@@ -29,14 +29,14 @@ Next, it is possible to initialize the model with some data, so it can behave li
 > [!IMPORTANT]
 In the case of running tests using CTest, no manual steps for creating the model configuration or initializing the model are necessary - CTest handles this by itself. In the case of running examples (or tests without CTest), the model has to be started manually by the user and some configuration has to be applied to the model, so atleast the pairing key slot 0 is written to be able to establish a secure session.
 
-Data, from which the `tropic01_model/create_model_cfg.py` script creates the YAML configuration file for the model, can be found in `provisioning_data/` directory - see [Provisioning Data](provisioning_data.md) section for more information about the directory structure.
+Data, from which the `tropic01_model/create_model_cfg.py` script creates the YAML configuration file for the model, can be found in `tropic01_model/provisioning_data/` directory - see [Provisioning Data](provisioning_data.md) section for more information about the directory structure.
 
 To create a model configuration that will initialize the model to the state which is almost identical to the provisioned chip, the `tropic01_model/create_model_cfg.py` script is run as:
 ```shell
 cd tropic01_model/
 python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
 ```
-where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside the `provisioning_data/`. As a result of running the script, a file `model_cfg.yml` is created, which can be passed directly to the model using the `-c` flag.
+where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside the `tropic01_model/provisioning_data/`. As a result of running the script, a file `model_cfg.yml` is created, which can be passed directly to the model using the `-c` flag.
 
 ## Running the Examples
 1. Switch to the `tropic01_model/` directory:
@@ -58,7 +58,7 @@ To enable debugging symbols (e.g. to use [GDB](https://www.gnu.org/software/gdb/
 
 3. Create a YAML configuration for the model from one of the lab batch packages:
 ```shell
-python3 ../create_model_cfg.py --pkg-dir ../../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
+python3 ../create_model_cfg.py --pkg-dir ../provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/
 ```
 As a result, `model_cfg.yml` is created.
 
@@ -124,8 +124,21 @@ After CTest finishes, it informs about the results and saves all output to the `
 > [!NOTE]
 The model is automatically started for each test separately, so it behaves like a fresh TROPIC01 straight out of factory. All this and other handling is done by the script `scripts/model_test_runner.py`, which is called by CTest.
 
-> [!IMPORTANT]
-> When `-DLT_BUILD_EXAMPLES=1` or `-DLT_BUILD_TESTS=1` are passed to CMake, there has to be a way to define the SH0 private key for the TROPIC01's pairing key slot 0, because both the examples and the tests depend on it. For this purpose, the CMake variable `LT_SH0_PRIV_PATH` is used, which should hold the path to the file with the SH0 private key in PEM or DER format. By default, the path is set to the currently used lab batch package, found in `../provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`. But it can be overriden by the user either from the command line when executing CMake (switch `-DLT_SH0_PRIV_PATH=<path>`), or from a child `CMakeLists.txt`.
+??? warning "Problems with Secure Channel Session Due to Custom Model Configuration"
+    Based on the TROPIC01 model configuration, you may encounter issues with tests or examples that establish a Secure Session. Examples and tests use production keys by default - see [Default Pairing Keys in Libtropic](../../get_started/default_pairing_keys.md#default-pairing-keys-in-libtropic) for more information.
+    
+    If you configured the model's pairing key slot 0 with engineering sample keys, you have to pass `-DLT_SH0_KEYS="eng_sample"` to `cmake` during the build.
+    
+    If you configured the model's pairing key slot 0 with some other keys, define the arrays for your private and public key as global and after `#include libtropic_examples.h` (or `#include libtropic_functional_tests.h`), do the following:
+    ```c
+    // Substitute LT_EX_SH0_PRIV for LT_TEST_SH0_PRIV in the case of test source file
+    #undef LT_EX_SH0_PRIV
+    #define LT_EX_SH0_PRIV <var_name_with_your_private_pairing_key>
+
+    // Substitute LT_EX_SH0_PUB for LT_TEST_SH0_PUB in the case of test source file
+    #undef LT_EX_SH0_PUB
+    #define LT_EX_SH0_PUB <var_name_with_your_public_pairing_key>
+    ```
 
 ### Running the Tests with Coverage
 We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
