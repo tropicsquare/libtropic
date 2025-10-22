@@ -14,6 +14,7 @@
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
 #include "lt_x25519.h"
+#include "libtropic_logging.h"
 
 // PSA Crypto initialization state
 static uint8_t psa_crypto_initialized = 0;
@@ -24,6 +25,7 @@ static lt_ret_t ensure_psa_crypto_init(void)
     if (!psa_crypto_initialized) {
         psa_status_t status = psa_crypto_init();
         if (status != PSA_SUCCESS) {
+            LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
         psa_crypto_initialized = 1;
@@ -40,6 +42,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
 
     // Ensure PSA Crypto is initialized
     if (ensure_psa_crypto_init() != LT_OK) {
+        LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }
 
@@ -54,6 +57,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't import X25519 private key, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -63,7 +67,13 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     // Clean up
     psa_destroy_key(key_id);
 
-    if (status != PSA_SUCCESS || secret_length != 32) {
+    if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("X25519 key agreement failed, status=%d (psa_status_t)", status);
+        return LT_CRYPTO_ERR;
+    }
+    
+    if (secret_length != 32) {
+        LT_LOG_ERROR("X25519 key agreement produced incorrect secret length");
         return LT_CRYPTO_ERR;
     }
 
@@ -79,6 +89,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
 
     // Ensure PSA Crypto is initialized
     if (ensure_psa_crypto_init() != LT_OK) {
+        LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }
 
@@ -93,6 +104,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't import X25519 private key, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -102,7 +114,13 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     // Clean up
     psa_destroy_key(key_id);
 
-    if (status != PSA_SUCCESS || pubkey_length != 32) {
+    if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("X25519 public key export failed, status=%d (psa_status_t)", status);
+        return LT_CRYPTO_ERR;
+    }
+    
+    if (pubkey_length != 32) {
+        LT_LOG_ERROR("X25519 public key export produced incorrect key length");
         return LT_CRYPTO_ERR;
     }
 
