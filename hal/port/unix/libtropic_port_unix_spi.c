@@ -257,7 +257,7 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     pfd.events = POLLIN | POLLPRI;  // Wait for data or priority event (GPIO edge)
     pfd.revents = 0;
 
-    LT_LOG_DEBUG("Polling on INT pin (fd: %d) for %u ms...\n", pfd.fd, ms);
+    LT_LOG_DEBUG("Polling on INT pin (fd: %d) for %u ms...", pfd.fd, ms);
 
     // Wait for the event or timeout
     ret = poll(&pfd, 1, (int)ms);
