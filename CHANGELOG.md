@@ -27,9 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Size macros for L3 results.
 - New return values (`lt_ret_t`): `LT_L3_RES_SIZE_ERROR`, `LT_L3_BUFFER_TOO_SMALL`.
 - L3 buffer size check  to `lt_init` and internal functions.
+- Finished interrupt pin support:
+  - In HALs that don't support it, raise compilation error.
+  - Implement support in Unix SPI HAL.
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
+- Compilation if `LT_USE_INT_PIN` is set from CMake.
 
 ### Removed
 - `TR01_L3_ID_SIZE` (redundant to `TR01_L3_CMD_ID_SIZE`).
