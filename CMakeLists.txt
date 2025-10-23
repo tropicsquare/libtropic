@@ -176,6 +176,7 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_default_sh0_keys.c
     # Crypto backend implementation files
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_aesgcm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_ed25519.c
@@ -261,7 +262,6 @@ if(LT_BUILD_EXAMPLES)
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hello_world.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_hw_wallet.c
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/lt_ex_macandd.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_default_sh0_keys.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/examples/
@@ -379,7 +379,6 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_random_value_get.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mac_and_destroy.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_log_req.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_default_sh0_keys.c
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
