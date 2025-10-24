@@ -6,16 +6,6 @@ This directory contains the MbedTLS 4.0 PSA Crypto API backend implementation fo
 
 This implementation provides the cryptographic HAL layer using the **PSA Cryptography API** from MbedTLS 4.0. The PSA (Platform Security Architecture) Crypto API is the modern, standardized interface for cryptographic operations in MbedTLS 4.x.
 
-## Files
-
-- `lt_crypto_macros.h` - Defines the context types for AES-GCM and SHA-256 operations using PSA types
-- `lt_mbedtls_aesgcm.c` - AES-GCM encryption and decryption using PSA AEAD operations
-- `lt_mbedtls_ecdsa.c` - ECDSA signature verification on NIST P-256 curve using PSA
-- `lt_mbedtls_ed25519.c` - Ed25519 signature verification using PSA
-- `lt_mbedtls_sha256.c` - SHA-256 hashing using PSA hash operations
-- `lt_mbedtls_hmac_sha256.c` - HMAC-SHA256 using PSA MAC operations
-- `lt_mbedtls_x25519.c` - Curve25519 (X25519) key agreement using PSA
-
 ## Requirements
 
 This implementation requires **MbedTLS 4.0.0** or later with PSA Crypto API enabled. The following PSA features must be configured in `tf-psa-crypto/include/psa/crypto_config.h`:
@@ -52,15 +42,14 @@ Uses PSA AEAD (Authenticated Encryption with Associated Data) operations:
 
 ### ECDSA
 - Verifies signatures on the NIST P-256 (secp256r1) curve using `psa_verify_hash()`
-- Public keys are imported as 64 bytes (32 bytes X, 32 bytes Y coordinates)
+- Public keys are imported as 64 bytes (32 bytes X, 32 bytes Y coordinates).
+  As the format requires that public keys also contain `0x4` prefix, we add it inside the HAL function.
 - Signatures are 64 bytes (32 bytes R, 32 bytes S)
 - Message is hashed with SHA-256 before verification
 
 ### Ed25519
-- Uses `psa_verify_message()` for Ed25519 signature verification
-- Public keys are 32 bytes
-- Signatures are 64 bytes
-- Pure EdDSA (no pre-hashing)
+- As the MbedTLS does not support EdDSA yet (no support for Edwards curve), we use a fallback
+  implementation provided by a [small library by Orson Peters](https://github.com/orlp/ed25519).
 
 ### SHA-256
 Uses PSA hash operations with streaming interface:
@@ -78,7 +67,25 @@ Uses `psa_mac_compute()` for single-call HMAC computation with PSA key managemen
 
 ### PSA Crypto Initialization
 
-The PSA Crypto subsystem is automatically initialized on first use in each module. The `psa_crypto_init()` function is called once per module to set up the PSA cryptography subsystem.
+The PSA Crypto subsystem is automatically initialized on first use. In each module, we call
+`lt_mbedtls_ensure_psa_crypto_init`, which checks whether the subsystem was initialized and if not,
+it initializes the subsystem. Initialization state is kept in the `lt_mbedtls_psa_crypto_initialized`
+global variable.
+
+### Including PSA Crypto Headers
+The MbedTLS headers contain some redundant declarations, see [this issue on GitHub](https://github.com/Mbed-TLS/mbedtls/issues/10376).
+As the errors are present in headers, not in the implementation files (.c), our strict compilation flags catch
+those problems, even though we restrict compilation with strict flags only to our own code. To keep
+ability to use this flag without triggering compilation errors due problems with PSA Crypto, we have to wrap `#include` like following:
+
+```c
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wredundant-decls"
+#include "psa/crypto.h"
+#pragma GCC diagnostic pop
+```
+
+The pragmas will disable this flag only for the PSA Crypto code.
 
 ## Differences from Legacy MbedTLS API
 
@@ -88,7 +95,3 @@ This implementation uses PSA Crypto API exclusively, which differs from the lega
 2. **Context Types**: PSA uses opaque context structures (`psa_hash_operation_t`, etc.)
 3. **Error Handling**: Uses `psa_status_t` return codes converted to libtropic return codes
 4. **API Design**: Higher-level, more abstract operations (e.g., `psa_aead_encrypt` vs manual GCM operations)
-
-## Integration
-
-To use this backend, set `LT_CRYPTO=mbedtls` when configuring CMake (after CMakeLists.txt is updated according to the documentation). Ensure MbedTLS 4.0 submodule is initialized with TF-PSA-Crypto.
