@@ -38,6 +38,14 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
     uint32_t request_mode;
 
+    // Initialize file descriptors to -1 so lt_port_deinit() can always execute safely.
+    device->gpioreq_cs.fd = -1;
+#if LT_USE_INT_PIN
+    device->gpioreq_int.fd = -1;
+#endif
+    device->gpio_fd = -1;
+    device->fd = -1;
+
     srand(device->rng_seed);
 
     LT_LOG_DEBUG("Initializing SPI...\n");
@@ -102,7 +110,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     LT_LOG_DEBUG("- info.lines = \"%u\"", info.lines);
 
     // Setup for CS pin (OUTPUT)
-    memset(&device->gpioreq_cs, 0, sizeof(device->gpioreq_cs));
     device->gpioreq_cs.offsets[0] = device->gpio_cs_num;
     device->gpioreq_cs.num_lines = 1;
     device->gpioreq_cs.config.flags = GPIO_V2_LINE_FLAG_OUTPUT;
@@ -120,7 +127,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 #if LT_USE_INT_PIN
     // Setup for INT pin (INPUT, RISING EDGE)
-    memset(&device->gpioreq_int, 0, sizeof(device->gpioreq_int));
     device->gpioreq_int.offsets[0] = device->gpio_int_num;
     device->gpioreq_int.num_lines = 1;
     // Configure as input with rising edge detection
@@ -143,27 +149,20 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
 
-    // We want to attempt to close all, even if one of them fails.
-    int cs_close_ret = close(device->gpioreq_cs.fd);
+    close(device->gpioreq_cs.fd);
 #if LT_USE_INT_PIN
-    int int_close_ret = close(device->gpioreq_int.fd);
+    close(device->gpioreq_int.fd);
 #endif
-    int gpio_close_ret = close(device->gpio_fd);
-    int spi_close_ret = close(device->fd);
+    close(device->gpio_fd);
+    close(device->fd);
 
-    if (cs_close_ret
+    // Mark all file descriptors as uninitialized.
+    device->gpioreq_cs.fd = -1;
 #if LT_USE_INT_PIN
-        || int_close_ret
+    device->gpioreq_int.fd = -1;
 #endif
-        || gpio_close_ret || spi_close_ret) {
-        if (cs_close_ret) LT_LOG_ERROR("Failed to close CS pin fd: %s", strerror(errno));
-#if LT_USE_INT_PIN
-        if (int_close_ret) LT_LOG_ERROR("Failed to close INT pin fd: %s", strerror(errno));
-#endif
-        if (gpio_close_ret) LT_LOG_ERROR("Failed to close GPIO chip fd: %s", strerror(errno));
-        if (spi_close_ret) LT_LOG_ERROR("Failed to close SPI dev fd: %s", strerror(errno));
-        return LT_FAIL;
-    }
+    device->gpio_fd = -1;
+    device->fd = -1;
 
     return LT_OK;
 }
