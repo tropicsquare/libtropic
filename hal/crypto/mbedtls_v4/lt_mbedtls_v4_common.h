@@ -6,7 +6,7 @@
 #include "libtropic_common.h"
 
 /**
- * @file lt_mbedtls_common.c
+ * @file lt_mbedtls_v4_common.h
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
