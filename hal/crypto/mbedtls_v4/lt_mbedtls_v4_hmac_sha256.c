@@ -12,8 +12,8 @@
 #include "psa/crypto.h"
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
-#include "lt_hmac_sha256.h"
 #include "libtropic_logging.h"
+#include "lt_hmac_sha256.h"
 #include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_t *input, const uint32_t input_len,
@@ -45,9 +45,7 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     }
 
     // Compute HMAC-SHA256
-    status = psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256),
-                             input, input_len,
-                             output, 32, &mac_length);
+    status = psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256), input, input_len, output, 32, &mac_length);
 
     // Clean up
     psa_destroy_key(key_id);
