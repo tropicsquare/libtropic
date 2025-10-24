@@ -23,6 +23,35 @@ extern "C" {
 /** @brief Mark variable as unused to sanitize compiler warnings. */
 #define LT_UNUSED(x) (void)(x)
 
+/** @brief Get max value.
+ *  @details This macro uses "statement expressions", which prevent double evaluation in contrast
+ *           to standard macros.
+ *  @note This uses GCC/Clang compatible extension.
+ */
+#define lt_max(a, b)               \
+    __extension__({                \
+        __typeof__(a) ___a = (a);  \
+        __typeof__(b) ___b = (b);  \
+        ___a > ___b ? ___a : ___b; \
+    })
+
+/** @brief Get min value.
+ *  @details This macro uses "statement expressions", which prevent double evaluation in contrast
+ *           to standard macros.
+ *  @note This uses GCC/Clang compatible extension.
+ */
+#define lt_min(a, b)               \
+    __extension__({                \
+        __typeof__(a) ___a = (a);  \
+        __typeof__(b) ___b = (b);  \
+        ___a < ___b ? ___a : ___b; \
+    })
+
+/**
+ * @brief Get max value from compile-time constants at compile-time.
+ */
+#define LT_COMPTIME_MAX(a, b) __builtin_choose_expr((a) > (b), a, b)
+
 #ifdef __cplusplus
 }
 #endif

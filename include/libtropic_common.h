@@ -9,6 +9,7 @@
  */
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "libtropic_macros.h"
 #include "lt_crypto_macros.h"
@@ -61,30 +62,36 @@ extern "C" {
 #define TR01_L2_MAX_FRAME_SIZE \
     (TR01_L2_STATUS_SIZE + TR01_L2_REQ_RSP_LEN_SIZE + TR01_L2_CHUNK_MAX_DATA_SIZE + TR01_L2_REQ_RSP_CRC_SIZE)
 
-/** @brief Size of l3 ID field */
-#define TR01_L3_ID_SIZE 1u
-/** @brief Size of l3 TAG field */
-#define TR01_L3_TAG_SIZE 16u
-/** @brief Size of IV */
+/** @brief Size of IV. */
 #define TR01_L3_IV_SIZE 12u
 
-/** @brief Size of RES_SIZE field */
-#define TR01_L3_RES_SIZE_SIZE 2
-/** @brief Size of CMD_SIZE field */
-#define TR01_L3_CMD_SIZE_SIZE 2
-/** @brief Size of l3 CMD_ID field */
-#define TR01_L3_CMD_ID_SIZE 1
-/** @brief Maximal size of l3 RES/RSP DATA field */
-#define TR01_L3_CMD_DATA_SIZE_MAX 4111
+/** @brief Size of CMD_SIZE and RES_SIZE fields. */
+#define TR01_L3_SIZE_SIZE 2u
+/** @brief Size of CMD_TAG and RES_TAG fields. */
+#define TR01_L3_TAG_SIZE 16u
 
-/** @brief Maximum size of l3 ciphertext (or decrypted l3 packet) */
-#define TR01_L3_CYPHERTEXT_MAX_SIZE (TR01_L3_CMD_ID_SIZE + TR01_L3_CMD_DATA_SIZE_MAX)
-/**
- * @brief Max size of one unit of transport on l3 layer
- *
- * The number 13 is given by the longest possible padding, which is given by the EDDSA_Sign command.
+/** @brief Size of CMD_ID field. */
+#define TR01_L3_CMD_ID_SIZE 1u
+
+/** @brief Size of the RESULT field in L3 Result. */
+#define TR01_L3_RESULT_SIZE 1u
+
+/** @brief Max size of L3 Command ciphertext.
+ * @details Currently the max size has the EDDSA_Sign Command.
  */
-#define TR01_L3_PACKET_MAX_SIZE (TR01_L3_RES_SIZE_SIZE + TR01_L3_CYPHERTEXT_MAX_SIZE + 13 + TR01_L3_TAG_SIZE)
+#define TR01_L3_CMD_CIPHERTEXT_MAX_SIZE 4112u
+/** @brief Max size of L3 Result ciphertext.
+ * @details Currently the max size has the Ping Result.
+ */
+#define TR01_L3_RES_CIPHERTEXT_MAX_SIZE 4097u
+/** @brief Max size of ciphertext for both L3 Commands and L3 Responses.
+ */
+#define TR01_L3_CIPHERTEXT_MAX_SIZE LT_COMPTIME_MAX(TR01_L3_CMD_CIPHERTEXT_MAX_SIZE, TR01_L3_RES_CIPHERTEXT_MAX_SIZE)
+
+/**
+ * @brief Max possible size of one unit of transport on L3 (for both Commands and Responses).
+ */
+#define TR01_L3_PACKET_MAX_SIZE (TR01_L3_SIZE_SIZE + TR01_L3_CIPHERTEXT_MAX_SIZE + TR01_L3_TAG_SIZE)
 
 /**
  * @brief Host MCU's X25519 private key to execute a Secure Channel Handshake on Pairing Key slot 0 of the engineering
@@ -129,8 +136,8 @@ extern const uint8_t sh0pub_prod0[];
 typedef struct lt_l3_gen_frame_t {
     /** @brief RES_SIZE or CMD_SIZE value */
     uint16_t cmd_size;
-    /** @brief Command or result data including ID and TAG */
-    uint8_t data[TR01_L3_PACKET_MAX_SIZE - TR01_L3_RES_SIZE_SIZE];
+    /** @brief Command or result ciphertext + tag */
+    uint8_t data[TR01_L3_CIPHERTEXT_MAX_SIZE + TR01_L3_TAG_SIZE];
 } __attribute__((packed)) lt_l3_gen_frame_t;
 
 // clang-format off
@@ -272,47 +279,56 @@ typedef enum lt_ret_t {
     LT_L3_INVALID_CMD = 22,
     /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR = 23,
+    /** @brief L3 response RES_SIZE have an invalid size.
+     * @details This can be caused by an attack or a bug.
+     */
+    LT_L3_RES_SIZE_ERROR = 24,
+    /** @brief L3 buffer is too small to parse this L3 command.
+     * @details If this error is raised, either the buffer is too small to accept the result,
+     * or RES_SIZE field in the response is invalid (attack or a bug).
+     */
+    LT_L3_BUFFER_TOO_SMALL = 25,
 
     // Return values based on STATUS field
     /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 24,
+    LT_L2_IN_CRC_ERR = 26,
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 25,
+    LT_L2_REQ_CONT = 27,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 26,
+    LT_L2_RES_CONT = 28,
     /** @brief The L2 Request frame is disabled and can’t be executed */
-    LT_L2_RESP_DISABLED = 27,
+    LT_L2_RESP_DISABLED = 29,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 28,
+    LT_L2_HSK_ERR = 30,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 29,
+    LT_L2_NO_SESSION = 31,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 30,
+    LT_L2_TAG_ERR = 32,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 31,
+    LT_L2_CRC_ERR = 33,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 32,
+    LT_L2_GEN_ERR = 34,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 33,
+    LT_L2_NO_RESP = 35,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 34,
+    LT_L2_UNKNOWN_REQ = 36,
     /** @brief Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED = 35,
-    /** @brief L2 data does not have an expected length */
-    LT_L2_DATA_LEN_ERROR = 36,
+    LT_L2_STATUS_NOT_RECOGNIZED = 37,
+    /** @brief L2 data does not have an expected length (invalid value in RSP_LEN field) */
+    LT_L2_RSP_LEN_ERROR = 38,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 37,
+    LT_CERT_STORE_INVALID = 39,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 38,
+    LT_CERT_UNSUPPORTED = 40,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 39,
+    LT_CERT_ITEM_NOT_FOUND = 41,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 40,
+    LT_NONCE_OVERFLOW = 42,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 41
+    LT_RET_T_LAST_VALUE = 43
 } lt_ret_t;
 
 #define LT_TR01_REBOOT_DELAY_MS 250

@@ -46,11 +46,17 @@ lt_ret_t lt_init(lt_handle_t *h)
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
+
     h->l3.session_status = LT_SECURE_SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
     if (ret != LT_OK) {
         return ret;
+    }
+
+    // Prevent usage of insufficient buffer.
+    if (h->l3.buff_len < LT_SIZE_OF_L3_BUFF) {
+        return LT_L3_BUFFER_TOO_SMALL;
     }
 
     return LT_OK;
@@ -149,7 +155,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
         }
 
         if (TR01_GET_INFO_BLOCK_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
 
         uint8_t *head = ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object;
@@ -254,9 +260,8 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(chip_id, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_CHIP_ID_SIZE);
@@ -289,9 +294,8 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_RISCV_FW_SIZE);
@@ -324,9 +328,8 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_SPECT_FW_SIZE);
@@ -362,11 +365,10 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
         return ret;
     }
 
-    // Check incomming l3 length
     if ((TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
         && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
         && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     // Check if the output buffer for the header is big enough
@@ -435,9 +437,8 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_ENCRYPTED_SESSION_ABT_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -467,9 +468,8 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_SLEEP_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -502,9 +502,8 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_STARTUP_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     ret = lt_l1_delay(&h->l2, LT_TR01_REBOOT_DELAY_MS);
@@ -549,7 +548,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
     }
 
     if (TR01_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -588,7 +587,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
     }
 
@@ -609,7 +608,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
     }
 
@@ -662,7 +661,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
     }
 
     if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -698,7 +697,7 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
 
         chunk_index += len + 1;
@@ -764,7 +763,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PING_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -791,7 +790,8 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -818,7 +818,8 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -845,7 +846,8 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_INVALIDATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -872,7 +874,7 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_CONFIG_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -899,7 +901,7 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_CONFIG_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -926,7 +928,7 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_CONFIG_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -953,7 +955,7 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_I_CONFIG_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -980,7 +982,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_I_CONFIG_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1008,7 +1010,8 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1036,7 +1039,8 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1063,7 +1067,8 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1090,7 +1095,8 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_RANDOM_VALUE_GET_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1117,7 +1123,8 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_GENERATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1143,7 +1150,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_STORE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1171,7 +1178,8 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1198,7 +1206,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1226,7 +1234,7 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECDSA_SIGN_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1263,7 +1271,7 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_EDDSA_SIGN_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1299,7 +1307,7 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MCOUNTER_INIT_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1326,7 +1334,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MCOUNTER_UPDATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1353,7 +1361,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MCOUNTER_GET_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1381,7 +1389,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MAC_AND_DESTROY_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1413,6 +1421,8 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_L3_UNAUTHORIZED",
                                     "LT_L3_INVALID_CMD",
                                     "LT_L3_DATA_LEN_ERROR",
+                                    "LT_L3_RES_SIZE_ERROR",
+                                    "LT_L3_BUFFER_TOO_SMALL",
                                     "LT_L2_IN_CRC_ERR",
                                     "LT_L2_REQ_CONT",
                                     "LT_L2_RES_CONT",

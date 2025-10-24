@@ -91,9 +91,21 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
 
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)s3->buff;
 
+    if (p_frame->cmd_size > TR01_L3_RES_CIPHERTEXT_MAX_SIZE) {
+        lt_l3_invalidate_host_session_data(s3);
+        return LT_L3_RES_SIZE_ERROR;
+    }
+
+    // This check makes sure the decryption function does not go past buffer bounds.
+    if (TR01_L3_SIZE_SIZE + p_frame->cmd_size + TR01_L3_TAG_SIZE > s3->buff_len) {
+        lt_l3_invalidate_host_session_data(s3);
+        return LT_L3_BUFFER_TOO_SMALL;
+    }
+
     lt_ret_t ret
         = lt_aesgcm_decrypt(&s3->aesgcm_decrypt_ctx, s3->decryption_IV, TR01_L3_IV_SIZE, (uint8_t *)"", 0,
                             p_frame->data, p_frame->cmd_size, p_frame->data + p_frame->cmd_size, TR01_L3_TAG_SIZE);
+
     if (ret != LT_OK) {
         lt_l3_invalidate_host_session_data(s3);
         return ret;
