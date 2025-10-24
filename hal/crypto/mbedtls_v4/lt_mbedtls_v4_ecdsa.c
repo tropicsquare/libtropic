@@ -15,7 +15,7 @@
 #include "libtropic_common.h"
 #include "lt_ecdsa.h"
 #include "libtropic_logging.h"
-#include "lt_mbedtls_common.h"
+#include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {

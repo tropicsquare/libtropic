@@ -17,7 +17,7 @@
 #include "lt_aesgcm.h"
 #include "lt_crypto_macros.h"
 #include "libtropic_logging.h"
-#include "lt_mbedtls_common.h"
+#include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key, const uint32_t key_len)
 {

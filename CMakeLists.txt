@@ -48,7 +48,7 @@ endif()
 
 # Crypto provider
 set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
-set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls")
+set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
 
 # Logging options
 set(LT_LOG_LVL "" CACHE STRING "Set log level")
@@ -479,17 +479,17 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PUBLIC trezor_crypto)
 
-elseif(LT_CRYPTO STREQUAL "mbedtls")
+elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
-    message(STATUS "Crypto provider set to mbedtls")
+    message(STATUS "Crypto provider set to mbedtls_v4")
 
-    set(ENABLE_TESTING OFF)  # Disable mbedtls test building.
-    set(ENABLE_PROGRAMS OFF) # Disable mbedtls examples building.
+    option(ENABLE_TESTING OFF)  # Disable mbedtls_v4 test building.
+    option(ENABLE_PROGRAMS OFF) # Disable mbedtls_v4 examples building.
     add_subdirectory(vendor/mbedtls/ "mbedtls")
     target_link_libraries(tropic PUBLIC mbedtls)
 
     target_sources(tropic PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/mbedtls/lt_mbedtls_common.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/mbedtls_v4/lt_mbedtls_v4_common.c
         # Fallback implementation of ED25519 we use until MbedTLS finalizes their implementation.
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/add_scalar.c
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/fe.c
