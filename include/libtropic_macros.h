@@ -35,6 +35,11 @@ extern "C" {
         ___a > ___b ? ___a : ___b; \
     })
 
+/** @brief Get min value.
+ *  @details This macro uses "statement expressions", which prevent double evaluation in contrast
+ *           to standard macros.
+ *  @note This uses GCC/Clang compatible extension.
+ */
 #define lt_min(a, b)               \
     __extension__({                \
         __typeof__(a) ___a = (a);  \
