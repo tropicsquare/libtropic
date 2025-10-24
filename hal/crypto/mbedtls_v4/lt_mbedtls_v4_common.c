@@ -24,7 +24,7 @@ lt_ret_t lt_mbedtls_ensure_psa_crypto_init(void)
             LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
-        lt_mbedtls_psa_crypto_initialized = 1;
+        lt_mbedtls_psa_crypto_initialized = true;
     }
     return LT_OK;
 }
