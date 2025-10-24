@@ -54,12 +54,12 @@ lt_ret_t lt_init(lt_handle_t *h)
         return ret;
     }
 
+    // Prevent usage of insufficient buffer.
     if (h->l3.buff_len < LT_SIZE_OF_L3_BUFF) {
         return LT_L3_BUFFER_TOO_SMALL;
     }
-    else {
-        return LT_OK;
-    }
+
+    return LT_OK;
 }
 
 lt_ret_t lt_deinit(lt_handle_t *h)
