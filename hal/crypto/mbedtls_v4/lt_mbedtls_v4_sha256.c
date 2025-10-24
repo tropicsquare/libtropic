@@ -16,7 +16,7 @@
 #include "lt_crypto_macros.h"
 #include "lt_sha256.h"
 #include "libtropic_logging.h"
-#include "lt_mbedtls_common.h"
+#include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_sha256_init(LT_CRYPTO_SHA256_CTX_T *ctx)
 {

@@ -15,7 +15,7 @@
 #include "libtropic_common.h"
 #include "lt_x25519.h"
 #include "libtropic_logging.h"
-#include "lt_mbedtls_common.h"
+#include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secret)
 {
