@@ -110,18 +110,13 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
 {
     psa_status_t status;
     size_t output_length;
-    uint8_t *ciphertext_with_tag;
+
+    // PSA expects ciphertext and tag concatenated.
     size_t ciphertext_with_tag_len = msg_len + tag_len;
+    uint8_t ciphertext_with_tag[ciphertext_with_tag_len];
 
     if (!ctx->key_set) {
         LT_LOG_ERROR("AES-GCM context key not set!");
-        return LT_CRYPTO_ERR;
-    }
-
-    // PSA expects ciphertext and tag concatenated
-    ciphertext_with_tag = (uint8_t *)malloc(ciphertext_with_tag_len);
-    if (ciphertext_with_tag == NULL) {
-        LT_LOG_ERROR("Memory allocation failed for AES-GCM decrypt buffer");
         return LT_CRYPTO_ERR;
     }
 
@@ -134,8 +129,6 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
                               add, add_len,
                               ciphertext_with_tag, ciphertext_with_tag_len,
                               msg, msg_len, &output_length);
-
-    free(ciphertext_with_tag);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM decryption failed, status=%d (psa_status_t)", status);
