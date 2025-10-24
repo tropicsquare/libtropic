@@ -16,28 +16,12 @@
 #include "lt_crypto_macros.h"
 #include "lt_sha256.h"
 #include "libtropic_logging.h"
-
-// PSA Crypto initialization state
-static uint8_t psa_crypto_initialized = 0;
-
-// Initialize PSA Crypto library if not already done
-static lt_ret_t ensure_psa_crypto_init(void)
-{
-    if (!psa_crypto_initialized) {
-        psa_status_t status = psa_crypto_init();
-        if (status != PSA_SUCCESS) {
-            LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
-            return LT_CRYPTO_ERR;
-        }
-        psa_crypto_initialized = 1;
-    }
-    return LT_OK;
-}
+#include "lt_mbedtls_common.h"
 
 lt_ret_t lt_sha256_init(LT_CRYPTO_SHA256_CTX_T *ctx)
 {
     // Ensure PSA Crypto is initialized
-    if (ensure_psa_crypto_init() != LT_OK) {
+    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
         LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }

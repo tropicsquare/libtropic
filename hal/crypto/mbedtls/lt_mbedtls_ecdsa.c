@@ -15,22 +15,7 @@
 #include "libtropic_common.h"
 #include "lt_ecdsa.h"
 #include "libtropic_logging.h"
-
-// PSA Crypto initialization state
-static uint8_t psa_crypto_initialized = 0;
-
-// Initialize PSA Crypto library if not already done
-static lt_ret_t ensure_psa_crypto_init(void)
-{
-    if (!psa_crypto_initialized) {
-        psa_status_t status = psa_crypto_init();
-        if (status != PSA_SUCCESS) {
-            return LT_CRYPTO_ERR;
-        }
-        psa_crypto_initialized = 1;
-    }
-    return LT_OK;
-}
+#include "lt_mbedtls_common.h"
 
 lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
@@ -50,7 +35,7 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     memcpy(&pubkey_with_prefix[1], pubkey, 64);
 
     // Ensure PSA Crypto is initialized
-    if (ensure_psa_crypto_init() != LT_OK) {
+    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
         LT_LOG_ERROR("PSA Crypto is not initialized!");
         return LT_CRYPTO_ERR;
     }
