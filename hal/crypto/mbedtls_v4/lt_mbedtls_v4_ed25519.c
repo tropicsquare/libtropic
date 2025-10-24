@@ -9,14 +9,15 @@
 
 #include "ed25519.h"
 #include "libtropic_common.h"
-#include "lt_ed25519.h"
 #include "libtropic_logging.h"
+#include "lt_ed25519.h"
 
 lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    if(ed25519_verify(rs, msg, msg_len, pubkey)) {
+    if (ed25519_verify(rs, msg, msg_len, pubkey)) {
         return LT_OK;
-    } else {
+    }
+    else {
         LT_LOG_ERROR("ED25519 signature verification failed!");
         return LT_CRYPTO_ERR;
     }

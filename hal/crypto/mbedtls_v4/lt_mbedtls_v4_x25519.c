@@ -13,9 +13,9 @@
 #include "psa/crypto.h"
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
-#include "lt_x25519.h"
 #include "libtropic_logging.h"
 #include "lt_mbedtls_v4_common.h"
+#include "lt_x25519.h"
 
 lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secret)
 {
@@ -55,7 +55,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
         LT_LOG_ERROR("X25519 key agreement failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
-    
+
     if (secret_length != 32) {
         LT_LOG_ERROR("X25519 key agreement produced incorrect secret length");
         return LT_CRYPTO_ERR;
@@ -102,7 +102,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
         LT_LOG_ERROR("X25519 public key export failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
-    
+
     if (pubkey_length != 32) {
         LT_LOG_ERROR("X25519 public key export produced incorrect key length");
         return LT_CRYPTO_ERR;

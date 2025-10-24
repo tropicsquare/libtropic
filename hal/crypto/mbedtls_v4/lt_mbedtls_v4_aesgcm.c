@@ -14,9 +14,9 @@
 #include "psa/crypto.h"
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
+#include "libtropic_logging.h"
 #include "lt_aesgcm.h"
 #include "lt_crypto_macros.h"
-#include "libtropic_logging.h"
 #include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key, const uint32_t key_len)
@@ -65,11 +65,8 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     }
 
     // PSA AEAD encrypt operation
-    status = psa_aead_encrypt(ctx->key_id, PSA_ALG_GCM,
-                              iv, iv_len,
-                              add, add_len,
-                              msg, msg_len,
-                              msg, msg_len + tag_len, &output_length);
+    status = psa_aead_encrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, msg, msg_len, msg, msg_len + tag_len,
+                              &output_length);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM encryption failed, status=%d (psa_status_t)", status);
@@ -80,7 +77,8 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     // Copy tag to separate buffer if needed
     if (output_length >= tag_len) {
         memcpy(tag, msg + msg_len, tag_len);
-    } else {
+    }
+    else {
         LT_LOG_ERROR("AES-GCM encryption output length insufficient");
         return LT_CRYPTO_ERR;
     }
@@ -108,11 +106,8 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     memcpy(ciphertext_with_tag + msg_len, tag, tag_len);
 
     // PSA AEAD decrypt operation
-    status = psa_aead_decrypt(ctx->key_id, PSA_ALG_GCM,
-                              iv, iv_len,
-                              add, add_len,
-                              ciphertext_with_tag, ciphertext_with_tag_len,
-                              msg, msg_len, &output_length);
+    status = psa_aead_decrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, ciphertext_with_tag,
+                              ciphertext_with_tag_len, msg, msg_len, &output_length);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM decryption failed, status=%d (psa_status_t)", status);

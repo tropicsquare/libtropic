@@ -19,8 +19,8 @@
  * for multi-part AES-GCM operations.
  */
 typedef struct {
-    psa_key_id_t key_id;     ///< PSA key identifier
-    uint8_t key_set;         ///< Flag indicating if key is set
+    psa_key_id_t key_id;  ///< PSA key identifier
+    uint8_t key_set;      ///< Flag indicating if key is set
 } LT_CRYPTO_AES_GCM_CTX_T;
 
 /// @brief Type of SHA-256 context for MbedTLS PSA Crypto.

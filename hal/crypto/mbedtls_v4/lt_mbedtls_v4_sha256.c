@@ -13,10 +13,10 @@
 #include "psa/crypto.h"
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
-#include "lt_crypto_macros.h"
-#include "lt_sha256.h"
 #include "libtropic_logging.h"
+#include "lt_crypto_macros.h"
 #include "lt_mbedtls_v4_common.h"
+#include "lt_sha256.h"
 
 lt_ret_t lt_sha256_init(LT_CRYPTO_SHA256_CTX_T *ctx)
 {
