@@ -488,8 +488,9 @@ elseif(LT_CRYPTO STREQUAL "mbedtls")
     add_subdirectory(vendor/mbedtls/ "mbedtls")
     target_link_libraries(tropic PUBLIC mbedtls)
 
-    # Fallback implementation of ED25519 we use until MbedTLS finalizes their implementation.
-    set(ED25519_SRCS
+    target_sources(tropic PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/mbedtls/lt_mbedtls_common.c
+        # Fallback implementation of ED25519 we use until MbedTLS finalizes their implementation.
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/add_scalar.c
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/fe.c
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/ge.c
@@ -501,9 +502,7 @@ elseif(LT_CRYPTO STREQUAL "mbedtls")
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sign.c
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/verify.c
     )
-    add_library(ed25519 ${ED25519_SRCS})
-    target_link_libraries(tropic PUBLIC ed25519)
-    target_include_directories(tropic PRIVATE vendor/ed25519/src)
+    target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src)
 else()
 
     get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)
