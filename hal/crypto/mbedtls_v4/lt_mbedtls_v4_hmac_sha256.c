@@ -1,5 +1,5 @@
 /**
- * @file lt_mbedtls_hmac_sha256.c
+ * @file lt_mbedtls_v4_hmac_sha256.c
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
