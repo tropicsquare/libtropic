@@ -40,7 +40,7 @@ typedef struct lt_dev_unix_spi_t {
     unsigned int rng_seed;
 
     /** @private @brief SPI file descriptor. */
-    int fd;
+    int spi_fd;
     /** @private @brief GPIO file descriptor. */
     int gpio_fd;
     /** @private @brief GPIO request structure for chip select. */

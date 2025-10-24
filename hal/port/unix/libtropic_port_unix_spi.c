@@ -44,7 +44,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     device->gpioreq_int.fd = -1;
 #endif
     device->gpio_fd = -1;
-    device->fd = -1;
+    device->spi_fd = -1;
 
     srand(device->rng_seed);
 
@@ -58,32 +58,32 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 #endif
 
     device->mode = SPI_MODE_0;
-    device->fd = open(device->spi_dev, O_RDWR);
-    if (device->fd < 0) {
+    device->spi_fd = open(device->spi_dev, O_RDWR);
+    if (device->spi_fd < 0) {
         LT_LOG_ERROR("Can't open device!");
         return LT_FAIL;
     }
 
     request_mode = device->mode;
-    if (ioctl(device->fd, SPI_IOC_WR_MODE32, &device->mode) < 0) {
+    if (ioctl(device->spi_fd, SPI_IOC_WR_MODE32, &device->mode) < 0) {
         LT_LOG_ERROR("Can't set SPI mode!");
-        close(device->fd);
+        close(device->spi_fd);
         return LT_FAIL;
     }
 
     // RD is read what mode the device actually is in.
-    if (ioctl(device->fd, SPI_IOC_RD_MODE32, &device->mode) < 0) {
+    if (ioctl(device->spi_fd, SPI_IOC_RD_MODE32, &device->mode) < 0) {
         LT_LOG_ERROR("Can't get SPI mode!");
-        close(device->fd);
+        close(device->spi_fd);
         return LT_FAIL;
     }
     if (request_mode != device->mode) {
         LT_LOG_WARN("Device does not support requested mode 0x%" PRIx32, request_mode);
     }
 
-    if (ioctl(device->fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0) {
+    if (ioctl(device->spi_fd, SPI_IOC_WR_MAX_SPEED_HZ, &device->spi_speed) < 0) {
         LT_LOG_ERROR("Can't set max SPI speed.");
-        close(device->fd);
+        close(device->spi_fd);
         return LT_FAIL;
     }
 
@@ -91,7 +91,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     device->gpio_fd = open(device->gpio_dev, O_RDWR | O_CLOEXEC);
     if (device->gpio_fd < 0) {
         LT_LOG_ERROR("Can't open GPIO device!");
-        close(device->fd);
+        close(device->spi_fd);
         return LT_FAIL;
     }
 
@@ -99,7 +99,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     if (ioctl(device->gpio_fd, GPIO_GET_CHIPINFO_IOCTL, &info) < 0) {
         LT_LOG_ERROR("GPIO_GET_CHIPINFO_IOCTL error!");
         LT_LOG_ERROR("Error string: %s", strerror(errno));
-        close(device->fd);
+        close(device->spi_fd);
         close(device->gpio_fd);
         return LT_FAIL;
     }
@@ -120,7 +120,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     if (ioctl(device->gpio_fd, GPIO_V2_GET_LINE_IOCTL, &device->gpioreq_cs) < 0) {
         LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL (CS pin) error!");
         LT_LOG_ERROR("Error string: %s", strerror(errno));
-        close(device->fd);
+        close(device->spi_fd);
         close(device->gpio_fd);
         return LT_FAIL;
     }
@@ -136,7 +136,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         LT_LOG_ERROR("GPIO_V2_GET_LINE_IOCTL (INT pin) error!");
         LT_LOG_ERROR("Error string: %s", strerror(errno));
         close(device->gpioreq_cs.fd);  // Clean up the CS pin FD
-        close(device->fd);
+        close(device->spi_fd);
         close(device->gpio_fd);
         return LT_FAIL;
     }
@@ -154,7 +154,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     close(device->gpioreq_int.fd);
 #endif
     close(device->gpio_fd);
-    close(device->fd);
+    close(device->spi_fd);
 
     // Mark all file descriptors as uninitialized.
     device->gpioreq_cs.fd = -1;
@@ -162,7 +162,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
     device->gpioreq_int.fd = -1;
 #endif
     device->gpio_fd = -1;
-    device->fd = -1;
+    device->spi_fd = -1;
 
     return LT_OK;
 }
@@ -210,7 +210,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         .delay_usecs = 0,
     };
 
-    ret = ioctl(device->fd, SPI_IOC_MESSAGE(1), &spi);
+    ret = ioctl(device->spi_fd, SPI_IOC_MESSAGE(1), &spi);
     if (ret >= 0) {
         return LT_OK;
     }
