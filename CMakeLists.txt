@@ -486,8 +486,24 @@ elseif(LT_CRYPTO STREQUAL "mbedtls")
     set(ENABLE_TESTING OFF)  # Disable mbedtls test building.
     set(ENABLE_PROGRAMS OFF) # Disable mbedtls examples building.
     add_subdirectory(vendor/mbedtls/ "mbedtls")
-    target_link_libraries(tropic PUBLIC mbedtls)  
+    target_link_libraries(tropic PUBLIC mbedtls)
 
+    # Fallback implementation of ED25519 we use until MbedTLS finalizes their implementation.
+    set(ED25519_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/add_scalar.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/fe.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/ge.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/key_exchange.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/keypair.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sc.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/seed.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sha512.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sign.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/verify.c
+    )
+    add_library(ed25519 ${ED25519_SRCS})
+    target_link_libraries(tropic PUBLIC ed25519)
+    target_include_directories(tropic PRIVATE vendor/ed25519/src)
 else()
 
     get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)
