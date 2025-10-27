@@ -14,11 +14,9 @@
 
 lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
-    if (ed25519_verify(rs, msg, msg_len, pubkey)) {
-        return LT_OK;
-    }
-    else {
+    if (!ed25519_verify(rs, msg, msg_len, pubkey)) {
         LT_LOG_ERROR("ED25519 signature verification failed!");
         return LT_CRYPTO_ERR;
     }
+    return LT_OK;
 }
