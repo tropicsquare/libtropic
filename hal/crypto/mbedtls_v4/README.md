@@ -87,6 +87,9 @@ ability to use this flag without triggering compilation errors due problems with
 
 The pragmas will disable this flag only for the PSA Crypto code.
 
+### Macros
+MbedTLS does not define macros for all sizes we need, sometimes they define macros only inside their implementation files ad-hoc. As such, I opted to use some of our macros, which is maybe not ideal but still better than using literals.
+
 ## Differences from Legacy MbedTLS API
 
 This implementation uses PSA Crypto API exclusively, which differs from the legacy MbedTLS 3.x implementation in several ways:
