@@ -65,7 +65,7 @@ lt_ret_t lt_sha256_finish(LT_CRYPTO_SHA256_CTX_T *ctx, uint8_t *output)
     size_t hash_length;
 
     // Finalize the hash and get the digest
-    status = psa_hash_finish(ctx, output, 32, &hash_length);
+    status = psa_hash_finish(ctx, output, PSA_HASH_LENGTH(PSA_ALG_SHA_256), &hash_length);
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("SHA-256 finish failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;

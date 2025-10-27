@@ -30,9 +30,9 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     //  - prefix 0x04
     //  - X coordinate (32 bytes)
     //  - Y coordinate (32 bytes)
-    uint8_t pubkey_with_prefix[65];
+    uint8_t pubkey_with_prefix[TR01_CURVE_P256_PUBKEY_LEN + 1];
     pubkey_with_prefix[0] = 0x04;
-    memcpy(&pubkey_with_prefix[1], pubkey, 64);
+    memcpy(&pubkey_with_prefix[1], pubkey, TR01_CURVE_P256_PUBKEY_LEN);
 
     // Ensure PSA Crypto is initialized
     if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
@@ -51,7 +51,9 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_VERIFY_HASH);
     psa_set_key_algorithm(&attributes, PSA_ALG_ECDSA(PSA_ALG_SHA_256));
     psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1));
-    psa_set_key_bits(&attributes, 256);
+    // MbedTLS expects private key size here, which is 32 bytes.
+    // See implementation: mbedtls/tf-psa-crypto/drivers/p256-m/p256-m_driver_entrypoints.c
+    psa_set_key_bits(&attributes, PSA_BYTES_TO_BITS(TR01_CURVE_PRIVKEY_LEN)); 
 
     // Import the public key with prefix
     status = psa_import_key(&attributes, pubkey_with_prefix, sizeof(pubkey_with_prefix), &key_id);
@@ -63,7 +65,7 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     }
 
     // Verify the ECDSA signature (64 bytes: R and S)
-    status = psa_verify_hash(key_id, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, hash_length, rs, 64);
+    status = psa_verify_hash(key_id, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, hash_length, rs, TR01_ECDSA_EDDSA_SIGNATURE_LENGTH);
 
     // Clean up
     psa_destroy_key(key_id);
