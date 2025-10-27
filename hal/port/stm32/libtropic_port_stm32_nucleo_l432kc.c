@@ -13,6 +13,10 @@
 #include "libtropic_port.h"
 #include "stm32l4xx_hal.h"
 
+#if LT_USE_INT_PIN
+#error "Interrupt PIN support on NUCLEO-L432KC not implemented yet!"
+#endif
+
 // CS pin
 #define LT_SPI_CS_BANK GPIOA
 #define LT_SPI_CS_PIN GPIO_PIN_4

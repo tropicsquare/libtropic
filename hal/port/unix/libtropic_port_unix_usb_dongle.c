@@ -29,6 +29,10 @@
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
 
+#if LT_USE_INT_PIN
+#error "Interrupt PIN not supported in the USB dongle port!"
+#endif
+
 /**
  * @brief Writes data to a serial port (specified by fd).
  *

@@ -32,15 +32,23 @@ typedef struct lt_dev_unix_spi_t {
     char gpio_dev[LT_DEVICE_PATH_MAX_LEN];
     /** @public @brief Number of the GPIO pin to map chip select to. */
     int gpio_cs_num;
+#if LT_USE_INT_PIN
+    /** @public @brief Number of the GPIO pin to map interrupt pin to. */
+    int gpio_int_num;
+#endif
     /** @public @brief Seed for the platform's random number generator. */
     unsigned int rng_seed;
 
     /** @private @brief SPI file descriptor. */
-    int fd;
+    int spi_fd;
     /** @private @brief GPIO file descriptor. */
     int gpio_fd;
-    /** @private @brief GPIO request (for GPIO configuration). */
-    struct gpio_v2_line_request gpioreq;
+    /** @private @brief GPIO request structure for chip select. */
+    struct gpio_v2_line_request gpioreq_cs;
+#if LT_USE_INT_PIN
+    /** @private @brief GPIO request structure for interrupt pin. */
+    struct gpio_v2_line_request gpioreq_int;
+#endif
     /** @private @brief SPI mode. */
     uint32_t mode;
 } lt_dev_unix_spi_t;
