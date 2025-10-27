@@ -49,7 +49,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     status = psa_raw_key_agreement(PSA_ALG_ECDH, key_id, pubkey, TR01_X25519_KEY_LEN, secret, TR01_X25519_KEY_LEN, &secret_length);
 
     // Clean up
-    psa_destroy_key(key_id);
+    psa_status_t destroy_key_status = psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("X25519 key agreement failed, status=%d (psa_status_t)", status);
@@ -58,6 +58,11 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
 
     if (secret_length != TR01_X25519_KEY_LEN) {
         LT_LOG_ERROR("X25519 key agreement produced incorrect secret length");
+        return LT_CRYPTO_ERR;
+    }
+
+    if (destroy_key_status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't destroy X25519 private key, status=%d (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 
@@ -96,7 +101,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     status = psa_export_public_key(key_id, pk, TR01_X25519_KEY_LEN, &pubkey_length);
 
     // Clean up
-    psa_destroy_key(key_id);
+    psa_status_t destroy_key_status = psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("X25519 public key export failed, status=%d (psa_status_t)", status);
@@ -105,6 +110,11 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
 
     if (pubkey_length != TR01_X25519_KEY_LEN) {
         LT_LOG_ERROR("X25519 public key export produced incorrect key length");
+        return LT_CRYPTO_ERR;
+    }
+
+    if (destroy_key_status != PSA_SUCCESS) {
+        LT_LOG_ERROR("Couldn't destroy X25519 private key, status=%d (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 

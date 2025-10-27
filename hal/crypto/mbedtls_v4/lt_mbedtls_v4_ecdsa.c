@@ -66,14 +66,16 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
 
     // Verify the ECDSA signature (64 bytes: R and S)
     status = psa_verify_hash(key_id, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, hash_length, rs, TR01_ECDSA_EDDSA_SIGNATURE_LENGTH);
+
+    // Clean up
+    psa_status_t destroy_key_status = psa_destroy_key(key_id);
+
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("Signature verification failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
-    // Clean up
-    status = psa_destroy_key(key_id);
-    if (status != PSA_SUCCESS) {
+    if (destroy_key_status != PSA_SUCCESS) {
         LT_LOG_ERROR("Couldn't destroy public key, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
