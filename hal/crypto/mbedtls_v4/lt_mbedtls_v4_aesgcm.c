@@ -122,7 +122,7 @@ lt_ret_t lt_aesgcm_end(LT_CRYPTO_AES_GCM_CTX_T *ctx)
     if (ctx->key_set) {
         psa_status_t status = psa_destroy_key(ctx->key_id);
         if (status != PSA_SUCCESS) {
-            LT_LOG_ERROR("Failed to destroy AES-GCM key, status=%d (psa_status_t), status");
+            LT_LOG_ERROR("Failed to destroy AES-GCM key, status=%d (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
         ctx->key_set = 0;
