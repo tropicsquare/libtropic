@@ -659,6 +659,12 @@ typedef struct lt_host_eph_keys_t {
  */
 #define TR01_X25519_KEY_LEN 32
 
+/** @brief Bit size of Curve25519 used for X25519 (Useful for crypto backends which expect bit-size).
+ *
+ * @note This is different from the key length in bytes * 8, because of clamping.
+*/
+#define TR01_X25519_KEY_BITS 255
+
 /** @brief Length of TROPIC01 X25519 public key for a Secure Channel Handshake. */
 #define TR01_STPUB_LEN TR01_X25519_KEY_LEN
 /** @brief Length of TROPIC01 X25519 private key for a Secure Channel Handshake. */

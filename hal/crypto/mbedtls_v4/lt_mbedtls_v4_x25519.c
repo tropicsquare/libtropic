@@ -34,7 +34,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_DERIVE);
     psa_set_key_algorithm(&attributes, PSA_ALG_ECDH);
     psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_MONTGOMERY));
-    psa_set_key_bits(&attributes, 255);
+    psa_set_key_bits(&attributes, TR01_X25519_KEY_BITS);
 
     // Import the private key (32 bytes)
     status = psa_import_key(&attributes, privkey, TR01_X25519_KEY_LEN, &key_id);
@@ -81,7 +81,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_EXPORT);
     psa_set_key_algorithm(&attributes, PSA_ALG_ECDH);
     psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(PSA_ECC_FAMILY_MONTGOMERY));
-    psa_set_key_bits(&attributes, 255);
+    psa_set_key_bits(&attributes, TR01_X25519_KEY_BITS);
 
     // Import the private key (32 bytes)
     status = psa_import_key(&attributes, sk, TR01_X25519_KEY_LEN, &key_id);
