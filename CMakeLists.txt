@@ -464,8 +464,8 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
     message(STATUS "Crypto provider set to mbedtls_v4")
 
-    option(ENABLE_TESTING OFF)  # Disable mbedtls_v4 test building.
-    option(ENABLE_PROGRAMS OFF) # Disable mbedtls_v4 examples building.
+    set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
+    set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
     add_subdirectory(vendor/mbedtls/ "mbedtls")
     target_link_libraries(tropic PUBLIC mbedtls)
 
