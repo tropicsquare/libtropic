@@ -22,7 +22,7 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     psa_status_t status;
     psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
     psa_key_id_t key_id = 0;
-    uint8_t hash[32];
+    uint8_t hash[PSA_HASH_LENGTH(PSA_ALG_SHA_256)];
     size_t hash_length;
 
     // Add correct prefix to public key (uncompressed format).
