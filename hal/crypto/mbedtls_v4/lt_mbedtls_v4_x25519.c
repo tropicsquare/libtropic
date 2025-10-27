@@ -46,7 +46,8 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     }
 
     // Perform X25519 key agreement to compute shared secret
-    status = psa_raw_key_agreement(PSA_ALG_ECDH, key_id, pubkey, TR01_X25519_KEY_LEN, secret, TR01_X25519_KEY_LEN, &secret_length);
+    status = psa_raw_key_agreement(PSA_ALG_ECDH, key_id, pubkey, TR01_X25519_KEY_LEN, secret, TR01_X25519_KEY_LEN,
+                                   &secret_length);
 
     // Clean up
     psa_status_t destroy_key_status = psa_destroy_key(key_id);

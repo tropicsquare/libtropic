@@ -45,7 +45,8 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     }
 
     // Compute HMAC-SHA256
-    status = psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256), input, input_len, output, PSA_HASH_LENGTH(PSA_ALG_SHA_256), &mac_length);
+    status = psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256), input, input_len, output,
+                             PSA_HASH_LENGTH(PSA_ALG_SHA_256), &mac_length);
 
     // Clean up
     psa_status_t destroy_key_status = psa_destroy_key(key_id);

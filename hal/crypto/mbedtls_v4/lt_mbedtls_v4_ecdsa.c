@@ -53,7 +53,7 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     psa_set_key_type(&attributes, PSA_KEY_TYPE_ECC_PUBLIC_KEY(PSA_ECC_FAMILY_SECP_R1));
     // MbedTLS expects private key size here, which is 32 bytes.
     // See implementation: mbedtls/tf-psa-crypto/drivers/p256-m/p256-m_driver_entrypoints.c
-    psa_set_key_bits(&attributes, PSA_BYTES_TO_BITS(TR01_CURVE_PRIVKEY_LEN)); 
+    psa_set_key_bits(&attributes, PSA_BYTES_TO_BITS(TR01_CURVE_PRIVKEY_LEN));
 
     // Import the public key with prefix
     status = psa_import_key(&attributes, pubkey_with_prefix, sizeof(pubkey_with_prefix), &key_id);
@@ -65,7 +65,8 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     }
 
     // Verify the ECDSA signature (64 bytes: R and S)
-    status = psa_verify_hash(key_id, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, hash_length, rs, TR01_ECDSA_EDDSA_SIGNATURE_LENGTH);
+    status = psa_verify_hash(key_id, PSA_ALG_ECDSA(PSA_ALG_SHA_256), hash, hash_length, rs,
+                             TR01_ECDSA_EDDSA_SIGNATURE_LENGTH);
 
     // Clean up
     psa_status_t destroy_key_status = psa_destroy_key(key_id);
