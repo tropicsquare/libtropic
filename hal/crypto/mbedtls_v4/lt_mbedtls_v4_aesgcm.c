@@ -53,11 +53,18 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
 }
 
 lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, uint8_t *msg, const uint32_t msg_len, uint8_t *tag,
-                           const uint32_t tag_len)
+                           const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len, uint8_t *ciphertext,
+                           const uint32_t ciphertext_len)
 {
     psa_status_t status;
-    size_t output_length;
+    size_t resulting_length;
+
+    if (ciphertext_len < PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len)) {
+        LT_LOG_ERROR("AES-GCM output (ciphertext) buffer too small! Current: %" PRIu32 " bytes, required: %u bytes",
+                     ciphertext_len,
+                     PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len));
+        return LT_CRYPTO_ERR;
+    }
 
     if (!ctx->key_set) {
         LT_LOG_ERROR("AES-GCM context key not set!");
@@ -65,21 +72,17 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     }
 
     // PSA AEAD encrypt operation
-    status = psa_aead_encrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, msg, msg_len, msg, msg_len + tag_len,
-                              &output_length);
+    status = psa_aead_encrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, plaintext, plaintext_len, ciphertext, ciphertext_len,
+                              &resulting_length);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM encryption failed, status=%d (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
-    // The tag is appended after the ciphertext in PSA output
-    // Copy tag to separate buffer if needed
-    if (output_length >= tag_len) {
-        memcpy(tag, msg + msg_len, tag_len);
-    }
-    else {
-        LT_LOG_ERROR("AES-GCM encryption output length insufficient");
+    if (resulting_length != PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len)) {
+        LT_LOG_ERROR("AES-GCM encryption output length mismatch! Current: %zu bytes, expected: %u bytes", resulting_length,
+                     PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len));
         return LT_CRYPTO_ERR;
     }
 
@@ -87,30 +90,36 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
 }
 
 lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, uint8_t *msg, const uint32_t msg_len, const uint8_t *tag,
-                           const uint32_t tag_len)
+                           const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len, uint8_t *plaintext,
+                           const uint32_t plaintext_len)
 {
     psa_status_t status;
-    size_t output_length;
+    size_t resulting_length;
 
-    // PSA expects ciphertext and tag concatenated.
-    size_t ciphertext_with_tag_len = msg_len + tag_len;
-    uint8_t ciphertext_with_tag[ciphertext_with_tag_len];
+    if (plaintext_len < PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len)) {
+        LT_LOG_ERROR("AES-GCM output (plaintext) buffer too small! Current: %" PRIu32 " bytes, required: %u bytes",
+                     plaintext_len,
+                     PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len));
+        return LT_CRYPTO_ERR;
+    }
 
     if (!ctx->key_set) {
         LT_LOG_ERROR("AES-GCM context key not set!");
         return LT_CRYPTO_ERR;
     }
 
-    memcpy(ciphertext_with_tag, msg, msg_len);
-    memcpy(ciphertext_with_tag + msg_len, tag, tag_len);
-
     // PSA AEAD decrypt operation
-    status = psa_aead_decrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, ciphertext_with_tag,
-                              ciphertext_with_tag_len, msg, msg_len, &output_length);
+    status = psa_aead_decrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, ciphertext,
+                              ciphertext_len, plaintext, plaintext_len, &resulting_length);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM decryption failed, status=%d (psa_status_t)", status);
+        return LT_CRYPTO_ERR;
+    }
+
+    if (resulting_length != PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len)) {
+        LT_LOG_ERROR("AES-GCM decryption output length mismatch! Current: %zu bytes, expected: %u bytes", resulting_length,
+                     PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len));
         return LT_CRYPTO_ERR;
     }
 
