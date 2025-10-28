@@ -42,8 +42,8 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
  * @return                  LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len, uint8_t *ciphertext,
-                           const uint32_t ciphertext_len) __attribute__((warn_unused_result));
+                           const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len,
+                           uint8_t *ciphertext, const uint32_t ciphertext_len) __attribute__((warn_unused_result));
 
 /**
  * @brief Decrypts data and expects initialized context with valid keys.
@@ -60,8 +60,8 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
  * @return                  LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len, uint8_t *plaintext,
-                           const uint32_t plaintext_len) __attribute__((warn_unused_result));
+                           const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len,
+                           uint8_t *plaintext, const uint32_t plaintext_len) __attribute__((warn_unused_result));
 
 /**
  * @brief Clears AES-GCM context.
