@@ -48,7 +48,7 @@ Uses PSA AEAD (Authenticated Encryption with Associated Data) operations:
 - Message is hashed with SHA-256 before verification
 
 ### Ed25519
-- As the MbedTLS does not support EdDSA yet (no support for Edwards curve), we use a fallback
+- As MbedTLS does not support EdDSA yet (no support for Edwards curve), we use a fallback
   implementation provided by a [small library by Orson Peters](https://github.com/orlp/ed25519).
 
 ### SHA-256
