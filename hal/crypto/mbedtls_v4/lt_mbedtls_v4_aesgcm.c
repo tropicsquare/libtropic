@@ -63,7 +63,7 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
         LT_LOG_ERROR("AES-GCM output (ciphertext) buffer too small! Current: %" PRIu32 " bytes, required: %u bytes",
                      ciphertext_len,
                      PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len));
-        return LT_CRYPTO_ERR;
+        return LT_PARAM_ERR;
     }
 
     if (!ctx->key_set) {
@@ -100,7 +100,7 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
         LT_LOG_ERROR("AES-GCM output (plaintext) buffer too small! Current: %" PRIu32 " bytes, required: %u bytes",
                      plaintext_len,
                      PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len));
-        return LT_CRYPTO_ERR;
+        return LT_PARAM_ERR;
     }
 
     if (!ctx->key_set) {
