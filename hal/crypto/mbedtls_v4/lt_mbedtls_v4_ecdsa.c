@@ -77,7 +77,7 @@ lt_ret_t lt_ecdsa_sign_verify(const uint8_t *msg, const uint32_t msg_len, const 
     }
 
     if (destroy_key_status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't destroy public key, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("Couldn't destroy public key, status=%d (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 

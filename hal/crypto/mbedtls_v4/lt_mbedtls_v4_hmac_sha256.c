@@ -57,7 +57,7 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     }
 
     if (destroy_key_status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't destroy HMAC key, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("Couldn't destroy HMAC key, status=%d (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 
