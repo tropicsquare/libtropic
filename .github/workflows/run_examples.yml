@@ -42,6 +42,7 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential
             pip install ${{ env.WHEEL_FILE_NAME }}
+            pip install -r vendor/mbedtls/scripts/basic.requirements.txt
 
       - name: Compile libtropic with examples and AddressSanitizer
         run: |
@@ -108,6 +109,7 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential valgrind
             pip install ${{ env.WHEEL_FILE_NAME }}
+            pip install -r vendor/mbedtls/scripts/basic.requirements.txt
 
       - name: Compile libtropic with examples
         run: |
