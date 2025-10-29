@@ -234,7 +234,7 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     }
 
     ret = lt_aesgcm_decrypt(&h->l3.aesgcm_decrypt_ctx, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash,
-                            sizeof(hash), (uint8_t *)"", 0, p_rsp->t_tauth, sizeof(p_rsp->t_tauth));
+                            sizeof(hash), p_rsp->t_tauth, sizeof(p_rsp->t_tauth), (uint8_t *)"", 0);
     if (ret != LT_OK) {
         goto exit;
     }

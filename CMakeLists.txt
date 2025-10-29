@@ -74,8 +74,7 @@ endif()
 
 # Crypto provider
 set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
-# set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls")  # uncomment this after mbedtls is ready
-set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto")              # delete this after mbedtls is ready
+set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
 
 # Logging options
 set(LT_LOG_LVL "" CACHE STRING "Set log level")
@@ -461,10 +460,30 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PUBLIC trezor_crypto)
 
-# elseif(LT_CRYPTO STREQUAL "mbedtls")
+elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
-#     message(STATUS "Crypto provider set to mbedtls")
+    message(STATUS "Crypto provider set to mbedtls_v4")
 
+    set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
+    set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
+    add_subdirectory(vendor/mbedtls/ "mbedtls")
+    target_link_libraries(tropic PUBLIC mbedtls)
+
+    target_sources(tropic PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/mbedtls_v4/lt_mbedtls_v4_common.c
+        # Fallback implementation of ED25519 we use until MbedTLS finalizes their implementation.
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/add_scalar.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/fe.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/ge.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/key_exchange.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/keypair.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sc.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/seed.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sha512.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sign.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/verify.c
+    )
+    target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src)
 else()
 
     get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)

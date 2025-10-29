@@ -30,38 +30,38 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
 /**
  * @brief Encrypts data and expects initialized context with valid keys.
  *
- * @param ctx         AES-GCM context structure
- * @param iv          Initialization vector
- * @param iv_len      Length of the initialization vector
- * @param add         Additional data
- * @param add_len     Length of additional data
- * @param msg         Message buffer
- * @param msg_len     Length of message in bytes
- * @param tag         Tag buffer
- * @param tag_len     Length of the tag buffer
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param ctx               AES-GCM context structure
+ * @param iv                Initialization vector
+ * @param iv_len            Length of the initialization vector
+ * @param add               Additional data
+ * @param add_len           Length of additional data
+ * @param plaintext         Input plaintext buffer
+ * @param plaintext_len     Length of the plaintext in bytes
+ * @param ciphertext        Output ciphertext buffer (data + tag will be stored here)
+ * @param ciphertext_len    Length of the ciphertext buffer
+ * @return                  LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, uint8_t *msg, const uint32_t msg_len, uint8_t *tag,
-                           const uint32_t tag_len) __attribute__((warn_unused_result));
+                           const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len,
+                           uint8_t *ciphertext, const uint32_t ciphertext_len) __attribute__((warn_unused_result));
 
 /**
  * @brief Decrypts data and expects initialized context with valid keys.
  *
- * @param ctx         AES-GCM context structure
- * @param iv          The initialisation vector
- * @param iv_len      Length of the initialization vector
- * @param add         Additional data
- * @param add_len     Length of additional data
- * @param msg         Message buffer
- * @param msg_len     Length of message in bytes
- * @param tag         Tag buffer
- * @param tag_len     Length of the tag buffer
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param ctx               AES-GCM context structure
+ * @param iv                The initialisation vector
+ * @param iv_len            Length of the initialization vector
+ * @param add               Additional data
+ * @param add_len           Length of additional data
+ * @param ciphertext        Input ciphertext buffer (data + tag)
+ * @param ciphertext_len    Length of the ciphertext buffer
+ * @param plaintext         Buffer to store plaintext
+ * @param plaintext_len     Length of the plaintext buffer
+ * @return                  LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, uint8_t *msg, const uint32_t msg_len, const uint8_t *tag,
-                           const uint32_t tag_len) __attribute__((warn_unused_result));
+                           const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len,
+                           uint8_t *plaintext, const uint32_t plaintext_len) __attribute__((warn_unused_result));
 
 /**
  * @brief Clears AES-GCM context.

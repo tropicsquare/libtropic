@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Finished interrupt pin support:
   - In HALs that don't support it, raise compilation error.
   - Implement support in Unix SPI HAL.
+- Support for MbedTLS v4 crypto backend.
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
