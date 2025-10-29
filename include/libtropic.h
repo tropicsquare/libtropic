@@ -373,6 +373,9 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
 
 /**
  * @brief Writes configuration object specified by `addr` to I-Config
+ * @warning Writing to I-Config below or above operating temperature range may fail without warning.
+ *          Make sure to check whether the I-Config was correctly written to. Refer to datasheet for operating
+ *          parameters and ratings.
  *
  * @param h           Device's handle
  * @param addr        Address of a config object
@@ -694,6 +697,9 @@ lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
 /**
  * @brief Writes the whole I-Config with the passed `config`.
  * @details Only the zero bits in `config` are written.
+ * @warning Writing to I-Config below or above operating temperature range may fail without warning.
+ *          Make sure to check whether the I-Config was correctly written to. Refer to datasheet for operating
+ *          parameters and ratings.
  *
  * @param h           Device's handle
  * @param config      Array into which objects are read
