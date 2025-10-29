@@ -49,10 +49,25 @@ extern "C" {
 
 /**
  * @brief Get max value from compile-time constants at compile-time.
+ * @note C-only version.
  */
+#ifndef __cplusplus
 #define LT_COMPTIME_MAX(a, b) __builtin_choose_expr((a) > (b), a, b)
+#endif
 
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+/**
+ * @brief Get max value from compile-time constants at compile-time.
+ * @note C++-only version.
+ */
+template <typename T, typename U>
+constexpr auto LT_COMPTIME_MAX(T a, U b)
+{
+    return (a > b) ? a : b;
 }
 #endif
 
