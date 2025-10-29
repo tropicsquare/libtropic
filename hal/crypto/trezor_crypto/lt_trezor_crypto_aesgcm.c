@@ -21,10 +21,18 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
 }
 
 lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, uint8_t *msg, const uint32_t msg_len, uint8_t *tag,
-                           const uint32_t tag_len)
+                           const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len,
+                           uint8_t *ciphertext, const uint32_t ciphertext_len)
 {
-    int ret = gcm_encrypt_message(iv, iv_len, add, add_len, msg, msg_len, tag, tag_len, ctx);
+    if (plaintext_len != ciphertext_len - TR01_L3_TAG_SIZE) {
+        return LT_PARAM_ERR;
+    }
+
+    // Copy plaintext into ciphertext, as Trezor's gcm_encrypt_message() works in-place
+    memcpy(ciphertext, plaintext, plaintext_len);
+
+    int ret = gcm_encrypt_message(iv, iv_len, add, add_len, ciphertext, plaintext_len, ciphertext + plaintext_len,
+                                  TR01_L3_TAG_SIZE, ctx);
     if (ret != RETURN_GOOD) {
         return LT_CRYPTO_ERR;
     }
@@ -33,10 +41,18 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
 }
 
 lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
-                           const uint32_t add_len, uint8_t *msg, const uint32_t msg_len, const uint8_t *tag,
-                           const uint32_t tag_len)
+                           const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len,
+                           uint8_t *plaintext, const uint32_t plaintext_len)
 {
-    int ret = gcm_decrypt_message(iv, iv_len, add, add_len, msg, msg_len, tag, tag_len, ctx);
+    if (plaintext_len != ciphertext_len - TR01_L3_TAG_SIZE) {
+        return LT_PARAM_ERR;
+    }
+
+    // Copy ciphertext into plaintext, as Trezor's gcm_decrypt_message() works in-place
+    memcpy(plaintext, ciphertext, plaintext_len);
+
+    int ret = gcm_decrypt_message(iv, iv_len, add, add_len, plaintext, plaintext_len, ciphertext + plaintext_len,
+                                  TR01_L3_TAG_SIZE, ctx);
     if (ret != RETURN_GOOD) {
         return LT_CRYPTO_ERR;
     }
