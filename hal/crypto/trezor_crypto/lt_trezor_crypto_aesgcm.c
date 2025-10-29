@@ -24,7 +24,7 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
                            const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len,
                            uint8_t *ciphertext, const uint32_t ciphertext_len)
 {
-    if (ciphertext_len < plaintext_len || plaintext_len != ciphertext_len - TR01_L3_TAG_SIZE) {
+    if (plaintext_len != ciphertext_len - TR01_L3_TAG_SIZE) {
         return LT_PARAM_ERR;
     }
 
