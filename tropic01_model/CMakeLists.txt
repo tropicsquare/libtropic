@@ -77,10 +77,19 @@ endif()
 set(LT_CRYPTO_HAL ${LT_CRYPTO})
 add_subdirectory("${PATH_TO_LIBTROPIC}hal/crypto/")
 
+# People who integrate libtropic don't have to use these variables
+# It's used in model's main.c to switch crypto contexts without manual changes
+set(LT_USE_TREZOR_CRYPTO  0 CACHE INTERNAL "")
+set(LT_USE_MBEDTLS_V4 0 CACHE INTERNAL "")
+
 # Handle LT_CRYPTO
 if(LT_CRYPTO STREQUAL "trezor_crypto")
     
     message(STATUS "Crypto provider set to trezor_crypto")
+    
+    # People who integrate libtropic don't have to use these variables
+    # It's used in model's main.c to switch crypto contexts without manual changes
+    set(LT_USE_TREZOR_CRYPTO 1)
 
     add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/trezor_crypto/" "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
@@ -89,6 +98,10 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
 elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
     message(STATUS "Crypto provider set to mbedtls_v4")
+
+    # People who integrate libtropic don't have to use these variables
+    # It's used in model's main.c to switch crypto contexts without manual changes
+    set(LT_USE_MBEDTLS_V4 1)
 
     set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
     set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
@@ -154,6 +167,13 @@ if (LT_BUILD_EXAMPLES)
         # Enable example registry using LT_BUILD_EXAMPLES and choose correct example for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_EXAMPLES)
         target_compile_definitions(${exe_name} PRIVATE ${example_macro})
+
+        # People who integrate libtropic don't have to use these variables
+        # It's used in model's main.c to switch crypto contexts without manual changes
+        target_compile_definitions(${exe_name} PRIVATE
+            LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
+            LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
+        )
 
     endforeach()
 
@@ -225,6 +245,13 @@ if(LT_BUILD_TESTS)
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
+
+        # People who integrate libtropic don't have to use these variables
+        # It's used in model's main.c to switch crypto contexts without manual changes
+        target_compile_definitions(${exe_name} PRIVATE
+            LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
+            LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
+        )
 
         if (LT_TEST_COVERAGE)
             # Add coverage-related flags from common config.
