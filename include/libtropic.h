@@ -297,6 +297,9 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
 
 /**
  * @brief Writes pairing public key into TROPIC01's pairing key slot 0-3
+ * @warning Writing pairing keys below or above operating temperature range may fail without warning.
+ *          Make sure to check whether the pairing key was correctly written. Refer to datasheet for operating
+ *          parameters and ratings.
  *
  * @param h           Device's handle
  * @param pairing_pub 32B of pubkey
@@ -323,6 +326,9 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
 
 /**
  * @brief Invalidates pairing key in slot 0-3
+ * @warning Invalidating pairing keys below or above operating temperature range may fail without warning.
+ *          Make sure to check whether the pairing key was correctly invalidated. Refer to datasheet for operating
+ *          parameters and ratings.
  *
  * @param h           Device's handle
  * @param slot        Pairing key lot SH0PUB - SH3PUB
