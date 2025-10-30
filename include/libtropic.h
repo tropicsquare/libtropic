@@ -297,6 +297,10 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
 
 /**
  * @brief Writes pairing public key into TROPIC01's pairing key slot 0-3
+ * @warning The pairing keys reside in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
+ * the rest of TROPIC01. Writing pairing keys below or above this range may fail without warning. Make sure to check
+ * whether the pairing key was correctly written if operating outside this range. Refer to datasheet for absolute
+ * maximum ratings.
  *
  * @param h           Device's handle
  * @param pairing_pub 32B of pubkey
@@ -323,6 +327,10 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
 
 /**
  * @brief Invalidates pairing key in slot 0-3
+ * @warning The pairing keys reside in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
+ * the rest of TROPIC01. Invalidating pairing keys below or above this range may fail without warning. Make sure to
+ * check whether the pairing key was correctly invalidated if operating outside this range. Refer to datasheet for
+ * absolute maximum ratings.
  *
  * @param h           Device's handle
  * @param slot        Pairing key lot SH0PUB - SH3PUB
@@ -373,6 +381,10 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
 
 /**
  * @brief Writes configuration object specified by `addr` to I-Config
+ * @warning The I-Config resides in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than the
+ * rest of TROPIC01. Writing to I-Memory in temperatures below or above this range may fail without warning. Make sure
+ * to check whether the I-Config was correctly written if operating outside this temperature range. Refer to datasheet
+ * for absolute maximum ratings.
  *
  * @param h           Device's handle
  * @param addr        Address of a config object
@@ -694,6 +706,10 @@ lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
 /**
  * @brief Writes the whole I-Config with the passed `config`.
  * @details Only the zero bits in `config` are written.
+ * @warning The I-Config resides in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than the
+ * rest of TROPIC01. Writing to I-Memory in temperatures below or above this range may fail without warning. Make sure
+ * to check whether the I-Config was correctly written if operating outside this temperature range. Refer to datasheet
+ * for absolute maximum ratings.
  *
  * @param h           Device's handle
  * @param config      Array into which objects are read
