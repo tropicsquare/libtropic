@@ -13,6 +13,10 @@ option(LT_VALGRIND "Enable Valgrind" OFF)
 # Enables compilation with coverage enabled and O0 for functional tests.
 option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
 
+# Crypto provider
+set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
+set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
+
 set(LAB_BATCH_PKG_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
     CACHE STRING
@@ -46,9 +50,6 @@ project(tropic01_model
 #                                                                         #
 ###########################################################################
 
-# Use trezor crypto as a source of backend cryptography code
-set(LT_CRYPTO "mbedtls_v4")
-
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
@@ -66,6 +67,43 @@ if(LT_VALGRIND)
     message(STATUS "Tests will be run with Valgrind (only when using CTest!).")
     set(VALGRIND_ARG --use-valgrind)
 endif()
+
+###########################################################################
+#                                                                         #
+#   LT_CRYPTO handling                                                    #
+#                                                                         #
+###########################################################################
+
+set(LT_CRYPTO_HAL ${LT_CRYPTO})
+add_subdirectory("${PATH_TO_LIBTROPIC}hal/crypto/")
+
+# Handle LT_CRYPTO
+if(LT_CRYPTO STREQUAL "trezor_crypto")
+    
+    message(STATUS "Crypto provider set to trezor_crypto")
+
+    add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/trezor_crypto/" "trezor_crypto")
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
+    target_link_libraries(tropic PUBLIC trezor_crypto)
+
+elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
+
+    message(STATUS "Crypto provider set to mbedtls_v4")
+
+    set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
+    set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
+    add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/mbedtls/" "mbedtls")
+    target_link_libraries(tropic PUBLIC mbedtls)
+
+else()
+
+    get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)
+    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${lt_crypto_choices}")
+    
+endif()
+
+target_sources(tropic PRIVATE ${LT_CRYPTO_HAL_SRCS} ${LT_CRYPTO_HAL_INCS})
+target_include_directories(tropic PUBLIC ${LT_CRYPTO_HAL_INCS_DIRS})
 
 ###########################################################################
 #                                                                         #
