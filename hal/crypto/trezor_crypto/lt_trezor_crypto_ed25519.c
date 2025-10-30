@@ -13,7 +13,7 @@
 lt_ret_t lt_ed25519_sign_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
 {
     int ret = ed25519_sign_open(msg, msg_len, pubkey, rs);
-    if (ret != RETURN_GOOD) {
+    if (ret != 0) {
         return LT_CRYPTO_ERR;
     }
     return LT_OK;

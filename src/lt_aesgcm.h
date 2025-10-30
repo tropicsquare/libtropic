@@ -14,17 +14,27 @@ extern "C" {
 #endif
 
 #include "libtropic_common.h"
-#include "lt_crypto_macros.h"
 
 /**
- * @brief Initializes AES-GCM context with the given key.
+ * @brief Initializes AES-GCM encryption context with the given key.
  *
- * @param ctx         AES-GCM context structure
- * @param key         The key value
- * @param key_len     Length of key in bytes
+ * @param ctx         Crypto context structure
+ * @param key         Key to initialize with
+ * @param key_len     Length of the key
  * @return            LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key, const uint32_t key_len)
+lt_ret_t lt_aesgcm_encrypt_init(void *ctx, const uint8_t *key, const uint32_t key_len)
+    __attribute__((warn_unused_result));
+
+/**
+ * @brief Initializes AES-GCM decryption context with the given key.
+ *
+ * @param ctx         Crypto context structure
+ * @param key         Key to initialize with
+ * @param key_len     Length of the key
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_aesgcm_decrypt_init(void *ctx, const uint8_t *key, const uint32_t key_len)
     __attribute__((warn_unused_result));
 
 /**
@@ -41,7 +51,7 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
  * @param ciphertext_len    Length of the ciphertext buffer
  * @return                  LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
+lt_ret_t lt_aesgcm_encrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
                            const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len,
                            uint8_t *ciphertext, const uint32_t ciphertext_len) __attribute__((warn_unused_result));
 
@@ -59,17 +69,25 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
  * @param plaintext_len     Length of the plaintext buffer
  * @return                  LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
+lt_ret_t lt_aesgcm_decrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
                            const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len,
                            uint8_t *plaintext, const uint32_t plaintext_len) __attribute__((warn_unused_result));
 
 /**
- * @brief Clears AES-GCM context.
+ * @brief Deinitializes AES-GCM encryption context.
  *
- * @param ctx         AES-GCM context structure
- * @return            LT_OK if success, otherwise returns other error code.
+ * @param ctx  Crypto context structure
+ * @return     LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_aesgcm_end(LT_CRYPTO_AES_GCM_CTX_T *ctx) __attribute__((warn_unused_result));
+lt_ret_t lt_aesgcm_encrypt_deinit(void *ctx) __attribute__((warn_unused_result));
+
+/**
+ * @brief Deinitializes AES-GCM decryption context.
+ *
+ * @param ctx  Crypto context structure
+ * @return     LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_aesgcm_decrypt_deinit(void *ctx) __attribute__((warn_unused_result));
 
 #ifdef __cplusplus
 }

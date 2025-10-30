@@ -16,10 +16,18 @@
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "lt_aesgcm.h"
-#include "lt_crypto_macros.h"
+#include "lt_mbedtls_v4.h"
 #include "lt_mbedtls_v4_common.h"
 
-lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key, const uint32_t key_len)
+/**
+ * @brief Initializes MbedTLS AES-GCM context.
+ *
+ * @param ctx      AES-GCM context structure (MbedTLS specific)
+ * @param key      Key to initialize with
+ * @param key_len  Length of the key
+ * @return         LT_OK if success, otherwise returns other error code.
+ */
+static lt_ret_t lt_aesgcm_init(lt_aesgcm_ctx_mbedtls_v4_t *ctx, const uint8_t *key, const uint32_t key_len)
 {
     psa_status_t status;
     psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
@@ -31,7 +39,7 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
     }
 
     // Initialize context
-    memset(ctx, 0, sizeof(LT_CRYPTO_AES_GCM_CTX_T));
+    memset(ctx, 0, sizeof(&ctx));
 
     // Set up key attributes
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT);
@@ -52,10 +60,44 @@ lt_ret_t lt_aesgcm_init_and_key(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *key
     return LT_OK;
 }
 
-lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
+/**
+ * @brief Deinitializes MbedTLS AES-GCM context.
+ *
+ * @param ctx  AES-GCM context structure (MbedTLS specific)
+ * @return     LT_OK if success, otherwise returns other error code.
+ */
+static lt_ret_t lt_aesgcm_deinit(lt_aesgcm_ctx_mbedtls_v4_t *ctx)
+{
+    if (ctx->key_set) {
+        psa_status_t status = psa_destroy_key(ctx->key_id);
+        if (status != PSA_SUCCESS) {
+            LT_LOG_ERROR("Failed to destroy AES-GCM key, status=%d (psa_status_t)", status);
+            return LT_CRYPTO_ERR;
+        }
+        ctx->key_set = 0;
+    }
+    return LT_OK;
+}
+
+lt_ret_t lt_aesgcm_encrypt_init(void *ctx, const uint8_t *key, const uint32_t key_len)
+{
+    lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
+
+    return lt_aesgcm_init(&_ctx->aesgcm_encrypt_ctx, key, key_len);
+}
+
+lt_ret_t lt_aesgcm_decrypt_init(void *ctx, const uint8_t *key, const uint32_t key_len)
+{
+    lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
+
+    return lt_aesgcm_init(&_ctx->aesgcm_decrypt_ctx, key, key_len);
+}
+
+lt_ret_t lt_aesgcm_encrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
                            const uint32_t add_len, const uint8_t *plaintext, const uint32_t plaintext_len,
                            uint8_t *ciphertext, const uint32_t ciphertext_len)
 {
+    lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
     psa_status_t status;
     size_t resulting_length;
 
@@ -65,14 +107,14 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
         return LT_PARAM_ERR;
     }
 
-    if (!ctx->key_set) {
+    if (!_ctx->aesgcm_encrypt_ctx.key_set) {
         LT_LOG_ERROR("AES-GCM context key not set!");
         return LT_CRYPTO_ERR;
     }
 
     // PSA AEAD encrypt operation
-    status = psa_aead_encrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, plaintext, plaintext_len, ciphertext,
-                              ciphertext_len, &resulting_length);
+    status = psa_aead_encrypt(_ctx->aesgcm_encrypt_ctx.key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, plaintext,
+                              plaintext_len, ciphertext, ciphertext_len, &resulting_length);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM encryption failed, status=%d (psa_status_t)", status);
@@ -88,10 +130,11 @@ lt_ret_t lt_aesgcm_encrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     return LT_OK;
 }
 
-lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
+lt_ret_t lt_aesgcm_decrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, const uint8_t *add,
                            const uint32_t add_len, const uint8_t *ciphertext, const uint32_t ciphertext_len,
                            uint8_t *plaintext, const uint32_t plaintext_len)
 {
+    lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
     psa_status_t status;
     size_t resulting_length;
 
@@ -101,14 +144,14 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
         return LT_PARAM_ERR;
     }
 
-    if (!ctx->key_set) {
+    if (!_ctx->aesgcm_decrypt_ctx.key_set) {
         LT_LOG_ERROR("AES-GCM context key not set!");
         return LT_CRYPTO_ERR;
     }
 
     // PSA AEAD decrypt operation
-    status = psa_aead_decrypt(ctx->key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, ciphertext, ciphertext_len, plaintext,
-                              plaintext_len, &resulting_length);
+    status = psa_aead_decrypt(_ctx->aesgcm_decrypt_ctx.key_id, PSA_ALG_GCM, iv, iv_len, add, add_len, ciphertext,
+                              ciphertext_len, plaintext, plaintext_len, &resulting_length);
 
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("AES-GCM decryption failed, status=%d (psa_status_t)", status);
@@ -124,15 +167,16 @@ lt_ret_t lt_aesgcm_decrypt(LT_CRYPTO_AES_GCM_CTX_T *ctx, const uint8_t *iv, cons
     return LT_OK;
 }
 
-lt_ret_t lt_aesgcm_end(LT_CRYPTO_AES_GCM_CTX_T *ctx)
+lt_ret_t lt_aesgcm_encrypt_deinit(void *ctx)
 {
-    if (ctx->key_set) {
-        psa_status_t status = psa_destroy_key(ctx->key_id);
-        if (status != PSA_SUCCESS) {
-            LT_LOG_ERROR("Failed to destroy AES-GCM key, status=%d (psa_status_t)", status);
-            return LT_CRYPTO_ERR;
-        }
-        ctx->key_set = 0;
-    }
-    return LT_OK;
+    lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
+
+    return lt_aesgcm_deinit(&_ctx->aesgcm_encrypt_ctx);
+}
+
+lt_ret_t lt_aesgcm_decrypt_deinit(void *ctx)
+{
+    lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
+
+    return lt_aesgcm_deinit(&_ctx->aesgcm_decrypt_ctx);
 }

@@ -13,7 +13,6 @@
 #include <stdint.h>
 
 #include "libtropic_common.h"
-#include "lt_crypto_macros.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,7 +27,7 @@ extern "C" {
  * @param  ctx Hash context
  * @return LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_sha256_init(LT_CRYPTO_SHA256_CTX_T *ctx) __attribute__((warn_unused_result));
+lt_ret_t lt_sha256_init(void *ctx) __attribute__((warn_unused_result));
 
 /**
  * @brief Starts SHA-256 calculation.
@@ -36,7 +35,7 @@ lt_ret_t lt_sha256_init(LT_CRYPTO_SHA256_CTX_T *ctx) __attribute__((warn_unused_
  * @param  ctx
  * @return LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_sha256_start(LT_CRYPTO_SHA256_CTX_T *ctx) __attribute__((warn_unused_result));
+lt_ret_t lt_sha256_start(void *ctx) __attribute__((warn_unused_result));
 
 /**
  * @brief Adds data to SHA-256 context.
@@ -46,8 +45,7 @@ lt_ret_t lt_sha256_start(LT_CRYPTO_SHA256_CTX_T *ctx) __attribute__((warn_unused
  * @param  input_len  Length of input data
  * @return LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_sha256_update(LT_CRYPTO_SHA256_CTX_T *ctx, const uint8_t *input, const size_t input_len)
-    __attribute__((warn_unused_result));
+lt_ret_t lt_sha256_update(void *ctx, const uint8_t *input, const size_t input_len) __attribute__((warn_unused_result));
 
 /**
  * @brief Finishes SHA-256 operation.
@@ -56,7 +54,7 @@ lt_ret_t lt_sha256_update(LT_CRYPTO_SHA256_CTX_T *ctx, const uint8_t *input, con
  * @param  output  Hash digest
  * @return LT_OK if success, otherwise returns other error code.
  */
-lt_ret_t lt_sha256_finish(LT_CRYPTO_SHA256_CTX_T *ctx, uint8_t *output) __attribute__((warn_unused_result));
+lt_ret_t lt_sha256_finish(void *ctx, uint8_t *output) __attribute__((warn_unused_result));
 
 #ifdef __cplusplus
 }

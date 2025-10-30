@@ -77,113 +77,112 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
     uint8_t protocol_name[32] = {'N', 'o', 'i', 's', 'e', '_', 'K', 'K', '1', '_', '2', '5', '5', '1',  '9',  '_',
                                  'A', 'E', 'S', 'G', 'C', 'M', '_', 'S', 'H', 'A', '2', '5', '6', 0x00, 0x00, 0x00};
     uint8_t hash[LT_SHA256_DIGEST_LENGTH] = {0};
-    LT_CRYPTO_SHA256_CTX_T sha256_ctx;
     lt_ret_t ret;
 
     // h = SHA_256(protocol_name)
-    ret = lt_sha256_init(&sha256_ctx);
+    ret = lt_sha256_init(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, protocol_name, sizeof(protocol_name));
+    ret = lt_sha256_update(h->l3.crypto_ctx, protocol_name, sizeof(protocol_name));
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, hash);
     if (ret != LT_OK) {
         return ret;
     }
 
     // h = SHA256(h||SHiPUB)
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    ret = lt_sha256_update(h->l3.crypto_ctx, hash, sizeof(hash));
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, shipub, TR01_SHIPUB_LEN);
+    ret = lt_sha256_update(h->l3.crypto_ctx, shipub, TR01_SHIPUB_LEN);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, hash);
     if (ret != LT_OK) {
         return ret;
     }
 
     // h = SHA256(h||STPUB)
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    ret = lt_sha256_update(h->l3.crypto_ctx, hash, sizeof(hash));
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, stpub, TR01_STPUB_LEN);
+    ret = lt_sha256_update(h->l3.crypto_ctx, stpub, TR01_STPUB_LEN);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, hash);
     if (ret != LT_OK) {
         return ret;
     }
 
     // h = SHA256(h||EHPUB)
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    ret = lt_sha256_update(h->l3.crypto_ctx, hash, sizeof(hash));
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, host_eph_keys->ehpub, TR01_EHPUB_LEN);
+    ret = lt_sha256_update(h->l3.crypto_ctx, host_eph_keys->ehpub, TR01_EHPUB_LEN);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, hash);
     if (ret != LT_OK) {
         return ret;
     }
 
     // h = SHA256(h||PKEY_INDEX)
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    ret = lt_sha256_update(h->l3.crypto_ctx, hash, sizeof(hash));
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, (uint8_t *)&pkey_index, 1);
+    ret = lt_sha256_update(h->l3.crypto_ctx, (uint8_t *)&pkey_index, 1);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, hash);
     if (ret != LT_OK) {
         return ret;
     }
 
     // h = SHA256(h||ETPUB)
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, hash, sizeof(hash));
+    ret = lt_sha256_update(h->l3.crypto_ctx, hash, sizeof(hash));
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, p_rsp->e_tpub, TR01_ETPUB_LEN);
+    ret = lt_sha256_update(h->l3.crypto_ctx, p_rsp->e_tpub, TR01_ETPUB_LEN);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, hash);
     if (ret != LT_OK) {
         return ret;
     }
@@ -228,23 +227,23 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
         return ret;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_decrypt_ctx, kauth, sizeof(kauth));
+    ret = lt_aesgcm_decrypt_init(h->l3.crypto_ctx, kauth, sizeof(kauth));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_decrypt(&h->l3.aesgcm_decrypt_ctx, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash,
-                            sizeof(hash), p_rsp->t_tauth, sizeof(p_rsp->t_tauth), (uint8_t *)"", 0);
+    ret = lt_aesgcm_decrypt(h->l3.crypto_ctx, h->l3.decryption_IV, sizeof(h->l3.decryption_IV), hash, sizeof(hash),
+                            p_rsp->t_tauth, sizeof(p_rsp->t_tauth), (uint8_t *)"", 0);
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_encrypt_ctx, kcmd, sizeof(kcmd));
+    ret = lt_aesgcm_encrypt_init(h->l3.crypto_ctx, kcmd, sizeof(kcmd));
     if (ret != LT_OK) {
         goto exit;
     }
 
-    ret = lt_aesgcm_init_and_key(&h->l3.aesgcm_decrypt_ctx, kres, sizeof(kres));
+    ret = lt_aesgcm_decrypt_init(h->l3.crypto_ctx, kres, sizeof(kres));
     if (ret != LT_OK) {
         goto exit;
     }
@@ -255,8 +254,10 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
 
 // If something went wrong during session keys establishment, better clean up AES GCM contexts
 exit:
-    memset(&h->l3.aesgcm_encrypt_ctx, 0, sizeof(h->l3.aesgcm_encrypt_ctx));
-    memset(&h->l3.aesgcm_decrypt_ctx, 0, sizeof(h->l3.aesgcm_decrypt_ctx));
+    lt_ret_t ret_unused;
+    ret_unused = lt_aesgcm_encrypt_deinit(h->l3.crypto_ctx);
+    ret_unused = lt_aesgcm_decrypt_deinit(h->l3.crypto_ctx);
+    LT_UNUSED(ret_unused);
 
     return ret;
 }
@@ -1165,22 +1166,21 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const 
 
     // Prepare hash of a message
     uint8_t msg_hash[32] = {0};
-    LT_CRYPTO_SHA256_CTX_T sha256_ctx;
     lt_ret_t ret;
 
-    ret = lt_sha256_init(&sha256_ctx);
+    ret = lt_sha256_init(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_start(&sha256_ctx);
+    ret = lt_sha256_start(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_update(&sha256_ctx, (uint8_t *)msg, msg_len);
+    ret = lt_sha256_update(h->l3.crypto_ctx, (uint8_t *)msg, msg_len);
     if (ret != LT_OK) {
         return ret;
     }
-    ret = lt_sha256_finish(&sha256_ctx, msg_hash);
+    ret = lt_sha256_finish(h->l3.crypto_ctx, msg_hash);
     if (ret != LT_OK) {
         return ret;
     }

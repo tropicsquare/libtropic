@@ -102,8 +102,8 @@ else()
     
 endif()
 
-target_sources(tropic PRIVATE ${LT_CRYPTO_HAL_SRCS} ${LT_CRYPTO_HAL_INCS})
-target_include_directories(tropic PUBLIC ${LT_CRYPTO_HAL_INCS_DIRS})
+target_sources(tropic PRIVATE ${LT_CRYPTO_HAL_SRCS})
+target_include_directories(tropic PUBLIC ${LT_CRYPTO_HAL_INC_DIRS})
 
 ###########################################################################
 #                                                                         #

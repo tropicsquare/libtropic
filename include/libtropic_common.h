@@ -12,7 +12,6 @@
 #include <stdint.h>
 
 #include "libtropic_macros.h"
-#include "lt_crypto_macros.h"
 #include "stdint.h"
 #include "tropic01_application_co.h"
 #include "tropic01_bootloader_co.h"
@@ -193,8 +192,7 @@ typedef struct lt_l3_state_t {
     enum lt_secure_session_status_t session_status;
     uint8_t encryption_IV[12];
     uint8_t decryption_IV[12];
-    LT_CRYPTO_AES_GCM_CTX_T aesgcm_encrypt_ctx;
-    LT_CRYPTO_AES_GCM_CTX_T aesgcm_decrypt_ctx;
+    void *crypto_ctx;
 #if LT_SEPARATE_L3_BUFF
     /** User shall define buffer's array and store its pointer into handle */
     uint8_t *buff __attribute__((aligned(16)));

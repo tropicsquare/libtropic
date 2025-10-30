@@ -15,6 +15,8 @@
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
 #include "libtropic_port_unix_tcp.h"
+#include "lt_mbedtls_v4.h"
+// #include "lt_trezor_crypto.h"
 
 int main(void)
 {
@@ -36,6 +38,10 @@ int main(void)
     device.port = 28992;
     device.rng_seed = (unsigned int)time(NULL);
     __lt_handle__.l2.device = &device;
+
+    lt_ctx_mbedtls_v4_t crypto_ctx;
+    // lt_ctx_trezor_crypto_t crypto_ctx;
+    __lt_handle__.l3.crypto_ctx = &crypto_ctx;
 
     LT_LOG_INFO("RNG initialized with seed=%u\n", device.rng_seed);
 
