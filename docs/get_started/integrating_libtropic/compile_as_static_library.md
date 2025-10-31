@@ -1,15 +1,16 @@
 # Compiling as a Static Library
 Apart from building the Libtropic during your project's build process, you can build the Libtropic separately as a static library (also known as static archive on Linux) and link it later.
 
-## Compilation
-When compiling Libtropic as a static library, a cryptography provider must always be defined, either in your `CMakeLists.txt` file or via the CMake command-line arguments.
+!!! warning
+    The Libtropic static library does not contain platform HALs (`hal/port/`) or cryptographic backend HALs (`hal/crypto/`). The consumer has to provide these - see the example `CMakeLists.txt` in [Adding to an Existing Project](./adding_to_project.md), specifically the parts where crypto HAL and platform HAL is added, for inspiration.
 
+## Compilation
 To compile Libtropic as a static library on a Unix-like system, do:
 
 ```shell
 $ mkdir build
 $ cd build
-$ cmake -DLT_CRYPTO=trezor_crypto .. # providing the crypto backend
+$ cmake ..
 $ make
 ```
 
@@ -20,7 +21,7 @@ After acquiring both the toolchain configuration and the linker script, do:
 ```shell
 $ mkdir build
 $ cd build
-$ cmake -DLT_CRYPTO=trezor_crypto -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
+$ cmake -DCMAKE_TOOLCHAIN_FILE=<ABSOLUTE PATH>/toolchain.cmake -DLINKER_SCRIPT=<ABSOLUTE PATH>/linker_script.ld ..
 $ make
 ```
 
