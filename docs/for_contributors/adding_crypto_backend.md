@@ -19,12 +19,18 @@ The new cryptographic backend has to support the following schemes:
 ## Guide
 To add a new cryptographic backend (let's say `mycrypto`):
 
-1. [Create and Implement the Necessary Files](#create-and-implement-the-necessary-files), 
-2. [Edit the Main CMakeLists.txt](#edit-the-main-cmakeliststxt).
+1. [Create and Implement the HAL C Files](#create-and-implement-the-hal-c-files),
+2. [Create and Implement the HAL CMakeLists.txt](#create-and-implement-the-hal-cmakeliststxt),
+3. [Edit the Crypto CMakeLists.txt](#edit-the-crypto-cmakeliststxt).
 
-After these steps, the new cryptographic backend should be selectable during compilation by setting `LT_CRYPTO` CMake variable to `"mycrypto"`.
+After these steps, the sources and include directories of the new cryptographic backend should be available in consumer's `CMakeLists.txt` by calling:
 
-### Create and Implement the Necessary Files
+1. `set(LT_CRYPTO_HAL "mycrypto")`,
+2. `add_subdirectory("<path_to_libtropic>/hal/crypto/")`.
+
+By doing this, the CMake variables `LT_CRYPTO_HAL_SRCS` and `LT_CRYPTO_HAL_INC_DIRS` will become available to the consumer.
+
+### Create and Implement the HAL C Files
 1. Inside `hal/crypto/`, create a new directory called `mycrypto`.
 2. Inside `hal/crypto/mycrypto/`, create the following source files:
     - `lt_mycrypto_aesgcm.c`,
@@ -47,43 +53,47 @@ After these steps, the new cryptographic backend should be selectable during com
         To implement Curve25519 functions, copy declarations from `lt_x25519.h` to `lt_mycrypto_x25519.c` and provide implementations.
         You can use existing ports inside `hal/crypto/` for inspiration.
 
-4. Inside `hal/crypto/mycrypto/`, create a file `lt_crypto_macros.h`. This file should define the following macros:
-    - `LT_CRYPTO_AES_GCM_CTX_T`: type of the AES-GCM context `mycrypto` uses,
-    - `LT_CRYPTO_SHA256_CTX_T`: type of the SHA256 context `mycrypto` uses.
-
-    !!! info
-        The name of `lt_crypto_macros.h` does not contain the name of the cryptographic backend (in this case `mycrypto`), because it is included in some Libtropic headers that do not know which cryptographic backend will be compiled (this is decided at compile time). The same goes for the aforementioned macros in `lt_crypto_macros.h`, because Libtropic often needs to instantiate a cryptographic context for e.g. AES-GCM functions, but does not have information about which backend is it working with.
-
-### Edit the Main CMakeLists.txt
-The cryptographic provider is selected using the `LT_CRYPTO` CMake option - a string, specifying the provider, is expected. In this case, the string would be `mycrypto`.
-
-The following steps describe how the `CMakeLists.txt` has to be edited to add support for the new cryptographic provider:
-
-1. In the `# Setup` section of the `CMakeLists.txt`, add the new string value for the `LT_CRYPTO` variable:
-```cmake
-# Crypto provider
-set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider") # no change
-set_property(CACHE LT_CRYPTO PROPERTY STRINGS "cryptoXY" "mycrypto") # add the new string here
+4. Inside `hal/crypto/mycrypto/`, create a file `lt_mycrypto.h`. This file should declare the **context structure** for `mycrypto`:
+```c
+typedef struct lt_ctx_mycrypto_t {
+    /** @private @brief AES-GCM context for encryption. */
+    // TODO
+    /** @private @brief AES-GCM context for decryption. */
+    // TODO
+    /** @private @brief SHA-256 context. */
+    // TODO
+} lt_ctx_mycrypto_t;
 ```
-2. At the end of `CMakeLists.txt`, in the section `# LT_CRYPTO handling`, add a new `elseif()` in the `LT_CRYPTO` handling:
+
+    !!! warning "Important"
+        This structure has to include all contexts the functions in the crypto HAL might need. This structure will then be defined in the user's application and assigned to `lt_handle_t`'s `crypto_ctx` void pointer - see [TODO](todo.md) for more information about this.
+
+1. Additionally, other source files and headers can be created for the needs of the implementation.
+
+### Create and Implement the HAL CMakeLists.txt
+Inside `hal/crypto/mycrypto/`, create a `CMakeLists.txt` with the following contents:
 ```cmake
-# Handle LT_CRYPTO
-if(LT_CRYPTO STREQUAL "trezor_crypto")
+set(LT_CRYPTO_HAL_SRCS
+    # Source files of the HAL
+)
 
-    # ... trezor_crypto handling ...
+set(LT_CRYPTO_HAL_INC_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    # Other include directories if needed
+)
 
-# --- start of new additions ---
-elseif(LT_CRYPTO STREQUAL "mycrypto")
+# export generic names for parent to consume
+set(LT_CRYPTO_HAL_SRCS ${LT_CRYPTO_HAL_SRCS} PARENT_SCOPE)
+set(LT_CRYPTO_HAL_INC_DIRS ${LT_CRYPTO_HAL_INC_DIRS} PARENT_SCOPE)
+```
 
-    message(STATUS "Crypto provider set to mycrypto")
+### Edit the Crypto CMakeLists.txt
+In `hal/crypto/`, there is a `CMakeLists.txt` which handles selecting one of the existing crypto HALs - at the top of the file, add the new string value `"mycrypto"` to `LT_CRYPTO_HAL` values, so `mycrypto` HAL can be selected by the consumer:
+```cmake
 
-    add_subdirectory(vendor/<path_to_crypto_backend>/ "mycrypto")
-    target_compile_definitions(mycrypto PRIVATE <edit_me>) # Edit or remove.
-    target_link_libraries(tropic PUBLIC mycrypto)
-    # Add more lines if necessary.
-
-# --- end of new additions ---
-else()
-    # ...
-endif()
+set(LT_CRYPTO_HAL "" CACHE STRING "Choose HAL files of the specified cryptography provider")
+# Add the new string below ---------------------------------------
+#                                                                |
+#                                                                v
+set_property(CACHE LT_CRYPTO_HAL PROPERTY STRINGS "cryptoXY" "mycrypto")
 ```
