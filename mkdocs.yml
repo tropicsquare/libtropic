@@ -56,9 +56,12 @@ nav:
     - Libtropic Architecture: get_started/libtropic_architecture.md
     - Integrating Libtropic:
       - get_started/integrating_libtropic/index.md
+      - How To Build:
+        - get_started/integrating_libtropic/how_to_build/index.md
+        - Add to an Existing Project: get_started/integrating_libtropic/how_to_build/adding_to_project.md
+        - Compile as a Static Library: get_started/integrating_libtropic/how_to_build/compile_as_static_library.md
+      - How To Use: get_started/integrating_libtropic/how_to_use/index.md
       - Integration Examples: get_started/integrating_libtropic/integration_examples.md
-      - Adding to an Existing Project: get_started/integrating_libtropic/adding_to_project.md
-      - Compiling as a Static Library: get_started/integrating_libtropic/compile_as_static_library.md
     - Examples:
       - get_started/examples/index.md
       - Reversible Examples: get_started/examples/reversible_examples.md
