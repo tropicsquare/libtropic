@@ -99,13 +99,21 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
     message(STATUS "Crypto provider set to mbedtls_v4")
 
+
     # People who integrate libtropic don't have to use these variables
     # It's used in model's main.c to switch crypto contexts without manual changes
     set(LT_USE_MBEDTLS_V4 1)
 
+    # Fetch MbedTLS v4.0.0
+    FetchContent_Declare(
+        mbedtls
+        URL https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-4.0.0/mbedtls-4.0.0.tar.bz2
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
     set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
     set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
-    add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/mbedtls/" "mbedtls")
+    FetchContent_MakeAvailable(mbedtls)
+
     target_link_libraries(tropic PUBLIC mbedtls)
 
 else()
