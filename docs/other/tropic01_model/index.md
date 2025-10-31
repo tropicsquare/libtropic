@@ -1,9 +1,9 @@
 # TROPIC01 Model
-Code in the `tropic01_model/` directory is meant to be compiled under Unix-like OS. This directory offers running libtropic's **functional tests** and **examples** against the TROPIC01's Python model, so no chip or external hardware is needed.
+The CMake project in the `tropic01_model/` directory builds libtropic in a way that it can communicate with the TROPIC01 Python Model. The CMake project offers the following:
 
-- Functional testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
-- When running examples, you need to start the model manually and then execute the example binary in a separate terminal. This applies also for the tests, if they are not run using CTest.
-- Both of these points are discussed further in this text.
+1. Running libtropic's [Functional Tests](../../for_contributors/functional_tests.md). The testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
+2. Running libtropic's [Examples](../../get_started/examples/index.md).
+3. Flexible switching between the supported cryptographic backends using the `LT_CRYPTO` CMake variable.
 
 > [!WARNING]
 > There are some examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those would always fail against the model and thus `tropic01_model/CMakeLists.txt` excludes them. Namely:
@@ -17,9 +17,7 @@ Code in the `tropic01_model/` directory is meant to be compiled under Unix-like 
     to the coverage.
 
 ## How it Works?
-Both processes (tests/examples and model) will talk to each other through TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from physical TROPIC01 chip.
-> [!NOTE]
-This functionality is implemented with the help of the Unix TCP HAL implemented in `hal/port/unix/libtropic_port_unix_tcp.c`.
+The `tropic01_model/CMakeLists.txt` uses the Unix TCP HAL implemented in`hal/port/unix/libtropic_port_unix_tcp.c`, so both processes (the compiled binary and the model) will talk to each other through a TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from the physical TROPIC01 chip.
 
 ## Model Setup
 First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
@@ -43,11 +41,11 @@ where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab 
 ```shell
 cd tropic01_model/
 ```
-2. Compile the examples:
+2. Compile the examples with the selected cryptographic backend (e.g. MbedTLS v4.0.0):
 ```shell
 mkdir build
 cd build
-cmake -DLT_BUILD_EXAMPLES=1 ..
+cmake -DLT_BUILD_EXAMPLES=1 -DLT_CRYPTO="mbedtls_v4" ..
 make
 ```
 As a result, executables for each example are built in the `tropic01_model/build/` directory.
@@ -82,11 +80,11 @@ It is recommended to run the tests using CTest, but if it's needed to run the te
 ```shell
 cd tropic01_model/
 ```
-2. Compile the tests in this directory:
+2. Compile the tests with the selected cryptographic backend (e.g. MbedTLS v4.0.0):
 ```shell
 mkdir build
 cd build
-cmake -DLT_BUILD_TESTS=1 ..
+cmake -DLT_BUILD_TESTS=1 -DLT_CRYPTO="mbedtls_v4" ..
 make
 ```
 As a result, executables for each test are built in the `tropic01_model/build/` directory.
@@ -143,12 +141,12 @@ The model is automatically started for each test separately, so it behaves like 
 ### Running the Tests with Coverage
 We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
 ```shell
-cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 ..
+cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 -DLT_CRYPTO="mbedtls_v4" ..
 ```
 
 After CTest finishes, you can use [gcovr](https://github.com/gcovr/gcovr) to export results:
 ```shell
-# Execute this from the tropic01_model directory.
+# Execute this from the tropic01_model/ directory.
 gcovr --txt coverage_report.txt --gcov-exclude '.*lt_test.*|.*main\.c.*'
 ```
 
