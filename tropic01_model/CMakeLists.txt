@@ -28,7 +28,6 @@ option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
 
 # Crypto provider
 set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
-set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
 
 set(LAB_BATCH_PKG_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
@@ -72,7 +71,11 @@ endif()
 
 ###########################################################################
 #                                                                         #
-#   LT_CRYPTO handling                                                    #
+#   Crypto backend handling                                               #
+#                                                                         #
+#   Note: The libtropic consumer does not have to do this in his          #
+#   application, we do this to quickly switch crypto backends.            #
+#   Refer to the libtropic documentation for more info about this.        #
 #                                                                         #
 ###########################################################################
 
@@ -81,7 +84,7 @@ add_subdirectory("${PATH_TO_LIBTROPIC}hal/crypto/")
 
 # People who integrate libtropic don't have to use these variables
 # It's used in model's main.c to switch crypto contexts without manual changes
-set(LT_USE_TREZOR_CRYPTO  0 CACHE INTERNAL "")
+set(LT_USE_TREZOR_CRYPTO 0 CACHE INTERNAL "")
 set(LT_USE_MBEDTLS_V4 0 CACHE INTERNAL "")
 
 # Handle LT_CRYPTO
@@ -101,7 +104,6 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
     message(STATUS "Crypto provider set to mbedtls_v4")
 
-
     # People who integrate libtropic don't have to use these variables
     # It's used in model's main.c to switch crypto contexts without manual changes
     set(LT_USE_MBEDTLS_V4 1)
@@ -117,11 +119,6 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
     FetchContent_MakeAvailable(mbedtls)
 
     target_link_libraries(tropic PUBLIC mbedtls)
-
-else()
-
-    get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)
-    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${lt_crypto_choices}")
     
 endif()
 
