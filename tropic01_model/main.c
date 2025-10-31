@@ -43,10 +43,11 @@ int main(void)
     __lt_handle__.l2.device = &device;
 
 #if LT_USE_TREZOR_CRYPTO
-    lt_ctx_trezor_crypto_t crypto_ctx;
+    lt_ctx_trezor_crypto_t
 #elif LT_USE_MBEDTLS_V4
-    lt_ctx_mbedtls_v4_t crypto_ctx;
+    lt_ctx_mbedtls_v4_t
 #endif
+        crypto_ctx;
     __lt_handle__.l3.crypto_ctx = &crypto_ctx;
 
     LT_LOG_INFO("RNG initialized with seed=%u\n", device.rng_seed);
