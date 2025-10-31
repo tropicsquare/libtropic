@@ -10,8 +10,8 @@
 
 #include "hasher.h"
 #include "libtropic_common.h"
+#include "libtropic_trezor_crypto.h"
 #include "lt_sha256.h"
-#include "lt_trezor_crypto.h"
 
 lt_ret_t lt_sha256_init(void *ctx)
 {

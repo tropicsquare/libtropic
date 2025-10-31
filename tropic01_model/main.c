@@ -16,9 +16,9 @@
 #include "libtropic_port.h"
 #include "libtropic_port_unix_tcp.h"
 #if LT_USE_TREZOR_CRYPTO
-#include "lt_trezor_crypto.h"
+#include "libtropic_trezor_crypto.h"
 #elif LT_USE_MBEDTLS_V4
-#include "lt_mbedtls_v4.h"
+#include "libtropic_mbedtls_v4.h"
 #endif
 
 int main(void)

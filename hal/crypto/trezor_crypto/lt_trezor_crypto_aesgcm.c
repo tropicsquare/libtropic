@@ -8,8 +8,8 @@
 #include "aes/aes.h"
 #include "aes/aesgcm.h"
 #include "libtropic_common.h"
+#include "libtropic_trezor_crypto.h"
 #include "lt_aesgcm.h"
-#include "lt_trezor_crypto.h"
 
 /**
  * @brief Initializes Trezor crypto AES-GCM context.

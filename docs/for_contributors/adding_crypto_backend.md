@@ -56,7 +56,7 @@ By doing this, the CMake variables `LT_CRYPTO_HAL_SRCS` and `LT_CRYPTO_HAL_INC_D
         To implement Curve25519 functions, copy declarations from `lt_x25519.h` to `lt_mycrypto_x25519.c` and provide implementations.
         You can use existing ports inside `hal/crypto/` for inspiration.
 
-4. Inside `hal/crypto/mycrypto/`, create a file `lt_mycrypto.h`. This file should declare the **context structure** for `mycrypto`:
+4. Inside `hal/crypto/mycrypto/`, create a file `libtropic_mycrypto.h`. This file should declare the **context structure** for `mycrypto`:
 ```c
 typedef struct lt_ctx_mycrypto_t {
     /** @private @brief AES-GCM context for encryption. */

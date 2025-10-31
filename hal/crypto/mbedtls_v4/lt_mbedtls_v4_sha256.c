@@ -14,7 +14,7 @@
 #pragma GCC diagnostic pop
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
-#include "lt_mbedtls_v4.h"
+#include "libtropic_mbedtls_v4.h"
 #include "lt_mbedtls_v4_common.h"
 #include "lt_sha256.h"
 
