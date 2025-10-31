@@ -22,7 +22,7 @@ extern "C" {
 #define LT_SHA256_DIGEST_LENGTH 32
 
 /**
- * @brief Initializes hash context.
+ * @brief Initializes SHA-256 context.
  *
  * @param  ctx Hash context
  * @return LT_OK if success, otherwise returns other error code.
