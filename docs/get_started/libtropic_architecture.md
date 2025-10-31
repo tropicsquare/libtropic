@@ -10,7 +10,7 @@ For more information about TROPIC01, please refer to [TROPIC01 repository](https
 Libtropic's architecture is visualized in the following figure:
 
 <figure style="text-align: center;">
-<img src="../../img/libtropic-architecture.svg" alt="Libtropic Architecture" width="500"/>
+<img src="../../img/libtropic_architecture.svg" alt="Libtropic Architecture" width="750"/>
 <figcaption style="font-size: 0.9em; color: #555; margin-top: 0.5em;">
     Libtropic Architecture
   </figcaption>
@@ -18,11 +18,11 @@ Libtropic's architecture is visualized in the following figure:
 
 Libtropic consists of:
 
-1. *Libtropic Public API*. Macros and data structures are available in `include/libtropic_common.h` and function declarations in `include/libtropic.h` (implemented in `src/libtropic.c`). Interface of these functions is tightly related to TROPIC01's commands, defined in the User API (can be found in the [TROPIC01 repository](https://github.com/tropicsquare/tropic01)). These public functions are used for *Unencrypted Communication*, which is achieved by calling the *Layer 2 API*, and *Encrypted Communication*, achieved by calling the *Layer 3 API* and using one of the available *Cryptography Libraries* for cryptography operations on the Host MCU side.
+1. *Libtropic Public API*. Macros and data structures are available in `include/libtropic_common.h` and function declarations in `include/libtropic.h` (implemented in `src/libtropic.c`). Interface of these functions is tightly related to TROPIC01's commands, defined in the User API (can be found in the [TROPIC01 repository](https://github.com/tropicsquare/tropic01)). These public functions are used for *Unencrypted Communication*, which is achieved by calling the *Layer 2 API*, and *Encrypted Communication*, achieved by calling the *Layer 3 API*.
 2. *Helpers*. Functions also declared in `include/libtropic.h`, that either wrap one or more Libtropic API functions to simplify some operations (e.g. the function `lt_verify_and_chip_and_start_secure_session()` for easier Secure Session establishment), or provide some additional functionality (e.g. the function `lt_print_chip_id()` for interpreting TROPIC01's `CHIP_ID` and printing it).
 3. *[Examples](examples/index.md)*. Show example usage of Libtropic, using both the *Libtropic API* and *Helpers*.
 4. *[Functional Tests](../for_contributors/functional_tests.md)*. Used to verify the libtropic core API, using both the *Libtropic API* and *Helpers*.
-5. *L3 Layer API*. Functions called by the *Libtropic Public API* during *Encrypted Communication*.
+5. *L3 Layer API*. Functions called by the *Libtropic Public API* during *Encrypted Communication*. The L3 Layer functions call an abstract cryptographic interface (declared in `src/`), providing cryptographic functionality needed on the Host MCU side. For every supported cryptographic backend, a crypto HAL exists in `hal/crypto/` and implements the abstract interface. However, it is assumed that only one cryptographic backend is used for the whole Libtropic build.
 6. *L2 Layer API*. Functions called by the *Libtropic Public API* during *Unencrypted Communication*.
 7. *L1 Layer API*. Functions called by the *L2 Layer API* and wrapping port-specific L1 Layer functions, which are implemented by the HALs (Hardware Abstract Layers) in `hal/port/`. These HALs are initialized using the *Libtropic Public API*. The library can be compiled with support for only one hardware abstraction layer (HAL) at a time, but the HAL allows communication with multiple chips.
 
