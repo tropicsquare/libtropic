@@ -23,6 +23,9 @@ To add a new cryptographic backend (let's say `mycrypto`):
 2. [Create and Implement the HAL CMakeLists.txt](#create-and-implement-the-hal-cmakeliststxt),
 3. [Edit the Crypto CMakeLists.txt](#edit-the-crypto-cmakeliststxt).
 
+!!! tip
+    For an inspiration, see existing HALs inside `hal/crypto/`.
+
 After these steps, the sources and include directories of the new cryptographic backend should be available in consumer's `CMakeLists.txt` by calling:
 
 1. `set(LT_CRYPTO_HAL "mycrypto")`,
@@ -66,7 +69,7 @@ typedef struct lt_ctx_mycrypto_t {
 ```
 
     !!! warning "Important"
-        This structure has to include all contexts the functions in the crypto HAL might need. This structure will then be defined in the user's application and assigned to `lt_handle_t`'s `crypto_ctx` void pointer - see [TODO](todo.md) for more information about this.
+        This structure has to include all contexts the functions in the crypto HAL might need. This structure will then be defined in the user's application and assigned to `lt_handle_t`'s `crypto_ctx` void pointer - see the [Libtropic Bare-Bone Example](../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
 
 1. Additionally, other source files and headers can be created for the needs of the implementation.
 
