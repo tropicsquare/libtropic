@@ -58,12 +58,12 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential
             pip install ${{ env.WHEEL_FILE_NAME }}
-            pip install gcovr
+            pip install gcovr jsonschema
 
       - name: Compile libtropic with tests and coverage enabled
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1
+            cmake ./ -B build -DLT_CRYPTO=mbedtls_v4 -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1
             cd build/
             make
 
