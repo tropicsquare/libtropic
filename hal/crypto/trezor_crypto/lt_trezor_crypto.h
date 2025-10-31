@@ -12,6 +12,10 @@
 #include "aes/aesgcm.h"
 #include "hasher.h"
 
+/**
+ * @brief Context structure for Trezor crypto.
+ *
+ */
 typedef struct lt_ctx_trezor_crypto_t {
     /** @private @brief AES-GCM context for encryption. */
     gcm_ctx aesgcm_encrypt_ctx;
