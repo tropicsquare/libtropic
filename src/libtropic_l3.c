@@ -252,9 +252,9 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
 
     return LT_OK;
 
-// If something went wrong during session keys establishment, better clean up AES GCM contexts
-exit:
+    // If something went wrong during session keys establishment, better clean up AES GCM contexts
     lt_ret_t ret_unused;
+exit:
     ret_unused = lt_aesgcm_encrypt_deinit(h->l3.crypto_ctx);
     ret_unused = lt_aesgcm_decrypt_deinit(h->l3.crypto_ctx);
     LT_UNUSED(ret_unused);
