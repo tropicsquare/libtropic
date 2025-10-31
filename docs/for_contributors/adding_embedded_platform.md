@@ -4,10 +4,9 @@ Libtropic is written as *platform-independent*, so no changes to the main code b
 ## Guide
 To create a new HAL:
 
-1. [Create and Implement the Necessary Files](#create-and-implement-the-necessary-files),
-2. [Use the New HAL](#use-the-new-hal).
+1. [Create and Implement the Necessary Files](#create-and-implement-the-necessary-files).
 !!! tip
-    For inspiration, see existing HALs inside `hal/port/`.
+    For an inspiration, see existing HALs inside `hal/port/`.
 
 ### Create and Implement the Necessary Files
 1. Inside `hal/port/`, create a new directory, for example called `newplatform`.
@@ -48,40 +47,3 @@ These members are usually physical pin numbers, SPI handles or other information
     }
     ```
     2. additional `static` functions you might need.
-
-### Use the New HAL
-
-1. Add the new HAL files inside your `CMakeLists.txt` or `Makefile` - see [Adding to an Existing Project](../get_started/integrating_libtropic/adding_to_project.md) section for an inspiration.
-2. Initialize and use the new HAL in your code:
-```c
-#include "libtropic_port_newplatform_<additional_info>.h"
-#include "libtropic_common.h"
-
-int main(void) {
-    lt_handle_t h = {0}; // Libtropic's handle.
-    lt_dev_newplatform_<additional_info> my_device;
-    // Initialize the device structure.
-    my_device.first_member = "some value for the first member";
-    my_device.nth_member = "some value for the n-th member";
-    // Save a pointer to `my_device` inside the libtropic's handle,
-    // so you can get it in the port functions.
-    h.l2.device = &my_device;
-
-    // Initialize the handle.
-    lt_ret_t ret = lt_init(h);
-    if (LT_OK != ret) {
-        lt_deinit(h);
-        return -1;
-    }
-
-    // Do your stuff ...
-
-    // Deinitialize the handle after you are done.
-    ret = lt_deinit(h);
-    if (LT_OK != ret) {
-        return -1;
-    }
-
-    return 0;
-}
-```
