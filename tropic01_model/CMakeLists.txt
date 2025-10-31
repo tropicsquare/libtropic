@@ -1,5 +1,18 @@
 cmake_minimum_required(VERSION 3.21.0)
 
+include(FetchContent)
+
+###########################################################################
+#                                                                         #
+#   Define project's name                                                 #
+#                                                                         #
+###########################################################################
+
+project(tropic01_model
+        VERSION 1.0.0
+        DESCRIPTION "TROPIC01 model project using libtropic."
+        LANGUAGES C)
+
 ###########################################################################
 #                                                                         #
 #   Options                                                               #
@@ -32,17 +45,6 @@ set(LAB_BATCH_PKG_DIR
 if(NOT DEFINED PATH_TO_LIBTROPIC)
     set(PATH_TO_LIBTROPIC "libtropic/")
 endif()
-
-###########################################################################
-#                                                                         #
-#   Define project's name                                                 #
-#                                                                         #
-###########################################################################
-
-project(tropic01_model
-        VERSION 0.1.0
-        DESCRIPTION "Port of libtropic to be used against TROPIC01 model."
-        LANGUAGES C)
 
 ###########################################################################
 #                                                                         #
