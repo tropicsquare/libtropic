@@ -24,12 +24,6 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     psa_key_id_t key_id = 0;
     size_t mac_length;
 
-    // Ensure PSA Crypto is initialized
-    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
-        LT_LOG_ERROR("PSA Crypto is not initialized!");
-        return LT_CRYPTO_ERR;
-    }
-
     // Set up key attributes for HMAC
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_SIGN_MESSAGE);
     psa_set_key_algorithm(&attributes, PSA_ALG_HMAC(PSA_ALG_SHA_256));

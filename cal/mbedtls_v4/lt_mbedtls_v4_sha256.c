@@ -22,12 +22,6 @@ lt_ret_t lt_sha256_init(void *ctx)
 {
     lt_ctx_mbedtls_v4_t *_ctx = (lt_ctx_mbedtls_v4_t *)ctx;
 
-    // Ensure PSA Crypto is initialized
-    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
-        LT_LOG_ERROR("PSA Crypto is not initialized!");
-        return LT_CRYPTO_ERR;
-    }
-
     // Initialize the hash operation
     _ctx->sha256_ctx = psa_hash_operation_init();
     return LT_OK;

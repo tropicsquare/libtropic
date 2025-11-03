@@ -16,7 +16,4 @@
 /** @brief PSA Crypto initialization state */
 extern bool lt_mbedtls_psa_crypto_initialized;
 
-/** @brief Initialize PSA Crypto library if not already done. */
-lt_ret_t lt_mbedtls_ensure_psa_crypto_init(void);
-
 #endif  // LT_MBEDTLS_V4_COMMON_H

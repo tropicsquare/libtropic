@@ -24,12 +24,6 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     psa_key_id_t key_id = 0;
     size_t secret_length;
 
-    // Ensure PSA Crypto is initialized
-    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
-        LT_LOG_ERROR("PSA Crypto is not initialized!");
-        return LT_CRYPTO_ERR;
-    }
-
     // Set up key attributes for X25519 private key
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_DERIVE);
     psa_set_key_algorithm(&attributes, PSA_ALG_ECDH);
@@ -76,12 +70,6 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
     psa_key_id_t key_id = 0;
     size_t pubkey_length;
-
-    // Ensure PSA Crypto is initialized
-    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
-        LT_LOG_ERROR("PSA Crypto is not initialized!");
-        return LT_CRYPTO_ERR;
-    }
 
     // Set up key attributes for X25519 private key
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_EXPORT);

@@ -17,7 +17,6 @@
 #include "libtropic_logging.h"
 #include "libtropic_mbedtls_v4.h"
 #include "lt_aesgcm.h"
-#include "lt_mbedtls_v4_common.h"
 
 /**
  * @brief Initializes MbedTLS AES-GCM context.
@@ -31,12 +30,6 @@ static lt_ret_t lt_aesgcm_init(lt_aesgcm_ctx_mbedtls_v4_t *ctx, const uint8_t *k
 {
     psa_status_t status;
     psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
-
-    // Ensure PSA Crypto is initialized
-    if (lt_mbedtls_ensure_psa_crypto_init() != LT_OK) {
-        LT_LOG_ERROR("PSA Crypto is not initialized!");
-        return LT_CRYPTO_ERR;
-    }
 
     // Initialize context
     memset(ctx, 0, sizeof(&ctx));
