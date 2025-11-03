@@ -70,6 +70,10 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
         return LT_PARAM_ERR;
     }
 
+    // Init IV to zeros
+    memset(h->l3.encryption_IV, 0, sizeof(h->l3.encryption_IV));
+    memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
+
     // Setup a response pointer to l2 buffer, which is placed in handle
     struct lt_l2_handshake_rsp_t *p_rsp = (struct lt_l2_handshake_rsp_t *)h->l2.buff;
 

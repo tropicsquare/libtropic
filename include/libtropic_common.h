@@ -190,8 +190,8 @@ typedef enum lt_secure_session_status_t {
 
 typedef struct lt_l3_state_t {
     enum lt_secure_session_status_t session_status;
-    uint8_t encryption_IV[12];
-    uint8_t decryption_IV[12];
+    uint8_t encryption_IV[TR01_L3_IV_SIZE];
+    uint8_t decryption_IV[TR01_L3_IV_SIZE];
     void *crypto_ctx;
 #if LT_SEPARATE_L3_BUFF
     /** User shall define buffer's array and store its pointer into handle */
