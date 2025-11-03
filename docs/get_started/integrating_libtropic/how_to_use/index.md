@@ -5,7 +5,7 @@ To start using Libtropic in your application, the following headers have to be i
 1. `libtropic_common.h`: Declarations of the commonly used macros, structures, enums and other. 
 2. `libtropic.h`: Main API function declarations.
 3. `libtropic_port_<port_name>.h`: Declares the `lt_dev_<port_name>_t` device structure, specific to the Host platform (see the `libtropic/hal/port/` directory for the existing platform HALs). An `lt_dev_<port_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below). 
-4. `libtropic_<crypto_backend_name>.h`: Declares the `lt_ctx_<crypto_backend_name>_t` context structure, specific to the used cryptographic backend (see the `libtropic/hal/crypto/` directory for the existing cryptographic backend HALs). An `lt_ctx_<crypto_backend_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below).
+4. `libtropic_<crypto_backend_name>.h`: Declares the `lt_ctx_<crypto_backend_name>_t` context structure, specific to the used CAL (Crypto Abstract Layer - see the `libtropic/cal/` directory for the existing CALs). An `lt_ctx_<crypto_backend_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below).
 5. Based on the needed functionality, additional headers from `libtropic/include/`. Refer to the [API Reference](../../../doxygen/build/html/index.html) for more details.
 
 !!! note
@@ -26,8 +26,8 @@ The following bare-bone example shows how to initialize Libtropic, so it can be 
 
 int main(void) {
     // 1. Declare a handle variable.
-    // The handle is basically a context for the whole communication between
-    // libtropic and TROPIC01.
+    // The handle is a context for the whole communication between libtropic
+    // and TROPIC01.
     lt_handle_t h;
 
     // 2. Declare a device structure.
@@ -45,15 +45,15 @@ int main(void) {
     // Libtropic will then pass this structure to the HAL functions.
     h.l2.device = &my_device;
 
-    // 5. Declare a context structure for the cryptographic backend.
+    // 5. Declare a context structure for the CFP (Cryptographic Functionality
+    //    Provider).
     // The context structure provides libtropic with the memory location where
     // it can save contexts of cryptographic functions.
     // None of its members have to be initialized.
     lt_ctx_<crypto_backend_name>_t my_crypto_ctx;
 
     // 6. Save a pointer to the context structure inside the handle.
-    // Libtropic will then pass this structure to the cryptographic backend
-    // HAL functions.
+    // Libtropic will then pass this structure to the CAL functions.
     h.l3.crypto_ctx = &my_crypto_ctx;
 
     // 7. Initialize the handle.
