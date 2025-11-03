@@ -42,6 +42,7 @@ lt_ret_t lt_sha256_start(void *ctx)
     status = psa_hash_setup(&_ctx->sha256_ctx, PSA_ALG_SHA_256);
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("SHA-256 setup failed, status=%d (psa_status_t)", status);
+        psa_hash_abort(&_ctx->sha256_ctx);
         return LT_CRYPTO_ERR;
     }
 
@@ -57,6 +58,7 @@ lt_ret_t lt_sha256_update(void *ctx, const uint8_t *input, const size_t input_le
     status = psa_hash_update(&_ctx->sha256_ctx, input, input_len);
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("SHA-256 update failed, status=%d (psa_status_t)", status);
+        psa_hash_abort(&_ctx->sha256_ctx);
         return LT_CRYPTO_ERR;
     }
 
@@ -73,6 +75,7 @@ lt_ret_t lt_sha256_finish(void *ctx, uint8_t *output)
     status = psa_hash_finish(&_ctx->sha256_ctx, output, PSA_HASH_LENGTH(PSA_ALG_SHA_256), &hash_length);
     if (status != PSA_SUCCESS) {
         LT_LOG_ERROR("SHA-256 finish failed, status=%d (psa_status_t)", status);
+        psa_hash_abort(&_ctx->sha256_ctx);
         return LT_CRYPTO_ERR;
     }
 
