@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 set(LT_CAL_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_trezor_crypto_common.c    
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_trezor_crypto_aesgcm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_trezor_crypto_ed25519.c
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_trezor_crypto_ecdsa.c

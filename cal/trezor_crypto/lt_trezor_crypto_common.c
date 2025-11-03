@@ -12,7 +12,11 @@
 
 bool lt_mbedtls_psa_crypto_initialized = false;
 
-lt_ret_t lt_crypto_ctx_init(void *ctx) { return LT_OK; }
+lt_ret_t lt_crypto_ctx_init(void *ctx)
+{
+    LT_UNUSED(ctx);
+    return LT_OK;
+}
 
 lt_ret_t lt_crypto_ctx_deinit(void *ctx)
 {
