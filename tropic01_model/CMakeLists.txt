@@ -79,8 +79,8 @@ endif()
 #                                                                         #
 ###########################################################################
 
-set(LT_CRYPTO_HAL ${LT_CRYPTO})
-add_subdirectory("${PATH_TO_LIBTROPIC}hal/crypto/")
+set(LT_CAL ${LT_CRYPTO})
+add_subdirectory("${PATH_TO_LIBTROPIC}cal/")
 
 # People who integrate libtropic don't have to use these variables
 # It's used in model's main.c to switch crypto contexts without manual changes
@@ -122,8 +122,8 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
     
 endif()
 
-target_sources(tropic PRIVATE ${LT_CRYPTO_HAL_SRCS})
-target_include_directories(tropic PUBLIC ${LT_CRYPTO_HAL_INC_DIRS})
+target_sources(tropic PRIVATE ${LT_CAL_SRCS})
+target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS})
 
 ###########################################################################
 #                                                                         #
