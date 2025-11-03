@@ -14,7 +14,6 @@
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "lt_hmac_sha256.h"
-#include "lt_mbedtls_v4_common.h"
 
 lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_t *input, const uint32_t input_len,
                         uint8_t *output)

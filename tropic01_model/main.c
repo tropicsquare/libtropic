@@ -19,10 +19,21 @@
 #include "libtropic_trezor_crypto.h"
 #elif LT_USE_MBEDTLS_V4
 #include "libtropic_mbedtls_v4.h"
+#include "psa/crypto.h"
 #endif
 
 int main(void)
 {
+    int ret;
+
+#if LT_USE_MBEDTLS_V4
+    psa_status_t status = psa_crypto_init();
+    if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
+        return -1;
+    }
+#endif
+
 #ifdef LT_BUILD_TESTS
     // Disable buffering on stdout and stderr (problem in GitHub CI)
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -60,8 +71,14 @@ int main(void)
 // Otherwise, 0 is always returned (in case of building tests).
 #ifdef LT_BUILD_EXAMPLES
 #include "lt_ex_registry.c.inc"
-    return __lt_ex_return_val__;
+    ret = __lt_ex_return_val__;
 #else
-    return 0;
+    ret = 0;
 #endif
+
+#if LT_USE_MBEDTLS_V4
+    mbedtls_psa_crypto_free();
+#endif
+
+    return ret;
 }

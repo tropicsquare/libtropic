@@ -15,9 +15,6 @@
 #include "libtropic_mbedtls_v4.h"
 #include "lt_aesgcm.h"
 #include "lt_crypto_common.h"
-#include "lt_mbedtls_v4_common.h"
-
-bool lt_mbedtls_psa_crypto_initialized = false;
 
 lt_ret_t lt_crypto_ctx_init(void *ctx)
 {
@@ -25,15 +22,6 @@ lt_ret_t lt_crypto_ctx_init(void *ctx)
 
     _ctx->aesgcm_encrypt_ctx.key_set = 0;
     _ctx->aesgcm_decrypt_ctx.key_set = 0;
-
-    if (!lt_mbedtls_psa_crypto_initialized) {
-        psa_status_t status = psa_crypto_init();
-        if (status != PSA_SUCCESS) {
-            LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
-            return LT_CRYPTO_ERR;
-        }
-        lt_mbedtls_psa_crypto_initialized = true;
-    }
 
     return LT_OK;
 }

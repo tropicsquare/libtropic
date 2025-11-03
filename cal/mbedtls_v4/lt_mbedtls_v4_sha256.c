@@ -15,7 +15,6 @@
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_mbedtls_v4.h"
-#include "lt_mbedtls_v4_common.h"
 #include "lt_sha256.h"
 
 lt_ret_t lt_sha256_init(void *ctx)
