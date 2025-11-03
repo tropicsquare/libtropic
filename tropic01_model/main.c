@@ -24,7 +24,7 @@
 
 int main(void)
 {
-    int ret;
+    int ret = 0;
 
 #if LT_USE_MBEDTLS_V4
     psa_status_t status = psa_crypto_init();
@@ -36,8 +36,16 @@ int main(void)
 
 #ifdef LT_BUILD_TESTS
     // Disable buffering on stdout and stderr (problem in GitHub CI)
-    setvbuf(stdout, NULL, _IONBF, 0);
-    setvbuf(stderr, NULL, _IONBF, 0);
+    ret = setvbuf(stdout, NULL, _IONBF, 0);
+    if (ret != 0) {
+        LT_LOG_ERROR("setvbuf(stdout, ...) failed, ret=%d", ret);
+        return ret;
+    }
+    ret = setvbuf(stderr, NULL, _IONBF, 0);
+    if (ret != 0) {
+        LT_LOG_ERROR("setvbuf(stderr, ...) failed, ret=%d", ret);
+        return ret;
+    }
 #endif
 
     lt_handle_t __lt_handle__ = {0};
@@ -72,8 +80,6 @@ int main(void)
 #ifdef LT_BUILD_EXAMPLES
 #include "lt_ex_registry.c.inc"
     ret = __lt_ex_return_val__;
-#else
-    ret = 0;
 #endif
 
 #if LT_USE_MBEDTLS_V4
