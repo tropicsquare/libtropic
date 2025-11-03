@@ -9,21 +9,21 @@ set(PATH_LIBTROPIC ${CMAKE_CURRENT_SOURCE_DIR}/../vendor/libtropic/)
 ```cmake
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 ```
-3. By default, Libtropic does not link crypto backend or it's HAL, so it can be built as a static library. This is the consumer's responsibility:
-    1. Choose one of the supported crypto backends (e.g. MbedTLS v4.0.0) and select its HAL:
+3. By default, Libtropic does not link CFP (Cryptographic Functionality Provider) or it's CAL (Crypto Abstract Layer), so it can be built as a static library. This is the consumer's responsibility:
+    1. Choose one of the supported CFPs (e.g. MbedTLS v4.0.0) and select its CAL:
     ```cmake
-    set(LT_CRYPTO_HAL "mbedtls_v4")
+    set(LT_CAL "mbedtls_v4")
     ```
-    2. Add the `libtropic/hal/crypto/` subdirectory, which provides the crypto backend HAL sources and include directories:
+    2. Add the `libtropic/cal/` subdirectory, which provides the CAL sources and include directories:
     ```cmake
-    add_subdirectory("${PATH_LIBTROPIC}hal/crypto/")
+    add_subdirectory("${PATH_LIBTROPIC}cal/")
     ```
     3. Add the provided sources and include directories to the `tropic` target:
     ```cmake
-    target_sources(tropic PRIVATE ${LT_CRYPTO_HAL_SRCS})
-    target_include_directories(tropic PUBLIC ${LT_CRYPTO_HAL_INC_DIRS})
+    target_sources(tropic PRIVATE ${LT_CAL_SRCS})
+    target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS})
     ```
-    4. Link the cryptographic backend (provided by the consumer) to the `tropic` target:
+    4. Link the CFP (provided by the consumer) to the `tropic` target:
     ```cmake
     target_link_libraries(tropic PUBLIC mbedtls)
     ```
@@ -60,4 +60,4 @@ If you use a Makefile instead of CMake, you need to:
 
 !!! tip
     You can compile libtropic as a static library (see [Compile as a Static Library](compile_as_static_library.md)) using CMake separately and include only the resulting library file in your Makefile.
-    This approach eliminates the need to compile the entire libtropic library and its dependencies in your Makefile. However, you will still need to manually add the HAL files for your platform (`libtropic/hal/port/`) and the cryptographic backend you want to use (`libtropic/hal/crypto/`).
+    This approach eliminates the need to compile the entire libtropic library and its dependencies in your Makefile. However, you will still need to manually add the HAL files for your platform (`libtropic/hal/port/`) and the CAL files for your CFP (`libtropic/cal/`).
