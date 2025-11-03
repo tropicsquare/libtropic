@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tropic01_model/`: don't compile unsupported examples.
 - Moved crypto HAL code outside of `hal/crypto/` to `cal/` and started reffering to crypto HAL as CAL (Crypto Abstract Layer).
 - Refactored compilation of CALs and supported crypto libraries (details in the [Add to an Existing Project](https://tropicsquare.github.io/libtropic/latest/get_started/integrating_libtropic/how_to_build/adding_to_project/) section of the libtropic documentation):
-  - Libtropic can be built as a static library without CALs or crypto libraries (a void pointer to `crypto_ctx`, holding all crypto contexts, was added to `lt_handle_t.l3`).
+  - Libtropic can be built as a static library without CALs or crypto libraries (replaced compile-time crypto type macros with runtime polymorphism using the `crypto_ctx` void pointer contained in `lt_l3_state_t`).
   - Crypto libraries are no longer in the `vendor/` directory (besides copy of `trezor_crypto/` for quick testing purposes). Providing the crypto library is now the consumer's responsibility.
   - CAL API was refactored to be compatible with the new `crypto_ctx` structure.
   - For testing purposes, quick switching of supported crypto libraries was implemented in the `tropic01_model/` CMake project.
