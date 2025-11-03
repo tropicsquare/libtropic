@@ -3,7 +3,7 @@ The CMake project in the `tropic01_model/` directory builds libtropic in a way t
 
 1. Running libtropic's [Functional Tests](../../for_contributors/functional_tests.md). The testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
 2. Running libtropic's [Examples](../../get_started/examples/index.md).
-3. Flexible switching between the supported cryptographic backends using the `LT_CRYPTO` CMake variable.
+3. Flexible switching between the supported cryptographic libraries using the `LT_CRYPTO` CMake variable.
 
 > [!WARNING]
 > There are some examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those would always fail against the model and thus `tropic01_model/CMakeLists.txt` excludes them. Namely:
@@ -41,7 +41,7 @@ where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab 
 ```shell
 cd tropic01_model/
 ```
-2. Compile the examples with the selected cryptographic backend (e.g. MbedTLS v4.0.0):
+2. Compile the examples with the selected cryptographic library (e.g. MbedTLS v4.0.0):
 ```shell
 mkdir build
 cd build
@@ -80,7 +80,7 @@ It is recommended to run the tests using CTest, but if it's needed to run the te
 ```shell
 cd tropic01_model/
 ```
-2. Compile the tests with the selected cryptographic backend (e.g. MbedTLS v4.0.0):
+2. Compile the tests with the selected cryptographic library (e.g. MbedTLS v4.0.0):
 ```shell
 mkdir build
 cd build
