@@ -36,6 +36,7 @@ By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will beco
 ### Create and Implement the CAL C Files
 1. Inside `cal/`, create a new directory called `mycrypto`.
 2. Inside `cal/mycrypto/`, create the following source files:
+    - `lt_mycrypto_common.c`
     - `lt_mycrypto_aesgcm.c`,
     - `lt_mycrypto_ecdsa.c`,
     - `lt_mycrypto_ed25519.c`,
@@ -43,6 +44,7 @@ By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will beco
     - `lt_mycrypto_hmac_sha256.c`,
     - `lt_mycrypto_x25519.c`.
 3. In each of the source files, implement all required functions - they are declared in respective headers inside the `libtropic/src/` directory:
+    - `lt_crypto_common.h`: Common CAL functions,
     - `lt_aesgcm.h`: AES-GCM functions,
     - `lt_ecdsa.h`: ECDSA functions,
     - `lt_ed25519.h`: ED25519 functions,
@@ -70,13 +72,20 @@ typedef struct lt_ctx_mycrypto_t {
     !!! warning "Important"
         This structure has to include all contexts the functions in the CAL might need. This structure will then be defined in the user's application and assigned to `lt_handle_t`'s `crypto_ctx` void pointer - see the [Libtropic Bare-Bone Example](../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
 
-1. Additionally, other source files and headers can be created for the needs of the implementation.
+5. Additionally, other source files and headers can be created for the needs of the implementation.
 
 ### Create and Implement the CAL CMakeLists.txt
 Inside `cal/mycrypto/`, create a `CMakeLists.txt` with the following contents:
 ```cmake
 set(LT_CAL_SRCS
-    # Source files of the CAL
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_common.c    
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_aesgcm.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_ed25519.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_ecdsa.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_hmac_sha256.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_x25519.c
+    # Other source files if needed
 )
 
 set(LT_CAL_INC_DIRS
