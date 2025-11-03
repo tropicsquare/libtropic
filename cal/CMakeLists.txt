@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 # Used for choosing the correct CAL
-set(LT_CAL "" CACHE STRING "Choose CAL files of the specified cryptography provider")
+set(LT_CAL "" CACHE STRING "Choose CAL files of the specified cryptographic functionality provider")
 set_property(CACHE LT_CAL PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
 
 # Validate LT_CAL
