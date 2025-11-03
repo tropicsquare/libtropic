@@ -16,6 +16,7 @@
 #include "libtropic_common.h"
 #include "libtropic_l2.h"
 #include "lt_aesgcm.h"
+#include "lt_crypto_common.h"
 #include "lt_l1.h"
 
 static lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
@@ -48,9 +49,7 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
     memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
     memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
 
-    lt_ret_t ret_unused;
-    ret_unused = lt_aesgcm_encrypt_deinit(s3->crypto_ctx);
-    ret_unused = lt_aesgcm_decrypt_deinit(s3->crypto_ctx);
+    lt_ret_t ret_unused = lt_crypto_ctx_deinit(s3->crypto_ctx);
     LT_UNUSED(ret_unused);
 
 #if LT_SEPARATE_L3_BUFF
