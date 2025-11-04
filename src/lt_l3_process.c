@@ -15,6 +15,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_l2.h"
+#include "libtropic_logging.h"
 #include "lt_aesgcm.h"
 #include "lt_crypto_common.h"
 #include "lt_l1.h"
@@ -49,8 +50,10 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
     memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
     memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
 
-    lt_ret_t ret_unused = lt_crypto_ctx_deinit(s3->crypto_ctx);
-    LT_UNUSED(ret_unused);
+    lt_ret_t ret = lt_crypto_ctx_deinit(s3->crypto_ctx);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("lt_crypto_ctx_deinit() failed, ret=%d", ret);
+    }
 
 #if LT_SEPARATE_L3_BUFF
     memset(s3->buff, 0, s3->buff_len);
