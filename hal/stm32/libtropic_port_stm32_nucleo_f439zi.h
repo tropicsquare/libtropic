@@ -18,7 +18,7 @@
  * @note Public members are meant to be configured by the developer before passing the handle to
  *       libtropic.
  */
-typedef struct lt_dev_stm32_nucleo_f439zi {
+typedef struct lt_dev_stm32_nucleo_f439zi_t {
     /** @brief @public Instance of STM SPI interface. Use STM32 macro (SPIX, e.g. SPI1). */
     SPI_TypeDef *spi_instance;
 
@@ -46,6 +46,6 @@ typedef struct lt_dev_stm32_nucleo_f439zi {
 
     /** @brief @private SPI handle. */
     SPI_HandleTypeDef spi_handle;
-} lt_dev_stm32_nucleo_f439zi;
+} lt_dev_stm32_nucleo_f439zi_t;
 
 #endif  // LIBTROPIC_PORT_STM32_NUCLEO_F439ZI_H
