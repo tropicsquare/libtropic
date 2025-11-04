@@ -1,5 +1,5 @@
-# Adding a New Embedded Platform
-Libtropic is written to be *platform-independent*, so no changes to the main code base are needed when adding support for a new platform. However, to define how communication on the L1 Layer will work, a new Hardware Abstraction Layer (HAL) must be implemented. Currently available HALs are located in `hal/`.
+# Adding a New Host Platform
+Libtropic is written to be *platform-independent*, so no changes to the main code base are needed when adding support for a new host platform. However, to define how communication on the L1 Layer will work, a new Hardware Abstraction Layer (HAL) must be implemented. Currently available HALs are located in `hal/`.
 
 ## Guide
 To add support for a new platform (let's say a board `my_board` with MCU `my_mcu`):
