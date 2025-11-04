@@ -92,7 +92,7 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
     
     message(STATUS "Crypto provider set to trezor_crypto")
     
-    # People who integrate libtropic don't have to use these variables
+    # Developers who integrate Libtropic do not have to use this variable
     # It's used in model's main.c to switch crypto contexts without manual changes
     set(LT_USE_TREZOR_CRYPTO 1)
 
