@@ -47,20 +47,19 @@ typedef struct lt_dev_my_mcu_my_board_t {
 
     2. Additional macros or types you will need in `libtropic_port_my_mcu_my_board.c`.
 
-1. Inside `libtropic_port_my_mcu_my_board.c`, implement:
-    1. all functions declared in `include/libtropic_port.h`. All of the port functions have an instance of `lt_l2_state_t` as one of the parameters, where your instance of `lt_dev_my_mcu_my_board_t` will be saved, so you can get it in a following way:
-    ```c
-    // one of the functions from include/libtropic_port.h
-    lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
-    {
-        lt_dev_my_mcu_my_board_t *device =
-            (lt_dev_my_mcu_my_board_t *)(s2->device);
-        
-        // Your implementation ...
-        
-        return LT_OK;
-    }
-    ```
+1. Inside `libtropic_port_my_mcu_my_board.c`, implement all functions declared in `include/libtropic_port.h`. All of the port functions have an instance of `lt_l2_state_t` as one of the parameters, where your instance of `lt_dev_my_mcu_my_board_t` will be saved, so you can get it in a following way:
+```c
+// one of the functions from include/libtropic_port.h
+lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
+{
+    lt_dev_my_mcu_my_board_t *device =
+        (lt_dev_my_mcu_my_board_t *)(s2->device);
+    
+    // Your implementation ...
+    
+    return LT_OK;
+}
+```
 2. Additionally, other source files and headers can be created for the needs of the implementation.
 
 ### Create and Implement the HAL CMakeLists.txt
