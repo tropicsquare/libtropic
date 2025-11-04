@@ -2,7 +2,7 @@
 Apart from building Libtropic during your project's build process, you can build Libtropic separately as a static library (also known as a static archive on Linux) and link it later.
 
 !!! warning
-    The Libtropic static library does not contain HALs (`libtropic/hal/port/`) or CALs (`libtropic/cal/`). The consumer must provide these:
+    The Libtropic static library does not contain HALs (`libtropic/hal/`) or CALs (`libtropic/cal/`). The consumer must provide these:
     
     1. If CMake is used, inspiration can be taken from the steps in the [Add to an Existing Project](./adding_to_project.md) section.
     2. In other cases, the HAL and CAL files will have to be added manually.

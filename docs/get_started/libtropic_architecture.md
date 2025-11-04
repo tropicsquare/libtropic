@@ -24,7 +24,7 @@ Libtropic consists of:
 4. *[Functional Tests](../for_contributors/functional_tests.md)*. Used to verify the libtropic core API using both the *Libtropic API* and *Helpers*.
 5. *L3 Layer API*. Functions called by the *Libtropic Public API* during *encrypted communication*. Because the L3 Layer requires cryptographic functionality (for example, to decrypt incoming L3 Result packets from TROPIC01), it uses a *Crypto Abstraction Layer* (CAL) to obtain functionality provided by a *Cryptographic Functionality Provider* (CFP). A CFP can be a cryptographic library (e.g. MbedTLS) or a cryptographic hardware accelerator. The CAL is declared in headers inside `src/` and specific CAL implementations for each CFP exist in `cal/`. It is assumed that only one CAL implementation is used for a given libtropic build.
 6. *L2 Layer API*. Functions called by the *Libtropic Public API* during *Unencrypted Communication*.
-7. *L1 Layer API*. Functions called by the *L2 Layer API* that wrap port-specific L1 Layer functions implemented by the *Hardware Abstraction Layers* (HAL) in `hal/port/`. These HALs are initialized using the *Libtropic Public API*. The library can be compiled with support for only one HAL at a time, but a single HAL may support communication with multiple chips.
+7. *L1 Layer API*. Functions called by the *L2 Layer API* that wrap port-specific L1 Layer functions implemented by the *Hardware Abstractionion Layers* (HAL) in `hal/`. These HALs are initialized using the *Libtropic Public API*. The library can be compiled with support for only one HAL at a time, but a single HAL may support communication with multiple chips.
 
 !!! tip
     For more information about Libtropic's functions, refer to the [API Reference](../doxygen/build/html/index.html).

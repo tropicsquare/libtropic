@@ -4,7 +4,7 @@ To start using Libtropic in your application, include the following headers:
 
 1. `libtropic_common.h`: Declarations of commonly used macros, structures, enums, and other definitions.
 2. `libtropic.h`: Main API function declarations.
-3. `libtropic_port_<port_name>.h`: Declares the `lt_dev_<port_name>_t` device structure specific to the Host platform (see the `libtropic/hal/port/` directory for existing platform HALs). An `lt_dev_<port_name>_t` variable must be declared and passed to an instance of `lt_handle_t` (see the example below).
+3. `libtropic_port_<port_name>.h`: Declares the `lt_dev_<port_name>_t` device structure specific to the Host platform (see the `libtropic/hal/` directory for existing platform HALs). An `lt_dev_<port_name>_t` variable must be declared and passed to an instance of `lt_handle_t` (see the example below).
 4. `libtropic_<cfp_name>.h`: Declares the `lt_ctx_<cfp_name>_t` context structure specific to the used CFP (Cryptographic Functionality Provider). See the `libtropic/cal/` directory for the existing CALs (Crypto Abstraction Layers). An `lt_ctx_<cfp_name>_t` variable must be declared and passed to an instance of `lt_handle_t` (see the example below).
 5. Based on the needed functionality, include additional headers from `libtropic/include/`. Refer to the [API Reference](../../../doxygen/build/html/index.html) for more details.
 
