@@ -104,7 +104,7 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
 
     message(STATUS "Crypto provider set to mbedtls_v4")
 
-    # People who integrate libtropic don't have to use these variables
+    # Developers who integrate Libtropic do not have to use this variable
     # It's used in model's main.c to switch crypto contexts without manual changes
     set(LT_USE_MBEDTLS_V4 1)
 
