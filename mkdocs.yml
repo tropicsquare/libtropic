@@ -84,6 +84,10 @@ nav:
     - TROPIC01 Model:
       - other/tropic01_model/index.md
       - Provisioning Data: other/tropic01_model/provisioning_data.md
+    - Supported Cryptographic Functionality Providers:
+      - other/supported_cfps/index.md
+      - Trezor Crypto: other/supported_cfps/trezor_crypto.md
+      - MbedTLS: other/supported_cfps/mbedtls.md
 
 plugins:
   - search
