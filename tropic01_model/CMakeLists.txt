@@ -75,12 +75,12 @@ endif()
 #                                                                         #
 #   Note: The libtropic consumer does not have to do this in his          #
 #   application, we do this to quickly switch crypto backends.            #
-#   Refer to the libtropic documentation for more info about this.        #
+#   Refer to the libtropic documentation for more info about what should  #
+#   be done by the consumer this.                                         #
 #                                                                         #
 ###########################################################################
 
-set(LT_CAL ${LT_CRYPTO})
-add_subdirectory("${PATH_TO_LIBTROPIC}cal/")
+add_subdirectory("${PATH_TO_LIBTROPIC}cal/${LT_CRYPTO}")
 
 # People who integrate libtropic don't have to use these variables
 # It's used in model's main.c to switch crypto contexts without manual changes

@@ -20,16 +20,15 @@ The new CFP has to support the following schemes:
 To add support for a new CFP (let's say `mycrypto`):
 
 1. [Create and Implement the CAL C Files](#create-and-implement-the-hal-c-files),
-2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt),
-3. [Edit the Common CAL CMakeLists.txt](#edit-the-common-cal-cmakeliststxt).
+2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt).
 
 !!! tip
     For an inspiration, see existing CALs inside `cal/`.
 
 After these steps, the sources and include directories of the new CAL should be available in consumer's `CMakeLists.txt` by calling:
-
-1. `set(LT_CAL "mycrypto")`,
-2. `add_subdirectory("<path_to_libtropic>/cal/")`.
+```cmake
+add_subdirectory("<path_to_libtropic>/cal/mycrypto")
+```
 
 By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will become available to the consumer.
 
@@ -96,15 +95,4 @@ set(LT_CAL_INC_DIRS
 # export generic names for parent to consume
 set(LT_CAL_SRCS ${LT_CAL_SRCS} PARENT_SCOPE)
 set(LT_CAL_INC_DIRS ${LT_CAL_INC_DIRS} PARENT_SCOPE)
-```
-
-### Edit the Common CAL CMakeLists.txt
-In `cal/`, there is a common `CMakeLists.txt` which handles selecting one of the existing CALs - at the top of the file, add the new string value `"mycrypto"` to `LT_CAL` values, so `mycrypto` CAL can be selected by the consumer:
-```cmake
-
-set(LT_CAL "" CACHE STRING "Choose CAL files of the specified cryptographic functionality provider")
-# Add the new string below ---------------------------------
-#                                                          |
-#                                                          v
-set_property(CACHE LT_CAL PROPERTY STRINGS "cryptoXY" "mycrypto")
 ```
