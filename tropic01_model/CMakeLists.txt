@@ -253,7 +253,7 @@ if(LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
 
-        # People who integrate libtropic don't have to use these variables
+        # Developers who integrate Libtropic do not have to use this variable
         # It's used in model's main.c to switch crypto contexts without manual changes
         target_compile_definitions(${exe_name} PRIVATE
             LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
