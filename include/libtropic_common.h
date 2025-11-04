@@ -593,7 +593,7 @@ LT_STATIC_ASSERT(
 
 /**
  * @brief When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs
- * based on bootloader version. This header layout is returned by bootloader version v1.0.1
+ * based on bootloader version. This header layout is returned by bootloader version v2.0.1
  */
 typedef struct lt_header_boot_v2_t {
     /** @brief Currently only two types supported:
