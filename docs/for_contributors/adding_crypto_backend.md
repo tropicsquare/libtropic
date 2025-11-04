@@ -19,7 +19,7 @@ The new CFP has to support the following schemes:
 ## Guide
 To add support for a new CFP (let's say `mycrypto`):
 
-1. [Create and Implement the CAL C Files](#create-and-implement-the-hal-c-files),
+1. [Create and Implement the CAL C Files](#create-and-implement-the-cal-c-files),
 2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt).
 
 !!! tip
