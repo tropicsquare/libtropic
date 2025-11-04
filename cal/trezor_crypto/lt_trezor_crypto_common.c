@@ -10,7 +10,6 @@
 #include "lt_aesgcm.h"
 #include "lt_crypto_common.h"
 
-
 lt_ret_t lt_crypto_ctx_init(void *ctx)
 {
     LT_UNUSED(ctx);
