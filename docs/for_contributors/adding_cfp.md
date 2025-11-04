@@ -1,5 +1,5 @@
 # Adding a New Cryptographic Functionality Provider
-Because Libtropic is designed to run on the Host MCU, it requires certain cryptographic functionality - for example, to decrypt incoming L3 packets from TROPIC01. To enable this, Libtropic defines a CAL (Crypto Abstraction Layer) to abstract the needed functionality of a chosen CFP (Cryptographic Functionality Provider). This interface-based design makes it easy to integrate and support additional CFPs in the future.
+Because Libtropic is designed to run on the Host MCU, it requires certain cryptographic functionality — for example, to decrypt incoming L3 packets from TROPIC01. To enable this, Libtropic defines a Crypto Abstraction Layer (CAL) to abstract the functionality required from a chosen Cryptographic Functionality Provider (CFP). CFP can implement the function either purely in software (using a cryptographic library) or in hardware (using a cryptographic hardware accelerator) or by combining both (e.g., implement all operations in MbedTLS except of the AES-GCM, which will be handled by a STM32's peripheral). This interface-based design makes it easy to integrate and support additional CFPs in the future.
 
 ## Requirements
 The new CFP has to support the following schemes:
@@ -23,7 +23,7 @@ To add support for a new CFP (let's say `mycrypto`):
 2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt).
 
 !!! tip
-    For an inspiration, see existing CALs inside `cal/`.
+    For inspiration, see the existing CALs inside `cal/`.
 
 After these steps, the sources and include directories of the new CAL should be available in consumer's `CMakeLists.txt` by calling:
 ```cmake
@@ -42,7 +42,7 @@ By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will beco
     - `lt_mycrypto_sha256.c`,
     - `lt_mycrypto_hmac_sha256.c`,
     - `lt_mycrypto_x25519.c`.
-3. In each of the source files, implement all required functions - they are declared in respective headers inside the `libtropic/src/` directory:
+3. In each of the source files, implement all required functions — they are declared in the respective headers inside the `libtropic/src/` directory:
     - `lt_crypto_common.h`: Common CAL functions,
     - `lt_aesgcm.h`: AES-GCM functions,
     - `lt_ecdsa.h`: ECDSA functions,
@@ -51,7 +51,7 @@ By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will beco
     - `lt_hmac_sha256.h`: HMAC SHA256 functions,
     - `lt_x25519.h`: Curve25519 functions.
 
-    Look into each header - the exact purpose of every function is described in its comment. Copy the function declarations
+    Look into each header — the exact purpose of every function is described in its comment. Copy the function declarations
     from the headers to the source files and implement the functions.
     !!! example
         To implement Curve25519 functions, copy declarations from `lt_x25519.h` to `lt_mycrypto_x25519.c` and provide implementations.
@@ -69,7 +69,7 @@ typedef struct lt_ctx_mycrypto_t {
 ```
 
     !!! warning "Important"
-        This structure has to include all contexts the functions in the CAL might need. This structure will then be defined in the user's application and assigned to `lt_handle_t`'s `crypto_ctx` void pointer - see the [Libtropic Bare-Bone Example](../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
+        This structure must include all contexts the functions in the CAL might need. The structure will be defined in the user's application and assigned to the `crypto_ctx` void pointer in the `lt_handle_t` — see the [Libtropic Bare-Bone Example](../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
 
 5. Additionally, other source files and headers can be created for the needs of the implementation.
 

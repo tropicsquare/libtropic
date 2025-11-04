@@ -1,14 +1,14 @@
 # Compile as a Static Library
-Apart from building the Libtropic during your project's build process, you can build the Libtropic separately as a static library (also known as static archive on Linux) and link it later.
+Apart from building Libtropic during your project's build process, you can build Libtropic separately as a static library (also known as a static archive on Linux) and link it later.
 
 !!! warning
-    The Libtropic static library does not contain HALs (`libtropic/hal/port/`) or CALs (`libtropic/cal/`). The consumer has to provide these:
+    The Libtropic static library does not contain HALs (`libtropic/hal/port/`) or CALs (`libtropic/cal/`). The consumer must provide these:
     
     1. If CMake is used, inspiration can be taken from the steps in the [Add to an Existing Project](./adding_to_project.md) section.
     2. In other cases, the HAL and CAL files will have to be added manually.
 
 ## Compilation
-To compile Libtropic as a static library on a Unix-like system, do:
+To compile Libtropic as a static library on a Unix-like system, run:
 
 ```shell
 $ mkdir build
@@ -17,7 +17,7 @@ $ cmake ..
 $ make
 ```
 
-To cross-compile Libtropic as a static library on a Unix-like system, you need a toolchain configuration file and a linker script. Both should be provided by the vendor of your platform. You can see an example of the toolchain configuration and the linker script in the [libtropic-stm32 repository](https://github.com/tropicsquare/libtropic-stm32).
+To cross-compile Libtropic as a static library on a Unix-like system, you need a toolchain configuration file and a linker script. Both should be provided by the vendor of your platform. See an example of the toolchain configuration and linker script in the [libtropic-stm32 repository](https://github.com/tropicsquare/libtropic-stm32).
 
 After acquiring both the toolchain configuration and the linker script, do:
 

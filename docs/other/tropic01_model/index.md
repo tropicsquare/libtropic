@@ -1,31 +1,31 @@
 # TROPIC01 Model
-The CMake project in the `tropic01_model/` directory builds libtropic in a way that it can communicate with the TROPIC01 Python Model. The CMake project offers the following:
+The CMake project in the `tropic01_model/` directory builds libtropic so it can communicate with the TROPIC01 Python model. The CMake project offers the following:
 
 1. Running libtropic's [Functional Tests](../../for_contributors/functional_tests.md). The testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
 2. Running libtropic's [Examples](../../get_started/examples/index.md).
 3. Flexible switching between the supported cryptographic libraries using the `LT_CRYPTO` CMake variable.
 
 > [!WARNING]
-> There are some examples which are not compatible with model, as the model does not implement all the chip's functionality. As such, those would always fail against the model and thus `tropic01_model/CMakeLists.txt` excludes them. Namely:
+> Some examples are not compatible with the model because the model does not implement all of the chip's functionality. Those examples will always fail against the model and are therefore excluded in `tropic01_model/CMakeLists.txt`. Namely:
 > 
 > - `lt_ex_fw_update`,
-> - `lt_ex_show_chip_id_and_fwver` (model does not implement Bootloader mode, so you can use `tests/functional/lt_test_rev_get_info_req_app.c` to get this info from the Application mode atleast).
+> - `lt_ex_show_chip_id_and_fwver` (the model does not implement Bootloader mode, so you can use `tests/functional/lt_test_rev_get_info_req_app.c` to get this info from Application mode instead).
 
 !!! note
     There is a symlink to a parent directory in the `tropic01_model` directory. This is required
     for coverage collection to work, as CMake does not include any files above the source directory
-    to the coverage.
+    in the coverage by default.
 
 ## How it Works?
-The `tropic01_model/CMakeLists.txt` uses the Unix TCP HAL implemented in`hal/port/unix/libtropic_port_unix_tcp.c`, so both processes (the compiled binary and the model) will talk to each other through a TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and model is emulated through this TCP connection. The model responses are exactly the same as from the physical TROPIC01 chip.
+The `tropic01_model/CMakeLists.txt` uses the Unix TCP HAL implemented in `hal/port/unix/libtropic_port_unix_tcp.c`, so both processes (the compiled binary and the model) communicate through a TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and the model is emulated through this TCP connection. The model responses match those of the physical TROPIC01 chip.
 
 ## Model Setup
-First, the model has to be installed. For that, follow the readme in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
+First, install the model by following the README in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.
 
-Next, it is possible to initialize the model with some data, so it can behave like the real provisioned chip. To do that, it is neccesary to pass a YAML configuration file to the model - see sections [Model Server](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-server) and [Model Configuration](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration) in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository. To create such a YAML configuration, the script `tropic01_model/create_model_cfg.py` in libtropic repository is used (example usage follows).
+Next, you can initialize the model with data so it behaves like a real provisioned chip. To do that, pass a YAML configuration file to the model — see the [Model Server](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-server) and [Model Configuration](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration) sections in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository. To create such a YAML configuration, use the `tropic01_model/create_model_cfg.py` script in the libtropic repository (example usage follows).
 
 > [!IMPORTANT]
-In the case of running tests using CTest, no manual steps for creating the model configuration or initializing the model are necessary - CTest handles this by itself. In the case of running examples (or tests without CTest), the model has to be started manually by the user and some configuration has to be applied to the model, so atleast the pairing key slot 0 is written to be able to establish a secure session.
+When running tests using CTest, no manual steps for creating the model configuration or initializing the model are necessary — CTest handles this. When running examples (or tests without CTest), start the model manually and apply a configuration so at least pairing key slot 0 is written to enable establishing a secure session.
 
 Data, from which the `tropic01_model/create_model_cfg.py` script creates the YAML configuration file for the model, can be found in `tropic01_model/provisioning_data/` directory - see [Provisioning Data](provisioning_data.md) section for more information about the directory structure.
 
@@ -34,7 +34,7 @@ To create a model configuration that will initialize the model to the state whic
 cd tropic01_model/
 python3 create_model_cfg.py --pkg-dir <path_to_the_lab_batch_package_directory>
 ```
-where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside the `tropic01_model/provisioning_data/`. As a result of running the script, a file `model_cfg.yml` is created, which can be passed directly to the model using the `-c` flag.
+where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab batch packages inside `tropic01_model/provisioning_data/`. Running the script creates a file named `model_cfg.yml`, which can be passed directly to the model using the `-c` flag.
 
 ## Running the Examples
 1. Switch to the `tropic01_model/` directory:

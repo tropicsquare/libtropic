@@ -1,5 +1,5 @@
 # Add to an Existing Project
-We recommend adding Libtropic to an existing project as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). Libtropic uses CMake build system, therefore it could be added to compilation of existing CMake projects in a following way:
+We recommend adding Libtropic to an existing project as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). Libtropic uses the CMake build system, so it can be added to the compilation of existing CMake projects as follows:
 
 1. Set path to the Libtropic submodule, for example as:
 ```cmake
@@ -9,7 +9,7 @@ set(PATH_LIBTROPIC ${CMAKE_CURRENT_SOURCE_DIR}/../vendor/libtropic/)
 ```cmake
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 ```
-3. By default, Libtropic does not link CFP (Cryptographic Functionality Provider) or it's CAL (Crypto Abstraction Layer), so it can be built as a static library. This is the consumer's responsibility:
+3. By default, Libtropic does not link a CFP (Cryptographic Functionality Provider) or its CAL (Crypto Abstraction Layer), so it can be built as a static library. This is the consumer's responsibility:
     1. For the chosen CFP (e.g. MbedTLS v4.0.0), add the correct subdirectory inside `libtropic/cal/`, which provides the corresponding CAL sources and include directories:
     ```cmake
     add_subdirectory("${PATH_LIBTROPIC}cal/mbedtls_v4")
@@ -23,7 +23,7 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
     ```cmake
     target_link_libraries(tropic PUBLIC mbedtls)
     ```
-4. By default, libtropic does not link platform-specific code or it's HAL, so it can be built as a static library. This is the consumer's responsibility:
+4. By default, libtropic does not link platform-specific code or its HAL, so it can be built as a static library. This is the consumer's responsibility:
     1. Add HAL functions to sources and includes depending on your platform. For example, to include Linux SPI HAL to `MY_PROJECTS_SOURCES` source list:
     ```cmake
     set(MY_PROJECT_SOURCES

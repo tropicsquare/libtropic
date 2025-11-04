@@ -1,21 +1,21 @@
 # How To Use
 ## Which Headers To Include?
-To start using Libtropic in your application, the following headers have to be included:
+To start using Libtropic in your application, include the following headers:
 
-1. `libtropic_common.h`: Declarations of the commonly used macros, structures, enums and other. 
+1. `libtropic_common.h`: Declarations of commonly used macros, structures, enums, and other definitions.
 2. `libtropic.h`: Main API function declarations.
-3. `libtropic_port_<port_name>.h`: Declares the `lt_dev_<port_name>_t` device structure, specific to the Host platform (see the `libtropic/hal/port/` directory for the existing platform HALs). An `lt_dev_<port_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below). 
-4. `libtropic_<cfp_name>.h`: Declares the `lt_ctx_<cfp_name>_t` context structure, specific to the used CFP (Cryptographic Functionality Provider) - see the `libtropic/cal/` directory for the existing CALs (Crypto Abstraction Layers). An `lt_ctx_<cfp_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below).
-5. Based on the needed functionality, additional headers from `libtropic/include/`. Refer to the [API Reference](../../../doxygen/build/html/index.html) for more details.
+3. `libtropic_port_<port_name>.h`: Declares the `lt_dev_<port_name>_t` device structure specific to the Host platform (see the `libtropic/hal/port/` directory for existing platform HALs). An `lt_dev_<port_name>_t` variable must be declared and passed to an instance of `lt_handle_t` (see the example below).
+4. `libtropic_<cfp_name>.h`: Declares the `lt_ctx_<cfp_name>_t` context structure specific to the used CFP (Cryptographic Functionality Provider). See the `libtropic/cal/` directory for the existing CALs (Crypto Abstraction Layers). An `lt_ctx_<cfp_name>_t` variable must be declared and passed to an instance of `lt_handle_t` (see the example below).
+5. Based on the needed functionality, include additional headers from `libtropic/include/`. Refer to the [API Reference](../../../doxygen/build/html/index.html) for more details.
 
 !!! note
-    The headers `libtropic_port_<port_name>.h` and `libtropic_<cfp_name>.h` should only be needed when initializing the instance of `lt_handle_t` - this is the case for the example below.
+    The headers `libtropic_port_<port_name>.h` and `libtropic_<cfp_name>.h` are typically only needed when initializing the `lt_handle_t` instance — see the example below.
 
 ## Libtropic Bare-Bone Example
 !!! tip
-    For inspiration on what to do in the step 8 of the example below, refer to the [Examples](../../examples/index.md) section.
+    For ideas about what to do in step 8 of the example below, refer to the [Examples](../../examples/index.md) section.
 
-    We recommend checking out the [Integration Examples](../integration_examples.md) section for complete examples on how to use Libtropic on some of the supported platforms.
+    We recommend checking the [Integration Examples](../integration_examples.md) section for complete examples showing how to use Libtropic on some supported platforms.
 
 The following bare-bone example shows how to initialize Libtropic, so it can be used to communicate with TROPIC01:
 ```c

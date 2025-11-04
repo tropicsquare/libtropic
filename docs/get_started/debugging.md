@@ -1,12 +1,12 @@
 # Debugging
-When debugging, some additional compiler flags are needed to produce debugging information. These flags can be added using the CMake's [`CMAKE_BUILD_TYPE`](https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html) environment variable by:
+When debugging, some additional compiler flags are needed to produce debugging information. These flags can be enabled using CMake's [`CMAKE_BUILD_TYPE`](https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html) setting by:
 
-1. specifying `-DCMAKE_BUILD_TYPE=Debug` when executing `cmake` in the command line,
-2. putting `set(CMAKE_BUILD_TYPE "Debug")` into *yours* or the *libtropic's* main `CMakeLists.txt`.
+1. specifying `-DCMAKE_BUILD_TYPE=Debug` when running `cmake` from the command line,
+2. adding `set(CMAKE_BUILD_TYPE "Debug")` to your or the libtropic top-level `CMakeLists.txt`.
 
-After this, you can use debugging tools of your choice, e.g. [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html) or [Valgrind](https://valgrind.org/). Refer to each tool's documentation for the installation instructions.
+After this, you can use debugging tools of your choice, e.g. [gdb](https://www.gnu.org/savannah-checkouts/gnu/gdb/index.html) or [Valgrind](https://valgrind.org/). Refer to each tool's documentation for installation instructions.
 
-If you want to use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), you have to add more compiler flags. That is why we added the `LT_ASAN` option into our main `CMakeLists.txt`, along with the `LT_ASAN_COMPILE_FLAGS` and `LT_ASAN_LINK_FLAGS` variables. If your project is using CMake, you can add the following lines into your `CMakeLists.txt` file:
+If you want to use [AddressSanitizer](https://github.com/google/sanitizers/wiki/addresssanitizer), you need to add additional compiler flags. We provide the `LT_ASAN` option in the top-level `CMakeLists.txt`, along with the `LT_ASAN_COMPILE_FLAGS` and `LT_ASAN_LINK_FLAGS` variables. If your project is using CMake, you can add the following lines to your `CMakeLists.txt` file:
 ```cmake
 if(LT_ASAN)
     message(STATUS "AddressSanitizer (ASan) is enabled for the entire project.")
