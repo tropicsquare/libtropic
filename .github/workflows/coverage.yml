@@ -63,7 +63,7 @@ jobs:
       - name: Compile libtropic with tests and coverage enabled
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_CRYPTO=mbedtls_v4 -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1
+            cmake ./ -B build -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1
             cd build/
             make
 

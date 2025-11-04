@@ -3,7 +3,7 @@ The CMake project in the `tropic01_model/` directory builds libtropic so it can 
 
 1. Running libtropic's [Functional Tests](../../for_contributors/functional_tests.md). The testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
 2. Running libtropic's [Examples](../../get_started/examples/index.md).
-3. Flexible switching between the supported cryptographic libraries using the `LT_CRYPTO` CMake variable.
+3. Flexible switching between the implemented CALs (Crypto Abstraction Layers) using the `LT_CAL` CMake variable.
 
 > [!WARNING]
 > Some examples are not compatible with the model because the model does not implement all of the chip's functionality. Those examples will always fail against the model and are therefore excluded in `tropic01_model/CMakeLists.txt`. Namely:
@@ -41,11 +41,11 @@ where `<path_to_the_lab_batch_package_directory>` is the path to one of the lab 
 ```shell
 cd tropic01_model/
 ```
-2. Compile the examples with the selected cryptographic library (e.g. MbedTLS v4.0.0):
+2. Compile the examples with the selected CAL (e.g. for MbedTLS v4.0.0):
 ```shell
 mkdir build
 cd build
-cmake -DLT_BUILD_EXAMPLES=1 -DLT_CRYPTO="mbedtls_v4" ..
+cmake -DLT_BUILD_EXAMPLES=1 -DLT_CAL="mbedtls_v4" ..
 make
 ```
 As a result, executables for each example are built in the `tropic01_model/build/` directory.
@@ -80,11 +80,11 @@ It is recommended to run the tests using CTest, but if it's needed to run the te
 ```shell
 cd tropic01_model/
 ```
-2. Compile the tests with the selected cryptographic library (e.g. MbedTLS v4.0.0):
+2. Compile the tests with the selected CAL (e.g. for MbedTLS v4.0.0):
 ```shell
 mkdir build
 cd build
-cmake -DLT_BUILD_TESTS=1 -DLT_CRYPTO="mbedtls_v4" ..
+cmake -DLT_BUILD_TESTS=1 -DLT_CAL="mbedtls_v4" ..
 make
 ```
 As a result, executables for each test are built in the `tropic01_model/build/` directory.
@@ -141,7 +141,7 @@ The model is automatically started for each test separately, so it behaves like 
 ### Running the Tests with Coverage
 We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
 ```shell
-cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 -DLT_CRYPTO="mbedtls_v4" ..
+cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 -DLT_CAL="mbedtls_v4" ..
 ```
 
 After CTest finishes, you can use [gcovr](https://github.com/gcovr/gcovr) to export results:

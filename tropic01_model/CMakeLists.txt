@@ -26,8 +26,9 @@ option(LT_VALGRIND "Enable Valgrind" OFF)
 # Enables compilation with coverage enabled and O0 for functional tests.
 option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
 
-# Crypto provider
-set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
+# Select CAL
+set(LT_CAL "" CACHE STRING "Set a CAL (Crypto Abstraction Layer)")
+set_property(CACHE LT_CAL PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
 
 set(LAB_BATCH_PKG_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
@@ -80,17 +81,15 @@ endif()
 #                                                                         #
 ###########################################################################
 
-add_subdirectory("${PATH_TO_LIBTROPIC}cal/${LT_CRYPTO}")
-
 # Developers who integrate Libtropic do not have to use these variables
 # It's used in model's main.c to switch crypto contexts without manual changes
 set(LT_USE_TREZOR_CRYPTO 0 CACHE INTERNAL "")
 set(LT_USE_MBEDTLS_V4 0 CACHE INTERNAL "")
 
-# Handle LT_CRYPTO
-if(LT_CRYPTO STREQUAL "trezor_crypto")
-    
+# Handle LT_CAL
+if(LT_CAL STREQUAL "trezor_crypto")
     message(STATUS "Crypto provider set to trezor_crypto")
+    add_subdirectory("${PATH_TO_LIBTROPIC}cal/trezor_crypto")
     
     # Developers who integrate Libtropic do not have to use this variable
     # It's used in model's main.c to switch crypto contexts without manual changes
@@ -99,10 +98,9 @@ if(LT_CRYPTO STREQUAL "trezor_crypto")
     add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/trezor_crypto/" "trezor_crypto")
     target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
     target_link_libraries(tropic PUBLIC trezor_crypto)
-
-elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
-
+elseif(LT_CAL STREQUAL "mbedtls_v4")
     message(STATUS "Crypto provider set to mbedtls_v4")
+    add_subdirectory("${PATH_TO_LIBTROPIC}cal/mbedtls_v4")
 
     # Developers who integrate Libtropic do not have to use this variable
     # It's used in model's main.c to switch crypto contexts without manual changes
@@ -119,7 +117,9 @@ elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
     FetchContent_MakeAvailable(mbedtls)
 
     target_link_libraries(tropic PUBLIC mbedtls)
-    
+else()
+    get_property(lt_cal_choices CACHE LT_CAL PROPERTY STRINGS)
+    message(FATAL_ERROR "Incorrect CAL set to LT_CAL!\nSupported CALs by the model: ${lt_cal_choices}")
 endif()
 
 target_sources(tropic PRIVATE ${LT_CAL_SRCS})
