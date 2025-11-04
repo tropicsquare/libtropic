@@ -9,7 +9,7 @@ set(PATH_LIBTROPIC ${CMAKE_CURRENT_SOURCE_DIR}/../vendor/libtropic/)
 ```cmake
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 ```
-3. By default, Libtropic does not link CFP (Cryptographic Functionality Provider) or it's CAL (Crypto Abstract Layer), so it can be built as a static library. This is the consumer's responsibility:
+3. By default, Libtropic does not link CFP (Cryptographic Functionality Provider) or it's CAL (Crypto Abstraction Layer), so it can be built as a static library. This is the consumer's responsibility:
     1. For the chosen CFP (e.g. MbedTLS v4.0.0), add the correct subdirectory inside `libtropic/cal/`, which provides the corresponding CAL sources and include directories:
     ```cmake
     add_subdirectory("${PATH_LIBTROPIC}cal/mbedtls_v4")

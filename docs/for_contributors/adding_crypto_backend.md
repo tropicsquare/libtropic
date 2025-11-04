@@ -1,5 +1,5 @@
 # Adding a New Cryptographic Backend
-Because Libtropic is designed to run on the Host MCU, it requires certain cryptographic functionality - for example, to decrypt incoming L3 packets from TROPIC01. To enable this, Libtropic defines a CAL (Crypto Abstract Layer) to abstract the needed functionality of a chosen CFP (Cryptographic Functionality Provider). This interface-based design makes it easy to integrate and support additional CFPs in the future.
+Because Libtropic is designed to run on the Host MCU, it requires certain cryptographic functionality - for example, to decrypt incoming L3 packets from TROPIC01. To enable this, Libtropic defines a CAL (Crypto Abstraction Layer) to abstract the needed functionality of a chosen CFP (Cryptographic Functionality Provider). This interface-based design makes it easy to integrate and support additional CFPs in the future.
 
 ## Requirements
 The new CFP has to support the following schemes:
