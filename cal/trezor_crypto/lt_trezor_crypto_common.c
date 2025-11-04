@@ -10,7 +10,6 @@
 #include "lt_aesgcm.h"
 #include "lt_crypto_common.h"
 
-bool lt_mbedtls_psa_crypto_initialized = false;
 
 lt_ret_t lt_crypto_ctx_init(void *ctx)
 {
