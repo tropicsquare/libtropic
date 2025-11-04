@@ -82,7 +82,7 @@ endif()
 
 add_subdirectory("${PATH_TO_LIBTROPIC}cal/${LT_CRYPTO}")
 
-# People who integrate libtropic don't have to use these variables
+# Developers who integrate Libtropic do not have to use these variables
 # It's used in model's main.c to switch crypto contexts without manual changes
 set(LT_USE_TREZOR_CRYPTO 0 CACHE INTERNAL "")
 set(LT_USE_MBEDTLS_V4 0 CACHE INTERNAL "")
