@@ -77,7 +77,7 @@ nav:
     - Contributing Guide: for_contributors/contributing_guide.md
     - Functional Tests: for_contributors/functional_tests.md
     - Adding a New Embedded Platform: for_contributors/adding_embedded_platform.md
-    - Adding a New Cryptographic Backend: for_contributors/adding_crypto_backend.md
+    - Adding a New Cryptographic Functionality Provider: for_contributors/adding_cfp.md
     - Building the Documentation: for_contributors/building_documentation.md
   - Other:
     - other/index.md

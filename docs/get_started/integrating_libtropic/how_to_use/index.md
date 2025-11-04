@@ -5,11 +5,11 @@ To start using Libtropic in your application, the following headers have to be i
 1. `libtropic_common.h`: Declarations of the commonly used macros, structures, enums and other. 
 2. `libtropic.h`: Main API function declarations.
 3. `libtropic_port_<port_name>.h`: Declares the `lt_dev_<port_name>_t` device structure, specific to the Host platform (see the `libtropic/hal/port/` directory for the existing platform HALs). An `lt_dev_<port_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below). 
-4. `libtropic_<crypto_backend_name>.h`: Declares the `lt_ctx_<crypto_backend_name>_t` context structure, specific to the used CAL (Crypto Abstraction Layer - see the `libtropic/cal/` directory for the existing CALs). An `lt_ctx_<crypto_backend_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below).
+4. `libtropic_<cfp_name>.h`: Declares the `lt_ctx_<cfp_name>_t` context structure, specific to the used CFP (Cryptographic Functionality Provider) - see the `libtropic/cal/` directory for the existing CALs (Crypto Abstraction Layers). An `lt_ctx_<cfp_name>_t` variable has to be declared and passed to an instance of `lt_handle_t` (see the example below).
 5. Based on the needed functionality, additional headers from `libtropic/include/`. Refer to the [API Reference](../../../doxygen/build/html/index.html) for more details.
 
 !!! note
-    The headers `libtropic_port_<port_name>.h` and `libtropic_<crypto_backend_name>.h` should only be needed when initializing the instance of `lt_handle_t` - this is the case for the example below.
+    The headers `libtropic_port_<port_name>.h` and `libtropic_<cfp_name>.h` should only be needed when initializing the instance of `lt_handle_t` - this is the case for the example below.
 
 ## Libtropic Bare-Bone Example
 !!! tip
@@ -22,7 +22,7 @@ The following bare-bone example shows how to initialize Libtropic, so it can be 
 #include "libtropic_common.h"
 #include "libtropic.h"
 #include "libtropic_port_<port_name>.h"
-#include "libtropic_<crypto_backend_name>.h"
+#include "libtropic_<cfp_name>.h"
 
 int main(void) {
     // 1. Declare a handle variable.
@@ -50,7 +50,7 @@ int main(void) {
     // The context structure provides libtropic with the memory location where
     // it can save contexts of cryptographic functions.
     // None of its members have to be initialized.
-    lt_ctx_<crypto_backend_name>_t my_crypto_ctx;
+    lt_ctx_<cfp_name>_t my_crypto_ctx;
 
     // 6. Save a pointer to the context structure inside the handle.
     // Libtropic will then pass this structure to the CAL functions.
