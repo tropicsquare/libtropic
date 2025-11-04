@@ -42,12 +42,12 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential
             pip install ${{ env.WHEEL_FILE_NAME }}
-            pip install -r vendor/mbedtls/scripts/basic.requirements.txt
+            pip install jsonschema
 
       - name: Compile libtropic with tests and AddressSanitizer
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
+            cmake ./ -B build -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
             cd build/
             make
 
@@ -95,12 +95,12 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential valgrind
             pip install ${{ env.WHEEL_FILE_NAME }}
-            pip install -r vendor/mbedtls/scripts/basic.requirements.txt
+            pip install jsonschema
 
       - name: Compile libtropic with tests and Valgrind
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
+            cmake ./ -B build -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
             cd build/
             make
 

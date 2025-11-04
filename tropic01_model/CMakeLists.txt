@@ -1,5 +1,18 @@
 cmake_minimum_required(VERSION 3.21.0)
 
+include(FetchContent)
+
+###########################################################################
+#                                                                         #
+#   Define project's name                                                 #
+#                                                                         #
+###########################################################################
+
+project(tropic01_model
+        VERSION 1.0.0
+        DESCRIPTION "TROPIC01 model project using libtropic."
+        LANGUAGES C)
+
 ###########################################################################
 #                                                                         #
 #   Options                                                               #
@@ -12,6 +25,10 @@ option(LT_VALGRIND "Enable Valgrind" OFF)
 
 # Enables compilation with coverage enabled and O0 for functional tests.
 option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
+
+# Select CAL
+set(LT_CAL "" CACHE STRING "Set a CAL (Crypto Abstraction Layer)")
+set_property(CACHE LT_CAL PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
 
 set(LAB_BATCH_PKG_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/provisioning_data/2025-06-27T07-51-29Z__prod_C2S_T200__provisioning__lab_batch_package/"
@@ -31,23 +48,9 @@ endif()
 
 ###########################################################################
 #                                                                         #
-#   Define project's name                                                 #
-#                                                                         #
-###########################################################################
-
-project(tropic01_model
-        VERSION 0.1.0
-        DESCRIPTION "Port of libtropic to be used against TROPIC01 model."
-        LANGUAGES C)
-
-###########################################################################
-#                                                                         #
 #   Add libtropic library and set it up                                   #
 #                                                                         #
 ###########################################################################
-
-# Use trezor crypto as a source of backend cryptography code
-set(LT_CRYPTO "mbedtls_v4")
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
@@ -66,6 +69,61 @@ if(LT_VALGRIND)
     message(STATUS "Tests will be run with Valgrind (only when using CTest!).")
     set(VALGRIND_ARG --use-valgrind)
 endif()
+
+###########################################################################
+#                                                                         #
+#   Crypto backend handling                                               #
+#                                                                         #
+#   Note: The libtropic consumer does not have to do this in his          #
+#   application, we do this to quickly switch crypto backends.            #
+#   Refer to the libtropic documentation for more info about what should  #
+#   be done by the consumer this.                                         #
+#                                                                         #
+###########################################################################
+
+# Developers who integrate Libtropic do not have to use these variables
+# It's used in model's main.c to switch crypto contexts without manual changes
+set(LT_USE_TREZOR_CRYPTO 0 CACHE INTERNAL "")
+set(LT_USE_MBEDTLS_V4 0 CACHE INTERNAL "")
+
+# Handle LT_CAL
+if(LT_CAL STREQUAL "trezor_crypto")
+    message(STATUS "Crypto provider set to trezor_crypto")
+    add_subdirectory("${PATH_TO_LIBTROPIC}cal/trezor_crypto")
+    
+    # Developers who integrate Libtropic do not have to use this variable
+    # It's used in model's main.c to switch crypto contexts without manual changes
+    set(LT_USE_TREZOR_CRYPTO 1)
+
+    add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/trezor_crypto/" "trezor_crypto")
+    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
+    target_link_libraries(tropic PUBLIC trezor_crypto)
+elseif(LT_CAL STREQUAL "mbedtls_v4")
+    message(STATUS "Crypto provider set to mbedtls_v4")
+    add_subdirectory("${PATH_TO_LIBTROPIC}cal/mbedtls_v4")
+
+    # Developers who integrate Libtropic do not have to use this variable
+    # It's used in model's main.c to switch crypto contexts without manual changes
+    set(LT_USE_MBEDTLS_V4 1)
+
+    # Fetch MbedTLS v4.0.0
+    FetchContent_Declare(
+        mbedtls
+        URL https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-4.0.0/mbedtls-4.0.0.tar.bz2
+        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    )
+    set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
+    set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
+    FetchContent_MakeAvailable(mbedtls)
+
+    target_link_libraries(tropic PUBLIC mbedtls)
+else()
+    get_property(lt_cal_choices CACHE LT_CAL PROPERTY STRINGS)
+    message(FATAL_ERROR "Incorrect CAL set to LT_CAL!\nSupported CALs by the model: ${lt_cal_choices}")
+endif()
+
+target_sources(tropic PRIVATE ${LT_CAL_SRCS})
+target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS})
 
 ###########################################################################
 #                                                                         #
@@ -116,6 +174,13 @@ if (LT_BUILD_EXAMPLES)
         # Enable example registry using LT_BUILD_EXAMPLES and choose correct example for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_EXAMPLES)
         target_compile_definitions(${exe_name} PRIVATE ${example_macro})
+
+        # Developers who integrate Libtropic do not have to use these variables
+        # It's used in model's main.c to switch crypto contexts without manual changes
+        target_compile_definitions(${exe_name} PRIVATE
+            LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
+            LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
+        )
 
     endforeach()
 
@@ -187,6 +252,13 @@ if(LT_BUILD_TESTS)
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
         target_compile_definitions(${exe_name} PRIVATE ${test_macro})
+
+        # Developers who integrate Libtropic do not have to use this variable
+        # It's used in model's main.c to switch crypto contexts without manual changes
+        target_compile_definitions(${exe_name} PRIVATE
+            LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
+            LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
+        )
 
         if (LT_TEST_COVERAGE)
             # Add coverage-related flags from common config.

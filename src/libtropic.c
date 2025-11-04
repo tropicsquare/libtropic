@@ -21,6 +21,7 @@
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
 #include "lt_asn1_der.h"
+#include "lt_crypto_common.h"
 #include "lt_ecdsa.h"
 #include "lt_ed25519.h"
 #include "lt_hkdf.h"
@@ -50,6 +51,11 @@ lt_ret_t lt_init(lt_handle_t *h)
     h->l3.session_status = LT_SECURE_SESSION_OFF;
     lt_ret_t ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_crypto_ctx_init(h->l3.crypto_ctx);
     if (ret != LT_OK) {
         return ret;
     }

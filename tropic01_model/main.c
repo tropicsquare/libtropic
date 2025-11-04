@@ -15,13 +15,37 @@
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
 #include "libtropic_port_unix_tcp.h"
+#if LT_USE_TREZOR_CRYPTO
+#include "libtropic_trezor_crypto.h"
+#elif LT_USE_MBEDTLS_V4
+#include "libtropic_mbedtls_v4.h"
+#include "psa/crypto.h"
+#endif
 
 int main(void)
 {
+    int ret = 0;
+
+#if LT_USE_MBEDTLS_V4
+    psa_status_t status = psa_crypto_init();
+    if (status != PSA_SUCCESS) {
+        LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
+        return -1;
+    }
+#endif
+
 #ifdef LT_BUILD_TESTS
     // Disable buffering on stdout and stderr (problem in GitHub CI)
-    setvbuf(stdout, NULL, _IONBF, 0);
-    setvbuf(stderr, NULL, _IONBF, 0);
+    ret = setvbuf(stdout, NULL, _IONBF, 0);
+    if (ret != 0) {
+        LT_LOG_ERROR("setvbuf(stdout, ...) failed, ret=%d", ret);
+        return ret;
+    }
+    ret = setvbuf(stderr, NULL, _IONBF, 0);
+    if (ret != 0) {
+        LT_LOG_ERROR("setvbuf(stderr, ...) failed, ret=%d", ret);
+        return ret;
+    }
 #endif
 
     lt_handle_t __lt_handle__ = {0};
@@ -37,6 +61,14 @@ int main(void)
     device.rng_seed = (unsigned int)time(NULL);
     __lt_handle__.l2.device = &device;
 
+#if LT_USE_TREZOR_CRYPTO
+    lt_ctx_trezor_crypto_t
+#elif LT_USE_MBEDTLS_V4
+    lt_ctx_mbedtls_v4_t
+#endif
+        crypto_ctx;
+    __lt_handle__.l3.crypto_ctx = &crypto_ctx;
+
     LT_LOG_INFO("RNG initialized with seed=%u\n", device.rng_seed);
 
 #ifdef LT_BUILD_TESTS
@@ -47,8 +79,12 @@ int main(void)
 // Otherwise, 0 is always returned (in case of building tests).
 #ifdef LT_BUILD_EXAMPLES
 #include "lt_ex_registry.c.inc"
-    return __lt_ex_return_val__;
-#else
-    return 0;
+    ret = __lt_ex_return_val__;
 #endif
+
+#if LT_USE_MBEDTLS_V4
+    mbedtls_psa_crypto_free();
+#endif
+
+    return ret;
 }

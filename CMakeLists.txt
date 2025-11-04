@@ -72,10 +72,6 @@ if (NOT cpu_fw_valid)
     message(FATAL_ERROR "Invalid TROPIC01 FW version: '${LT_CPU_FW_VERSION}'\nAvailable FW versions: ${lt_cpu_fw_version_choices}")
 endif()
 
-# Crypto provider
-set(LT_CRYPTO "" CACHE STRING "Set a cryptography provider")
-set_property(CACHE LT_CRYPTO PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
-
 # Logging options
 set(LT_LOG_LVL "" CACHE STRING "Set log level")
 set_property(CACHE LT_LOG_LVL PROPERTY STRINGS "None" "Error" "Warning" "Info" "Debug")
@@ -176,13 +172,6 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_default_sh0_keys.c
-    # Crypto backend implementation files
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_aesgcm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_ed25519.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_ecdsa.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_hmac_sha256.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_${LT_CRYPTO}_x25519.c
 )
 
 set(SDK_INCS ${SDK_INCS}
@@ -199,16 +188,12 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.h
-    # Crypto backend header for required macros
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}/lt_crypto_macros.h
 )
 set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    # Add the crypto backend directory to the public include paths
-    ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/${LT_CRYPTO}
 )
 
 
@@ -443,52 +428,6 @@ endif()
 if(LT_TEST_COVERAGE)
     message(STATUS "Enabling coverage collection for libtropic")
     target_link_libraries(tropic PRIVATE libtropic::coverage_flags)
-endif()
-
-###########################################################################
-#                                                                         #
-#   LT_CRYPTO handling                                                    #
-#                                                                         #
-###########################################################################
-
-# Handle LT_CRYPTO
-if(LT_CRYPTO STREQUAL "trezor_crypto")
-    
-    message(STATUS "Crypto provider set to trezor_crypto")
-
-    add_subdirectory(vendor/trezor_crypto/ "trezor_crypto")
-    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
-    target_link_libraries(tropic PUBLIC trezor_crypto)
-
-elseif(LT_CRYPTO STREQUAL "mbedtls_v4")
-
-    message(STATUS "Crypto provider set to mbedtls_v4")
-
-    set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
-    set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
-    add_subdirectory(vendor/mbedtls/ "mbedtls")
-    target_link_libraries(tropic PUBLIC mbedtls)
-
-    target_sources(tropic PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/hal/crypto/mbedtls_v4/lt_mbedtls_v4_common.c
-        # Fallback implementation of ED25519 we use until MbedTLS finalizes their implementation.
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/add_scalar.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/fe.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/ge.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/key_exchange.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/keypair.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sc.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/seed.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sha512.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/sign.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src/verify.c
-    )
-    target_include_directories(tropic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/ed25519/src)
-else()
-
-    get_property(lt_crypto_choices CACHE LT_CRYPTO PROPERTY STRINGS)
-    message(FATAL_ERROR "Incorrect cryptographic provider set to LT_CRYPTO!\nAvailable providers: ${lt_crypto_choices}")
-    
 endif()
 
 ###########################################################################
