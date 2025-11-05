@@ -24,7 +24,7 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
     target_link_libraries(tropic PUBLIC mbedtls)
     ```
 4. By default, libtropic does not link platform-specific code or its HAL, so it can be built as a static library. This is the consumer's responsibility:
-    1. For the chosen platform (e.g. Linux with HW SPI), add the correct subdirectory inside `libtropic/hal/`, which provides the corresponding HAL sources and include directories:
+    1. For the chosen platform (e.g. Linux with HW SPI), add a corresponding HAL using `add_subdirectory`:
     ```cmake
     add_subdirectory("${PATH_TO_LIBTROPIC}hal/linux/spi")
     ```
