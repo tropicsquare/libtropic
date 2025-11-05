@@ -1,6 +1,8 @@
 # MbedTLS
 Currently, we support the [MbedTLS v4.0.0](https://github.com/Mbed-TLS/mbedtls/tree/v4.0.0) and use the [PSA Crypto API](https://mbed-tls.readthedocs.io/en/latest/getting_started/psa/) in our `mbedtls_v4` CAL (Crypto Abstraction Layer).
 
+CAL files of this port are available in the `libtropic/cal/mbedtls_v4/` directory.
+
 !!! warning
     Note that Libtropic does not handle initialization and deinitialization of MbedTLS - this is the user's responsibility. Specifically, it is assumed that:
     
