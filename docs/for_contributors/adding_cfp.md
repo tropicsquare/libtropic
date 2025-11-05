@@ -20,7 +20,8 @@ The new CFP has to support the following schemes:
 To add support for a new CFP (let's say `mycrypto`):
 
 1. [Create and Implement the CAL C Files](#create-and-implement-the-cal-c-files),
-2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt).
+2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt),
+3. [Provide Some Information About the CAL](#provide-some-information-about-the-cal).
 
 !!! tip
     For inspiration, see the existing CALs inside `cal/`.
@@ -96,3 +97,6 @@ set(LT_CAL_INC_DIRS
 set(LT_CAL_SRCS ${LT_CAL_SRCS} PARENT_SCOPE)
 set(LT_CAL_INC_DIRS ${LT_CAL_INC_DIRS} PARENT_SCOPE)
 ```
+
+### Provide Some Information About the CAL
+All currently supported CFPs are listed in the [Supported Cryptographic Functionality Providers](../other/supported_cfps/index.md) section. Add the new CFP there and provide some information about it and the CAL (see other sections for inspiration).

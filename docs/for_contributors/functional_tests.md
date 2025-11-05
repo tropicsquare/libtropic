@@ -27,8 +27,8 @@ The functional tests are organized into two categories, as some of them may caus
 ## Adding a New Test
 To add a new test, you need to:
 
-    1. Decide whether the test is reversible or irreversible (see [Test Types and Cleanup](#test-types-and-cleanup) if you are not sure).
-    2. Write the new test (see [Test Template](#test-template)).
+1. Decide whether the test is reversible or irreversible (see [Test Types and Cleanup](#test-types-and-cleanup) if you are not sure).
+2. Write the new test (see [Test Template](#test-template)).
 3. Add the declaration together with a Doxygen comment to `include/libtropic_functional_tests.h`.
 4. Add the test to the root `CMakeLists.txt`:
         - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST` (it must match the name of the function that implements the test)

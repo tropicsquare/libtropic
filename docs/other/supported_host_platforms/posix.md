@@ -1,0 +1,27 @@
+# POSIX
+We provide the following ports, which should be compatible with most POSIX compliant operating systems:
+
+- [TCP](#tcp)
+- [Tropic Square TS1302 USB Devkit](#tropic-square-ts1302-usb-devkit)
+
+HALs for these ports are available in the `libtropic/hal/posix/` directory.
+
+Libtropic example usage with **some** of these ports is currently available in our [libtropic-linux](https://github.com/tropicsquare/libtropic-linux) repository. Other operating systems were not tested.
+
+## TCP
+We use this port with the [TROPIC01 Python Model](../tropic01_model/index.md), which acts as a server, to which libtropic connects via the specified TCP port.
+
+!!! warning
+    The TCP port does not support TROPIC01's interrupt PIN.
+
+## Tropic Square TS1302 USB Devkit
+Libtropic communicates with this devkit using the USB protocol. Refer to the [TS1302 USB Devkit](https://github.com/tropicsquare/tropic01-stm32u5-usb-devkit-hw) GitHub page for more information about it.
+
+!!! bug "Raspberry Pi 4 Issues"
+    When testing with Raspberry Pi 4, we have encountered [issues with its USB](https://github.com/raspberrypi/linux/issues/3259#), which seems to lose some of the USB packets sent to it.
+
+    !!! success "Raspberry Pi 5"
+        Fortunately, Raspberry Pi 5 fixes these issues and the TS1302 USB Devkit works without any issues.
+
+!!! warning
+    The TS1302 USB Devkit port does not support TROPIC01's interrupt PIN.
