@@ -44,6 +44,9 @@ target_link_libraries(my_binary_name PRIVATE tropic)
 !!! info
     We offer multiple CMake options - to see all of them, go to the beginning of the `CMakeLists.txt` file in the repository's root directory.
 
+!!! tip
+    Refer to sections [Supported Host Platforms](../../../other/supported_host_platforms/index.md) and [Supported Cryptographic Functionality Providers](../../../other/supported_cfps/index.md) to see what is supported.
+
 
 ## Do You Use a Makefile Instead of CMake?
 If you use a Makefile instead of CMake, you need to:

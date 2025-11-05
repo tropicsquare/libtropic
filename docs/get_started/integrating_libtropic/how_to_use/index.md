@@ -1,4 +1,5 @@
 # How To Use
+First, the host platform and Cryptographic Functionality Provider (CFP) have to be chosen. Refer to sections [Supported Host Platforms](../../../other/supported_host_platforms/index.md) and [Supported Cryptographic Functionality Providers](../../../other/supported_cfps/index.md) to see which ones are supported.
 ## Which Headers To Include?
 To start using Libtropic in your application, include the following headers:
 

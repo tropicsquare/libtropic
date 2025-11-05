@@ -7,7 +7,9 @@ This guide will walk you through adding support for a new platform. In this guid
 To add support for a our new platform (`my_board` with `my_mcu`):
 
 1. [Create and Implement the HAL C Files](#create-and-implement-the-hal-c-files),
-2. [Create and Implement the HAL CMakeLists.txt](#create-and-implement-the-hal-cmakeliststxt).
+2. [Create and Implement the HAL CMakeLists.txt](#create-and-implement-the-hal-cmakeliststxt),
+3. [Provide Some Information About the HAL](#provide-some-information-about-the-hal).
+
 !!! tip
     For inspiration, see the existing HALs inside `hal/`.
 
@@ -81,3 +83,6 @@ set(LT_HAL_INC_DIRS
 set(LT_HAL_SRCS ${LT_HAL_SRCS} PARENT_SCOPE)
 set(LT_HAL_INC_DIRS ${LT_HAL_INC_DIRS} PARENT_SCOPE)
 ```
+
+### Provide Some Information About the HAL
+All currently supported host platforms are listed in the [Supported Host Platforms](../other/supported_host_platforms/index.md) section. Add the new host platform there and provide some information about it and the HAL (see other sections for inspiration).
