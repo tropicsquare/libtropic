@@ -1,5 +1,5 @@
 /**
- * @file libtropic_port_unix_spi.c
+ * @file libtropic_port_linux_spi.c
  * @author Evgeny Beysembaev <evgeny@contentwise.tech>
  * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
  *
@@ -31,11 +31,11 @@
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
-#include "libtropic_port_unix_spi.h"
+#include "libtropic_port_linux_spi.h"
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    lt_dev_linux_spi_t *device = (lt_dev_linux_spi_t *)(s2->device);
     uint32_t request_mode;
 
     // Initialize file descriptors to -1 so lt_port_deinit() can always execute safely.
@@ -147,7 +147,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    lt_dev_linux_spi_t *device = (lt_dev_linux_spi_t *)(s2->device);
 
     close(device->gpioreq_cs.fd);
 #if LT_USE_INT_PIN
@@ -169,7 +169,7 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    lt_dev_linux_spi_t *device = (lt_dev_linux_spi_t *)(s2->device);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
@@ -184,7 +184,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    lt_dev_linux_spi_t *device = (lt_dev_linux_spi_t *)(s2->device);
     struct gpio_v2_line_values values;
 
     values.mask = 1;
@@ -200,7 +200,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length, uint32_t timeout_ms)
 {
     LT_UNUSED(timeout_ms);
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    lt_dev_linux_spi_t *device = (lt_dev_linux_spi_t *)(s2->device);
 
     int ret = 0;
     struct spi_ioc_transfer spi = {
@@ -247,7 +247,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 #if LT_USE_INT_PIN
 lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 {
-    lt_dev_unix_spi_t *device = (lt_dev_unix_spi_t *)(s2->device);
+    lt_dev_linux_spi_t *device = (lt_dev_linux_spi_t *)(s2->device);
     struct pollfd pfd;
     int ret;
 

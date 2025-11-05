@@ -24,14 +24,14 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
     target_link_libraries(tropic PUBLIC mbedtls)
     ```
 4. By default, libtropic does not link platform-specific code or its HAL, so it can be built as a static library. This is the consumer's responsibility:
-    1. Add HAL functions to sources and includes depending on your platform. For example, to include Linux SPI HAL to `MY_PROJECTS_SOURCES` source list:
+    1. For the chosen platform (e.g. Linux with HW SPI), add a corresponding HAL using `add_subdirectory`:
     ```cmake
-    set(MY_PROJECT_SOURCES
-        ${PATH_LIBTROPIC}/hal/port/unix/libtropic_port_unix_spi.c
-    )
-    include_directories(
-        ${PATH_LIBTROPIC}/hal/port/unix
-    )
+    add_subdirectory("${PATH_TO_LIBTROPIC}hal/linux/spi")
+    ```
+    2. Add HAL sources and include directories to the `tropic` target. In the previous step, `LT_HAL_SRCS` and `LT_HAL_INC_DIRS` variables were populated based on the selected HAL, so you can use those:
+    ```cmake
+    target_sources(tropic PRIVATE ${LT_HAL_SRCS})
+    target_include_directories(tropic PUBLIC ${LT_HAL_INC_DIRS})
     ```
 5. And finally, link Libtropic with your binary:
 ```cmake
@@ -56,4 +56,4 @@ If you use a Makefile instead of CMake, you need to:
 
 !!! tip
     You can compile libtropic as a static library (see [Compile as a Static Library](compile_as_static_library.md)) using CMake separately and include only the resulting library file in your Makefile.
-    This approach eliminates the need to compile the entire libtropic library and its dependencies in your Makefile. However, you will still need to manually add the HAL files for your platform (`libtropic/hal/port/`) and the CAL files for your CFP (`libtropic/cal/`).
+    This approach eliminates the need to compile the entire libtropic library and its dependencies in your Makefile. However, you will still need to manually add the HAL files for your platform (`libtropic/hal/`) and the CAL files for your CFP (`libtropic/cal/`).

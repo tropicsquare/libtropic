@@ -17,7 +17,7 @@ The CMake project in the `tropic01_model/` directory builds libtropic so it can 
     in the coverage by default.
 
 ## How it Works?
-The `tropic01_model/CMakeLists.txt` uses the Unix TCP HAL implemented in `hal/port/unix/libtropic_port_unix_tcp.c`, so both processes (the compiled binary and the model) communicate through a TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and the model is emulated through this TCP connection. The model responses match those of the physical TROPIC01 chip.
+The `tropic01_model/CMakeLists.txt` uses the TCP HAL implemented in `hal/posix/tcp/libtropic_port_posix_tcp.c`, so both processes (the compiled binary and the model) communicate through a TCP socket at 127.0.0.1:28992. The SPI layer between libtropic and the model is emulated through this TCP connection. The model responses match those of the physical TROPIC01 chip.
 
 ## Model Setup
 First, install the model by following the README in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository.

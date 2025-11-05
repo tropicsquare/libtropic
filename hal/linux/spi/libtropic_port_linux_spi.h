@@ -1,8 +1,8 @@
-#ifndef LIBTROPIC_PORT_UNIX_SPI_H
-#define LIBTROPIC_PORT_UNIX_SPI_H
+#ifndef LIBTROPIC_PORT_LINUX_SPI_H
+#define LIBTROPIC_PORT_LINUX_SPI_H
 
 /**
- * @file libtropic_port_unix_spi.h
+ * @file libtropic_port_linux_spi.h
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for communication using Generic SPI and GPIO Linux UAPI.
  *
@@ -18,12 +18,12 @@ extern "C" {
 #endif
 
 /**
- * @brief Device structure for Unix SPI port.
+ * @brief Device structure for Linux SPI port.
  *
  * @note Public members are meant to be configured by the developer before passing the handle to
  *       libtropic.
  */
-typedef struct lt_dev_unix_spi_t {
+typedef struct lt_dev_linux_spi_t {
     /** @public @brief SPI speed in Hz. */
     int spi_speed;
     /** @public @brief Path to the SPI device. */
@@ -51,10 +51,10 @@ typedef struct lt_dev_unix_spi_t {
 #endif
     /** @private @brief SPI mode. */
     uint32_t mode;
-} lt_dev_unix_spi_t;
+} lt_dev_linux_spi_t;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // LIBTROPIC_PORT_UNIX_SPI_H
+#endif  // LIBTROPIC_PORT_LINUX_SPI_H
