@@ -28,7 +28,7 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
     ```cmake
     add_subdirectory("${PATH_TO_LIBTROPIC}hal/linux/spi")
     ```
-    2. Add the obtained sources and include directories to the `tropic` target:
+    2. Add HAL sources and include directories to the `tropic` target. In the previous step, `LT_HAL_SRCS` and `LT_HAL_INC_DIRS` variables were populated based on the selected HAL, so you can use those:
     ```cmake
     target_sources(tropic PRIVATE ${LT_HAL_SRCS})
     target_include_directories(tropic PUBLIC ${LT_HAL_INC_DIRS})
