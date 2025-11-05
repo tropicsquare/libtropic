@@ -132,7 +132,7 @@ target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS})
 #                                                                         #
 ###########################################################################
 
-add_subdirectory("${PATH_TO_LIBTROPIC}hal/unix/tcp")
+add_subdirectory("${PATH_TO_LIBTROPIC}hal/posix/tcp")
 
 target_sources(tropic PRIVATE ${LT_HAL_SRCS})
 target_include_directories(tropic PUBLIC ${LT_HAL_INC_DIRS})

@@ -40,7 +40,7 @@ For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_sh
 * `src/` Library's source files
 * `tests/` Functional tests
 * `TROPIC01_fw_update_files/` Files used for updating TROPIC01's firmware
-* `tropic01_model/` Project for the TROPIC01's model, utilizing the Unix TCP port
+* `tropic01_model/` Project for the TROPIC01's model, utilizing the TCP HAL
 * `vendor/` Third party libraries and tools
 
 ## Get started!

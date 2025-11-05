@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 set(LT_HAL_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/libtropic_port_unix_spi.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/libtropic_port_linux_spi.c
 )
 
 set(LT_HAL_INC_DIRS

@@ -1,5 +1,5 @@
 /**
- * @file libtropic_port_unix_usb_dongle.c
+ * @file libtropic_port_posix_usb_dongle.c
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for communication with USB UART Dongle (TS1302).
  *
@@ -10,7 +10,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include "libtropic_port_unix_usb_dongle.h"
+#include "libtropic_port_posix_usb_dongle.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -83,7 +83,7 @@ static ssize_t read_port(int fd, uint8_t *buffer, size_t size)
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
-    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
+    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
 
     srand(device->rng_seed);
 
@@ -158,7 +158,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
-    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
+    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
 
     if (close(device->fd)) {
         return LT_FAIL;
@@ -200,7 +200,7 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
-    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
+    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
 
     uint8_t cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
     if (write_port(device->fd, cs_high, 5) != 0) {
@@ -223,14 +223,14 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 {
     LT_UNUSED(timeout_ms);
 
-    lt_dev_unix_usb_dongle_t *device = (lt_dev_unix_usb_dongle_t *)s2->device;
+    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
 
     if (offset + tx_data_length > TR01_L1_LEN_MAX) {
         return LT_L1_DATA_LEN_ERROR;
     }
 
     // Bytes from handle which are about to be sent are encoded as chars and stored to buffered_chars.
-    uint8_t buffered_chars[LT_UNIX_USB_DONGLE_SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
+    uint8_t buffered_chars[LT_USB_DONGLE_SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
     for (int i = 0; i < tx_data_length; i++) {
         sprintf((char *)(buffered_chars + i * 2), "%02" PRIX8, s2->buff[i + offset]);
     }
@@ -245,7 +245,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         return LT_L1_SPI_ERROR;
     }
 
-    lt_port_delay(s2, LT_UNIX_USB_DONGLE_READ_WRITE_DELAY);
+    lt_port_delay(s2, LT_USB_DONGLE_READ_WRITE_DELAY);
 
     int read_bytes = read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2);
     if (read_bytes != ((2 * tx_data_length) + 2)) {

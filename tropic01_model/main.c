@@ -14,7 +14,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "libtropic_port.h"
-#include "libtropic_port_unix_tcp.h"
+#include "libtropic_port_posix_tcp.h"
 #if LT_USE_TREZOR_CRYPTO
 #include "libtropic_trezor_crypto.h"
 #elif LT_USE_MBEDTLS_V4
@@ -55,7 +55,7 @@ int main(void)
     __lt_handle__.l3.buff_len = sizeof(l3_buffer);
 #endif
     // Initialize device before handing handle to the test.
-    lt_dev_unix_tcp_t device;
+    lt_dev_posix_tcp_t device;
     device.addr = inet_addr("127.0.0.1");
     device.port = 28992;
     device.rng_seed = (unsigned int)time(NULL);

@@ -26,7 +26,7 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 4. By default, libtropic does not link platform-specific code or its HAL, so it can be built as a static library. This is the consumer's responsibility:
     1. For the chosen platform (e.g. Linux with HW SPI), add the correct subdirectory inside `libtropic/hal/`, which provides the corresponding HAL sources and include directories:
     ```cmake
-    add_subdirectory("${PATH_TO_LIBTROPIC}hal/unix/spi")
+    add_subdirectory("${PATH_TO_LIBTROPIC}hal/linux/spi")
     ```
     2. Add the obtained sources and include directories to the `tropic` target:
     ```cmake
