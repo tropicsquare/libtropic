@@ -2,7 +2,9 @@
 Libtropic is written to be *platform-independent*, so no changes to the main code base are needed when adding support for a new host platform. However, to define how communication on the L1 Layer will work, a new Hardware Abstraction Layer (HAL) must be implemented. Currently available HALs are located in `hal/`.
 
 ## Guide
-To add support for a new platform (let's say a board `my_board` with MCU `my_mcu`):
+This guide will walk you through adding support for a new platform. In this guide, we will add a support for a microcontroller called `my_mcu` on a board `my_board`. The directory structure will be different if you create a port e.g., for an operating system. In that case, please get inspired by existing ports (POSIX, Linux).
+
+To add support for a our new platform (`my_board` with `my_mcu`):
 
 1. [Create and Implement the HAL C Files](#create-and-implement-the-hal-c-files),
 2. [Create and Implement the HAL CMakeLists.txt](#create-and-implement-the-hal-cmakeliststxt).
