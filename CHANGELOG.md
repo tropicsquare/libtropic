@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CAL API was refactored to be compatible with the new `crypto_ctx` structure.
   - For testing purposes, quick switching of supported crypto libraries was implemented in the `tropic01_model/` CMake project.
 - Moved contents of `hal/port/` into `hal/`.
+- Moved TCP and USB dongle port into `hal/posix/`.
+- Moved Linux SPI port into `hal/linux/`.
 - Refactored platform HAL compilation.
 - Renamed `lt_dev_stm32_nucleo_f439zi` to `lt_dev_stm32_nucleo_f439zi_t`.
 
