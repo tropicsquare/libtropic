@@ -7,10 +7,6 @@ The new CFP has to support the following schemes:
 - **AES-GCM**
     - encryption
     - decryption
-- **ECDSA**
-    - signing
-- **ED25519**
-    - signing
 - **SHA256**
     - hashing
 - **Curve25519**
@@ -38,16 +34,12 @@ By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will beco
 2. Inside `cal/mycrypto/`, create the following source files:
     - `lt_mycrypto_common.c`
     - `lt_mycrypto_aesgcm.c`,
-    - `lt_mycrypto_ecdsa.c`,
-    - `lt_mycrypto_ed25519.c`,
     - `lt_mycrypto_sha256.c`,
     - `lt_mycrypto_hmac_sha256.c`,
     - `lt_mycrypto_x25519.c`.
 3. In each of the source files, implement all required functions — they are declared in the respective headers inside the `libtropic/src/` directory:
     - `lt_crypto_common.h`: Common CAL functions,
     - `lt_aesgcm.h`: AES-GCM functions,
-    - `lt_ecdsa.h`: ECDSA functions,
-    - `lt_ed25519.h`: ED25519 functions,
     - `lt_sha256.h`: SHA256 functions,
     - `lt_hmac_sha256.h`: HMAC SHA256 functions,
     - `lt_x25519.h`: Curve25519 functions.
@@ -80,8 +72,6 @@ Inside `cal/mycrypto/`, create a `CMakeLists.txt` with the following contents:
 set(LT_CAL_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_common.c    
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_aesgcm.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_ed25519.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_ecdsa.c
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_sha256.c
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_hmac_sha256.c
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_x25519.c

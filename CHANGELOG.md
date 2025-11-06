@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored platform HAL compilation.
 - Renamed `lt_dev_stm32_nucleo_f439zi` to `lt_dev_stm32_nucleo_f439zi_t`.
 - Added sections **Supported Host Platforms** and **Supported Cryptographic Functionality Providers** into **Other** section in the Libtropic documentation.
+- Added dependencies on the [micro-ecc](https://github.com/kmackay/micro-ecc) and [ed25519](https://github.com/orlp/ed25519/tree/master) repositories in functional tests, which use them to verify signatures performed by TROPIC01.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
@@ -50,6 +51,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `TR01_L3_ID_SIZE` (redundant to `TR01_L3_CMD_ID_SIZE`).
+- Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecc_eddsa_sig_verify()`:
+  - Reasons:
+    - They don't use any TROPIC01's functionality.
+    - Users should verify the signatures themselves.
+  - Implies:
+    - Signature verification was removed from the HW wallet example.
+    - Libtropic's dependency on ed25519 was removed.
 
 ## [2.0.1]
 
