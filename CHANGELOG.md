@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `LT_L3_MCOUNTER_UPDATE_UPDATE_ERR` to `LT_L3_UPDATE_ERR`.
 - Renamed `LT_L2_STATUS_NOT_RECOGNIZED` to `LT_L2_STATUS_UNKNOWN`.
 - `lt_l3_decrypt_response()` returns `LT_L3_RESULT_UNKNOWN` instead of `LT_FAIL` if the L3 result value is unknown.
-
+- Moved `LT_ASAN` CMake option from Libtropic's CMakeLists.txt to the model's CMakeLists.txt.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
 - Compilation if `LT_USE_INT_PIN` is set from CMake.
+- Apply ASan to libtropic if `LT_ASAN` is defined.
 
 ### Removed
 - `TR01_L3_ID_SIZE` (redundant to `TR01_L3_CMD_ID_SIZE`).

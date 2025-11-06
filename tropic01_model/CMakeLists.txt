@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.21.0)
 
-include(FetchContent)
-
 ###########################################################################
 #                                                                         #
 #   Define project's name                                                 #
@@ -15,9 +13,24 @@ project(tropic01_model
 
 ###########################################################################
 #                                                                         #
+#   Paths and setup                                                       #
+#                                                                         #
+###########################################################################
+
+if(NOT DEFINED PATH_TO_LIBTROPIC)
+    set(PATH_TO_LIBTROPIC "libtropic/")
+endif()
+
+include(FetchContent)
+include(${PATH_TO_LIBTROPIC}cmake/static_asan_flags.cmake)
+
+###########################################################################
+#                                                                         #
 #   Options                                                               #
 #                                                                         #
 ###########################################################################
+
+option(LT_ASAN "Enable static AddressSanitizer (ASan)" OFF)
 
 # LT_VALGRIND - as Valgrind does not have to be compiled/linked together with libtropic as ASAN, this switch does not do anything if not using the model.
 # If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
@@ -35,16 +48,6 @@ set(LAB_BATCH_PKG_DIR
 
 ###########################################################################
 #                                                                         #
-#   Paths and setup                                                       #
-#                                                                         #
-###########################################################################
-
-if(NOT DEFINED PATH_TO_LIBTROPIC)
-    set(PATH_TO_LIBTROPIC "libtropic/")
-endif()
-
-###########################################################################
-#                                                                         #
 #   Add libtropic library and set it up                                   #
 #                                                                         #
 ###########################################################################
@@ -56,9 +59,8 @@ add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 
 if(LT_ASAN)
-    message(STATUS "AddressSanitizer (ASan) is enabled for the entire project.")
-    add_compile_options(${LT_ASAN_COMPILE_FLAGS})
-    add_link_options(${LT_ASAN_LINK_FLAGS})
+    message(STATUS "Enabling static AddressSanitizer (ASan).")
+    target_link_libraries(tropic PRIVATE libtropic::static_asan_flags)
 endif()
 
 set(VALGRIND_ARG "")
@@ -221,6 +223,10 @@ if (LT_BUILD_EXAMPLES)
         add_executable(${exe_name} ${SOURCES})
         target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
 
+        if(LT_ASAN)
+            target_link_libraries(${exe_name} PRIVATE tropic libtropic::static_asan_flags)
+        endif()
+
         # Enable example registry using LT_BUILD_EXAMPLES and choose correct example for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_EXAMPLES)
         target_compile_definitions(${exe_name} PRIVATE ${example_macro})
@@ -294,6 +300,10 @@ if(LT_BUILD_TESTS)
         # Define executable (separate for each test) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
         target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
+
+        if(LT_ASAN)
+            target_link_libraries(${exe_name} PRIVATE tropic libtropic::static_asan_flags)
+        endif()
 
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
