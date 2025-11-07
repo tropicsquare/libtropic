@@ -686,8 +686,9 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    // Signature verification could be done here
-    LT_LOG_INFO("Suggestion: Verify the signature here");
+    // Here you should verify the signature, for example using functions
+    // from your crypto library.
+    LT_LOG_INFO("Suggestion: Verify the signature here!");
 
     LT_LOG_INFO("Generating ECC key in slot %d...", (int)TR01_ECC_SLOT_8);
     ret = lt_ecc_key_generate(h, TR01_ECC_SLOT_8, TR01_CURVE_ED25519);
