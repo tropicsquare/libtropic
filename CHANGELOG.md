@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored platform HAL compilation.
 - Renamed `lt_dev_stm32_nucleo_f439zi` to `lt_dev_stm32_nucleo_f439zi_t`.
 - Added sections **Supported Host Platforms** and **Supported Cryptographic Functionality Providers** into **Other** section in the Libtropic documentation.
-- Added dependencies on the [micro-ecc](https://github.com/kmackay/micro-ecc) and [ed25519](https://github.com/orlp/ed25519/tree/master) repositories in functional tests, which use them to verify signatures performed by TROPIC01.
+- Added dependencies on [micro-ecc](https://github.com/kmackay/micro-ecc) and [ed25519](https://github.com/orlp/ed25519/tree/master) repositories in functional tests (for verification of signatures calculated by TROPIC01).
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
