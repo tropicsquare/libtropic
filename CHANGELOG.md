@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `LT_L2_STATUS_NOT_RECOGNIZED` to `LT_L2_STATUS_UNKNOWN`.
 - `lt_l3_decrypt_response()` returns `LT_L3_RESULT_UNKNOWN` instead of `LT_FAIL` if the L3 result value is unknown.
 - Moved `LT_ASAN` CMake option from Libtropic's CMakeLists.txt to the model's CMakeLists.txt.
+- Moved `LT_STRICT_COMP_FLAGS` CMake option from Libtropic's CMakeLists.txt to the model's CMakeLists.txt and set it ON by default.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.

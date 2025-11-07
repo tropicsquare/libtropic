@@ -7,7 +7,6 @@ cmake_minimum_required(VERSION 3.21.0)
 ###########################################################################
 
 # Used in the tropic01_model/CMakeLists.txt and platform repositories
-include(cmake/strict_compile_flags.cmake)
 include(cmake/coverage_flags.cmake)
 
 option(LT_BUILD_EXAMPLES "Compile example code as part of libtropic library" OFF)
@@ -21,7 +20,6 @@ option(LT_HELPERS "Compile helper function" ON)
 option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" OFF)
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
-option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
 
 # Select pairing keys written during manufacturing into your TROPIC01
 set(LT_SH0_KEYS "prod0" CACHE STRING "Choose which pairing keys in slot 0 will be used in examples/tests")
@@ -400,23 +398,6 @@ target_compile_definitions(tropic PUBLIC
 #   Compile and link                                                      #
 #                                                                         #
 ###########################################################################
-
-# Conditionally apply strict compilation flags
-if(LT_STRICT_COMP_FLAGS OR LT_BUILD_EXAMPLES OR LT_BUILD_TESTS)
-
-    # 1. Apply the compiler options immediately.
-    # This is the primary action of this block.
-    target_link_libraries(tropic PRIVATE libtropic::strict_comp_flags)
-
-    # 2. Handle the cache variable for user visibility.
-    # If the flag wasn't already ON, it means tests/examples implicitly enabled it.
-    # We update the cache so the user sees the actual state in cmake-gui.
-    if(NOT LT_STRICT_COMP_FLAGS)
-        message(STATUS "Enabling strict compilation flags for libtropic because LT_BUILD_EXAMPLES or LT_BUILD_TESTS is ON.")
-        set(LT_STRICT_COMP_FLAGS ON CACHE BOOL "Enable strict compilation flags for libtropic" FORCE)
-    endif()
-
-endif()
 
 if(LT_TEST_COVERAGE)
     message(STATUS "Enabling coverage collection for libtropic")
