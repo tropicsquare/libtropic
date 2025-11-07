@@ -8,7 +8,7 @@ There are multiple kinds of FW running in TROPIC01:
 
 1. *Immutable FW (bootloader)*. Located in ROM, runs on RISC-V CPU from ROM after power-up, updates or boots the mutable FWs.
 2. *RISC-V Mutable FW (CPU FW)*. Updatable, located in R-memory, runs on RISC-V CPU from RAM, processes L2/L3 communication.
-3. *ECC engine mutable FW (ECC engine FW)*. Updatable, located in R-memory, runs on ECC engine from RAM, helps the RISC-V CPU FW with processing ECC commands (ECC_Key_*, ECDSA/EDDSA_Sign).
+3. *ECC engine mutable FW (ECC engine FW or SPECT FW)*. Updatable, located in R-memory, runs on ECC engine from RAM, helps the RISC-V CPU FW with processing ECC commands (ECC_Key_*, ECDSA/EDDSA_Sign).
 
 !!! tip
     For more detailed information about each FW, refer to the [FW Update Application Note](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#application-notes).
@@ -46,3 +46,13 @@ To select which FW version will be compiled together with Libtropic, the user ha
 
 1. `LT_SILICON_REV`: Defines the TROPIC01 silicon revision (e.g. `"ACAB"`), based on which the correct bootloader version is selected. Refer to the [Available Parts](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#available-parts) section (in the [TROPIC01 GitHub repository](https://github.com/tropicsquare/tropic01)) to find out the silicon revision of your TROPIC01 chip.
 2. `LT_CPU_FW_VERSION`: Defines the TROPIC01 FW version (e.g. `"1_0_1"`), based on which the correct FW update files for both RISC-V CPU and SPECT are selected.
+
+## Firmware Hashes
+TROPIC01 is able to report hashes of the firmware it is loaded with. Using Libtropic, you can get the value using `lt_get_info_fw_bank` function.
+
+However, for certain old firmware versions, the reported hashes will not match with the hashes found in the public firmware repositories. The reason is that before publication, we cleaned up the git histories. Although the code was not changed, git hashes were affected. Affected version are:
+
+- CPU FW: versions older than and including v1.0.1.
+- SPECT FW: versions older than and including v1.0.0.
+
+If you want to verify that production binaries match the source code, you can compile the source code and then compare the resulting binary to production binaries provided in the Libtropic repository.
