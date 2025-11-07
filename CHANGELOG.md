@@ -51,14 +51,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `TR01_L3_ID_SIZE` (redundant to `TR01_L3_CMD_ID_SIZE`).
-- Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecc_eddsa_sig_verify()`:
-  - Reasons:
-    - They don't use any TROPIC01's functionality.
-    - Users should verify the signatures themselves.
-  - Implies:
-    - Signature verification was removed from the HW wallet example.
+- Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecc_eddsa_sig_verify()`.
+  - Reason: They don't use any TROPIC01's functionality and are an unneccessary wrapper.
+  - Consequences:
+    - CAL was simplified, there are less requirements on CFP (ECDSA and EdDSA not required from now).
     - Libtropic's dependency on ed25519 was removed.
-
+    - Signature verification was removed from the HW wallet example.
+    - Users should verify the signatures themselves e.g., using functions provided by their crypto library.
 ## [2.0.1]
 
 ### Added
