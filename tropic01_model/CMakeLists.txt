@@ -23,9 +23,6 @@ project(tropic01_model
 # If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
 option(LT_VALGRIND "Enable Valgrind" OFF)
 
-# Enables compilation with coverage enabled and O0 for functional tests.
-option(LT_TEST_COVERAGE "Enable coverage collection for functional tests" OFF)
-
 # Select CAL
 set(LT_CAL "" CACHE STRING "Set a CAL (Crypto Abstraction Layer)")
 set_property(CACHE LT_CAL PROPERTY STRINGS "trezor_crypto" "mbedtls_v4")
@@ -232,10 +229,6 @@ if(LT_BUILD_TESTS)
         lt_test_rev_get_info_req_bootloader
     )
 
-    if(LT_TEST_COVERAGE)
-        message(STATUS "Enabling converage and compiling with -O0!")
-    endif()
-
     # Loop through tests defined in libtropic and prepare environment.
     foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
     
@@ -259,11 +252,6 @@ if(LT_BUILD_TESTS)
             LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
             LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
         )
-
-        if (LT_TEST_COVERAGE)
-            # Add coverage-related flags from common config.
-            target_link_libraries(${exe_name} PRIVATE libtropic::coverage_flags)
-        endif()
 
         # Make sure model configuration exists before building this test
         add_dependencies(${exe_name} generate_model_cfg)
