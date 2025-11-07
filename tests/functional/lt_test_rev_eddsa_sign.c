@@ -8,6 +8,7 @@
 
 #include <inttypes.h>
 
+#include "ed25519.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -127,7 +128,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Verifying signature...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, msg_to_sign_len, read_pub_key, rs));
+        LT_TEST_ASSERT(1, ed25519_verify(rs, msg_to_sign, msg_to_sign_len, read_pub_key));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
@@ -162,7 +163,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Verifying signature...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_eddsa_sig_verify(msg_to_sign, msg_to_sign_len, read_pub_key, rs));
+        LT_TEST_ASSERT(1, ed25519_verify(rs, msg_to_sign, msg_to_sign_len, read_pub_key));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));

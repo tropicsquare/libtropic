@@ -686,13 +686,9 @@ static int session3(lt_handle_t *h)
     }
     LT_LOG_INFO("\tOK");
 
-    LT_LOG_INFO("Verifying with lt_ecc_eddsa_sig_verify()...");
-    ret = lt_ecc_eddsa_sig_verify(msg, sizeof(msg), ed25519_pubkey, rs);
-    if (LT_OK != ret) {
-        LT_LOG_ERROR("Failed to verify, ret%s", lt_ret_verbose(ret));
-        return -1;
-    }
-    LT_LOG_INFO("\tOK");
+    // Here you should verify the signature, for example using functions
+    // from your crypto library.
+    LT_LOG_INFO("Suggestion: Verify the signature here!");
 
     LT_LOG_INFO("Generating ECC key in slot %d...", (int)TR01_ECC_SLOT_8);
     ret = lt_ecc_key_generate(h, TR01_ECC_SLOT_8, TR01_CURVE_ED25519);

@@ -1,3 +1,0 @@
-[submodule "vendor/ed25519"]
-	path = vendor/ed25519
-	url = https://github.com/orlp/ed25519.git

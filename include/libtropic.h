@@ -541,21 +541,6 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
                            uint8_t *rs);
 
 /**
- * @brief Verifies ECDSA signature. Host side only, does not require TROPIC01.
- *
- * @param msg         Message
- * @param msg_len     Length of the message
- * @param pubkey      Public key related to private key which signed the message (64B)
- * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
- *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
- * of returned value
- *
- */
-lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
-
-/**
  * @brief Performs EdDSA sign of a message with a private ECC key stored in TROPIC01
  *
  * @param h           Device's handle
@@ -570,19 +555,6 @@ lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, con
  */
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs);
-
-/**
- * @brief Verifies EdDSA signature. Host side only, does not require TROPIC01.
- *
- * @param msg         Message
- * @param msg_len     Length of the message (max length is 4095)
- * @param pubkey      Public key related to private key which signed the message (32B)
- * @param rs          Signature to be verified, in a form of R and S bytes (should always have length 64B)
- * lt_ret_t           LT_OK          - success
- *                    LT_PARAM_ERROR - wrong parameters were passed
- *                    LT_FAIL        - signature verify failed
- */
-lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs);
 
 /**
  * @brief Initializes monotonic counter of a given index

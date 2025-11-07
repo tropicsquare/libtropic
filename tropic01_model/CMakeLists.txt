@@ -141,6 +141,55 @@ set(SOURCES
     main.c
 )
 
+if(LT_BUILD_TESTS)
+    # Download micro-ecc repository used for ECDSA signature verification
+    FetchContent_Declare(
+        micro_ecc
+        GIT_REPOSITORY https://github.com/kmackay/micro-ecc.git
+        GIT_TAG        v1.1
+    )
+    FetchContent_MakeAvailable(micro_ecc)
+
+    add_library(micro_ecc_lib STATIC
+        ${micro_ecc_SOURCE_DIR}/uECC.c
+    )
+
+    target_include_directories(micro_ecc_lib PRIVATE
+        ${micro_ecc_SOURCE_DIR}
+    )
+
+    target_include_directories(tropic PRIVATE ${micro_ecc_SOURCE_DIR})
+    target_link_libraries(tropic PRIVATE micro_ecc_lib)
+
+    # Download ed25519 repository used for ECDSA signature verification
+    FetchContent_Declare(
+        ed25519
+        GIT_REPOSITORY https://github.com/orlp/ed25519.git
+        GIT_TAG        master
+    )
+    FetchContent_MakeAvailable(ed25519)
+
+    add_library(ed25519_lib STATIC
+        ${ed25519_SOURCE_DIR}/src/verify.c
+        ${ed25519_SOURCE_DIR}/src/add_scalar.c
+        ${ed25519_SOURCE_DIR}/src/fe.c
+        ${ed25519_SOURCE_DIR}/src/ge.c
+        ${ed25519_SOURCE_DIR}/src/key_exchange.c
+        ${ed25519_SOURCE_DIR}/src/keypair.c
+        ${ed25519_SOURCE_DIR}/src/sc.c
+        ${ed25519_SOURCE_DIR}/src/seed.c
+        ${ed25519_SOURCE_DIR}/src/sha512.c
+        ${ed25519_SOURCE_DIR}/src/sign.c
+    )
+
+    target_include_directories(ed25519_lib PRIVATE
+        ${ed25519_SOURCE_DIR}/src/
+    )
+
+    target_include_directories(tropic PRIVATE ${ed25519_SOURCE_DIR}/src)
+    target_link_libraries(tropic PRIVATE ed25519_lib)
+endif()
+
 ###########################################################################
 #                                                                         #
 #   EXAMPLES CONFIGURATION                                                #

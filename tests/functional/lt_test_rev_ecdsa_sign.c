@@ -14,7 +14,9 @@
 #include "libtropic_logging.h"
 #include "lt_l3_api_structs.h"
 #include "lt_random.h"
+#include "lt_sha256.h"
 #include "string.h"
+#include "uECC.h"
 
 #define MSG_TO_SIGN_LEN_MAX 4096
 
@@ -93,6 +95,7 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
     lt_ecc_curve_type_t curve;
     lt_ecc_key_origin_t origin;
     uint32_t msg_to_sign_len;
+    uint8_t msg_hash[LT_SHA256_DIGEST_LENGTH] = {0};
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
@@ -128,8 +131,14 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
+        LT_LOG_INFO("Calculating hash of the message before verifying the signature...");
+        LT_TEST_ASSERT(LT_OK, lt_sha256_init(h->l3.crypto_ctx));
+        LT_TEST_ASSERT(LT_OK, lt_sha256_start(h->l3.crypto_ctx));
+        LT_TEST_ASSERT(LT_OK, lt_sha256_update(h->l3.crypto_ctx, msg_to_sign, msg_to_sign_len));
+        LT_TEST_ASSERT(LT_OK, lt_sha256_finish(h->l3.crypto_ctx, msg_hash));
+
         LT_LOG_INFO("Verifying signature...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sig_verify(msg_to_sign, msg_to_sign_len, read_pub_key, rs));
+        LT_TEST_ASSERT(1, uECC_verify(read_pub_key, msg_hash, sizeof(msg_hash), rs, uECC_secp256r1()));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
@@ -163,8 +172,14 @@ void lt_test_rev_ecdsa_sign(lt_handle_t *h)
         LT_LOG_INFO("Signing message...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
+        LT_LOG_INFO("Calculating hash of the message before verifying the signature...");
+        LT_TEST_ASSERT(LT_OK, lt_sha256_init(h->l3.crypto_ctx));
+        LT_TEST_ASSERT(LT_OK, lt_sha256_start(h->l3.crypto_ctx));
+        LT_TEST_ASSERT(LT_OK, lt_sha256_update(h->l3.crypto_ctx, msg_to_sign, msg_to_sign_len));
+        LT_TEST_ASSERT(LT_OK, lt_sha256_finish(h->l3.crypto_ctx, msg_hash));
+
         LT_LOG_INFO("Verifying signature...");
-        LT_TEST_ASSERT(LT_OK, lt_ecc_ecdsa_sig_verify(msg_to_sign, msg_to_sign_len, read_pub_key, rs));
+        LT_TEST_ASSERT(1, uECC_verify(read_pub_key, msg_hash, sizeof(msg_hash), rs, uECC_secp256r1()));
 
         LT_LOG_INFO("Erasing the slot...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));

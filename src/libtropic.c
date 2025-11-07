@@ -22,8 +22,6 @@
 #include "libtropic_port.h"
 #include "lt_asn1_der.h"
 #include "lt_crypto_common.h"
-#include "lt_ecdsa.h"
-#include "lt_ed25519.h"
 #include "lt_hkdf.h"
 #include "lt_l1.h"
 #include "lt_l1_port_wrap.h"
@@ -1248,15 +1246,6 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
     return lt_in__ecc_ecdsa_sign(h, rs);
 }
 
-lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
-{
-    if (!msg || !pubkey || !rs) {
-        return LT_PARAM_ERR;
-    }
-
-    return lt_ecdsa_sign_verify(msg, msg_len, pubkey, rs);
-}
-
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
                            uint8_t *rs)
 {
@@ -1283,15 +1272,6 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
     }
 
     return lt_in__ecc_eddsa_sign(h, rs);
-}
-
-lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
-{
-    if (!msg || (msg_len > TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || !pubkey || !rs) {
-        return LT_PARAM_ERR;
-    }
-
-    return lt_ed25519_sign_verify(msg, msg_len, pubkey, rs);
 }
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
