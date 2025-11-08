@@ -58,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Libtropic's dependency on ed25519 was removed.
     - Signature verification was removed from the HW wallet example.
     - Users should verify the signatures themselves e.g., using functions provided by their crypto library.
+
 ## [2.0.1]
 
 ### Added
