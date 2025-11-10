@@ -50,7 +50,7 @@ extern "C" {
 #define TR01_L3_RESULT_INVALID_KEY 0x12
 /** @brief Update operation failed (i.e. mcounter done). */
 #define TR01_L3_RESULT_UPDATE_ERR 0x13
-/** @brief The counter disabled or failed. */
+/** @brief The counter is disabled or has failed. */
 #define TR01_L3_RESULT_COUNTER_INVALID 0x14
 /** @brief The requested slot is empty and contains no valid data. */
 #define TR01_L3_RESULT_SLOT_EMPTY 0x15
