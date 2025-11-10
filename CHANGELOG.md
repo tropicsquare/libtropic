@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL` to `LT_L3_SLOT_NOT_EMPTY`.
     - `LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED` to `LT_L3_SLOT_EXPIRED`.
     - `LT_L3_MCOUNTER_UPDATE_UPDATE_ERR` to `LT_L3_UPDATE_ERR`.
-- Order of values inside `lt_ret_t`.
+- Reordered values inside `lt_ret_t` enum.
 - Renamed `LT_L2_STATUS_NOT_RECOGNIZED` to `LT_L2_STATUS_UNKNOWN`.
 - `lt_l3_decrypt_response()` returns `LT_L3_RESULT_UNKNOWN` instead of `LT_FAIL` if the L3 result value is unknown.
 
