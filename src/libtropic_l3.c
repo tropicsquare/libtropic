@@ -241,6 +241,12 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
         goto exit;
     }
 
+    // Deinit kauth, not needed anymore
+    ret = lt_aesgcm_decrypt_deinit(h->l3.crypto_ctx);
+    if (ret != LT_OK) {
+        goto exit;
+    }
+
     ret = lt_aesgcm_encrypt_init(h->l3.crypto_ctx, kcmd, sizeof(kcmd));
     if (ret != LT_OK) {
         goto exit;
