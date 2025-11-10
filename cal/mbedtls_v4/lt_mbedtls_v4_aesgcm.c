@@ -5,6 +5,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +43,7 @@ static lt_ret_t lt_aesgcm_init(lt_aesgcm_ctx_mbedtls_v4_t *ctx, const uint8_t *k
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't import AES-GCM key, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("Couldn't import AES-GCM key, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -61,7 +62,7 @@ static lt_ret_t lt_aesgcm_deinit(lt_aesgcm_ctx_mbedtls_v4_t *ctx)
     if (ctx->key_set) {
         psa_status_t status = psa_destroy_key(ctx->key_id);
         if (status != PSA_SUCCESS) {
-            LT_LOG_ERROR("Failed to destroy AES-GCM key, status=%d (psa_status_t)", status);
+            LT_LOG_ERROR("Failed to destroy AES-GCM key, status=%" PRId32 " (psa_status_t)", status);
             return LT_CRYPTO_ERR;
         }
         ctx->key_set = 0;
@@ -92,7 +93,8 @@ lt_ret_t lt_aesgcm_encrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, 
     size_t resulting_length;
 
     if (ciphertext_len < PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len)) {
-        LT_LOG_ERROR("AES-GCM output (ciphertext) buffer too small! Current: %" PRIu32 " bytes, required: %u bytes",
+        LT_LOG_ERROR("AES-GCM output (ciphertext) buffer too small! Current: %" PRIu32 " bytes, required: %" PRIu32
+                     " bytes",
                      ciphertext_len, PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len));
         return LT_PARAM_ERR;
     }
@@ -107,12 +109,12 @@ lt_ret_t lt_aesgcm_encrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, 
                               plaintext_len, ciphertext, ciphertext_len, &resulting_length);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("AES-GCM encryption failed, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("AES-GCM encryption failed, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
     if (resulting_length != PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len)) {
-        LT_LOG_ERROR("AES-GCM encryption output length mismatch! Current: %zu bytes, expected: %u bytes",
+        LT_LOG_ERROR("AES-GCM encryption output length mismatch! Current: %zu bytes, expected: %" PRIu32 " bytes",
                      resulting_length, PSA_AEAD_ENCRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, plaintext_len));
         return LT_CRYPTO_ERR;
     }
@@ -129,7 +131,8 @@ lt_ret_t lt_aesgcm_decrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, 
     size_t resulting_length;
 
     if (plaintext_len < PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len)) {
-        LT_LOG_ERROR("AES-GCM output (plaintext) buffer too small! Current: %" PRIu32 " bytes, required: %u bytes",
+        LT_LOG_ERROR("AES-GCM output (plaintext) buffer too small! Current: %" PRIu32 " bytes, required: %" PRIu32
+                     " bytes",
                      plaintext_len, PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len));
         return LT_PARAM_ERR;
     }
@@ -144,12 +147,12 @@ lt_ret_t lt_aesgcm_decrypt(void *ctx, const uint8_t *iv, const uint32_t iv_len, 
                               ciphertext_len, plaintext, plaintext_len, &resulting_length);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("AES-GCM decryption failed, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("AES-GCM decryption failed, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
     if (resulting_length != PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len)) {
-        LT_LOG_ERROR("AES-GCM decryption output length mismatch! Current: %zu bytes, expected: %u bytes",
+        LT_LOG_ERROR("AES-GCM decryption output length mismatch! Current: %zu bytes, expected: %" PRIu32 " bytes",
                      resulting_length, PSA_AEAD_DECRYPT_OUTPUT_SIZE(PSA_KEY_TYPE_AES, PSA_ALG_GCM, ciphertext_len));
         return LT_CRYPTO_ERR;
     }

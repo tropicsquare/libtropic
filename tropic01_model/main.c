@@ -6,6 +6,7 @@
  */
 
 #include <arpa/inet.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -29,7 +30,7 @@ int main(void)
 #if LT_USE_MBEDTLS_V4
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("PSA Crypto initialization failed, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("PSA Crypto initialization failed, status=%" PRId32 " (psa_status_t)", status);
         return -1;
     }
 #endif
