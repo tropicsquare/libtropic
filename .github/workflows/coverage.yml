@@ -75,7 +75,7 @@ jobs:
       - name: Export Markdown report
         run: |
             cd tropic01_model
-            gcovr --markdown coverage_report.md --gcov-exclude '.*lt_test.*|.*main\.c.*'
+            gcovr --markdown coverage_report.md --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*'
 
       - name: Post or update PR comment
         uses: actions/github-script@v7

@@ -146,8 +146,8 @@ cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 -DLT_CAL="mbedtls_v4" ..
 
 After CTest finishes, you can use [gcovr](https://github.com/gcovr/gcovr) to export results:
 ```shell
-# Execute this from the tropic01_model/ directory.
-gcovr --txt coverage_report.txt --gcov-exclude '.*lt_test.*|.*main\.c.*'
+# Execute this from the tropic01_model/ directory!
+gcovr --txt coverage_report.txt --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*'
 ```
 
 We use the following parameters:
