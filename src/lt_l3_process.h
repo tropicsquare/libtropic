@@ -31,20 +31,20 @@ extern "C" {
 /** @brief L3 RESULT ﬁeld Value */
 #define TR01_L3_RESULT_INVALID_CMD 0x02u
 
-/** @brief L3 RESULT ﬁeld Value returned from ecc_key_read */
-#define TR01_L3_ECC_INVALID_KEY 0x12u
-/** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define TR01_L3_PAIRING_KEY_EMPTY 0x15u
-/** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
-#define TR01_L3_PAIRING_KEY_INVALID 0x16u
 /** @brief The slot is already written in */
 #define TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
 /** @brief The writing operation limit is reached for the slot. */
 #define TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED 0x11
+/** @brief L3 RESULT ﬁeld Value returned from ecc_key_read */
+#define TR01_L3_ECC_INVALID_KEY 0x12u
 /** @brief Failure to update the specified Monotonic Counter. The Monotonic Counter is already at 0. */
 #define TR01_L3_MCOUNTER_UPDATE_ERROR 0x13
 /** @brief The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. */
 #define TR01_L3_MCOUNTER_COUNTER_INVALID 0x14
+/** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
+#define TR01_L3_PAIRING_KEY_EMPTY 0x15u
+/** @brief L3 RESULT ﬁeld Value returned from pairing_key_read */
+#define TR01_L3_PAIRING_KEY_INVALID 0x16u
 
 /**
  * @brief Encrypts content of L3 buffer and fills it with cyphertext ready to be sent to TROPIC01.
