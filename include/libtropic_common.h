@@ -270,7 +270,7 @@ typedef enum lt_ret_t {
     /** @brief Unknown L3 Command packet. */
     LT_L3_INVALID_CMD = 21,
     /** @brief L3 result [API Pairing_Key_Write, Pairing_Key_Invalidate, R_Config_Write, I_Config_Write,
-       R_Mem_Data_Write]: A hardware error occured during a write operation. */
+       R_Mem_Data_Write]: A hardware error occurred during a write operation. */
     LT_L3_HARDWARE_FAIL = 22,
 
     // Libtropic's return values for the L3 Layer.
