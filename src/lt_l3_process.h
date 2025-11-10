@@ -22,14 +22,14 @@
 extern "C" {
 #endif
 
-/** @brief L3 RESULT ﬁeld Value */
-#define TR01_L3_RESULT_OK 0xC3u
-/** @brief L3 RESULT ﬁeld Value */
-#define TR01_L3_RESULT_FAIL 0x3Cu
-/** @brief L3 RESULT ﬁeld Value */
-#define TR01_L3_RESULT_UNAUTHORIZED 0x01u
-/** @brief L3 RESULT ﬁeld Value */
-#define TR01_L3_RESULT_INVALID_CMD 0x02u
+/** @brief L3 Command executed successfully. */
+#define TR01_L3_RESULT_OK 0xC3
+/** @brief Generic L3 command failure. */
+#define TR01_L3_RESULT_FAIL 0x3C
+/** @brief Unauthorized access. */
+#define TR01_L3_RESULT_UNAUTHORIZED 0x01
+/** @brief Invalid or unsupported L3 command identifier. */
+#define TR01_L3_RESULT_INVALID_CMD 0x02
 
 /** @brief The slot is already written in */
 #define TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL 0x10
