@@ -55,8 +55,8 @@ static lt_ret_t lt_test_rev_eddsa_sign_cleanup(void)
 
         LT_LOG_INFO("Reading slot #%" PRIu8 " (should fail)", i);
         ret = lt_ecc_key_read(g_h, i, read_pub_key, sizeof(read_pub_key), &curve, &origin);
-        if (LT_L3_ECC_INVALID_KEY != ret) {
-            LT_LOG_ERROR("Return value is not LT_L3_ECC_INVALID_KEY.");
+        if (LT_L3_INVALID_KEY != ret) {
+            LT_LOG_ERROR("Return value is not LT_L3_INVALID_KEY.");
             return ret;
         }
     }
@@ -116,7 +116,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
+        LT_TEST_ASSERT(LT_L3_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Storing private key pre-generated using Ed25519 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_store(h, i, TR01_CURVE_ED25519, priv_test_key));
@@ -134,7 +134,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
 
         LT_LOG_INFO("Signing message with erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
+        LT_TEST_ASSERT(LT_L3_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
     }
     LT_LOG_LINE();
 
@@ -151,7 +151,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, msg_to_sign, msg_to_sign_len));
 
         LT_LOG_INFO("Signing message with empty slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
+        LT_TEST_ASSERT(LT_L3_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
 
         LT_LOG_INFO("Generating private key using Ed25519 curve...");
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_generate(h, i, TR01_CURVE_ED25519));
@@ -169,7 +169,7 @@ void lt_test_rev_eddsa_sign(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_ecc_key_erase(h, i));
 
         LT_LOG_INFO("Signing message with erased slot (should fail)...");
-        LT_TEST_ASSERT(LT_L3_ECC_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
+        LT_TEST_ASSERT(LT_L3_INVALID_KEY, lt_ecc_eddsa_sign(h, i, msg_to_sign, msg_to_sign_len, rs));
     }
     LT_LOG_LINE();
 

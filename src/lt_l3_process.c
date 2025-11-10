@@ -133,21 +133,23 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
             return LT_L3_INVALID_CMD;
         case TR01_L3_RESULT_OK:
             return LT_OK;
-        case TR01_L3_PAIRING_KEY_EMPTY:
-            return LT_L3_PAIRING_KEY_EMPTY;
-        case TR01_L3_PAIRING_KEY_INVALID:
-            return LT_L3_PAIRING_KEY_INVALID;
-        case TR01_L3_ECC_INVALID_KEY:
-            return LT_L3_ECC_INVALID_KEY;
-        case TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL:
-            return LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL;
-        case TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED:
-            return LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED;
-        case TR01_L3_MCOUNTER_UPDATE_ERROR:
-            return LT_L3_MCOUNTER_UPDATE_UPDATE_ERR;
-        case TR01_L3_MCOUNTER_COUNTER_INVALID:
+        case TR01_L3_RESULT_SLOT_EMPTY:
+            return LT_L3_SLOT_EMPTY;
+        case TR01_L3_RESULT_SLOT_INVALID:
+            return LT_L3_SLOT_INVALID;
+        case TR01_L3_RESULT_INVALID_KEY:
+            return LT_L3_INVALID_KEY;
+        case TR01_L3_RESULT_SLOT_NOT_EMPTY:
+            return LT_L3_SLOT_NOT_EMPTY;
+        case TR01_L3_RESULT_SLOT_EXPIRED:
+            return LT_L3_SLOT_EXPIRED;
+        case TR01_L3_RESULT_UPDATE_ERR:
+            return LT_L3_UPDATE_ERR;
+        case TR01_L3_RESULT_COUNTER_INVALID:
             return LT_L3_COUNTER_INVALID;
+        case TR01_L3_RESULT_HARDWARE_FAIL:
+            return LT_L3_HARDWARE_FAIL;
         default:
-            return LT_FAIL;
+            return LT_L3_RESULT_UNKNOWN;
     }
 }
