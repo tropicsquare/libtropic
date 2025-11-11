@@ -17,12 +17,10 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
-    Serial.println("Initializing SPI...");
     pinMode(device->spi_cs_pin, OUTPUT);
     digitalWrite(device->spi_cs_pin, HIGH);
     device->spi->begin();
 
-    Serial.println("Initializing RNG...\n");
     randomSeed(device->rng_seed);
 
     return LT_OK;
