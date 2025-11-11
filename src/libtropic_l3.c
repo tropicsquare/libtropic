@@ -34,10 +34,10 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
         return LT_PARAM_ERR;
     }
 
+    // Remove any previous session data and init IVs.
     // In case we reuse handle and use separate l3 buffer, we need to ensure that IV's are zeroed,
     // because on session start we expect IV's to be 0. It does not hurt to zero them anyway on session start.
-    memset(h->l3.encryption_IV, 0, sizeof(h->l3.encryption_IV));
-    memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
+    lt_l3_invalidate_host_session_data(&h->l3);
 
     // Create ephemeral host keys
     lt_ret_t ret = lt_random_bytes(h, host_eph_keys->ehpriv, sizeof(host_eph_keys->ehpriv));
@@ -69,9 +69,10 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
         return LT_PARAM_ERR;
     }
 
-    // Init IV to zeros
-    memset(h->l3.encryption_IV, 0, sizeof(h->l3.encryption_IV));
-    memset(h->l3.decryption_IV, 0, sizeof(h->l3.decryption_IV));
+    // Remove any previous session data and init IVs.
+    // In case we reuse handle and use separate l3 buffer, we need to ensure that IV's are zeroed,
+    // because on session start we expect IV's to be 0. It does not hurt to zero them anyway on session start.
+    lt_l3_invalidate_host_session_data(&h->l3);
 
     // Setup a response pointer to l2 buffer, which is placed in handle
     struct lt_l2_handshake_rsp_t *p_rsp = (struct lt_l2_handshake_rsp_t *)h->l2.buff;
