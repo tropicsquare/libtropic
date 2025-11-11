@@ -5,6 +5,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -34,7 +35,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't import X25519 private key, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("Couldn't import X25519 private key, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -46,7 +47,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     psa_status_t destroy_key_status = psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("X25519 key agreement failed, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("X25519 key agreement failed, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -56,7 +57,7 @@ lt_ret_t lt_X25519(const uint8_t *privkey, const uint8_t *pubkey, uint8_t *secre
     }
 
     if (destroy_key_status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't destroy X25519 private key, status=%d (psa_status_t)", destroy_key_status);
+        LT_LOG_ERROR("Couldn't destroy X25519 private key, status=%" PRId32 " (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 
@@ -81,7 +82,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't import X25519 private key, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("Couldn't import X25519 private key, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -92,7 +93,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     psa_status_t destroy_key_status = psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("X25519 public key export failed, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("X25519 public key export failed, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -102,7 +103,7 @@ lt_ret_t lt_X25519_scalarmult(const uint8_t *sk, uint8_t *pk)
     }
 
     if (destroy_key_status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't destroy X25519 private key, status=%d (psa_status_t)", destroy_key_status);
+        LT_LOG_ERROR("Couldn't destroy X25519 private key, status=%" PRId32 " (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 

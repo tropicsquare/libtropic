@@ -5,6 +5,7 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
+#include <inttypes.h>
 #include <stdint.h>
 
 #pragma GCC diagnostic push
@@ -33,7 +34,7 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     psa_reset_key_attributes(&attributes);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't import HMAC key, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("Couldn't import HMAC key, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
@@ -45,12 +46,12 @@ lt_ret_t lt_hmac_sha256(const uint8_t *key, const uint32_t key_len, const uint8_
     psa_status_t destroy_key_status = psa_destroy_key(key_id);
 
     if (status != PSA_SUCCESS) {
-        LT_LOG_ERROR("HMAC-SHA256 computation failed, status=%d (psa_status_t)", status);
+        LT_LOG_ERROR("HMAC-SHA256 computation failed, status=%" PRId32 " (psa_status_t)", status);
         return LT_CRYPTO_ERR;
     }
 
     if (destroy_key_status != PSA_SUCCESS) {
-        LT_LOG_ERROR("Couldn't destroy HMAC key, status=%d (psa_status_t)", destroy_key_status);
+        LT_LOG_ERROR("Couldn't destroy HMAC key, status=%" PRId32 " (psa_status_t)", destroy_key_status);
         return LT_CRYPTO_ERR;
     }
 
