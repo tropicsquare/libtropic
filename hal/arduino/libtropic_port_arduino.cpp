@@ -82,7 +82,7 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     unsigned long start_time = millis();
     unsigned long curr_time;
 
-    while (!digitalRead(device->int_gpo_pin)) {
+    while (!digitalRead(device->int_gpio_pin)) {
         curr_time = millis();
         if (curr_time - start_time > (unsigned long)ms) {
             return LT_L1_INT_TIMEOUT;
