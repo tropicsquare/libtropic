@@ -17,10 +17,17 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_arduino_t *device = (lt_dev_arduino_t *)(s2->device);
 
+    // Setup SPI
     pinMode(device->spi_cs_pin, OUTPUT);
     digitalWrite(device->spi_cs_pin, HIGH);
     device->spi->begin();
 
+    // Setup interrupt pin
+#if LT_USE_INT_PIN
+    pinMode(device->int_gpio_pin, INPUT);
+#endif
+
+    // Initialize RNG
     randomSeed(device->rng_seed);
 
     return LT_OK;

@@ -22,7 +22,7 @@
 typedef struct lt_dev_arduino_t {
     /** @public @brief SPI chip select pin. */
     uint16_t spi_cs_pin;
-#ifdef LT_USE_INT_PIN
+#if LT_USE_INT_PIN
     /** @public @brief Pin to which TROPIC01's GPO or interrupt pin is connected to. */
     uint16_t int_gpio_pin;
 #endif
