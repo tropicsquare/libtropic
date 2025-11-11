@@ -4,6 +4,7 @@ These are the currently supported host platforms:
 - [STM32](stm32.md)
 - [Linux](linux.md)
 - [POSIX](posix.md)
+- [Arduino](arduino.md)
 
 All HAL files can be found in the `libtropic/hal/` directory.
 
