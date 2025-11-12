@@ -29,7 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added sections **Supported Host Platforms** and **Supported Cryptographic Functionality Providers** into **Other** section in the Libtropic documentation.
 - Added dependencies on [micro-ecc](https://github.com/kmackay/micro-ecc) and [ed25519](https://github.com/orlp/ed25519/tree/master) repositories in functional tests (for verification of signatures calculated by TROPIC01).
 - Updated L3 result values according to Application FW 1.1.0:
-  - Renaming inside `lt_l3_process.h` (not exposed to users directly).
   - Renaming of `lt_ret_t` values:
     - `LT_L3_PAIRING_KEY_EMPTY` to `LT_L3_SLOT_EMPTY`.
     - `LT_L3_PAIRING_KEY_INVALID` to `LT_L3_SLOT_INVALID`.
