@@ -132,7 +132,7 @@ void lt_test_rev_mcounter(lt_handle_t *h)
         }
 
         LT_LOG_INFO("Try to decrement when mcounter is 0 (should fail)...");
-        LT_TEST_ASSERT(LT_L3_MCOUNTER_UPDATE_UPDATE_ERR, lt_mcounter_update(h, i));
+        LT_TEST_ASSERT(LT_L3_UPDATE_ERR, lt_mcounter_update(h, i));
     }
     LT_LOG_LINE();
 

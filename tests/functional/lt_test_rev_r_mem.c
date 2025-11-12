@@ -131,7 +131,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
         LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, TR01_R_MEM_DATA_SIZE_MAX));
 
         LT_LOG_INFO("Writing zeros to slot #%" PRIu16 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL, lt_r_mem_data_write(h, i, zeros, TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(LT_L3_SLOT_NOT_EMPTY, lt_r_mem_data_write(h, i, zeros, TR01_R_MEM_DATA_SIZE_MAX));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
         read_data_size = 0;  // Set different value just in case

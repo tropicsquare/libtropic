@@ -245,36 +245,35 @@ typedef enum lt_ret_t {
     /** @brief Interrupt pin did not fire as expected */
     LT_L1_INT_TIMEOUT = 10,
 
-    // Return values based on RESULT field
-    /** @brief User slot is empty */
-    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 11,
-    /** @brief L3 result [API r_mem_data_write]: write failed, because slot is already written in */
-    LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL = 12,
-    /** @brief L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot */
-    LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED = 13,
-    /** @brief L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is
-       invalid. */
-    LT_L3_ECC_INVALID_KEY = 14,
-    /** @brief L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter
-       is already at 0. */
-    LT_L3_MCOUNTER_UPDATE_UPDATE_ERR = 15,
-    /** @brief L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The
-       counter must be reinitialized. */
-    LT_L3_COUNTER_INVALID = 16,
-    /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been
-       written to it yet */
-    LT_L3_PAIRING_KEY_EMPTY = 17,
-    /** @brief L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has
-       been invalidated */
-    LT_L3_PAIRING_KEY_INVALID = 18,
-    /** @brief L3 command was received correctly*/
-    LT_L3_OK = 19,
-    /** @brief L3 command was not received correctly */
-    LT_L3_FAIL = 20,
-    /** @brief Current pairing keys are not authorized for execution of the last command */
-    LT_L3_UNAUTHORIZED = 21,
-    /** @brief Received L3 command is invalid */
-    LT_L3_INVALID_CMD = 22,
+    // Return values based on the RESULT field in the L3 Result packet.
+    /** @brief L3 result [API R_Mem_Data_Write]: The target slot is already written. */
+    LT_L3_SLOT_NOT_EMPTY = 11,
+    /** @brief L3 result [API R_Mem_Data_Write]: The target FLASH slot has expired. */
+    LT_L3_SLOT_EXPIRED = 12,
+    /** @brief L3 result [API EDDSA_Sign, ECDSA_Sign, ECC_Key_Read]: The key in selected slot is invalid or corrupted.
+     */
+    LT_L3_INVALID_KEY = 13,
+    /** @brief L3 result [API MCounter_Update]: Update operation failed (i.e. mcounter done at 0). */
+    LT_L3_UPDATE_ERR = 14,
+    /** @brief L3 result [API MCounter_Update, MCounter_Get]: The Monotonic Counter is disabled or locked. */
+    LT_L3_COUNTER_INVALID = 15,
+    /** @brief L3 result [API Pairing_Key_Read]: The requested slot is empty and contains no valid data. */
+    LT_L3_SLOT_EMPTY = 16,
+    /** @brief L3 result [API Pairing_Key_Read]: The slot content is invalidated. */
+    LT_L3_SLOT_INVALID = 17,
+    /** @brief L3 Command successfully executed. */
+    LT_L3_OK = 18,
+    /** @brief Error during processing of the L3 command. */
+    LT_L3_FAIL = 19,
+    /** @brief Insufficient User Access Privileges. */
+    LT_L3_UNAUTHORIZED = 20,
+    /** @brief Unknown L3 Command packet. */
+    LT_L3_INVALID_CMD = 21,
+    /** @brief L3 result [API Pairing_Key_Write, Pairing_Key_Invalidate, R_Config_Write, I_Config_Write,
+       R_Mem_Data_Write]: A hardware error occurred during a write operation. */
+    LT_L3_HARDWARE_FAIL = 22,
+
+    // Libtropic's return values for the L3 Layer.
     /** @brief L3 data does not have an expected length */
     LT_L3_DATA_LEN_ERROR = 23,
     /** @brief L3 response RES_SIZE have an invalid size.
@@ -286,47 +285,53 @@ typedef enum lt_ret_t {
      * or RES_SIZE field in the response is invalid (attack or a bug).
      */
     LT_L3_BUFFER_TOO_SMALL = 25,
+    /** @brief User slot is empty */
+    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 26,
+    /** @brief Unknown L3 RESULT value. */
+    LT_L3_RESULT_UNKNOWN = 27,
 
-    // Return values based on STATUS field
-    /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 26,
+    // Return values based on the STATUS field in the L2 Response frame.
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 27,
+    LT_L2_REQ_CONT = 28,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 28,
+    LT_L2_RES_CONT = 29,
     /** @brief The L2 Request frame is disabled and can’t be executed */
-    LT_L2_RESP_DISABLED = 29,
+    LT_L2_RESP_DISABLED = 30,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 30,
+    LT_L2_HSK_ERR = 31,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 31,
+    LT_L2_NO_SESSION = 32,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 32,
+    LT_L2_TAG_ERR = 33,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 33,
+    LT_L2_CRC_ERR = 34,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 34,
+    LT_L2_GEN_ERR = 35,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 35,
+    LT_L2_NO_RESP = 36,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 36,
-    /** @brief Returned status byte is not recognized at all */
-    LT_L2_STATUS_NOT_RECOGNIZED = 37,
+    LT_L2_UNKNOWN_REQ = 37,
+
+    // Libtropic's return values for the L2 Layer.
+    /** @brief l2 response frame contains CRC error */
+    LT_L2_IN_CRC_ERR = 38,
     /** @brief L2 data does not have an expected length (invalid value in RSP_LEN field) */
-    LT_L2_RSP_LEN_ERROR = 38,
+    LT_L2_RSP_LEN_ERROR = 39,
+    /** @brief Unknown L2 STATUS value. */
+    LT_L2_STATUS_UNKNOWN = 40,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 39,
+    LT_CERT_STORE_INVALID = 41,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 40,
+    LT_CERT_UNSUPPORTED = 42,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 41,
+    LT_CERT_ITEM_NOT_FOUND = 43,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 42,
+    LT_NONCE_OVERFLOW = 44,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 43
+    LT_RET_T_LAST_VALUE = 45
 } lt_ret_t;
 
 #define LT_TR01_REBOOT_DELAY_MS 250
