@@ -20,6 +20,9 @@ To establish a Secure Channel Session with your new TROPIC01, do the following:
     2. run our example program [lt_ex_show_chip_id_and_fwver](examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](integrating_libtropic/integration_examples.md).
 
 2. Establish the Secure Channel Session:
+
+    There are two options, depending on what you want to do — choose one:
+
     1. You want to run our **examples** or **tests** that establish a Secure Channel Session:
         1. Your P/N is `TROPIC01-ES` -> add `-DLT_SH0_KEYS="eng_sample"` to other switches when building with `cmake`.
         1. Your P/N is **not** `TROPIC01-ES` -> nothing has to be done, the production keys are used by default.
