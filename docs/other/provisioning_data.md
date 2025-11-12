@@ -1,5 +1,5 @@
 # Provisioning Data
-The `provisioning_data/` directory contains so called **lab batch packages**, which are data used for prsovisioning TROPIC01 chips in the Tropic Square lab for testing purposes. These lab batch packages are used here for configuring the [TROPIC01 Model](tropic01_model.md) and for providing the tests and examples public and private keys for the TROPIC01's pairing key slot 0 (SH0PUB, SH0PRIV), so they can establish a secure session with the chip.
+The `provisioning_data/` directory contains so-called **lab batch packages**, which are data used for provisioning TROPIC01 chips in the Tropic Square lab for testing purposes. These lab batch packages are used here for configuring the [TROPIC01 Model](tropic01_model.md) and for providing the tests and examples public and private keys for the TROPIC01's pairing key slot 0 (SH0PUB, SH0PRIV), so they can establish a secure session with the chip.
 > [!NOTE]
 > Lab batch packages in this directory are stripped - they contain only data needed in libtropic.
 
