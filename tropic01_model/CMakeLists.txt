@@ -93,7 +93,11 @@ if(LT_CAL STREQUAL "trezor_crypto")
     set(LT_USE_TREZOR_CRYPTO 1)
 
     add_subdirectory("${PATH_TO_LIBTROPIC}/vendor/trezor_crypto/" "trezor_crypto")
-    target_compile_definitions(trezor_crypto PRIVATE AES_VAR USE_INSECURE_PRNG)
+    target_compile_definitions(trezor_crypto PRIVATE
+        AES_VAR
+        USE_INSECURE_PRNG
+        ed25519_verify=trezor_crypto_ed25519_verify  # Solves name collisions with the ed25519_lib target.
+    )
     target_link_libraries(tropic PUBLIC trezor_crypto)
 elseif(LT_CAL STREQUAL "mbedtls_v4")
     message(STATUS "Crypto provider set to mbedtls_v4")
