@@ -137,6 +137,8 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver);
 /**
  * @brief Read TROPIC01's firmware bank info
  *
+ * @note  Reported git hashes will not match for certain old firmware versions, see documentation for details.
+ *
  * @param h                  Device's handle
  * @param bank_id            ID of firmware bank (one from enum lt_bank_id_t)
  * @param header             Buffer to store fw header bytes into
@@ -741,6 +743,8 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
 
 /**
  * @brief Prints interpreted firmware header of the given bank using the passed printf-like function.
+ *
+ * @note  Reported git hashes will not match for certain old firmware versions, see documentation for details.
  *
  * @param h            Device's handle
  * @param bank_id      Bank ID whose header should be printed
