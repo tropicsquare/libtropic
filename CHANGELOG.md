@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
 - Compilation if `LT_USE_INT_PIN` is set from CMake.
-- Apply ASan to libtropic if `LT_ASAN` is defined.
+- TROPIC01 Model: apply ASan to libtropic if `LT_ASAN` is defined.
 
 ### Removed
 - `TR01_L3_ID_SIZE` (redundant to `TR01_L3_CMD_ID_SIZE`).
