@@ -100,6 +100,11 @@ if(LT_CAL STREQUAL "trezor_crypto")
         USE_INSECURE_PRNG
         ed25519_verify=trezor_crypto_ed25519_verify  # Solves name collisions with the ed25519_lib target.
     )
+
+    if(LT_ASAN)
+        target_link_libraries(trezor_crypto PRIVATE libtropic::static_asan_flags)
+    endif()
+
     target_link_libraries(tropic PUBLIC trezor_crypto)
 elseif(LT_CAL STREQUAL "mbedtls_v4")
     message(STATUS "Crypto provider set to mbedtls_v4")
@@ -118,6 +123,12 @@ elseif(LT_CAL STREQUAL "mbedtls_v4")
     set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
     set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
     FetchContent_MakeAvailable(mbedtls)
+
+    if(LT_ASAN)
+        target_link_libraries(mbedx509 PRIVATE libtropic::static_asan_flags)
+        target_link_libraries(tfpsacrypto PRIVATE libtropic::static_asan_flags)
+        target_link_libraries(mbedtls PRIVATE libtropic::static_asan_flags)
+    endif()
 
     target_link_libraries(tropic PUBLIC mbedtls)
 else()
@@ -162,6 +173,11 @@ if(LT_BUILD_TESTS)
     )
 
     target_include_directories(tropic PRIVATE ${micro_ecc_SOURCE_DIR})
+
+    if(LT_ASAN)
+        target_link_libraries(micro_ecc_lib PRIVATE libtropic::static_asan_flags)
+    endif()
+
     target_link_libraries(tropic PRIVATE micro_ecc_lib)
 
     # Download ed25519 repository used for ECDSA signature verification
@@ -190,6 +206,11 @@ if(LT_BUILD_TESTS)
     )
 
     target_include_directories(tropic PRIVATE ${ed25519_SOURCE_DIR}/src)
+
+    if(LT_ASAN)
+        target_link_libraries(ed25519_lib PRIVATE libtropic::static_asan_flags)
+    endif()
+
     target_link_libraries(tropic PRIVATE ed25519_lib)
 endif()
 
