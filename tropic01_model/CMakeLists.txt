@@ -22,6 +22,7 @@ if(NOT DEFINED PATH_TO_LIBTROPIC)
 endif()
 
 include(FetchContent)
+include(${PATH_TO_LIBTROPIC}cmake/strict_compile_flags.cmake)
 include(${PATH_TO_LIBTROPIC}cmake/static_asan_flags.cmake)
 
 ###########################################################################
@@ -29,6 +30,8 @@ include(${PATH_TO_LIBTROPIC}cmake/static_asan_flags.cmake)
 #   Options                                                               #
 #                                                                         #
 ###########################################################################
+
+option(LT_STRICT_COMPILATION "Enable strict compilation flags" ON)
 
 option(LT_ASAN "Enable static AddressSanitizer (ASan)" OFF)
 
@@ -64,6 +67,11 @@ add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
+
+if(LT_STRICT_COMPILATION)
+    message(STATUS "Enabling strict compilation flags.")
+    target_link_libraries(tropic PRIVATE libtropic::strict_comp_flags)
+endif()
 
 set(VALGRIND_ARG "")
 if(LT_VALGRIND)
@@ -223,7 +231,10 @@ if (LT_BUILD_EXAMPLES)
 
         # Define executable (separate for each example) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
-        target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
+        
+        if(LT_STRICT_COMPILATION)
+            target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
+        endif()
 
         # Enable example registry using LT_BUILD_EXAMPLES and choose correct example for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_EXAMPLES)
@@ -297,7 +308,10 @@ if(LT_BUILD_TESTS)
 
         # Define executable (separate for each test) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
-        target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
+
+        if(LT_STRICT_COMPILATION)
+            target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
+        endif()
 
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
