@@ -31,7 +31,7 @@ include(${PATH_TO_LIBTROPIC}cmake/static_asan_flags.cmake)
 #                                                                         #
 ###########################################################################
 
-option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags" ON)
+option(LT_STRICT_COMPILATION "Enable strict compilation flags" ON)
 
 option(LT_ASAN "Enable static AddressSanitizer (ASan)" OFF)
 
@@ -68,7 +68,7 @@ add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 
-if(LT_STRICT_COMP_FLAGS)
+if(LT_STRICT_COMPILATION)
     message(STATUS "Enabling strict compilation flags.")
     target_link_libraries(tropic PRIVATE libtropic::strict_comp_flags)
 endif()
@@ -232,7 +232,7 @@ if (LT_BUILD_EXAMPLES)
         # Define executable (separate for each example) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
         
-        if(LT_STRICT_COMP_FLAGS)
+        if(LT_STRICT_COMPILATION)
             target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
         endif()
 
@@ -309,7 +309,7 @@ if(LT_BUILD_TESTS)
         # Define executable (separate for each test) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
 
-        if(LT_STRICT_COMP_FLAGS)
+        if(LT_STRICT_COMPILATION)
             target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
         endif()
 
