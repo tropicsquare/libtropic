@@ -52,16 +52,18 @@ set(LAB_BATCH_PKG_DIR
 #                                                                         #
 ###########################################################################
 
+if(LT_ASAN)
+    message(STATUS "Enabling static AddressSanitizer (ASan).")
+    # This applies the flags to all targets
+    add_compile_options(${LT_ASAN_COMPILE_FLAGS})
+    add_link_options(${LT_ASAN_LINK_FLAGS})
+endif()
+
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
-
-if(LT_ASAN)
-    message(STATUS "Enabling static AddressSanitizer (ASan).")
-    target_link_libraries(tropic PRIVATE libtropic::static_asan_flags)
-endif()
 
 set(VALGRIND_ARG "")
 if(LT_VALGRIND)
@@ -100,11 +102,6 @@ if(LT_CAL STREQUAL "trezor_crypto")
         USE_INSECURE_PRNG
         ed25519_verify=trezor_crypto_ed25519_verify  # Solves name collisions with the ed25519_lib target.
     )
-
-    if(LT_ASAN)
-        target_link_libraries(trezor_crypto PRIVATE libtropic::static_asan_flags)
-    endif()
-
     target_link_libraries(tropic PUBLIC trezor_crypto)
 elseif(LT_CAL STREQUAL "mbedtls_v4")
     message(STATUS "Crypto provider set to mbedtls_v4")
@@ -123,12 +120,6 @@ elseif(LT_CAL STREQUAL "mbedtls_v4")
     set(ENABLE_TESTING OFF CACHE BOOL "Disable mbedtls_v4 test building.")
     set(ENABLE_PROGRAMS OFF CACHE BOOL "Disable mbedtls_v4 examples building.")
     FetchContent_MakeAvailable(mbedtls)
-
-    if(LT_ASAN)
-        target_link_libraries(mbedx509 PRIVATE libtropic::static_asan_flags)
-        target_link_libraries(tfpsacrypto PRIVATE libtropic::static_asan_flags)
-        target_link_libraries(mbedtls PRIVATE libtropic::static_asan_flags)
-    endif()
 
     target_link_libraries(tropic PUBLIC mbedtls)
 else()
@@ -173,11 +164,6 @@ if(LT_BUILD_TESTS)
     )
 
     target_include_directories(tropic PRIVATE ${micro_ecc_SOURCE_DIR})
-
-    if(LT_ASAN)
-        target_link_libraries(micro_ecc_lib PRIVATE libtropic::static_asan_flags)
-    endif()
-
     target_link_libraries(tropic PRIVATE micro_ecc_lib)
 
     # Download ed25519 repository used for ECDSA signature verification
@@ -206,11 +192,6 @@ if(LT_BUILD_TESTS)
     )
 
     target_include_directories(tropic PRIVATE ${ed25519_SOURCE_DIR}/src)
-
-    if(LT_ASAN)
-        target_link_libraries(ed25519_lib PRIVATE libtropic::static_asan_flags)
-    endif()
-
     target_link_libraries(tropic PRIVATE ed25519_lib)
 endif()
 
@@ -243,10 +224,6 @@ if (LT_BUILD_EXAMPLES)
         # Define executable (separate for each example) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
         target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
-
-        if(LT_ASAN)
-            target_link_libraries(${exe_name} PRIVATE tropic libtropic::static_asan_flags)
-        endif()
 
         # Enable example registry using LT_BUILD_EXAMPLES and choose correct example for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_EXAMPLES)
@@ -321,10 +298,6 @@ if(LT_BUILD_TESTS)
         # Define executable (separate for each test) and link dependencies.
         add_executable(${exe_name} ${SOURCES})
         target_link_libraries(${exe_name} PRIVATE tropic libtropic::strict_comp_flags)
-
-        if(LT_ASAN)
-            target_link_libraries(${exe_name} PRIVATE tropic libtropic::static_asan_flags)
-        endif()
 
         # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
         target_compile_definitions(${exe_name} PRIVATE LT_BUILD_TESTS)
