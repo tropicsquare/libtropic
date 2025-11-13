@@ -48,6 +48,7 @@ For retrieving firmware versions from TROPIC01, check code in `examples/lt_ex_sh
 Platform repositories, showing example usage of libtropic on known platforms:
 * [libtropic-stm32](https://github.com/tropicsquare/libtropic-stm32)
 * [libtropic-linux](https://github.com/tropicsquare/libtropic-linux)
+* [libtropic-arduino](https://github.com/tropicsquare/libtropic-arduino)
 * [libtropic-util](https://github.com/tropicsquare/libtropic-util)
 
 ## License
