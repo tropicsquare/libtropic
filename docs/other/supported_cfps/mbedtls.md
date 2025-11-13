@@ -1,9 +1,9 @@
 # MbedTLS
-Currently, we support the [MbedTLS v4.0.0](https://github.com/Mbed-TLS/mbedtls/tree/v4.0.0) and use the [PSA Crypto API](https://mbed-tls.readthedocs.io/en/latest/getting_started/psa/), which differs from the legacy MbedTLS 3.x implementation in several ways:
+Currently, we support the [MbedTLS v4.0.0](https://github.com/Mbed-TLS/mbedtls/tree/v4.0.0) and use the [PSA Crypto API](https://mbed-tls.readthedocs.io/en/latest/getting_started/psa/), which differs from the legacy MbedTLS API in several ways:
 
 1. **Key Management**: Keys are imported into PSA key store and referenced by key ID.
 2. **Context Types**: PSA uses opaque context structures (`psa_hash_operation_t`, etc.).
-3. **Error Handling**: Uses `psa_status_t` return codes converted to libtropic return codes.
+3. **Error Handling**: Uses `psa_status_t` return codes.
 4. **API Design**: Higher-level, more abstract operations (e.g., `psa_aead_encrypt` vs manual GCM operations).
 
 CAL files of this port are available in the `libtropic/cal/mbedtls_v4/` directory.
@@ -40,4 +40,4 @@ The MbedTLS headers contain some redundant declarations, see [this issue on GitH
 The pragmas will disable this flag only for the PSA Crypto code.
 
 ### Macros
-MbedTLS does not define macros for all sizes we need, sometimes they define macros only inside their implementation files ad-hoc. As such, we opted to use some of our macros, which is maybe not ideal but still better than using literals.
+MbedTLS does not define macros for all sizes we need, sometimes they define macros only inside their implementation files ad-hoc. As such, we opted to use some of our macros.
