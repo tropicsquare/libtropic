@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.21.0)
 
-include(FetchContent)
-
 ###########################################################################
 #                                                                         #
 #   Define project's name                                                 #
@@ -15,9 +13,24 @@ project(tropic01_model
 
 ###########################################################################
 #                                                                         #
+#   Paths and setup                                                       #
+#                                                                         #
+###########################################################################
+
+if(NOT DEFINED PATH_TO_LIBTROPIC)
+    set(PATH_TO_LIBTROPIC "libtropic/")
+endif()
+
+include(FetchContent)
+include(${PATH_TO_LIBTROPIC}cmake/static_asan_flags.cmake)
+
+###########################################################################
+#                                                                         #
 #   Options                                                               #
 #                                                                         #
 ###########################################################################
+
+option(LT_ASAN "Enable static AddressSanitizer (ASan)" OFF)
 
 # LT_VALGRIND - as Valgrind does not have to be compiled/linked together with libtropic as ASAN, this switch does not do anything if not using the model.
 # If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
@@ -35,31 +48,22 @@ set(LAB_BATCH_PKG_DIR
 
 ###########################################################################
 #                                                                         #
-#   Paths and setup                                                       #
-#                                                                         #
-###########################################################################
-
-if(NOT DEFINED PATH_TO_LIBTROPIC)
-    set(PATH_TO_LIBTROPIC "libtropic/")
-endif()
-
-###########################################################################
-#                                                                         #
 #   Add libtropic library and set it up                                   #
 #                                                                         #
 ###########################################################################
+
+if(LT_ASAN)
+    message(STATUS "Enabling static AddressSanitizer (ASan).")
+    # This applies the flags to all targets
+    add_compile_options(${LT_ASAN_COMPILE_FLAGS})
+    add_link_options(${LT_ASAN_LINK_FLAGS})
+endif()
 
 # Add path to libtropic's repository root folder
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
-
-if(LT_ASAN)
-    message(STATUS "AddressSanitizer (ASan) is enabled for the entire project.")
-    add_compile_options(${LT_ASAN_COMPILE_FLAGS})
-    add_link_options(${LT_ASAN_LINK_FLAGS})
-endif()
 
 set(VALGRIND_ARG "")
 if(LT_VALGRIND)

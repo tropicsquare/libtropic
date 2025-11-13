@@ -6,6 +6,7 @@ cmake_minimum_required(VERSION 3.21.0)
 #                                                                         #
 ###########################################################################
 
+# Used in the tropic01_model/CMakeLists.txt and platform repositories
 include(cmake/strict_compile_flags.cmake)
 include(cmake/coverage_flags.cmake)
 
@@ -21,7 +22,6 @@ option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" O
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 option(LT_STRICT_COMP_FLAGS "Enable strict compilation flags for libtropic" OFF)
-option(LT_ASAN "Enable AddressSanitizer (ASan)" OFF)
 
 # Select pairing keys written during manufacturing into your TROPIC01
 set(LT_SH0_KEYS "prod0" CACHE STRING "Choose which pairing keys in slot 0 will be used in examples/tests")
@@ -127,13 +127,6 @@ else()
     get_property(lt_log_lvl_choices CACHE LT_LOG_LVL PROPERTY STRINGS)
     message(FATAL_ERROR "Incorrect logging level specified: '${LT_LOG_LVL}'\nAvailable logging levels: ${lt_log_lvl_choices}")
 endif()
-
-# Define the ASAN flags here so they are not duplicated.
-set(LT_ASAN_COMPILE_FLAGS "-fsanitize=address,leak,undefined;-fno-omit-frame-pointer;-g"
-    CACHE INTERNAL "Robust compile flags for Sanitizers (ASan, LSan, UBSan)")
-
-set(LT_ASAN_LINK_FLAGS "-fsanitize=address,leak,undefined;-static-libasan"
-    CACHE INTERNAL "Link flags for Sanitizers (ASan, LSan, UBSan)")
 
 # Check whether compiling standalone (e.g. as a library) or as a child project (= has parent scope)
 # and save result to HAS_PARENT_SCOPE.
