@@ -49,6 +49,8 @@ set(LAB_BATCH_PKG_DIR
     "Lab batch package directory to configure the model with"
 )
 
+set(LT_MODEL_RISCV_FW_VER "2.0.0" CACHE STRING "RISC-V FW version to be configured in the model")
+
 ###########################################################################
 #                                                                         #
 #   Add libtropic library and set it up                                   #
@@ -284,6 +286,7 @@ if(LT_BUILD_TESTS)
                 PYTHONPATH=${PYTHONPATH}:${ABSOLUTE_PATH_TO_LIBTROPIC}/tropic01_model/
                 python3 -m create_model_cfg
                 --pkg-dir ${LAB_BATCH_PKG_DIR}
+                --riscv-fw-ver ${LT_MODEL_RISCV_FW_VER}
                 --model-cfg ${MODEL_CFG_PATH}
         COMMENT "Creating configuration for the model"
         VERBATIM
