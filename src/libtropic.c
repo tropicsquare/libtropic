@@ -49,12 +49,6 @@ lt_ret_t lt_init(lt_handle_t *h)
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
 
-    // Initialize the TROPIC01 properties based on its Application FW.
-    ret = lt_init_tr01_props(h);
-    if (ret != LT_OK) {
-        return ret;
-    }
-
     h->l3.session_status = LT_SECURE_SESSION_OFF;
     ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
@@ -70,6 +64,12 @@ lt_ret_t lt_init(lt_handle_t *h)
     // Prevent usage of insufficient buffer.
     if (h->l3.buff_len < LT_SIZE_OF_L3_BUFF) {
         return LT_L3_BUFFER_TOO_SMALL;
+    }
+
+    // Initialize the TROPIC01 properties based on its Application FW.
+    ret = lt_init_tr01_props(h);
+    if (ret != LT_OK) {
+        return ret;
     }
 
     return LT_OK;
