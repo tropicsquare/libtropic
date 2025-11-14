@@ -659,10 +659,6 @@ LT_STATIC_ASSERT(
 #define TR01_L3_R_MEM_DATA_WRITE_CMD_ID 0x40
 /** @brief Command length (fields: CMD_ID + CMD_DATA) */
 #define TR01_L3_R_MEM_DATA_WRITE_CMD_SIZE_MIN 5u
-/** Minimal length of field data */
-#define TR01_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MIN 1u
-/** Maximal length of field data */
-#define TR01_L3_R_MEM_DATA_WRITE_CMD_DATA_LEN_MAX 444u
 
 /** @brief Result length (fields: RESULT + zero RES_DATA) */
 #define TR01_L3_R_MEM_DATA_WRITE_RES_SIZE 1u
@@ -688,10 +684,10 @@ struct lt_l3_r_mem_data_write_cmd_t {
      */
     uint8_t padding; /**< Padding */
     /**
-     * @brief
-     * The data stream to be written in the slot specified in the UDATA_SLOT L3 field.
+     * @brief The data stream to be written in the slot specified in the UDATA_SLOT L3 field.
+     * @note The size is given by the maximal possible slot size across all Application FWs.
      */
-    uint8_t data[444]; /**< Data to write */
+    uint8_t data[475]; /**< Data to write */
     uint8_t tag[16];   /**< L3 tag */
 } __attribute__((packed));
 
@@ -741,11 +737,8 @@ LT_STATIC_ASSERT(
 
 /** @brief Result min length (fields: RESULT + RES_DATA) */
 #define TR01_L3_R_MEM_DATA_READ_RES_SIZE_MIN 4u
-/** @brief Result max length (fields: RESULT + RES_DATA) */
-#define TR01_L3_R_MEM_DATA_READ_RES_SIZE_MAX 448u
-/** @brief Packet length (incl. RES_SIZE and TAG) */
-#define TR01_L3_R_MEM_DATA_READ_RES_PACKET_SIZE_MAX \
-    TR01_L3_SIZE_SIZE + TR01_L3_R_MEM_DATA_READ_RES_SIZE_MAX + TR01_L3_TAG_SIZE
+/** @brief Size of the padding. */
+#define TR01_L3_R_MEM_DATA_READ_PADDING_SIZE 3u
 
 /**
  * @brief

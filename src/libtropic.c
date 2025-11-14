@@ -30,6 +30,7 @@
 #include "lt_l3_process.h"
 #include "lt_random.h"
 #include "lt_sha256.h"
+#include "lt_tr01_props.h"
 #include "lt_x25519.h"
 
 #define TR01_GET_INFO_BLOCK_LEN 128
@@ -40,14 +41,22 @@ lt_ret_t lt_init(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    lt_ret_t ret;
+
     // When compiling libtropic with l3 buffer embedded into handle,
     // define buffer's length here (later used to prevent overflow during communication).
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
 
+    // Initialize the TROPIC01 properties based on its Application FW.
+    ret = lt_init_tr01_props(h);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
     h->l3.session_status = LT_SECURE_SESSION_OFF;
-    lt_ret_t ret = lt_l1_init(&h->l2);
+    ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
     if (ret != LT_OK) {
         return ret;
@@ -996,7 +1005,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
 
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t data_size)
 {
-    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > TR01_R_MEM_DATA_SIZE_MAX
+    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > h->tr01_props.r_mem_udata_slot_size_max
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
@@ -1043,8 +1052,11 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
-                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_READ_RES_PACKET_SIZE_MAX));
+    ret = lt_l2_recv_encrypted_res(
+        &h->l2, h->l3.buff,
+        lt_min(h->l3.buff_len, TR01_L3_SIZE_SIZE + TR01_L3_RESULT_SIZE
+                                   + (TR01_L3_R_MEM_DATA_READ_PADDING_SIZE + h->tr01_props.r_mem_udata_slot_size_max)
+                                   + TR01_L3_TAG_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
