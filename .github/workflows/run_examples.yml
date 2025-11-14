@@ -26,11 +26,11 @@ jobs:
 
       - name: Download ts-tvl wheel
         run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
           
           WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
           if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in latest release." >&2
+            echo "No .whl file found in the release." >&2
             exit 1
           fi
 
@@ -93,11 +93,11 @@ jobs:
 
       - name: Download ts-tvl wheel
         run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
           
           WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
           if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in latest release." >&2
+            echo "No .whl file found in the release." >&2
             exit 1
           fi
 
