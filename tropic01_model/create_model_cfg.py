@@ -152,8 +152,8 @@ if __name__ == "__main__":
     }
 
     # Set RISC-V FW version
-    model_cfg["riscv_fw_version"] = b'\x00' + riscv_fw_patch.to_bytes() + \
-                                    riscv_fw_minor.to_bytes() + riscv_fw_major.to_bytes()
+    model_cfg["riscv_fw_version"] = b'\x00' + riscv_fw_patch.to_bytes(1, 'little') + \
+                                    riscv_fw_minor.to_bytes(1, 'little') + riscv_fw_major.to_bytes(1, 'little')
 
     print("Warning: Following variables are not configured (model will set them to default values):")
     print("\t- r_config")
