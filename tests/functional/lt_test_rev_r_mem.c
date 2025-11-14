@@ -172,18 +172,24 @@ void lt_test_rev_r_mem(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, write_data, write_data_len));
 
         LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT_COND(lt_r_mem_data_write(h, i, write_data, write_data_len), write_data_len != 0, LT_OK,
-                            LT_L3_FAIL);
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, write_data_len));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT_COND(lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size),
-                            write_data_len != 0, LT_OK, LT_L3_R_MEM_DATA_READ_SLOT_EMPTY);
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_TEST_ASSERT(1, (read_data_size == write_data_len));
 
         LT_LOG_INFO("Checking contents...");
         LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, write_data_len));
+    }
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Testing writing data with zero length to all slots...");
+    for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
+        LT_LOG_INFO();
+        LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_write(h, i, write_data, 0));
     }
     LT_LOG_LINE();
 
