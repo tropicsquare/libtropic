@@ -113,6 +113,12 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
         return ret;
     }
 
+    // Check ALARM bit of CHIP_STATUS byte. If there is ALARM, return with error and do not update mode.
+    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
+        LT_LOG_DEBUG("CHIP_STATUS: 0x%02" PRIX8, h->l2.buff[0]);
+        return LT_L1_CHIP_ALARM_MODE;
+    }
+
     // Buffer in handle now contains CHIP_STATUS byte,
     // Save info about chip mode into 'mode' variable in handle
     if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
