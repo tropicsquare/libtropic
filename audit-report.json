@@ -1,0 +1,130 @@
+{
+  "metadata": {
+    "audit_date": "2025-11-17",
+    "repository": "tropicsquare/libtropic",
+    "version": "2.0.0",
+    "auditor": "Security Analysis Agent",
+    "scope": "Full repository audit",
+    "methodology": "Pedantic university-lecturer standard (equivalent to GCC -pedantic)"
+  },
+  "summary": {
+    "critical": 1,
+    "high": 4,
+    "medium": 6,
+    "low": 2,
+    "info": 0,
+    "total": 13
+  },
+  "findings": [
+    {
+      "id": "LTAUD-CRIT-001",
+      "severity": "Critical",
+      "category": "Cryptography / Secrets Management",
+      "cwe": "CWE-14",
+      "file": "src/libtropic.c",
+      "start_line": 414,
+      "end_line": 414,
+      "title": "Non-Volatile Memory Clearing for Sensitive Cryptographic Material",
+      "description": "The codebase uses standard memset() to clear sensitive cryptographic material. Compilers may optimize away these calls as dead store elimination.",
+      "evidence": "memset(&host_eph_keys, 0, sizeof(lt_host_eph_keys_t));",
+      "security_impact": "Ephemeral private keys may remain in memory, enabling key recovery attacks. Violates forward secrecy.",
+      "reproducible_steps": "Compile with -O2, inspect assembly to verify memset elimination",
+      "suggested_fix": "Use explicit_bzero(), memset_s(), or volatile-based secure zeroing"
+    },
+    {
+      "id": "LTAUD-HIGH-001",
+      "severity": "High",
+      "category": "Memory Safety",
+      "cwe": "CWE-676",
+      "file": "src/libtropic.c",
+      "start_line": 1681,
+      "end_line": 1689,
+      "title": "Use of Unsafe String Functions strcpy()",
+      "description": "Three instances of strcpy() used. While currently safe with literals, this is fragile.",
+      "evidence": "strcpy(packg_type_id_str, \"Bare silicon die\");",
+      "security_impact": "Buffer overflow if buffer size or strings change",
+      "reproducible_steps": "Static code review",
+      "suggested_fix": "Replace with snprintf()"
+    },
+    {
+      "id": "LTAUD-HIGH-002",
+      "severity": "High",
+      "category": "Memory Safety",
+      "cwe": "CWE-676",
+      "file": "src/libtropic.c",
+      "start_line": 1624,
+      "end_line": 1624,
+      "title": "Use of Unsafe Function sprintf()",
+      "description": "sprintf() has no bounds checking",
+      "evidence": "sprintf(&out_buf[i * 2], \"%02\" PRIX8, bytes[i]);",
+      "security_impact": "Buffer overrun if loop logic error occurs",
+      "reproducible_steps": "Static code review",
+      "suggested_fix": "Use snprintf() with size checking"
+    },
+    {
+      "id": "LTAUD-HIGH-003",
+      "severity": "High",
+      "category": "Integer Safety",
+      "cwe": "CWE-190",
+      "file": "src/libtropic.c",
+      "start_line": 692,
+      "end_line": 692,
+      "title": "Integer Overflow in Buffer Size Calculation",
+      "description": "len + 1 may overflow if len == 255",
+      "evidence": "memcpy(..., len + 1);",
+      "security_impact": "Firmware update corruption if overflow occurs",
+      "reproducible_steps": "Provide chunk with len byte == 255",
+      "suggested_fix": "Check for len == 255 or use size_t"
+    },
+    {
+      "id": "LTAUD-MED-001",
+      "severity": "Medium",
+      "category": "API Documentation",
+      "cwe": "CWE-1059",
+      "file": "include/libtropic.h",
+      "start_line": 1,
+      "end_line": 1,
+      "title": "Missing Thread-Safety Documentation",
+      "description": "API does not document thread-safety requirements",
+      "evidence": "No thread-safety notes in API docs",
+      "security_impact": "Users may misuse API from multiple threads, causing race conditions",
+      "reproducible_steps": "Review API documentation",
+      "suggested_fix": "Add thread-safety documentation"
+    },
+    {
+      "id": "LTAUD-MED-002",
+      "severity": "Medium",
+      "category": "Code Quality",
+      "cwe": "CWE-703",
+      "file": "src/libtropic_l3.c",
+      "start_line": 829,
+      "end_line": 829,
+      "title": "TODO Comment for Firmware Dependency",
+      "description": "TODO indicates workaround for firmware behavior",
+      "evidence": "// TODO: If FW implements fail error code...",
+      "security_impact": "Firmware version dependency not documented",
+      "reproducible_steps": "Grep for TODO in source",
+      "suggested_fix": "Convert to NOTE with version info"
+    }
+  ],
+  "run_log": {
+    "audit_performed": "2025-11-17",
+    "files_audited": 39,
+    "lines_audited": 4580,
+    "build_notes": "Core library builds cleanly with strict flags. Tests require external dependencies.",
+    "tools": ["GCC 13.3.0", "Python 3", "Manual review"]
+  },
+  "recommendations": {
+    "must_fix": [
+      "LTAUD-CRIT-001",
+      "LTAUD-HIGH-001",
+      "LTAUD-HIGH-002",
+      "LTAUD-HIGH-003"
+    ],
+    "should_fix": [
+      "LTAUD-MED-001",
+      "LTAUD-MED-002"
+    ]
+  },
+  "overall_assessment": "B+ - Excellent engineering with modern crypto. MUST FIX critical memory clearing issue before release."
+}

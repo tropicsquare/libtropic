@@ -1,0 +1,39 @@
+From: Security Audit Agent <audit@tropicsquare.com>
+Date: Sun, 17 Nov 2025 08:25:00 +0000
+Subject: [PATCH] Fix LTAUD-HIGH-001: Replace unsafe strcpy() with snprintf()
+
+Replace three instances of strcpy() with snprintf() for bounds-checked
+string copying. While the current usage is safe (copying string literals
+into adequately sized buffer), snprintf() is more robust against future
+changes.
+
+References: CWE-676, CERT C STR07-C, MISRA C Rule 21.16
+---
+ src/libtropic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/libtropic.c b/src/libtropic.c
+index 1234567..2345678 100644
+--- a/src/libtropic.c
++++ b/src/libtropic.c
+@@ -1678,13 +1678,13 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)
+     char packg_type_id_str[17];  // Length of the longest possible string ("Bare silicon die") + \0.
+     switch (packg_type_id) {
+         case TR01_CHIP_PKG_BARE_SILICON_ID:
+-            strcpy(packg_type_id_str, "Bare silicon die");
++            snprintf(packg_type_id_str, sizeof(packg_type_id_str), "%s", "Bare silicon die");
+             break;
+ 
+         case TR01_CHIP_PKG_QFN32_ID:
+-            strcpy(packg_type_id_str, "QFN32, 4x4mm");
++            snprintf(packg_type_id_str, sizeof(packg_type_id_str), "%s", "QFN32, 4x4mm");
+             break;
+ 
+         default:
+-            strcpy(packg_type_id_str, "N/A");
++            snprintf(packg_type_id_str, sizeof(packg_type_id_str), "%s", "N/A");
+             break;
+     }
+     if (0 > print_func("Package ID             = 0x%s (%s)\r\n", print_bytes_buff, packg_type_id_str)) {
+-- 
+2.40.0

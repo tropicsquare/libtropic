@@ -1,0 +1,155 @@
+From: Security Audit Agent <audit@tropicsquare.com>
+Date: Sun, 17 Nov 2025 08:25:00 +0000
+Subject: [PATCH] Fix LTAUD-CRIT-001: Implement secure memory zeroization
+
+Add lt_secure_zero() function to securely clear sensitive cryptographic
+material. The function uses volatile pointers to prevent compiler
+optimization (dead store elimination).
+
+This fixes clearing of:
+- Ephemeral private keys (X25519 scalars)
+- Session encryption/decryption IVs
+- L3 buffer data
+
+References: CWE-14, CERT C MSC06-C
+---
+ include/libtropic_common.h |  1 +
+ src/libtropic.c            |  2 +-
+ src/lt_l3_process.c        |  6 +++---
+ src/lt_secure_memory.c     | 35 +++++++++++++++++++++++++++++++++++
+ src/lt_secure_memory.h     | 28 ++++++++++++++++++++++++++++
+ 5 files changed, 68 insertions(+), 4 deletions(-)
+ create mode 100644 src/lt_secure_memory.c
+ create mode 100644 src/lt_secure_memory.h
+
+diff --git a/include/libtropic_common.h b/include/libtropic_common.h
+index 1234567..2345678 100644
+--- a/include/libtropic_common.h
++++ b/include/libtropic_common.h
+@@ -15,6 +15,7 @@
+ #include "stdint.h"
+ #include "tropic01_application_co.h"
+ #include "tropic01_bootloader_co.h"
++#include "lt_secure_memory.h"
+ 
+ #ifdef __cplusplus
+ extern "C" {
+diff --git a/src/libtropic.c b/src/libtropic.c
+index 1234567..2345678 100644
+--- a/src/libtropic.c
++++ b/src/libtropic.c
+@@ -411,7 +411,7 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_
+     }
+ 
+     ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &host_eph_keys);
+-    memset(&host_eph_keys, 0, sizeof(lt_host_eph_keys_t));
++    lt_secure_zero(&host_eph_keys, sizeof(lt_host_eph_keys_t));
+ 
+     return ret;
+ }
+diff --git a/src/lt_l3_process.c b/src/lt_l3_process.c
+index 1234567..2345678 100644
+--- a/src/lt_l3_process.c
++++ b/src/lt_l3_process.c
+@@ -47,8 +47,8 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
+ {
+     s3->session_status = LT_SECURE_SESSION_OFF;
+ 
+-    memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
+-    memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
++    lt_secure_zero(s3->encryption_IV, sizeof(s3->encryption_IV));
++    lt_secure_zero(s3->decryption_IV, sizeof(s3->decryption_IV));
+ 
+     lt_ret_t ret = lt_crypto_ctx_deinit(s3->crypto_ctx);
+     if (ret != LT_OK) {
+@@ -56,9 +56,9 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
+     }
+ 
+ #if LT_SEPARATE_L3_BUFF
+-    memset(s3->buff, 0, s3->buff_len);
++    lt_secure_zero(s3->buff, s3->buff_len);
+ #else
+-    memset(s3->buff, 0, sizeof(s3->buff));
++    lt_secure_zero(s3->buff, sizeof(s3->buff));
+ #endif
+ }
+ 
+diff --git a/src/lt_secure_memory.c b/src/lt_secure_memory.c
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/lt_secure_memory.c
+@@ -0,0 +1,35 @@
++/**
++ * @file lt_secure_memory.c
++ * @brief Secure memory operations (clearing sensitive data)
++ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
++ *
++ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
++ */
++
++#include "lt_secure_memory.h"
++
++#include <stddef.h>
++#include <stdint.h>
++
++void lt_secure_zero(void *ptr, size_t len)
++{
++    if (ptr == NULL || len == 0) {
++        return;
++    }
++
++#if defined(__STDC_LIB_EXT1__)
++    // C11 Annex K - preferred if available
++    memset_s(ptr, len, 0, len);
++#elif defined(__unix__) || defined(__APPLE__)
++    // POSIX explicit_bzero
++    explicit_bzero(ptr, len);
++#elif defined(_MSC_VER)
++    // Microsoft SecureZeroMemory
++    SecureZeroMemory(ptr, len);
++#else
++    // Fallback: volatile pointer prevents optimization
++    volatile unsigned char *p = (volatile unsigned char *)ptr;
++    while (len--) {
++        *p++ = 0;
++    }
++#endif
++}
+diff --git a/src/lt_secure_memory.h b/src/lt_secure_memory.h
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/lt_secure_memory.h
+@@ -0,0 +1,28 @@
++#ifndef LT_SECURE_MEMORY_H
++#define LT_SECURE_MEMORY_H
++
++/**
++ * @file lt_secure_memory.h
++ * @brief Secure memory operations
++ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
++ *
++ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
++ */
++
++#include <stddef.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/**
++ * @brief Securely zero memory (cannot be optimized away by compiler)
++ * @param ptr Pointer to memory to clear
++ * @param len Number of bytes to clear
++ */
++void lt_secure_zero(void *ptr, size_t len);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* LT_SECURE_MEMORY_H */
+-- 
+2.40.0

@@ -1,0 +1,39 @@
+From: Security Audit Agent <audit@tropicsquare.com>
+Date: Sun, 17 Nov 2025 08:25:00 +0000
+Subject: [PATCH] Fix LTAUD-HIGH-003: Fix potential integer overflow in FW update
+
+Add check for len == 255 to prevent integer overflow in len + 1
+calculation used as memcpy() size parameter. If len is 255 (max uint8_t),
+len + 1 wraps to 0, causing zero-length copy and potential firmware
+corruption.
+
+Promote to size_t before addition as additional safety measure.
+
+References: CWE-190, CERT C INT30-C
+---
+ src/libtropic.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/libtropic.c b/src/libtropic.c
+index 1234567..2345678 100644
+--- a/src/libtropic.c
++++ b/src/libtropic.c
+@@ -688,8 +688,14 @@ lt_ret_t lt_fw_update_p2_loop(lt_handle_t *h, const uint8_t *update_data, cons
+ 
+     do {
+         uint8_t len = update_data[chunk_index];
++        // Check for len == 255 which would cause overflow in len + 1
++        if (len == 255) {
++            return LT_PARAM_ERR;
++        }
++        // Promote to size_t to avoid uint8_t overflow
++        size_t copy_len = (size_t)len + 1;
++        
+         p2_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_DATA_REQ;
+-        memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, len + 1);
++        memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, copy_len);
+ 
+         lt_ret_t ret = lt_l2_send(&h->l2);
+         if (ret != LT_OK) {
+-- 
+2.40.0

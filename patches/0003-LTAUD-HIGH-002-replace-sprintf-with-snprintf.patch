@@ -1,0 +1,37 @@
+From: Security Audit Agent <audit@tropicsquare.com>
+Date: Sun, 17 Nov 2025 08:25:00 +0000
+Subject: [PATCH] Fix LTAUD-HIGH-002: Replace sprintf() with snprintf()
+
+Replace sprintf() with snprintf() in lt_print_bytes() to add bounds
+checking. Add verification that snprintf() succeeded.
+
+While the current code validates buffer size before the loop, using
+snprintf() provides defense-in-depth against logic errors in loop
+bounds or integer arithmetic.
+
+References: CWE-676, CERT C STR07-C
+---
+ src/libtropic.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/libtropic.c b/src/libtropic.c
+index 1234567..2345678 100644
+--- a/src/libtropic.c
++++ b/src/libtropic.c
+@@ -1621,7 +1621,13 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint8_t bytes_cnt, char *ou
+     }
+ 
+     for (uint16_t i = 0; i < bytes_cnt; i++) {
+-        sprintf(&out_buf[i * 2], "%02" PRIX8, bytes[i]);
++        int remaining = out_buf_size - (i * 2);
++        int written = snprintf(&out_buf[i * 2], remaining, "%02" PRIX8, bytes[i]);
++        // Verify snprintf succeeded and didn't truncate
++        // (should never happen given precondition check, but defensive)
++        if (written < 0 || written >= remaining) {
++            return LT_FAIL;
++        }
+     }
+     out_buf[bytes_cnt * 2] = '\0';
+ 
+-- 
+2.40.0
