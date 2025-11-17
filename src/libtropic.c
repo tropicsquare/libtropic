@@ -18,6 +18,7 @@
 #include "libtropic_common.h"
 #include "libtropic_l2.h"
 #include "libtropic_l3.h"
+#include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
 #include "lt_asn1_der.h"
@@ -111,6 +112,12 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
     ret = lt_l1_spi_csn_high(&h->l2);
     if (ret != LT_OK) {
         return ret;
+    }
+
+    // Check ALARM bit of CHIP_STATUS byte. If there is ALARM, return with error and do not update mode.
+    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
+        LT_LOG_DEBUG("CHIP_STATUS: 0x%02" PRIX8, h->l2.buff[0]);
+        return LT_L1_CHIP_ALARM_MODE;
     }
 
     // Buffer in handle now contains CHIP_STATUS byte,
