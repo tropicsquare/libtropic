@@ -167,18 +167,17 @@ if(LT_BUILD_TESTS)
         ${micro_ecc_SOURCE_DIR}/uECC.c
     )
 
-    target_include_directories(micro_ecc_lib PRIVATE
+    target_include_directories(micro_ecc_lib PUBLIC # PUBLIC as it is also used in tropic target
         ${micro_ecc_SOURCE_DIR}
     )
 
-    target_include_directories(tropic PRIVATE ${micro_ecc_SOURCE_DIR})
     target_link_libraries(tropic PRIVATE micro_ecc_lib)
 
-    # Download ed25519 repository used for ECDSA signature verification
+    # Download ed25519 repository used for EdDSA signature verification
     FetchContent_Declare(
         ed25519
         GIT_REPOSITORY https://github.com/orlp/ed25519.git
-        GIT_TAG        master
+        GIT_TAG        b1f19fab4aebe607805620d25a5e42566ce46a0e # Latest supported master 
     )
     FetchContent_MakeAvailable(ed25519)
 
@@ -195,11 +194,10 @@ if(LT_BUILD_TESTS)
         ${ed25519_SOURCE_DIR}/src/sign.c
     )
 
-    target_include_directories(ed25519_lib PRIVATE
+    target_include_directories(ed25519_lib PUBLIC # PUBLIC as it is also used in tropic target
         ${ed25519_SOURCE_DIR}/src/
     )
 
-    target_include_directories(tropic PRIVATE ${ed25519_SOURCE_DIR}/src)
     target_link_libraries(tropic PRIVATE ed25519_lib)
 endif()
 
