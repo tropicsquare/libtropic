@@ -1,5 +1,5 @@
 
-#include "lt_tr01_props.h"
+#include "lt_tr01_attrs.h"
 
 #include "libtropic.h"
 #include "libtropic_common.h"
@@ -9,13 +9,13 @@
 #define LT_LATEST_RISCV_FW_VER_MINOR 0
 #define LT_LATEST_RISCV_FW_VER_PATCH 0
 
-lt_ret_t lt_init_tr01_props(lt_handle_t *h)
+lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
 {
     lt_ret_t ret;
     uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE];
 
-    // 1. Set some default dummy values for the props
-    h->tr01_props.r_mem_udata_slot_size_max = 0;
+    // 1. Set some default dummy values for the attributes
+    h->tr01_attrs.r_mem_udata_slot_size_max = 0;
 
     // 2. Check current mode
     ret = lt_update_mode(h);
@@ -59,13 +59,13 @@ lt_ret_t lt_init_tr01_props(lt_handle_t *h)
         return LT_APP_FW_TOO_NEW;
     }
 
-    // 5. Initialize the TROPIC01 properties structure
+    // 5. Initialize the TROPIC01 attributes structure
     // this is the most crucial part - has to be efficient and logically correct
     if (riscv_fw_ver[3] < 2) {
-        h->tr01_props.r_mem_udata_slot_size_max = 444;
+        h->tr01_attrs.r_mem_udata_slot_size_max = 444;
     }
     else {
-        h->tr01_props.r_mem_udata_slot_size_max = 475;
+        h->tr01_attrs.r_mem_udata_slot_size_max = 475;
     }
 
     return LT_OK;

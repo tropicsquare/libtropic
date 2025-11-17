@@ -210,10 +210,10 @@ typedef struct lt_l3_state_t {
  * @brief Contains data that depend on the TROPIC01's Application FW version.
  *
  */
-typedef struct lt_tr01_props_t {
+typedef struct lt_tr01_attrs_t {
     /** @private @brief Maximal size of the UDATA slot in the User R-Memory. */
     uint16_t r_mem_udata_slot_size_max;
-} lt_tr01_props_t;
+} lt_tr01_attrs_t;
 
 /**
  * @details This structure holds data related to one physical chip.
@@ -223,7 +223,7 @@ typedef struct lt_tr01_props_t {
 typedef struct lt_handle_t {
     lt_l2_state_t l2;
     lt_l3_state_t l3;
-    lt_tr01_props_t tr01_props;
+    lt_tr01_attrs_t tr01_attrs;
 } lt_handle_t;
 
 /**

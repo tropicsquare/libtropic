@@ -737,7 +737,7 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj)
 lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data,
                                   const uint16_t data_size)
 {
-    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > h->tr01_props.r_mem_udata_slot_size_max
+    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > h->tr01_attrs.r_mem_udata_slot_size_max
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
@@ -821,7 +821,7 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t da
     struct lt_l3_r_mem_data_read_res_t *p_l3_res = (struct lt_l3_r_mem_data_read_res_t *)h->l3.buff;
 
     if (p_l3_res->res_size
-        > TR01_L3_RESULT_SIZE + h->tr01_props.r_mem_udata_slot_size_max + TR01_L3_R_MEM_DATA_READ_PADDING_SIZE) {
+        > TR01_L3_RESULT_SIZE + h->tr01_attrs.r_mem_udata_slot_size_max + TR01_L3_R_MEM_DATA_READ_PADDING_SIZE) {
         lt_l3_invalidate_host_session_data(&h->l3);
         return LT_L3_RES_SIZE_ERROR;
     }

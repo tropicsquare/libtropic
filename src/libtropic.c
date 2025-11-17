@@ -30,7 +30,7 @@
 #include "lt_l3_process.h"
 #include "lt_random.h"
 #include "lt_sha256.h"
-#include "lt_tr01_props.h"
+#include "lt_tr01_attrs.h"
 #include "lt_x25519.h"
 
 #define TR01_GET_INFO_BLOCK_LEN 128
@@ -66,8 +66,8 @@ lt_ret_t lt_init(lt_handle_t *h)
         return LT_L3_BUFFER_TOO_SMALL;
     }
 
-    // Initialize the TROPIC01 properties based on its Application FW.
-    ret = lt_init_tr01_props(h);
+    // Initialize the TROPIC01 attributes based on its Application FW.
+    ret = lt_init_tr01_attrs(h);
     if (ret != LT_OK) {
         return ret;
     }
@@ -1005,7 +1005,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
 
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t data_size)
 {
-    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > h->tr01_props.r_mem_udata_slot_size_max
+    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > h->tr01_attrs.r_mem_udata_slot_size_max
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
@@ -1055,7 +1055,7 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
     ret = lt_l2_recv_encrypted_res(
         &h->l2, h->l3.buff,
         lt_min(h->l3.buff_len, TR01_L3_SIZE_SIZE + TR01_L3_RESULT_SIZE
-                                   + (TR01_L3_R_MEM_DATA_READ_PADDING_SIZE + h->tr01_props.r_mem_udata_slot_size_max)
+                                   + (TR01_L3_R_MEM_DATA_READ_PADDING_SIZE + h->tr01_attrs.r_mem_udata_slot_size_max)
                                    + TR01_L3_TAG_SIZE));
     if (ret != LT_OK) {
         return ret;
