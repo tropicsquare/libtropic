@@ -163,6 +163,7 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_default_sh0_keys.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_secure_memory.c
 )
 
 set(SDK_INCS ${SDK_INCS}
@@ -179,6 +180,7 @@ set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_random.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_secure_memory.h
 )
 set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
