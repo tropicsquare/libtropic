@@ -54,8 +54,10 @@ lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
 
     // 4. Check if the App FW version is supported by the current version of libtropic
     // TODO: handle FW versions older than 1.0.0
-    if (riscv_fw_ver[3] > LT_LATEST_RISCV_FW_VER_MAJOR || riscv_fw_ver[2] > LT_LATEST_RISCV_FW_VER_MINOR
-        || riscv_fw_ver[1] > LT_LATEST_RISCV_FW_VER_PATCH) {
+    if (riscv_fw_ver[3] > LT_LATEST_RISCV_FW_VER_MAJOR
+        || (riscv_fw_ver[3] == LT_LATEST_RISCV_FW_VER_MAJOR && riscv_fw_ver[2] > LT_LATEST_RISCV_FW_VER_MINOR)
+        || (riscv_fw_ver[3] == LT_LATEST_RISCV_FW_VER_MAJOR && riscv_fw_ver[2] == LT_LATEST_RISCV_FW_VER_MINOR
+            && riscv_fw_ver[1] > LT_LATEST_RISCV_FW_VER_PATCH)) {
         return LT_APP_FW_TOO_NEW;
     }
 
