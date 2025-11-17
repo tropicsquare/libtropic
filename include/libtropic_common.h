@@ -207,7 +207,7 @@ typedef struct lt_l3_state_t {
 #define TR01_AES256_KEY_LEN 32
 
 /**
- * @brief Contains data that depend on the TROPIC01's Application FW version.
+ * @brief Configures attributes that are different among TROPIC01's Application FW versions.
  *
  */
 typedef struct lt_tr01_attrs_t {
