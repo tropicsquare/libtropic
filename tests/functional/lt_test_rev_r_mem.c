@@ -15,13 +15,16 @@
 #include "lt_random.h"
 #include "string.h"
 
+/** @brief Maximal possible size of UDATA slot in User R-Memory accross all Application FWs. */
+#define R_MEM_DATA_SIZE_MAX 475
+
 // Shared with cleanup function
 lt_handle_t *g_h;
 
 static lt_ret_t lt_test_rev_r_mem_cleanup(void)
 {
     lt_ret_t ret;
-    uint8_t r_mem_data[TR01_R_MEM_DATA_SIZE_MAX];
+    uint8_t r_mem_data[R_MEM_DATA_SIZE_MAX];
     uint16_t read_data_size;
 
     LT_LOG_INFO("Starting secure session with slot %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
@@ -43,7 +46,7 @@ static lt_ret_t lt_test_rev_r_mem_cleanup(void)
         }
 
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
-        ret = lt_r_mem_data_read(g_h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size);
+        ret = lt_r_mem_data_read(g_h, i, r_mem_data, sizeof(r_mem_data), &read_data_size);
         if (LT_L3_R_MEM_DATA_READ_SLOT_EMPTY != ret) {
             LT_LOG_ERROR("Return value is not LT_L3_R_MEM_DATA_READ_SLOT_EMPTY.");
             return ret;
@@ -82,8 +85,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     // Making the handle accessible to the cleanup function.
     g_h = h;
 
-    uint8_t r_mem_data[TR01_R_MEM_DATA_SIZE_MAX], write_data[TR01_R_MEM_DATA_SIZE_MAX],
-        zeros[TR01_R_MEM_DATA_SIZE_MAX] = {0};
+    uint8_t r_mem_data[R_MEM_DATA_SIZE_MAX], write_data[R_MEM_DATA_SIZE_MAX], zeros[R_MEM_DATA_SIZE_MAX] = {0};
     uint16_t read_data_size, write_data_len;
 
     LT_LOG_INFO("Initializing handle");
@@ -102,7 +104,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
 
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY,
-                       lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
+                       lt_r_mem_data_read(h, i, r_mem_data, sizeof(r_mem_data), &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes (should be 0)...");
         LT_TEST_ASSERT(1, (read_data_size == 0));
@@ -116,32 +118,32 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
         LT_LOG_INFO("Generating random data for slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, write_data, sizeof(write_data)));
+        LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, write_data, h->tr01_attrs.r_mem_udata_slot_size_max));
 
         LT_LOG_INFO("Writing to slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, h->tr01_attrs.r_mem_udata_slot_size_max));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, sizeof(r_mem_data), &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
-        LT_TEST_ASSERT(1, (read_data_size == TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(1, (read_data_size == h->tr01_attrs.r_mem_udata_slot_size_max));
 
         LT_LOG_INFO("Checking contents...");
-        LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, h->tr01_attrs.r_mem_udata_slot_size_max));
 
         LT_LOG_INFO("Writing zeros to slot #%" PRIu16 " (should fail)...", i);
-        LT_TEST_ASSERT(LT_L3_SLOT_NOT_EMPTY, lt_r_mem_data_write(h, i, zeros, TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(LT_L3_SLOT_NOT_EMPTY, lt_r_mem_data_write(h, i, zeros, h->tr01_attrs.r_mem_udata_slot_size_max));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
         read_data_size = 0;  // Set different value just in case
-        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, sizeof(r_mem_data), &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
-        LT_TEST_ASSERT(1, (read_data_size == TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(1, (read_data_size == h->tr01_attrs.r_mem_udata_slot_size_max));
 
         LT_LOG_INFO("Checking contents (should still contain original data)...");
-        LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, TR01_R_MEM_DATA_SIZE_MAX));
+        LT_TEST_ASSERT(0, memcmp(r_mem_data, write_data, h->tr01_attrs.r_mem_udata_slot_size_max));
     }
     LT_LOG_LINE();
 
@@ -153,7 +155,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
 
         LT_LOG_INFO("Reading slot #%" PRIu16 " (should fail)...", i);
         LT_TEST_ASSERT(LT_L3_R_MEM_DATA_READ_SLOT_EMPTY,
-                       lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
+                       lt_r_mem_data_read(h, i, r_mem_data, sizeof(r_mem_data), &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes (should be 0)...");
         LT_TEST_ASSERT(1, (read_data_size == 0));
@@ -163,10 +165,11 @@ void lt_test_rev_r_mem(lt_handle_t *h)
     LT_LOG_INFO("Testing writing all slots partially...");
     for (uint16_t i = 0; i <= TR01_R_MEM_DATA_SLOT_MAX; i++) {
         LT_LOG_INFO();
-        LT_LOG_INFO("Generating random data length < %d...", (int)TR01_R_MEM_DATA_SIZE_MAX);
+        LT_LOG_INFO("Generating random data length < %" PRIu16 "...", h->tr01_attrs.r_mem_udata_slot_size_max);
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, &write_data_len, sizeof(write_data_len)));
-        write_data_len %= TR01_R_MEM_DATA_SIZE_MAX - 1;  // 0-442
-        write_data_len += 1;                             // 1-443
+        write_data_len
+            %= h->tr01_attrs.r_mem_udata_slot_size_max - 1;  // 0..(h->tr01_attrs.r_mem_udata_slot_size_max-2)
+        write_data_len += 1;                                 // 1..(h->tr01_attrs.r_mem_udata_slot_size_max-1)
 
         LT_LOG_INFO("Generating %" PRIu16 " random bytes for slot #%" PRIu16 "...", write_data_len, i);
         LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, write_data, write_data_len));
@@ -175,7 +178,7 @@ void lt_test_rev_r_mem(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_r_mem_data_write(h, i, write_data, write_data_len));
 
         LT_LOG_INFO("Reading slot #%" PRIu16 "...", i);
-        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, TR01_R_MEM_DATA_SIZE_MAX, &read_data_size));
+        LT_TEST_ASSERT(LT_OK, lt_r_mem_data_read(h, i, r_mem_data, sizeof(r_mem_data), &read_data_size));
 
         LT_LOG_INFO("Checking number of read bytes...");
         LT_TEST_ASSERT(1, (read_data_size == write_data_len));

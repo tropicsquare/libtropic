@@ -207,6 +207,15 @@ typedef struct lt_l3_state_t {
 #define TR01_AES256_KEY_LEN 32
 
 /**
+ * @brief Configures attributes that are different among TROPIC01's Application FW versions.
+ *
+ */
+typedef struct lt_tr01_attrs_t {
+    /** @private @brief Maximal size of the UDATA slot in the User R-Memory. */
+    uint16_t r_mem_udata_slot_size_max;
+} lt_tr01_attrs_t;
+
+/**
  * @details This structure holds data related to one physical chip.
  * Contains AESGCM contexts for encrypting and decrypting L3 commands, nonce and device void pointer, which can be used
  * for passing arbitrary data.
@@ -214,6 +223,7 @@ typedef struct lt_l3_state_t {
 typedef struct lt_handle_t {
     lt_l2_state_t l2;
     lt_l3_state_t l3;
+    lt_tr01_attrs_t tr01_attrs;
 } lt_handle_t;
 
 /**
@@ -231,107 +241,112 @@ typedef enum lt_ret_t {
     LT_PARAM_ERR = 3,
     /** @brief Error detected during cryptographic operation */
     LT_CRYPTO_ERR = 4,
+    /**
+     * @brief TROPIC01's Application FW is too new for the current version of Libtropic. Please update Libtropic to a
+     * newer release version.
+     */
+    LT_APP_FW_TOO_NEW = 5,
 
     /** @brief Some SPI related operation was not successful */
-    LT_L1_SPI_ERROR = 5,
+    LT_L1_SPI_ERROR = 6,
     /** @brief Data does not have an expected length */
-    LT_L1_DATA_LEN_ERROR = 6,
+    LT_L1_DATA_LEN_ERROR = 7,
     /** @brief Chip is in STARTUP mode */
-    LT_L1_CHIP_STARTUP_MODE = 7,
+    LT_L1_CHIP_STARTUP_MODE = 8,
     /** @brief Chip is in ALARM mode */
-    LT_L1_CHIP_ALARM_MODE = 8,
+    LT_L1_CHIP_ALARM_MODE = 9,
     /** @brief Chip is BUSY - typically chip is still booting */
-    LT_L1_CHIP_BUSY = 9,
+    LT_L1_CHIP_BUSY = 10,
     /** @brief Interrupt pin did not fire as expected */
-    LT_L1_INT_TIMEOUT = 10,
+    LT_L1_INT_TIMEOUT = 11,
 
     // Return values based on the RESULT field in the L3 Result packet.
     /** @brief L3 result [API R_Mem_Data_Write]: The target slot is already written. */
-    LT_L3_SLOT_NOT_EMPTY = 11,
+    LT_L3_SLOT_NOT_EMPTY = 12,
     /** @brief L3 result [API R_Mem_Data_Write]: The target FLASH slot has expired. */
-    LT_L3_SLOT_EXPIRED = 12,
+    LT_L3_SLOT_EXPIRED = 13,
     /** @brief L3 result [API EDDSA_Sign, ECDSA_Sign, ECC_Key_Read]: The key in selected slot is invalid or corrupted.
      */
-    LT_L3_INVALID_KEY = 13,
+    LT_L3_INVALID_KEY = 14,
     /** @brief L3 result [API MCounter_Update]: Update operation failed (i.e. mcounter done at 0). */
-    LT_L3_UPDATE_ERR = 14,
+    LT_L3_UPDATE_ERR = 15,
     /** @brief L3 result [API MCounter_Update, MCounter_Get]: The Monotonic Counter is disabled or locked. */
-    LT_L3_COUNTER_INVALID = 15,
+    LT_L3_COUNTER_INVALID = 16,
     /** @brief L3 result [API Pairing_Key_Read]: The requested slot is empty and contains no valid data. */
-    LT_L3_SLOT_EMPTY = 16,
+    LT_L3_SLOT_EMPTY = 17,
     /** @brief L3 result [API Pairing_Key_Read]: The slot content is invalidated. */
-    LT_L3_SLOT_INVALID = 17,
+    LT_L3_SLOT_INVALID = 18,
     /** @brief L3 Command successfully executed. */
-    LT_L3_OK = 18,
+    LT_L3_OK = 19,
     /** @brief Error during processing of the L3 command. */
-    LT_L3_FAIL = 19,
+    LT_L3_FAIL = 20,
     /** @brief Insufficient User Access Privileges. */
-    LT_L3_UNAUTHORIZED = 20,
+    LT_L3_UNAUTHORIZED = 21,
     /** @brief Unknown L3 Command packet. */
-    LT_L3_INVALID_CMD = 21,
+    LT_L3_INVALID_CMD = 22,
     /** @brief L3 result [API Pairing_Key_Write, Pairing_Key_Invalidate, R_Config_Write, I_Config_Write,
        R_Mem_Data_Write]: A hardware error occurred during a write operation. */
-    LT_L3_HARDWARE_FAIL = 22,
+    LT_L3_HARDWARE_FAIL = 23,
 
     // Libtropic's return values for the L3 Layer.
     /** @brief L3 data does not have an expected length */
-    LT_L3_DATA_LEN_ERROR = 23,
+    LT_L3_DATA_LEN_ERROR = 24,
     /** @brief L3 response RES_SIZE have an invalid size.
      * @details This can be caused by an attack or a bug.
      */
-    LT_L3_RES_SIZE_ERROR = 24,
+    LT_L3_RES_SIZE_ERROR = 25,
     /** @brief L3 buffer is too small to parse this L3 command.
      * @details If this error is raised, either the buffer is too small to accept the result,
      * or RES_SIZE field in the response is invalid (attack or a bug).
      */
-    LT_L3_BUFFER_TOO_SMALL = 25,
+    LT_L3_BUFFER_TOO_SMALL = 26,
     /** @brief User slot is empty */
-    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 26,
+    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 27,
     /** @brief Unknown L3 RESULT value. */
-    LT_L3_RESULT_UNKNOWN = 27,
+    LT_L3_RESULT_UNKNOWN = 28,
 
     // Return values based on the STATUS field in the L2 Response frame.
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 28,
+    LT_L2_REQ_CONT = 29,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 29,
+    LT_L2_RES_CONT = 30,
     /** @brief The L2 Request frame is disabled and can’t be executed */
-    LT_L2_RESP_DISABLED = 30,
+    LT_L2_RESP_DISABLED = 31,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 31,
+    LT_L2_HSK_ERR = 32,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 32,
+    LT_L2_NO_SESSION = 33,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 33,
+    LT_L2_TAG_ERR = 34,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 34,
+    LT_L2_CRC_ERR = 35,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 35,
+    LT_L2_GEN_ERR = 36,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 36,
+    LT_L2_NO_RESP = 37,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 37,
+    LT_L2_UNKNOWN_REQ = 38,
 
     // Libtropic's return values for the L2 Layer.
     /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 38,
+    LT_L2_IN_CRC_ERR = 39,
     /** @brief L2 data does not have an expected length (invalid value in RSP_LEN field) */
-    LT_L2_RSP_LEN_ERROR = 39,
+    LT_L2_RSP_LEN_ERROR = 40,
     /** @brief Unknown L2 STATUS value. */
-    LT_L2_STATUS_UNKNOWN = 40,
+    LT_L2_STATUS_UNKNOWN = 41,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 41,
+    LT_CERT_STORE_INVALID = 42,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 42,
+    LT_CERT_UNSUPPORTED = 43,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 43,
+    LT_CERT_ITEM_NOT_FOUND = 44,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 44,
+    LT_NONCE_OVERFLOW = 45,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 45
+    LT_RET_T_LAST_VALUE = 46
 } lt_ret_t;
 
 #define LT_TR01_REBOOT_DELAY_MS 250
@@ -770,8 +785,6 @@ typedef enum lt_config_obj_idx_t {
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Minimal size of one data slot in bytes */
 #define TR01_R_MEM_DATA_SIZE_MIN (1)
-/** @brief Maximal size of one data slot in bytes */
-#define TR01_R_MEM_DATA_SIZE_MAX (444)
 /** @brief Index of last data slot. TROPIC01 contains 512 slots indexed 0-511. */
 #define TR01_R_MEM_DATA_SLOT_MAX (511)
 
