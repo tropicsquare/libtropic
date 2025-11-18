@@ -18,6 +18,12 @@
 
 lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
 {
+#ifdef LT_REDUNDANT_ARG_CHECK
+    if (!h) {
+        return LT_PARAM_ERR;
+    }
+#endif
+
     lt_ret_t ret;
     uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE];
 
