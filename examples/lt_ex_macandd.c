@@ -252,7 +252,9 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
         goto exit;
     }
 
-// Cleanup all sensitive data from memory
+// Cleanup all sensitive data from memory.
+// We recommend using a safe function for this. Refer to the link below for some information.
+// https://www.gnu.org/software/libc/manual/html_node/Erasing-Sensitive-Data.html
 exit:
     memset(kdf_input_buff, 0, PIN_size + add_size_checked);
     memset(u, 0, sizeof(u));
@@ -455,7 +457,9 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
         goto exit;
     }
 
-// Cleanup all sensitive data from memory
+// Cleanup all sensitive data from memory.
+// We recommend using a safe function for this. Refer to the link below for some information.
+// https://www.gnu.org/software/libc/manual/html_node/Erasing-Sensitive-Data.html
 exit:
     memset(kdf_input_buff, 0, PIN_size + add_size_checked);
     memset(w_i, 0, sizeof(w_i));

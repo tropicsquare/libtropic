@@ -19,6 +19,7 @@
 #include "lt_aesgcm.h"
 #include "lt_crypto_common.h"
 #include "lt_l1.h"
+#include "lt_secure_memzero.h"
 
 static lt_ret_t lt_l3_nonce_increase(uint8_t *nonce)
 {
@@ -47,8 +48,8 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
 {
     s3->session_status = LT_SECURE_SESSION_OFF;
 
-    memset(s3->encryption_IV, 0, sizeof(s3->encryption_IV));
-    memset(s3->decryption_IV, 0, sizeof(s3->decryption_IV));
+    lt_secure_memzero(s3->encryption_IV, sizeof(s3->encryption_IV));
+    lt_secure_memzero(s3->decryption_IV, sizeof(s3->decryption_IV));
 
     lt_ret_t ret = lt_crypto_ctx_deinit(s3->crypto_ctx);
     if (ret != LT_OK) {
@@ -56,9 +57,9 @@ void lt_l3_invalidate_host_session_data(lt_l3_state_t *s3)
     }
 
 #if LT_SEPARATE_L3_BUFF
-    memset(s3->buff, 0, s3->buff_len);
+    lt_secure_memzero(s3->buff, s3->buff_len);
 #else
-    memset(s3->buff, 0, sizeof(s3->buff));
+    lt_secure_memzero(s3->buff, sizeof(s3->buff));
 #endif
 }
 

@@ -30,6 +30,7 @@
 #include "lt_l3_api_structs.h"
 #include "lt_l3_process.h"
 #include "lt_random.h"
+#include "lt_secure_memzero.h"
 #include "lt_sha256.h"
 #include "lt_tr01_attrs.h"
 #include "lt_x25519.h"
@@ -414,21 +415,22 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
 
     lt_ret_t ret = lt_out__session_start(h, pkey_index, &host_eph_keys);
     if (ret != LT_OK) {
-        return ret;
+        goto lt_session_start_cleanup;
     }
 
     ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
-        return ret;
+        goto lt_session_start_cleanup;
     }
     ret = lt_l2_receive(&h->l2);
     if (ret != LT_OK) {
-        return ret;
+        goto lt_session_start_cleanup;
     }
 
     ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &host_eph_keys);
-    memset(&host_eph_keys, 0, sizeof(lt_host_eph_keys_t));
 
+lt_session_start_cleanup:
+    lt_secure_memzero(&host_eph_keys, sizeof(lt_host_eph_keys_t));
     return ret;
 }
 
