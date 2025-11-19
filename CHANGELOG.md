@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed `LT_STRICT_COMP_FLAGS` to `LT_STRICT_COMPILATION`, moved it from Libtropic's CMakeLists.txt to the model's CMakeLists.txt and set it ON by default.
 - TCP HAL: removed `rng_seed` from `struct lt_dev_posix_tcp_t`. In the case of the TROPIC01 model, The PRNG is seeded in `tropic01_model/main.c`.
 - Linux SPI HAL: remove `rng_seed` from `struct lt_dev_linux_spi_t` and use `getrandom()` in `lt_port_random_bytes()`.
+- POSIX USB Dongle HAL: remove `rng_seed` from `struct lt_dev_posix_usb_dongle_t` and use `getentropy()` in `lt_port_random_bytes()`.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
