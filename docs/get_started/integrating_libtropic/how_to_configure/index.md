@@ -88,3 +88,6 @@ Used for compiling the correct FW update files. Available versions can be seen i
 
 !!! tip "See Available Values When Using CMake CLI"
     Pass `-DLT_CPU_FW_VERSION=` to `cmake`, which will invoke an error, but will print the available values.
+
+!!! tip "See Current Configuration"
+    Use `cmake -LAH | grep -B 1 LT_` to check current value of all Libtropic options.
