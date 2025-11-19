@@ -18,7 +18,7 @@ lt_ret_t lt_sha256_init(void *ctx)
 {
     lt_ctx_trezor_crypto_t *_ctx = (lt_ctx_trezor_crypto_t *)ctx;
 
-    lt_secure_memzero(&_ctx->sha256_ctx, sizeof(_ctx->sha256_ctx));
+    memset(&_ctx->sha256_ctx, 0, sizeof(_ctx->sha256_ctx));
     return LT_OK;
 }
 
