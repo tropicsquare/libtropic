@@ -27,6 +27,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Other
+#include <sys/random.h>
+
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
@@ -45,8 +48,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 #endif
     device->gpio_fd = -1;
     device->spi_fd = -1;
-
-    srand(device->rng_seed);
 
     LT_LOG_DEBUG("Initializing SPI...\n");
     LT_LOG_DEBUG("SPI speed: %d", device->spi_speed);
@@ -235,10 +236,17 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     LT_UNUSED(s2);
 
-    uint8_t *buff_ptr = buff;
-    for (size_t i = 0; i < count; i++) {
-        // Number from rand() is guaranteed to have at least 15 bits valid
-        buff_ptr[i] = (uint8_t)(rand() & 0xFF);
+    ssize_t ret = getrandom(buff, count, 0);
+
+    if (ret == -1) {
+        LT_LOG_ERROR("lt_port_random_bytes: getrandom() failed (%s)!", strerror(errno));
+        return LT_FAIL;
+    }
+
+    if (ret != count) {
+        LT_LOG_ERROR("lt_port_random_bytes: getrandom() generated %zd bytes instead of requested %zu bytes!", ret,
+                     count);
+        return LT_FAIL;
     }
 
     return LT_OK;
