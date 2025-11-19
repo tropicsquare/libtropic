@@ -9,7 +9,7 @@ The CMake project in the `tropic01_model/` directory builds libtropic so it can 
     - `LT_VALGRIND` (boolean, default value: `OFF`): CTest runs the binaries with Valgrind.
     - `LT_CAL` (string): Flexible switching between the implemented CALs (Crypto Abstraction Layers).
     - `LAB_BATCH_PKG_DIR` (string, default value: *latest available lab batch package*): Path to the latest lab batch package to use for configuring the model (refer to [Provisioning Data](provisioning_data.md) for more information).
-    - `LT_MODEL_RISCV_FW_VER` (string, default value: *latest available TROPIC01's RISC-V FW version*): RISC-V FW version to be configured in the model (does not invoke changes of the model's functionality).
+    - `LT_MODEL_RISCV_FW_VER` (string, default value: *latest available TROPIC01's RISC-V FW version*): RISC-V FW version to be configured in the model (does not affect behavior of the model).
 
 
 > [!WARNING]
