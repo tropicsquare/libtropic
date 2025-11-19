@@ -189,7 +189,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     LT_UNUSED(s2);
 
-    uint8_t *buff_ptr = (uint8_t *)buff;
+    uint8_t *buff_ptr = buff;
     size_t bytes_left = count;
     size_t current_cnt;
 
