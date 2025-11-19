@@ -85,8 +85,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
 
-    srand(device->rng_seed);
-
     // Initialize the serial port.
     device->fd = open(device->dev_path, O_RDWR | O_NOCTTY);
     if (device->fd == -1) {
@@ -182,10 +180,9 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     LT_UNUSED(s2);
 
-    uint8_t *buff_ptr = buff;
-    for (size_t i = 0; i < count; i++) {
-        // Number from rand() is guaranteed to have at least 15 bits valid
-        buff_ptr[i] = (uint8_t)(rand() & 0xFF);
+    if (0 != getentropy(buff, count)) {
+        LT_LOG_ERROR("lt_port_random_bytes: getentropy() failed (%s)!", strerror(errno));
+        return LT_FAIL;
     }
 
     return LT_OK;
