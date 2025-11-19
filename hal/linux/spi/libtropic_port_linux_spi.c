@@ -238,12 +238,12 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
     ssize_t ret = getrandom(buff, count, 0);
 
-    if (ret == -1) {
+    if (ret < 0) {
         LT_LOG_ERROR("lt_port_random_bytes: getrandom() failed (%s)!", strerror(errno));
         return LT_FAIL;
     }
 
-    if (ret != count) {
+    if ((size_t)ret != count) {
         LT_LOG_ERROR("lt_port_random_bytes: getrandom() generated %zd bytes instead of requested %zu bytes!", ret,
                      count);
         return LT_FAIL;
