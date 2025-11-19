@@ -36,8 +36,6 @@ typedef struct lt_dev_linux_spi_t {
     /** @public @brief Number of the GPIO pin to map interrupt pin to. */
     int gpio_int_num;
 #endif
-    /** @public @brief Seed for the platform's random number generator. */
-    unsigned int rng_seed;
 
     /** @private @brief SPI file descriptor. */
     int spi_fd;
