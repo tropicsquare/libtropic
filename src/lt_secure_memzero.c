@@ -45,7 +45,7 @@ void lt_secure_memzero(void *const ptr, const size_t count)
     }
 
 #else
-    LT_LOG_WARNING("Memory is zeroed out using volatile pointers, which may not be safe.");
+#warning Zeroing of the memory will be done using volatile pointers, which may not be safe.
 
     volatile unsigned char *volatile _ptr = (volatile unsigned char *volatile)ptr;
     for (size_t i = 0U; i < count; i++) {
