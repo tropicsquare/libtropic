@@ -94,6 +94,7 @@ nav:
       - other/supported_cfps/index.md
       - Trezor Crypto: other/supported_cfps/trezor_crypto.md
       - MbedTLS: other/supported_cfps/mbedtls.md
+  - FAQ: faq.md
 
 plugins:
   - search
