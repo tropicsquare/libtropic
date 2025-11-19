@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.21.0)
 #                                                                         #
 ###########################################################################
 
+include(CheckSymbolExists)
+include(CheckIncludeFiles)
 # Used in the tropic01_model/CMakeLists.txt and platform repositories
 include(cmake/coverage_flags.cmake)
 
@@ -164,6 +166,7 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_default_sh0_keys.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_tr01_attrs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_secure_memzero.c
 )
 
 set(SDK_INCS ${SDK_INCS}
@@ -404,6 +407,39 @@ if(LT_TEST_COVERAGE)
     message(STATUS "Enabling coverage collection for libtropic")
     target_link_libraries(tropic PRIVATE libtropic::coverage_flags)
 endif()
+
+# Handle definitions for safe memory zeroing functions
+set(SECURE_ZERO_FUNCS
+    "memset_explicit"
+    "explicit_bzero"
+    "explicit_memset"
+    "memset_s"
+)
+
+# Ensure C11 safe functions are exposed if available
+target_compile_definitions(tropic PRIVATE __STDC_WANT_LIB_EXT1__=1)
+
+check_include_files("strings.h" LT_HAVE_STRINGS_H)
+if(LT_HAVE_STRINGS_H)
+    set(headers_to_check "string.h;strings.h")
+    target_compile_definitions(tropic PRIVATE LT_HAVE_STRINGS_H)
+else()
+    set(headers_to_check "string.h")
+endif()
+
+foreach(secure_zero_func ${SECURE_ZERO_FUNCS})
+    # Generate a variable name (e.g. LT_HAVE_MEMSET_S)
+    string(TOUPPER "${secure_zero_func}" secure_zero_func_upper)
+    set(secure_zero_func_macro "LT_HAVE_${secure_zero_func_upper}")
+
+    # Check if the symbol exists
+    check_symbol_exists(${secure_zero_func} "${headers_to_check}" ${secure_zero_func_macro})
+
+    # If it exists, pass it to the compiler definitions
+    if(${secure_zero_func_macro})
+        target_compile_definitions(tropic PRIVATE ${secure_zero_func_macro})
+    endif()
+endforeach()
 
 ###########################################################################
 #                                                                         #

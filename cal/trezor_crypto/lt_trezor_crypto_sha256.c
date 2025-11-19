@@ -11,6 +11,7 @@
 #include "hasher.h"
 #include "libtropic_common.h"
 #include "libtropic_trezor_crypto.h"
+#include "lt_secure_memzero.h"
 #include "lt_sha256.h"
 
 lt_ret_t lt_sha256_init(void *ctx)
