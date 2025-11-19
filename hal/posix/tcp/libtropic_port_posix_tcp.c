@@ -213,8 +213,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         return ret;
     }
 
-    srand(dev->rng_seed);
-
     return LT_OK;
 }
 
