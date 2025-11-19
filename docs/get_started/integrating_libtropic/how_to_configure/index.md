@@ -6,6 +6,7 @@ Libtropic can be configured using CMake in the following ways:
 cmake -D<config_option_name>=value ..
 ```
 Where `<config_option_name>` can be substituted with one of the [Available CMake Options](#available-cmake-options). Multiple options can be passed to `cmake`.
+
 2. CMake GUI. This makes the configuring process more user-friendly. For more information, refer to the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) documentation.
 
 ## Available CMake Options
