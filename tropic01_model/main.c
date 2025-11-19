@@ -18,6 +18,8 @@
 #if LT_USE_TREZOR_CRYPTO
 #include "libtropic_trezor_crypto.h"
 #elif LT_USE_MBEDTLS_V4
+#include <inttypes.h>
+
 #include "libtropic_mbedtls_v4.h"
 #include "psa/crypto.h"
 #endif
