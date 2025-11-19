@@ -60,6 +60,7 @@ nav:
         - get_started/integrating_libtropic/how_to_build/index.md
         - Add to an Existing Project: get_started/integrating_libtropic/how_to_build/adding_to_project.md
         - Compile as a Static Library: get_started/integrating_libtropic/how_to_build/compile_as_static_library.md
+      - How To Configure: get_started/integrating_libtropic/how_to_configure/index.md
       - How To Use: get_started/integrating_libtropic/how_to_use/index.md
       - Integration Examples: get_started/integrating_libtropic/integration_examples.md
     - Examples:

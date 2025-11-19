@@ -3,7 +3,14 @@ The CMake project in the `tropic01_model/` directory builds libtropic so it can 
 
 1. Running libtropic's [Functional Tests](../../for_contributors/functional_tests.md). The testing is managed by CTest - it executes both the test and the model automatically, along with the creation of model configuration.
 2. Running libtropic's [Examples](../../get_started/examples/index.md).
-3. Flexible switching between the implemented CALs (Crypto Abstraction Layers) using the `LT_CAL` CMake variable.
+3. Additional CMake configuration options:
+    - `LT_STRICT_COMPILATION` (boolean, default value: `ON`): Enables strict compilation flags.
+    - `LT_ASAN` (boolean, default value: `OFF`): Enables static AddressSanitizer.
+    - `LT_VALGRIND` (boolean, default value: `OFF`): CTest runs the binaries with Valgrind.
+    - `LT_CAL` (string): Flexible switching between the implemented CALs (Crypto Abstraction Layers).
+    - `LAB_BATCH_PKG_DIR` (string, default value: *latest available lab batch package*): Path to the latest lab batch package to use for configuring the model (refer to [Provisioning Data](provisioning_data.md) for more information).
+    - `LT_MODEL_RISCV_FW_VER` (string, default value: *latest available TROPIC01's RISC-V FW version*): RISC-V FW version to be configured in the model (does not affect behavior of the model).
+
 
 > [!WARNING]
 > Some examples are not compatible with the model because the model does not implement all of the chip's functionality. Those examples will always fail against the model and are therefore excluded in `tropic01_model/CMakeLists.txt`. Namely:
