@@ -25,6 +25,7 @@ void lt_secure_memzero(void *const ptr, const size_t count)
 {
     if (!ptr) {
         LT_LOG_ERROR("lt_secure_memzero: ptr=NULL!");
+        return;
     }
 
 #if defined(_WIN32) || defined(__WIN32__)
