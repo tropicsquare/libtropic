@@ -15,6 +15,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
+#include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -31,6 +32,14 @@
 
 #if LT_USE_INT_PIN
 #error "Interrupt PIN not supported in the USB dongle port!"
+#endif
+
+// getentropy() has a limit of random bytes it can generate in one call. The POSIX.1-2024 standard requires
+// GETENTROPY_MAX to be defined in limits.h, but because this standard is quite new, we will define the macro here in
+// case the current limits.h does not define it yet. The value 256 is safe to use because it was always the minimum
+// value.
+#ifndef GETENTROPY_MAX
+#define GETENTROPY_MAX 256
 #endif
 
 /**
@@ -180,9 +189,22 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     LT_UNUSED(s2);
 
-    if (0 != getentropy(buff, count)) {
-        LT_LOG_ERROR("lt_port_random_bytes: getentropy() failed (%s)!", strerror(errno));
-        return LT_FAIL;
+    uint8_t *buff_ptr = (uint8_t *)buff;
+    size_t bytes_left = count;
+    size_t current_cnt;
+
+    // Number of bytes getentropy() can generate is limited to GETENTROPY_MAX,
+    // so generate random data in chunks.
+    while (bytes_left) {
+        current_cnt = bytes_left > GETENTROPY_MAX ? GETENTROPY_MAX : bytes_left;
+
+        if (0 != getentropy(buff_ptr, current_cnt)) {
+            LT_LOG_ERROR("lt_port_random_bytes: getentropy() failed (%s)!", strerror(errno));
+            return LT_FAIL;
+        }
+
+        buff_ptr += current_cnt;
+        bytes_left -= current_cnt;
     }
 
     return LT_OK;
