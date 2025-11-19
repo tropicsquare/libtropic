@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `lt_l3_decrypt_response()` returns `LT_L3_RESULT_UNKNOWN` instead of `LT_FAIL` if the L3 result value is unknown.
 - Moved `LT_ASAN` CMake option from Libtropic's CMakeLists.txt to the model's CMakeLists.txt.
 - Renamed `LT_STRICT_COMP_FLAGS` to `LT_STRICT_COMPILATION`, moved it from Libtropic's CMakeLists.txt to the model's CMakeLists.txt and set it ON by default.
+- TCP HAL: removed `rng_seed` from `struct lt_dev_posix_tcp_t`. In the case of the TROPIC01 model, The PRNG is seeded in `tropic01_model/main.c`.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.

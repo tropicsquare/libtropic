@@ -61,8 +61,6 @@ typedef struct lt_dev_posix_tcp_t {
     in_addr_t addr;
     /** @public @brief Port of the model server. */
     in_port_t port;
-    /** @public @brief Seed for the platform's random number generator. */
-    unsigned int rng_seed;
 
     /** @private @brief Socket file descriptor. */
     int socket_fd;

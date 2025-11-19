@@ -11,8 +11,14 @@ Libtropic example usage with **some** of these ports is currently available in o
 ## TCP
 We use this port with the [TROPIC01 Python Model](../tropic01_model/index.md), which acts as a server, to which libtropic connects via the specified TCP port.
 
-!!! warning
-    The TCP port does not support TROPIC01's interrupt PIN.
+!!! warning "Disclaimer"
+    The TCP HAL is implemented with consideration of the following:
+
+    1. It is primarily targeted for use with the [TROPIC01 Python Model](../tropic01_model/index.md).
+    2. To ensure reproducibility of randomized functional tests, a PRNG is used in the `lt_port_random_bytes` function with a known random seed instead of more cryptographically secure solutions.
+
+!!! warning "Interrupt PIN Support"
+    The TCP HAL does not support TROPIC01's interrupt PIN.
 
 ## Tropic Square TS1302 USB Devkit
 Libtropic communicates with this devkit using the USB protocol. Refer to the [TS1302 USB Devkit](https://github.com/tropicsquare/tropic01-stm32u5-usb-devkit-hw) GitHub page for more information about it.
