@@ -57,7 +57,7 @@ set_property(CACHE LT_SILICON_REV PROPERTY STRINGS "ABAB" "ACAB")
 # Used for compiling the correct FW update files
 # Available versions can be seen in the compatibility table in the main README.md.
 # Always use bundled versions from "TROPIC01_fw_update_files" folder!
-set(LT_CPU_FW_VERSION "1_0_1" CACHE STRING "Set TROPIC01 FW version")
+set(LT_CPU_FW_VERSION "2_0_0" CACHE STRING "Set TROPIC01 FW version")
 set_property(CACHE LT_CPU_FW_VERSION PROPERTY STRINGS "1_0_0" "1_0_1")
 # Validate specified version
 get_property(lt_cpu_fw_version_choices CACHE LT_CPU_FW_VERSION PROPERTY STRINGS)
