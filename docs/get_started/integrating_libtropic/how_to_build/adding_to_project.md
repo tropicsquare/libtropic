@@ -55,7 +55,7 @@ If you use a Makefile instead of CMake, you need to:
     See [How to Configure](../how_to_configure/index.md) for available CMake Options. However, some of these options are not directly used in the Libtropic code - based on them, additional internal macros are defined. To see those, either:
     
     1. Analyze Libtropic's root `CMakeLists.txt`.
-    2. Configure Libtropic using CMake and then use execute `grep LT_ CMakeCache.txt` in your `build/` directory to see all used options/defines.
+    2. Configure Libtropic using CMake and then execute `grep LT_ CMakeCache.txt` in your `build/` directory to see all used options/defines.
 
 !!! tip "Tip: Build Libtropic as a Static Library"
     You can compile libtropic as a static library (see [Compile as a Static Library](compile_as_static_library.md)) using CMake separately and include only the resulting library file in your Makefile.
