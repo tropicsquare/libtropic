@@ -29,7 +29,7 @@ Logging can be done using *logging macros*, which are defined in `include/libtro
 
 Each macro corresponds to a verbosity level, which is activated with the aforementioned CMake switch. Macros have the same interface as the `printf` function, as they are essentially a wrapper over `printf`.
 
-!!! warning "Function Calls as Logging Macro's Arguments"
+!!! warning "Function Calls as LT_LOG_* Arguments"
     Avoid passing function calls as macro arguments (except for simple formatting helpers like `lt_ret_verbose` or `strerror`).
     Logging macros may be completely removed at lower verbosity levels, meaning any function calls inside them will **not** execute.
 
