@@ -41,7 +41,7 @@ extern "C" {
  * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_hello_world(lt_handle_t *h);
 
@@ -66,7 +66,7 @@ int lt_ex_hello_world(lt_handle_t *h);
  * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_hello_world_separate_API(lt_handle_t *h);
 
@@ -92,7 +92,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h);
  * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_hardware_wallet(lt_handle_t *h);
 
@@ -109,7 +109,7 @@ int lt_ex_hardware_wallet(lt_handle_t *h);
  * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_fw_update(lt_handle_t *h);
 
@@ -134,7 +134,7 @@ int lt_ex_fw_update(lt_handle_t *h);
  * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_macandd(lt_handle_t *h);
 
@@ -150,7 +150,7 @@ int lt_ex_macandd(lt_handle_t *h);
  * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
 
