@@ -3,7 +3,7 @@ To establish a Secure Channel Session with TROPIC01, one of the Pairing Key slot
 
 At the time of manufacturing, Tropic Square configures the Pairing Key slot 0 of every TROPIC01 with $S_{H0PUB}$, generated from $S_{H0PRIV}$, which is provided to customers. The customer can then establish a Secure Channel Session with Pairing Key slot 0, configure TROPIC01, write their own X25519 public key to slot 1, 2 or 3 and invalidate the slot 0 (which is recommended for security reasons).
 
-!!! tip
+!!! info "More Information About Pairing Keys"
     For more information, refer to the [TROPIC01 datasheet](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#documentation).
 
 ## Default Pairing Keys in Libtropic

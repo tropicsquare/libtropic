@@ -23,5 +23,5 @@ Libtropic communicates with this devkit using the USB protocol. Refer to the [TS
     !!! success "Raspberry Pi 5"
         Fortunately, Raspberry Pi 5 fixes these issues and the TS1302 USB Devkit works without any issues.
 
-!!! warning
+!!! failure "Interrupt PIN Support"
     The TS1302 USB Devkit port does not support TROPIC01's interrupt PIN.

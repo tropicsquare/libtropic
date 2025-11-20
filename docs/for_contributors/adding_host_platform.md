@@ -10,7 +10,7 @@ To add support for a our new platform (`my_board` with `my_mcu`):
 2. [Create and Implement the HAL CMakeLists.txt](#create-and-implement-the-hal-cmakeliststxt),
 3. [Provide Some Information About the HAL](#provide-some-information-about-the-hal).
 
-!!! tip
+!!! tip "Get Inspired by Existing HALs"
     For inspiration, see the existing HALs inside `hal/`.
 
 After these steps, the sources and include directories of the new HAL should be available in consumer's `CMakeLists.txt` by calling:
@@ -46,7 +46,7 @@ typedef struct lt_dev_my_mcu_my_board_t {
 } lt_dev_my_mcu_my_board_t;
 ```
 
-        !!! info
+        !!! question "Which Members Are Needed?"
             These members are usually physical pin numbers, SPI handles, or other information needed in the HAL functions that handle the platform-specific interface on the L1 Layer.
 
     2. Additional macros or types you will need in `libtropic_port_my_mcu_my_board.c`.

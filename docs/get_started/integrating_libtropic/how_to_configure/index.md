@@ -1,4 +1,4 @@
-# How To Configure
+# How to Configure
 Libtropic can be configured using CMake in the following ways:
 
 1. Via a command line when building the project:

@@ -10,7 +10,7 @@ There are multiple kinds of FW running in TROPIC01:
 2. *RISC-V Mutable FW (CPU FW)*. Updatable, located in R-memory, runs on RISC-V CPU from RAM, processes L2/L3 communication.
 3. *ECC engine mutable FW (ECC engine FW or SPECT FW)*. Updatable, located in R-memory, runs on ECC engine from RAM, helps the RISC-V CPU FW with processing ECC commands (ECC_Key_*, ECDSA/EDDSA_Sign).
 
-!!! tip
+!!! info "More Information About TROPIC01 Firmware"
     For more detailed information about each FW, refer to the [FW Update Application Note](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#application-notes).
 
 ## TROPIC01 Firmware in Libtropic

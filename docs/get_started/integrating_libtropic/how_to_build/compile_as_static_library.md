@@ -1,7 +1,7 @@
 # Compile as a Static Library
 Apart from building Libtropic during your project's build process, you can build Libtropic separately as a static library (also known as a static archive on Linux) and link it later.
 
-!!! warning
+!!! warning "HAL and CAL Files Handling"
     The Libtropic static library does not contain HALs (`libtropic/hal/`) or CALs (`libtropic/cal/`). The consumer must provide these:
     
     1. If CMake is used, inspiration can be taken from the steps in the [Add to an Existing Project](./adding_to_project.md) section.
@@ -36,7 +36,7 @@ add_executable(my_app source1.c source2.c etc.c)
 target_link_libraries(my_app <absolute path to library file>)
 ```
 
-!!! note
+!!! info "Other Linking Options"
     There are other options for linking the library (e.g., imported targets). Refer to the CMake documentation for more information.
 
 ## Linking in a Make Project
@@ -47,5 +47,5 @@ LDFLAGS += -L<directory where the static library file is located>
 LDLIBS  += -ltropic
 ```
 
-!!! note
+!!! info "Linking External Libraries"
     Refer to the [GNU Make documentation](https://www.gnu.org/software/make/manual/html_node/index.html) for more information about linking external libraries.
