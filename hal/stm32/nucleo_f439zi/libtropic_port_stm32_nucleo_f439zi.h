@@ -42,7 +42,7 @@ typedef struct lt_dev_stm32_nucleo_f439zi_t {
 #endif
 
     /** @brief @private Random number generator handle. */
-    RNG_HandleTypeDef rng_handle;
+    RNG_HandleTypeDef *rng_handle;
 
     /** @brief @private SPI handle. */
     SPI_HandleTypeDef spi_handle;

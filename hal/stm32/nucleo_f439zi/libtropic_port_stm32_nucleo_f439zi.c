@@ -30,7 +30,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
     uint32_t random_data;
 
     while (bytes_left) {
-        ret = HAL_RNG_GenerateRandomNumber(&device->rng_handle, &random_data);
+        ret = HAL_RNG_GenerateRandomNumber(device->rng_handle, &random_data);
         if (ret != HAL_OK) {
             LT_LOG_ERROR("HAL_RNG_GenerateRandomNumber failed, ret=%d", ret);
             return LT_FAIL;
