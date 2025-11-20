@@ -24,8 +24,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
 
     // This variable is reused on more places in this example to store different firmware versions
     uint8_t fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    lt_ret_t ret;
 
-    lt_ret_t ret = lt_init(h);
+    LT_LOG_INFO("Initializing handle");
+    // Note: It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+    // initialized. Because these members are pointers, the assigned structures must exist throughout the whole
+    // life-cycle of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the
+    // Libtropic documentation for more information.
+    ret = lt_init(h);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
