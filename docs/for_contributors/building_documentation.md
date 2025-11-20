@@ -7,16 +7,15 @@ Libtropic documentation is built using the two following frameworks, each buildi
 Normally, you should not need to build the documentation yourself - it is available on our [GitHub Pages](https://tropicsquare.github.io/libtropic/latest/), where versions for the [master](https://github.com/tropicsquare/libtropic/tree/master) branch and all [releases](https://github.com/tropicsquare/libtropic/releases) are automatically built and released by our GitHub Actions. However, in the case of contributing to the documentation, it is handy to be able to build it locally and preview the new changes. Refer to the following sections for steps on how to do that.
 
 ## Installation of the Dependencies
-!!! info "Dependency on Python"
-    Before proceeding, you need to have Python 3.x installed on your system.
 To install **MkDocs**, do the following:
 
-1. We recommend creating a [Python Virtual Environment](https://docs.python.org/3/library/venv.html), for example with a name `.docs-venv`:
+1. Install Python 3, at least version 3.8.
+2. We recommend creating a [Python Virtual Environment](https://docs.python.org/3/library/venv.html), for example with a name `.docs-venv`:
 ```shell
 python3 -m venv .docs-venv
 source .docs-venv/bin/activate
 ```
-1. Update `pip` and install the needed `pip` packages using `docs/requirements.txt`:
+3. Update `pip` and install the needed `pip` packages using `docs/requirements.txt`:
 ```shell
 pip install --upgrade pip
 pip install -r docs/requirements.txt
