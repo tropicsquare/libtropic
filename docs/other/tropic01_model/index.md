@@ -31,7 +31,7 @@ First, install the model by following the README in the [ts-tvl](https://github.
 
 Next, you can initialize the model with data so it behaves like a real provisioned chip. To do that, pass a YAML configuration file to the model — see the [Model Server](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-server) and [Model Configuration](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration) sections in the [ts-tvl](https://github.com/tropicsquare/ts-tvl) repository. To create such a YAML configuration, use the `tropic01_model/create_model_cfg.py` script in the libtropic repository (example usage follows).
 
-!!! question "When to Handle Model's Configuration?"
+!!! question "When to Handle Model Configuration?"
     When running tests using CTest, no manual steps for creating the model configuration or initializing the model are necessary — CTest handles this. When running examples (or tests without CTest), start the model manually and apply a configuration so at least pairing key slot 0 is written to enable establishing a Secure Channel Session.
 
 Data, from which the `tropic01_model/create_model_cfg.py` script creates the YAML configuration file for the model, can be found in `tropic01_model/provisioning_data/` directory - see [Provisioning Data](provisioning_data.md) section for more information about the directory structure.
