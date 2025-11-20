@@ -5,13 +5,13 @@ The functional tests are organized into two categories, as some of them may caus
 
 - **Reversible** (`lt_test_rev_*.c`): only reversible operations are executed on the TROPIC01 chip.
 - **Irreversible** (`lt_test_ire_*.c`): irreversible operations are executed - the state or contents of the TROPIC01 chip **cannot** be reverted.
-!!! note
+!!! info "Compiling Functional Tests"
     Functional tests are not compiled by default. To compile the functional tests, either
 
     - pass `-DLT_BUILD_TESTS=1` to `cmake` during configuration, or
     - enable the option in your CMake file: `set(LT_BUILD_TESTS ON)`.
 
-!!! warning
+!!! failure "Cannot Establish a Secure Channel Session"
     You may encounter issues with examples that establish a Secure Session — refer to [Establishing Your First Secure Channel Session](../get_started/default_pairing_keys.md#establishing-your-first-secure-channel-session) for more information.
 
 ??? tip "Advanced Tip: Running a Test With Your Own Pairing Key"

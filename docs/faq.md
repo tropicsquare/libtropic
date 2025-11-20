@@ -19,8 +19,8 @@ Normally, this means the TROPIC01 entered Alarm Mode. However, it can also mean 
 ### `LT_L3_DATA_LEN_ERROR`
 This error normally means that the L3 packet size we sent to the TROPIC01 is incorrect, which can be caused by a bug or an attack. However, it can also mean that the chip select is connected incorrectly. Check your connections and GPIO assignments.
 
-> [!IMPORTANT] 
-> We use a GPIO to handle chip select, not the SPI peripheral's native chip select output.
+!!! warning "Chip Select Handling"
+    We use a GPIO to handle chip select, not the SPI peripheral's native chip select output.
 
 ### `LT_L3_INVALID_CMD` or `LT_L2_UNKNOWN_REQ`
 This error means that the TROPIC01 does not recognize the L3 command or L2 request it received. However, this behavior can be caused by the TROPIC01 being in Maintenance Mode. Maintenance Mode does not implement the entire API — it does not implement `Handshake_Req` nor any L3 commands, so handshake attempts will always fail.

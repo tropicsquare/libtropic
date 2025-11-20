@@ -29,7 +29,7 @@ Logging can be done using *logging macros*, which are defined in `include/libtro
 
 Each macro corresponds to a verbosity level, which is activated with the aforementioned CMake switch. Macros have the same interface as the `printf` function, as they are essentially a wrapper over `printf`.
 
-!!! important
+!!! warning "Function Calls as LT_LOG_* Arguments"
     Avoid passing function calls as macro arguments (except for simple formatting helpers like `lt_ret_verbose` or `strerror`).
     Logging macros may be completely removed at lower verbosity levels, meaning any function calls inside them will **not** execute.
 
@@ -52,5 +52,5 @@ int ret = lt_init(&h);
 LT_LOG_INFO("Initializing handle: %d", ret);
 ```
 
-!!! note
-    There are also macros used for assertion. These are used in functional tests.
+!!! info "Other Macros"
+    There are also macros used for assertion. These are used in [Functional Tests](../for_contributors/functional_tests.md).

@@ -10,9 +10,9 @@ Libtropic example usage of these platforms is currently available in our [libtro
 
 ## NUCLEO-F439ZI
 Fully working.
-!!! warning
-    Support for the TROPIC01's interrupt PIN is implemented but not tested.
+!!! failure "Interrupt Pin Support"
+    Support for the TROPIC01's interrupt pin is implemented but not tested.
 
 ## NUCLEO-L432KC
-!!! bug "Limited Support"
+!!! failure "Limited Support"
     Consider this platform as not supported. The HAL is implemented, but very outdated. Support for this platform is planned to be removed.

@@ -25,8 +25,10 @@ In this example, you will:
     - `lt_r_config_erase()`: L3 command to erase the R-config.
     - `lt_write_whole_R_config()`: helper function to write the whole R-config with an instance of `struct lt_config_t`.
     - `lt_read_whole_R_config()`: helper function to read the whole R-config into an instance of `struct lt_config_t`.
-    > [!NOTE]
-    > If you need to modify only one entry in the R-config, you can use `lt_r_config_write()` or `lt_r_config_read()`.
+
+        !!! tip "Tip: Modifying Only One R-Config Register"
+            If you need to modify only one register in the R-config, you can use `lt_r_config_write()` or `lt_r_config_read()`.
+            
 - Learn how to manage pairing keys:
     - `lt_pairing_key_write()`: L3 command to write a pairing key.
     - `lt_pairing_key_invalidate()`: L3 command to invalidate a pairing key.
@@ -52,8 +54,11 @@ This example explains the firmware update process for both ABAB and ACAB silicon
 - How to read the current firmware versions.
 - How to update the firmware using `lt_do_mutable_fw_update()`.
 
-!!! tip
+!!! info "TROPIC01 Firmware"
     For more information about the firmware itself, refer to the [TROPIC01 Firmware](../tropic01_fw.md) section.
+
+!!! warning "Firmware Update Precautions" 
+    Use a stable power source and avoid disconnecting the TROPIC01 (devkit) or rebooting your host device (computer or microcontroller) during the update. Interrupting the firmware update can brick the device.
 
 ??? example "Source code"
     ```c { .copy }

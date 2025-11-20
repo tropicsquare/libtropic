@@ -19,7 +19,7 @@ To add support for a new CFP (let's say `mycrypto`):
 2. [Create and Implement the CAL CMakeLists.txt](#create-and-implement-the-cal-cmakeliststxt),
 3. [Provide Some Information About the CAL](#provide-some-information-about-the-cal).
 
-!!! tip
+!!! tip "Get Inspired by Existing CALs"
     For inspiration, see the existing CALs inside `cal/`.
 
 After these steps, the sources and include directories of the new CAL should be available in consumer's `CMakeLists.txt` by calling:
@@ -61,7 +61,7 @@ typedef struct lt_ctx_mycrypto_t {
 } lt_ctx_mycrypto_t;
 ```
 
-    !!! warning "Important"
+    !!! question "Which Contexts Are Needed?"
         This structure must include all contexts the functions in the CAL might need. The structure will be defined in the user's application and assigned to the `crypto_ctx` void pointer in the `lt_handle_t` — see the [Libtropic Bare-Bone Example](../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
 
 5. Additionally, other source files and headers can be created for the needs of the implementation.
