@@ -57,6 +57,9 @@ This example explains the firmware update process for both ABAB and ACAB silicon
 !!! info "TROPIC01 Firmware"
     For more information about the firmware itself, refer to the [TROPIC01 Firmware](../tropic01_fw.md) section.
 
+!!! warning "Firmware Update Precautions" 
+    Use a stable power source and avoid disconnecting the TROPIC01 (devkit) or rebooting your host device (computer or microcontroller) during the update. Interrupting the firmware update can brick the device.
+
 ??? example "Source code"
     ```c { .copy }
     --8<-- "examples/lt_ex_fw_update.c"
