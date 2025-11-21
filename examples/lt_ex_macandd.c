@@ -105,7 +105,7 @@ static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destinatio
  *
  * Take it as an inspiration, copy it into your project and adapt it to your specific hw resources.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param master_secret  32 bytes of random data (determines final_key)
  * @param PIN         Array of bytes (size between MAC_AND_DESTROY_PIN_SIZE_MIN and MAC_AND_DESTROY_PIN_SIZE_MAX)
  * representing PIN
@@ -277,7 +277,7 @@ exit:
  *
  * Take it as an inspiration, copy it into your project and adapt it to your specific hw resources.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param PIN         Array of bytes (size between MAC_AND_DESTROY_PIN_SIZE_MIN and MAC_AND_DESTROY_PIN_SIZE_MAX)
  * representing PIN
  * @param PIN_size    Length of the PIN field
