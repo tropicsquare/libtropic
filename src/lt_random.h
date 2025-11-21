@@ -21,7 +21,7 @@ extern "C" {
 /**
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param buff        Buffer to be filled
  * @param count       Number of random bytes
  * @return lt_ret_t

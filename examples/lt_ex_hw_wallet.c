@@ -313,7 +313,7 @@ static void create_example_r_config(struct lt_config_t *r_config)
  * @brief Initial session, when chip is powered for the first time during manufacturing.
  *        This function writes chip's configuration into R config.
  *
- * @param h  Device's handle
+ * @param h  Handle for communication with TROPIC01
  * @return   0 if success, -1 otherwise
  */
 static int session_initial(lt_handle_t *h)
@@ -427,7 +427,7 @@ static int session_initial(lt_handle_t *h)
 /**
  * @brief Session with pairing key slot 0
  *
- * @param h  Device's handle
+ * @param h  Handle for communication with TROPIC01
  * @return   0 if success, -1 otherwise
  */
 static int session0(lt_handle_t *h)
@@ -466,7 +466,7 @@ static int session0(lt_handle_t *h)
 /**
  * @brief Session with pairing key slot 1
  *
- * @param h  Device's handle
+ * @param h  Handle for communication with TROPIC01
  * @return   0 if success, -1 otherwise
  */
 static int session1(lt_handle_t *h)
@@ -544,7 +544,7 @@ static int session1(lt_handle_t *h)
 /**
  * @brief Session with pairing key slot 2
  *
- * @param h  Device's handle
+ * @param h  Handle for communication with TROPIC01
  * @return   0 if success, -1 otherwise
  */
 static int session2(lt_handle_t *h)
@@ -647,7 +647,7 @@ static int session2(lt_handle_t *h)
 /**
  * @brief Session with pairing key slot 3
  *
- * @param h  Device's handle
+ * @param h  Handle for communication with TROPIC01
  * @return   0 if success, -1 otherwise
  */
 static int session3(lt_handle_t *h)
