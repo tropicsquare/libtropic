@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - POSIX USB Dongle HAL: remove `rng_seed` from `struct lt_dev_posix_usb_dongle_t` and use `getentropy()` in `lt_port_random_bytes()`.
 - STM32 F439ZI HAL: Removed the RNG initialization, now it is the user's responsibility.
 - STM32 F439ZI HAL: Changed `rng_handle` type in `lt_dev_stm32_nucleo_f439zi_t` to a pointer (`RNG_HandleTypeDef*`).
-- New return value `LT_REBOOT_UNSUCCESSFUL` returned by `lt_reboot` function, which know checks if TROPIC01 is in correct mode after the reboot.
+- New return value `LT_REBOOT_UNSUCCESSFUL` returned by `lt_reboot` function, which now checks if TROPIC01 is in correct mode after the reboot.
 - Examples: Refactored and cleaned up `lt_ex_show_chip_id_and_fwver` and `lt_ex_fw_update` logic to use the new version of the `lt_reboot` function.
 
 ### Added
