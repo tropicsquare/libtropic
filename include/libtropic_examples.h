@@ -35,10 +35,13 @@ extern "C" {
  * @brief Establishes Secure Session and executes Ping L3 command.
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
- * @param  h     Device's handle
+ * @param  h     Device's handle. It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+ * initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle
+ * of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the Libtropic
+ * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_hello_world(lt_handle_t *h);
 
@@ -57,10 +60,13 @@ int lt_ex_hello_world(lt_handle_t *h);
  * This might be used for example in production, where we want to establish a secure channel between HSM and TROPIC01 on
  * PCB.
  *
- * @param  h     Device's handle
+ * @param  h     Device's handle. It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+ * initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle
+ * of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the Libtropic
+ * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_hello_world_separate_API(lt_handle_t *h);
 
@@ -80,20 +86,30 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h);
  * @warning We strongly recommend running this example against the TROPIC01 model only, as it does irreversible
  operations!
  *
- * @param  h     Device's handle
+ * @param  h     Device's handle. It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+ * initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle
+ * of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the Libtropic
+ * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_hardware_wallet(lt_handle_t *h);
 
 /**
- * @brief Performs firmware update of TROPIC01 chip.
+ * @brief Example how to update TROPIC01 firmware. Process is described in detail in 'ODN_TR01_app_007_fw_update.pdf'
+ * Application Note.
  *
- * @param  h     Device's handle
+ * It is recommended to update both Application firmware banks with the same Application firmware
+ * and both SPECT firmware banks with the same SPECT firmware.
+ *
+ * @param  h     Device's handle. It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+ * initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle
+ * of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the Libtropic
+ * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_fw_update(lt_handle_t *h);
 
@@ -112,10 +128,13 @@ int lt_ex_fw_update(lt_handle_t *h);
  *
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
- * @param  h     Device's handle
+ * @param  h     Device's handle. It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+ * initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle
+ * of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the Libtropic
+ * documentation for more information.
  *
  * @retval       0  Function executed successfully
- * @retval      -1  Function did not execute successully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_macandd(lt_handle_t *h);
 
@@ -125,7 +144,13 @@ int lt_ex_macandd(lt_handle_t *h);
  *
  * @note We recommend reading TROPIC01's datasheet before diving into this example!
  *
- * @return 0 on success, -1 otherwise
+ * @param  h     Device's handle. It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+ * initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle
+ * of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the Libtropic
+ * documentation for more information.
+ *
+ * @retval       0  Function executed successfully
+ * @retval      -1  Function did not execute successfully
  */
 int lt_ex_show_chip_id_and_fwver(lt_handle_t *h);
 

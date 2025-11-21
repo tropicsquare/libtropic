@@ -27,37 +27,63 @@ The following bare-bone example shows how to initialize Libtropic, so it can be 
 
 int main(void) {
     // 1. Declare a handle variable.
+    //
     // The handle is a context for the whole communication between libtropic
-    // and TROPIC01.
+    // and TROPIC01. Multiple handle instances can exist if it is needed to
+    // communicate with multiple TROPIC01 chips.
     lt_handle_t h;
 
     // 2. Declare a device structure.
+    //
     // The device structure provides libtropic with the device-specific
     // information.
+    //
+    // IMPORTANT: This structure must exist throughout the whole life-cycle
+    // of the handle declared above, because the handle points to it,
+    // does not copy it!
     lt_dev_<port_name>_t my_device;
 
     // 3. Initialize the device structure.
+    //
     // The members of the device structure are specific to the device - each
     // device requires different members to be initialized.
     my_device.first_member = "some value for the first member";
     my_device.nth_member = "some value for the n-th member";
 
     // 4. Save a pointer to the device structure inside the handle.
+    //
     // Libtropic will then pass this structure to the HAL functions.
+    //
+    // IMPORTANT #1: The assignment below has to be done before calling
+    // lt_init() with the specific handle instance!
+    // IMPORTANT #2: One device structure cannot be shared among multiple
+    // handle instances!
     h.l2.device = &my_device;
 
     // 5. Declare a context structure for the CFP (Cryptographic Functionality
-    //    Provider).
+    // Provider).
+    //
     // The context structure provides libtropic with the memory location where
-    // it can save contexts of cryptographic functions.
-    // None of its members have to be initialized.
+    // it can save contexts of cryptographic functions. None of its members have
+    // to be initialized.
+    //
+    // IMPORTANT: This structure must exist throughout the whole life-cycle
+    // of the handle declared above, because the handle points to it,
+    // does not copy it!
     lt_ctx_<cfp_name>_t my_crypto_ctx;
 
     // 6. Save a pointer to the context structure inside the handle.
+    //
     // Libtropic will then pass this structure to the CAL functions.
+    //
+    // IMPORTANT #1: The assignment below has to be done before calling
+    // lt_init() with the specific handle instance!
+    // IMPORTANT #2: One context structure cannot be shared among multiple
+    // handle instances!
     h.l3.crypto_ctx = &my_crypto_ctx;
 
     // 7. Initialize the handle.
+    //
     // This should be done only once for a specific handle.
     // If you need to initialize the specific handle again, call lt_deinit()
     // first.

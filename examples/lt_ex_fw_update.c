@@ -17,17 +17,6 @@
 #include "libtropic_logging.h"
 #include "string.h"
 
-/**
- * @brief Example how to update TROPIC01 firmware. Process is described in detail in 'ODN_TR01_app_007_fw_update.pdf'
- * Application Note.
- *
- * It is recommended to update both Application firmware banks with the same Application firmware
- * and both SPECT firmware banks with the same SPECT firmware.
- *
- * @param h Pointer to lt_handle_t structure
- * @returns 0 on success, -1 otherwise
- */
-
 int lt_ex_fw_update(lt_handle_t *h)
 {
     LT_LOG_INFO("====================================");
@@ -37,6 +26,10 @@ int lt_ex_fw_update(lt_handle_t *h)
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
+    // Note: It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+    // initialized. Because these members are pointers, the assigned structures must exist throughout the whole
+    // life-cycle of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the
+    // Libtropic documentation for more information.
     ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
