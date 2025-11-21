@@ -15,7 +15,7 @@ We use this port with the [TROPIC01 Python Model](../tropic01_model/index.md), w
     The TCP HAL is implemented with consideration of the following:
 
     1. It is primarily targeted for use with the [TROPIC01 Python Model](../tropic01_model/index.md).
-    2. To ensure reproducibility of randomized functional tests, a PRNG is used in the `lt_port_random_bytes` function with a known random seed instead of more cryptographically secure solutions.
+    2. To ensure reproducibility of randomized functional tests, the [rand](https://en.cppreference.com/w/c/numeric/random/rand) function is used in the `lt_port_random_bytes` function with a known random seed instead of more cryptographically secure solutions.
 
 !!! failure "Interrupt Pin Support"
     The TCP HAL does not support TROPIC01's interrupt pin.
