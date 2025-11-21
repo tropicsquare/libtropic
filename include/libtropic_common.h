@@ -156,8 +156,9 @@ LT_STATIC_ASSERT(
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Values for the Startup_Req command, which TROPIC01 uses to determine the mode to reboot into. */
 typedef enum lt_startup_id_t {
-    TR01_REBOOT = 0x01,            /**< @brief Reboot TROPIC01 into Application mode. */
-    TR01_MAINTENANCE_REBOOT = 0x03 /**< @brief Reboot TROPIC01 into Maintenance mode. */
+    TR01_REBOOT = 0x01, /**< Restart, then initialize as if a power-cycle was applied. */
+    TR01_MAINTENANCE_REBOOT
+    = 0x03 /**< Restart, then initialize. Stay in Start-up mode and do not load the mutable FW from R-Memory. */
 } lt_startup_id_t;
 
 /**
