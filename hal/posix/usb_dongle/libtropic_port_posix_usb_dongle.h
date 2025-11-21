@@ -29,8 +29,6 @@ typedef struct lt_dev_posix_usb_dongle_t {
     char dev_path[LT_DEVICE_PATH_MAX_LEN];
     /** @public @brief UART baudrate. */
     uint32_t baud_rate;
-    /** @public @brief Seed for the platform's random number generator. */
-    unsigned int rng_seed;
 
     /** @private @brief UART device file descriptor. */
     int fd;

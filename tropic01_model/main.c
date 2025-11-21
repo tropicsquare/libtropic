@@ -6,10 +6,9 @@
  */
 
 #include <arpa/inet.h>
-#include <inttypes.h>
-#include <stdio.h>
+#include <errno.h>
 #include <string.h>
-#include <time.h>
+#include <unistd.h>
 
 #include "libtropic_examples.h"
 #include "libtropic_functional_tests.h"
@@ -19,6 +18,8 @@
 #if LT_USE_TREZOR_CRYPTO
 #include "libtropic_trezor_crypto.h"
 #elif LT_USE_MBEDTLS_V4
+#include <inttypes.h>
+
 #include "libtropic_mbedtls_v4.h"
 #include "psa/crypto.h"
 #endif
@@ -59,9 +60,9 @@ int main(void)
     lt_dev_posix_tcp_t device;
     device.addr = inet_addr("127.0.0.1");
     device.port = 28992;
-    device.rng_seed = (unsigned int)time(NULL);
     __lt_handle__.l2.device = &device;
 
+    // Initialize crypto context.
 #if LT_USE_TREZOR_CRYPTO
     lt_ctx_trezor_crypto_t
 #elif LT_USE_MBEDTLS_V4
@@ -70,7 +71,19 @@ int main(void)
         crypto_ctx;
     __lt_handle__.l3.crypto_ctx = &crypto_ctx;
 
-    LT_LOG_INFO("RNG initialized with seed=%u\n", device.rng_seed);
+    // Generate seed for the PRNG.
+    unsigned int prng_seed;
+    if (0 != getentropy(&prng_seed, sizeof(prng_seed))) {
+        LT_LOG_ERROR("main: getentropy() failed (%s)!", strerror(errno));
+        return -1;
+    }
+
+    // Seed the PRNG.
+    // Note: We use rand() for random numbers, which is not cryptographically secure, but it is okay here because the
+    // TCP port is targeted for use with the model only. Thanks to this, we can log the used seed and if needed,
+    // reproduce the random tests.
+    srand(prng_seed);
+    LT_LOG_INFO("PRNG initialized with seed=%u\n", prng_seed);
 
 #ifdef LT_BUILD_TESTS
 #include "lt_test_registry.c.inc"

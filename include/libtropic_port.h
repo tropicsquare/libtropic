@@ -111,6 +111,8 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
 #endif
 /**
  * @brief Fill buffer with random bytes, platform defined function.
+ * @note This function should use some cryptographically secure mechanism to generate the random bytes. Its speed should
+ * not be a concern, as this function is not called often.
  *
  * @param s2          Structure holding l2 state
  * @param buff        Buffer to be filled
