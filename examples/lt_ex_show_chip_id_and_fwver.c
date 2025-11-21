@@ -38,100 +38,88 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
         return -1;
     }
 
-    // First we check versions of both updateable firmwares. For this we need to be in APPLICATION mode.
-    // If there are valid firmwares, chip will execute them on boot. In any case we will try to reboot into application,
-    // in case chip would be in maintenance mode (executing bootloader)
-    LT_LOG_INFO("Rebooting into APPLICATION mode to check FW versions");
+    // First, we check versions of both updateable firmwares. To do that, we need TROPIC01 to **not** be in the Start-up
+    // Mode. If there are valid firmwares, TROPIC01 will begin to execute them automatically on boot.
+    LT_LOG_INFO("Doing a normal restart upon which TROPIC01 will begin to execute Application FW");
     ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK");
 
-    if (h->l2.mode == LT_TR01_APP_MODE) {
-        // App runs so we can see what firmwares are running
-        // Getting RISCV app firmware version
-        LT_LOG_INFO("Reading RISC-V FW version");
-        ret = lt_get_info_riscv_fw_ver(h, fw_ver);
-        if (ret == LT_OK) {
-            LT_LOG_INFO("Chip is executing RISC-V application FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8
-                        "    (+ .%02" PRIX8 ")",
-                        fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
-        }
-        else {
-            LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-
-        LT_LOG_INFO("Reading SPECT FW version");
-        ret = lt_get_info_spect_fw_ver(h, fw_ver);
-        if (ret == LT_OK) {
-            LT_LOG_INFO("Chip is executing SPECT firmware version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8
-                        "    (+ .%02" PRIX8 ")",
-                        fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
-        }
-        else {
-            LT_LOG_ERROR("Failed to get SPECT firmware version, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-    }
-    else {
-        LT_LOG_ERROR("Chip couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid");
-    }
-    LT_LOG_LINE();
-
-    LT_LOG_INFO("Rebooting into MAINTENANCE mode to check bootloader version and fw bank headers");
-    ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
+    LT_LOG_INFO("Reading RISC-V FW version");
+    ret = lt_get_info_riscv_fw_ver(h, fw_ver);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to reboot into MAINTENANCE mode, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK");
 
-    if (h->l2.mode == LT_TR01_MAINTENANCE_MODE) {
-        LT_LOG_INFO("Reading RISC-V FW version (during maintenance chip actually returns bootloader version):");
-        ret = lt_get_info_riscv_fw_ver(h, fw_ver);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-
-        LT_LOG_INFO("Bootloader version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 "    (+ .%02" PRIX8 ")", fw_ver[3] & 0x7f,
-                    fw_ver[2], fw_ver[1], fw_ver[0]);
-        LT_LOG_LINE();
-
-        LT_LOG_INFO("Reading and printing headers of all 4 FW banks:");
-        ret = lt_print_fw_header(h, TR01_FW_BANK_FW1, printf);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("Failed to print TR01_FW_BANK_FW1 header, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        ret = lt_print_fw_header(h, TR01_FW_BANK_FW2, printf);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("Failed to print TR01_FW_BANK_FW2 header, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        ret = lt_print_fw_header(h, TR01_FW_BANK_SPECT1, printf);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("Failed to print TR01_FW_BANK_SPECT1 header, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        ret = lt_print_fw_header(h, TR01_FW_BANK_SPECT2, printf);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("Failed to print TR01_FW_BANK_SPECT2 header, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
+    LT_LOG_INFO("Reading SPECT FW version");
+    ret = lt_get_info_spect_fw_ver(h, fw_ver);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to get SPECT FW version, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
     }
-    else {
-        LT_LOG_ERROR("Chip couldn't get into MAINTENANCE mode");
+    LT_LOG_INFO("OK");
+
+    LT_LOG_LINE();
+    LT_LOG_INFO("TROPIC01 is executing FW with the following versions:");
+    LT_LOG_INFO("RISC-V FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
+                fw_ver[1], fw_ver[0]);
+    LT_LOG_INFO("SPECT FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
+                fw_ver[1], fw_ver[0]);
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Doing a Maintenance restart to check bootloader version and FW bank headers");
+    ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    LT_LOG_INFO("OK");
+
+    // When TROPIC01 is in Start-up Mode, we can get RISC-V bootloader version the same way as we got RISC-V FW version.
+    LT_LOG_INFO("Reading RISC-V bootloader version");
+    ret = lt_get_info_riscv_fw_ver(h, fw_ver);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to get RISC-V bootloader version, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    LT_LOG_INFO("OK");
+
+    LT_LOG_INFO("RISC-V bootloader version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3] & 0x7f,
+                fw_ver[2], fw_ver[1], fw_ver[0]);
+    LT_LOG_LINE();
+
+    LT_LOG_INFO("Reading and printing headers of all 4 FW banks:");
+    ret = lt_print_fw_header(h, TR01_FW_BANK_FW1, printf);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to print TR01_FW_BANK_FW1 header, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    ret = lt_print_fw_header(h, TR01_FW_BANK_FW2, printf);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to print TR01_FW_BANK_FW2 header, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    ret = lt_print_fw_header(h, TR01_FW_BANK_SPECT1, printf);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to print TR01_FW_BANK_SPECT1 header, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    ret = lt_print_fw_header(h, TR01_FW_BANK_SPECT2, printf);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to print TR01_FW_BANK_SPECT2 header, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
@@ -153,16 +141,18 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
         lt_deinit(h);
         return -1;
     }
-    LT_LOG_LINE();
 
-    LT_LOG_INFO("Rebooting back into APPLICATION mode");
+    LT_LOG_LINE();
+    LT_LOG_INFO("Doing a normal restart upon which TROPIC01 will begin to execute Application FW");
     ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK");
 
+    LT_LOG_LINE();
     LT_LOG_INFO("Deinitializing handle");
     ret = lt_deinit(h);
     if (LT_OK != ret) {

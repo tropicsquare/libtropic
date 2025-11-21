@@ -160,16 +160,21 @@ typedef enum lt_startup_id_t {
     TR01_MAINTENANCE_REBOOT = 0x03 /**< @brief Reboot TROPIC01 into Maintenance mode. */
 } lt_startup_id_t;
 
-/** @brief Libtropic's internal values to track the mode TROPIC01 is currently in. */
-typedef enum lt_tr01_mode_t {
-    LT_TR01_APP_MODE,        /**< TROPIC01 is in Application mode. */
-    LT_TR01_MAINTENANCE_MODE /**< TROPIC01 is in Maintenance mode. */
-} lt_tr01_mode_t;
+/**
+ * @brief Interprets values of CHIP_STATUS byte. You can get current TROPIC01 status by calling the
+ * `lt_get_tr01_status` function.
+ * @note Refer to the TROPIC01 datasheet for more information about TROPIC01 modes.
+ */
+typedef enum lt_tr01_status_t {
+    TR01_READY,    /**< TROPIC01 is ready to receive L2 Request frame or L3 Command Packet. */
+    TR01_ALARM,    /**< TROPIC01 is in Alarm Mode. */
+    TR01_START,    /**< TROPIC01 is in Start-up Mode. */
+    TR01_UNDEFINED /**< Undefined. */
+} lt_tr01_status_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 typedef struct lt_l2_state_t {
     void *device;
-    enum lt_tr01_mode_t mode;
     uint8_t buff[TR01_L1_CHIP_STATUS_SIZE + TR01_L2_MAX_FRAME_SIZE];
     bool startup_req_sent;
 } lt_l2_state_t;
@@ -246,107 +251,112 @@ typedef enum lt_ret_t {
      * newer release version.
      */
     LT_APP_FW_TOO_NEW = 5,
+    /** @brief TROPIC01 executed the Startup_Req L2 Request (invoked by calling `lt_reboot()`) succesfully, but the mode
+       TROPIC01 is in after the reboot is not the expected one based on the `startup_id` argument. This can e.g. happen
+       when the chip, for some reason, cannot execute the Application FW - it will stay in Start-up Mode no matter the
+       `startup_id`. */
+    LT_REBOOT_UNSUCCESSFUL = 6,
 
     /** @brief Some SPI related operation was not successful */
-    LT_L1_SPI_ERROR = 6,
+    LT_L1_SPI_ERROR = 7,
     /** @brief Data does not have an expected length */
-    LT_L1_DATA_LEN_ERROR = 7,
+    LT_L1_DATA_LEN_ERROR = 8,
     /** @brief Chip is in STARTUP mode */
-    LT_L1_CHIP_STARTUP_MODE = 8,
+    LT_L1_CHIP_STARTUP_MODE = 9,
     /** @brief Chip is in ALARM mode */
-    LT_L1_CHIP_ALARM_MODE = 9,
+    LT_L1_CHIP_ALARM_MODE = 10,
     /** @brief Chip is BUSY - typically chip is still booting */
-    LT_L1_CHIP_BUSY = 10,
+    LT_L1_CHIP_BUSY = 11,
     /** @brief Interrupt pin did not fire as expected */
-    LT_L1_INT_TIMEOUT = 11,
+    LT_L1_INT_TIMEOUT = 12,
 
     // Return values based on the RESULT field in the L3 Result packet.
     /** @brief L3 result [API R_Mem_Data_Write]: The target slot is already written. */
-    LT_L3_SLOT_NOT_EMPTY = 12,
+    LT_L3_SLOT_NOT_EMPTY = 13,
     /** @brief L3 result [API R_Mem_Data_Write]: The target FLASH slot has expired. */
-    LT_L3_SLOT_EXPIRED = 13,
+    LT_L3_SLOT_EXPIRED = 14,
     /** @brief L3 result [API EDDSA_Sign, ECDSA_Sign, ECC_Key_Read]: The key in selected slot is invalid or corrupted.
      */
-    LT_L3_INVALID_KEY = 14,
+    LT_L3_INVALID_KEY = 15,
     /** @brief L3 result [API MCounter_Update]: Update operation failed (i.e. mcounter done at 0). */
-    LT_L3_UPDATE_ERR = 15,
+    LT_L3_UPDATE_ERR = 16,
     /** @brief L3 result [API MCounter_Update, MCounter_Get]: The Monotonic Counter is disabled or locked. */
-    LT_L3_COUNTER_INVALID = 16,
+    LT_L3_COUNTER_INVALID = 17,
     /** @brief L3 result [API Pairing_Key_Read]: The requested slot is empty and contains no valid data. */
-    LT_L3_SLOT_EMPTY = 17,
+    LT_L3_SLOT_EMPTY = 18,
     /** @brief L3 result [API Pairing_Key_Read]: The slot content is invalidated. */
-    LT_L3_SLOT_INVALID = 18,
+    LT_L3_SLOT_INVALID = 19,
     /** @brief L3 Command successfully executed. */
-    LT_L3_OK = 19,
+    LT_L3_OK = 20,
     /** @brief Error during processing of the L3 command. */
-    LT_L3_FAIL = 20,
+    LT_L3_FAIL = 21,
     /** @brief Insufficient User Access Privileges. */
-    LT_L3_UNAUTHORIZED = 21,
+    LT_L3_UNAUTHORIZED = 22,
     /** @brief Unknown L3 Command packet. */
-    LT_L3_INVALID_CMD = 22,
+    LT_L3_INVALID_CMD = 23,
     /** @brief L3 result [API Pairing_Key_Write, Pairing_Key_Invalidate, R_Config_Write, I_Config_Write,
        R_Mem_Data_Write]: A hardware error occurred during a write operation. */
-    LT_L3_HARDWARE_FAIL = 23,
+    LT_L3_HARDWARE_FAIL = 24,
 
     // Libtropic's return values for the L3 Layer.
     /** @brief L3 data does not have an expected length */
-    LT_L3_DATA_LEN_ERROR = 24,
+    LT_L3_DATA_LEN_ERROR = 25,
     /** @brief L3 response RES_SIZE have an invalid size.
      * @details This can be caused by an attack or a bug.
      */
-    LT_L3_RES_SIZE_ERROR = 25,
+    LT_L3_RES_SIZE_ERROR = 26,
     /** @brief L3 buffer is too small to parse this L3 command.
      * @details If this error is raised, either the buffer is too small to accept the result,
      * or RES_SIZE field in the response is invalid (attack or a bug).
      */
-    LT_L3_BUFFER_TOO_SMALL = 26,
+    LT_L3_BUFFER_TOO_SMALL = 27,
     /** @brief User slot is empty */
-    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 27,
+    LT_L3_R_MEM_DATA_READ_SLOT_EMPTY = 28,
     /** @brief Unknown L3 RESULT value. */
-    LT_L3_RESULT_UNKNOWN = 28,
+    LT_L3_RESULT_UNKNOWN = 29,
 
     // Return values based on the STATUS field in the L2 Response frame.
     /** @brief There is more than one chunk to be expected for a current request */
-    LT_L2_REQ_CONT = 29,
+    LT_L2_REQ_CONT = 30,
     /** @brief There is more than one chunk to be received for a current response */
-    LT_L2_RES_CONT = 30,
+    LT_L2_RES_CONT = 31,
     /** @brief The L2 Request frame is disabled and can’t be executed */
-    LT_L2_RESP_DISABLED = 31,
+    LT_L2_RESP_DISABLED = 32,
     /** @brief There were an error during handshake establishing */
-    LT_L2_HSK_ERR = 32,
+    LT_L2_HSK_ERR = 33,
     /** @brief There is no secure session */
-    LT_L2_NO_SESSION = 33,
+    LT_L2_NO_SESSION = 34,
     /** @brief There were error during checking message authenticity */
-    LT_L2_TAG_ERR = 34,
+    LT_L2_TAG_ERR = 35,
     /** @brief l2 request contained crc error */
-    LT_L2_CRC_ERR = 35,
+    LT_L2_CRC_ERR = 36,
     /** @brief There were some other error */
-    LT_L2_GEN_ERR = 36,
+    LT_L2_GEN_ERR = 37,
     /** @brief Chip has no response to be transmitted */
-    LT_L2_NO_RESP = 37,
+    LT_L2_NO_RESP = 38,
     /** @brief ID of last request is not known to TROPIC01 */
-    LT_L2_UNKNOWN_REQ = 38,
+    LT_L2_UNKNOWN_REQ = 39,
 
     // Libtropic's return values for the L2 Layer.
     /** @brief l2 response frame contains CRC error */
-    LT_L2_IN_CRC_ERR = 39,
+    LT_L2_IN_CRC_ERR = 40,
     /** @brief L2 data does not have an expected length (invalid value in RSP_LEN field) */
-    LT_L2_RSP_LEN_ERROR = 40,
+    LT_L2_RSP_LEN_ERROR = 41,
     /** @brief Unknown L2 STATUS value. */
-    LT_L2_STATUS_UNKNOWN = 41,
+    LT_L2_STATUS_UNKNOWN = 42,
 
     // Certificate store related errors
     /** @brief Certificate store likely does not contain valid data */
-    LT_CERT_STORE_INVALID = 42,
+    LT_CERT_STORE_INVALID = 43,
     /** @brief Certificate store contains ASN1-DER syntax that is beyond the supported subset*/
-    LT_CERT_UNSUPPORTED = 43,
+    LT_CERT_UNSUPPORTED = 44,
     /** @brief Certificate does not contain requested item */
-    LT_CERT_ITEM_NOT_FOUND = 44,
+    LT_CERT_ITEM_NOT_FOUND = 45,
     /** @brief The nonce has reached its maximum value. */
-    LT_NONCE_OVERFLOW = 45,
+    LT_NONCE_OVERFLOW = 46,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 46
+    LT_RET_T_LAST_VALUE = 47
 } lt_ret_t;
 
 #define LT_TR01_REBOOT_DELAY_MS 250

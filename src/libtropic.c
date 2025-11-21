@@ -93,9 +93,9 @@ lt_ret_t lt_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_update_mode(lt_handle_t *h)
+lt_ret_t lt_get_tr01_status(lt_handle_t *h, lt_tr01_status_t *status)
 {
-    if (!h) {
+    if (!h || !status) {
         return LT_PARAM_ERR;
     }
 
@@ -124,19 +124,19 @@ lt_ret_t lt_update_mode(lt_handle_t *h)
         return ret;
     }
 
-    // Check ALARM bit of CHIP_STATUS byte. If there is ALARM, return with error and do not update mode.
-    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
-        LT_LOG_DEBUG("CHIP_STATUS: 0x%02" PRIX8, h->l2.buff[0]);
-        return LT_L1_CHIP_ALARM_MODE;
+    // Assign the status enum based on obtained CHIP_STATUS.
+    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_READY_bit) {
+        *status = TR01_READY;
     }
-
-    // Buffer in handle now contains CHIP_STATUS byte,
-    // Save info about chip mode into 'mode' variable in handle
-    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = LT_TR01_MAINTENANCE_MODE;
+    else if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
+        LT_LOG_DEBUG("CHIP_STATUS: 0x%02" PRIX8, h->l2.buff[0]);
+        *status = TR01_ALARM;
+    }
+    else if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
+        *status = TR01_START;
     }
     else {
-        h->l2.mode = LT_TR01_APP_MODE;
+        *status = TR01_UNDEFINED;
     }
 
     return LT_OK;
@@ -533,10 +533,17 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
-    // Update mode variable in handle after reboot
-    ret = lt_update_mode(h);
+    // Read TROPIC01 status to check whether TROPIC01 was rebooted into the correct mode.
+    lt_tr01_status_t tr01_status;
+    ret = lt_get_tr01_status(h, &tr01_status);
     if (ret != LT_OK) {
         return ret;
+    }
+
+    // Validate the current TROPIC01 mode based on the given `startup_id`.
+    if ((startup_id == TR01_REBOOT && tr01_status != TR01_READY)
+        || (startup_id == TR01_MAINTENANCE_REBOOT && tr01_status != TR01_START)) {
+        return LT_REBOOT_UNSUCCESSFUL;
     }
 
     return LT_OK;
