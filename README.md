@@ -24,7 +24,7 @@ The following table outlines the tested and supported compatibility between rele
 | 1.0.0               | 1.0.0                  | 1.0.0            |  v1.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       |
 | 2.0.0               | 1.0.0–1.0.1                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       |
 | 2.0.1               | 1.0.0–1.0.1                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf) |
-| 3.0.0               | 1.0.0–2.0.0                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf) |
+| 3.0.0               | 1.0.0–2.0.0                  | 1.0.0            |  v2.0.1     |  <code style="color : green">Passed</code> | [TODO]() |
 
 Using mismatched versions of the components may result in unpredictable behavior or errors. It is strongly advised to use the latest compatible versions of all components to ensure proper functionality.  
 
