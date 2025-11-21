@@ -301,8 +301,9 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
  * @brief Writes pairing public key into TROPIC01's pairing key slot 0-3
  * @warning The pairing keys reside in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
  * the rest of TROPIC01. New CPU firmware versions (v2.0.0 and newer) return error when the operation is unsuccessful,
- * but with older firmwares the operation fails silently. Make sure to manually check whether the pairing key was
- * correctly written if operating outside this range. Refer to datasheet for absolute maximum ratings.
+ * but with older firmwares the operation fails silently. If you use CPU firmware older than v2.0.0, make sure to
+ * manually check whether the pairing key was correctly written if operating outside this range. Refer to datasheet for
+ * absolute maximum ratings.
  *
  * @param h           Handle for communication with TROPIC01
  * @param pairing_pub 32B of pubkey
@@ -331,8 +332,9 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
  * @brief Invalidates pairing key in slot 0-3
  * @warning The pairing keys reside in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
  * the rest of TROPIC01. New CPU firmware versions (v2.0.0 and newer) return error when the operation is unsuccessful,
- * but with older firmwares the operation fails silently. Make sure to manually check whether the pairing key was
- * correctly invalidated if operating outside this range. Refer to datasheet for absolute maximum ratings.
+ * but with older firmwares the operation fails silently. If you use CPU firmware older than v2.0.0, make sure to
+ * manually check whether the pairing key was correctly invalidated if operating outside this range. Refer to datasheet
+ * for absolute maximum ratings.
  *
  * @param h           Handle for communication with TROPIC01
  * @param slot        Pairing key lot SH0PUB - SH3PUB
@@ -385,8 +387,9 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h);
  * @brief Writes configuration object specified by `addr` to I-Config
  * @warning The I-Config resides in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
  * the rest of TROPIC01. New CPU firmware versions (v2.0.0 and newer) return error when the operation is unsuccessful,
- * but with older firmwares the operation fails silently. Make sure to manually check whether the I-Config was correctly
- * written if operating outside this range. Refer to datasheet for absolute maximum ratings.
+ * but with older firmwares the operation fails silently. If you use CPU firmware older than v2.0.0, make sure to
+ * manually check whether the I-Config was correctly written if operating outside this range. Refer to datasheet for
+ * absolute maximum ratings.
  *
  * @param h           Handle for communication with TROPIC01
  * @param addr        Address of a config object
@@ -682,8 +685,9 @@ lt_ret_t lt_read_whole_I_config(lt_handle_t *h, struct lt_config_t *config);
  * @details Only the zero bits in `config` are written.
  * @warning The I-Config resides in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
  * the rest of TROPIC01. New CPU firmware versions (v2.0.0 and newer) return error when the operation is unsuccessful,
- * but with older firmwares the operation fails silently. Make sure to manually check whether the I-Config was correctly
- * written if operating outside this range. Refer to datasheet for absolute maximum ratings.
+ * but with older firmwares the operation fails silently. If you use CPU firmware older than v2.0.0, make sure to
+ * manually check whether the I-Config was correctly written if operating outside this range. Refer to datasheet for
+ * absolute maximum ratings.
  *
  * @param h           Handle for communication with TROPIC01
  * @param config      Array into which objects are read
