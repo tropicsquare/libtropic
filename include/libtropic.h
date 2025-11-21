@@ -332,7 +332,7 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
  * @warning The pairing keys reside in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than
  * the rest of TROPIC01. New CPU firmware versions (v2.0.0 and newer) return error when the operation is unsuccessful,
  * but with older firmwares the operation fails silently. Make sure to manually check whether the pairing key was
- * correctly written if operating outside this range. Refer to datasheet for absolute maximum ratings.
+ * correctly invalidated if operating outside this range. Refer to datasheet for absolute maximum ratings.
  *
  * @param h           Handle for communication with TROPIC01
  * @param slot        Pairing key lot SH0PUB - SH3PUB
