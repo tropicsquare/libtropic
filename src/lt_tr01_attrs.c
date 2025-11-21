@@ -37,8 +37,8 @@ lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
         return ret;
     }
 
-    // 3. Reboot into Idle Mode if TROPIC01's status is not READY.
-    // When TROPIC01 is in Idle Mode, we can be sure that it is executing the Application FW.
+    // 3. Reboot if TROPIC01's status is not READY.
+    // When TROPIC01 is READY, we can be sure that it is executing the Application FW.
     if (tr01_status != TR01_READY) {
         ret = lt_reboot(h, TR01_REBOOT);
         if (ret != LT_OK) {
