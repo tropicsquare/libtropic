@@ -79,8 +79,9 @@ int main(void)
     }
 
     // Seed the PRNG.
-    // Note: Although using PRNG is not the most secure way, it is okay here because the TCP port is targeted for use
-    // with the model only. Thanks to this, we can log the used seed and if needed, reproduce the random tests.
+    // Note: We use rand() for random numbers, which is not cryptographically secure, but it is okay here because the
+    // TCP port is targeted for use with the model only. Thanks to this, we can log the used seed and if needed,
+    // reproduce the random tests.
     srand(prng_seed);
     LT_LOG_INFO("PRNG initialized with seed=%u\n", prng_seed);
 
