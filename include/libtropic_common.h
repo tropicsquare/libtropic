@@ -162,16 +162,47 @@ typedef enum lt_startup_id_t {
 } lt_startup_id_t;
 
 /**
- * @brief Interprets values of CHIP_STATUS byte. You can get current TROPIC01 status by calling the
- * `lt_get_tr01_status` function.
- * @note Refer to the TROPIC01 datasheet for more information about TROPIC01 modes.
+ * @brief Interprets TROPIC01's **Chip Modes** and **CHIP_STATUS** values (described in the TROPIC01 datasheet) and
+ * defines new modes (not described in the TROPIC01 datasheet) based on them. These modes are practical when working
+ * with the chip.
+ *
  */
-typedef enum lt_tr01_status_t {
-    TR01_READY,    /**< TROPIC01 is ready to receive L2 Request frame or L3 Command Packet. */
-    TR01_ALARM,    /**< TROPIC01 is in Alarm Mode. */
-    TR01_START,    /**< TROPIC01 is in Start-up Mode. */
-    TR01_UNDEFINED /**< Undefined. */
-} lt_tr01_status_t;
+typedef enum lt_tr01_mode_t {
+    /**
+     * @brief TROPIC01 is in Maintenance Mode (defined by Libtropic), if it is not running Application FW and is ready
+     * to accept L2 Requests defined by the Bootloader API (refer to the TROPIC01 User API).
+     *
+     * Values of **Chip Mode** and **CHIP_STATUS** from the datasheet:
+     *
+     * - **Chip Mode**: Start-up
+     *
+     * - **CHIP_STATUS**: READY=1, ALARM=0, START=1
+     *
+     */
+    LT_TR01_MAINTENANCE,
+    /**
+     * @brief TROPIC01 is in Application Mode (defined by Libtropic), if it is running Application FW and is ready to
+     * accept L2 Requests or L3 Commands defined by the Application API (refer to the TROPIC01 User API).
+     *
+     * Values of **Chip Mode** and **CHIP_STATUS** from the datasheet:
+     *
+     * - **Chip Mode**: Idle or Secure Channel or Sleep
+     *
+     * - **CHIP_STATUS**: READY=1, ALARM=0, START=0
+     *
+     */
+    LT_TR01_APPLICATION,
+    /**
+     * @brief TROPIC01 is in Alarm Mode (defined by Libtropic) if the values of **Chip Mode** and **CHIP_STATUS** from
+     * the datasheet are:
+     *
+     * - **Chip Mode**: Alarm
+     *
+     * - **CHIP_STATUS**: READY=?, ALARM=1, START=?
+     *
+     */
+    LT_TR01_ALARM
+} lt_tr01_mode_t;
 
 //--------------------------------------------------------------------------------------------------------------------//
 typedef struct lt_l2_state_t {
@@ -252,10 +283,10 @@ typedef enum lt_ret_t {
      * newer release version.
      */
     LT_APP_FW_TOO_NEW = 5,
-    /** @brief TROPIC01 executed the Startup_Req L2 Request (invoked by calling `lt_reboot()`) successfully, but the mode
-       TROPIC01 is in after the reboot is not the expected one based on the `startup_id` argument. This can e.g. happen
-       when the chip, for some reason, cannot execute the Application FW - it will stay in Start-up Mode no matter the
-       `startup_id`. */
+    /** @brief TROPIC01 executed the Startup_Req L2 Request (invoked by calling `lt_reboot()`) successfully, but the
+       mode TROPIC01 is in after the reboot is not the expected one based on the `startup_id` argument. This can e.g.
+       happen when the chip, for some reason, cannot execute the Application FW - it will stay in Start-up Mode no
+       matter the `startup_id`. */
     LT_REBOOT_UNSUCCESSFUL = 6,
 
     /** @brief Some SPI related operation was not successful */

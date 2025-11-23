@@ -25,21 +25,20 @@ lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
 #endif
 
     lt_ret_t ret;
-    lt_tr01_status_t tr01_status;
+    lt_tr01_mode_t tr01_mode;
     uint8_t riscv_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE];
 
     // 1. Set some default dummy values for the attributes
     h->tr01_attrs.r_mem_udata_slot_size_max = 0;
 
-    // 2. Get current TROPIC01's status
-    ret = lt_get_tr01_status(h, &tr01_status);
+    // 2. Get current TROPIC01's mode
+    ret = lt_get_tr01_mode(h, &tr01_mode);
     if (ret != LT_OK) {
         return ret;
     }
 
-    // 3. Reboot if TROPIC01's status is not READY.
-    // When TROPIC01 is READY, we can be sure that it is executing the Application FW.
-    if (tr01_status != TR01_READY) {
+    // 3. Reboot if TROPIC01 is not executing Application FW.
+    if (tr01_mode != LT_TR01_APPLICATION) {
         ret = lt_reboot(h, TR01_REBOOT);
         if (ret != LT_OK) {
             return ret;

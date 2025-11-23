@@ -54,16 +54,17 @@ lt_ret_t lt_init(lt_handle_t *h);
 lt_ret_t lt_deinit(lt_handle_t *h);
 
 /**
- * @brief Gets current status of TROPIC01. The `status` parameter is valid only when this function returns LT_OK.
+ * @brief Gets current mode (Libtropic defined, see lt_tr01_mode_t) of TROPIC01.
+ * @note The `mode` parameter can be considered valid only when this function returns LT_OK.
  *
  * @param h            Handle for communication with TROPIC01
  * @param[out] status  Current status of TROPIC01
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
- * of returned value
+ * of returned value. The `mode` parameter is also **not** valid.
  */
-lt_ret_t lt_get_tr01_status(lt_handle_t *h, lt_tr01_status_t *status);
+lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode);
 
 /**
  * @brief Read out PKI chain from TROPIC01's Certificate Store
