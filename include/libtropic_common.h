@@ -284,9 +284,15 @@ typedef enum lt_ret_t {
      */
     LT_APP_FW_TOO_NEW = 5,
     /** @brief TROPIC01 executed the Startup_Req L2 Request (invoked by calling `lt_reboot()`) successfully, but the
-       mode TROPIC01 is in after the reboot is not the expected one based on the `startup_id` argument. This can e.g.
-       happen when the chip, for some reason, cannot execute the Application FW - it will stay in Start-up Mode no
-       matter the `startup_id`. */
+       mode TROPIC01 is in after the reboot is not the expected one based on the `startup_id` argument:
+
+       - `startup_id`==`TR01_REBOOT` and TROPIC01's mode after successful reboot is **not** `LT_TR01_APPLICATION` (this
+       can e.g. happen when the chip, for some reason, cannot execute the Application FW - it will stay in Start-up Mode
+       no matter the `startup_id`), or
+
+       - `startup_id`==`TR01_MAINTENANCE_REBOOT` and TROPIC01's mode after successful reboot is **not**
+       `LT_TR01_MAINTENANCE`.
+    */
     LT_REBOOT_UNSUCCESSFUL = 6,
 
     /** @brief Some SPI related operation was not successful */

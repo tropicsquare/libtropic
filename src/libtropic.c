@@ -536,6 +536,10 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
+    if (tr01_mode == LT_TR01_ALARM) {
+        return LT_L1_CHIP_ALARM_MODE;
+    }
+
     // Validate the current TROPIC01 mode based on the given `startup_id`.
     if ((startup_id == TR01_REBOOT && tr01_mode != LT_TR01_APPLICATION)
         || (startup_id == TR01_MAINTENANCE_REBOOT && tr01_mode != LT_TR01_MAINTENANCE)) {
