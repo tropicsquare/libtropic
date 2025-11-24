@@ -466,5 +466,5 @@ if(LT_USE_INT_PIN)
 endif()
 
 if(LT_SEPARATE_L3_BUFF)
-    target_compile_definitions(tropic PRIVATE LT_SEPARATE_L3_BUFF)
+    target_compile_definitions(tropic PUBLIC LT_SEPARATE_L3_BUFF)
 endif()
