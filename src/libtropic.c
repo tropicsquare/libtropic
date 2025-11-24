@@ -705,7 +705,7 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
     int chunk_index = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1;
 
     do {
-        uint8_t len = update_data[chunk_index];
+        uint16_t len = update_data[chunk_index];
         p2_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_DATA_REQ;
         memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, len + 1);
 
@@ -1642,7 +1642,13 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *ou
     }
 
     for (uint16_t i = 0; i < bytes_cnt; i++) {
-        sprintf(&out_buf[i * 2], "%02" PRIX8, bytes[i]);
+        int remaining = out_buf_size - (i * 2);
+        int written = snprintf(&out_buf[i * 2], remaining, "%02" PRIX8, bytes[i]);
+        // Verify snprintf succeeded and didn't truncate
+        // (should never happen given precondition check, but defensive)
+        if (written < 0 || written >= remaining) {
+            return LT_FAIL;
+        }
     }
     out_buf[bytes_cnt * 2] = '\0';
 
@@ -1696,18 +1702,18 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
                           sizeof(print_bytes_buff))) {
         return LT_FAIL;
     }
-    char packg_type_id_str[17];  // Length of the longest possible string ("Bare silicon die") + \0.
+    const char *packg_type_id_str;
     switch (packg_type_id) {
         case TR01_CHIP_PKG_BARE_SILICON_ID:
-            strcpy(packg_type_id_str, "Bare silicon die");
+            packg_type_id_str = "Bare silicon die";
             break;
 
         case TR01_CHIP_PKG_QFN32_ID:
-            strcpy(packg_type_id_str, "QFN32, 4x4mm");
+            packg_type_id_str = "QFN32, 4x4mm";
             break;
 
         default:
-            strcpy(packg_type_id_str, "N/A");
+            packg_type_id_str = "N/A";
             break;
     }
     if (0 > print_func("Package ID             = 0x%s (%s)\r\n", print_bytes_buff, packg_type_id_str)) {
