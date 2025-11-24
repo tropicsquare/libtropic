@@ -58,11 +58,11 @@ lt_ret_t lt_deinit(lt_handle_t *h);
  * @note The `mode` parameter can be considered valid only when this function returns LT_OK.
  *
  * @param h            Handle for communication with TROPIC01
- * @param[out] status  Current status of TROPIC01
+ * @param[out] mode    Current mode of TROPIC01
  *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
- * of returned value. The `mode` parameter is also **not** valid.
+ * @retval             LT_OK Function executed successfully
+ * @retval             other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value. The `mode` parameter should **not** be considered valid.
  */
 lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode);
 
