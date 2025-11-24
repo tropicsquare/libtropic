@@ -59,6 +59,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
+    LT_LOG_INFO();
     LT_LOG_INFO("2.2. Updating SPECT FW");
     ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT1);
     if (ret != LT_OK) {
@@ -79,6 +80,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
+    LT_LOG_INFO();
     LT_LOG_INFO("3.2. Updating SPECT FW");
     ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT2);
     if (ret != LT_OK) {
@@ -90,7 +92,6 @@ int lt_ex_fw_update(lt_handle_t *h)
 
     LT_LOG_LINE();
     LT_LOG("Successfully updated all 4 FW banks:");
-    LT_LOG_LINE();
 
     ret = lt_print_fw_header(h, TR01_FW_BANK_FW1, printf);
     if (ret != LT_OK) {
@@ -127,6 +128,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
+    LT_LOG_LINE();
     LT_LOG_INFO("Reading RISC-V FW version");
     // This variable is reused on more places in this block to store different FW versions
     uint8_t fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
@@ -138,6 +140,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
+    LT_LOG_INFO();
     LT_LOG_INFO("Reading SPECT FW version");
     ret = lt_get_info_spect_fw_ver(h, fw_ver);
     if (ret != LT_OK) {
@@ -147,7 +150,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
-    LT_LOG_LINE();
+    LT_LOG_INFO();
     LT_LOG_INFO("TROPIC01 is executing FW with the following versions:");
     LT_LOG_INFO("RISC-V FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
                 fw_ver[1], fw_ver[0]);
