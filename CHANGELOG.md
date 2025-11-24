@@ -45,6 +45,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - POSIX USB Dongle HAL: remove `rng_seed` from `struct lt_dev_posix_usb_dongle_t` and use `getentropy()` in `lt_port_random_bytes()`.
 - STM32 F439ZI HAL: Removed the RNG initialization, now it is the user's responsibility.
 - STM32 F439ZI HAL: Changed `rng_handle` type in `lt_dev_stm32_nucleo_f439zi_t` to a pointer (`RNG_HandleTypeDef*`).
+- New return value `LT_REBOOT_UNSUCCESSFUL` returned by `lt_reboot` function, which now checks if TROPIC01 is in correct mode after the reboot.
+- Examples: Refactored and cleaned up `lt_ex_show_chip_id_and_fwver` and `lt_ex_fw_update` logic to use the new version of the `lt_reboot` function.
+- Meaning of `lt_tr01_mode_t` enum values. Now, this enum is supposed to be used with the new `lt_get_tr01_mode` function.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
@@ -65,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `LT_L3_RESULT_UNKNOWN` for unknown L3 result values from TROPIC01.
   - `LT_L3_HARDWARE_FAIL` to reflect the new L3 result value from TROPIC01.
 - HAL port for Arduino framework.
+- `lt_get_tr01_mode` function to get current mode (`lt_tr01_mode_t`) of TROPIC01. This function is a replacement for `lt_update_mode`.
 
 ### Fixed
 - `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
@@ -80,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Libtropic's dependency on ed25519 was removed.
     - Signature verification was removed from the HW wallet example.
     - Users should verify the signatures themselves e.g., using functions provided by their crypto library.
+- `lt_update_mode` function.
 
 ## [2.0.1]
 

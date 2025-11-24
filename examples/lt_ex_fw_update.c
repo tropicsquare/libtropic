@@ -37,83 +37,61 @@ int lt_ex_fw_update(lt_handle_t *h)
         return -1;
     }
 
-    // The chip must be rebooted into MAINTENANCE mode to perform a firmware update.
+    // The chip must be in Start-up Mode to be able to perform a firmware update.
     LT_LOG_LINE();
-    LT_LOG_INFO("Updating TR01_FW_BANK_FW1 and TR01_FW_BANK_SPECT1");
-    LT_LOG_INFO("Rebooting into Maintenance mode");
+    LT_LOG_INFO("1. Sending maintenance reboot request");
     ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK");
 
-    if (h->l2.mode == LT_TR01_MAINTENANCE_MODE) {
-        LT_LOG_INFO("Chip is in maintenance mode, executing bootloader");
-        LT_LOG_INFO("Updating RISC-V FW");
-        ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW1);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("RISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        LT_LOG_INFO("OK");
-
-        LT_LOG_INFO("Updating SPECT FW");
-        ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT1);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("SPECT FW update failed, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        LT_LOG_INFO("OK");
-    }
-    else {
-        LT_LOG_ERROR("Chip couldn't get into MAINTENANCE mode");
-        lt_deinit(h);
-        return -1;
-    }
     LT_LOG_LINE();
-
-    // The chip must be rebooted into MAINTENANCE mode to perform a firmware update.
-    LT_LOG_INFO("Updating TR01_FW_BANK_FW2 and TR01_FW_BANK_SPECT2");
-    LT_LOG_INFO("Rebooting into Maintenance mode");
-    ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
+    LT_LOG_INFO("2. Updating TR01_FW_BANK_FW1 and TR01_FW_BANK_SPECT1");
+    LT_LOG_INFO("2.1. Updating RISC-V FW");
+    ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW1);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        LT_LOG_ERROR("RISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK");
 
-    if (h->l2.mode == LT_TR01_MAINTENANCE_MODE) {
-        LT_LOG_INFO("Chip is in maintenance mode, executing bootloader");
-        LT_LOG_INFO("Updating RISC-V FW");
-        ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW2);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("RISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        LT_LOG_INFO("OK");
-
-        LT_LOG_INFO("Updating SPECT FW");
-        ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT2);
-        if (ret != LT_OK) {
-            LT_LOG_ERROR("SPECT FW update failed, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-        LT_LOG_INFO("OK");
-    }
-    else {
-        LT_LOG_ERROR("Chip couldn't get into MAINTENANCE mode");
+    LT_LOG_INFO();
+    LT_LOG_INFO("2.2. Updating SPECT FW");
+    ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT1);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("SPECT FW update failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK");
 
     LT_LOG_LINE();
-    LT_LOG("Successfully updated all 4 FW banks");
+    LT_LOG_INFO("3. Updating TR01_FW_BANK_FW2 and TR01_FW_BANK_SPECT2");
+    LT_LOG_INFO("3.1. Updating RISC-V FW");
+    ret = lt_do_mutable_fw_update(h, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW2);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("RISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    LT_LOG_INFO("OK");
+
+    LT_LOG_INFO();
+    LT_LOG_INFO("3.2. Updating SPECT FW");
+    ret = lt_do_mutable_fw_update(h, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT2);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("SPECT FW update failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    LT_LOG_INFO("OK");
+
     LT_LOG_LINE();
+    LT_LOG("Successfully updated all 4 FW banks:");
 
     ret = lt_print_fw_header(h, TR01_FW_BANK_FW1, printf);
     if (ret != LT_OK) {
@@ -141,52 +119,44 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Rebooting into Application mode");
+    LT_LOG_INFO("Sending reboot request");
     ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
+    LT_LOG_INFO("OK, TROPIC01 is executing Application FW now");
 
-    if (h->l2.mode == LT_TR01_APP_MODE) {
-        LT_LOG_INFO("Chip is executing firmwares of following versions:");
-        LT_LOG_INFO("Reading RISC-V FW version");
-        // This variable is reused on more places in this block to store different firmware versions
-        uint8_t fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
-
-        ret = lt_get_info_riscv_fw_ver(h, fw_ver);
-        if (ret == LT_OK) {
-            LT_LOG_INFO("Chip is executing RISC-V application FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8
-                        "    (+ .%02" PRIX8 ")",
-                        fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
-        }
-        else {
-            LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-
-        LT_LOG_INFO("Reading SPECT FW version");
-        ret = lt_get_info_spect_fw_ver(h, fw_ver);
-        if (ret == LT_OK) {
-            LT_LOG_INFO("Chip is executing SPECT firmware version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8
-                        "    (+ .%02" PRIX8 ")",
-                        fw_ver[3], fw_ver[2], fw_ver[1], fw_ver[0]);
-        }
-        else {
-            LT_LOG_ERROR("Failed to get SPECT firmware version, ret=%s", lt_ret_verbose(ret));
-            lt_deinit(h);
-            return -1;
-        }
-    }
-    else {
-        LT_LOG_ERROR("Chip couldn't get into APP mode, APP and SPECT firmwares in fw banks are not valid");
+    LT_LOG_LINE();
+    LT_LOG_INFO("Reading RISC-V FW version");
+    // This variable is reused on more places in this block to store different FW versions
+    uint8_t fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
+    ret = lt_get_info_riscv_fw_ver(h, fw_ver);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
-    LT_LOG_LINE();
+    LT_LOG_INFO("OK");
 
+    LT_LOG_INFO("RISC-V FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
+                fw_ver[1], fw_ver[0]);
+
+    LT_LOG_INFO();
+    LT_LOG_INFO("Reading SPECT FW version");
+    ret = lt_get_info_spect_fw_ver(h, fw_ver);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to get SPECT FW version, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(h);
+        return -1;
+    }
+    LT_LOG_INFO("OK");
+
+    LT_LOG_INFO("SPECT FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
+                fw_ver[1], fw_ver[0]);
+
+    LT_LOG_LINE();
     LT_LOG_INFO("Deinitializing handle");
     ret = lt_deinit(h);
     if (LT_OK != ret) {

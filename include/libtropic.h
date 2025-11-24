@@ -54,20 +54,17 @@ lt_ret_t lt_init(lt_handle_t *h);
 lt_ret_t lt_deinit(lt_handle_t *h);
 
 /**
- * @brief Update mode variable in handle.
- * Reads one byte from SPI, checks `TR01_L1_CHIP_MODE_STARTUP_bit` and updates this information in `lt_l2_state_t` (part
- * of the handle).
+ * @brief Gets current mode (Libtropic defined, see lt_tr01_mode_t) of TROPIC01.
+ * @note The `mode` parameter can be considered valid only when this function returns LT_OK.
  *
- * Info from this bit is updated in handle on every L1 transaction anyway.
- * This function can be used to actualize it whenever user wants.
+ * @param h            Handle for communication with TROPIC01
+ * @param[out] mode    Current mode of TROPIC01
  *
- * @param h           Handle for communication with TROPIC01
- *
- * @retval            LT_OK Function executed successfully
- * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
- * of returned value
+ * @retval             LT_OK Function executed successfully
+ * @retval             other Function did not execute successully, you might use lt_ret_verbose() to get verbose
+ * encoding of returned value. The `mode` parameter should **not** be considered valid.
  */
-lt_ret_t lt_update_mode(lt_handle_t *h);
+lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode);
 
 /**
  * @brief Read out PKI chain from TROPIC01's Certificate Store

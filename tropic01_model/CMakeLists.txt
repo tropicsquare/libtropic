@@ -296,6 +296,8 @@ if(LT_BUILD_TESTS)
     list(REMOVE_ITEM LIBTROPIC_TEST_LIST
         lt_test_rev_startup_req
         lt_test_rev_get_info_req_bootloader
+        lt_test_rev_resend_req  # This test is not run only because the model returns CHIP_STATUS.START=0 when in Maintenance Mode.
+        lt_test_rev_get_log_req # This test is not run only because the model returns CHIP_STATUS.START=0 when in Maintenance Mode.
     )
 
     # Loop through tests defined in libtropic and prepare environment.

@@ -93,53 +93,49 @@ lt_ret_t lt_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_update_mode(lt_handle_t *h)
+lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode)
 {
-    if (!h) {
+    if (!h || !mode) {
         return LT_PARAM_ERR;
     }
 
     lt_ret_t ret;
 
-    // The byte used here must not be ID byte of some request, otherwise chip would be confused
-    // and would return CRC error.
-    // GET_RESP 0xAA works fine.
-    h->l2.buff[0] = TR01_L1_GET_RESPONSE_REQ_ID;
+    // Send Get_Response L2 Request to get CHIP_STATUS.
+    // If CHIP_STATUS.READY=0, implement waiting similarly as in lt_l1_read().
+    int max_tries = LT_L1_READ_MAX_TRIES;
+    do {
+        h->l2.buff[0] = TR01_L1_GET_RESPONSE_REQ_ID;
 
-    // Transfer just one byte to read CHIP_STATUS byte
-    ret = lt_l1_spi_csn_low(&h->l2);
-    if (ret != LT_OK) {
-        return ret;
-    }
+        ret = lt_l1_write(&h->l2, 1, LT_L1_TIMEOUT_MS_DEFAULT);
+        if (ret != LT_OK) {
+            return ret;
+        }
 
-    ret = lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT);
-    if (ret != LT_OK) {
-        lt_ret_t ret_unused = lt_l1_spi_csn_high(&h->l2);
-        LT_UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
-        return ret;
-    }
+        if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
+            *mode = LT_TR01_ALARM;
+            return LT_OK;
+        }
 
-    ret = lt_l1_spi_csn_high(&h->l2);
-    if (ret != LT_OK) {
-        return ret;
-    }
+        if (h->l2.buff[0] & TR01_L1_CHIP_MODE_READY_bit) {
+            if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
+                *mode = LT_TR01_MAINTENANCE;
+                return LT_OK;
+            }
+            *mode = LT_TR01_APPLICATION;
+            return LT_OK;
+        }
 
-    // Check ALARM bit of CHIP_STATUS byte. If there is ALARM, return with error and do not update mode.
-    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
-        LT_LOG_DEBUG("CHIP_STATUS: 0x%02" PRIX8, h->l2.buff[0]);
-        return LT_L1_CHIP_ALARM_MODE;
-    }
+        // Chip is not ready, let's wait and try again in a while.
+        ret = lt_l1_delay(&h->l2, LT_L1_READ_RETRY_DELAY);
+        if (ret != LT_OK) {
+            return ret;
+        }
 
-    // Buffer in handle now contains CHIP_STATUS byte,
-    // Save info about chip mode into 'mode' variable in handle
-    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = LT_TR01_MAINTENANCE_MODE;
-    }
-    else {
-        h->l2.mode = LT_TR01_APP_MODE;
-    }
+        max_tries--;
+    } while (max_tries > 0);
 
-    return LT_OK;
+    return LT_L1_CHIP_BUSY;
 }
 
 lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
@@ -533,10 +529,21 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
-    // Update mode variable in handle after reboot
-    ret = lt_update_mode(h);
+    // Get current TROPIC01 mode to check whether TROPIC01 was rebooted into the correct mode.
+    lt_tr01_mode_t tr01_mode;
+    ret = lt_get_tr01_mode(h, &tr01_mode);
     if (ret != LT_OK) {
         return ret;
+    }
+
+    if (tr01_mode == LT_TR01_ALARM) {
+        return LT_L1_CHIP_ALARM_MODE;
+    }
+
+    // Validate the current TROPIC01 mode based on the given `startup_id`.
+    if ((startup_id == TR01_REBOOT && tr01_mode != LT_TR01_APPLICATION)
+        || (startup_id == TR01_MAINTENANCE_REBOOT && tr01_mode != LT_TR01_MAINTENANCE)) {
+        return LT_REBOOT_UNSUCCESSFUL;
     }
 
     return LT_OK;
