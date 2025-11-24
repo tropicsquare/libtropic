@@ -60,6 +60,9 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
+    LT_LOG_INFO("RISC-V FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
+                fw_ver[1], fw_ver[0]);
+
     LT_LOG_INFO();
     LT_LOG_INFO("Reading SPECT FW version");
     ret = lt_get_info_spect_fw_ver(h, fw_ver);
@@ -70,10 +73,6 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
-    LT_LOG_INFO();
-    LT_LOG_INFO("TROPIC01 is executing FW with the following versions:");
-    LT_LOG_INFO("RISC-V FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
-                fw_ver[1], fw_ver[0]);
     LT_LOG_INFO("SPECT FW version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3], fw_ver[2],
                 fw_ver[1], fw_ver[0]);
 
@@ -98,7 +97,6 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     }
     LT_LOG_INFO("OK");
 
-    LT_LOG_INFO();
     LT_LOG_INFO("RISC-V bootloader version: %02" PRIX8 ".%02" PRIX8 ".%02" PRIX8 " (+ .%02" PRIX8 ")", fw_ver[3] & 0x7f,
                 fw_ver[2], fw_ver[1], fw_ver[0]);
 
