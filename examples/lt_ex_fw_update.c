@@ -39,7 +39,7 @@ int lt_ex_fw_update(lt_handle_t *h)
 
     // The chip must be in Start-up Mode to be able to perform a firmware update.
     LT_LOG_LINE();
-    LT_LOG_INFO("1. Doing a Maintenance restart upon which TROPIC01's FW can be updated");
+    LT_LOG_INFO("1. Sending maintenance reboot request");
     ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
@@ -119,14 +119,14 @@ int lt_ex_fw_update(lt_handle_t *h)
     }
     LT_LOG_LINE();
 
-    LT_LOG_INFO("Doing a normal restart upon which TROPIC01 will begin to execute Application FW");
+    LT_LOG_INFO("Sending reboot request");
     ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
-    LT_LOG_INFO("OK");
+    LT_LOG_INFO("OK, TROPIC01 is executing Application FW now");
 
     LT_LOG_LINE();
     LT_LOG_INFO("Reading RISC-V FW version");

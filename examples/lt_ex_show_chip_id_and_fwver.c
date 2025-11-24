@@ -41,7 +41,7 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     // First, we check versions of both updateable firmwares. To do that, we need TROPIC01 to **not** be in the Start-up
     // Mode. If there are valid firmwares, TROPIC01 will begin to execute them automatically on boot.
     LT_LOG_LINE();
-    LT_LOG_INFO("Doing a normal restart upon which TROPIC01 will begin to execute Application FW");
+    LT_LOG_INFO("Sending reboot request");
     ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
@@ -77,7 +77,8 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
                 fw_ver[1], fw_ver[0]);
 
     LT_LOG_LINE();
-    LT_LOG_INFO("Doing a Maintenance restart to check bootloader version and FW bank headers");
+    LT_LOG_INFO(
+        "Sending maintenance reboot request to check bootloader version and FW bank headers in the Startup Mode");
     ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
@@ -146,14 +147,14 @@ int lt_ex_show_chip_id_and_fwver(lt_handle_t *h)
     }
 
     LT_LOG_LINE();
-    LT_LOG_INFO("Doing a normal restart upon which TROPIC01 will begin to execute Application FW");
+    LT_LOG_INFO("Sending reboot request");
     ret = lt_reboot(h, TR01_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR("lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);
         return -1;
     }
-    LT_LOG_INFO("OK");
+    LT_LOG_INFO("OK, TROPIC01 is executing Application FW now");
 
     LT_LOG_LINE();
     LT_LOG_INFO("Deinitializing handle");
