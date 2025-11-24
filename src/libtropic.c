@@ -131,6 +131,8 @@ lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode)
         if (ret != LT_OK) {
             return ret;
         }
+
+        max_tries--;
     } while (max_tries > 0);
 
     return LT_L1_CHIP_BUSY;
