@@ -44,8 +44,8 @@ TROPIC01_fw_update_files/
 #### Compiling into Libtropic
 To select which FW version will be compiled together with Libtropic, the user has to set the following CMake variables (both have a default value):
 
-1. `LT_SILICON_REV`: Defines the TROPIC01 silicon revision (e.g. `"ACAB"`), based on which the correct bootloader version is selected. Refer to the [Available Parts](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#available-parts) section (in the [TROPIC01 GitHub repository](https://github.com/tropicsquare/tropic01)) to find out the silicon revision of your TROPIC01 chip.
-2. `LT_CPU_FW_VERSION`: Defines the TROPIC01 FW version (e.g. `"1_0_1"`), based on which the correct FW update files for both RISC-V CPU and SPECT are selected.
+- [LT_SILICON_REV](integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
+- [LT_CPU_FW_UPDATE_DATA_VER](integrating_libtropic/how_to_configure/index.md#lt_riscv_fw_ver_to_update).
 
 ## Firmware Hashes
 TROPIC01 is able to report hashes of the firmware it is loaded with. Using Libtropic, you can get the value using `lt_get_info_fw_bank` function.

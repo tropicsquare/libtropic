@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New return value `LT_REBOOT_UNSUCCESSFUL` returned by `lt_reboot` function, which now checks if TROPIC01 is in correct mode after the reboot.
 - Examples: Refactored and cleaned up `lt_ex_show_chip_id_and_fwver` and `lt_ex_fw_update` logic to use the new version of the `lt_reboot` function.
 - Meaning of `lt_tr01_mode_t` enum values. Now, this enum is supposed to be used with the new `lt_get_tr01_mode` function.
+- CMake: Renamed `LT_CPU_FW_VERSION` to `LT_CPU_FW_UPDATE_DATA_VER` to make it more clear that it is used for the FW version to update to.
 
 ### Added
 - Possibility to measure test coverage with the TROPIC01 model.
