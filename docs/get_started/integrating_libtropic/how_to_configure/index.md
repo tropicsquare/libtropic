@@ -1,5 +1,5 @@
 # How to Configure
-Libtropic can be configured using with the [Available CMake Options](#available-cmake-options) (let's say `LT_CFG_OPT`) in the following ways:
+Libtropic can be configured using the [Available CMake Options](#available-cmake-options) (let's say `LT_CFG_OPT`) in the following ways:
 
 1. Via a command line when building the project:
 ```cmake
