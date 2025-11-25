@@ -691,7 +691,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
 
 lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size)
 {
-    if (!h || !update_data || update_data_size < (TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1U)
+    if (!h || !update_data || update_data_size <= (TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1U)
         || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX) {
         return LT_PARAM_ERR;
     }
