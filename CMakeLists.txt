@@ -54,22 +54,22 @@ endif()
 set(LT_SILICON_REV "ACAB" CACHE STRING "Set TROPIC01 silicon revision")
 set_property(CACHE LT_SILICON_REV PROPERTY STRINGS "ABAB" "ACAB")
 
-# Used for compiling the correct FW update files
+# Choose version of RISC-V FW to update to.
 # Available versions can be seen in the compatibility table in the main README.md.
-# Always use bundled versions from "TROPIC01_fw_update_files" folder!
-set(LT_CPU_FW_VERSION "2_0_0" CACHE STRING "Set TROPIC01 FW version")
-set_property(CACHE LT_CPU_FW_VERSION PROPERTY STRINGS "1_0_0" "1_0_1" "2_0_0")
+# Default value is always the latest version available in the current Libtropic release.
+set(LT_CPU_FW_UPDATE_DATA_VER "2_0_0" CACHE STRING "Set TROPIC01 FW version to update to")
+set_property(CACHE LT_CPU_FW_UPDATE_DATA_VER PROPERTY STRINGS "1_0_0" "1_0_1" "2_0_0")
 # Validate specified version
-get_property(lt_cpu_fw_version_choices CACHE LT_CPU_FW_VERSION PROPERTY STRINGS)
+get_property(lt_cpu_fw_ver_choices CACHE LT_CPU_FW_UPDATE_DATA_VER PROPERTY STRINGS)
 set(cpu_fw_valid FALSE)
-foreach(cpu_fw_choice IN LISTS lt_cpu_fw_version_choices)
-    if(LT_CPU_FW_VERSION STREQUAL ${cpu_fw_choice})
+foreach(cpu_fw_choice IN LISTS lt_cpu_fw_ver_choices)
+    if(LT_CPU_FW_UPDATE_DATA_VER STREQUAL ${cpu_fw_choice})
         set(cpu_fw_valid TRUE)
         break()
     endif()
 endforeach()
 if (NOT cpu_fw_valid)
-    message(FATAL_ERROR "Invalid TROPIC01 FW version: '${LT_CPU_FW_VERSION}'\nAvailable FW versions: ${lt_cpu_fw_version_choices}")
+    message(FATAL_ERROR "Invalid TROPIC01 FW version: '${LT_CPU_FW_UPDATE_DATA_VER}'\nAvailable FW versions: ${lt_cpu_fw_ver_choices}")
 endif()
 
 # Logging options
@@ -206,12 +206,12 @@ else()
 endif()
 
 set(SDK_INCS ${SDK_INCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_CPU.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/fw_SPECT.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_UPDATE_DATA_VER}/fw_CPU.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_UPDATE_DATA_VER}/fw_SPECT.h
 )
 
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
-    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_VERSION}/
+    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_UPDATE_DATA_VER}/
 )
 
 

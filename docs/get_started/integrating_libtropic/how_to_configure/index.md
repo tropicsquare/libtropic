@@ -76,16 +76,22 @@ Log SPI communication using `printf`. Handy to debug low level communication.
 - string
 - default value: latest silicon revision available in the current Libtropic release
 
+Silicon version (e.g. `"ACAB"`) of the currently used TROPIC01 has to be set in this option. It is needed for TROPIC01's firmware update and functional tests, as some behavior differs between the TROPIC01 revisions.
 Needed for TROPIC01's firmware update and functional tests, as some behavior differs between the TROPIC01 revisions.
+
+!!! warning
+    Because the implementation of Libtropic's FW update functions is chosen at compile-time based on `LT_SILICON_REV`, in one compiled instance of Libtropic, FW update can be done only with TROPIC01 of this silicon revision.
+    !!! example
+        I passed `-DLT_SILICON_REV=ACAB` to `cmake` during the build. I will be able to do FW updates with TROPIC01 chips that have silicon revision ACAB **only**. Updating a TROPIC01 chip with e.g. ABAB silicon revision will **not** work.
 
 !!! tip "See Available Values When Using CMake CLI"
     Pass `-DLT_SILICON_REV=` to `cmake`, which will invoke an error, but will print the available values.
 
-### `LT_CPU_FW_VERSION`
+### `LT_CPU_FW_UPDATE_DATA_VER`
 - string
 - default value: latest FW version available in the current Libtropic release
 
-Used for compiling the correct FW update files. Available versions can be seen in the compatibility table in the repository's main `README.md`.
+Defines the TROPIC01's RISC-V CPU FW version (e.g. `"1_0_1"`) to update to. It is used for compiling the correct FW update files for both the RISC-V CPU and SPECT. Available versions can be seen in the [compatibility table](https://github.com/tropicsquare/libtropic?tab=readme-ov-file#compatibility-with-tropic01-firmware-versions) in the repository's main `README.md`.
 
 !!! tip "See Available Values When Using CMake CLI"
     Pass `-DLT_CPU_FW_VERSION=` to `cmake`, which will invoke an error, but will print the available values.
