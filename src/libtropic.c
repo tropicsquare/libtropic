@@ -1643,7 +1643,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *
     return LT_OK;
 }
 
-lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *out_buf, const uint16_t out_buf_size)
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const size_t bytes_cnt, char *out_buf, const size_t out_buf_size)
 {
     if (!bytes || !out_buf || out_buf_size < (bytes_cnt * 2 + 1)) {
         // Write empty string if buffer too small
@@ -1653,12 +1653,12 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *ou
         return LT_FAIL;
     }
 
-    for (uint16_t i = 0; i < bytes_cnt; i++) {
-        int remaining = out_buf_size - (i * 2);
+    for (size_t i = 0; i < bytes_cnt; i++) {
+        size_t remaining = out_buf_size - (i * 2);
         int written = snprintf(&out_buf[i * 2], remaining, "%02" PRIX8, bytes[i]);
         // Verify snprintf succeeded and didn't truncate
         // (should never happen given precondition check, but defensive)
-        if (written < 0 || written >= remaining) {
+        if (written < 0 || (size_t)written >= remaining) {
             return LT_FAIL;
         }
     }

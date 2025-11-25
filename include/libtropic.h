@@ -731,7 +731,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get verbose encoding
  * of returned value
  */
-lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *out_buf, const uint16_t out_buf_size);
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const size_t bytes_cnt, char *out_buf, const size_t out_buf_size);
 
 /**
  * @brief Interprets fields of CHIP_ID and prints them using the passed printf-like function.
