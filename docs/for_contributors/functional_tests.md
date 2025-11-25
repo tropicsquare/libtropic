@@ -6,7 +6,7 @@ The functional tests are organized into two categories, as some of them may caus
 - **Reversible** (`lt_test_rev_*.c`): only reversible operations are executed on the TROPIC01 chip.
 - **Irreversible** (`lt_test_ire_*.c`): irreversible operations are executed - the state or contents of the TROPIC01 chip **cannot** be reverted.
 !!! info "Compiling Functional Tests"
-    Functional tests are not compiled by default. They can be compiled using the [LT_BUILD_TESTS](../get_started/integrating_libtropic/how_to_configure/index.md#lt_build_tests) CMake option. See [How to Configure](../get_started/integrating_libtropic/how_to_configure/index.md) section for ways how to enable this option.
+    Functional tests are not compiled by default. They can be compiled using the [LT_BUILD_TESTS](../get_started/integrating_libtropic/how_to_configure/index.md#lt_build_tests) CMake option. See [How to Configure](../get_started/integrating_libtropic/how_to_configure/index.md) section for ways to enable this option.
 
 !!! failure "Cannot Establish a Secure Channel Session"
     Refer to the dedicated section in the [FAQ](../faq.md#i-cannot-establish-a-secure-session).
