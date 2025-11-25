@@ -12,7 +12,7 @@ Some examples may cause irreversible changes to the chip, so they are organized 
     Irreversible changes include writing to I-config, writing or invalidating pairing keys, or performing a firmware update.
 
 ## Building
-Examples can be compiled using the [LT_BUILD_EXAMPLES](../integrating_libtropic/how_to_configure/index.md#lt_build_examples) CMake option. See [How to Configure](../integrating_libtropic/how_to_configure/index.md) section for ways how to enable this option.
+Examples can be compiled using the [LT_BUILD_EXAMPLES](../integrating_libtropic/how_to_configure/index.md#lt_build_examples) CMake option. See [How to Configure](../integrating_libtropic/how_to_configure/index.md) section for ways to enable this option.
 
 We recommend trying the examples in one of our [platform repositories](../integrating_libtropic/integration_examples.md) using a real TROPIC01 chip on one of our supported platforms, or on a [TROPIC01 model](../../other/tropic01_model/index.md) directly on your computer. Both the platform repositories and the model contain detailed guides on compiling examples.
 
