@@ -4,6 +4,10 @@ This list might help you resolve some issues.
 
 - [I received an error](#i-received-an-error)
 - [I cannot establish a Secure Session](#i-cannot-establish-a-secure-session)
+- [FW update failed](#fw-update-failed)
+- [What is the part number (P/N) of my TROPIC01?](#what-is-the-part-number-pn-of-my-tropic01)
+- [What is the silicon revision of my TROPIC01?](#what-is-the-silicon-revision-of-my-tropic01)
+- [What FW versions is my TROPIC01 running?](#what-fw-versions-is-my-tropic01-running)
 
 ## I received an error
 Description of all return values is in the `libtropic_common.h` (`lt_ret_t` enum). However, some errors may have a seemingly unrelated cause; see the following paragraphs.
@@ -37,3 +41,27 @@ There are two main causes:
 
 2. Your TROPIC01 is in Maintenance Mode.
    Reboot to Application Mode by calling `lt_reboot` with `TR01_REBOOT`, or during evaluation use the [lt_ex_show_chip_id_and_fwver.c](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc) example, which reboots to Application Mode at the end.
+
+## FW update failed
+If our [lt_ex_fw_update](get_started/examples/irreversible_examples.md#lt_ex_fw_updatec) example program failed:
+
+1. Try the suggestions in [I received an error](#i-received-an-error).
+2. Make sure you have correct values set in the following CMake options:
+    - [LT_SILICON_REV](get_started/integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
+    - [LT_CPU_FW_UPDATE_DATA_VER](get_started/integrating_libtropic/how_to_configure/index.md#lt_cpu_fw_update_data_ver).
+3. Make sure you are not trying to do a downgrade - TROPIC01 does not allow this.
+
+## What is the part number (P/N) of my TROPIC01?
+You have two options:
+
+1. Read it from the packaging you received your TROPIC01 product in.
+2. Run our example program [lt_ex_show_chip_id_and_fwver](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](get_started/integrating_libtropic/integration_examples.md).
+
+## What is the silicon revision of my TROPIC01?
+You have two options:
+
+1. Read the product number (P/N) from the packaging you received your TROPIC01 product in. After that, refer to the [Available Parts](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#available-parts) section (in the [TROPIC01 GitHub repository](https://github.com/tropicsquare/tropic01)) and read the linked Catalog list, which will help you decode the silicon revision based on your P/N.
+2. Run our example program [lt_ex_show_chip_id_and_fwver](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](get_started/integrating_libtropic/integration_examples.md).
+
+## What FW versions is my TROPIC01 running?
+Run our example program [lt_ex_show_chip_id_and_fwver](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](get_started/integrating_libtropic/integration_examples.md).

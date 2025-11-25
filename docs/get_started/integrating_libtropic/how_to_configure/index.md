@@ -1,13 +1,15 @@
 # How to Configure
-Libtropic can be configured using CMake in the following ways:
+Libtropic can be configured using with the [Available CMake Options](#available-cmake-options) (let's say `LT_CFG_OPT`) in the following ways:
 
 1. Via a command line when building the project:
 ```cmake
-cmake -D<config_option_name>=value ..
+cmake -DLT_CFG_OPT=value ..
 ```
-Where `<config_option_name>` can be substituted with one of the [Available CMake Options](#available-cmake-options). Multiple options can be passed to `cmake`.
-
-2. CMake GUI. This makes the configuring process more user-friendly. For more information, refer to the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) documentation.
+2. Using the CMake GUI. This makes the configuring process more user-friendly compared to the previous way. For more information, refer to the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) documentation.
+3. In your project's `CMakeLists.txt`:
+```cmake
+set(LT_CFG_OPT value)
+```
 
 ## Available CMake Options
 
@@ -77,7 +79,9 @@ Log SPI communication using `printf`. Handy to debug low level communication.
 - default value: latest silicon revision available in the current Libtropic release
 
 Silicon version (e.g. `"ACAB"`) of the currently used TROPIC01 has to be set in this option. It is needed for TROPIC01's firmware update and functional tests, as some behavior differs between the TROPIC01 revisions.
-Needed for TROPIC01's firmware update and functional tests, as some behavior differs between the TROPIC01 revisions.
+
+!!! question "What Is the Silicon Revision of My TROPIC01?"
+    Refer to the dedicated section in the [FAQ](../../../faq.md#what-is-the-silicon-revision-of-my-tropic01).
 
 !!! warning
     Because the implementation of Libtropic's FW update functions is chosen at compile-time based on `LT_SILICON_REV`, in one compiled instance of Libtropic, FW update can be done only with TROPIC01 of this silicon revision.

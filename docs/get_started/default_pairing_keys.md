@@ -15,18 +15,15 @@ Libtropic provides both of these default $S_{H0PUB}$ and $S_{H0PRIV}$ keys by in
 ### Establishing Your First Secure Channel Session
 To establish a Secure Channel Session with your new TROPIC01, do the following:
 
-1. Find out which P/N your TROPIC01 has:
-    1. read it from the packaging you received your TROPIC01 product in, or
-    2. run our example program [lt_ex_show_chip_id_and_fwver](examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](integrating_libtropic/integration_examples.md).
-
+1. Get P/N of your TROPIC01 — refer to [FAQ](../faq.md#what-is-the-part-number-pn-of-my-tropic01).
 2. Establish the Secure Channel Session:
 
     There are two options, depending on what you want to do — choose one:
 
     1. You want to run our **examples** or **tests** that establish a Secure Channel Session:
-        1. Your P/N is `TROPIC01-ES` -> add `-DLT_SH0_KEYS="eng_sample"` to other switches when building with `cmake`.
-        1. Your P/N is **not** `TROPIC01-ES` -> nothing has to be done, the production keys are used by default.
-    1. You are writing **your own** application -> select the correct key pair arrays according to [Default Pairing Keys in Libtropic](#default-pairing-keys-in-libtropic) and simply pass them to either:
+        1. Your P/N is `TROPIC01-ES` -> Set [LT_SH0_KEYS](integrating_libtropic/how_to_configure/index.md#lt_sh0_keys) CMake option to `"eng_sample"` (refer to [How to Configure](integrating_libtropic/how_to_configure/index.md) section for ways how to set it).
+        2. Your P/N is **not** `TROPIC01-ES` -> nothing has to be done, the production keys are used by default.
+    2. You are writing **your own** application -> select the correct key pair arrays according to [Default Pairing Keys in Libtropic](#default-pairing-keys-in-libtropic) and simply pass them to either:
         1. `lt_verify_chip_and_start_secure_session` helper function, or
         2. `lt_session_start` core API function.
         

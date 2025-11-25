@@ -45,14 +45,14 @@ TROPIC01_fw_update_files/
 To select which FW version will be compiled together with Libtropic, the user has to set the following CMake variables (both have a default value):
 
 - [LT_SILICON_REV](integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
-- [LT_CPU_FW_UPDATE_DATA_VER](integrating_libtropic/how_to_configure/index.md#lt_riscv_fw_ver_to_update).
+- [LT_CPU_FW_UPDATE_DATA_VER](integrating_libtropic/how_to_configure/index.md#lt_cpu_fw_update_data_ver).
 
 ## Firmware Hashes
 TROPIC01 is able to report hashes of the firmware it is loaded with. Using Libtropic, you can get the value using `lt_get_info_fw_bank` function.
 
 However, for certain old firmware versions, the reported hashes will not match with the hashes found in the public firmware repositories. The reason is that before publication, we cleaned up the git histories. Although the code was not changed, git hashes were affected. Affected version are:
 
-- CPU FW: versions older than and including v1.0.1.
+- RISC-V CPU FW: versions older than and including v1.0.1.
 - SPECT FW: versions older than and including v1.0.0.
 
 If you want to verify that production binaries match the source code, you can compile the source code and then compare the resulting binary to production binaries provided in the Libtropic repository.

@@ -12,15 +12,12 @@ Some examples may cause irreversible changes to the chip, so they are organized 
     Irreversible changes include writing to I-config, writing or invalidating pairing keys, or performing a firmware update.
 
 ## Building
-Examples can be compiled using the `LT_BUILD_EXAMPLES` flag. You can enable the flag in two ways:
-
-- During compilation by passing `-DLT_BUILD_EXAMPLES=1` to `cmake`, or
-- in your project's `CMakeLists.txt`: `set(LT_BUILD_EXAMPLES ON)`.
+Examples can be compiled using the [LT_BUILD_EXAMPLES](../integrating_libtropic/how_to_configure/index.md#lt_build_examples) CMake option. See [How to Configure](../integrating_libtropic/how_to_configure/index.md) section for ways how to enable this option.
 
 We recommend trying the examples in one of our [platform repositories](../integrating_libtropic/integration_examples.md) using a real TROPIC01 chip on one of our supported platforms, or on a [TROPIC01 model](../../other/tropic01_model/index.md) directly on your computer. Both the platform repositories and the model contain detailed guides on compiling examples.
 
 !!! failure "Cannot Establish a Secure Channel Session"
-    You may encounter issues with examples that establish a Secure Session - refer to [Establishing Your First Secure Channel Session](../default_pairing_keys.md#establishing-your-first-secure-channel-session) section for more information.
+    Refer to the dedicated section in the [FAQ](../../faq.md#i-cannot-establish-a-secure-session).
 
 ??? tip "Advanced Tip: Running an Example With Your Own Pairing Key"
     If you have already written your own public key to one of the available slots and want to execute an example that uses a Secure Session, define the arrays for your private and public key as globals and, after `#include "libtropic_examples.h"`, do the following:

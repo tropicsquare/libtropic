@@ -3,21 +3,13 @@ Libtropic contains a logging functionality, which is disabled by default (unless
 
 You may find it useful to enable logging during libtropic evaluation or integration. There are five logging levels:
 
-- none (default unless compiling *tests* or *examples*),
-- error,
-- warning,
-- info,
-- debug.
+- None (default unless compiling *tests* or *examples*),
+- Error,
+- Warning,
+- Info,
+- Debug.
 
-One of these logging levels can be switched on using the CMake switch `-DLT_LOG_LVL`, which is passed to `cmake` when building the project. The following table summarizes all logging levels and a switch corresponding to each level:
-
-| Level   | CMake switch           |
-|---------|------------------------|
-| none    | `-DLT_LOG_LVL=None`    |
-| error   | `-DLT_LOG_LVL=Error`   |
-| warning | `-DLT_LOG_LVL=Warning` |
-| info    | `-DLT_LOG_LVL=Info`    |
-| debug   | `-DLT_LOG_LVL=Debug`   |
+One of these logging levels can be switched on using the [LT_LOG_LVL](integrating_libtropic/how_to_configure/index.md#lt_log_lvl) CMake option (refer to [How to Configure](integrating_libtropic/how_to_configure/index.md) section for ways how to set it).
 
 ## How to Log
 Logging can be done using *logging macros*, which are defined in `include/libtropic_logging.h`. Following logging macros are available:
