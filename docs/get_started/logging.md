@@ -9,7 +9,7 @@ You may find it useful to enable logging during libtropic evaluation or integrat
 - Info,
 - Debug.
 
-One of these logging levels can be switched on using the [LT_LOG_LVL](integrating_libtropic/how_to_configure/index.md#lt_log_lvl) CMake option (refer to [How to Configure](integrating_libtropic/how_to_configure/index.md) section for ways how to set it).
+One of these logging levels can be switched on using the [LT_LOG_LVL](integrating_libtropic/how_to_configure/index.md#lt_log_lvl) CMake option (refer to [How to Configure](integrating_libtropic/how_to_configure/index.md) section for ways to set it).
 
 ## How to Log
 Logging can be done using *logging macros*, which are defined in `include/libtropic_logging.h`. Following logging macros are available:
