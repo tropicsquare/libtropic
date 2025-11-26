@@ -57,7 +57,7 @@ Platform repositories, showing example usage of libtropic on known platforms:
 * [libtropic-util](https://github.com/tropicsquare/libtropic-util)
 
 ## FAQ
-We provide the [FAQ](https://tropicsquare.github.io/libtropic/latest/faq/) section in our documentation with frequently asked questions.
+We provide the [FAQ](https://tropicsquare.github.io/libtropic/latest/faq/) section in our documentation with frequently asked questions and troubleshooting tips.
 
 ## License
 
