@@ -49,7 +49,7 @@ If our [lt_ex_fw_update](get_started/examples/irreversible_examples.md#lt_ex_fw_
 2. Make sure you have correct values set in the following CMake options:
     - [LT_SILICON_REV](get_started/integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
     - [LT_CPU_FW_UPDATE_DATA_VER](get_started/integrating_libtropic/how_to_configure/index.md#lt_cpu_fw_update_data_ver).
-3. Make sure you are not attempting a firmware downgrade - TROPIC01 does not allow this.
+3. Make sure you are not attempting a firmware downgrade — TROPIC01 does not allow this.
 
 ## What is the part number (P/N) of my TROPIC01?
 You have two options:
