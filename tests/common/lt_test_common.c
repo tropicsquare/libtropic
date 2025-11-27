@@ -17,6 +17,8 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 
+#include "lt_test_common.h"
+
 lt_ret_t (*lt_test_cleanup_function)(void) = NULL;
 
 void lt_assert_fail_handler(void)

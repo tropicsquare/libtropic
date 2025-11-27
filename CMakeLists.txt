@@ -331,7 +331,7 @@ configure_file(
 if(LT_BUILD_TESTS)
     set(SDK_SRCS ${SDK_SRCS}
         # Special file with stuff common for testing.
-        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_common.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/common/lt_test_common.c
 
         # Files which include test functions definitions.
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_ecdsa_sign.c
@@ -359,6 +359,7 @@ if(LT_BUILD_TESTS)
     )
     set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/common/
     )
 endif()
 
