@@ -21,7 +21,7 @@ include(FetchContent)
 ###########################################################################
 
 # Add path to libtropic's repository root folder
-set(LT_LOG_LVL "Debug" CACHE BOOL "Set log level to DEBUG." FORCE)
+set(LT_LOG_LVL "Info" CACHE BOOL "Set log level to INFO." FORCE)
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
