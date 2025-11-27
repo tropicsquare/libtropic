@@ -41,24 +41,8 @@ int lt_test_mock_attrs(lt_handle_t *h)
                     riscv_fw_ver_resp[i][0]);
 
         lt_mock_hal_reset(&h->l2);
-
-        // Mock response data for chip mode check.
-        uint8_t chip_ready = TR01_L1_CHIP_MODE_READY_bit;
-        lt_mock_hal_enqueue_response(&h->l2, &chip_ready, sizeof(chip_ready));
-
-        // Mock response data for Get_Info, for both L2 Request.
-        lt_mock_hal_enqueue_response(&h->l2, &chip_ready, sizeof(chip_ready));
-
-        struct lt_l2_get_info_rsp_t get_info_resp = {
-            .chip_status = TR01_L1_CHIP_MODE_READY_bit,
-            .status = TR01_L2_STATUS_REQUEST_OK,
-            .rsp_len = TR01_L2_GET_INFO_RISCV_FW_SIZE,
-            .object = {0}
-        };
-        memcpy(get_info_resp.object, riscv_fw_ver_resp[i], TR01_L2_GET_INFO_RISCV_FW_SIZE);
-        add_resp_crc(&get_info_resp);
-        // Mock response data for Get_Info, for both L2 Response.
-        lt_mock_hal_enqueue_response(&h->l2, (uint8_t *)&get_info_resp, calc_mocked_resp_len(&get_info_resp));
+        LT_LOG_INFO("Mocking initialization...");
+        LT_ASSERT(LT_OK, mock_init_communication(h, riscv_fw_ver_resp[i]));
 
         LT_LOG_INFO("Initializing handle");
         LT_ASSERT(LT_OK, lt_init(h));
