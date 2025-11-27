@@ -23,7 +23,7 @@ Libtropic provides not only implementation of the FW update L2 commands, but als
 The `TROPIC01_fw_update_files/` directory provides TROPIC01 FW update files in two formats:
 
 1. *C header files (`*.h`)*. These are designed to be included and compiled directly into the Host MCU's firmware/application. See [Compiling into Libtropic](#compiling-into-libtropic) section for more information.
-2. *Binary files (`*.bin`)*. These can be stored in the Host MCU, loaded at runtime and used to update TROPIC01's FW.
+2. *Binary files (`*.bin`)*. These can be stored in the Host MCU's filesystem or external storage, loaded at runtime and used to update TROPIC01's FW.
 
 The general structure of the `TROPIC01_fw_update_files/` directory is the following:
 ```text
