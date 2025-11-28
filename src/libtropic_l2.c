@@ -9,8 +9,10 @@
 #include "libtropic_l2.h"
 
 #include <string.h>
+#include <inttypes.h>
 
 #include "libtropic_common.h"
+#include "libtropic_logging.h"
 #include "lt_crc16.h"
 #include "lt_l1.h"
 #include "lt_l2_api_structs.h"
@@ -94,11 +96,9 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2)
     return ret;
 }
 
-lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len)
+lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t buff_len)
 {
-    if (!s2
-        // Max len must be definitively smaller than size of l3 buffer
-        || max_len > TR01_L3_PACKET_MAX_SIZE || !buff) {
+    if (!s2 || !buff) {
         return LT_PARAM_ERR;
     }
 
@@ -109,9 +109,17 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
     // there must be a space for 2B of size value, ?B of command (ID + data) and 16B of TAG.
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)buff;
     uint16_t packet_size = (TR01_L3_SIZE_SIZE + p_frame->cmd_size + TR01_L3_TAG_SIZE);
-    // Prevent sending more data then is the size of compiled l3 buffer
-    if (packet_size > max_len) {
+
+    // Prevent sending more data then is the max size of L3 packet.
+    if (packet_size > TR01_L3_PACKET_MAX_SIZE) {
+        LT_LOG_ERROR("Packet size %" PRIu16 "exceeds maximum L3 packet size %u", packet_size,
+                     TR01_L3_PACKET_MAX_SIZE);
         return LT_L3_DATA_LEN_ERROR;
+    }
+    // Prevent sending more data then is the size of passed buffer.
+    if (packet_size > buff_len) {
+        LT_LOG_ERROR("Packet size %" PRIu16 "exceeds L3 buffer size %" PRIu16, packet_size, buff_len);
+        return LT_PARAM_ERR;
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
@@ -126,6 +134,8 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
     // Calculate the length of the last chunk
     uint16_t last_chunk_len = packet_size - ((chunk_num - 1) * TR01_L2_CHUNK_MAX_DATA_SIZE);
 
+    uint16_t buff_offset = 0;
+
     // Split encrypted buffer into chunks and proceed them into l2 transfers:
     for (int i = 0; i < chunk_num; i++) {
         req->req_id = TR01_L2_ENCRYPTED_CMD_REQ_ID;
@@ -136,8 +146,8 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max
         else {
             req->req_len = TR01_L2_CHUNK_MAX_DATA_SIZE;
         }
-        memcpy(req->l3_chunk, buff + i * TR01_L2_CHUNK_MAX_DATA_SIZE, req->req_len);
-
+        memcpy(req->l3_chunk, buff + buff_offset, req->req_len);
+        buff_offset += req->req_len; // Move offset for next chunk
         add_crc(req);
 
         // Send l2 request cointaining a chunk from l3 buff
