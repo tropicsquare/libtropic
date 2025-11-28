@@ -110,12 +110,12 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t buf
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)buff;
     uint16_t packet_size = (TR01_L3_SIZE_SIZE + p_frame->cmd_size + TR01_L3_TAG_SIZE);
 
-    // Prevent sending more data then is the max size of L3 packet.
+    // Prevent sending more data than is the max size of L3 packet.
     if (packet_size > TR01_L3_PACKET_MAX_SIZE) {
         LT_LOG_ERROR("Packet size %" PRIu16 "exceeds maximum L3 packet size %u", packet_size, TR01_L3_PACKET_MAX_SIZE);
         return LT_L3_DATA_LEN_ERROR;
     }
-    // Prevent sending more data then is the size of passed buffer.
+    // Prevent sending more data than is the size of passed buffer.
     if (packet_size > buff_len) {
         LT_LOG_ERROR("Packet size %" PRIu16 "exceeds L3 buffer size %" PRIu16, packet_size, buff_len);
         return LT_PARAM_ERR;
