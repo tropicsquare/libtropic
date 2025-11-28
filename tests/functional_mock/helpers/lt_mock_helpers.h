@@ -11,6 +11,8 @@
 
 #include <stdint.h>
 
+#include "libtropic.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
