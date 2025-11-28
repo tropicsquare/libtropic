@@ -17,7 +17,7 @@ extern "C" {
 
 /**
  * @brief Mocked MISO data structure.
- * 
+ *
  * @details This can be either L2 Response frame or a single CHIP_STATUS byte (in a case of writing REQ_ID=0xAA).
  * Basically, anything that can be returned by the chip during a period between CSN low and CSN high on the MISO line.
  */
@@ -43,7 +43,7 @@ typedef struct lt_dev_mock_t {
     size_t mock_queue_count;
 
     /** @private @brief Flag indicating if a frame is currently in progress (CSN low). */
-    bool   frame_in_progress;
+    bool frame_in_progress;
     /** @private @brief Number of bytes transferred in the current frame so far. */
     size_t frame_bytes_transferred;
 } lt_dev_mock_t;
@@ -52,8 +52,8 @@ typedef struct lt_dev_mock_t {
 
 /**
  * @brief Reset internal mock state (clear queued responses and flags).
- * 
- * @warning This has to be called by the test developer before starting a new test case. It is not called automatically 
+ *
+ * @warning This has to be called by the test developer before starting a new test case. It is not called automatically
  * by HAL, as mocked reponses may be needed before/after initializing Libtropic.
  */
 lt_ret_t lt_mock_hal_reset(lt_l2_state_t *s2);
@@ -73,4 +73,4 @@ lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, si
 }
 #endif
 
-#endif // LIBTROPIC_PORT_MOCK_H
+#endif  // LIBTROPIC_PORT_MOCK_H
