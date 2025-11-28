@@ -1,6 +1,14 @@
 #ifndef LT_FUNCTIONAL_MOCK_TESTS_H
 #define LT_FUNCTIONAL_MOCK_TESTS_H
 
+/**
+ * @file lt_functional_mock_tests.h
+ * @brief Declaration of functional mock test functions.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ */
+
 #include "libtropic_common.h"
 
 #ifdef __cplusplus

@@ -1,9 +1,9 @@
 /**
  * @file libtropic_port_mock.c
- * @brief Mock HAL implementation.
+ * @brief Mock HAL implementation (only for testing purposes).
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * This file provides a mock implementation of the platform port API
- * used by Libtropic. It is intended for tests only.
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "libtropic_port_mock.h"
@@ -20,7 +20,7 @@
 #include "libtropic_logging.h"
 #include "lt_l1.h"
 
-/* Mock test control API ----------------------------------------------------- */
+// Mock test control API -----------------------------------------------------
 
 lt_ret_t lt_mock_hal_reset(lt_l2_state_t *s2)
 {
@@ -59,7 +59,7 @@ lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, si
     // Copy provided data into next slot.
     mock_miso_data_t *r = &dev->mock_queue[dev->mock_queue_tail];
     // Fill with zeroes first, as transfer may exceed data queued by user (typically on writing).
-    memset(r->data, 0, TR01_L1_LEN_MAX);
+    memset(r->data, 0, sizeof(r->data));
     memcpy(r->data, data, len);
     r->len = len;
 
@@ -70,7 +70,7 @@ lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, si
     return LT_OK;
 }
 
-/* Platform API implementation ------------------------------------------------ */
+// Platform API implementation ------------------------------------------------
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
@@ -191,9 +191,11 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
     if (!buff) {
         return LT_PARAM_ERR;
     }
-    uint8_t *ptr = (uint8_t *)buff;
+
+    uint8_t *buff_ptr = (uint8_t *)buff;
     for (size_t i = 0; i < count; i++) {
-        ptr[i] = (uint8_t)(rand() & 0xFF);
+        buff_ptr[i] = (uint8_t)(rand() & 0xFF);
     }
+
     return LT_OK;
 }

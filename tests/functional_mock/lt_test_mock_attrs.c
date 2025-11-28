@@ -1,7 +1,6 @@
 /**
  * @file lt_test_mock_attrs.c
  * @brief Test for checking if TROPIC01 attributes are set correctly based on RISC-V FW version.
- *
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
@@ -21,10 +20,9 @@
 #include "lt_l1.h"
 #include "lt_l2_frame_check.h"
 #include "lt_l2_api_structs.h"
-
-/* Mock control API */
 #include "libtropic_port_mock.h"
 #include "lt_mock_helpers.h"
+
 #include "lt_functional_mock_tests.h"
 
 int lt_test_mock_attrs(lt_handle_t *h)

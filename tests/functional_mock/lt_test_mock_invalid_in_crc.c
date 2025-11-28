@@ -1,7 +1,6 @@
 /**
  * @file lt_test_mock_invalid_in_crc.c
  * @brief Test for handling invalid CRC in TROPIC01 responses.
- *
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.

@@ -1,6 +1,9 @@
 /**
  * @file main.c
- * @brief Mock-integration test runner (single-file driver)
+ * @brief Main file for running functional mock tests.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include <stdio.h>
@@ -10,17 +13,16 @@
 
 #include "libtropic.h"
 #include "libtropic_logging.h"
-
 #include "libtropic_mbedtls_v4.h"
-
-#include "lt_functional_mock_tests.h" // Provides LIBTROPIC_MOCK_TEST_FUNCTION
 #include "libtropic_port_mock.h"
+
+#include "lt_functional_mock_tests.h"
 
 int main(void)
 {
     int ret = 0;
 
-    /* Disable buffering on stdout/stderr to simplify CI logs */
+    // Disable buffering on stdout/stderr to simplify CI logs.
     (void)setvbuf(stdout, NULL, _IONBF, 0);
     (void)setvbuf(stderr, NULL, _IONBF, 0);
 
@@ -32,7 +34,7 @@ int main(void)
 
     lt_handle_t __lt_handle__ = {0};
 #if LT_SEPARATE_L3_BUFF
-    /* Provide an l3 buffer when separate L3 buffer is used. */
+    // Provide an l3 buffer when separate L3 buffer is used.
     uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
     __lt_handle__.l3.buff = l3_buffer;
     __lt_handle__.l3.buff_len = sizeof(l3_buffer);
@@ -45,13 +47,13 @@ int main(void)
     lt_ctx_mbedtls_v4_t crypto_ctx;
     __lt_handle__.l3.crypto_ctx = &crypto_ctx;
 
-    /* Seed PRNG similarly to integration main so tests are reproducible when desired. */
+    // Seed PRNG similarly to integration main so tests are reproducible when desired.
     unsigned int prng_seed = 0;
     (void)getentropy(&prng_seed, sizeof(prng_seed));
     srand(prng_seed);
     LT_LOG_INFO("PRNG initialized with seed=%u", prng_seed);
 
-    /* Call the test function (each test will call lt_init() itself). */
+    // Call the test function (each test will call lt_init() itself).
     ret = @LIBTROPIC_MOCK_TEST_FUNCTION@(&__lt_handle__);
 
     mbedtls_psa_crypto_free();

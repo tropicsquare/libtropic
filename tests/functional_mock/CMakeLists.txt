@@ -21,7 +21,10 @@ include(FetchContent)
 ###########################################################################
 
 # Add path to libtropic's repository root folder
-set(LT_LOG_LVL "Info" CACHE BOOL "Set log level to INFO." FORCE)
+if (NOT LT_LOG_LVL)
+    message(STATUS "No logging level specified, defaulting to INFO for tests.")
+    set(LT_LOG_LVL "Info" CACHE BOOL "Set log level to INFO." FORCE)
+endif()
 add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
@@ -87,13 +90,7 @@ set(LIBTROPIC_MOCK_TEST_LIST
 
 ###########################################################################
 #                                                                         #
-# FUNCTIONAL TESTS CONFIGURATION                                          #
-#                                                                         #
-# This section will automatically configure CTest for launching tests     #
-# defined in libtropic. Do NOT hardcode any test definitions here.        #
-# Define them in libtropic.                                               #
-#                                                                         #
-# To build functional tests, use -DLT_BUILD_TESTS=1 in cmake invocation.  #
+# FUNCTIONAL MOCK TESTS CONFIGURATION                                     #
 #                                                                         #
 ###########################################################################
 # Enable CTest.
@@ -123,16 +120,8 @@ foreach(test_name IN LISTS LIBTROPIC_MOCK_TEST_LIST)
     # Include this (./) directory to include lt_functional_mock_tests.h with test functions declarations.
     target_include_directories(${exe_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
-    # Developers who integrate Libtropic do not have to use this variable
-    # It's used in model's main.c to switch crypto contexts without manual changes
-    # target_compile_definitions(${exe_name} PRIVATE
-    #     LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
-    #     LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
-    # )
-
     # Add CTest entry.
     add_test(NAME ${test_name}
                 COMMAND ./${exe_name}
     )
-
 endforeach()
