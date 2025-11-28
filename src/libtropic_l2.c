@@ -8,8 +8,8 @@
 
 #include "libtropic_l2.h"
 
-#include <string.h>
 #include <inttypes.h>
+#include <string.h>
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
@@ -112,8 +112,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t buf
 
     // Prevent sending more data then is the max size of L3 packet.
     if (packet_size > TR01_L3_PACKET_MAX_SIZE) {
-        LT_LOG_ERROR("Packet size %" PRIu16 "exceeds maximum L3 packet size %u", packet_size,
-                     TR01_L3_PACKET_MAX_SIZE);
+        LT_LOG_ERROR("Packet size %" PRIu16 "exceeds maximum L3 packet size %u", packet_size, TR01_L3_PACKET_MAX_SIZE);
         return LT_L3_DATA_LEN_ERROR;
     }
     // Prevent sending more data then is the size of passed buffer.
@@ -147,7 +146,7 @@ lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t buf
             req->req_len = TR01_L2_CHUNK_MAX_DATA_SIZE;
         }
         memcpy(req->l3_chunk, buff + buff_offset, req->req_len);
-        buff_offset += req->req_len; // Move offset for next chunk
+        buff_offset += req->req_len;  // Move offset for next chunk
         add_crc(req);
 
         // Send l2 request cointaining a chunk from l3 buff
