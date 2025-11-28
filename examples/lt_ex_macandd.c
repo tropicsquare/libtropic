@@ -145,6 +145,8 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     uint8_t k_i[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Variable used to initialize slot(s)
     uint8_t u[LT_HMAC_SHA256_HASH_LEN] = {0};
+    // Helper array of zeroes (used as a key in KDF)
+    const uint8_t zeros[32] = {0};
 
     // This organizes data which will be stored into nvm
     struct lt_macandd_nvm_t nvm = {0};
@@ -188,7 +190,6 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     }
 
     // Compute v = KDF(0, PIN||A) where 0 is all zeroes key
-    const uint8_t zeros[32] = {0};
     ret = lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v);
     if (ret != LT_OK) {
         LT_LOG_ERROR("v = KDF(0, PIN||A) failed, ret=%s", lt_ret_verbose(ret));
@@ -320,6 +321,8 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     uint8_t t_[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Value used to initialize Mac And Destroy's slot after a correct PIN try
     uint8_t u[LT_HMAC_SHA256_HASH_LEN] = {0};
+    // Helper array of zeroes (used as a key in KDF)
+    const uint8_t zeros[32] = {0};
 
     // This organizes data which will be read from nvm
     struct lt_macandd_nvm_t nvm = {0};
@@ -372,7 +375,6 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Compute v’ = KDF(0, PIN’||A).
-    const uint8_t zeros[32] = {0};
     ret = lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v_);
     if (ret != LT_OK) {
         LT_LOG_ERROR("v' = KDF(0, PIN'||A) failed, ret=%s", lt_ret_verbose(ret));
