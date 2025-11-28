@@ -1,6 +1,10 @@
 /**
  * @file lt_test_mock_attrs.c
- * @brief Example functional test using `hal/mock` to test attribute structure handling.
+ * @brief Test for checking if TROPIC01 attributes are set correctly based on RISC-V FW version.
+ *
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
+ *
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include <stdio.h>
@@ -21,10 +25,13 @@
 /* Mock control API */
 #include "libtropic_port_mock.h"
 #include "lt_mock_helpers.h"
+#include "lt_functional_mock_tests.h"
 
 int lt_test_mock_attrs(lt_handle_t *h)
 {
-    LT_LOG_INFO("Starting lt_test_mock_attrs...");
+    LT_LOG_INFO("----------------------------------------------");
+    LT_LOG_INFO("lt_test_mock_attrs()");
+    LT_LOG_INFO("----------------------------------------------");
 
     uint8_t riscv_fw_ver_resp[][TR01_L2_GET_INFO_RISCV_FW_SIZE] = {
         {0x00, 0x00, 0x00, 0x02}, // Version 2.0.0
