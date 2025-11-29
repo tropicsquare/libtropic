@@ -1,8 +1,9 @@
 # Include source directories.
-+*src/*
-+*hal/*
-+*include/*
-+*examples/*
++*/libtropic/src/*
++*/libtropic/cal/*
++*/libtropic/hal/*
++*/libtropic/include/*
++*/libtropic/examples/*
 
 # Skip everything else (vendor libs, CMake internal libs...)
 -*
