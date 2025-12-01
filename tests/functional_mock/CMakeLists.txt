@@ -9,7 +9,7 @@ project(libtropic_functional_mock_tests)
 ###########################################################################
 
 if(NOT DEFINED PATH_TO_LIBTROPIC)
-    set(PATH_TO_LIBTROPIC "${CMAKE_CURRENT_SOURCE_DIR}/../../")
+    set(PATH_TO_LIBTROPIC "${CMAKE_CURRENT_SOURCE_DIR}/libtropic/")
 endif()
 
 include(FetchContent)
