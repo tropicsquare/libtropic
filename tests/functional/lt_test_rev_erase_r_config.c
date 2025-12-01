@@ -12,6 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
+#include "lt_test_common.h"
 
 // Shared with cleanup function.
 struct lt_config_t r_config_backup;

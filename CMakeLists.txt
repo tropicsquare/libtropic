@@ -361,6 +361,10 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/common/
     )
+    set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/common/
+    )
 endif()
 
 add_library(tropic ${SDK_SRCS} ${SDK_INCS})

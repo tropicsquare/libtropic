@@ -13,6 +13,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "lt_port_wrap.h"
+#include "lt_test_common.h"
 #include "string.h"
 
 /** @brief How many pings will be sent. */
