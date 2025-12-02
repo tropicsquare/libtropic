@@ -107,7 +107,7 @@ foreach(test_name IN LISTS LIBTROPIC_MOCK_TEST_LIST)
     set(LIBTROPIC_MOCK_TEST_FUNCTION ${test_name})
 
     configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.in.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.c.in
         ${CMAKE_CURRENT_BINARY_DIR}/main.c
         @ONLY
     )
