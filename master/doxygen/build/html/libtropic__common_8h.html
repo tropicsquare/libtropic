@@ -108,7 +108,8 @@ $(document).ready(function(){initNavTree('libtropic__common_8h.html',''); initRe
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">libtropic_common.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -116,22 +117,29 @@ $(document).ready(function(){initNavTree('libtropic__common_8h.html',''); initRe
 <p>Shared definitions and functions commonly used by more libtropic's layers.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="libtropic__macros_8h.html">libtropic_macros.h</a>&quot;</code><br />
-<code>#include &quot;stdint.h&quot;</code><br />
-<code>#include &quot;tropic01_application_co.h&quot;</code><br />
-<code>#include &quot;tropic01_bootloader_co.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="tropic01__application__co_8h.html">tropic01_application_co.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="tropic01__bootloader__co_8h.html">tropic01_bootloader_co.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for libtropic_common.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="libtropic__common_8h__incl.png" border="0" usemap="#alibtropic__common_8h" alt=""/></div>
 <map name="alibtropic__common_8h" id="alibtropic__common_8h">
-<area shape="rect" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="109,5,259,31"/>
+<area shape="rect" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="203,5,354,31"/>
 <area shape="rect" title=" " alt="" coords="5,79,88,104"/>
-<area shape="poly" title=" " alt="" coords="163,33,82,75,80,70,161,28"/>
-<area shape="rect" href="libtropic__macros_8h.html" title="Various helper macros." alt="" coords="113,79,255,104"/>
-<area shape="poly" title=" " alt="" coords="187,31,187,65,181,65,181,31"/>
-<area shape="rect" title=" " alt="" coords="279,79,350,104"/>
-<area shape="poly" title=" " alt="" coords="206,28,283,70,280,74,204,33"/>
+<area shape="poly" title=" " alt="" coords="242,33,98,77,96,72,241,28"/>
+<area shape="rect" title=" " alt="" coords="113,79,183,104"/>
+<area shape="poly" title=" " alt="" coords="259,33,182,74,180,70,256,28"/>
+<area shape="rect" href="libtropic__macros_8h.html" title="Various helper macros." alt="" coords="207,79,350,104"/>
+<area shape="poly" title=" " alt="" coords="281,31,281,65,276,65,276,31"/>
+<area shape="rect" href="tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="374,79,562,104"/>
+<area shape="poly" title=" " alt="" coords="310,28,425,71,423,76,308,33"/>
+<area shape="rect" href="tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="587,79,773,104"/>
+<area shape="poly" title=" " alt="" coords="344,28,602,74,601,79,343,33"/>
+<area shape="rect" href="bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="544,152,603,177"/>
+<area shape="poly" title=" " alt="" coords="486,102,546,142,544,147,483,106"/>
+<area shape="poly" title=" " alt="" coords="664,106,604,147,601,142,661,102"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -139,43 +147,59 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="libtropic__common_8h__dep__incl.png" border="0" usemap="#alibtropic__common_8hdep" alt=""/></div>
 <map name="alibtropic__common_8hdep" id="alibtropic__common_8hdep">
-<area shape="rect" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="1021,5,1172,31"/>
+<area shape="rect" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="1520,5,1671,31"/>
 <area shape="rect" href="libtropic_8h.html" title="Libtropic library main API header file." alt="" coords="5,86,92,111"/>
-<area shape="poly" title=" " alt="" coords="1008,24,541,42,288,59,183,69,104,81,78,89,76,83,103,76,183,64,287,54,541,37,1008,19"/>
+<area shape="poly" title=" " alt="" coords="1506,22,1208,25,802,33,398,51,230,64,104,81,78,88,76,83,103,76,230,59,398,46,802,28,1208,19,1506,17"/>
 <area shape="rect" href="libtropic__examples_8h.html" title="Functions with examples of usage of TROPIC01 chip." alt="" coords="116,86,275,111"/>
-<area shape="poly" title=" " alt="" coords="1008,25,689,42,489,58,288,81,246,89,245,83,287,76,488,53,689,36,1007,20"/>
+<area shape="poly" title=" " alt="" coords="1506,21,1291,23,988,30,640,48,462,63,288,81,245,89,244,83,287,76,462,57,640,43,988,25,1290,17,1506,16"/>
 <area shape="rect" href="libtropic__functional__tests_8h.html" title="Functions with functional tests used internally for testing behaviour of TROPIC01 chip." alt="" coords="299,79,446,119"/>
-<area shape="poly" title=" " alt="" coords="1008,27,760,46,609,61,458,81,447,83,446,78,458,76,608,56,759,40,1007,21"/>
+<area shape="poly" title=" " alt="" coords="1506,22,1316,24,1056,32,759,50,607,64,458,81,446,83,446,78,458,76,606,58,758,45,1055,27,1316,19,1506,16"/>
 <area shape="rect" href="libtropic__l2_8h.html" title="Layer 2 functions declarations." alt="" coords="470,86,577,111"/>
-<area shape="poly" title=" " alt="" coords="1008,28,815,47,702,62,589,81,560,88,559,83,588,76,701,57,814,41,1008,23"/>
+<area shape="poly" title=" " alt="" coords="1507,25,1034,44,776,61,589,81,559,89,557,83,588,76,776,56,1034,39,1506,19"/>
 <area shape="rect" href="libtropic__l3_8h.html" title="Layer 3 functions declarations." alt="" coords="601,86,707,111"/>
-<area shape="poly" title=" " alt="" coords="1008,33,872,53,720,81,691,89,690,83,719,76,871,48,1007,28"/>
+<area shape="poly" title=" " alt="" coords="1506,22,1356,25,1160,33,940,51,829,65,720,81,689,89,688,83,719,76,828,59,940,46,1160,28,1356,19,1506,17"/>
 <area shape="rect" href="libtropic__port_8h.html" title="Header file with layer 1 interfaces which are defined based on host platform." alt="" coords="731,86,851,111"/>
-<area shape="poly" title=" " alt="" coords="1040,37,836,89,835,83,1038,31"/>
-<area shape="rect" href="libtropic__port__unix__tcp_8h.html" title="Port for communication with the TROPIC01 Model using TCP." alt="" coords="876,79,1019,119"/>
-<area shape="poly" title=" " alt="" coords="1064,40,985,81,982,76,1061,35"/>
-<area shape="rect" href="lt__asn1__der_8h.html" title="ASN1 DER parser." alt="" coords="1043,86,1151,111"/>
-<area shape="poly" title=" " alt="" coords="1099,44,1099,86,1094,86,1094,44"/>
-<area shape="rect" href="lt__l1_8h.html" title="Layer 1 functions declarations." alt="" coords="1175,86,1237,111"/>
-<area shape="poly" title=" " alt="" coords="1126,37,1191,84,1188,88,1123,41"/>
-<area shape="rect" href="lt__l1__port__wrap_8h.html" title="Layer 1 functions declarations." alt="" coords="1261,86,1396,111"/>
-<area shape="poly" title=" " alt="" coords="1144,33,1296,83,1294,89,1143,38"/>
-<area shape="rect" href="lt__l2__api__structs_8h.html" title="Layer 2 structure declaration." alt="" coords="1420,86,1560,111"/>
-<area shape="poly" title=" " alt="" coords="1174,31,1409,76,1442,83,1441,89,1408,81,1173,36"/>
-<area shape="rect" href="lt__l2__frame__check_8h.html" title="Layer 2 frame check functions declarations." alt="" coords="1584,86,1737,111"/>
-<area shape="poly" title=" " alt="" coords="1186,26,1365,46,1573,76,1611,83,1610,89,1572,81,1365,51,1186,31"/>
-<area shape="rect" href="lt__l3__api__structs_8h.html" title="Layer 3 structure declaration." alt="" coords="1761,86,1901,111"/>
-<area shape="poly" title=" " alt="" coords="1186,21,1440,39,1595,55,1750,76,1787,83,1786,89,1750,81,1595,60,1440,44,1185,26"/>
-<area shape="rect" href="lt__l3__process_8h.html" title="Layer 3 transfer functions declarations." alt="" coords="1925,86,2044,111"/>
-<area shape="poly" title=" " alt="" coords="1186,18,1326,22,1508,32,1711,49,1914,76,1947,83,1946,89,1914,81,1710,54,1508,37,1326,27,1186,23"/>
-<area shape="rect" href="lt__random_8h.html" title="Declarations of functions related to random number generator." alt="" coords="2068,86,2168,111"/>
-<area shape="poly" title=" " alt="" coords="1186,20,1636,39,1880,56,1980,65,2057,76,2086,83,2085,88,2056,81,1980,71,1879,61,1636,44,1186,25"/>
-<area shape="rect" href="libtropic__port__stm32__nucleo__f439zi_8h.html" title="Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select)." alt="" coords="540,167,696,207"/>
-<area shape="poly" title=" " alt="" coords="757,120,657,169,655,164,755,115"/>
-<area shape="rect" href="libtropic__port__unix__spi_8h.html" title="Port for communication using Generic SPI and GPIO Linux UAPI." alt="" coords="720,167,863,207"/>
-<area shape="poly" title=" " alt="" coords="794,125,794,166,789,166,789,125"/>
-<area shape="rect" href="libtropic__port__unix__usb__dongle_8h.html" title="Port for communication with USB UART Dongle (TS1302)." alt="" coords="887,167,1029,207"/>
-<area shape="poly" title=" " alt="" coords="827,115,922,164,920,169,825,120"/>
+<area shape="poly" title=" " alt="" coords="1506,24,1220,40,1043,57,865,81,832,89,830,83,864,76,1042,52,1219,35,1506,19"/>
+<area shape="rect" href="libtropic__port__posix__tcp_8h.html" title="Port for communication with the TROPIC01 Model using TCP." alt="" coords="876,79,1027,119"/>
+<area shape="poly" title=" " alt="" coords="1507,29,1294,49,1040,81,1028,83,1027,78,1039,76,1293,43,1506,23"/>
+<area shape="rect" href="lt__aesgcm_8h.html" title="AES&#45;GCM function declarations." alt="" coords="1051,86,1153,111"/>
+<area shape="poly" title=" " alt="" coords="1507,30,1347,50,1167,81,1138,89,1137,83,1165,76,1347,45,1506,25"/>
+<area shape="rect" href="lt__asn1__der_8h.html" title="ASN1 DER parser." alt="" coords="1177,86,1285,111"/>
+<area shape="poly" title=" " alt="" coords="1519,36,1299,81,1271,89,1269,83,1297,76,1517,30"/>
+<area shape="rect" href="lt__crypto__common_8h.html" title="Common CAL declarations." alt="" coords="1310,86,1465,111"/>
+<area shape="poly" title=" " alt="" coords="1553,38,1419,88,1417,83,1551,33"/>
+<area shape="rect" href="lt__hkdf_8h.html" title="HKDF function declaration." alt="" coords="1489,86,1568,111"/>
+<area shape="poly" title=" " alt="" coords="1579,43,1541,88,1537,84,1574,40"/>
+<area shape="rect" href="lt__hmac__sha256_8h.html" title="HMAC SHA256 functions declarations." alt="" coords="1592,86,1732,111"/>
+<area shape="poly" title=" " alt="" coords="1616,40,1654,84,1650,88,1612,43"/>
+<area shape="rect" href="lt__l1_8h.html" title="Layer 1 functions declarations." alt="" coords="1756,86,1819,111"/>
+<area shape="poly" title=" " alt="" coords="1639,33,1746,76,1763,83,1761,88,1744,81,1637,38"/>
+<area shape="rect" href="lt__l1__port__wrap_8h.html" title="Layer 1 functions declarations." alt="" coords="1843,86,1977,111"/>
+<area shape="poly" title=" " alt="" coords="1655,31,1865,83,1864,89,1654,37"/>
+<area shape="rect" href="lt__l2__api__structs_8h.html" title="Layer 2 structure declaration." alt="" coords="2001,86,2141,111"/>
+<area shape="poly" title=" " alt="" coords="1685,28,1829,49,1990,76,2025,83,2024,89,1990,81,1828,54,1684,33"/>
+<area shape="rect" href="lt__l2__frame__check_8h.html" title="Layer 2 frame check functions declarations." alt="" coords="2165,86,2319,111"/>
+<area shape="poly" title=" " alt="" coords="1685,23,1899,43,2154,76,2193,83,2192,89,2154,81,1899,48,1684,29"/>
+<area shape="rect" href="lt__l3__api__structs_8h.html" title="Layer 3 structure declaration." alt="" coords="2343,86,2483,111"/>
+<area shape="poly" title=" " alt="" coords="1685,20,1973,37,2152,53,2332,76,2369,83,2368,89,2331,81,2152,58,1973,42,1684,25"/>
+<area shape="rect" href="lt__l3__process_8h.html" title="Layer 3 transfer functions declarations." alt="" coords="2507,86,2625,111"/>
+<area shape="poly" title=" " alt="" coords="1685,17,1839,20,2041,29,2268,47,2496,76,2529,83,2528,89,2495,81,2267,52,2041,34,1839,25,1685,22"/>
+<area shape="rect" href="lt__random_8h.html" title="Declarations of functions related to random number generator." alt="" coords="2649,86,2749,111"/>
+<area shape="poly" title=" " alt="" coords="1685,19,2175,38,2443,54,2554,65,2639,76,2668,83,2667,89,2637,81,2553,70,2443,60,2175,43,1685,24"/>
+<area shape="rect" href="lt__secure__memzero_8h.html" title="Declarations for secure memory zeroing." alt="" coords="2774,86,2937,111"/>
+<area shape="poly" title=" " alt="" coords="1684,17,1879,19,2147,28,2453,46,2609,59,2762,76,2806,83,2805,89,2762,81,2609,64,2452,51,2146,33,1879,25,1684,22"/>
+<area shape="rect" href="lt__sha256_8h.html" title="SHA256 functions declarations." alt="" coords="2961,86,3059,111"/>
+<area shape="poly" title=" " alt="" coords="1684,18,1958,22,2323,32,2685,50,2835,62,2949,76,2979,83,2977,88,2948,81,2835,67,2685,55,2323,38,1958,28,1684,23"/>
+<area shape="rect" href="lt__tr01__attrs_8h.html" title="Declarations for handling TROPIC01 attributes based on FW versions." alt="" coords="3083,86,3196,111"/>
+<area shape="poly" title=" " alt="" coords="1684,18,1980,22,2380,32,2780,50,2946,62,3072,76,3104,83,3103,89,3071,81,2945,67,2780,55,2380,38,1980,28,1684,23"/>
+<area shape="rect" href="libtropic__port__arduino_8h.html" title="Port for the Arduino framework." alt="" coords="431,174,607,199"/>
+<area shape="poly" title=" " alt="" coords="743,118,557,176,555,171,741,113"/>
+<area shape="rect" href="libtropic__port__linux__spi_8h.html" title="Port for communication using Generic SPI and GPIO Linux UAPI." alt="" coords="631,167,778,207"/>
+<area shape="poly" title=" " alt="" coords="772,123,726,168,722,164,768,119"/>
+<area shape="rect" href="libtropic__port__posix__usb__dongle_8h.html" title="Port for communication with USB UART Dongle (TS1302)." alt="" coords="803,167,953,207"/>
+<area shape="poly" title=" " alt="" coords="815,119,860,164,857,168,811,123"/>
+<area shape="rect" href="libtropic__port__stm32__nucleo__f439zi_8h.html" title="Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select)." alt="" coords="977,167,1133,207"/>
+<area shape="poly" title=" " alt="" coords="841,113,998,164,996,169,839,118"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -188,6 +212,9 @@ Data Structures</h2></td></tr>
 <tr class="separator:structlt__l2__state__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structlt__l3__state__t" id="r_structlt__l3__state__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h.html#structlt__l3__state__t">lt_l3_state_t</a></td></tr>
 <tr class="separator:structlt__l3__state__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlt__tr01__attrs__t.html">lt_tr01_attrs_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures attributes that are different among TROPIC01's Application FW versions.  <a href="structlt__tr01__attrs__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structlt__handle__t" id="r_structlt__handle__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h.html#structlt__handle__t">lt_handle_t</a></td></tr>
 <tr class="separator:structlt__handle__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structlt__cert__store__t" id="r_structlt__cert__store__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h.html#structlt__cert__store__t">lt_cert_store_t</a></td></tr>
@@ -203,7 +230,7 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:structlt__header__boot__v1__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs based on bootloader version. This header layout is returned by bootloader version v1.0.1.  <a href="libtropic__common_8h.html#structlt__header__boot__v1__t">More...</a><br /></td></tr>
 <tr class="separator:structlt__header__boot__v1__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structlt__header__boot__v2__t" id="r_structlt__header__boot__v2__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h.html#structlt__header__boot__v2__t">lt_header_boot_v2_t</a></td></tr>
-<tr class="memdesc:structlt__header__boot__v2__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs based on bootloader version. This header layout is returned by bootloader version v1.0.1.  <a href="libtropic__common_8h.html#structlt__header__boot__v2__t">More...</a><br /></td></tr>
+<tr class="memdesc:structlt__header__boot__v2__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs based on bootloader version. This header layout is returned by bootloader version v2.0.1.  <a href="libtropic__common_8h.html#structlt__header__boot__v2__t">More...</a><br /></td></tr>
 <tr class="separator:structlt__header__boot__v2__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structlt__host__eph__keys__t" id="r_structlt__host__eph__keys__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h.html#structlt__host__eph__keys__t">lt_host_eph_keys_t</a></td></tr>
 <tr class="memdesc:structlt__host__eph__keys__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores Host MCU ephemeral keys.  <a href="libtropic__common_8h.html#structlt__host__eph__keys__t">More...</a><br /></td></tr>
@@ -280,43 +307,42 @@ Macros</h2></td></tr>
 <tr class="memitem:ad852f810f00629f1ed18e7cb48e37cd7" id="r_ad852f810f00629f1ed18e7cb48e37cd7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_ad852f810f00629f1ed18e7cb48e37cd7.html#ad852f810f00629f1ed18e7cb48e37cd7">TR01_L2_MAX_FRAME_SIZE</a>&#160;&#160;&#160;    (<a class="el" href="libtropic__common_8h.html#acd5da58228ceeeef861fd294f249c5c8">TR01_L2_STATUS_SIZE</a> + <a class="el" href="libtropic__common_8h.html#ae017c29a106f18555504319d891dc796">TR01_L2_REQ_RSP_LEN_SIZE</a> + <a class="el" href="libtropic__common_8h.html#ac6c4fd0fbd35bd61031d66331bdefee2">TR01_L2_CHUNK_MAX_DATA_SIZE</a> + <a class="el" href="libtropic__common_8h.html#a05ad4f9d3edaf8399bbaf9a5159049b5">TR01_L2_REQ_RSP_CRC_SIZE</a>)</td></tr>
 <tr class="memdesc:ad852f810f00629f1ed18e7cb48e37cd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximal size of one l2 frame.  <br /></td></tr>
 <tr class="separator:ad852f810f00629f1ed18e7cb48e37cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa277461ec434d2adab9061aeec3fdfaa" id="r_aa277461ec434d2adab9061aeec3fdfaa"><td class="memItemLeft" align="right" valign="top"><a id="aa277461ec434d2adab9061aeec3fdfaa" name="aa277461ec434d2adab9061aeec3fdfaa"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_ID_SIZE</b>&#160;&#160;&#160;1u</td></tr>
-<tr class="memdesc:aa277461ec434d2adab9061aeec3fdfaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of l3 ID field. <br /></td></tr>
-<tr class="separator:aa277461ec434d2adab9061aeec3fdfaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a041b45b01e6fb6f7f8534aa407592e38" id="r_a041b45b01e6fb6f7f8534aa407592e38"><td class="memItemLeft" align="right" valign="top"><a id="a041b45b01e6fb6f7f8534aa407592e38" name="a041b45b01e6fb6f7f8534aa407592e38"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_TAG_SIZE</b>&#160;&#160;&#160;16u</td></tr>
-<tr class="memdesc:a041b45b01e6fb6f7f8534aa407592e38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of l3 TAG field. <br /></td></tr>
-<tr class="separator:a041b45b01e6fb6f7f8534aa407592e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade5362666ab8e135878f3987d65237b7" id="r_ade5362666ab8e135878f3987d65237b7"><td class="memItemLeft" align="right" valign="top"><a id="ade5362666ab8e135878f3987d65237b7" name="ade5362666ab8e135878f3987d65237b7"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_IV_SIZE</b>&#160;&#160;&#160;12u</td></tr>
 <tr class="memdesc:ade5362666ab8e135878f3987d65237b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of IV. <br /></td></tr>
 <tr class="separator:ade5362666ab8e135878f3987d65237b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae173954059276f32afa474efba61c0ef" id="r_ae173954059276f32afa474efba61c0ef"><td class="memItemLeft" align="right" valign="top"><a id="ae173954059276f32afa474efba61c0ef" name="ae173954059276f32afa474efba61c0ef"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RES_SIZE_SIZE</b>&#160;&#160;&#160;2</td></tr>
-<tr class="memdesc:ae173954059276f32afa474efba61c0ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of RES_SIZE field. <br /></td></tr>
-<tr class="separator:ae173954059276f32afa474efba61c0ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11bba26781e8bc159ac6a5f813d14a96" id="r_a11bba26781e8bc159ac6a5f813d14a96"><td class="memItemLeft" align="right" valign="top"><a id="a11bba26781e8bc159ac6a5f813d14a96" name="a11bba26781e8bc159ac6a5f813d14a96"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_CMD_SIZE_SIZE</b>&#160;&#160;&#160;2</td></tr>
-<tr class="memdesc:a11bba26781e8bc159ac6a5f813d14a96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of CMD_SIZE field. <br /></td></tr>
-<tr class="separator:a11bba26781e8bc159ac6a5f813d14a96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a405f18b7492a8107ab883a176ad822f4" id="r_a405f18b7492a8107ab883a176ad822f4"><td class="memItemLeft" align="right" valign="top"><a id="a405f18b7492a8107ab883a176ad822f4" name="a405f18b7492a8107ab883a176ad822f4"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_SIZE_SIZE</b>&#160;&#160;&#160;2u</td></tr>
+<tr class="memdesc:a405f18b7492a8107ab883a176ad822f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of CMD_SIZE and RES_SIZE fields. <br /></td></tr>
+<tr class="separator:a405f18b7492a8107ab883a176ad822f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a041b45b01e6fb6f7f8534aa407592e38" id="r_a041b45b01e6fb6f7f8534aa407592e38"><td class="memItemLeft" align="right" valign="top"><a id="a041b45b01e6fb6f7f8534aa407592e38" name="a041b45b01e6fb6f7f8534aa407592e38"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_TAG_SIZE</b>&#160;&#160;&#160;16u</td></tr>
+<tr class="memdesc:a041b45b01e6fb6f7f8534aa407592e38"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of CMD_TAG and RES_TAG fields. <br /></td></tr>
+<tr class="separator:a041b45b01e6fb6f7f8534aa407592e38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab76500cece6be597a6721e7d5add1d2f" id="r_ab76500cece6be597a6721e7d5add1d2f"><td class="memItemLeft" align="right" valign="top"><a id="ab76500cece6be597a6721e7d5add1d2f" name="ab76500cece6be597a6721e7d5add1d2f"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_CMD_ID_SIZE</b>&#160;&#160;&#160;1</td></tr>
-<tr class="memdesc:ab76500cece6be597a6721e7d5add1d2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of l3 CMD_ID field. <br /></td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_CMD_ID_SIZE</b>&#160;&#160;&#160;1u</td></tr>
+<tr class="memdesc:ab76500cece6be597a6721e7d5add1d2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of CMD_ID field. <br /></td></tr>
 <tr class="separator:ab76500cece6be597a6721e7d5add1d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15865f936dfb751d0463c791f5fcd461" id="r_a15865f936dfb751d0463c791f5fcd461"><td class="memItemLeft" align="right" valign="top"><a id="a15865f936dfb751d0463c791f5fcd461" name="a15865f936dfb751d0463c791f5fcd461"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_CMD_DATA_SIZE_MAX</b>&#160;&#160;&#160;4111</td></tr>
-<tr class="memdesc:a15865f936dfb751d0463c791f5fcd461"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximal size of l3 RES/RSP DATA field. <br /></td></tr>
-<tr class="separator:a15865f936dfb751d0463c791f5fcd461"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade8271aba04024efe5beacaf5258f9cd" id="r_ade8271aba04024efe5beacaf5258f9cd"><td class="memItemLeft" align="right" valign="top"><a id="ade8271aba04024efe5beacaf5258f9cd" name="ade8271aba04024efe5beacaf5258f9cd"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_CYPHERTEXT_MAX_SIZE</b>&#160;&#160;&#160;(<a class="el" href="libtropic__common_8h.html#ab76500cece6be597a6721e7d5add1d2f">TR01_L3_CMD_ID_SIZE</a> + <a class="el" href="libtropic__common_8h.html#a15865f936dfb751d0463c791f5fcd461">TR01_L3_CMD_DATA_SIZE_MAX</a>)</td></tr>
-<tr class="memdesc:ade8271aba04024efe5beacaf5258f9cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum size of l3 ciphertext (or decrypted l3 packet) <br /></td></tr>
-<tr class="separator:ade8271aba04024efe5beacaf5258f9cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a112b32d21c37548216431c338b234c20" id="r_a112b32d21c37548216431c338b234c20"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a112b32d21c37548216431c338b234c20.html#a112b32d21c37548216431c338b234c20">TR01_L3_PACKET_MAX_SIZE</a>&#160;&#160;&#160;(<a class="el" href="libtropic__common_8h.html#ae173954059276f32afa474efba61c0ef">TR01_L3_RES_SIZE_SIZE</a> + <a class="el" href="libtropic__common_8h.html#ade8271aba04024efe5beacaf5258f9cd">TR01_L3_CYPHERTEXT_MAX_SIZE</a> + 13 + <a class="el" href="libtropic__common_8h.html#a041b45b01e6fb6f7f8534aa407592e38">TR01_L3_TAG_SIZE</a>)</td></tr>
-<tr class="memdesc:a112b32d21c37548216431c338b234c20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max size of one unit of transport on l3 layer.  <br /></td></tr>
+<tr class="memitem:a2613f7641b6641796d4e6709ed04a551" id="r_a2613f7641b6641796d4e6709ed04a551"><td class="memItemLeft" align="right" valign="top"><a id="a2613f7641b6641796d4e6709ed04a551" name="a2613f7641b6641796d4e6709ed04a551"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_SIZE</b>&#160;&#160;&#160;1u</td></tr>
+<tr class="memdesc:a2613f7641b6641796d4e6709ed04a551"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of the RESULT field in L3 Result. <br /></td></tr>
+<tr class="separator:a2613f7641b6641796d4e6709ed04a551"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad111f81e12ec8d539e4d8cf5c2e6978d" id="r_ad111f81e12ec8d539e4d8cf5c2e6978d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_ad111f81e12ec8d539e4d8cf5c2e6978d.html#ad111f81e12ec8d539e4d8cf5c2e6978d">TR01_L3_CMD_CIPHERTEXT_MAX_SIZE</a>&#160;&#160;&#160;4112u</td></tr>
+<tr class="memdesc:ad111f81e12ec8d539e4d8cf5c2e6978d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max size of L3 Command ciphertext.  <br /></td></tr>
+<tr class="separator:ad111f81e12ec8d539e4d8cf5c2e6978d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1815dfa4b86aab9ec58a7dc83a68226" id="r_ae1815dfa4b86aab9ec58a7dc83a68226"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_ae1815dfa4b86aab9ec58a7dc83a68226.html#ae1815dfa4b86aab9ec58a7dc83a68226">TR01_L3_RES_CIPHERTEXT_MAX_SIZE</a>&#160;&#160;&#160;4097u</td></tr>
+<tr class="memdesc:ae1815dfa4b86aab9ec58a7dc83a68226"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max size of L3 Result ciphertext.  <br /></td></tr>
+<tr class="separator:ae1815dfa4b86aab9ec58a7dc83a68226"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae297b45066954d1a040d805a268738ec" id="r_ae297b45066954d1a040d805a268738ec"><td class="memItemLeft" align="right" valign="top"><a id="ae297b45066954d1a040d805a268738ec" name="ae297b45066954d1a040d805a268738ec"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_CIPHERTEXT_MAX_SIZE</b>&#160;&#160;&#160;<a class="el" href="libtropic__macros_8h_a19384e5ce1f0bfe6421b4f41caba116f.html#a19384e5ce1f0bfe6421b4f41caba116f">LT_COMPTIME_MAX</a>(<a class="el" href="libtropic__common_8h_ad111f81e12ec8d539e4d8cf5c2e6978d.html#ad111f81e12ec8d539e4d8cf5c2e6978d">TR01_L3_CMD_CIPHERTEXT_MAX_SIZE</a>, <a class="el" href="libtropic__common_8h_ae1815dfa4b86aab9ec58a7dc83a68226.html#ae1815dfa4b86aab9ec58a7dc83a68226">TR01_L3_RES_CIPHERTEXT_MAX_SIZE</a>)</td></tr>
+<tr class="memdesc:ae297b45066954d1a040d805a268738ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max size of ciphertext for both L3 Commands and L3 Responses. <br /></td></tr>
+<tr class="separator:ae297b45066954d1a040d805a268738ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a112b32d21c37548216431c338b234c20" id="r_a112b32d21c37548216431c338b234c20"><td class="memItemLeft" align="right" valign="top"><a id="a112b32d21c37548216431c338b234c20" name="a112b32d21c37548216431c338b234c20"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_PACKET_MAX_SIZE</b>&#160;&#160;&#160;(<a class="el" href="libtropic__common_8h.html#a405f18b7492a8107ab883a176ad822f4">TR01_L3_SIZE_SIZE</a> + <a class="el" href="libtropic__common_8h.html#ae297b45066954d1a040d805a268738ec">TR01_L3_CIPHERTEXT_MAX_SIZE</a> + <a class="el" href="libtropic__common_8h.html#a041b45b01e6fb6f7f8534aa407592e38">TR01_L3_TAG_SIZE</a>)</td></tr>
+<tr class="memdesc:a112b32d21c37548216431c338b234c20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Max possible size of one unit of transport on L3 (for both Commands and Responses). <br /></td></tr>
 <tr class="separator:a112b32d21c37548216431c338b234c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fbe3595ce94af9f6d2525447ccda385" id="r_a8fbe3595ce94af9f6d2525447ccda385"><td class="memItemLeft" align="right" valign="top"><a id="a8fbe3595ce94af9f6d2525447ccda385" name="a8fbe3595ce94af9f6d2525447ccda385"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>LT_SIZE_OF_L3_BUFF</b>&#160;&#160;&#160;<a class="el" href="libtropic__common_8h_a112b32d21c37548216431c338b234c20.html#a112b32d21c37548216431c338b234c20">TR01_L3_PACKET_MAX_SIZE</a></td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LT_SIZE_OF_L3_BUFF</b>&#160;&#160;&#160;<a class="el" href="libtropic__common_8h.html#a112b32d21c37548216431c338b234c20">TR01_L3_PACKET_MAX_SIZE</a></td></tr>
 <tr class="separator:a8fbe3595ce94af9f6d2525447ccda385"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2ae9f9bbfa586990f9258f74bc17e5f" id="r_ac2ae9f9bbfa586990f9258f74bc17e5f"><td class="memItemLeft" align="right" valign="top"><a id="ac2ae9f9bbfa586990f9258f74bc17e5f" name="ac2ae9f9bbfa586990f9258f74bc17e5f"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_AES256_KEY_LEN</b>&#160;&#160;&#160;32</td></tr>
@@ -381,6 +407,9 @@ Macros</h2></td></tr>
 <tr class="memitem:a260f3dc71a5125a874694533ecfbc20a" id="r_a260f3dc71a5125a874694533ecfbc20a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a260f3dc71a5125a874694533ecfbc20a.html#a260f3dc71a5125a874694533ecfbc20a">TR01_X25519_KEY_LEN</a>&#160;&#160;&#160;32</td></tr>
 <tr class="memdesc:a260f3dc71a5125a874694533ecfbc20a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of key used in X25519 function.  <br /></td></tr>
 <tr class="separator:a260f3dc71a5125a874694533ecfbc20a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80cdbf3c1bb83e12aa04bfd8a6ca3a76" id="r_a80cdbf3c1bb83e12aa04bfd8a6ca3a76"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a80cdbf3c1bb83e12aa04bfd8a6ca3a76.html#a80cdbf3c1bb83e12aa04bfd8a6ca3a76">TR01_X25519_KEY_BITS</a>&#160;&#160;&#160;255</td></tr>
+<tr class="memdesc:a80cdbf3c1bb83e12aa04bfd8a6ca3a76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bit size of Curve25519 used for X25519 (Useful for crypto backends which expect bit-size).  <br /></td></tr>
+<tr class="separator:a80cdbf3c1bb83e12aa04bfd8a6ca3a76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a212e30c0cdfd108785627bb17be2056e" id="r_a212e30c0cdfd108785627bb17be2056e"><td class="memItemLeft" align="right" valign="top"><a id="a212e30c0cdfd108785627bb17be2056e" name="a212e30c0cdfd108785627bb17be2056e"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_STPUB_LEN</b>&#160;&#160;&#160;<a class="el" href="libtropic__common_8h_a260f3dc71a5125a874694533ecfbc20a.html#a260f3dc71a5125a874694533ecfbc20a">TR01_X25519_KEY_LEN</a></td></tr>
 <tr class="memdesc:a212e30c0cdfd108785627bb17be2056e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of TROPIC01 X25519 public key for a Secure Channel Handshake. <br /></td></tr>
@@ -428,10 +457,6 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_R_MEM_DATA_SIZE_MIN</b>&#160;&#160;&#160;(1)</td></tr>
 <tr class="memdesc:ae97cfd708f30b5837c0b07a12fcb07dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimal size of one data slot in bytes. <br /></td></tr>
 <tr class="separator:ae97cfd708f30b5837c0b07a12fcb07dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50f6e16eb4f64344f77f86c8a5c451c9" id="r_a50f6e16eb4f64344f77f86c8a5c451c9"><td class="memItemLeft" align="right" valign="top"><a id="a50f6e16eb4f64344f77f86c8a5c451c9" name="a50f6e16eb4f64344f77f86c8a5c451c9"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_R_MEM_DATA_SIZE_MAX</b>&#160;&#160;&#160;(444)</td></tr>
-<tr class="memdesc:a50f6e16eb4f64344f77f86c8a5c451c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximal size of one data slot in bytes. <br /></td></tr>
-<tr class="separator:a50f6e16eb4f64344f77f86c8a5c451c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ab65d01df017f70445f3cbe700fc108" id="r_a4ab65d01df017f70445f3cbe700fc108"><td class="memItemLeft" align="right" valign="top"><a id="a4ab65d01df017f70445f3cbe700fc108" name="a4ab65d01df017f70445f3cbe700fc108"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_R_MEM_DATA_SLOT_MAX</b>&#160;&#160;&#160;(511)</td></tr>
 <tr class="memdesc:a4ab65d01df017f70445f3cbe700fc108"><td class="mdescLeft">&#160;</td><td class="mdescRight">Index of last data slot. TROPIC01 contains 512 slots indexed 0-511. <br /></td></tr>
@@ -569,7 +594,7 @@ typedef enum <a class="el" href="libtropic__common_8h_a889c8a58a40dbdb52f064457d
 <tr class="separator:ae576d8d4609a0940b373f0dcb0dcca95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b01074cce25c23f60bc88150bce1e87" id="r_a1b01074cce25c23f60bc88150bce1e87"><td class="memItemLeft" align="right" valign="top"><a id="a1b01074cce25c23f60bc88150bce1e87" name="a1b01074cce25c23f60bc88150bce1e87"></a>
 typedef enum <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3">lt_tr01_mode_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lt_tr01_mode_t</b></td></tr>
-<tr class="memdesc:a1b01074cce25c23f60bc88150bce1e87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Libtropic's internal values to track the mode TROPIC01 is currently in. <br /></td></tr>
+<tr class="memdesc:a1b01074cce25c23f60bc88150bce1e87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interprets TROPIC01's <b>Chip Modes</b> and <b>CHIP_STATUS</b> values (described in the TROPIC01 datasheet) and defines new modes (not described in the TROPIC01 datasheet) based on them. These modes are practical when working with the chip. <br /></td></tr>
 <tr class="separator:a1b01074cce25c23f60bc88150bce1e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac571c616908cb9eee786e209433df707" id="r_ac571c616908cb9eee786e209433df707"><td class="memItemLeft" align="right" valign="top"><a id="ac571c616908cb9eee786e209433df707" name="ac571c616908cb9eee786e209433df707"></a>
 typedef struct <a class="el" href="libtropic__common_8h.html#structlt__l2__state__t">lt_l2_state_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lt_l2_state_t</b></td></tr>
@@ -581,6 +606,10 @@ typedef enum <a class="el" href="libtropic__common_8h.html#a40ca6921c126a9e5f3bf
 <tr class="memitem:a0f55a4d50330d4245c95b81574dab8d2" id="r_a0f55a4d50330d4245c95b81574dab8d2"><td class="memItemLeft" align="right" valign="top"><a id="a0f55a4d50330d4245c95b81574dab8d2" name="a0f55a4d50330d4245c95b81574dab8d2"></a>
 typedef struct <a class="el" href="libtropic__common_8h.html#structlt__l3__state__t">lt_l3_state_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lt_l3_state_t</b></td></tr>
 <tr class="separator:a0f55a4d50330d4245c95b81574dab8d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00db913cb4e3c318c28f99d8573a8ab3" id="r_a00db913cb4e3c318c28f99d8573a8ab3"><td class="memItemLeft" align="right" valign="top"><a id="a00db913cb4e3c318c28f99d8573a8ab3" name="a00db913cb4e3c318c28f99d8573a8ab3"></a>
+typedef struct <a class="el" href="structlt__tr01__attrs__t.html">lt_tr01_attrs_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lt_tr01_attrs_t</b></td></tr>
+<tr class="memdesc:a00db913cb4e3c318c28f99d8573a8ab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures attributes that are different among TROPIC01's Application FW versions. <br /></td></tr>
+<tr class="separator:a00db913cb4e3c318c28f99d8573a8ab3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab6d70189915a5e5476978cb8afd11e9" id="r_aab6d70189915a5e5476978cb8afd11e9"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="libtropic__common_8h.html#structlt__handle__t">lt_handle_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_aab6d70189915a5e5476978cb8afd11e9.html#aab6d70189915a5e5476978cb8afd11e9">lt_handle_t</a></td></tr>
 <tr class="separator:aab6d70189915a5e5476978cb8afd11e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc56232f287d208a0ae7a4f0a8ff4f10" id="r_abc56232f287d208a0ae7a4f0a8ff4f10"><td class="memItemLeft" align="right" valign="top">typedef enum <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">lt_ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_abc56232f287d208a0ae7a4f0a8ff4f10.html#abc56232f287d208a0ae7a4f0a8ff4f10">lt_ret_t</a></td></tr>
@@ -610,7 +639,7 @@ typedef struct <a class="el" href="libtropic__common_8h.html#structlt__header__b
 <tr class="separator:a10289d4ec2440adec0437f4516ff4f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33202a1589729b14fda47069efd53de0" id="r_a33202a1589729b14fda47069efd53de0"><td class="memItemLeft" align="right" valign="top"><a id="a33202a1589729b14fda47069efd53de0" name="a33202a1589729b14fda47069efd53de0"></a>
 typedef struct <a class="el" href="libtropic__common_8h.html#structlt__header__boot__v2__t">lt_header_boot_v2_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lt_header_boot_v2_t</b></td></tr>
-<tr class="memdesc:a33202a1589729b14fda47069efd53de0"><td class="mdescLeft">&#160;</td><td class="mdescRight">When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs based on bootloader version. This header layout is returned by bootloader version v1.0.1. <br /></td></tr>
+<tr class="memdesc:a33202a1589729b14fda47069efd53de0"><td class="mdescLeft">&#160;</td><td class="mdescRight">When in MAINTENANCE mode, it is possible to read firmware header from a firmware bank. Returned data differs based on bootloader version. This header layout is returned by bootloader version v2.0.1. <br /></td></tr>
 <tr class="separator:a33202a1589729b14fda47069efd53de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb18ab91bb1973875358242f522a3809" id="r_afb18ab91bb1973875358242f522a3809"><td class="memItemLeft" align="right" valign="top"><a id="afb18ab91bb1973875358242f522a3809" name="afb18ab91bb1973875358242f522a3809"></a>
 typedef enum <a class="el" href="libtropic__common_8h.html#a9429f2724d43aa43479c6e549318d0e8">lt_pkey_index_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lt_pkey_index_t</b></td></tr>
@@ -663,10 +692,11 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a889c8a58a40dbdb52f064457de35ed7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Values for the Startup_Req command, which TROPIC01 uses to determine the mode to reboot into.  <a href="libtropic__common_8h_a889c8a58a40dbdb52f064457de35ed7f.html#a889c8a58a40dbdb52f064457de35ed7f">More...</a><br /></td></tr>
 <tr class="separator:a889c8a58a40dbdb52f064457de35ed7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f8656253ff65797abcc62ee12d9a3f3" id="r_a3f8656253ff65797abcc62ee12d9a3f3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3">lt_tr01_mode_t</a> { <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3aabc5df4aff3b953fcf6736df680d36af">LT_TR01_APP_MODE</a>
-, <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3afa374e35c562167d16440be5885372fe">LT_TR01_MAINTENANCE_MODE</a>
+<tr class="memitem:a3f8656253ff65797abcc62ee12d9a3f3" id="r_a3f8656253ff65797abcc62ee12d9a3f3"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3">lt_tr01_mode_t</a> { <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3a36d88310c45ef8492086efe0a5bad1dd">LT_TR01_MAINTENANCE</a>
+, <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3a67a9610d52cdbf6fb08e537046f2a349">LT_TR01_APPLICATION</a>
+, <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3a8e1abc99c6746bb7fea683ddcbfc4209">LT_TR01_ALARM</a>
  }</td></tr>
-<tr class="memdesc:a3f8656253ff65797abcc62ee12d9a3f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Libtropic's internal values to track the mode TROPIC01 is currently in.  <a href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3">More...</a><br /></td></tr>
+<tr class="memdesc:a3f8656253ff65797abcc62ee12d9a3f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interprets TROPIC01's <b>Chip Modes</b> and <b>CHIP_STATUS</b> values (described in the TROPIC01 datasheet) and defines new modes (not described in the TROPIC01 datasheet) based on them. These modes are practical when working with the chip.  <a href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3">More...</a><br /></td></tr>
 <tr class="separator:a3f8656253ff65797abcc62ee12d9a3f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40ca6921c126a9e5f3bf1a50634a7e97" id="r_a40ca6921c126a9e5f3bf1a50634a7e97"><td class="memItemLeft" align="right" valign="top"><a id="a40ca6921c126a9e5f3bf1a50634a7e97" name="a40ca6921c126a9e5f3bf1a50634a7e97"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h.html#a40ca6921c126a9e5f3bf1a50634a7e97">lt_secure_session_status_t</a> { <b>LT_SECURE_SESSION_ON</b> = 0x5A5A5A5A
 , <b>LT_SECURE_SESSION_OFF</b> = 0
@@ -680,52 +710,59 @@ Enumerations</h2></td></tr>
 , <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a4455f4cabc3ee1cc96a5f49078e72a5f">LT_PARAM_ERR</a> = 3
 , <br />
 &#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ae6a7f243654047dc93deb027afd7d0ad">LT_CRYPTO_ERR</a> = 4
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699af9238332e8571736bff16cba36bb21b7">LT_L1_SPI_ERROR</a> = 5
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699abd3d5b8deb169b1e4bdd6d62653465da">LT_L1_DATA_LEN_ERROR</a> = 6
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699afe77e32a611a31ef5819dcbbe861ec16">LT_L1_CHIP_STARTUP_MODE</a> = 7
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a8c1c5379cf52d7ee139e4bacdb89a7ee">LT_APP_FW_TOO_NEW</a> = 5
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a8f9e662dfeca217b989cce7efa42cd53">LT_REBOOT_UNSUCCESSFUL</a> = 6
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699af9238332e8571736bff16cba36bb21b7">LT_L1_SPI_ERROR</a> = 7
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a61cef4b86f73bfaeb5c333bd9ba16ab1">LT_L1_CHIP_ALARM_MODE</a> = 8
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa2942ab69ded40ebc36978ad7b533bb8">LT_L1_CHIP_BUSY</a> = 9
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aef3061eef4c055671a2b30a587cafa97">LT_L1_INT_TIMEOUT</a> = 10
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699af7a830c6f978bdc99738704cadeba5a5">LT_L3_R_MEM_DATA_READ_SLOT_EMPTY</a> = 11
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699abd3d5b8deb169b1e4bdd6d62653465da">LT_L1_DATA_LEN_ERROR</a> = 8
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699afe77e32a611a31ef5819dcbbe861ec16">LT_L1_CHIP_STARTUP_MODE</a> = 9
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a61cef4b86f73bfaeb5c333bd9ba16ab1">LT_L1_CHIP_ALARM_MODE</a> = 10
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa2942ab69ded40ebc36978ad7b533bb8">LT_L1_CHIP_BUSY</a> = 11
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad87691fe77f30c66e1ba64d85ac79310">LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL</a> = 12
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a769330604d7f755480904a8f3974567e">LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED</a> = 13
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ac16ccff1d199e5424f00159156533195">LT_L3_ECC_INVALID_KEY</a> = 14
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a0a02d78b75ece958cef7b77b86617adb">LT_L3_MCOUNTER_UPDATE_UPDATE_ERR</a> = 15
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aef3061eef4c055671a2b30a587cafa97">LT_L1_INT_TIMEOUT</a> = 12
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aca6f38f8783fc4d7174b3e1e97a6b4be">LT_L3_SLOT_NOT_EMPTY</a> = 13
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a9372e60367d9e12f1d26c5bf34d99e36">LT_L3_SLOT_EXPIRED</a> = 14
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a01a2d6f421fd315b6825eef2773f58c8">LT_L3_INVALID_KEY</a> = 15
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a028ee74d76871f0202b0f1b826213309">LT_L3_COUNTER_INVALID</a> = 16
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a68623baa9a2d9662a29955f6b7b36b7e">LT_L3_PAIRING_KEY_EMPTY</a> = 17
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a497252edb6ba90c8027c90dcac256afa">LT_L3_PAIRING_KEY_INVALID</a> = 18
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a31ddc191c5e2f32894a548258787e2c2">LT_L3_OK</a> = 19
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699afd7286215fee9e57179820389aa3b49a">LT_L3_UPDATE_ERR</a> = 16
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a028ee74d76871f0202b0f1b826213309">LT_L3_COUNTER_INVALID</a> = 17
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699adb07c1d3adadc3cf17e9728a0fbe9c0e">LT_L3_SLOT_EMPTY</a> = 18
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa74ec08be6477ae33c862dcd9f9c7ec0">LT_L3_SLOT_INVALID</a> = 19
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ab7772ddd5d1bc2df53a778e3fb51073f">LT_L3_FAIL</a> = 20
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a05b97e24fb16f0abf804c68e68a6bfb8">LT_L3_UNAUTHORIZED</a> = 21
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a1e0cde57d6121dc309d02696d7b7c89f">LT_L3_INVALID_CMD</a> = 22
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a2f27b0813b5d9fdb3c7dda9c1a9e46db">LT_L3_DATA_LEN_ERROR</a> = 23
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a31ddc191c5e2f32894a548258787e2c2">LT_L3_OK</a> = 20
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ab7772ddd5d1bc2df53a778e3fb51073f">LT_L3_FAIL</a> = 21
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a05b97e24fb16f0abf804c68e68a6bfb8">LT_L3_UNAUTHORIZED</a> = 22
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a1e0cde57d6121dc309d02696d7b7c89f">LT_L3_INVALID_CMD</a> = 23
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad2a38db114ec6c78134ef273af80aea6">LT_L2_IN_CRC_ERR</a> = 24
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ae9209463f563ecd73d60f973190c2bbf">LT_L2_REQ_CONT</a> = 25
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad21603607b6b1ecd43b2ee3f232b0151">LT_L2_RES_CONT</a> = 26
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a0ed4bd6ff4520a63bcb256e319289160">LT_L2_RESP_DISABLED</a> = 27
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ab4437bfe762c6bb35f1e61f2cdb701f9">LT_L3_HARDWARE_FAIL</a> = 24
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a2f27b0813b5d9fdb3c7dda9c1a9e46db">LT_L3_DATA_LEN_ERROR</a> = 25
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ac1147a21e4c8b7e5ae09760f2558fe6d">LT_L3_RES_SIZE_ERROR</a> = 26
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a181c1c4fd59df5ab9312ecbf3ac6615c">LT_L3_BUFFER_TOO_SMALL</a> = 27
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a69355892c15090f893756761c69512e7">LT_L2_HSK_ERR</a> = 28
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a1db0496854f71df6c786bcb4ccc5d7c9">LT_L2_NO_SESSION</a> = 29
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a69ad454cb404cacb90e776122031d0d6">LT_L2_TAG_ERR</a> = 30
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ae441e860757caa74fdc09706d3c45f08">LT_L2_CRC_ERR</a> = 31
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699af7a830c6f978bdc99738704cadeba5a5">LT_L3_R_MEM_DATA_READ_SLOT_EMPTY</a> = 28
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a1ef3275c2bce030397b2d71f6f97d76c">LT_L3_RESULT_UNKNOWN</a> = 29
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ae9209463f563ecd73d60f973190c2bbf">LT_L2_REQ_CONT</a> = 30
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad21603607b6b1ecd43b2ee3f232b0151">LT_L2_RES_CONT</a> = 31
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa4e09b8b4ae76852f3e6d04ebcd73a3e">LT_L2_GEN_ERR</a> = 32
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad6e14cab2e08500935eda4fb138afd4b">LT_L2_NO_RESP</a> = 33
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a8dc17faa263098735f554cb650998b75">LT_L2_UNKNOWN_REQ</a> = 34
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a3f779edd98d79c865d02082884c3f7e3">LT_L2_STATUS_NOT_RECOGNIZED</a> = 35
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a0ed4bd6ff4520a63bcb256e319289160">LT_L2_RESP_DISABLED</a> = 32
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a69355892c15090f893756761c69512e7">LT_L2_HSK_ERR</a> = 33
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a1db0496854f71df6c786bcb4ccc5d7c9">LT_L2_NO_SESSION</a> = 34
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a69ad454cb404cacb90e776122031d0d6">LT_L2_TAG_ERR</a> = 35
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa2811c089c7ceb7736aa0e0079f48265">LT_L2_DATA_LEN_ERROR</a> = 36
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ab89665c0348aac5a292a3543ec7b9a03">LT_CERT_STORE_INVALID</a> = 37
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aae47430e0a281a0789c1cdee6edc03d7">LT_CERT_UNSUPPORTED</a> = 38
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699afbd425c670e5a0090bffa8456e203e6f">LT_CERT_ITEM_NOT_FOUND</a> = 39
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ae441e860757caa74fdc09706d3c45f08">LT_L2_CRC_ERR</a> = 36
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa4e09b8b4ae76852f3e6d04ebcd73a3e">LT_L2_GEN_ERR</a> = 37
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad6e14cab2e08500935eda4fb138afd4b">LT_L2_NO_RESP</a> = 38
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a8dc17faa263098735f554cb650998b75">LT_L2_UNKNOWN_REQ</a> = 39
 , <br />
-&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa32e1873f6ac07e6a250187df10c2796">LT_NONCE_OVERFLOW</a> = 40
-, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aff10234eb228c0ecb80b234e4c328b82">LT_RET_T_LAST_VALUE</a> = 41
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ad2a38db114ec6c78134ef273af80aea6">LT_L2_IN_CRC_ERR</a> = 40
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699abd8de61ddc56eb4e8f66b2b84a47cbfc">LT_L2_RSP_LEN_ERROR</a> = 41
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699a623ca0d0ff4bbeaf94304f906225061a">LT_L2_STATUS_UNKNOWN</a> = 42
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699ab89665c0348aac5a292a3543ec7b9a03">LT_CERT_STORE_INVALID</a> = 43
+, <br />
+&#160;&#160;<a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aae47430e0a281a0789c1cdee6edc03d7">LT_CERT_UNSUPPORTED</a> = 44
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699afbd425c670e5a0090bffa8456e203e6f">LT_CERT_ITEM_NOT_FOUND</a> = 45
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aa32e1873f6ac07e6a250187df10c2796">LT_NONCE_OVERFLOW</a> = 46
+, <a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699aff10234eb228c0ecb80b234e4c328b82">LT_RET_T_LAST_VALUE</a> = 47
 <br />
  }</td></tr>
 <tr class="memdesc:a5bd8c869b1f48487474d8f9b1e266699"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum return type.  <a href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">More...</a><br /></td></tr>
@@ -1068,9 +1105,24 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a9f1d6c23c2768bc75624973a751c8da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mac-and-Destroy slot indexes. <br /></td></tr>
 <tr class="separator:a9f1d6c23c2768bc75624973a751c8da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ac4ff230793a41441e27ccedfd11daf5f" id="r_ac4ff230793a41441e27ccedfd11daf5f"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_ac4ff230793a41441e27ccedfd11daf5f.html#ac4ff230793a41441e27ccedfd11daf5f">sh0priv_eng_sample</a> []</td></tr>
+<tr class="memdesc:ac4ff230793a41441e27ccedfd11daf5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host MCU's X25519 private key to execute a Secure Channel Handshake on Pairing Key slot 0 of the engineering (pre-production) TROPIC01 samples.  <br /></td></tr>
+<tr class="separator:ac4ff230793a41441e27ccedfd11daf5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a985654cae4f73840835b8e0146d7d9c3" id="r_a985654cae4f73840835b8e0146d7d9c3"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a985654cae4f73840835b8e0146d7d9c3.html#a985654cae4f73840835b8e0146d7d9c3">sh0pub_eng_sample</a> []</td></tr>
+<tr class="memdesc:a985654cae4f73840835b8e0146d7d9c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host MCU's X25519 public key (stored in TROPIC01) to execute a Secure Channel Handshake on Pairing Key slot 0 of the engineering (pre-production) TROPIC01 samples.  <br /></td></tr>
+<tr class="separator:a985654cae4f73840835b8e0146d7d9c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa443c54a08c0bcf6ff8946d6141dfce3" id="r_aa443c54a08c0bcf6ff8946d6141dfce3"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_aa443c54a08c0bcf6ff8946d6141dfce3.html#aa443c54a08c0bcf6ff8946d6141dfce3">sh0priv_prod0</a> []</td></tr>
+<tr class="memdesc:aa443c54a08c0bcf6ff8946d6141dfce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host MCU's X25519 private key to execute a Secure Channel Handshake on Pairing Key slot 0 of the production TROPIC01 chips.  <br /></td></tr>
+<tr class="separator:aa443c54a08c0bcf6ff8946d6141dfce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67a124484892aa85e360cbdfec7748ad" id="r_a67a124484892aa85e360cbdfec7748ad"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="libtropic__common_8h_a67a124484892aa85e360cbdfec7748ad.html#a67a124484892aa85e360cbdfec7748ad">sh0pub_prod0</a> []</td></tr>
+<tr class="memdesc:a67a124484892aa85e360cbdfec7748ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Host MCU's X25519 public key (stored in TROPIC01) to execute a Secure Channel Handshake on Pairing Key slot 0 of the production TROPIC01 chips.  <br /></td></tr>
+<tr class="separator:a67a124484892aa85e360cbdfec7748ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><dl class="section author"><dt>Author</dt><dd>Tropic Square s.r.o. * </dd></dl>
+<div class="textblock"><dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2020-2025 Tropic Square s.r.o. </dd></dl>
 <dl class="section user"><dt>License</dt><dd>For the license see file LICENSE.txt file in the root directory of this source tree. </dd></dl>
 </div><hr/><h2 class="groupheader">Data Structure Documentation</h2>
 <a name="structlt__l3__gen__frame__t" id="structlt__l3__gen__frame__t"></a>
@@ -1093,11 +1145,11 @@ cmd_size</td>
 <td class="fielddoc">
 RES_SIZE or CMD_SIZE value. </td></tr>
 <tr><td class="fieldtype">
-<a id="a8600b097434ccb01ae5e6723b458ae29" name="a8600b097434ccb01ae5e6723b458ae29"></a>uint8_t</td>
+<a id="a8f17543fd0b984562b74145228ca55c9" name="a8f17543fd0b984562b74145228ca55c9"></a>uint8_t</td>
 <td class="fieldname">
-data[<a class="el" href="libtropic__common_8h_a112b32d21c37548216431c338b234c20.html#a112b32d21c37548216431c338b234c20">TR01_L3_PACKET_MAX_SIZE</a> - <a class="el" href="libtropic__common_8h.html#ae173954059276f32afa474efba61c0ef">TR01_L3_RES_SIZE_SIZE</a>]</td>
+data[<a class="el" href="libtropic__common_8h.html#ae297b45066954d1a040d805a268738ec">TR01_L3_CIPHERTEXT_MAX_SIZE</a>+<a class="el" href="libtropic__common_8h.html#a041b45b01e6fb6f7f8534aa407592e38">TR01_L3_TAG_SIZE</a>]</td>
 <td class="fielddoc">
-Command or result data including ID and TAG. </td></tr>
+Command or result ciphertext + tag. </td></tr>
 </table>
 
 </div>
@@ -1119,12 +1171,6 @@ Command or result data including ID and TAG. </td></tr>
 <a id="a724042d6b4bb220cdc5efbe53ecdabea" name="a724042d6b4bb220cdc5efbe53ecdabea"></a>void *</td>
 <td class="fieldname">
 device</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="aa55d9b6fafaef74d410a9daa8f7dd928" name="aa55d9b6fafaef74d410a9daa8f7dd928"></a>enum <a class="el" href="libtropic__common_8h_a3f8656253ff65797abcc62ee12d9a3f3.html#a3f8656253ff65797abcc62ee12d9a3f3">lt_tr01_mode_t</a></td>
-<td class="fieldname">
-mode</td>
 <td class="fielddoc">
 </td></tr>
 <tr><td class="fieldtype">
@@ -1163,27 +1209,21 @@ session_status</td>
 <td class="fielddoc">
 </td></tr>
 <tr><td class="fieldtype">
-<a id="ac326c1ba1720dcf183908299e07a48d0" name="ac326c1ba1720dcf183908299e07a48d0"></a>uint8_t</td>
+<a id="af5d2cdc0e363a179a229f8f4c1189992" name="af5d2cdc0e363a179a229f8f4c1189992"></a>uint8_t</td>
 <td class="fieldname">
-encryption_IV[12]</td>
+encryption_IV[<a class="el" href="libtropic__common_8h.html#ade5362666ab8e135878f3987d65237b7">TR01_L3_IV_SIZE</a>]</td>
 <td class="fielddoc">
 </td></tr>
 <tr><td class="fieldtype">
-<a id="a1e0d7c5e742417e030dadbec54bb8482" name="a1e0d7c5e742417e030dadbec54bb8482"></a>uint8_t</td>
+<a id="a2b5bade81a887f8f4fe5194bcd77cbfd" name="a2b5bade81a887f8f4fe5194bcd77cbfd"></a>uint8_t</td>
 <td class="fieldname">
-decryption_IV[12]</td>
+decryption_IV[<a class="el" href="libtropic__common_8h.html#ade5362666ab8e135878f3987d65237b7">TR01_L3_IV_SIZE</a>]</td>
 <td class="fielddoc">
 </td></tr>
 <tr><td class="fieldtype">
-<a id="a991e26183b025375f4af4408e71cb61c" name="a991e26183b025375f4af4408e71cb61c"></a>uint8_t</td>
+<a id="ab53aa8239d8c5b39a61ed10d386ddfe6" name="ab53aa8239d8c5b39a61ed10d386ddfe6"></a>void *</td>
 <td class="fieldname">
-encrypt[352]</td>
-<td class="fielddoc">
-</td></tr>
-<tr><td class="fieldtype">
-<a id="ab198482fb9d7dee9765d4b41489db679" name="ab198482fb9d7dee9765d4b41489db679"></a>uint8_t</td>
-<td class="fieldname">
-decrypt[352]</td>
+crypto_ctx</td>
 <td class="fielddoc">
 </td></tr>
 <tr><td class="fieldtype">
@@ -1228,6 +1268,12 @@ l2</td>
 <a id="a6996a030f4b4568716e71593177b981b" name="a6996a030f4b4568716e71593177b981b"></a><a class="el" href="libtropic__common_8h.html#structlt__l3__state__t">lt_l3_state_t</a></td>
 <td class="fieldname">
 l3</td>
+<td class="fielddoc">
+</td></tr>
+<tr><td class="fieldtype">
+<a id="af8cf6e8deaa3a8b505e5d9b7a82fe0bf" name="af8cf6e8deaa3a8b505e5d9b7a82fe0bf"></a><a class="el" href="structlt__tr01__attrs__t.html">lt_tr01_attrs_t</a></td>
+<td class="fieldname">
+tr01_attrs</td>
 <td class="fielddoc">
 </td></tr>
 </table>

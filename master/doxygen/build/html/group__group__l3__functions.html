@@ -106,7 +106,6 @@ $(document).ready(function(){initNavTree('group__group__l3__functions.html','');
 <div class="header">
   <div class="summary">
 <a href="#files">Files</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">4.1. Layer 3: Encrypt/Decrypt</div></div>
 </div><!--header-->
@@ -121,53 +120,6 @@ Files</h2></td></tr>
 <tr class="memdesc:lt__l3__process_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Layer 3 transfer functions declarations. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ga92b5e7af8a98d920999fb600db3f71a6" id="r_ga92b5e7af8a98d920999fb600db3f71a6"><td class="memItemLeft" align="right" valign="top"><a id="ga92b5e7af8a98d920999fb600db3f71a6" name="ga92b5e7af8a98d920999fb600db3f71a6"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_OK</b>&#160;&#160;&#160;0xC3u</td></tr>
-<tr class="memdesc:ga92b5e7af8a98d920999fb600db3f71a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value. <br /></td></tr>
-<tr class="separator:ga92b5e7af8a98d920999fb600db3f71a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad352f4588ef43bb4aaab8f334d2b9f36" id="r_gad352f4588ef43bb4aaab8f334d2b9f36"><td class="memItemLeft" align="right" valign="top"><a id="gad352f4588ef43bb4aaab8f334d2b9f36" name="gad352f4588ef43bb4aaab8f334d2b9f36"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_FAIL</b>&#160;&#160;&#160;0x3Cu</td></tr>
-<tr class="memdesc:gad352f4588ef43bb4aaab8f334d2b9f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value. <br /></td></tr>
-<tr class="separator:gad352f4588ef43bb4aaab8f334d2b9f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga377560d56ea57ece24636db3c16e3be8" id="r_ga377560d56ea57ece24636db3c16e3be8"><td class="memItemLeft" align="right" valign="top"><a id="ga377560d56ea57ece24636db3c16e3be8" name="ga377560d56ea57ece24636db3c16e3be8"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_UNAUTHORIZED</b>&#160;&#160;&#160;0x01u</td></tr>
-<tr class="memdesc:ga377560d56ea57ece24636db3c16e3be8"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value. <br /></td></tr>
-<tr class="separator:ga377560d56ea57ece24636db3c16e3be8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7baaf99e9432346b71e78c63a1589d51" id="r_ga7baaf99e9432346b71e78c63a1589d51"><td class="memItemLeft" align="right" valign="top"><a id="ga7baaf99e9432346b71e78c63a1589d51" name="ga7baaf99e9432346b71e78c63a1589d51"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_INVALID_CMD</b>&#160;&#160;&#160;0x02u</td></tr>
-<tr class="memdesc:ga7baaf99e9432346b71e78c63a1589d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value. <br /></td></tr>
-<tr class="separator:ga7baaf99e9432346b71e78c63a1589d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga103b1a2d3c48a1cc0af8795b29a67924" id="r_ga103b1a2d3c48a1cc0af8795b29a67924"><td class="memItemLeft" align="right" valign="top"><a id="ga103b1a2d3c48a1cc0af8795b29a67924" name="ga103b1a2d3c48a1cc0af8795b29a67924"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_ECC_INVALID_KEY</b>&#160;&#160;&#160;0x12u</td></tr>
-<tr class="memdesc:ga103b1a2d3c48a1cc0af8795b29a67924"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value returned from ecc_key_read. <br /></td></tr>
-<tr class="separator:ga103b1a2d3c48a1cc0af8795b29a67924"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9611247648742d9a53569264e497d9cb" id="r_ga9611247648742d9a53569264e497d9cb"><td class="memItemLeft" align="right" valign="top"><a id="ga9611247648742d9a53569264e497d9cb" name="ga9611247648742d9a53569264e497d9cb"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_PAIRING_KEY_EMPTY</b>&#160;&#160;&#160;0x15u</td></tr>
-<tr class="memdesc:ga9611247648742d9a53569264e497d9cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value returned from pairing_key_read. <br /></td></tr>
-<tr class="separator:ga9611247648742d9a53569264e497d9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab799affc98ea081cd4b2fbe764749fbc" id="r_gab799affc98ea081cd4b2fbe764749fbc"><td class="memItemLeft" align="right" valign="top"><a id="gab799affc98ea081cd4b2fbe764749fbc" name="gab799affc98ea081cd4b2fbe764749fbc"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_PAIRING_KEY_INVALID</b>&#160;&#160;&#160;0x16u</td></tr>
-<tr class="memdesc:gab799affc98ea081cd4b2fbe764749fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 RESULT ﬁeld Value returned from pairing_key_read. <br /></td></tr>
-<tr class="separator:gab799affc98ea081cd4b2fbe764749fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga02a518d0d1d8024cb566d14341f0208c" id="r_ga02a518d0d1d8024cb566d14341f0208c"><td class="memItemLeft" align="right" valign="top"><a id="ga02a518d0d1d8024cb566d14341f0208c" name="ga02a518d0d1d8024cb566d14341f0208c"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_R_MEM_DATA_WRITE_WRITE_FAIL</b>&#160;&#160;&#160;0x10</td></tr>
-<tr class="memdesc:ga02a518d0d1d8024cb566d14341f0208c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The slot is already written in. <br /></td></tr>
-<tr class="separator:ga02a518d0d1d8024cb566d14341f0208c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadaa3e60db504e3ad1a209dfecc152476" id="r_gadaa3e60db504e3ad1a209dfecc152476"><td class="memItemLeft" align="right" valign="top"><a id="gadaa3e60db504e3ad1a209dfecc152476" name="gadaa3e60db504e3ad1a209dfecc152476"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED</b>&#160;&#160;&#160;0x11</td></tr>
-<tr class="memdesc:gadaa3e60db504e3ad1a209dfecc152476"><td class="mdescLeft">&#160;</td><td class="mdescRight">The writing operation limit is reached for the slot. <br /></td></tr>
-<tr class="separator:gadaa3e60db504e3ad1a209dfecc152476"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae00aad28a1a524a1cd2d8f9a5b995a2a" id="r_gae00aad28a1a524a1cd2d8f9a5b995a2a"><td class="memItemLeft" align="right" valign="top"><a id="gae00aad28a1a524a1cd2d8f9a5b995a2a" name="gae00aad28a1a524a1cd2d8f9a5b995a2a"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_MCOUNTER_UPDATE_ERROR</b>&#160;&#160;&#160;0x13</td></tr>
-<tr class="memdesc:gae00aad28a1a524a1cd2d8f9a5b995a2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Failure to update the specified Monotonic Counter. The Monotonic Counter is already at 0. <br /></td></tr>
-<tr class="separator:gae00aad28a1a524a1cd2d8f9a5b995a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga319afeae1a13c3ff6513aaaee4c28a7b" id="r_ga319afeae1a13c3ff6513aaaee4c28a7b"><td class="memItemLeft" align="right" valign="top"><a id="ga319afeae1a13c3ff6513aaaee4c28a7b" name="ga319afeae1a13c3ff6513aaaee4c28a7b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_MCOUNTER_COUNTER_INVALID</b>&#160;&#160;&#160;0x14</td></tr>
-<tr class="memdesc:ga319afeae1a13c3ff6513aaaee4c28a7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. <br /></td></tr>
-<tr class="separator:ga319afeae1a13c3ff6513aaaee4c28a7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga11bc973eefa3237cdd3c79cf7d37478e" id="r_ga11bc973eefa3237cdd3c79cf7d37478e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">lt_ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__l3__functions_ga11bc973eefa3237cdd3c79cf7d37478e.html#ga11bc973eefa3237cdd3c79cf7d37478e">lt_l3_encrypt_request</a> (<a class="el" href="libtropic__common_8h.html#structlt__l3__state__t">lt_l3_state_t</a> *s3)</td></tr>
@@ -179,6 +131,62 @@ Functions</h2></td></tr>
 <tr class="memitem:ga24d314129bd64aa69a75292613900e8e" id="r_ga24d314129bd64aa69a75292613900e8e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__l3__functions_ga24d314129bd64aa69a75292613900e8e.html#ga24d314129bd64aa69a75292613900e8e">lt_l3_invalidate_host_session_data</a> (<a class="el" href="libtropic__common_8h.html#structlt__l3__state__t">lt_l3_state_t</a> *s3)</td></tr>
 <tr class="memdesc:ga24d314129bd64aa69a75292613900e8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalidates host's session data.  <br /></td></tr>
 <tr class="separator:ga24d314129bd64aa69a75292613900e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader">Common L3 Command result codes</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p>L3 Command result codes used by all commands. </p>
+</td></tr>
+<tr class="memitem:ga92b5e7af8a98d920999fb600db3f71a6" id="r_ga92b5e7af8a98d920999fb600db3f71a6"><td class="memItemLeft" align="right" valign="top"><a id="ga92b5e7af8a98d920999fb600db3f71a6" name="ga92b5e7af8a98d920999fb600db3f71a6"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_OK</b>&#160;&#160;&#160;0xC3</td></tr>
+<tr class="memdesc:ga92b5e7af8a98d920999fb600db3f71a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">L3 Command executed successfully. <br /></td></tr>
+<tr class="separator:ga92b5e7af8a98d920999fb600db3f71a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad352f4588ef43bb4aaab8f334d2b9f36" id="r_gad352f4588ef43bb4aaab8f334d2b9f36"><td class="memItemLeft" align="right" valign="top"><a id="gad352f4588ef43bb4aaab8f334d2b9f36" name="gad352f4588ef43bb4aaab8f334d2b9f36"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_FAIL</b>&#160;&#160;&#160;0x3C</td></tr>
+<tr class="memdesc:gad352f4588ef43bb4aaab8f334d2b9f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic L3 command failure. <br /></td></tr>
+<tr class="separator:gad352f4588ef43bb4aaab8f334d2b9f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga377560d56ea57ece24636db3c16e3be8" id="r_ga377560d56ea57ece24636db3c16e3be8"><td class="memItemLeft" align="right" valign="top"><a id="ga377560d56ea57ece24636db3c16e3be8" name="ga377560d56ea57ece24636db3c16e3be8"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_UNAUTHORIZED</b>&#160;&#160;&#160;0x01</td></tr>
+<tr class="memdesc:ga377560d56ea57ece24636db3c16e3be8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unauthorized access. <br /></td></tr>
+<tr class="separator:ga377560d56ea57ece24636db3c16e3be8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7baaf99e9432346b71e78c63a1589d51" id="r_ga7baaf99e9432346b71e78c63a1589d51"><td class="memItemLeft" align="right" valign="top"><a id="ga7baaf99e9432346b71e78c63a1589d51" name="ga7baaf99e9432346b71e78c63a1589d51"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_INVALID_CMD</b>&#160;&#160;&#160;0x02</td></tr>
+<tr class="memdesc:ga7baaf99e9432346b71e78c63a1589d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invalid or unsupported L3 command identifier. <br /></td></tr>
+<tr class="separator:ga7baaf99e9432346b71e78c63a1589d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader">Specific L3 Command result codes</h2></td></tr>
+<tr><td class="ititle" colspan="2"><p>L3 Command result codes specific to only some of the commands. </p>
+</td></tr>
+<tr class="memitem:gac86cc22c35b8e487a03f41fadc98ac7b" id="r_gac86cc22c35b8e487a03f41fadc98ac7b"><td class="memItemLeft" align="right" valign="top"><a id="gac86cc22c35b8e487a03f41fadc98ac7b" name="gac86cc22c35b8e487a03f41fadc98ac7b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_SLOT_NOT_EMPTY</b>&#160;&#160;&#160;0x10</td></tr>
+<tr class="memdesc:gac86cc22c35b8e487a03f41fadc98ac7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The target slot is not empty when expected to be. <br /></td></tr>
+<tr class="separator:gac86cc22c35b8e487a03f41fadc98ac7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9b7ebfe734cbe363feb22fa178243970" id="r_ga9b7ebfe734cbe363feb22fa178243970"><td class="memItemLeft" align="right" valign="top"><a id="ga9b7ebfe734cbe363feb22fa178243970" name="ga9b7ebfe734cbe363feb22fa178243970"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_SLOT_EXPIRED</b>&#160;&#160;&#160;0x11</td></tr>
+<tr class="memdesc:ga9b7ebfe734cbe363feb22fa178243970"><td class="mdescLeft">&#160;</td><td class="mdescRight">The target FLASH slot has expired. <br /></td></tr>
+<tr class="separator:ga9b7ebfe734cbe363feb22fa178243970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf45b1a04389dad4e5262783773820389" id="r_gaf45b1a04389dad4e5262783773820389"><td class="memItemLeft" align="right" valign="top"><a id="gaf45b1a04389dad4e5262783773820389" name="gaf45b1a04389dad4e5262783773820389"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_INVALID_KEY</b>&#160;&#160;&#160;0x12</td></tr>
+<tr class="memdesc:gaf45b1a04389dad4e5262783773820389"><td class="mdescLeft">&#160;</td><td class="mdescRight">The key in selected slot is invalid or corrupted. <br /></td></tr>
+<tr class="separator:gaf45b1a04389dad4e5262783773820389"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1a20ab15ccb3c3f395802e53095a8fcc" id="r_ga1a20ab15ccb3c3f395802e53095a8fcc"><td class="memItemLeft" align="right" valign="top"><a id="ga1a20ab15ccb3c3f395802e53095a8fcc" name="ga1a20ab15ccb3c3f395802e53095a8fcc"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_UPDATE_ERR</b>&#160;&#160;&#160;0x13</td></tr>
+<tr class="memdesc:ga1a20ab15ccb3c3f395802e53095a8fcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update operation failed (i.e. mcounter done). <br /></td></tr>
+<tr class="separator:ga1a20ab15ccb3c3f395802e53095a8fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga58a929bb30111ca9a27652afea3b470c" id="r_ga58a929bb30111ca9a27652afea3b470c"><td class="memItemLeft" align="right" valign="top"><a id="ga58a929bb30111ca9a27652afea3b470c" name="ga58a929bb30111ca9a27652afea3b470c"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_COUNTER_INVALID</b>&#160;&#160;&#160;0x14</td></tr>
+<tr class="memdesc:ga58a929bb30111ca9a27652afea3b470c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The counter is disabled or has failed. <br /></td></tr>
+<tr class="separator:ga58a929bb30111ca9a27652afea3b470c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabe94f43858686d9de917d0da2c55fa02" id="r_gabe94f43858686d9de917d0da2c55fa02"><td class="memItemLeft" align="right" valign="top"><a id="gabe94f43858686d9de917d0da2c55fa02" name="gabe94f43858686d9de917d0da2c55fa02"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_SLOT_EMPTY</b>&#160;&#160;&#160;0x15</td></tr>
+<tr class="memdesc:gabe94f43858686d9de917d0da2c55fa02"><td class="mdescLeft">&#160;</td><td class="mdescRight">The requested slot is empty and contains no valid data. <br /></td></tr>
+<tr class="separator:gabe94f43858686d9de917d0da2c55fa02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga03b53a69c4a251738b14be87f6081f33" id="r_ga03b53a69c4a251738b14be87f6081f33"><td class="memItemLeft" align="right" valign="top"><a id="ga03b53a69c4a251738b14be87f6081f33" name="ga03b53a69c4a251738b14be87f6081f33"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_SLOT_INVALID</b>&#160;&#160;&#160;0x16</td></tr>
+<tr class="memdesc:ga03b53a69c4a251738b14be87f6081f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">The slot content is invalidated. <br /></td></tr>
+<tr class="separator:ga03b53a69c4a251738b14be87f6081f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga09716c41752cce9cb659e53206d09586" id="r_ga09716c41752cce9cb659e53206d09586"><td class="memItemLeft" align="right" valign="top"><a id="ga09716c41752cce9cb659e53206d09586" name="ga09716c41752cce9cb659e53206d09586"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TR01_L3_RESULT_HARDWARE_FAIL</b>&#160;&#160;&#160;0x17</td></tr>
+<tr class="memdesc:ga09716c41752cce9cb659e53206d09586"><td class="mdescLeft">&#160;</td><td class="mdescRight">A hardware error occurred during a write operation. <br /></td></tr>
+<tr class="separator:ga09716c41752cce9cb659e53206d09586"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 </div><!-- contents -->

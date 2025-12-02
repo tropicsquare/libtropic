@@ -120,19 +120,19 @@ $(document).ready(function(){initNavTree('group__libtropic__examples_ga169dcbe60
       </table>
 </div><div class="memdoc">
 <p>Value MACANDD_ROUNDS represents a number of possible PIN gueses, this value also affects size of lt_macandd_nvm_t struct. Technically TROPIC01 is capable to have this set to 128, therefore provide 128 Mac And Destroy tries, which would require roughly 128*32 bytes in non volatile memory for storing data related to M&amp;D tries.</p>
-<p>In this example TROPIC01's R memory is used as a storage for data during power cycle (specifically, the last slot is used). For a sake of simplicity, only one R memory slot is used as a storage, which means 444B of storage are available.</p>
-<p>Therefore MACANDD_ROUNDS is here limited to 12 -&gt; biggest possible number of tries which fits into 444B one R memory slot.</p>
+<p>In this example, TROPIC01's User R-Memory is used as a storage for data during power cycle (specifically, the last slot is used). For a sake of simplicity, only one User R-Memory slot is used as a storage.</p>
+<p>Therefore MACANDD_ROUNDS is here limited to 12 -&gt; the biggest possible number of tries which fits into one User R-Memory slot (slot size in User R-Memory is atleast 444B in all TROPIC01 chips).</p>
 <dl class="section note"><dt>Note</dt><dd>We recommend reading TROPIC01's datasheet before diving into this example!</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">h</td><td>Device's handle</td></tr>
+    <tr><td class="paramname">h</td><td>Handle for communication with TROPIC01. It is assumed that the <code>h.l2.device</code> and <code>h.l3.crypto_ctx</code> members were already initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle of the handle. Refer to the 'Get Started'-&gt;'Integrating Libtropic'-&gt;'How to Use' Section in the Libtropic documentation for more information.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">0</td><td>Function executed successfully </td></tr>
-    <tr><td class="paramname">-1</td><td>Function did not execute successully </td></tr>
+    <tr><td class="paramname">-1</td><td>Function did not execute successfully </td></tr>
   </table>
   </dd>
 </dl>

@@ -129,10 +129,10 @@ $(document).ready(function(){initNavTree('group__libtropic__API__helpers_ga411a2
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Only the zero bits in <code>config</code> are written.</p>
+<p>Only the zero bits in <code>config</code> are written. </p><dl class="section warning"><dt>Warning</dt><dd>The I-Config resides in I-Memory, which has narrower operating temperature range (-20 °C to 85 °C) than the rest of TROPIC01. New CPU firmware versions (v2.0.0 and newer) return error when the operation is unsuccessful, but with older firmwares the operation fails silently. If you use CPU firmware older than v2.0.0, make sure to manually check whether the I-Config was correctly written if operating outside this range. Refer to datasheet for absolute maximum ratings.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">h</td><td>Device's handle </td></tr>
+    <tr><td class="paramname">h</td><td>Handle for communication with TROPIC01 </td></tr>
     <tr><td class="paramname">config</td><td>Array into which objects are read</td></tr>
   </table>
   </dd>

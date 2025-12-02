@@ -116,9 +116,25 @@ $(document).ready(function(){initNavTree('libtropic__common_8h_a3f8656253ff65797
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3f8656253ff65797abcc62ee12d9a3f3aabc5df4aff3b953fcf6736df680d36af" name="a3f8656253ff65797abcc62ee12d9a3f3aabc5df4aff3b953fcf6736df680d36af"></a>LT_TR01_APP_MODE&#160;</td><td class="fielddoc"><p>TROPIC01 is in Application mode. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3f8656253ff65797abcc62ee12d9a3f3a36d88310c45ef8492086efe0a5bad1dd" name="a3f8656253ff65797abcc62ee12d9a3f3a36d88310c45ef8492086efe0a5bad1dd"></a>LT_TR01_MAINTENANCE&#160;</td><td class="fielddoc"><p>TROPIC01 is in Maintenance Mode (defined by Libtropic), if it is not running Application FW and is ready to accept L2 Requests defined by the Bootloader API (refer to the TROPIC01 User API). </p>
+<p>Values of <b>Chip Mode</b> and <b>CHIP_STATUS</b> from the datasheet:</p>
+<ul>
+<li><b>Chip Mode</b>: Start-up</li>
+<li><b>CHIP_STATUS</b>: READY=1, ALARM=0, START=1 </li>
+</ul>
 </td></tr>
-<tr><td class="fieldname"><a id="a3f8656253ff65797abcc62ee12d9a3f3afa374e35c562167d16440be5885372fe" name="a3f8656253ff65797abcc62ee12d9a3f3afa374e35c562167d16440be5885372fe"></a>LT_TR01_MAINTENANCE_MODE&#160;</td><td class="fielddoc"><p>TROPIC01 is in Maintenance mode. </p>
+<tr><td class="fieldname"><a id="a3f8656253ff65797abcc62ee12d9a3f3a67a9610d52cdbf6fb08e537046f2a349" name="a3f8656253ff65797abcc62ee12d9a3f3a67a9610d52cdbf6fb08e537046f2a349"></a>LT_TR01_APPLICATION&#160;</td><td class="fielddoc"><p>TROPIC01 is in Application Mode (defined by Libtropic), if it is running Application FW and is ready to accept L2 Requests or L3 Commands defined by the Application API (refer to the TROPIC01 User API). </p>
+<p>Values of <b>Chip Mode</b> and <b>CHIP_STATUS</b> from the datasheet:</p>
+<ul>
+<li><b>Chip Mode</b>: Idle or Secure Channel or Sleep</li>
+<li><b>CHIP_STATUS</b>: READY=1, ALARM=0, START=0 </li>
+</ul>
+</td></tr>
+<tr><td class="fieldname"><a id="a3f8656253ff65797abcc62ee12d9a3f3a8e1abc99c6746bb7fea683ddcbfc4209" name="a3f8656253ff65797abcc62ee12d9a3f3a8e1abc99c6746bb7fea683ddcbfc4209"></a>LT_TR01_ALARM&#160;</td><td class="fielddoc"><p>TROPIC01 is in Alarm Mode (defined by Libtropic) if the values of <b>Chip Mode</b> and <b>CHIP_STATUS</b> from the datasheet are: </p>
+<ul>
+<li><b>Chip Mode</b>: Alarm</li>
+<li><b>CHIP_STATUS</b>: READY=?, ALARM=1, START=? </li>
+</ul>
 </td></tr>
 </table>
 

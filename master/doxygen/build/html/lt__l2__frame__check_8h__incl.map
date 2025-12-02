@@ -1,12 +1,19 @@
 <map id="lt_l2_frame_check.h" name="lt_l2_frame_check.h">
-<area shape="rect" id="Node000001" title="Layer 2 frame check functions declarations." alt="" coords="15,5,168,31"/>
+<area shape="rect" id="Node000001" title="Layer 2 frame check functions declarations." alt="" coords="83,5,236,31"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,152,76,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,32,63,80,47,139,42,138,58,78,82,30"/>
-<area shape="rect" id="Node000003" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="73,79,224,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="103,29,133,66,129,70,99,33"/>
-<area shape="poly" id="edge5_Node000003_Node000002" title=" " alt="" coords="133,106,71,147,68,142,130,102"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="103,152,186,177"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="151,104,149,139,143,138,145,104"/>
-<area shape="rect" id="Node000005" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="211,152,353,177"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="171,102,249,143,247,148,169,106"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="152,33,61,143,57,140,148,29"/>
+<area shape="rect" id="Node000003" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="172,79,323,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="175,29,224,68,221,72,172,33"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="215,107,88,150,86,145,213,101"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="101,152,183,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="232,106,172,147,169,142,229,102"/>
+<area shape="rect" id="Node000005" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="208,152,351,177"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="255,103,271,139,266,141,250,105"/>
+<area shape="rect" id="Node000006" href="$tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="375,152,563,177"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="284,101,421,145,419,150,282,107"/>
+<area shape="rect" id="Node000008" href="$tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="587,152,774,177"/>
+<area shape="poly" id="edge8_Node000003_Node000008" title=" " alt="" coords="317,101,598,147,597,152,317,107"/>
+<area shape="rect" id="Node000007" href="$bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="545,225,603,251"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="487,175,547,215,544,220,484,180"/>
+<area shape="poly" id="edge9_Node000008_Node000007" title=" " alt="" coords="665,180,604,220,601,215,662,175"/>
 </map>

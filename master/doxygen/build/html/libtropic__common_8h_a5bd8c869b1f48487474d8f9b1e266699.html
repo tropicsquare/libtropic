@@ -125,6 +125,14 @@ $(document).ready(function(){initNavTree('libtropic__common_8h_a5bd8c869b1f48487
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ae6a7f243654047dc93deb027afd7d0ad" name="a5bd8c869b1f48487474d8f9b1e266699ae6a7f243654047dc93deb027afd7d0ad"></a>LT_CRYPTO_ERR&#160;</td><td class="fielddoc"><p>Error detected during cryptographic operation. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a8c1c5379cf52d7ee139e4bacdb89a7ee" name="a5bd8c869b1f48487474d8f9b1e266699a8c1c5379cf52d7ee139e4bacdb89a7ee"></a>LT_APP_FW_TOO_NEW&#160;</td><td class="fielddoc"><p>TROPIC01's Application FW is too new for the current version of Libtropic. Please update Libtropic to a newer release version. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a8f9e662dfeca217b989cce7efa42cd53" name="a5bd8c869b1f48487474d8f9b1e266699a8f9e662dfeca217b989cce7efa42cd53"></a>LT_REBOOT_UNSUCCESSFUL&#160;</td><td class="fielddoc"><p>TROPIC01 executed the Startup_Req L2 Request (invoked by calling <code><a class="el" href="group__libtropic__API_ga1a297194a21f3c6d4c74b83fd9045f41.html#ga1a297194a21f3c6d4c74b83fd9045f41" title="Reboots TROPIC01.">lt_reboot()</a></code>) successfully, but the mode TROPIC01 is in after the reboot is not the expected one based on the <code>startup_id</code> argument: </p>
+<ul>
+<li><code>startup_id</code>==<code>TR01_REBOOT</code> and TROPIC01's mode after successful reboot is <b>not</b> <code>LT_TR01_APPLICATION</code> (this can e.g. happen when the chip, for some reason, cannot execute the Application FW - it will stay in Start-up Mode no matter the <code>startup_id</code>), or</li>
+<li><code>startup_id</code>==<code>TR01_MAINTENANCE_REBOOT</code> and TROPIC01's mode after successful reboot is <b>not</b> <code>LT_TR01_MAINTENANCE</code>. </li>
+</ul>
+</td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699af9238332e8571736bff16cba36bb21b7" name="a5bd8c869b1f48487474d8f9b1e266699af9238332e8571736bff16cba36bb21b7"></a>LT_L1_SPI_ERROR&#160;</td><td class="fielddoc"><p>Some SPI related operation was not successful. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699abd3d5b8deb169b1e4bdd6d62653465da" name="a5bd8c869b1f48487474d8f9b1e266699abd3d5b8deb169b1e4bdd6d62653465da"></a>LT_L1_DATA_LEN_ERROR&#160;</td><td class="fielddoc"><p>Data does not have an expected length. </p>
@@ -137,33 +145,41 @@ $(document).ready(function(){initNavTree('libtropic__common_8h_a5bd8c869b1f48487
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699aef3061eef4c055671a2b30a587cafa97" name="a5bd8c869b1f48487474d8f9b1e266699aef3061eef4c055671a2b30a587cafa97"></a>LT_L1_INT_TIMEOUT&#160;</td><td class="fielddoc"><p>Interrupt pin did not fire as expected. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699af7a830c6f978bdc99738704cadeba5a5" name="a5bd8c869b1f48487474d8f9b1e266699af7a830c6f978bdc99738704cadeba5a5"></a>LT_L3_R_MEM_DATA_READ_SLOT_EMPTY&#160;</td><td class="fielddoc"><p>User slot is empty. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699aca6f38f8783fc4d7174b3e1e97a6b4be" name="a5bd8c869b1f48487474d8f9b1e266699aca6f38f8783fc4d7174b3e1e97a6b4be"></a>LT_L3_SLOT_NOT_EMPTY&#160;</td><td class="fielddoc"><p>L3 result [API R_Mem_Data_Write]: The target slot is already written. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ad87691fe77f30c66e1ba64d85ac79310" name="a5bd8c869b1f48487474d8f9b1e266699ad87691fe77f30c66e1ba64d85ac79310"></a>LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL&#160;</td><td class="fielddoc"><p>L3 result [API r_mem_data_write]: write failed, because slot is already written in. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a9372e60367d9e12f1d26c5bf34d99e36" name="a5bd8c869b1f48487474d8f9b1e266699a9372e60367d9e12f1d26c5bf34d99e36"></a>LT_L3_SLOT_EXPIRED&#160;</td><td class="fielddoc"><p>L3 result [API R_Mem_Data_Write]: The target FLASH slot has expired. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a769330604d7f755480904a8f3974567e" name="a5bd8c869b1f48487474d8f9b1e266699a769330604d7f755480904a8f3974567e"></a>LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED&#160;</td><td class="fielddoc"><p>L3 result [API r_mem_data_write]: writing operation limit is reached for a given slot. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a01a2d6f421fd315b6825eef2773f58c8" name="a5bd8c869b1f48487474d8f9b1e266699a01a2d6f421fd315b6825eef2773f58c8"></a>LT_L3_INVALID_KEY&#160;</td><td class="fielddoc"><p>L3 result [API EDDSA_Sign, ECDSA_Sign, ECC_Key_Read]: The key in selected slot is invalid or corrupted. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ac16ccff1d199e5424f00159156533195" name="a5bd8c869b1f48487474d8f9b1e266699ac16ccff1d199e5424f00159156533195"></a>LT_L3_ECC_INVALID_KEY&#160;</td><td class="fielddoc"><p>L3 result [API EDDSA_sign, ECDSA_sign, ecc_key_read]: The key in the requested slot does not exist, or is invalid. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699afd7286215fee9e57179820389aa3b49a" name="a5bd8c869b1f48487474d8f9b1e266699afd7286215fee9e57179820389aa3b49a"></a>LT_L3_UPDATE_ERR&#160;</td><td class="fielddoc"><p>L3 result [API MCounter_Update]: Update operation failed (i.e. mcounter done at 0). </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a0a02d78b75ece958cef7b77b86617adb" name="a5bd8c869b1f48487474d8f9b1e266699a0a02d78b75ece958cef7b77b86617adb"></a>LT_L3_MCOUNTER_UPDATE_UPDATE_ERR&#160;</td><td class="fielddoc"><p>L3 result [API mcounter_update]: Failure to update the speciﬁed Monotonic Counter. The Monotonic Counter is already at 0. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a028ee74d76871f0202b0f1b826213309" name="a5bd8c869b1f48487474d8f9b1e266699a028ee74d76871f0202b0f1b826213309"></a>LT_L3_COUNTER_INVALID&#160;</td><td class="fielddoc"><p>L3 result [API MCounter_Update, MCounter_Get]: The Monotonic Counter is disabled or locked. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a028ee74d76871f0202b0f1b826213309" name="a5bd8c869b1f48487474d8f9b1e266699a028ee74d76871f0202b0f1b826213309"></a>LT_L3_COUNTER_INVALID&#160;</td><td class="fielddoc"><p>L3 result [API mcounter_update, mcounter_get]: The Monotonic Counter detects an attack and is locked. The counter must be reinitialized. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699adb07c1d3adadc3cf17e9728a0fbe9c0e" name="a5bd8c869b1f48487474d8f9b1e266699adb07c1d3adadc3cf17e9728a0fbe9c0e"></a>LT_L3_SLOT_EMPTY&#160;</td><td class="fielddoc"><p>L3 result [API Pairing_Key_Read]: The requested slot is empty and contains no valid data. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a68623baa9a2d9662a29955f6b7b36b7e" name="a5bd8c869b1f48487474d8f9b1e266699a68623baa9a2d9662a29955f6b7b36b7e"></a>LT_L3_PAIRING_KEY_EMPTY&#160;</td><td class="fielddoc"><p>L3 result [API pairing_key_read], The Pairing key slot is in "Blank" state. A Pairing Key has not been written to it yet. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699aa74ec08be6477ae33c862dcd9f9c7ec0" name="a5bd8c869b1f48487474d8f9b1e266699aa74ec08be6477ae33c862dcd9f9c7ec0"></a>LT_L3_SLOT_INVALID&#160;</td><td class="fielddoc"><p>L3 result [API Pairing_Key_Read]: The slot content is invalidated. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a497252edb6ba90c8027c90dcac256afa" name="a5bd8c869b1f48487474d8f9b1e266699a497252edb6ba90c8027c90dcac256afa"></a>LT_L3_PAIRING_KEY_INVALID&#160;</td><td class="fielddoc"><p>L3 result [API pairing_key_read], The Pairing key slot is in "Invalidated" state. The Pairing key has been invalidated. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a31ddc191c5e2f32894a548258787e2c2" name="a5bd8c869b1f48487474d8f9b1e266699a31ddc191c5e2f32894a548258787e2c2"></a>LT_L3_OK&#160;</td><td class="fielddoc"><p>L3 Command successfully executed. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a31ddc191c5e2f32894a548258787e2c2" name="a5bd8c869b1f48487474d8f9b1e266699a31ddc191c5e2f32894a548258787e2c2"></a>LT_L3_OK&#160;</td><td class="fielddoc"><p>L3 command was received correctly. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ab7772ddd5d1bc2df53a778e3fb51073f" name="a5bd8c869b1f48487474d8f9b1e266699ab7772ddd5d1bc2df53a778e3fb51073f"></a>LT_L3_FAIL&#160;</td><td class="fielddoc"><p>Error during processing of the L3 command. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ab7772ddd5d1bc2df53a778e3fb51073f" name="a5bd8c869b1f48487474d8f9b1e266699ab7772ddd5d1bc2df53a778e3fb51073f"></a>LT_L3_FAIL&#160;</td><td class="fielddoc"><p>L3 command was not received correctly. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a05b97e24fb16f0abf804c68e68a6bfb8" name="a5bd8c869b1f48487474d8f9b1e266699a05b97e24fb16f0abf804c68e68a6bfb8"></a>LT_L3_UNAUTHORIZED&#160;</td><td class="fielddoc"><p>Insufficient User Access Privileges. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a05b97e24fb16f0abf804c68e68a6bfb8" name="a5bd8c869b1f48487474d8f9b1e266699a05b97e24fb16f0abf804c68e68a6bfb8"></a>LT_L3_UNAUTHORIZED&#160;</td><td class="fielddoc"><p>Current pairing keys are not authorized for execution of the last command. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a1e0cde57d6121dc309d02696d7b7c89f" name="a5bd8c869b1f48487474d8f9b1e266699a1e0cde57d6121dc309d02696d7b7c89f"></a>LT_L3_INVALID_CMD&#160;</td><td class="fielddoc"><p>Unknown L3 Command packet. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a1e0cde57d6121dc309d02696d7b7c89f" name="a5bd8c869b1f48487474d8f9b1e266699a1e0cde57d6121dc309d02696d7b7c89f"></a>LT_L3_INVALID_CMD&#160;</td><td class="fielddoc"><p>Received L3 command is invalid. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ab4437bfe762c6bb35f1e61f2cdb701f9" name="a5bd8c869b1f48487474d8f9b1e266699ab4437bfe762c6bb35f1e61f2cdb701f9"></a>LT_L3_HARDWARE_FAIL&#160;</td><td class="fielddoc"><p>L3 result [API Pairing_Key_Write, Pairing_Key_Invalidate, R_Config_Write, I_Config_Write, R_Mem_Data_Write]: A hardware error occurred during a write operation. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a2f27b0813b5d9fdb3c7dda9c1a9e46db" name="a5bd8c869b1f48487474d8f9b1e266699a2f27b0813b5d9fdb3c7dda9c1a9e46db"></a>LT_L3_DATA_LEN_ERROR&#160;</td><td class="fielddoc"><p>L3 data does not have an expected length. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ad2a38db114ec6c78134ef273af80aea6" name="a5bd8c869b1f48487474d8f9b1e266699ad2a38db114ec6c78134ef273af80aea6"></a>LT_L2_IN_CRC_ERR&#160;</td><td class="fielddoc"><p>l2 response frame contains CRC error </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ac1147a21e4c8b7e5ae09760f2558fe6d" name="a5bd8c869b1f48487474d8f9b1e266699ac1147a21e4c8b7e5ae09760f2558fe6d"></a>LT_L3_RES_SIZE_ERROR&#160;</td><td class="fielddoc"><p>L3 response RES_SIZE have an invalid size. </p>
+<p>This can be caused by an attack or a bug. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a181c1c4fd59df5ab9312ecbf3ac6615c" name="a5bd8c869b1f48487474d8f9b1e266699a181c1c4fd59df5ab9312ecbf3ac6615c"></a>LT_L3_BUFFER_TOO_SMALL&#160;</td><td class="fielddoc"><p>L3 buffer is too small to parse this L3 command. </p>
+<p>If this error is raised, either the buffer is too small to accept the result, or RES_SIZE field in the response is invalid (attack or a bug). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699af7a830c6f978bdc99738704cadeba5a5" name="a5bd8c869b1f48487474d8f9b1e266699af7a830c6f978bdc99738704cadeba5a5"></a>LT_L3_R_MEM_DATA_READ_SLOT_EMPTY&#160;</td><td class="fielddoc"><p>User slot is empty. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a1ef3275c2bce030397b2d71f6f97d76c" name="a5bd8c869b1f48487474d8f9b1e266699a1ef3275c2bce030397b2d71f6f97d76c"></a>LT_L3_RESULT_UNKNOWN&#160;</td><td class="fielddoc"><p>Unknown L3 RESULT value. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ae9209463f563ecd73d60f973190c2bbf" name="a5bd8c869b1f48487474d8f9b1e266699ae9209463f563ecd73d60f973190c2bbf"></a>LT_L2_REQ_CONT&#160;</td><td class="fielddoc"><p>There is more than one chunk to be expected for a current request. </p>
 </td></tr>
@@ -185,9 +201,11 @@ $(document).ready(function(){initNavTree('libtropic__common_8h_a5bd8c869b1f48487
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a8dc17faa263098735f554cb650998b75" name="a5bd8c869b1f48487474d8f9b1e266699a8dc17faa263098735f554cb650998b75"></a>LT_L2_UNKNOWN_REQ&#160;</td><td class="fielddoc"><p>ID of last request is not known to TROPIC01. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a3f779edd98d79c865d02082884c3f7e3" name="a5bd8c869b1f48487474d8f9b1e266699a3f779edd98d79c865d02082884c3f7e3"></a>LT_L2_STATUS_NOT_RECOGNIZED&#160;</td><td class="fielddoc"><p>Returned status byte is not recognized at all. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ad2a38db114ec6c78134ef273af80aea6" name="a5bd8c869b1f48487474d8f9b1e266699ad2a38db114ec6c78134ef273af80aea6"></a>LT_L2_IN_CRC_ERR&#160;</td><td class="fielddoc"><p>l2 response frame contains CRC error </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699aa2811c089c7ceb7736aa0e0079f48265" name="a5bd8c869b1f48487474d8f9b1e266699aa2811c089c7ceb7736aa0e0079f48265"></a>LT_L2_DATA_LEN_ERROR&#160;</td><td class="fielddoc"><p>L2 data does not have an expected length. </p>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699abd8de61ddc56eb4e8f66b2b84a47cbfc" name="a5bd8c869b1f48487474d8f9b1e266699abd8de61ddc56eb4e8f66b2b84a47cbfc"></a>LT_L2_RSP_LEN_ERROR&#160;</td><td class="fielddoc"><p>L2 data does not have an expected length (invalid value in RSP_LEN field) </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699a623ca0d0ff4bbeaf94304f906225061a" name="a5bd8c869b1f48487474d8f9b1e266699a623ca0d0ff4bbeaf94304f906225061a"></a>LT_L2_STATUS_UNKNOWN&#160;</td><td class="fielddoc"><p>Unknown L2 STATUS value. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a5bd8c869b1f48487474d8f9b1e266699ab89665c0348aac5a292a3543ec7b9a03" name="a5bd8c869b1f48487474d8f9b1e266699ab89665c0348aac5a292a3543ec7b9a03"></a>LT_CERT_STORE_INVALID&#160;</td><td class="fielddoc"><p>Certificate store likely does not contain valid data. </p>
 </td></tr>

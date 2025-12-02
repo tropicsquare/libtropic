@@ -9,5 +9,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "libtropic_l3.h", "libtropic__l3_8h.html", "libtropic__l3_8h" ],
     [ "libtropic_logging.h", "libtropic__logging_8h.html", "libtropic__logging_8h" ],
     [ "libtropic_macros.h", "libtropic__macros_8h.html", "libtropic__macros_8h" ],
-    [ "libtropic_port.h", "libtropic__port_8h.html", "libtropic__port_8h" ]
+    [ "libtropic_port.h", "libtropic__port_8h.html", "libtropic__port_8h" ],
+    [ "tropic01_application_co.h", "tropic01__application__co_8h.html", null ],
+    [ "tropic01_bootloader_co.h", "tropic01__bootloader__co_8h.html", null ]
 ];

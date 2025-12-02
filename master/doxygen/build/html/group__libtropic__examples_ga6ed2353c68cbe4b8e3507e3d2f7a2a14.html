@@ -120,7 +120,19 @@ $(document).ready(function(){initNavTree('group__libtropic__examples_ga6ed2353c6
       </table>
 </div><div class="memdoc">
 <dl class="section note"><dt>Note</dt><dd>We recommend reading TROPIC01's datasheet before diving into this example!</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>0 on success, -1 otherwise </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">h</td><td>Handle for communication with TROPIC01. It is assumed that the <code>h.l2.device</code> and <code>h.l3.crypto_ctx</code> members were already initialized. Because these members are pointers, the assigned structures must exist throughout the whole life-cycle of the handle. Refer to the 'Get Started'-&gt;'Integrating Libtropic'-&gt;'How to Use' Section in the Libtropic documentation for more information.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">0</td><td>Function executed successfully </td></tr>
+    <tr><td class="paramname">-1</td><td>Function did not execute successfully </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

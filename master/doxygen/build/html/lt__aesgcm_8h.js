@@ -1,8 +1,9 @@
 var lt__aesgcm_8h =
 [
-    [ "lt_crypto_aes_gcm_ctx_t", "lt__aesgcm_8h.html#structlt__crypto__aes__gcm__ctx__t", null ],
-    [ "lt_aesgcm_init_and_key", "lt__aesgcm_8h_a792ba4844f5f111c6c695c44d692a3d4.html#a792ba4844f5f111c6c695c44d692a3d4", null ],
-    [ "lt_aesgcm_encrypt", "lt__aesgcm_8h_aed00e630adc6a933bdf45bbe9b76b36a.html#aed00e630adc6a933bdf45bbe9b76b36a", null ],
-    [ "lt_aesgcm_decrypt", "lt__aesgcm_8h_a907890c229c7b37a86f98afb86a245b8.html#a907890c229c7b37a86f98afb86a245b8", null ],
-    [ "lt_aesgcm_end", "lt__aesgcm_8h_ac3d961a8ec262d4313cc14b46fa61e9c.html#ac3d961a8ec262d4313cc14b46fa61e9c", null ]
+    [ "lt_aesgcm_encrypt_init", "lt__aesgcm_8h_aa48ff4545f88f46dc1cf4a8272509320.html#aa48ff4545f88f46dc1cf4a8272509320", null ],
+    [ "lt_aesgcm_decrypt_init", "lt__aesgcm_8h_aad8c2041bb3e4c902d00b675e53e1872.html#aad8c2041bb3e4c902d00b675e53e1872", null ],
+    [ "lt_aesgcm_encrypt", "lt__aesgcm_8h_a23d27ff32d39ab8acc02a4d22e626fb2.html#a23d27ff32d39ab8acc02a4d22e626fb2", null ],
+    [ "lt_aesgcm_decrypt", "lt__aesgcm_8h_a1495bd867e1be505b464baf59406f8fc.html#a1495bd867e1be505b464baf59406f8fc", null ],
+    [ "lt_aesgcm_encrypt_deinit", "lt__aesgcm_8h_a1311cfa261b04eeb54a84bc164b424c3.html#a1311cfa261b04eeb54a84bc164b424c3", null ],
+    [ "lt_aesgcm_decrypt_deinit", "lt__aesgcm_8h_a6f94959799f1932928386e7d44639bf6.html#a6f94959799f1932928386e7d44639bf6", null ]
 ];

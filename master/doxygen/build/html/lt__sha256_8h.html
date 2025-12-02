@@ -105,7 +105,6 @@ $(document).ready(function(){initNavTree('lt__sha256_8h.html',''); initResizable
 
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">lt_sha256.h File Reference</div></div>
@@ -116,61 +115,60 @@ $(document).ready(function(){initNavTree('lt__sha256_8h.html',''); initResizable
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="libtropic__common_8h.html">libtropic_common.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for lt_sha256.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="lt__sha256_8h__incl.png" border="0" usemap="#alt__sha256_8h" alt=""/></div>
 <map name="alt__sha256_8h" id="alt__sha256_8h">
-<area shape="rect" title="SHA256 functions declarations." alt="" coords="42,5,139,31"/>
+<area shape="rect" title="SHA256 functions declarations." alt="" coords="69,5,166,31"/>
 <area shape="rect" title=" " alt="" coords="5,79,80,104"/>
-<area shape="poly" title=" " alt="" coords="85,33,60,69,56,66,81,30"/>
-<area shape="rect" title=" " alt="" coords="105,79,175,104"/>
-<area shape="poly" title=" " alt="" coords="101,29,126,66,122,69,97,33"/>
+<area shape="poly" title=" " alt="" coords="107,33,67,71,63,67,104,29"/>
+<area shape="rect" title=" " alt="" coords="51,152,122,177"/>
+<area shape="poly" title=" " alt="" coords="117,32,95,139,89,138,112,31"/>
+<area shape="rect" href="libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="218,79,369,104"/>
+<area shape="poly" title=" " alt="" coords="147,28,253,71,251,76,145,33"/>
+<area shape="poly" title=" " alt="" coords="261,107,134,150,132,145,259,101"/>
+<area shape="rect" title=" " alt="" coords="147,152,229,177"/>
+<area shape="poly" title=" " alt="" coords="278,106,218,147,215,142,275,102"/>
+<area shape="rect" href="libtropic__macros_8h.html" title="Various helper macros." alt="" coords="254,152,397,177"/>
+<area shape="poly" title=" " alt="" coords="301,103,317,139,312,141,296,105"/>
+<area shape="rect" href="tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="421,152,609,177"/>
+<area shape="poly" title=" " alt="" coords="330,101,467,145,465,150,328,107"/>
+<area shape="rect" href="tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="633,152,820,177"/>
+<area shape="poly" title=" " alt="" coords="363,101,644,147,643,152,363,107"/>
+<area shape="rect" href="bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="591,225,649,251"/>
+<area shape="poly" title=" " alt="" coords="533,175,593,215,590,220,530,180"/>
+<area shape="poly" title=" " alt="" coords="711,180,650,220,647,215,708,175"/>
 </map>
 </div>
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Data Structures</h2></td></tr>
-<tr class="memitem:structlt__crypto__sha256__ctx__t" id="r_structlt__crypto__sha256__ctx__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h.html#structlt__crypto__sha256__ctx__t">lt_crypto_sha256_ctx_t</a></td></tr>
-<tr class="separator:structlt__crypto__sha256__ctx__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a28e4c805a09192c44b9c1525c6f5a6f4" id="r_a28e4c805a09192c44b9c1525c6f5a6f4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_a28e4c805a09192c44b9c1525c6f5a6f4.html#a28e4c805a09192c44b9c1525c6f5a6f4">LT_SHA256_DIGEST_LENGTH</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memitem:a28e4c805a09192c44b9c1525c6f5a6f4" id="r_a28e4c805a09192c44b9c1525c6f5a6f4"><td class="memItemLeft" align="right" valign="top"><a id="a28e4c805a09192c44b9c1525c6f5a6f4" name="a28e4c805a09192c44b9c1525c6f5a6f4"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LT_SHA256_DIGEST_LENGTH</b>&#160;&#160;&#160;32</td></tr>
+<tr class="memdesc:a28e4c805a09192c44b9c1525c6f5a6f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of SHA-256 digest. <br /></td></tr>
 <tr class="separator:a28e4c805a09192c44b9c1525c6f5a6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a774f3a022d093a8f44854526caa36798" id="r_a774f3a022d093a8f44854526caa36798"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_a774f3a022d093a8f44854526caa36798.html#a774f3a022d093a8f44854526caa36798">lt_sha256_init</a> (void *ctx)</td></tr>
-<tr class="separator:a774f3a022d093a8f44854526caa36798"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d6410c0a8b277588440f8f94d2b35eb" id="r_a6d6410c0a8b277588440f8f94d2b35eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_a6d6410c0a8b277588440f8f94d2b35eb.html#a6d6410c0a8b277588440f8f94d2b35eb">lt_sha256_start</a> (void *ctx)</td></tr>
-<tr class="separator:a6d6410c0a8b277588440f8f94d2b35eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae447e3113de8975f5509bb1bf441ec4d" id="r_ae447e3113de8975f5509bb1bf441ec4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_ae447e3113de8975f5509bb1bf441ec4d.html#ae447e3113de8975f5509bb1bf441ec4d">lt_sha256_update</a> (void *ctx, const uint8_t *input, size_t len)</td></tr>
-<tr class="separator:ae447e3113de8975f5509bb1bf441ec4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3586afeeec2290b5d846269064917863" id="r_a3586afeeec2290b5d846269064917863"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_a3586afeeec2290b5d846269064917863.html#a3586afeeec2290b5d846269064917863">lt_sha256_finish</a> (void *ctx, uint8_t *output)</td></tr>
-<tr class="memdesc:a3586afeeec2290b5d846269064917863"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function finalizes hashing and outputs a digest.  <br /></td></tr>
-<tr class="separator:a3586afeeec2290b5d846269064917863"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acbd758888f207b5fdd2f8ab6f2c90d44" id="r_acbd758888f207b5fdd2f8ab6f2c90d44"><td class="memItemLeft" align="right" valign="top"><a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">lt_ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_acbd758888f207b5fdd2f8ab6f2c90d44.html#acbd758888f207b5fdd2f8ab6f2c90d44">lt_sha256_init</a> (void *ctx)</td></tr>
+<tr class="memdesc:acbd758888f207b5fdd2f8ab6f2c90d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes SHA-256 context.  <br /></td></tr>
+<tr class="separator:acbd758888f207b5fdd2f8ab6f2c90d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a300b11f77d9194f7ac40f6cc3cef0b6a" id="r_a300b11f77d9194f7ac40f6cc3cef0b6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">lt_ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_a300b11f77d9194f7ac40f6cc3cef0b6a.html#a300b11f77d9194f7ac40f6cc3cef0b6a">lt_sha256_start</a> (void *ctx)</td></tr>
+<tr class="memdesc:a300b11f77d9194f7ac40f6cc3cef0b6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts SHA-256 calculation.  <br /></td></tr>
+<tr class="separator:a300b11f77d9194f7ac40f6cc3cef0b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad99b88b437667b0d321f8c1bae1d7283" id="r_ad99b88b437667b0d321f8c1bae1d7283"><td class="memItemLeft" align="right" valign="top"><a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">lt_ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_ad99b88b437667b0d321f8c1bae1d7283.html#ad99b88b437667b0d321f8c1bae1d7283">lt_sha256_update</a> (void *ctx, const uint8_t *input, const size_t input_len)</td></tr>
+<tr class="memdesc:ad99b88b437667b0d321f8c1bae1d7283"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds data to SHA-256 context.  <br /></td></tr>
+<tr class="separator:ad99b88b437667b0d321f8c1bae1d7283"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfc424b917a251854148f41342a92d84" id="r_acfc424b917a251854148f41342a92d84"><td class="memItemLeft" align="right" valign="top"><a class="el" href="libtropic__common_8h_a5bd8c869b1f48487474d8f9b1e266699.html#a5bd8c869b1f48487474d8f9b1e266699">lt_ret_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lt__sha256_8h_acfc424b917a251854148f41342a92d84.html#acfc424b917a251854148f41342a92d84">lt_sha256_finish</a> (void *ctx, uint8_t *output)</td></tr>
+<tr class="memdesc:acfc424b917a251854148f41342a92d84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finishes SHA-256 operation.  <br /></td></tr>
+<tr class="separator:acfc424b917a251854148f41342a92d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><dl class="section author"><dt>Author</dt><dd>Tropic Square s.r.o.</dd></dl>
+<div class="textblock"><dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2020-2025 Tropic Square s.r.o.</dd></dl>
 <dl class="section user"><dt>License</dt><dd>For the license see file LICENSE.txt file in the root directory of this source tree. </dd></dl>
-</div><hr/><h2 class="groupheader">Data Structure Documentation</h2>
-<a name="structlt__crypto__sha256__ctx__t" id="structlt__crypto__sha256__ctx__t"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#structlt__crypto__sha256__ctx__t">&#9670;&#160;</a></span>lt_crypto_sha256_ctx_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct lt_crypto_sha256_ctx_t</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<div class="textblock"><p>sha256 context structure </p>
-</div>
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

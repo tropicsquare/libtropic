@@ -1,0 +1,26 @@
+<map id="libtropic_port_arduino.h" name="libtropic_port_arduino.h">
+<area shape="rect" id="Node000001" title="Port for the Arduino framework." alt="" coords="53,5,229,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,89,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,33,75,72,72,68,124,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="113,79,168,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="143,31,143,65,138,65,138,31"/>
+<area shape="rect" id="Node000004" href="$libtropic__port_8h.html" title="Header file with layer 1 interfaces which are defined based on host platform." alt="" coords="193,79,313,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="160,28,224,69,221,73,157,33"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="151,152,221,177"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="244,106,208,144,204,140,240,103"/>
+<area shape="rect" id="Node000006" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="245,152,396,177"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="266,102,302,140,298,144,262,106"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="47,225,130,251"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="284,180,140,224,138,219,283,175"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="155,225,225,251"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="301,180,224,221,222,216,298,175"/>
+<area shape="rect" id="Node000009" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="249,225,392,251"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="323,178,323,212,318,212,318,178"/>
+<area shape="rect" id="Node000010" href="$tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="416,225,604,251"/>
+<area shape="poly" id="edge9_Node000006_Node000010" title=" " alt="" coords="352,175,467,218,465,223,350,180"/>
+<area shape="rect" id="Node000012" href="$tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="629,225,815,251"/>
+<area shape="poly" id="edge11_Node000006_Node000012" title=" " alt="" coords="386,175,644,220,643,226,385,180"/>
+<area shape="rect" id="Node000011" href="$bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="586,299,645,324"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="528,248,588,289,586,293,525,253"/>
+<area shape="poly" id="edge12_Node000012_Node000011" title=" " alt="" coords="706,253,646,293,643,289,703,248"/>
+</map>
