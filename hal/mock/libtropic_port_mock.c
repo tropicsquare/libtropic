@@ -112,7 +112,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
     // End of transaction (frame), pop the response.
     if (dev->mock_queue_count == 0) {
-        // This could happen only if no reponse was enqueued and Libtropic
+        // This could happen only if no response was enqueued and Libtropic
         // sets CSN low and high without any SPI transfer in between (implementation mistake).
         LT_LOG_ERROR("Mock HAL: no response queued at the end of transaction!");
         LT_ASSERT(0, 1);  // Force test failure
