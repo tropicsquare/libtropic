@@ -67,4 +67,6 @@ lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4])
         != lt_mock_hal_enqueue_response(&h->l2, (uint8_t *)&get_info_resp, calc_mocked_resp_len(&get_info_resp))) {
         return LT_FAIL;
     }
+
+    return LT_OK;
 }

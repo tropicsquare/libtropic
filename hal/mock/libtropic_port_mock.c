@@ -164,7 +164,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     LT_LOG_DEBUG("Mock HAL queue position: head=%zu, tail=%zu, count=%zu", dev->mock_queue_head, dev->mock_queue_tail,
                  dev->mock_queue_count);
     for (size_t i = 0; i < tx_len; i++) {
-        LT_LOG_DEBUG("Mock HAL: SPI Transfer: buff[%d] = 0x%02" PRIX8, offset + i, s2->buff[offset + i]);
+        LT_LOG_DEBUG("Mock HAL: SPI Transfer: buff[%zu] = 0x%02" PRIX8, offset + i, s2->buff[offset + i]);
     }
 
     return LT_OK;
