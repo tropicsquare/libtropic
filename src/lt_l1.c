@@ -8,6 +8,7 @@
 #include "lt_l1.h"
 
 #include <inttypes.h>
+#include <string.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -77,9 +78,13 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
         // Check ALARM bit of CHIP_STATUS byte
         if (s2->buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
             lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
-            LT_UNUSED(ret_unused);  // We don't care about it, we return LT_L1_CHIP_ALARM_MODE anyway.
-
             LT_LOG_DEBUG("CHIP_STATUS: 0x%02" PRIX8, s2->buff[0]);
+
+#ifdef LT_RETRIEVE_ALARM_LOG
+            ret_unused = lt_l1_retrieve_alarm_log(s2, timeout_ms);
+#endif
+
+            LT_UNUSED(ret_unused);  // We don't care about it, we return LT_L1_CHIP_ALARM_MODE anyway.
             return LT_L1_CHIP_ALARM_MODE;
         }
 
@@ -198,6 +203,43 @@ lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeo
 
     ret = lt_l1_spi_csn_high(s2);
     if (ret != LT_OK) {
+        return ret;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t lt_l1_retrieve_alarm_log(lt_l2_state_t *s2, const uint32_t timeout_ms)
+{
+    LT_LOG_DEBUG("Retrieving alarm log from TROPIC01...");
+
+    memset(s2->buff, 0, sizeof(s2->buff));
+    s2->buff[0] = TR01_L1_GET_RESPONSE_REQ_ID;
+
+    lt_ret_t ret = lt_l1_spi_csn_low(s2);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to set CSN low while retrieving alarm log.");
+        return ret;
+    }
+
+    ret = lt_l1_spi_transfer(s2, 0, 256, timeout_ms);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to transfer SPI data while retrieving alarm log.");
+        return ret;
+    }
+
+    uint8_t log_size = s2->buff[2];
+    LT_LOG_DEBUG("LOG SIZE: %" PRId8, log_size);
+
+    LT_LOG_DEBUG("------------ CPU Log BEGIN ------------");
+    for (size_t i = 3; i < log_size; i++) {
+        LT_LOG_DEBUG("%c", s2->buff[i]);
+    }
+    LT_LOG_DEBUG("------------- CPU Log END -------------");
+
+    ret = lt_l1_spi_csn_high(s2);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Failed to set CSN high after retrieving alarm log.");
         return ret;
     }
 

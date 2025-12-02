@@ -468,3 +468,8 @@ endif()
 if(LT_SEPARATE_L3_BUFF)
     target_compile_definitions(tropic PUBLIC LT_SEPARATE_L3_BUFF)
 endif()
+
+# Development option incompatible with production chips.
+if(LT_RETRIEVE_ALARM_LOG)
+    target_compile_definitions(tropic PUBLIC LT_RETRIEVE_ALARM_LOG)
+endif()

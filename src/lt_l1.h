@@ -66,6 +66,19 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
 lt_ret_t lt_l1_write(lt_l2_state_t *s2, const uint16_t len, const uint32_t timeout_ms)
     __attribute__((warn_unused_result));
 
+/**
+ * @brief Retrieves alarm log from TROPIC01.
+ *
+ * @warning This function is for internal use only and it is not compatible
+ * with production TROPIC01 chips.
+ *
+ * @param s2          Structure holding l2 state
+ * @param timeout_ms  Timeout
+ *
+ * @return LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_l1_retrieve_alarm_log(lt_l2_state_t *s2, const uint32_t timeout_ms) __attribute__((warn_unused_result));
+
 /** @} */  // end of group_l1_functions
 
 #ifdef __cplusplus

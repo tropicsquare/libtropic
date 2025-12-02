@@ -113,6 +113,11 @@ lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode)
         }
 
         if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
+#ifdef LT_RETRIEVE_ALARM_LOG
+            lt_ret_t ret_unused = lt_l1_retrieve_alarm_log(&h->l2, LT_L1_TIMEOUT_MS_DEFAULT);
+            LT_UNUSED(ret_unused);
+#endif
+
             *mode = LT_TR01_ALARM;
             return LT_OK;
         }
