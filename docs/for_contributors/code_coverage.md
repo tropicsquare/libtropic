@@ -1,0 +1,58 @@
+# Code Coverage
+We implement two groups of tests: functional (which use standard HAL) and functional mock (which use only mock HAL).
+
+To measure total code coverage from both functional and functional mock tests, you need to combine coverage data. At first, run tests with coverage in each group separately according to guides below.
+
+!!! note "Implementation remarks"
+    - We do not measure HAL coverage now, as not all platforms have coverage collection support. 
+    - CAL is also excluded from coverage collection, as we cannot mock CFP return values, thus making full coverage impossible without unit testing.
+
+## Running Functional Tests with Coverage against Model
+We support collecting coverage only against [TROPIC01 Model](../other/tropic01_model/index.md). Refer to the [documentation](../other/tropic01_model/index.md) to prepare the model.
+
+To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`. Complete steps:
+```shell
+cd tropic01_model
+mkdir -p build
+cd build
+cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 -DLT_CAL="mbedtls_v4" ..
+make
+ctest -V
+```
+
+After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results:
+```shell
+# Execute this from the tropic01_model/ directory!
+gcovr --json coverage_trace.json --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*|\.\./hal/.*|\.\./cal/.*'
+```
+
+## Running Functional Mock Tests
+Run functional mock tests on the same platform you used for the previous tests. The tests can be compiled and run as following:
+
+```shell
+cd tests/functional_mock
+mkdir -p build
+cd build
+cmake -DLT_TEST_COVERAGE=1 ..
+make
+ctest -V
+```
+
+After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results:
+```shell
+# Execute this from the tests/functional_mock directory!
+gcovr --json coverage_trace.json --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*|\.\./\.\./hal/.*|\.\./\.\./cal/.*'
+```
+
+## Merging and Exporting Total Coverage
+
+Use following command to merge results and export in text format:
+
+```shell
+# Execute this from the repository root (or adjust paths accordingly)
+gcovr --json-add-tracefile tropic01_model/coverage_trace.json  --json-add-tracefile tests/functional_mock/coverage_trace.json --txt coverage.txt
+```
+
+!!! tip "Tip: Gcovr Output Formats"
+    You can use `--html` or `--html-details` output options to export in a HTML format or `--markdown` to export in a Markdown format instead of `--txt`.
+    Check out [gcovr user guide](https://gcovr.com/en/latest/guide.html).

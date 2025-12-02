@@ -147,24 +147,3 @@ After CTest finishes, it informs about the results and saves all output to the `
     #undef LT_EX_SH0_PUB
     #define LT_EX_SH0_PUB <var_name_with_your_public_pairing_key>
     ```
-
-### Running the Tests with Coverage
-We support coverage collection for testing against the model. To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`, for example:
-```shell
-cmake -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1 -DLT_CAL="mbedtls_v4" ..
-```
-
-After CTest finishes, you can use [gcovr](https://github.com/gcovr/gcovr) to export results:
-```shell
-# Execute this from the tropic01_model/ directory!
-gcovr --txt coverage_report.txt --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*'
-```
-
-We use the following parameters:
-
-- `--gcov-exclude` excludes selected files from report - we are not interested in measuring coverage of the tests themselves,
-- `--txt` chooses text output format.
-
-!!! tip "Tip: Gcovr Output Formats"
-    You can use `--html` or `--html-details` output options to export in a HTML format or `--markdown` to export in a Markdown format.
-    Check out [gcovr user guide](https://gcovr.com/en/latest/guide.html).
