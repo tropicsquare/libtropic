@@ -13,6 +13,15 @@ if(NOT DEFINED PATH_TO_LIBTROPIC)
 endif()
 
 include(FetchContent)
+include(${PATH_TO_LIBTROPIC}cmake/strict_compile_flags.cmake)
+
+###########################################################################
+#                                                                         #
+#   Options                                                               #
+#                                                                         #
+###########################################################################
+
+option(LT_STRICT_COMPILATION "Enable strict compilation flags" ON)
 
 ###########################################################################
 #                                                                         #
@@ -29,6 +38,11 @@ add_subdirectory(${PATH_TO_LIBTROPIC} "libtropic")
 
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
+
+if(LT_STRICT_COMPILATION)
+    message(STATUS "Enabling strict compilation flags.")
+    target_link_libraries(tropic PRIVATE libtropic::strict_comp_flags)
+endif()
 
 ###########################################################################
 #                                                                         #
@@ -79,6 +93,9 @@ add_library(
     ${TEST_SRCS}
 )
 target_link_libraries(libtropic_functional_mock_tests_objs PUBLIC tropic)
+if(LT_STRICT_COMPILATION)
+    target_link_libraries(libtropic_functional_mock_tests_objs PRIVATE libtropic::strict_comp_flags)
+endif()
 target_include_directories(libtropic_functional_mock_tests_objs PUBLIC ${PATH_TO_LIBTROPIC}/src)
 target_include_directories(libtropic_functional_mock_tests_objs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../common)
 target_include_directories(libtropic_functional_mock_tests_objs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/helpers)
@@ -117,6 +134,11 @@ foreach(test_name IN LISTS LIBTROPIC_MOCK_TEST_LIST)
         ${CMAKE_CURRENT_BINARY_DIR}/main.c
     )
     target_link_libraries(${exe_name} PUBLIC libtropic_functional_mock_tests_objs)
+    
+    if(LT_STRICT_COMPILATION)
+        target_link_libraries(${exe_name} PRIVATE libtropic::strict_comp_flags)
+    endif()
+
     # Include this (./) directory to include lt_functional_mock_tests.h with test functions declarations.
     target_include_directories(${exe_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
