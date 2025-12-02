@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -24,11 +26,11 @@ jobs:
 
       - name: Download ts-tvl wheel
         run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
           
           WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
           if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in latest release." >&2
+            echo "No .whl file found in the release." >&2
             exit 1
           fi
 
@@ -40,11 +42,12 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential
             pip install ${{ env.WHEEL_FILE_NAME }}
+            pip install jsonschema
 
       - name: Compile libtropic with tests and AddressSanitizer
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
+            cmake ./ -B build -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
             cd build/
             make
 
@@ -66,6 +69,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -74,11 +79,11 @@ jobs:
 
       - name: Download ts-tvl wheel
         run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/latest" > release.json
+          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
           
           WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
           if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in latest release." >&2
+            echo "No .whl file found in the release." >&2
             exit 1
           fi
 
@@ -90,11 +95,12 @@ jobs:
         run: |
             sudo apt-get install cmake build-essential valgrind
             pip install ${{ env.WHEEL_FILE_NAME }}
+            pip install jsonschema
 
       - name: Compile libtropic with tests and Valgrind
         run: |
             cd tropic01_model/
-            cmake ./ -B build -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
+            cmake ./ -B build -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
             cd build/
             make
 

@@ -11,7 +11,7 @@
 /**
  * @file libtropic_l2.h
  * @brief Layer 2 functions declarations
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -66,12 +66,12 @@ lt_ret_t lt_l2_receive(lt_l2_state_t *s2);
  *
  * @param s2          Structure holding l2 state
  * @param buff        Buffer containing encrypted l3 command
- * @param max_len     Maximal length of buff. Whole buffer might be used, or just its part.
+ * @param buff_len    Length of buff.
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully
  */
-lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t max_len);
+lt_ret_t lt_l2_send_encrypted_cmd(lt_l2_state_t *s2, uint8_t *buff, uint16_t buff_len);
 
 /**
  * @brief Receives encrypted L3 response over Layer 2.

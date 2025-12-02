@@ -1,7 +1,7 @@
 /**
  * @file lt_ex_hello_world.c
  * @brief Establishes Secure Session and executes Ping L3 command.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -25,6 +25,10 @@ int lt_ex_hello_world(lt_handle_t *h)
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
+    // Note: It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+    // initialized. Because these members are pointers, the assigned structures must exist throughout the whole
+    // life-cycle of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the
+    // Libtropic documentation for more information.
     ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
@@ -33,7 +37,7 @@ int lt_ex_hello_world(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)TR01_PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));

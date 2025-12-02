@@ -1,7 +1,7 @@
 /**
  * @file bits.h
  * @brief Struct and function declarations for dealing with bit assignment.
- * @author Ondrej Ille
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -24,12 +24,20 @@ extern "C" {
 #define _AC(X, Y) __AC(X, Y)
 #endif
 
+#ifndef _U
 #define _U(x) (_AC(x, U))
+#endif
+#ifndef U
 #define U(x) (_U(x))
+#endif
 
+#ifndef BIT
 #define BIT(nr) (1U << (nr))
+#endif
 
+#ifndef BIT64
 #define BIT64(nr) (((u64)(1)) << ((u64)(nr)))
+#endif
 
 // BIT defines a bit mask for the specified bit number from 0 to whatever fits into an unsigned long
 // so BIT(10) should evaluate to decimal 1024 (which is binary 1 left shifted by 10 bits)

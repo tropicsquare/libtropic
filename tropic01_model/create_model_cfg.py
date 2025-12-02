@@ -1,3 +1,4 @@
+from __future__ import annotations
 import argparse
 import pathlib
 import yaml
@@ -31,6 +32,31 @@ def parse_and_complete_chip_id(pkg_yml: dict) -> bytes:
     res += 24 * b'\xff'  # Padding
     return res
 
+def validate_and_parse_riscv_fw_ver(riscv_fw_ver: str) -> list[int]:
+    try:
+        # 1. Split the string
+        parts = riscv_fw_ver.split('.')
+        
+        # 2. Check if there are exactly 3 parts
+        if len(parts) != 3:
+            # Raise the specific error argparse expects
+            raise argparse.ArgumentTypeError(
+                f"'{riscv_fw_ver}' is not in the required 'X.Y.Z' format."
+            )
+            
+        # 3. Try to convert all parts to integers
+        # This will raise a ValueError if any part is not a number
+        numbers = [int(part) for part in parts]
+        
+        # 4. Return the successfully parsed list of numbers
+        return numbers
+        
+    except ValueError:
+        # Catch errors from int() conversion
+        raise argparse.ArgumentTypeError(
+            f"'{riscv_fw_ver}' contains non-numeric parts."
+        )
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -46,6 +72,13 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "--riscv-fw-ver",
+        help="RISC-V FW version.",
+        type=validate_and_parse_riscv_fw_ver,
+        required=True
+    )
+
+    parser.add_argument(
         "--model-cfg",
         help="Path to the file where to put created YAML model configuration.",
         type=pathlib.Path,
@@ -56,6 +89,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     pkg_dir_path: pathlib.Path = args.pkg_dir
     model_cfg_path: pathlib.Path = args.model_cfg
+    riscv_fw_major, riscv_fw_minor, riscv_fw_patch = args.riscv_fw_ver
 
     # Load batch package YAML
     with pkg_dir_path.joinpath("tropic01_lab_batch_package.yml").open("r") as f:
@@ -117,6 +151,10 @@ if __name__ == "__main__":
         }
     }
 
+    # Set RISC-V FW version
+    model_cfg["riscv_fw_version"] = b'\x00' + riscv_fw_patch.to_bytes(1, 'little') + \
+                                    riscv_fw_minor.to_bytes(1, 'little') + riscv_fw_major.to_bytes(1, 'little')
+
     print("Warning: Following variables are not configured (model will set them to default values):")
     print("\t- r_config")
     print("\t- r_ecc_keys")
@@ -124,7 +162,6 @@ if __name__ == "__main__":
     print("\t- r_mcounters")
     print("\t- r_macandd_data")
     print("\t- i_config")
-    print("\t- riscv_fw_version")
     print("\t- spect_fw_version")
     print("\t- debug_random_value")
     print("\t- activate_encryption")

@@ -53,6 +53,10 @@ clang-format -i <path_to_the_file_to_format>
         "editor.defaultFormatter": "ms-vscode.cpptools",
         "editor.formatOnSave": true
     },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true
+    },
     "C_Cpp.formatting": "clangFormat"
 } // Add this bracket only if your settings.json file is empty
 ```

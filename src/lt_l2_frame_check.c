@@ -1,7 +1,7 @@
 /**
  * @file lt_l2_frame_check.c
  * @brief Layer 2 frame check functions definitions
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -54,6 +54,6 @@ lt_ret_t lt_l2_frame_check(const uint8_t *frame)
         case TR01_L2_STATUS_RESP_DISABLED:
             return LT_L2_RESP_DISABLED;
         default:
-            return LT_L2_STATUS_NOT_RECOGNIZED;
+            return LT_L2_STATUS_UNKNOWN;
     }
 }

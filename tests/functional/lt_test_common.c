@@ -1,7 +1,7 @@
 /**
  * @file lt_test_common.c
- * @brief Common variables for functional tests.
- * @author Tropic Square s.r.o.
+ * @brief Common variables and functions for functional tests.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */

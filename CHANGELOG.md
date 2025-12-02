@@ -5,6 +5,88 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0]
+
+### Changed
+- Refactored crypto HAL.
+- Refactored `trezor_crypto` HAL.
+- Reworked handling of pairing keys:
+  - All default pairing keys for slot 0 are now available from `libtropic_common.h`. As a result, a dependency on Python `cryptography` package was removed.
+  - Keys for other slots (that are used by examples and tests) are defined only in examples/tests that need them.
+  - `provisioning_data/` moved to `tropic01_model/`, as they are not needed anymore when not working with the model.
+- `tropic01_model/`: don't compile unsupported examples.
+- Moved crypto HAL code outside of `hal/crypto/` to `cal/` and started reffering to crypto HAL as CAL (Crypto Abstraction Layer).
+- Refactored compilation of CALs and supported crypto libraries (details in the [Add to an Existing Project](https://tropicsquare.github.io/libtropic/latest/get_started/integrating_libtropic/how_to_build/adding_to_project/) section of the libtropic documentation):
+  - Libtropic can be built as a static library without CALs or crypto libraries (replaced compile-time crypto type macros with runtime polymorphism using the `crypto_ctx` void pointer contained in `lt_l3_state_t`).
+  - Crypto libraries are no longer in the `vendor/` directory (besides copy of `trezor_crypto/` for quick testing purposes). Providing the crypto library is now the consumer's responsibility.
+  - CAL API was refactored to be compatible with the new `crypto_ctx` structure.
+  - For testing purposes, quick switching of supported crypto libraries was implemented in the `tropic01_model/` CMake project.
+- Moved contents of `hal/port/` into `hal/`.
+- Moved TCP and USB dongle port into `hal/posix/`.
+- Moved Linux SPI port into `hal/linux/`.
+- Refactored platform HAL compilation.
+- Renamed `lt_dev_stm32_nucleo_f439zi` to `lt_dev_stm32_nucleo_f439zi_t`.
+- Added sections **Supported Host Platforms** and **Supported Cryptographic Functionality Providers** into **Other** section in the Libtropic documentation.
+- Added dependencies on [micro-ecc](https://github.com/kmackay/micro-ecc) and [ed25519](https://github.com/orlp/ed25519/tree/master) repositories in functional tests (for verification of signatures calculated by TROPIC01).
+- Updated L3 result values according to Application FW 1.1.0:
+  - Renaming of `lt_ret_t` values:
+    - `LT_L3_PAIRING_KEY_EMPTY` to `LT_L3_SLOT_EMPTY`.
+    - `LT_L3_PAIRING_KEY_INVALID` to `LT_L3_SLOT_INVALID`.
+    - `LT_L3_ECC_INVALID_KEY` to `LT_L3_INVALID_KEY`.
+    - `LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL` to `LT_L3_SLOT_NOT_EMPTY`.
+    - `LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED` to `LT_L3_SLOT_EXPIRED`.
+    - `LT_L3_MCOUNTER_UPDATE_UPDATE_ERR` to `LT_L3_UPDATE_ERR`.
+- Renamed `LT_L2_STATUS_NOT_RECOGNIZED` to `LT_L2_STATUS_UNKNOWN`.
+- `lt_l3_decrypt_response()` returns `LT_L3_RESULT_UNKNOWN` instead of `LT_FAIL` if the L3 result value is unknown.
+- Moved `LT_ASAN` CMake option from Libtropic's CMakeLists.txt to the model's CMakeLists.txt.
+- Renamed `LT_STRICT_COMP_FLAGS` to `LT_STRICT_COMPILATION`, moved it from Libtropic's CMakeLists.txt to the model's CMakeLists.txt and set it ON by default.
+- TCP HAL: removed `rng_seed` from `struct lt_dev_posix_tcp_t`. In the case of the TROPIC01 model, the PRNG is seeded in `tropic01_model/main.c`.
+- Linux SPI HAL: remove `rng_seed` from `struct lt_dev_linux_spi_t` and use `getrandom()` in `lt_port_random_bytes()`.
+- POSIX USB Dongle HAL: remove `rng_seed` from `struct lt_dev_posix_usb_dongle_t` and use `getentropy()` in `lt_port_random_bytes()`.
+- STM32 F439ZI HAL: Removed the RNG initialization, now it is the user's responsibility.
+- STM32 F439ZI HAL: Changed `rng_handle` type in `lt_dev_stm32_nucleo_f439zi_t` to a pointer (`RNG_HandleTypeDef*`).
+- New return value `LT_REBOOT_UNSUCCESSFUL` returned by `lt_reboot` function, which now checks if TROPIC01 is in correct mode after the reboot.
+- Examples: Refactored and cleaned up `lt_ex_show_chip_id_and_fwver` and `lt_ex_fw_update` logic to use the new version of the `lt_reboot` function.
+- Meaning of `lt_tr01_mode_t` enum values. Now, this enum is supposed to be used with the new `lt_get_tr01_mode` function.
+- CMake: Renamed `LT_CPU_FW_VERSION` to `LT_CPU_FW_UPDATE_DATA_VER` to make it more clear that it is used for the FW version to update to.
+
+### Added
+- Possibility to measure test coverage with the TROPIC01 model.
+- Documentation: section **Default Pairing Keys for a Secure Channel Handshake** in Get Started
+- GitHub action to run examples against TROPIC01 model (only the supported ones).
+- Replaced `TR01_L3_RES_SIZE_SIZE` and `TR01_L3_CMD_SIZE_SIZE` with `TR01_L3_SIZE_SIZE`.
+- Renamed `TR01_L3_CYPHERTEXT_MAX_SIZE` to `TR01_L3_CIPHERTEXT_MAX_SIZE`.
+- Renamed `LT_L2_DATA_LEN_ERROR` to `LT_L2_RSP_LEN_ERROR`.
+- New generic size macros: `TR01_L3_RESULT_SIZE`, `TR01_L3_CMD_CIPHERTEXT_MAX_SIZE`, `TR01_L3_RES_CIPHERTEXT_MAX_SIZE`.
+- Size macros for L3 results.
+- New return values (`lt_ret_t`): `LT_L3_RES_SIZE_ERROR`, `LT_L3_BUFFER_TOO_SMALL`.
+- L3 buffer size check  to `lt_init` and internal functions.
+- Finished interrupt pin support:
+  - In HALs that don't support it, raise compilation error.
+  - Implement support in Unix SPI HAL.
+- Support for MbedTLS v4 crypto backend.
+- `enum lt_ret_t`:
+  - `LT_L3_RESULT_UNKNOWN` for unknown L3 result values from TROPIC01.
+  - `LT_L3_HARDWARE_FAIL` to reflect the new L3 result value from TROPIC01.
+- HAL port for Arduino framework.
+- `lt_get_tr01_mode` function to get current mode (`lt_tr01_mode_t`) of TROPIC01. This function is a replacement for `lt_update_mode`.
+
+### Fixed
+- `lt_ex_show_chip_id_and_fwver`: reboot back to Application mode in the end.
+- Compilation if `LT_USE_INT_PIN` is set from CMake.
+- TROPIC01 Model: apply ASan to libtropic if `LT_ASAN` is defined.
+
+### Removed
+- `TR01_L3_ID_SIZE` (redundant to `TR01_L3_CMD_ID_SIZE`).
+- Functions `lt_ecc_ecdsa_sig_verify()` and `lt_ecc_eddsa_sig_verify()`.
+  - Reason: They don't use any TROPIC01's functionality and are an unneccessary wrapper.
+  - Consequences:
+    - CAL was simplified, there are less requirements on CFP (ECDSA and EdDSA not required from now).
+    - Libtropic's dependency on ed25519 was removed.
+    - Signature verification was removed from the HW wallet example.
+    - Users should verify the signatures themselves e.g., using functions provided by their crypto library.
+- `lt_update_mode` function.
+
 ## [2.0.1]
 
 ### Added

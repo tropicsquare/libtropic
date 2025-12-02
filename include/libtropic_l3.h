@@ -18,7 +18,7 @@
 /**
  * @file libtropic_l3.h
  * @brief Layer 3 functions declarations
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -38,7 +38,7 @@ extern "C" {
  * After successful execution, `h->l2->buff` will contain data for L2 handshake request.
  * @note For more information read info at the top of this file.
  *
- * @param h              Device's handle
+ * @param h              Handle for communication with TROPIC01
  * @param pkey_index     Index of pairing public key
  * @param host_eph_keys  Host MCU ephemeral keys, used to finish secure session establishment in lt_in__session_start().
  * @return               LT_OK if success, otherwise returns other error code.
@@ -52,7 +52,7 @@ lt_ret_t lt_out__session_start(lt_handle_t *h, const lt_pkey_index_t pkey_index,
  * @note Secure session will be established after successful execution. For more information read info at the top of
  * this file.
  *
- * @param h              Device's handle
+ * @param h              Handle for communication with TROPIC01
  * @param stpub          STPUB from device's certificate
  * @param pkey_index     Index of pairing public key
  * @param shipriv        Secure host private key
@@ -69,7 +69,7 @@ lt_ret_t lt_in__session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pke
  * @note Used for separate L3 communication, for more information read info at the top
  * of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param msg_out     Ping message going out
  * @param msg_len     Length of sent message
  * @return            LT_OK if success, otherwise returns other error code.
@@ -81,7 +81,7 @@ lt_ret_t lt_out__ping(lt_handle_t *h, const uint8_t *msg_out, const uint16_t msg
  * @note Used for separate L3 communication, for more information read info at the top
  * of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param msg_in      Buffer to receive ping message
  * @param msg_len     Expected length of received message, the same as sent in lt_out__ping()
  * @return            LT_OK if success, otherwise returns other error code.
@@ -93,7 +93,7 @@ lt_ret_t lt_in__ping(lt_handle_t *h, uint8_t *msg_in, const uint16_t msg_len);
  * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param pairing_pub 32B of pubkey
  * @param slot        Pairing key lot SH0PUB - SH3PUB
  * @return            LT_OK if success, otherwise returns other error code.
@@ -104,7 +104,7 @@ lt_ret_t lt_out__pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, c
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__pairing_key_write(lt_handle_t *h);
@@ -114,7 +114,7 @@ lt_ret_t lt_in__pairing_key_write(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        Slot to read pairing key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -125,7 +125,7 @@ lt_ret_t lt_out__pairing_key_read(lt_handle_t *h, const uint8_t slot);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param pubkey      Buffer to receive pairing public key
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -136,7 +136,7 @@ lt_ret_t lt_in__pairing_key_read(lt_handle_t *h, uint8_t *pubkey);
  * @note Used for separate L3 communication, for more information
  * read info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        Slot to invalidate pairing key in
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -147,7 +147,7 @@ lt_ret_t lt_out__pairing_key_invalidate(lt_handle_t *h, const uint8_t slot);
  * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
@@ -157,7 +157,7 @@ lt_ret_t lt_in__pairing_key_invalidate(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param addr        Address of a config object
  * @param obj         Content to be written
  * @return            LT_OK if success, otherwise returns other error code.
@@ -169,7 +169,7 @@ lt_ret_t lt_out__r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t 
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__r_config_write(lt_handle_t *h);
@@ -179,7 +179,7 @@ lt_ret_t lt_in__r_config_write(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param addr        Address to read configuration object from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -190,7 +190,7 @@ lt_ret_t lt_out__r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t a
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param obj         Buffer to receive configuration object
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -201,7 +201,7 @@ lt_ret_t lt_in__r_config_read(lt_handle_t *h, uint32_t *obj);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__r_config_erase(lt_handle_t *h);
@@ -211,7 +211,7 @@ lt_ret_t lt_out__r_config_erase(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
@@ -221,7 +221,7 @@ lt_ret_t lt_in__r_config_erase(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param addr        Address to write configuration object to
  * @param bit_index   Bit index to write in the configuration object
  * @return            LT_OK if success, otherwise returns other error code.
@@ -233,7 +233,7 @@ lt_ret_t lt_out__i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t 
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__i_config_write(lt_handle_t *h);
@@ -243,7 +243,7 @@ lt_ret_t lt_in__i_config_write(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param addr        Address to read configuration object from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -254,7 +254,7 @@ lt_ret_t lt_out__i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t a
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param obj         Buffer to receive configuration object
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -265,7 +265,7 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
  * @param data_size   Size of data to be written (valid range given by macros `TR01_R_MEM_DATA_SIZE_MIN` and
@@ -280,7 +280,7 @@ lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, con
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
@@ -290,7 +290,7 @@ lt_ret_t lt_in__r_mem_data_write(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param udata_slot  Slot to read data from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -301,7 +301,7 @@ lt_ret_t lt_out__r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h                Device's handle
+ * @param h                Handle for communication with TROPIC01
  * @param data             Buffer to receive data
  * @param data_max_size    Size of the data buffer
  * @param data_read_size   Number of bytes read into data buffer
@@ -314,7 +314,7 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t da
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param udata_slot  Slot to erase data from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -325,7 +325,7 @@ lt_ret_t lt_out__r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
@@ -335,7 +335,7 @@ lt_ret_t lt_in__r_mem_data_erase(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h               Device's handle
+ * @param h               Handle for communication with TROPIC01
  * @param rnd_bytes_cnt   Number of random bytes to get (255 bytes is the maximum)
  * @return                LT_OK if success, otherwise returns other error code.
  */
@@ -346,7 +346,7 @@ lt_ret_t lt_out__random_value_get(lt_handle_t *h, const uint16_t rnd_bytes_cnt);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h                 Device's handle
+ * @param h                 Handle for communication with TROPIC01
  * @param rnd_bytes         Buffer for the random bytes
  * @param rnd_bytes_cnt     Number of random bytes to get (255 bytes is the maximum)
  * @return                  LT_OK if success, otherwise returns other error code.
@@ -358,7 +358,7 @@ lt_ret_t lt_in__random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint1
  * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        ECC key slot to generate key in
  * @param curve       ECC curve type to use for key generation
  * @return            LT_OK if success, otherwise returns other error code.
@@ -370,7 +370,7 @@ lt_ret_t lt_out__ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, cons
  * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
@@ -380,7 +380,7 @@ lt_ret_t lt_in__ecc_key_generate(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        ECC key slot to store key in
  * @param curve       ECC curve type to use for key storage
  * @param key         Ecc key to store, 32B length
@@ -394,7 +394,7 @@ lt_ret_t lt_out__ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const l
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
@@ -404,7 +404,7 @@ lt_ret_t lt_in__ecc_key_store(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        ECC key slot to read key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -415,7 +415,7 @@ lt_ret_t lt_out__ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t slot);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h              Device's handle
+ * @param h              Handle for communication with TROPIC01
  * @param key            Buffer for retrieving a key; length depends on the type of key in the slot (32B for Ed25519,
  * 64B for P256), according to *curve*
  * @param key_max_size   Size of the key buffer
@@ -432,7 +432,7 @@ lt_ret_t lt_in__ecc_key_read(lt_handle_t *h, uint8_t *key, const uint8_t key_max
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        ECC key slot to erase key from
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -443,7 +443,7 @@ lt_ret_t lt_out__ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t slot);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
@@ -453,7 +453,7 @@ lt_ret_t lt_in__ecc_key_erase(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        ECC key slot to use for signing
  * @param msg         Message to sign
  * @param msg_len     Length of the message
@@ -466,7 +466,7 @@ lt_ret_t lt_out__ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t slot, const 
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param rs          Buffer with a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -477,7 +477,7 @@ lt_ret_t lt_in__ecc_ecdsa_sign(lt_handle_t *h, uint8_t *rs);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param ecc_slot    ECC key slot to use for signing
  * @param msg         Message to sign
  * @param msg_len     Length of the message
@@ -491,7 +491,7 @@ lt_ret_t lt_out__ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, co
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param rs          Buffer with a signature in a form of R and S bytes (should always have length 64B)
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -502,7 +502,7 @@ lt_ret_t lt_in__ecc_eddsa_sign(lt_handle_t *h, uint8_t *rs);
  * @note Used for separate L3 communication, for more information read info at
  * the top of this file.
  *
- * @param h               Device's handle
+ * @param h               Handle for communication with TROPIC01
  * @param mcounter_index  Index of monotonic counter
  * @param mcounter_value  Value to set as an initial value
  *
@@ -518,7 +518,7 @@ lt_ret_t lt_out__mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mc
  * @note Used for separate L3 communication, for more information read info at the
  * top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__mcounter_init(lt_handle_t *h);
@@ -528,7 +528,7 @@ lt_ret_t lt_in__mcounter_init(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information
  * read info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param mcounter_index  Index of the monotonic counter to update
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -539,7 +539,7 @@ lt_ret_t lt_out__mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t 
  * @note Used for separate L3 communication, for more information
  * read info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_in__mcounter_update(lt_handle_t *h);
@@ -549,7 +549,7 @@ lt_ret_t lt_in__mcounter_update(lt_handle_t *h);
  * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param mcounter_index  Index of the monotonic counter to get
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -560,7 +560,7 @@ lt_ret_t lt_out__mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mco
  * @note Used for separate L3 communication, for more information read
  * info at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param mcounter_value  Buffer to receive the value of the monotonic counter
  * @return            LT_OK if success, otherwise returns other error code.
  */
@@ -571,7 +571,7 @@ lt_ret_t lt_in__mcounter_get(lt_handle_t *h, uint32_t *mcounter_value);
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param slot        Slot to use for MAC and destroy operation
  * @param data_out    Data to be sent out, must be 32 bytes long
  * @return            LT_OK if success, otherwise returns other error code.
@@ -583,7 +583,7 @@ lt_ret_t lt_out__mac_and_destroy(lt_handle_t *h, lt_mac_and_destroy_slot_t slot,
  * @note Used for separate L3 communication, for more information read info
  * at the top of this file.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param data_in     Buffer to receive data, must be 32 bytes long
  * @return            LT_OK if success, otherwise returns other error code.
  */

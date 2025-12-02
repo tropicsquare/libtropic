@@ -5,7 +5,7 @@
 /**
  * @file lt_random.h
  * @brief Declarations of functions related to random number generator
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -21,7 +21,7 @@ extern "C" {
 /**
  * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param buff        Buffer to be filled
  * @param count       Number of random bytes
  * @return lt_ret_t

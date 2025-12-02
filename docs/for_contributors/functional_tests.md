@@ -1,31 +1,37 @@
 # Functional Tests
-Functional tests are used to verify the libtropic core API and are implemented in `tests/functional/`. In the `libtropic` repository, these tests are run against the [TROPIC01 Model](../other/tropic01_model.md) only. Testing aganist the TROPIC01 model is also utilized in a CI job, triggered for the `master` and `develop` branches (pushes and pull requests). The tests can also be run in the [libtropic platform repositories](https://github.com/tropicsquare/libtropic#get-started).
+Functional tests are used to verify the libtropic core API and are implemented in `tests/functional/`. In the `libtropic` repository, these tests are run against the [TROPIC01 Model](../other/tropic01_model/index.md) only. Testing against the TROPIC01 model is also used in a CI job, triggered for the `master` and `develop` branches (pushes and pull requests). The tests can also be run in the [libtropic platform repositories](https://github.com/tropicsquare/libtropic#get-started).
 
 The functional tests are organized into two categories, as some of them may cause irreversible changes to the chip:
 
 - **Reversible** (`lt_test_rev_*.c`): only reversible operations are executed on the TROPIC01 chip.
 - **Irreversible** (`lt_test_ire_*.c`): irreversible operations are executed - the state or contents of the TROPIC01 chip **cannot** be reverted.
-!!! note
-    Functional tests are not compiled by default. To compile functional tests, either
+!!! info "Compiling Functional Tests"
+    Functional tests are not compiled by default. They can be compiled using the [LT_BUILD_TESTS](../get_started/integrating_libtropic/how_to_configure/index.md#lt_build_tests) CMake option. See [How to Configure](../get_started/integrating_libtropic/how_to_configure/index.md) section for ways to enable this option.
 
-    - pass `-DLT_BUILD_TESTS=1` to `cmake` during compilation, or
-    - in your CMake file, switch the option on: `set(LT_BUILD_TESTS ON)`.
+!!! failure "Cannot Establish a Secure Channel Session"
+    Refer to the dedicated section in the [FAQ](../faq.md#i-cannot-establish-a-secure-session).
 
-!!! note
-    During build, SH0 keypair is automatically chosen from `libtropic/provisioning_data/<lab_batch_package_directory>/sh0_key_pair/`, this SH0 key is present in the majority of distributed TROPIC01 chips. In certain cases (first   engineering samples) it might be necessary to manually set it (in PEM or DER format) with following cmake switch: `-DLT_SH0_PRIV_PATH=<path to sh0_priv_engineering_sample01.pem>`
+??? tip "Advanced Tip: Running a Test With Your Own Pairing Key"
+    If you have already written your own public key to one of the available slots and want to execute a test that uses a Secure Session, define the arrays for your private and public key as globals and, after `#include "libtropic_functional_tests.h"`, do the following:
+    ```c
+    #undef LT_TEST_SH0_PRIV
+    #define LT_TEST_SH0_PRIV <var_name_with_your_private_pairing_key>
+
+    #undef LT_TEST_SH0_PUB
+    #define LT_TEST_SH0_PUB <var_name_with_your_public_pairing_key>
+    ```
 
 ## Adding a New Test
 To add a new test, you need to:
 
-1. Decide whether the test is reversible or not (see [Test Types and Cleanup](#test-types-and-cleanup) if you are not sure).
+1. Decide whether the test is reversible or irreversible (see [Test Types and Cleanup](#test-types-and-cleanup) if you are not sure).
 2. Write the new test (see [Test Template](#test-template)).
 3. Add the declaration together with a Doxygen comment to `include/libtropic_functional_tests.h`.
 4. Add the test to the root `CMakeLists.txt`:
-    - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST`
-      (it has to be the same as the name of the function which implements the test)
-    - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
-      with test source files. Add the source file of your test here.
-5. Make sure your test works - you can run it against the [TROPIC01 Model](../other/tropic01_model.md). If the test
+        - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST` (it must match the name of the function that implements the test)
+        - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
+            with test source files. Add your test source file there.
+5. Make sure your test works - you can run it against the [TROPIC01 Model](../other/tropic01_model/index.md). If the test
    fails, you either:
     - Did a mistake in the test. Fix it.
     - Or you found a bug - if you are certain it is a bug and not a problem in your test,
@@ -39,30 +45,29 @@ As the tests are also ran against the real chips, we recognize two types of test
    to define a cleanup function, which is called on every failed assert before the test termination.
    If the test does some changes to the chip, which should be reverted after the end of the test,
    the cleanup function for the test **must** be implemented, to make the test truly reversible.
-2. *Irreversible*. This type of test causes changes which are not reversible by nature (e.g. I-Config
-   modifications). These tests do not have to implement the cleanup function, as the chip state or
-   contents cannot be reverted after the test ends.
+2. *Irreversible*. This type of test causes changes that are not reversible by nature (e.g., I-Config
+    modifications). These tests do not have to implement a cleanup function, since the chip state or
+    contents cannot be reverted after the test ends.
 
 #### Cleanup Function
-If the assert fails, the assert function checks whether the `lt_test_cleanup_function` function pointer
-is not `NULL`. If not, the cleanup function is called automatically before terminating the test. By default, the pointer is initialized to `NULL`.
+If an assert fails, the assert function checks whether the `lt_test_cleanup_function` function pointer
+is not `NULL`. If so, the cleanup function is called automatically before terminating the test. By default, the pointer is initialized to `NULL`.
 
-If you need a cleanup function, please create the function and assign the `lt_test_cleanup_function`
-at the right moment in the test (e.g. after you backed up data you would like to restore).
+If you need a cleanup function, create the function and assign it to `lt_test_cleanup_function` at the appropriate point in the test (for example, after you back up data that you will restore later).
 
-You can of course reuse your cleanup function at the end of the test, so you don't have
 to duplicate the cleanup code if it would be the same. If you wrap the function call in the `LT_TEST_ASSERT`, do not forget to set `lt_test_cleanup_function` back to `NULL` beforehands, otherwise the cleanup will be called twice.
+You can reuse your cleanup function at the end of the test so you don't have to duplicate the cleanup code. If you wrap the function call in `LT_TEST_ASSERT`, remember to set `lt_test_cleanup_function` back to `NULL` beforehand, otherwise the cleanup will be called twice.
 
 ### Test Template
-Change the lines with `TODO`.
+Change the lines marked with `TODO`.
 
 ```c
 /**
  * @file TODO: FILL ME
  * @brief TODO: FILL ME
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ * @license For the license see the LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "libtropic.h"
@@ -71,14 +76,14 @@ Change the lines with `TODO`.
 #include "libtropic_logging.h"
 
 // Shared with cleanup function.
-// TODO: CAN BE REMOVED IF CLEANUP NOT USED.
+// TODO: CAN BE REMOVED IF CLEANUP IS NOT USED.
 lt_handle_t *g_h;
 
 // TODO: REMOVE OR EDIT
 static lt_ret_t lt_new_test_cleanup(void)
 {
     LT_LOG_INFO("Starting secure session with slot %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(g_h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(g_h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to establish secure session, ret=%s", lt_ret_verbose(ret));
         return ret;
@@ -102,8 +107,8 @@ void lt_new_test(lt_handle_t *h)
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
-    LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+    LT_LOG_INFO("Starting secure session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     // TODO: DO THE TESTING HERE

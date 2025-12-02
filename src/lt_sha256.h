@@ -4,7 +4,7 @@
 /**
  * @file   lt_sha256.h
  * @brief  SHA256 functions declarations
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -12,48 +12,49 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "libtropic_common.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** Length of sha256 digest */
+/** @brief Length of SHA-256 digest. */
 #define LT_SHA256_DIGEST_LENGTH 32
 
-/** sha256 context structure */
-struct lt_crypto_sha256_ctx_t {
-#if LT_CRYPTO_MBEDTLS
-    uint32_t space[32];
-#elif LT_CRYPTO_TREZOR
-    uint32_t space[256];
-#endif
-};
+/**
+ * @brief Initializes SHA-256 context.
+ *
+ * @param  ctx Hash context
+ * @return LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_sha256_init(void *ctx) __attribute__((warn_unused_result));
 
 /**
- * @details This function initializes hash context
- * @param ctx   Hash context
+ * @brief Starts SHA-256 calculation.
+ *
+ * @param  ctx
+ * @return LT_OK if success, otherwise returns other error code.
  */
-void lt_sha256_init(void *ctx);
+lt_ret_t lt_sha256_start(void *ctx) __attribute__((warn_unused_result));
 
 /**
- * @details This function starts hash context
- * @param ctx
+ * @brief Adds data to SHA-256 context.
+ *
+ * @param  ctx        Hash context
+ * @param  input      Input data
+ * @param  input_len  Length of input data
+ * @return LT_OK if success, otherwise returns other error code.
  */
-void lt_sha256_start(void *ctx);
+lt_ret_t lt_sha256_update(void *ctx, const uint8_t *input, const size_t input_len) __attribute__((warn_unused_result));
 
 /**
- * @details This function add data to hashing context
- * @param ctx   Hash context
- * @param input Input data
- * @param len   Length of input data
+ * @brief Finishes SHA-256 operation.
+ *
+ * @param  ctx     Hash context
+ * @param  output  Hash digest
+ * @return LT_OK if success, otherwise returns other error code.
  */
-void lt_sha256_update(void *ctx, const uint8_t *input, size_t len);
-
-/**
- * @brief This function finalizes hashing and outputs a digest
- * @param ctx    Hash context
- * @param output Hash digest
- */
-void lt_sha256_finish(void *ctx, uint8_t *output);
+lt_ret_t lt_sha256_finish(void *ctx, uint8_t *output) __attribute__((warn_unused_result));
 
 #ifdef __cplusplus
 }

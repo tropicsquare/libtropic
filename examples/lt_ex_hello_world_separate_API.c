@@ -1,7 +1,7 @@
 /**
  * @file lt_ex_hello_world_separate_API.c
  * @brief Establishes Secure Session and executes Ping L3 command using separated API.
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -26,6 +26,10 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
+    // Note: It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+    // initialized. Because these members are pointers, the assigned structures must exist throughout the whole
+    // life-cycle of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the
+    // Libtropic documentation for more information.
     ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
@@ -96,7 +100,7 @@ int lt_ex_hello_world_separate_API(lt_handle_t *h)
     // Then following l2 function is called on server side
     // This function establishes gcm contexts for a session
     LT_LOG_INFO("Executing lt_in__session_start()...");
-    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, sh0priv, sh0pub, &host_eph_keys);
+    ret = lt_in__session_start(h, stpub, TR01_PAIRING_KEY_SLOT_INDEX_0, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, &host_eph_keys);
     if (LT_OK != ret) {
         LT_LOG_ERROR("lt_in__session_start failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(h);

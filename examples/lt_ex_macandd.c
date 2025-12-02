@@ -2,7 +2,7 @@
  * @file lt_ex_macandd.c
  * @brief Example usage of TROPIC01 flagship feature - 'Mac And Destroy' PIN verification engine.
  * For more info please refer to ODN_TR01_app_002_pin_verif.pdf
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -105,7 +105,7 @@ static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destinatio
  *
  * Take it as an inspiration, copy it into your project and adapt it to your specific hw resources.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param master_secret  32 bytes of random data (determines final_key)
  * @param PIN         Array of bytes (size between MAC_AND_DESTROY_PIN_SIZE_MIN and MAC_AND_DESTROY_PIN_SIZE_MAX)
  * representing PIN
@@ -145,6 +145,8 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     uint8_t k_i[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Variable used to initialize slot(s)
     uint8_t u[LT_HMAC_SHA256_HASH_LEN] = {0};
+    // Helper array of zeroes (used as a key in KDF)
+    const uint8_t zeros[32] = {0};
 
     // This organizes data which will be stored into nvm
     struct lt_macandd_nvm_t nvm = {0};
@@ -173,15 +175,26 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     nvm.i = MACANDD_ROUNDS;
     // Compute tag t = KDF(s, 0x00), save into nvm struct
     // Tag will be later used during lt_PIN_entry_check() to verify validity of final_key
-    lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x00}, 1, nvm.t);
+    ret = lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x00}, 1, nvm.t);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("t = KDF(s, 0x00) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Compute u = KDF(s, 0x01)
     // This value will be sent through M&D sequence to initialize a slot
-    lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x01}, 1, u);
+    ret = lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t[]){0x01}, 1, u);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("u = KDF(s, 0x01) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Compute v = KDF(0, PIN||A) where 0 is all zeroes key
-    const uint8_t zeros[32] = {0};
-    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v);
+    ret = lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("v = KDF(0, PIN||A) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     for (int i = 0; i < nvm.i; i++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
@@ -215,7 +228,11 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
         LT_LOG_INFO("\tOK");
 
         // Derive k_i = KDF(w_i, PIN||A); k_i will be used to encrypt master_secret
-        lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+        ret = lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+        if (ret != LT_OK) {
+            LT_LOG_ERROR("k_i = KDF(w_i, PIN||A) failed, ret=%s", lt_ret_verbose(ret));
+            goto exit;
+        }
 
         // Encrypt master_secret using k_i as a key and store ciphertext into non volatile storage
         encrypt(master_secret, k_i, nvm.ci + (i * TR01_MAC_AND_DESTROY_DATA_SIZE));
@@ -230,9 +247,15 @@ static lt_ret_t lt_new_PIN_setup(lt_handle_t *h, const uint8_t *master_secret, c
     }
 
     // final_key is released to the caller
-    lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t *)"2", 1, final_key);
+    ret = lt_hmac_sha256(master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE, (uint8_t *)"2", 1, final_key);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Fail during last computation of final_key, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
-// Cleanup all sensitive data from memory
+// Cleanup all sensitive data from memory.
+// We recommend using a safe function for this. Refer to the link below for some information.
+// https://www.gnu.org/software/libc/manual/html_node/Erasing-Sensitive-Data.html
 exit:
     memset(kdf_input_buff, 0, PIN_size + add_size_checked);
     memset(u, 0, sizeof(u));
@@ -255,7 +278,7 @@ exit:
  *
  * Take it as an inspiration, copy it into your project and adapt it to your specific hw resources.
  *
- * @param h           Device's handle
+ * @param h           Handle for communication with TROPIC01
  * @param PIN         Array of bytes (size between MAC_AND_DESTROY_PIN_SIZE_MIN and MAC_AND_DESTROY_PIN_SIZE_MAX)
  * representing PIN
  * @param PIN_size    Length of the PIN field
@@ -298,6 +321,8 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     uint8_t t_[LT_HMAC_SHA256_HASH_LEN] = {0};
     // Value used to initialize Mac And Destroy's slot after a correct PIN try
     uint8_t u[LT_HMAC_SHA256_HASH_LEN] = {0};
+    // Helper array of zeroes (used as a key in KDF)
+    const uint8_t zeros[32] = {0};
 
     // This organizes data which will be read from nvm
     struct lt_macandd_nvm_t nvm = {0};
@@ -350,8 +375,11 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Compute v’ = KDF(0, PIN’||A).
-    const uint8_t zeros[32] = {0};
-    lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v_);
+    ret = lt_hmac_sha256(zeros, sizeof(zeros), kdf_input_buff, PIN_size + add_size_checked, v_);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("v' = KDF(0, PIN'||A) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Execute w’ = MACANDD(i, v’)
     LT_LOG_INFO("Doing M&D sequence...");
@@ -363,14 +391,22 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Compute k’_i = KDF(w’, PIN’||A)
-    lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+    ret = lt_hmac_sha256(w_i, sizeof(w_i), kdf_input_buff, PIN_size + add_size_checked, k_i);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("k'_i = KDF(w', PIN'||A) failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // Read the ciphertext c_i and tag t from NVM,
     // decrypt c_i with k’_i as the key and obtain s_
     decrypt(nvm.ci + (nvm.i * TR01_MAC_AND_DESTROY_DATA_SIZE), k_i, s_);
 
     // Compute tag t = KDF(s_, "0x00")
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x00}, 1, t_);
+    ret = lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x00}, 1, t_);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("t = KDF(s_, \"0x00\") failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     // If t’ != t: FAIL
     if (memcmp(nvm.t, t_, sizeof(t_)) != 0) {
@@ -380,7 +416,11 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
 
     // Pin is correct, now initialize macandd slots again:
     // Compute u = KDF(s’, "0x01")
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x01}, 1, u);
+    ret = lt_hmac_sha256(s_, sizeof(s_), (uint8_t[]){0x01}, 1, u);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("u = KDF(s', \"0x01\") failed, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
     for (int x = nvm.i; x < MACANDD_ROUNDS - 1; x++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
@@ -413,9 +453,15 @@ static lt_ret_t lt_PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uin
     LT_LOG_INFO("\tOK");
 
     // Calculate final_key and store it into passed array
-    lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"2", 1, final_key);
+    ret = lt_hmac_sha256(s_, sizeof(s_), (uint8_t *)"2", 1, final_key);
+    if (ret != LT_OK) {
+        LT_LOG_ERROR("Fail during last computation of final_key, ret=%s", lt_ret_verbose(ret));
+        goto exit;
+    }
 
-// Cleanup all sensitive data from memory
+// Cleanup all sensitive data from memory.
+// We recommend using a safe function for this. Refer to the link below for some information.
+// https://www.gnu.org/software/libc/manual/html_node/Erasing-Sensitive-Data.html
 exit:
     memset(kdf_input_buff, 0, PIN_size + add_size_checked);
     memset(w_i, 0, sizeof(w_i));
@@ -434,6 +480,10 @@ int lt_ex_macandd(lt_handle_t *h)
     lt_ret_t ret;
 
     LT_LOG_INFO("Initializing handle");
+    // Note: It is assumed that the `h.l2.device` and `h.l3.crypto_ctx` members were already
+    // initialized. Because these members are pointers, the assigned structures must exist throughout the whole
+    // life-cycle of the handle. Refer to the 'Get Started'->'Integrating Libtropic'->'How to Use' Section in the
+    // Libtropic documentation for more information.
     ret = lt_init(h);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to initialize handle, ret=%s", lt_ret_verbose(ret));
@@ -442,7 +492,7 @@ int lt_ex_macandd(lt_handle_t *h)
     }
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(h, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to start Secure Session with key %d, ret=%s", (int)TR01_PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));

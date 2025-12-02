@@ -1,7 +1,7 @@
 /**
  * @file lt_test_rev_mac_and_destroy.c
  * @brief Tests MAC_And_Destroy command using HMAC-SHA256 as the Key Derivation Function (KDF).
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -28,19 +28,19 @@ static int pin_check(lt_handle_t *h, uint8_t *pin, uint16_t pin_len, lt_mac_and_
         t_[LT_HMAC_SHA256_HASH_LEN];
 
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
-    lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v));
 
     LT_LOG_INFO("Executing MAC_And_Destroy with v and slot #%d...", (int)slot);
     LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, slot, v, w));
 
     LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
-    lt_hmac_sha256(w, sizeof(w), pin, pin_len, k_i);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(w, sizeof(w), pin, pin_len, k_i));
 
     LT_LOG_INFO("Decrypting (XOR) c_i using k_i...");
     for (uint8_t j = 0; j < TR01_MAC_AND_DESTROY_DATA_SIZE; j++) s[j] = ciphertexts[slot][j] ^ k_i[j];
 
     LT_LOG_INFO("Computing t' = KDF(s, \"0\")...");
-    lt_hmac_sha256(s, TR01_MAC_AND_DESTROY_DATA_SIZE, (uint8_t *)"0", 1, t_);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, TR01_MAC_AND_DESTROY_DATA_SIZE, (uint8_t *)"0", 1, t_));
 
     LT_LOG_INFO("Checking if t' != t...");
     for (uint8_t i = 0; i < sizeof(t_); i++)
@@ -66,7 +66,8 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Starting Secure Session with key %d", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, sh0priv, sh0pub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+    LT_TEST_ASSERT(LT_OK, lt_verify_chip_and_start_secure_session(h, LT_TEST_SH0_PRIV, LT_TEST_SH0_PUB,
+                                                                  TR01_PAIRING_KEY_SLOT_INDEX_0));
     LT_LOG_LINE();
 
     LT_LOG_INFO("Setup PIN");
@@ -87,13 +88,13 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_random_bytes(h, pin, sizeof(pin)));
 
     LT_LOG_INFO("Computing t = KDF(s, \"0\")...");
-    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"0", 1, t);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, sizeof(s), (uint8_t *)"0", 1, t));
 
     LT_LOG_INFO("Computing u = KDF(s, \"1\")...");
-    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u));
 
     LT_LOG_INFO("Computing v = KDF(0, PIN_DATA)...");
-    lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin, pin_len, v));
 
     LT_LOG_INFO("Starting n=%" PRIu8 " blocks of MAC_And_Destroy sequences", n);
     for (uint8_t i = 0; i < n; i++) {
@@ -108,7 +109,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
         LT_TEST_ASSERT(LT_OK, lt_mac_and_destroy(h, i, u, ignored));
 
         LT_LOG_INFO("Computing k_i = KDF(w, PIN_DATA)...");
-        lt_hmac_sha256(w, sizeof(w), pin, pin_len, k_i);
+        LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(w, sizeof(w), pin, pin_len, k_i));
 
         LT_LOG_INFO("Encrypting (XOR) s using k_i...");
         for (uint8_t j = 0; j < sizeof(ciphertexts[i]); j++) {
@@ -117,7 +118,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     }
     LT_LOG_LINE();
     // Compute the cryptographic key k
-    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_setup);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_setup));
 
     LT_LOG_INFO("Check PIN");
     LT_LOG_INFO();
@@ -142,7 +143,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
 
     LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
     // Compute the cryptographic key k
-    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_check);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_check));
     for (uint8_t i = 0; i < sizeof(k_from_setup); i++) {
         LT_TEST_ASSERT(1, (k_from_setup[i] == k_from_check[i]));
     }
@@ -151,7 +152,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
     LT_LOG_INFO("Starting a restoration of destroyed slots");
     LT_LOG_INFO();
     LT_LOG_INFO("Computing u = KDF(s, \"1\")...");
-    lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
+    LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u));
 
     for (uint8_t i = 0; i <= wrong_attempts; i++) {
         LT_LOG_INFO("Restoring slot #%" PRIu8 "...", i);
@@ -167,7 +168,7 @@ void lt_test_rev_mac_and_destroy(lt_handle_t *h)
 
         LT_LOG_INFO("Comparing cryptographic key k to the one from the setup phase...");
         // Compute the cryptographic key k
-        lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_check);
+        LT_TEST_ASSERT(LT_OK, lt_hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, k_from_check));
         for (uint8_t j = 0; j < sizeof(k_from_setup); j++) {
             LT_TEST_ASSERT(1, (k_from_setup[j] == k_from_check[j]));
         }

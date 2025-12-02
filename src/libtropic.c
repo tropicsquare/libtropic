@@ -1,7 +1,7 @@
 /**
  * @file libtropic.c
  * @brief Implementation of libtropic API
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "libtropic_common.h"
@@ -20,10 +21,8 @@
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
-#include "lt_aesgcm.h"
 #include "lt_asn1_der.h"
-#include "lt_ecdsa.h"
-#include "lt_ed25519.h"
+#include "lt_crypto_common.h"
 #include "lt_hkdf.h"
 #include "lt_l1.h"
 #include "lt_l1_port_wrap.h"
@@ -31,7 +30,9 @@
 #include "lt_l3_api_structs.h"
 #include "lt_l3_process.h"
 #include "lt_random.h"
+#include "lt_secure_memzero.h"
 #include "lt_sha256.h"
+#include "lt_tr01_attrs.h"
 #include "lt_x25519.h"
 
 #define TR01_GET_INFO_BLOCK_LEN 128
@@ -42,14 +43,33 @@ lt_ret_t lt_init(lt_handle_t *h)
         return LT_PARAM_ERR;
     }
 
+    lt_ret_t ret;
+
     // When compiling libtropic with l3 buffer embedded into handle,
     // define buffer's length here (later used to prevent overflow during communication).
 #if !LT_SEPARATE_L3_BUFF
     h->l3.buff_len = LT_SIZE_OF_L3_BUFF;  // Size of l3 buffer is defined in libtropic_common.h
 #endif
+
     h->l3.session_status = LT_SECURE_SESSION_OFF;
-    lt_ret_t ret = lt_l1_init(&h->l2);
+    ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_crypto_ctx_init(h->l3.crypto_ctx);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    // Prevent usage of insufficient buffer.
+    if (h->l3.buff_len < LT_SIZE_OF_L3_BUFF) {
+        return LT_L3_BUFFER_TOO_SMALL;
+    }
+
+    // Initialize the TROPIC01 attributes based on its Application FW.
+    ret = lt_init_tr01_attrs(h);
     if (ret != LT_OK) {
         return ret;
     }
@@ -73,47 +93,49 @@ lt_ret_t lt_deinit(lt_handle_t *h)
     return LT_OK;
 }
 
-lt_ret_t lt_update_mode(lt_handle_t *h)
+lt_ret_t lt_get_tr01_mode(lt_handle_t *h, lt_tr01_mode_t *mode)
 {
-    if (!h) {
+    if (!h || !mode) {
         return LT_PARAM_ERR;
     }
 
     lt_ret_t ret;
 
-    // The byte used here must not be ID byte of some request, otherwise chip would be confused
-    // and would return CRC error.
-    // GET_RESP 0xAA works fine.
-    h->l2.buff[0] = TR01_L1_GET_RESPONSE_REQ_ID;
+    // Send Get_Response L2 Request to get CHIP_STATUS.
+    // If CHIP_STATUS.READY=0, implement waiting similarly as in lt_l1_read().
+    int max_tries = LT_L1_READ_MAX_TRIES;
+    do {
+        h->l2.buff[0] = TR01_L1_GET_RESPONSE_REQ_ID;
 
-    // Transfer just one byte to read CHIP_STATUS byte
-    ret = lt_l1_spi_csn_low(&h->l2);
-    if (ret != LT_OK) {
-        return ret;
-    }
+        ret = lt_l1_write(&h->l2, 1, LT_L1_TIMEOUT_MS_DEFAULT);
+        if (ret != LT_OK) {
+            return ret;
+        }
 
-    ret = lt_l1_spi_transfer(&h->l2, 0, 1, LT_L1_TIMEOUT_MS_DEFAULT);
-    if (ret != LT_OK) {
-        lt_ret_t ret_unused = lt_l1_spi_csn_high(&h->l2);
-        LT_UNUSED(ret_unused);  // We don't care about it, we return ret from SPI transfer anyway.
-        return ret;
-    }
+        if (h->l2.buff[0] & TR01_L1_CHIP_MODE_ALARM_bit) {
+            *mode = LT_TR01_ALARM;
+            return LT_OK;
+        }
 
-    ret = lt_l1_spi_csn_high(&h->l2);
-    if (ret != LT_OK) {
-        return ret;
-    }
+        if (h->l2.buff[0] & TR01_L1_CHIP_MODE_READY_bit) {
+            if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
+                *mode = LT_TR01_MAINTENANCE;
+                return LT_OK;
+            }
+            *mode = LT_TR01_APPLICATION;
+            return LT_OK;
+        }
 
-    // Buffer in handle now contains CHIP_STATUS byte,
-    // Save info about chip mode into 'mode' variable in handle
-    if (h->l2.buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-        h->l2.mode = LT_TR01_MAINTENANCE_MODE;
-    }
-    else {
-        h->l2.mode = LT_TR01_APP_MODE;
-    }
+        // Chip is not ready, let's wait and try again in a while.
+        ret = lt_l1_delay(&h->l2, LT_L1_READ_RETRY_DELAY);
+        if (ret != LT_OK) {
+            return ret;
+        }
 
-    return LT_OK;
+        max_tries--;
+    } while (max_tries > 0);
+
+    return LT_L1_CHIP_BUSY;
 }
 
 lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
@@ -150,7 +172,7 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
         }
 
         if (TR01_GET_INFO_BLOCK_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
 
         uint8_t *head = ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object;
@@ -255,9 +277,8 @@ lt_ret_t lt_get_info_chip_id(lt_handle_t *h, struct lt_chip_id_t *chip_id)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_CHIP_ID_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(chip_id, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_CHIP_ID_SIZE);
@@ -290,9 +311,8 @@ lt_ret_t lt_get_info_riscv_fw_ver(lt_handle_t *h, uint8_t *ver)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_RISCV_FW_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_RISCV_FW_SIZE);
@@ -325,9 +345,8 @@ lt_ret_t lt_get_info_spect_fw_ver(lt_handle_t *h, uint8_t *ver)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_GET_INFO_SPECT_FW_SIZE != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     memcpy(ver, ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object, TR01_L2_GET_INFO_SPECT_FW_SIZE);
@@ -363,11 +382,10 @@ lt_ret_t lt_get_info_fw_bank(lt_handle_t *h, const lt_bank_id_t bank_id, uint8_t
         return ret;
     }
 
-    // Check incomming l3 length
     if ((TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V1 != p_l2_resp->rsp_len)
         && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2 != p_l2_resp->rsp_len)
         && (TR01_L2_GET_INFO_FW_HEADER_SIZE_BOOT_V2_EMPTY_BANK != p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     // Check if the output buffer for the header is big enough
@@ -393,21 +411,22 @@ lt_ret_t lt_session_start(lt_handle_t *h, const uint8_t *stpub, const lt_pkey_in
 
     lt_ret_t ret = lt_out__session_start(h, pkey_index, &host_eph_keys);
     if (ret != LT_OK) {
-        return ret;
+        goto lt_session_start_cleanup;
     }
 
     ret = lt_l2_send(&h->l2);
     if (ret != LT_OK) {
-        return ret;
+        goto lt_session_start_cleanup;
     }
     ret = lt_l2_receive(&h->l2);
     if (ret != LT_OK) {
-        return ret;
+        goto lt_session_start_cleanup;
     }
 
     ret = lt_in__session_start(h, stpub, pkey_index, shipriv, shipub, &host_eph_keys);
-    memset(&host_eph_keys, 0, sizeof(lt_host_eph_keys_t));
 
+lt_session_start_cleanup:
+    lt_secure_memzero(&host_eph_keys, sizeof(lt_host_eph_keys_t));
     return ret;
 }
 
@@ -436,9 +455,8 @@ lt_ret_t lt_session_abort(lt_handle_t *h)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_ENCRYPTED_SESSION_ABT_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -468,9 +486,8 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_SLEEP_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -503,9 +520,8 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
-    // Check incomming l3 length
     if (TR01_L2_STARTUP_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     ret = lt_l1_delay(&h->l2, LT_TR01_REBOOT_DELAY_MS);
@@ -513,10 +529,21 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
         return ret;
     }
 
-    // Update mode variable in handle after reboot
-    ret = lt_update_mode(h);
+    // Get current TROPIC01 mode to check whether TROPIC01 was rebooted into the correct mode.
+    lt_tr01_mode_t tr01_mode;
+    ret = lt_get_tr01_mode(h, &tr01_mode);
     if (ret != LT_OK) {
         return ret;
+    }
+
+    if (tr01_mode == LT_TR01_ALARM) {
+        return LT_L1_CHIP_ALARM_MODE;
+    }
+
+    // Validate the current TROPIC01 mode based on the given `startup_id`.
+    if ((startup_id == TR01_REBOOT && tr01_mode != LT_TR01_APPLICATION)
+        || (startup_id == TR01_MAINTENANCE_REBOOT && tr01_mode != LT_TR01_MAINTENANCE)) {
+        return LT_REBOOT_UNSUCCESSFUL;
     }
 
     return LT_OK;
@@ -550,7 +577,7 @@ lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
     }
 
     if (TR01_L2_MUTABLE_FW_ERASE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -589,7 +616,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
     }
 
@@ -610,7 +637,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const uint
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
     }
 
@@ -663,7 +690,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
     }
 
     if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-        return LT_FAIL;
+        return LT_L2_RSP_LEN_ERROR;
     }
 
     return LT_OK;
@@ -671,7 +698,8 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *update_request)
 
 lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, const uint16_t update_data_size)
 {
-    if (!h || !update_data || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX) {
+    if (!h || !update_data || update_data_size <= (TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1U)
+        || update_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX) {
         return LT_PARAM_ERR;
     }
 
@@ -680,14 +708,27 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)h->l2.buff;
 
-    // Data consist of "request" and "data" parts,
-    // 'data' byte chunks are taken from following index:
-    int chunk_index = TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1;
+    // Normalized sizes for arithmetic.
+    size_t upd_size = (size_t)update_data_size;
+    size_t copy_len;
 
-    do {
-        uint8_t len = update_data[chunk_index];
+    // Compute how many bytes are available in the `lt_l2_mutable_fw_update_data_req_t` struct starting at `req_len`.
+    // This is a compile-time-safe calculation and prevents overflow into unknown memory.
+    const size_t dest_offset = offsetof(struct lt_l2_mutable_fw_update_data_req_t, req_len);
+    const size_t dest_capacity = sizeof(*p2_l2_req) > dest_offset ? sizeof(*p2_l2_req) - dest_offset : 0U;
+
+    // Data consist of "request" and "data" parts,
+    // 'data' byte chunks are taken starting from 'chunk_index'
+    for (size_t chunk_index = (size_t)TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN + 1U; chunk_index < upd_size;
+         chunk_index += copy_len) {
+        copy_len = (size_t)update_data[chunk_index] + 1U;
+
+        if (copy_len > upd_size - chunk_index || copy_len > dest_capacity) {
+            return LT_PARAM_ERR;
+        }
+
         p2_l2_req->req_id = TR01_L2_MUTABLE_FW_UPDATE_DATA_REQ;
-        memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, len + 1);
+        memcpy((uint8_t *)&p2_l2_req->req_len, update_data + chunk_index, copy_len);
 
         lt_ret_t ret = lt_l2_send(&h->l2);
         if (ret != LT_OK) {
@@ -699,11 +740,9 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *update_data, c
         }
 
         if (TR01_L2_MUTABLE_FW_UPDATE_RSP_LEN != (p_l2_resp->rsp_len)) {
-            return LT_FAIL;
+            return LT_L2_RSP_LEN_ERROR;
         }
-
-        chunk_index += len + 1;
-    } while ((chunk_index) < update_data_size);
+    }
 
     return LT_OK;
 }
@@ -765,7 +804,7 @@ lt_ret_t lt_ping(lt_handle_t *h, const uint8_t *msg_out, uint8_t *msg_in, const 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_PING_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -792,7 +831,8 @@ lt_ret_t lt_pairing_key_write(lt_handle_t *h, const uint8_t *pairing_pub, const 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -819,7 +859,8 @@ lt_ret_t lt_pairing_key_read(lt_handle_t *h, uint8_t *pairing_pub, const uint8_t
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -846,7 +887,8 @@ lt_ret_t lt_pairing_key_invalidate(lt_handle_t *h, const uint8_t slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_PAIRING_KEY_INVALIDATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -873,7 +915,7 @@ lt_ret_t lt_r_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_CONFIG_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -900,7 +942,7 @@ lt_ret_t lt_r_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_CONFIG_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -927,7 +969,7 @@ lt_ret_t lt_r_config_erase(lt_handle_t *h)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_R_CONFIG_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -954,7 +996,7 @@ lt_ret_t lt_i_config_write(lt_handle_t *h, const enum lt_config_obj_addr_t addr,
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_I_CONFIG_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -981,7 +1023,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_I_CONFIG_READ_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -991,7 +1033,7 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
 
 lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data, const uint16_t data_size)
 {
-    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > TR01_R_MEM_DATA_SIZE_MAX
+    if (!h || !data || data_size < TR01_R_MEM_DATA_SIZE_MIN || data_size > h->tr01_attrs.r_mem_udata_slot_size_max
         || (udata_slot > TR01_R_MEM_DATA_SLOT_MAX)) {
         return LT_PARAM_ERR;
     }
@@ -1009,7 +1051,8 @@ lt_ret_t lt_r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const ui
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_WRITE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1037,7 +1080,11 @@ lt_ret_t lt_r_mem_data_read(lt_handle_t *h, const uint16_t udata_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(
+        &h->l2, h->l3.buff,
+        lt_min(h->l3.buff_len, TR01_L3_SIZE_SIZE + TR01_L3_RESULT_SIZE
+                                   + (TR01_L3_R_MEM_DATA_READ_PADDING_SIZE + h->tr01_attrs.r_mem_udata_slot_size_max)
+                                   + TR01_L3_TAG_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1064,7 +1111,8 @@ lt_ret_t lt_r_mem_data_erase(lt_handle_t *h, const uint16_t udata_slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_R_MEM_DATA_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1091,7 +1139,8 @@ lt_ret_t lt_random_value_get(lt_handle_t *h, uint8_t *rnd_bytes, const uint16_t 
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_RANDOM_VALUE_GET_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1118,7 +1167,8 @@ lt_ret_t lt_ecc_key_generate(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_GENERATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1144,7 +1194,7 @@ lt_ret_t lt_ecc_key_store(lt_handle_t *h, const lt_ecc_slot_t slot, const lt_ecc
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_STORE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1172,7 +1222,8 @@ lt_ret_t lt_ecc_key_read(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, uint8_t *
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff,
+                                   lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_READ_RES_PACKET_SIZE_MAX));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1199,7 +1250,7 @@ lt_ret_t lt_ecc_key_erase(lt_handle_t *h, const lt_ecc_slot_t ecc_slot)
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECC_KEY_ERASE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1227,25 +1278,12 @@ lt_ret_t lt_ecc_ecdsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_ECDSA_SIGN_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
 
     return lt_in__ecc_ecdsa_sign(h, rs);
-}
-
-lt_ret_t lt_ecc_ecdsa_sig_verify(const uint8_t *msg, const uint32_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
-{
-    if (!msg || !pubkey || !rs) {
-        return LT_PARAM_ERR;
-    }
-
-    if (lt_ecdsa_verify(msg, msg_len, pubkey, rs) != 0) {
-        return LT_FAIL;
-    }
-
-    return LT_OK;
 }
 
 lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const uint8_t *msg, const uint16_t msg_len,
@@ -1268,25 +1306,12 @@ lt_ret_t lt_ecc_eddsa_sign(lt_handle_t *h, const lt_ecc_slot_t ecc_slot, const u
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_EDDSA_SIGN_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
 
     return lt_in__ecc_eddsa_sign(h, rs);
-}
-
-lt_ret_t lt_ecc_eddsa_sig_verify(const uint8_t *msg, const uint16_t msg_len, const uint8_t *pubkey, const uint8_t *rs)
-{
-    if (!msg || (msg_len > TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX) || !pubkey || !rs) {
-        return LT_PARAM_ERR;
-    }
-
-    if (lt_ed25519_sign_open(msg, msg_len, pubkey, rs) != 0) {
-        return LT_FAIL;
-    }
-
-    return LT_OK;
 }
 
 lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounter_index, const uint32_t mcounter_value)
@@ -1308,7 +1333,7 @@ lt_ret_t lt_mcounter_init(lt_handle_t *h, const enum lt_mcounter_index_t mcounte
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MCOUNTER_INIT_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1335,7 +1360,7 @@ lt_ret_t lt_mcounter_update(lt_handle_t *h, const enum lt_mcounter_index_t mcoun
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MCOUNTER_UPDATE_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1362,7 +1387,7 @@ lt_ret_t lt_mcounter_get(lt_handle_t *h, const enum lt_mcounter_index_t mcounter
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MCOUNTER_GET_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1390,7 +1415,7 @@ lt_ret_t lt_mac_and_destroy(lt_handle_t *h, const lt_mac_and_destroy_slot_t slot
         return ret;
     }
 
-    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, h->l3.buff_len);
+    ret = lt_l2_recv_encrypted_res(&h->l2, h->l3.buff, lt_min(h->l3.buff_len, TR01_L3_MAC_AND_DESTROY_RES_PACKET_SIZE));
     if (ret != LT_OK) {
         return ret;
     }
@@ -1403,26 +1428,31 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_HOST_NO_SESSION",
                                     "LT_PARAM_ERR",
                                     "LT_CRYPTO_ERR",
+                                    "LT_APP_FW_TOO_NEW",
+                                    "LT_REBOOT_UNSUCCESSFUL",
                                     "LT_L1_SPI_ERROR",
                                     "LT_L1_DATA_LEN_ERROR",
                                     "LT_L1_CHIP_STARTUP_MODE",
                                     "LT_L1_CHIP_ALARM_MODE",
                                     "LT_L1_CHIP_BUSY",
                                     "LT_L1_INT_TIMEOUT",
-                                    "LT_L3_R_MEM_DATA_READ_SLOT_EMPTY",
-                                    "LT_L3_R_MEM_DATA_WRITE_WRITE_FAIL",
-                                    "LT_L3_R_MEM_DATA_WRITE_SLOT_EXPIRED",
-                                    "LT_L3_ECC_INVALID_KEY",
-                                    "LT_L3_MCOUNTER_UPDATE_UPDATE_ERR",
+                                    "LT_L3_SLOT_NOT_EMPTY",
+                                    "LT_L3_SLOT_EXPIRED",
+                                    "LT_L3_INVALID_KEY",
+                                    "LT_L3_UPDATE_ERR",
                                     "LT_L3_COUNTER_INVALID",
-                                    "LT_L3_PAIRING_KEY_EMPTY",
-                                    "LT_L3_PAIRING_KEY_INVALID",
+                                    "LT_L3_SLOT_EMPTY",
+                                    "LT_L3_SLOT_INVALID",
                                     "LT_L3_OK",
                                     "LT_L3_FAIL",
                                     "LT_L3_UNAUTHORIZED",
                                     "LT_L3_INVALID_CMD",
+                                    "LT_L3_HARDWARE_FAIL",
                                     "LT_L3_DATA_LEN_ERROR",
-                                    "LT_L2_IN_CRC_ERR",
+                                    "LT_L3_RES_SIZE_ERROR",
+                                    "LT_L3_BUFFER_TOO_SMALL",
+                                    "LT_L3_R_MEM_DATA_READ_SLOT_EMPTY",
+                                    "LT_L3_RESULT_UNKNOWN",
                                     "LT_L2_REQ_CONT",
                                     "LT_L2_RES_CONT",
                                     "LT_L2_RESP_DISABLED",
@@ -1433,8 +1463,9 @@ static const char *lt_ret_strs[] = {"LT_OK",
                                     "LT_L2_GEN_ERR",
                                     "LT_L2_NO_RESP",
                                     "LT_L2_UNKNOWN_REQ",
-                                    "LT_L2_STATUS_NOT_RECOGNIZED",
-                                    "LT_L2_DATA_LEN_ERROR",
+                                    "LT_L2_IN_CRC_ERR",
+                                    "LT_L2_RSP_LEN_ERROR",
+                                    "LT_L2_STATUS_UNKNOWN",
                                     "LT_CERT_STORE_INVALID",
                                     "LT_CERT_UNSUPPORTED",
                                     "LT_CERT_ITEM_NOT_FOUND",
@@ -1621,7 +1652,7 @@ lt_ret_t lt_verify_chip_and_start_secure_session(lt_handle_t *h, const uint8_t *
     return LT_OK;
 }
 
-lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *out_buf, const uint16_t out_buf_size)
+lt_ret_t lt_print_bytes(const uint8_t *bytes, const size_t bytes_cnt, char *out_buf, const size_t out_buf_size)
 {
     if (!bytes || !out_buf || out_buf_size < (bytes_cnt * 2 + 1)) {
         // Write empty string if buffer too small
@@ -1631,8 +1662,14 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const uint16_t bytes_cnt, char *ou
         return LT_FAIL;
     }
 
-    for (uint16_t i = 0; i < bytes_cnt; i++) {
-        sprintf(&out_buf[i * 2], "%02" PRIX8, bytes[i]);
+    for (size_t i = 0; i < bytes_cnt; i++) {
+        size_t remaining = out_buf_size - (i * 2);
+        int written = snprintf(&out_buf[i * 2], remaining, "%02" PRIX8, bytes[i]);
+        // Verify snprintf succeeded and didn't truncate
+        // (should never happen given precondition check, but defensive)
+        if (written < 0 || (size_t)written >= remaining) {
+            return LT_FAIL;
+        }
     }
     out_buf[bytes_cnt * 2] = '\0';
 
@@ -1686,18 +1723,18 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id, int (*print_func)(
                           sizeof(print_bytes_buff))) {
         return LT_FAIL;
     }
-    char packg_type_id_str[17];  // Length of the longest possible string ("Bare silicon die") + \0.
+    const char *packg_type_id_str;
     switch (packg_type_id) {
         case TR01_CHIP_PKG_BARE_SILICON_ID:
-            strcpy(packg_type_id_str, "Bare silicon die");
+            packg_type_id_str = "Bare silicon die";
             break;
 
         case TR01_CHIP_PKG_QFN32_ID:
-            strcpy(packg_type_id_str, "QFN32, 4x4mm");
+            packg_type_id_str = "QFN32, 4x4mm";
             break;
 
         default:
-            strcpy(packg_type_id_str, "N/A");
+            packg_type_id_str = "N/A";
             break;
     }
     if (0 > print_func("Package ID             = 0x%s (%s)\r\n", print_bytes_buff, packg_type_id_str)) {

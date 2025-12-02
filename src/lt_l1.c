@@ -1,7 +1,7 @@
 /**
  * @file lt_l1.c
  * @brief Layer 1 functions definitions
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
@@ -83,17 +83,8 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             return LT_L1_CHIP_ALARM_MODE;
         }
 
-        // Check and save STARTUP bit of CHIP_STATUS to signalize whether device operates in bootloader or in
-        // application
-        if (s2->buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-            s2->mode = LT_TR01_MAINTENANCE_MODE;
-        }
-        else {
-            s2->mode = LT_TR01_APP_MODE;
-        }
-
         // Proceed further in case CHIP_STATUS contains READY bit, signalizing that chip is ready to receive request
-        if (s2->buff[0] & (TR01_L1_CHIP_MODE_READY_bit)) {
+        if (s2->buff[0] & TR01_L1_CHIP_MODE_READY_bit) {
             // receive STATUS byte and length byte
             ret = lt_l1_spi_transfer(s2, 1, 2, timeout_ms);
             if (ret != LT_OK) {  // offset 1
@@ -146,23 +137,23 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             if (ret != LT_OK) {
                 return ret;
             }
-            if (s2->mode == LT_TR01_MAINTENANCE_MODE) {
-                // Chip is in bootloader mode and INT pin is not implemented in bootloader mode
+            if (s2->buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
+                // INT pin is not implemented in Start-up Mode
                 // So we wait a bit before we poll again for CHIP_STATUS
-                // printf("x\n");
                 ret = lt_l1_delay(s2, LT_L1_READ_RETRY_DELAY);
                 if (ret != LT_OK) {
                     return ret;
                 }
             }
             else {
-                // We are in application. IF INT pin is enabled, wait for it to go low
 #if LT_USE_INT_PIN
-                ret = lt_l1_delay_on_int(h, LT_L1_TIMEOUT_MS_MAX);
+                // Wait for rising edge on the INT pin, which signalizes that L2 Response frame is ready to be received
+                ret = lt_l1_delay_on_int(s2, LT_L1_TIMEOUT_MS_MAX);
                 if (ret != LT_OK) {
                     return ret;
                 }
 #else
+                // INT pin not used, delay for some time
                 ret = lt_l1_delay(s2, LT_L1_READ_RETRY_DELAY);
                 if (ret != LT_OK) {
                     return ret;

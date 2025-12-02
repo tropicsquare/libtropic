@@ -56,14 +56,19 @@ nav:
     - Libtropic Architecture: get_started/libtropic_architecture.md
     - Integrating Libtropic:
       - get_started/integrating_libtropic/index.md
+      - How to Build:
+        - get_started/integrating_libtropic/how_to_build/index.md
+        - Add to an Existing Project: get_started/integrating_libtropic/how_to_build/adding_to_project.md
+        - Compile as a Static Library: get_started/integrating_libtropic/how_to_build/compile_as_static_library.md
+      - How to Configure: get_started/integrating_libtropic/how_to_configure/index.md
+      - How to Use: get_started/integrating_libtropic/how_to_use/index.md
       - Integration Examples: get_started/integrating_libtropic/integration_examples.md
-      - Adding to an Existing Project: get_started/integrating_libtropic/adding_to_project.md
-      - Compiling as a Static Library: get_started/integrating_libtropic/compile_as_static_library.md
     - Examples:
       - get_started/examples/index.md
       - Reversible Examples: get_started/examples/reversible_examples.md
       - Irreversible Examples: get_started/examples/irreversible_examples.md
     - TROPIC01 Firmware: get_started/tropic01_fw.md
+    - Default Pairing Keys for a Secure Channel Handshake: get_started/default_pairing_keys.md
     - Logging: get_started/logging.md
     - Debugging: get_started/debugging.md
   - API Reference:
@@ -72,13 +77,25 @@ nav:
     - for_contributors/index.md
     - Contributing Guide: for_contributors/contributing_guide.md
     - Functional Tests: for_contributors/functional_tests.md
-    - Adding a New Embedded Platform: for_contributors/adding_embedded_platform.md
-    - Adding a New Cryptographic Backend: for_contributors/adding_crypto_backend.md
+    - Adding a New Host Platform: for_contributors/adding_host_platform.md
+    - Adding a New Cryptographic Functionality Provider: for_contributors/adding_cfp.md
     - Building the Documentation: for_contributors/building_documentation.md
+  - FAQ: faq.md
   - Other:
     - other/index.md
-    - TROPIC01 Model: other/tropic01_model.md
-    - Provisioning Data: other/provisioning_data.md
+    - TROPIC01 Model:
+      - other/tropic01_model/index.md
+      - Provisioning Data: other/tropic01_model/provisioning_data.md
+    - Supported Host Platforms:
+      - other/supported_host_platforms/index.md
+      - STM32: other/supported_host_platforms/stm32.md
+      - Linux: other/supported_host_platforms/linux.md
+      - POSIX: other/supported_host_platforms/posix.md
+      - Arduino: other/supported_host_platforms/arduino.md
+    - Supported Cryptographic Functionality Providers:
+      - other/supported_cfps/index.md
+      - Trezor Crypto: other/supported_cfps/trezor_crypto.md
+      - MbedTLS: other/supported_cfps/mbedtls.md
 
 plugins:
   - search
@@ -98,7 +115,8 @@ markdown_extensions:
       check_paths: true
   # Following extensions can be used for wider Markdown syntax support
   - admonition
-  - pymdownx.arithmatex    # For math rendering (optional)
+  - pymdownx.arithmatex:    # For math rendering (optional)
+      generic: true
   - pymdownx.betterem      # Better emphasis handling
   - pymdownx.caret         # Superscripts
   - pymdownx.critic        # Suggestions / strike-through
@@ -128,3 +146,7 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
