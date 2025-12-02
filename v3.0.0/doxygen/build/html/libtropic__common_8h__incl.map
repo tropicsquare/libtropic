@@ -1,0 +1,16 @@
+<map id="libtropic_common.h" name="libtropic_common.h">
+<area shape="rect" id="Node000001" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="203,5,354,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,88,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="242,33,98,77,96,72,241,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="113,79,183,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,33,182,74,180,70,256,28"/>
+<area shape="rect" id="Node000004" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="207,79,350,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="281,31,281,65,276,65,276,31"/>
+<area shape="rect" id="Node000005" href="$tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="374,79,562,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="310,28,425,71,423,76,308,33"/>
+<area shape="rect" id="Node000007" href="$tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="587,79,773,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="344,28,602,74,601,79,343,33"/>
+<area shape="rect" id="Node000006" href="$bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="544,152,603,177"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="486,102,546,142,544,147,483,106"/>
+<area shape="poly" id="edge7_Node000007_Node000006" title=" " alt="" coords="664,106,604,147,601,142,661,102"/>
+</map>

@@ -1,0 +1,24 @@
+<map id="libtropic_port_stm32_nucleo_f439zi.h" name="libtropic_port_stm32_nucleo_f439zi.h">
+<area shape="rect" id="Node000001" title="Port for STM32 F439ZI using native SPI HAL (and GPIO HAL for chip select)." alt="" coords="207,5,363,45"/>
+<area shape="rect" id="Node000002" href="$libtropic__port_8h.html" title="Header file with layer 1 interfaces which are defined based on host platform." alt="" coords="151,93,271,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,47,233,85,229,81,265,44"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="295,93,425,119"/>
+<area shape="poly" id="edge11_Node000001_Node000011" title=" " alt="" coords="305,44,341,81,337,85,301,47"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="109,167,179,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="202,121,166,158,162,155,198,117"/>
+<area shape="rect" id="Node000004" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="203,167,354,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="224,117,260,155,256,158,220,121"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,240,88,265"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="242,195,98,239,96,233,241,189"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="113,240,183,265"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="259,194,182,236,180,231,256,190"/>
+<area shape="rect" id="Node000007" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="207,240,350,265"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="281,192,281,226,276,226,276,192"/>
+<area shape="rect" id="Node000008" href="$tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="374,240,562,265"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="310,190,425,232,423,237,308,195"/>
+<area shape="rect" id="Node000010" href="$tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="587,240,773,265"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="344,189,602,235,601,240,343,195"/>
+<area shape="rect" id="Node000009" href="$bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="544,313,603,339"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="486,263,546,303,544,308,483,268"/>
+<area shape="poly" id="edge10_Node000010_Node000009" title=" " alt="" coords="664,268,604,308,601,303,661,263"/>
+</map>

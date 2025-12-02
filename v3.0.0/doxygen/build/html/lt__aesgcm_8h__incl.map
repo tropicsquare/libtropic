@@ -1,0 +1,18 @@
+<map id="lt_aesgcm.h" name="lt_aesgcm.h">
+<area shape="rect" id="Node000001" title="AES&#45;GCM function declarations." alt="" coords="228,5,329,31"/>
+<area shape="rect" id="Node000002" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="203,79,354,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="281,31,281,65,276,65,276,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,88,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="242,107,98,151,96,145,241,101"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="113,152,183,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="259,106,182,148,180,143,256,102"/>
+<area shape="rect" id="Node000005" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="207,152,350,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="281,104,281,138,276,138,276,104"/>
+<area shape="rect" id="Node000006" href="$tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="374,152,562,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="310,102,425,144,423,149,308,107"/>
+<area shape="rect" id="Node000008" href="$tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="587,152,773,177"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="344,101,602,147,601,152,343,107"/>
+<area shape="rect" id="Node000007" href="$bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="544,225,603,251"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="486,175,546,215,544,220,483,180"/>
+<area shape="poly" id="edge8_Node000008_Node000007" title=" " alt="" coords="664,180,604,220,601,215,661,175"/>
+</map>
