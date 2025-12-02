@@ -1,8 +1,8 @@
 # Functional Mock Tests
-Functional Mock Tests are a special type of test which is run against mock HAL (not against any "real" target, including the model). As such, all communication can (and has to be) mocked. They are a supplement to classic [functional tests](./functional_tests.md) and are meant to test behavior that is not triggered easily on real targets.
+Functional Mock Tests are tests run against the mock HAL (not against any real target, including the model). As such, all communication must be mocked. They supplement the classic [functional tests](./functional_tests.md) and are intended to test behavior that is difficult to trigger on real targets.
 
 ## Compiling and Running Tests
-These tests are compiled standalone in the `tests/functional_mock` directory. The tests can be compiled and run as following:
+These tests are compiled standalone in the `tests/functional_mock` directory. The tests can be compiled and run as follows:
 
 ```shell
 cd tests/functional_mock
@@ -16,42 +16,39 @@ ctest -V
 ## Adding a New Test
 
 !!! important
-    If possible and feasible, prefer to implement classic functional tests, as they can run against all platforms. Functional mock tests should be used to test only the behavior which cannot be easily tested against real targets, e.g., hardware errors that are extremely rare and cannot be easily triggered.
+    If possible and feasible, prefer implementing classic functional tests, as they can run on all platforms. Use functional mock tests only to cover behavior that cannot be easily tested on real targets (for example, extremely rare hardware errors).
 
 ### Basic Concepts
-To write this type of test, you need to understand TROPIC01's communication protocol at the lowest level. At first, remainder of units and layers of communication:
+To write these tests, you need to understand TROPIC01's communication protocol at a low level. Here are the units and layers of communication:
 
-- *One unit of communication on L1 = SPI transfer*, represented by `lt_port_spi_transfer`. One more more bytes can be transferred during one transfer.
-- *One unit of communication on L2 = frame*. Initiated by negedge on CSN and terminated by posedge on CSN. Frame can be transferred during single or multiple L1 transfer. As long as the CSN is low and any part of the frame is remaining, host can do SPI transfers. As a consequence, frame can be read even byte-by-byte.
-- *One unit of communication on L3 = packet*. Encapsulated in L2 frame's REQ_DATA/RSP_DATA (similar to ISO/OSI encapsulation). L2 frame size is limited and as such it can happen that L3 packet has to be split into multiple frames. This is not really relevant from the point of the HAL — it is still a part of the frame.
+- *One unit of communication on L1 = SPI transfer*, represented by `lt_port_spi_transfer`. One or more bytes can be transferred in a single transfer.
+- *One unit of communication on L2 = frame*. A frame is initiated by a falling edge on CSN and terminated by a rising edge. A frame can be transferred in a single L1 transfer or across multiple L1 transfers. As long as CSN is low and part of the frame remains, the host can perform SPI transfers. Consequently, a frame can be read byte-by-byte.
+- *One unit of communication on L3 = packet*. A packet is encapsulated in an L2 frame's REQ_DATA/RSP_DATA (similar to ISO/OSI encapsulation). Because L2 frames have a limited size, an L3 packet may need to be split into multiple frames. From the HAL perspective this is still part of the frame.
 
 Additional key points:
 
-- We mock incoming data — the data that would be on the MISO line.
-- There's no difference between "writing" and "reading". Everything is a SPI transaction, where the contents of buffers are swapped. We distinguish "reads" from "writes" only by a different `REQ_ID`. "Reads" have `REQ_ID == Get_Response (0xAA)`. Everything else is a "write". As such, you need to mock incoming data also for "writes", which is currently only a single `CHIP_STATUS` byte. Other bytes can be undefined/invalid/zero.
-  - Actually, length of outcoming and incoming data shall always match, due to the nature of the SPI protocol. However, to simplify things, mock HAL does not require to fill the rest of the space after CHIP_STATUS with anything. If Libtropic tries to read incoming data (MISO) beyond data queued by user, mock HAL returns zeroes (up to the LT_L1_MAX_LENGTH). There's a logging macro which can be enabled to simplify test design.
-- Data sent to the mocked HAL (outgoing data — "MOSI") are ignored in current implementation to keep test complexity bearable.
-- Data are mocked by "frames", not by bytes. After CSN posedge, next mocked transaction is prepared in the internal mock queue.
-  - By "frames", we also mean the single CHIP_STATUS that is sent when `REQ_ID == Get_Response`.
-- If no mocked transaction is available in the queue, attempt at starting the transaction by setting CSN low (negedge) results in an error.
-- Any attempt at SPI transfer while the CSN is high results in an error, as this would be an error in Libtropic implementation. Transfers can happen only during CSN low (after CSN negedge).
+- We mock incoming data — the data that would appear on the MISO line.
+- There is no distinction between "writing" and "reading" at the SPI level. Everything is an SPI transaction where the contents of the buffers are swapped. We distinguish "reads" from "writes" only by the `REQ_ID`: "reads" have `REQ_ID == Get_Response (0xAA)`, and everything else is treated as a "write". Therefore you must also mock incoming data for "writes" (currently, this is only a single `CHIP_STATUS` byte). Other bytes may be undefined, invalid, or zero.
+- In principle, the lengths of outgoing and incoming data must match due to the nature of SPI. However, to simplify tests the mock HAL does not require filling the remainder of the buffer after `CHIP_STATUS`. If Libtropic attempts to read incoming data (MISO) beyond what the test queued, the mock HAL returns zeros (up to `LT_L1_MAX_LENGTH`). A logging macro can be enabled to simplify test design.
+- Data sent to the mocked HAL (outgoing data — "MOSI") are ignored by the current implementation to keep test complexity manageable.
+- Data are mocked by "frames", not by individual bytes. After a CSN rising edge, the next mocked transaction is taken from the internal mock queue.
+- By "frames" we also include the single `CHIP_STATUS` that is sent when `REQ_ID == Get_Response`.
+- If no mocked transaction is available in the queue, attempting to start a transaction by pulling CSN low results in an error.
+- Any SPI transfer attempted while CSN is high results in an error, since transfers are only allowed while CSN is low (after CSN falling edge).
 
 There are also some quirks to be aware of:
 
-- When determining size of the mocked L2 Request, you cannot use `sizeof()`, as some structures are universal for multiple types of arguments. For example, `lt_l2_get_info_rsp_t()` is actually not always `sizeof(lt_l2_get_info_rsp_t)` bytes long. As a consequence, you have to either determine size manually, or use `calc_mocked_resp_len()`, which will calculate length for you (including the length of the CRC).
-  - Another side effect is that CRC is not always in the `crc` field, it can be in the `object` field if data are shorter.
+- When determining the size of a mocked L2 request, do not rely on `sizeof()` because some structures are reused for multiple argument types. For example, `lt_l2_get_info_rsp_t()` is not always `sizeof(lt_l2_get_info_rsp_t)` bytes long. You must either determine the size manually or use `calc_mocked_resp_len()`, which calculates the correct length for you (including the CRC length).
+- Another side effect is that the CRC is not always stored in the `crc` field; it can appear in the previous fields if the data are shorter.
 
 ### Creating the Test
-To add a new test, you need to:
+To add a new test, do the following:
 
-1. Write the new test. Add a new file to `tests/functional_mock` called `lt_test_mock_<name>.c`. The test shall always contain a function called the same as the file for clarity. This function will be the entry point. You can use [Test Template](#test-template).
-2. Add the declaration together with a Doxygen comment to `tests/functional_mock/lt_functional_mock_tests.h`.
-3. Add the test to the `tests/functional_mock/CMakeLists.txt`.
-    - Add the test name to the `LIBTROPIC_MOCK_TEST_LIST` (it must match the name of the entrypoint function).
-4. Make sure your test works. If the test fails, you:
-    - Did a mistake in the test. Fix it.
-    - Found a bug. If you are certain it is a bug and not a problem in your test,
-      [open an issue](https://github.com/tropicsquare/libtropic/issues/new). Thanks!
+1. Write the test. Add a new file to `tests/functional_mock` named `lt_test_mock_<name>.c`. The test must contain an entry-point function with the same name as the file for clarity; this function will be the entry point. You can use the [Test Template](#test-template).
+2. Add the declaration and a Doxygen comment to `tests/functional_mock/lt_functional_mock_tests.h`.
+3. Add the test to `tests/functional_mock/CMakeLists.txt`:
+     - Add the test name to the `LIBTROPIC_MOCK_TEST_LIST` (it must match the name of the entry-point function).
+4. Make sure your test passes. If it fails, either you made a mistake in the test (fix it) or you found a bug. If you are certain it is a bug and not an issue with your test, [open an issue](https://github.com/tropicsquare/libtropic/issues/new).
 
 ### Test Template
 Change the lines marked with `TODO`.

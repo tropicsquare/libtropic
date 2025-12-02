@@ -1,16 +1,16 @@
 # Code Coverage
-We implement two groups of tests: functional (which use standard HAL) and functional mock (which use only mock HAL).
+We use two groups of tests: functional (which use the standard HAL) and functional mock (which use the mock HAL only).
 
-To measure total code coverage from both functional and functional mock tests, you need to combine coverage data. At first, run tests with coverage in each group separately according to guides below.
+To measure total code coverage from both functional and functional mock tests, combine the coverage data. First, run tests with coverage for each group separately using the guides below.
 
 !!! note "Implementation remarks"
-    - We do not measure HAL coverage now, as not all platforms have coverage collection support. 
-    - CAL is also excluded from coverage collection, as we cannot mock CFP return values, thus making full coverage impossible without unit testing.
+    - We do not measure HAL coverage currently, because not all platforms support coverage collection.
+    - CAL is also excluded from coverage collection because we cannot mock CFP return values, which makes full coverage impossible without unit tests.
 
 ## Running Functional Tests with Coverage against Model
 We support collecting coverage only against [TROPIC01 Model](../other/tropic01_model/index.md). Refer to the [documentation](../other/tropic01_model/index.md) to prepare the model.
 
-To activate coverage collection, add switch `-DLT_TEST_COVERAGE=1` when executing `cmake`. Complete steps:
+To activate coverage collection, add the switch `-DLT_TEST_COVERAGE=1` when invoking `cmake`. Follow these steps:
 ```shell
 cd tropic01_model
 mkdir -p build
