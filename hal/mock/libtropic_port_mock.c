@@ -25,7 +25,7 @@
 lt_ret_t lt_mock_hal_reset(lt_l2_state_t *s2)
 {
     if (!s2) {
-        return LT_FAIL;
+        return LT_PARAM_ERR;
     }
 
     lt_dev_mock_t *dev = (lt_dev_mock_t *)s2->device;
@@ -43,18 +43,13 @@ lt_ret_t lt_mock_hal_reset(lt_l2_state_t *s2)
 lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, size_t len)
 {
     if (!s2 || !data || len == 0 || len > TR01_L1_LEN_MAX) {
-        return LT_FAIL;
+        return LT_PARAM_ERR;
     }
 
     lt_dev_mock_t *dev = (lt_dev_mock_t *)s2->device;
 
     if (dev->mock_queue_count >= MOCK_QUEUE_DEPTH) {
         LT_LOG_ERROR("Mock HAL: response queue full, cannot enqueue more responses!");
-        return LT_FAIL;
-    }
-
-    if (len > TR01_L1_LEN_MAX) {
-        LT_LOG_ERROR("Mock HAL: response too long to enqueue!");
         return LT_FAIL;
     }
 
