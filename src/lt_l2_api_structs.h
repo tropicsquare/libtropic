@@ -1,9 +1,6 @@
 // GENERATED ON 2024-10-10 16:07:36.959632
 // BY internal VERSION 1.6
 // INPUT FILE: 20402444E43870FE5FEA170E6AADDC8A15CFA812CA74D39EEC3A8B75FA10ED56
-//
-// Copyright 2024 TropicSquare
-// SPDX-License-Identifier: Apache-2.0
 
 #ifndef LT_L2_API_STRUCTS_H
 #define LT_L2_API_STRUCTS_H
@@ -12,6 +9,8 @@
  * @file lt_l2_api_structs.h
  * @brief Layer 2 structure declaration
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
+ * 
+ * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
 #include "libtropic_common.h"
