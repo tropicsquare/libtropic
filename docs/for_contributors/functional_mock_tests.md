@@ -41,7 +41,7 @@ Additional key points:
 
 There are also some quirks to be aware of:
 
-- When determining the size of a mocked L2 request, do not rely on `sizeof()` because some structures are reused for multiple argument types. For example, `lt_l2_get_info_rsp_t()` is not always `sizeof(lt_l2_get_info_rsp_t)` bytes long. You must either determine the size manually or use `calc_mocked_resp_len()`, which calculates the correct length for you (including the CRC length).
+- When determining the size of a mocked L2 request, do not rely on `sizeof()` because some structures are reused for multiple argument types. For example, `lt_l2_get_info_rsp_t` is not always `sizeof(lt_l2_get_info_rsp_t)` bytes long. You must either determine the size manually or use `calc_mocked_resp_len()`, which calculates the correct length for you (including the CRC length).
 - Another side effect is that the CRC is not always stored in the `crc` field; it can appear in the previous fields if the data are shorter.
 
 ### Creating the Test
