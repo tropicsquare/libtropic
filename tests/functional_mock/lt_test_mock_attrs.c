@@ -23,6 +23,7 @@
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
 #include "lt_mock_helpers.h"
+#include "lt_test_common.h"
 
 int lt_test_mock_attrs(lt_handle_t *h)
 {
@@ -43,21 +44,21 @@ int lt_test_mock_attrs(lt_handle_t *h)
 
         lt_mock_hal_reset(&h->l2);
         LT_LOG_INFO("Mocking initialization...");
-        LT_ASSERT(LT_OK, mock_init_communication(h, riscv_fw_ver_resp[i]));
+        LT_TEST_ASSERT(LT_OK, mock_init_communication(h, riscv_fw_ver_resp[i]));
 
         LT_LOG_INFO("Initializing handle");
-        LT_ASSERT(LT_OK, lt_init(h));
+        LT_TEST_ASSERT(LT_OK, lt_init(h));
 
         LT_LOG_INFO("Checking if attributes were set correctly");
         if (riscv_fw_ver_resp[i][3] < 2) {
-            LT_ASSERT(h->tr01_attrs.r_mem_udata_slot_size_max, 444);
+            LT_TEST_ASSERT(h->tr01_attrs.r_mem_udata_slot_size_max, 444);
         }
         else {
-            LT_ASSERT(h->tr01_attrs.r_mem_udata_slot_size_max, 475);
+            LT_TEST_ASSERT(h->tr01_attrs.r_mem_udata_slot_size_max, 475);
         }
 
         LT_LOG_INFO("Deinitializing handle");
-        LT_ASSERT(LT_OK, lt_deinit((lt_handle_t *)h));
+        LT_TEST_ASSERT(LT_OK, lt_deinit((lt_handle_t *)h));
     }
 
     return 0;
