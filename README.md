@@ -20,16 +20,19 @@ For the Libtropic library to function correctly with the TROPIC01 secure element
 2. **Application FW**: Application firmware running on the TROPIC01's RISC-V CPU. It can be updated.
 3. **SPECT FW**: Firmware running on the TROPIC01's SPECT co-processor. It can be updated.
 
+For more information about each of these, refer to the [TROPIC01](https://github.com/tropicsquare/tropic01) repository.
+
 The following table outlines the tested and supported compatibility between released versions:
 
-| Libtropic         | Application FW          | SPECT FW            | Bootloader FW |  Tests                                     | API document version                                                                                   |
-|:-------------------:|:----------------------:|:----------------:|  :-------:  |  :---------------------------------------: | :----------------------------------------------------------------------------------------------------: |
-| 1.0.0               | 1.0.0                  | 1.0.0            |  1.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       |
-| 2.0.0               | 1.0.0–1.0.1                  | 1.0.0            |  2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf)       |
-| 2.0.1               | 1.0.0–1.0.1                  | 1.0.0            |  2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf) |
-| 3.0.0               | 1.0.0–2.0.0                  | 1.0.0            |  2.0.1     |  <code style="color : green">Passed</code> | [1.3.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.3.0.pdf), [1.4.0](https://github.com/tropicsquare/tropic01/blob/main/doc/api/ODU_TR01_user_api_v1.4.0.pdf) |
+| Libtropic | Application FW | SPECT FW | Bootloader FW |  Tests                                    |
+|:---------:|:--------------:|:--------:|:-------------:|:----------------------------------------: |
+| 1.0.0     | 1.0.0          | 1.0.0    | 1.0.1         | <code style="color : green">Passed</code> |
+| 2.0.0     | 1.0.0–1.0.1    | 1.0.0    | 2.0.1         | <code style="color : green">Passed</code> |
+| 2.0.1     | 1.0.0–1.0.1    | 1.0.0    | 2.0.1         | <code style="color : green">Passed</code> |
+| 3.0.0     | 1.0.0–2.0.0    | 1.0.0    | 2.0.1         | <code style="color : green">Passed</code> |
 
-Using mismatched versions of the components may result in unpredictable behavior or errors. It is strongly advised to use the latest compatible versions of all components to ensure proper functionality.  
+> [!WARNING]
+> Using mismatched versions of the components may result in unpredictable behavior or errors. It is strongly advised to use the latest compatible versions of all components to ensure proper functionality. 
 
 For retrieving firmware versions from TROPIC01, check the [lt_ex_show_chip_id_and_fw_ver](https://tropicsquare.github.io/libtropic/latest/get_started/examples/reversible_examples/#lt_ex_show_chip_id_and_fwverc) example. For updating firmware, please follow code example in [lt_ex_fw_update](https://tropicsquare.github.io/libtropic/latest/get_started/examples/irreversible_examples/#lt_ex_fw_updatec).
 
