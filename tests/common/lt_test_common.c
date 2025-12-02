@@ -6,6 +6,8 @@
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
+#include "lt_test_common.h"
+
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -16,8 +18,6 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-
-#include "lt_test_common.h"
 
 lt_ret_t (*lt_test_cleanup_function)(void) = NULL;
 

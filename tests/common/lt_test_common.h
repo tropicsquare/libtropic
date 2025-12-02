@@ -88,9 +88,8 @@ void hexdump_8byte(const uint8_t *data, uint16_t size);
  */
 int chip_id_printf_wrapper(const char *format, ...);
 
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif // LT_TEST_COMMON_H
+#endif  // LT_TEST_COMMON_H
