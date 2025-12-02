@@ -1,6 +1,6 @@
 /**
- * @file libtropic_port_arduino.c
- * @author Tropic Square s.r.o.
+ * @file libtropic_port_arduino.cpp
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for the Arduino framework.
  *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
