@@ -9,7 +9,7 @@
  * @file lt_l2_api_structs.h
  * @brief Layer 2 structure declaration
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
- * 
+ *
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
