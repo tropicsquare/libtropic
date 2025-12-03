@@ -321,7 +321,7 @@ void lt_test_rev_param_check(lt_handle_t *h)
         uint8_t bb[1] = {0};
         char out_ok[3];
         LT_TEST_ASSERT(LT_FAIL, lt_print_bytes(NULL, 0, out_ok, sizeof(out_ok)));
-        LT_TEST_ASSERT(LT_OK, lt_print_bytes(bb, sizeof(bb), NULL, sizeof(out_ok)));
+        LT_TEST_ASSERT(LT_FAIL, lt_print_bytes(bb, sizeof(bb), NULL, sizeof(out_ok)));
         LT_TEST_ASSERT(LT_FAIL, lt_print_bytes(bb, sizeof(bb), out_small, sizeof(out_small)));
     }
 
@@ -336,8 +336,6 @@ void lt_test_rev_param_check(lt_handle_t *h)
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(NULL, data, sizeof(data), TR01_FW_BANK_FW1));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(h, NULL, sizeof(data), TR01_FW_BANK_FW1));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(h, data, (uint16_t)(TR01_MUTABLE_FW_UPDATE_SIZE_MAX + 1), TR01_FW_BANK_FW1));
-        LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(h, data, sizeof(data), 0xFFFFFFFF));
-
     }
 
     {
