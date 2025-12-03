@@ -40,7 +40,7 @@ lt_ret_t lt_mock_hal_reset(lt_l2_state_t *s2)
     return LT_OK;
 }
 
-lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, size_t len)
+lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, const size_t len)
 {
     if (!s2 || !data || len == 0 || len > TR01_L1_LEN_MAX) {
         return LT_PARAM_ERR;
