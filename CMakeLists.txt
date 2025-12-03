@@ -288,6 +288,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_erase_r_config
     lt_test_rev_handshake_req
     lt_test_rev_mcounter
+    lt_test_rev_param_check
     lt_test_rev_get_info_req_app
     lt_test_rev_get_info_req_bootloader
     lt_test_rev_read_i_config
@@ -345,6 +346,7 @@ if(LT_BUILD_TESTS)
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_erase_r_config.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_handshake_req.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_mcounter.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_param_check.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_info_req_app.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_get_info_req_bootloader.c
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/functional/lt_test_rev_read_i_config.c

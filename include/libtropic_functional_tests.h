@@ -236,6 +236,16 @@ void lt_test_rev_handshake_req(lt_handle_t *h);
 void lt_test_rev_mcounter(lt_handle_t *h);
 
 /**
+ * @brief Test parameter checking in public API functions.
+ *
+ * Test steps:
+ *  Try to call all public API functions with invalid parameters and check for expected error codes.
+ *
+ * @param h     Handle for communication with TROPIC01
+ */
+void lt_test_rev_param_check(lt_handle_t *h);
+
+/**
  * @brief Test Get_Info_Req command in Application mode with all possible OBJECT_ID values.
  *
  * Test steps:
