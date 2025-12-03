@@ -13,6 +13,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "lt_l3_api_structs.h"
+#include "lt_l2_api_structs.h"
 
 void lt_test_rev_param_check(lt_handle_t *h)
 {
@@ -291,6 +292,58 @@ void lt_test_rev_param_check(lt_handle_t *h)
     // LT_HELPERS
     // --------------------------------------------------------
 #ifdef LT_HELPERS
+    {
+        struct lt_config_t cfg = {0};
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_read_whole_R_config(NULL, &cfg));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_read_whole_R_config(h, NULL));
 
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_write_whole_R_config(NULL, &cfg));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_write_whole_R_config(h, NULL));
+
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_read_whole_I_config(NULL, &cfg));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_read_whole_I_config(h, NULL));
+
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_write_whole_I_config(NULL, &cfg));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_write_whole_I_config(h, NULL));
+    }
+
+    {
+        uint8_t shipriv[TR01_SHIPRIV_LEN] = {0};
+        uint8_t shipub[TR01_SHIPUB_LEN] = {0};
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_verify_chip_and_start_secure_session(NULL, shipriv, shipub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_verify_chip_and_start_secure_session(h, NULL, shipub, TR01_PAIRING_KEY_SLOT_INDEX_0));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_verify_chip_and_start_secure_session(h, shipriv, NULL, TR01_PAIRING_KEY_SLOT_INDEX_0));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_verify_chip_and_start_secure_session(h, shipriv, shipub, (lt_pkey_index_t)(TR01_PAIRING_KEY_SLOT_INDEX_3 + 1)));
+    }
+
+    {
+        char out_small[1];
+        uint8_t bb[1] = {0};
+        char out_ok[3];
+        LT_TEST_ASSERT(LT_FAIL, lt_print_bytes(NULL, 0, out_ok, sizeof(out_ok)));
+        LT_TEST_ASSERT(LT_OK, lt_print_bytes(bb, sizeof(bb), NULL, sizeof(out_ok)));
+        LT_TEST_ASSERT(LT_FAIL, lt_print_bytes(bb, sizeof(bb), out_small, sizeof(out_small)));
+    }
+
+    {
+        lt_chip_id_t chip_id = {0};
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_print_chip_id(NULL, printf));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_print_chip_id(&chip_id, NULL));
+    }
+
+    {
+        uint8_t data[1] = {0};
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(NULL, data, sizeof(data), TR01_FW_BANK_FW1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(h, NULL, sizeof(data), TR01_FW_BANK_FW1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(h, data, (uint16_t)(TR01_MUTABLE_FW_UPDATE_SIZE_MAX + 1), TR01_FW_BANK_FW1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_do_mutable_fw_update(h, data, sizeof(data), 0xFFFFFFFF));
+
+    }
+
+    {
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_print_fw_header(NULL, TR01_FW_BANK_FW1, printf));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_print_fw_header(h, 0xFFFFFFFF, printf));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_print_fw_header(h, TR01_FW_BANK_FW1, NULL));
+    }
 #endif
 }
