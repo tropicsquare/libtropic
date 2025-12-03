@@ -20,6 +20,10 @@ void lt_test_rev_param_check(lt_handle_t *h)
     LT_LOG_INFO("lt_test_rev_param_check()");
     LT_LOG_INFO("----------------------------------------------");
 
+    // --------------------------------------------------------
+    // Common functions
+    // --------------------------------------------------------
+
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_init(NULL));
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_deinit(NULL));
 
@@ -148,7 +152,13 @@ void lt_test_rev_param_check(lt_handle_t *h)
 
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_i_config_write(NULL, TR01_CFG_START_UP_ADDR, 0));
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_i_config_write(h, TR01_CFG_START_UP_ADDR, 32));
-
+    
+    {
+        uint32_t obj;
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_i_config_read(NULL, TR01_CFG_START_UP_ADDR, &obj));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_i_config_read(h, TR01_CFG_START_UP_ADDR, NULL));
+    }
+    
     {
         uint8_t data[TR01_R_MEM_DATA_SIZE_MIN];
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_write(NULL, 0, data, sizeof(data)));
@@ -247,4 +257,40 @@ void lt_test_rev_param_check(lt_handle_t *h)
     }
 
     LT_TEST_ASSERT(0, strcmp(lt_ret_verbose(LT_RET_T_LAST_VALUE + 1), "FATAL ERROR, unknown return value"));
+
+
+    // --------------------------------------------------------
+    // Silicon revision specific functions
+    // --------------------------------------------------------
+#ifdef ABAB
+    LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_erase(NULL, TR01_FW_BANK_FW1));
+    LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_erase(h, 0xFFFFFFFF));
+
+    {
+        uint8_t dummy_data[1];
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update(NULL, dummy_data, sizeof(dummy_data), TR01_FW_BANK_FW1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update(h, NULL, sizeof(dummy_data), TR01_FW_BANK_FW1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update(h, dummy_data, TR01_MUTABLE_FW_UPDATE_SIZE_MAX + 1, TR01_FW_BANK_FW1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update(h, dummy_data, sizeof(dummy_data), 0xFFFFFFFF));
+    }
+#elif ACAB
+    {
+        uint8_t dummy_data[1];
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update(NULL, dummy_data));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update(h, NULL));
+
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update_data(NULL, dummy_data, TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update_data(h, NULL, TR01_L2_MUTABLE_FW_UPDATE_REQ_LEN));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mutable_fw_update_data(h, dummy_data, TR01_MUTABLE_FW_UPDATE_SIZE_MAX + 1));
+    }
+#else
+    #warning "Unknown silicon revision, no revision specific parameter checks implemented!"
+#endif
+
+    // --------------------------------------------------------
+    // LT_HELPERS
+    // --------------------------------------------------------
+#ifdef LT_HELPERS
+
+#endif
 }
