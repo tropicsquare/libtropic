@@ -123,6 +123,14 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms);
  */
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
 
+/**
+ * @brief Port-specific logging function.
+ *
+ * @param format      Pointer to a null-terminated byte string specifying how to interpret the data
+ * @param ...         Arguments specifying data to print
+ */
+void lt_port_log(const char *format, ...);
+
 /** @} */  // end of group_port_functions
 
 #ifdef __cplusplus

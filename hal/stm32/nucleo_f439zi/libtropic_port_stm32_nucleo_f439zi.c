@@ -11,7 +11,9 @@
 
 #include "libtropic_port_stm32_nucleo_f439zi.h"
 
+#include <stdarg.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "libtropic_common.h"
@@ -178,3 +180,12 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     return LT_OK;
 }
 #endif
+
+void lt_port_log(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+}

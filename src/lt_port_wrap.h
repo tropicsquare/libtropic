@@ -92,7 +92,8 @@ lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_
 #endif
 
 /**
- * @brief Generate `count` random bytes using host's random number generator. This is wrapper for platform defined function.
+ * @brief Generate `count` random bytes using host's random number generator. This is wrapper for platform defined
+ * function.
  *
  * @param h           Handle for communication with TROPIC01
  * @param buff        Buffer to be filled

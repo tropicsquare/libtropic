@@ -5,7 +5,9 @@
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
+#include <stdarg.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "libtropic_common.h"
@@ -145,4 +147,13 @@ lt_ret_t lt_port_delay(lt_l2_state_t *h, uint32_t ms)
     HAL_Delay(ms);
 
     return LT_OK;
+}
+
+void lt_port_log(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
 }

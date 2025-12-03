@@ -12,6 +12,8 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include "libtropic_port.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -24,30 +26,30 @@ extern "C" {
         if (0) {                                                 \
             /* A base string ensures printf is always valid. */  \
             /* Using a single space is minimal and effective. */ \
-            printf(" " __VA_ARGS__);                             \
+            lt_port_log(" " __VA_ARGS__);                        \
         }                                                        \
     } while (0)
 
 #if LT_LOG_ENABLE_INFO
-#define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_INFO(f_, ...) lt_port_log("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_INFO(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
 
 #if LT_LOG_ENABLE_WARN
-#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) lt_port_log("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_WARN(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
 
 #if LT_LOG_ENABLE_ERROR
-#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) lt_port_log("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_ERROR(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
 
 #if LT_LOG_ENABLE_DEBUG
-#define LT_LOG_DEBUG(f_, ...) printf("DEBUG   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_DEBUG(f_, ...) lt_port_log("DEBUG   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_DEBUG(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
