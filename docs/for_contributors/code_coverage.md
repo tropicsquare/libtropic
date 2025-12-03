@@ -45,7 +45,6 @@ gcovr --json coverage_trace.json --exclude 'build/_deps/.*|\.\./tests/.*|\.\./ve
 ```
 
 ## Merging and Exporting Total Coverage
-
 Use the following command to merge results and export in text format:
 
 ```shell
