@@ -6,7 +6,7 @@
  * @note The chip select (CS) pin is controlled separately using GPIO, as the protocol requires
  *       manual handling of the chip select.
  *
- * @license For the license see LICENSE.md file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 // SPI-related includes

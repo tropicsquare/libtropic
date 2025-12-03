@@ -3,7 +3,7 @@
  * @brief Test Ping L3 command with random data of random length <= TR01_PING_LEN_MAX.
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see LICENSE.md file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include <inttypes.h>

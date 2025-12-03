@@ -3,7 +3,7 @@
  * @brief Implementation for handling TROPIC01 attributes based on FW versions.
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see LICENSE.md file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include "lt_tr01_attrs.h"

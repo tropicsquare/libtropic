@@ -2,7 +2,7 @@
  * @file lt_trezor_crypto_sha256.c
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see LICENSE.md file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include <stdint.h>

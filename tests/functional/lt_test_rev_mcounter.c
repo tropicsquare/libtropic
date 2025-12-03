@@ -3,7 +3,7 @@
  * @brief Test monotonic counter API - lt_mcounter_init, lt_mcounter_get, lt_mcounter_update.
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see LICENSE.md file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include <inttypes.h>
