@@ -67,7 +67,7 @@ lt_ret_t lt_mock_hal_reset(lt_l2_state_t *s2);
  * @param len Length of response bytes.
  * @return LT_OK on success, LT_FAIL otherwise.
  */
-lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, size_t len);
+lt_ret_t lt_mock_hal_enqueue_response(lt_l2_state_t *s2, const uint8_t *data, const size_t len);
 
 #ifdef __cplusplus
 }
