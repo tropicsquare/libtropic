@@ -13,9 +13,6 @@
 #include "libtropic_examples.h"
 #include "libtropic_logging.h"
 #include "string.h"
-
-// Needed to access to lt_random_bytes()
-#include "lt_random.h"
 // Needed to access HMAC_SHA256
 #include "lt_hmac_sha256.h"
 
@@ -515,9 +512,9 @@ int lt_ex_macandd(lt_handle_t *h)
     LT_LOG_LINE();
 
     LT_LOG_INFO("Initializing Mac And Destroy");
-    LT_LOG_INFO("Generating random master_secret...");
+    LT_LOG_INFO("Generating random master_secret (using TROPIC01's RNG)...");
     uint8_t master_secret[TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE] = {0};
-    ret = lt_random_bytes(h, master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE);
+    ret = lt_random_value_get(h, master_secret, TR01_MAC_AND_DESTROY_MASTER_SECRET_SIZE);
     if (ret != LT_OK) {
         LT_LOG_ERROR("Failed to get random bytes, ret=%s", lt_ret_verbose(ret));
         lt_session_abort(h);
