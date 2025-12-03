@@ -91,7 +91,7 @@ int lt_ex_fw_update(lt_handle_t *h)
     LT_LOG_INFO("OK");
 
     LT_LOG_LINE();
-    LT_LOG("Successfully updated all 4 FW banks:");
+    LT_LOG_INFO("Successfully updated all 4 FW banks:");
 
     ret = lt_print_fw_header(h, TR01_FW_BANK_FW1, printf);
     if (ret != LT_OK) {

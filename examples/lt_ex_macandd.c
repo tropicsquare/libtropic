@@ -533,7 +533,7 @@ int lt_ex_macandd(lt_handle_t *h)
     LT_LOG_INFO("Generated master_secret: %s", print_buff);
 
     // Set the PIN and log out the final_key
-    LT_LOG("Setting the user PIN...");
+    LT_LOG_INFO("Setting the user PIN...");
     ret = lt_new_PIN_setup(h, master_secret, pin, sizeof(pin), NULL, sizeof(additional_data), final_key_initialized);
     if (LT_OK != ret) {
         LT_LOG_ERROR("Failed to set the user PIN, ret=%s", lt_ret_verbose(ret));
