@@ -15,7 +15,7 @@
  * @brief Header file with layer 1 interfaces which are defined based on host platform
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include <stdlib.h>

@@ -1,6 +1,6 @@
 The Clear BSD License
 
-Copyright (c) 2024 Tropic Square
+Copyright (c) 2020-2025 Tropic Square
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted (subject to the limitations in the disclaimer below) provided that the following conditions are met:

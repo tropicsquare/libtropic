@@ -7,7 +7,7 @@
  * implements the protocol. More info about the dongle in GitHub repo:
  * https://github.com/tropicsquare/ts13-usb-dev-kit-fw
  *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include "libtropic_port_posix_usb_dongle.h"

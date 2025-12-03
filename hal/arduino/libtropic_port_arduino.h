@@ -3,10 +3,10 @@
 
 /**
  * @file libtropic_port_arduino.h
- * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for the Arduino framework.
  *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
 #include <Arduino.h>
