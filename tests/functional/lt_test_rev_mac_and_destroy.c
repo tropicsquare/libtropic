@@ -13,7 +13,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "lt_hmac_sha256.h"
-#include "lt_random.h"
+#include "lt_port_wrap.h"
 #include "string.h"
 
 #define PIN_LEN_MAX 2048

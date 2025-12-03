@@ -12,7 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
-#include "lt_random.h"
+#include "lt_port_wrap.h"
 #include "string.h"
 
 // Shared with cleanup function.

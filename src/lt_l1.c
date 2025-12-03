@@ -15,7 +15,7 @@
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
-#include "lt_l1_port_wrap.h"
+#include "lt_port_wrap.h"
 
 #ifdef LT_PRINT_SPI_DATA
 #include "stdio.h"

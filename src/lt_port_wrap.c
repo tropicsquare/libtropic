@@ -1,12 +1,12 @@
 /**
- * @file lt_l1_port_wrap.c
- * @brief Layer 1 functions definitions
+ * @file lt_port_wrap.c
+ * @brief Implementation of wrappers for the port-specific functions.
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
-#include "lt_l1_port_wrap.h"
+#include "lt_port_wrap.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -87,3 +87,13 @@ lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     return lt_port_delay_on_int(s2, ms);
 }
 #endif
+
+lt_ret_t lt_random_bytes(lt_handle_t *h, void *buff, size_t count)
+{
+#ifdef LT_REDUNDANT_ARG_CHECK
+    if (!buff || !h) {
+        return LT_PARAM_ERR;
+    }
+#endif
+    return lt_port_random_bytes(&h->l2, buff, count);
+}
