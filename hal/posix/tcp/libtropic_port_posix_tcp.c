@@ -3,7 +3,7 @@
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  * @brief Port for communication with the TROPIC01 Model using TCP.
  *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ * @license For the license see LICENSE.md file in the root directory of this source tree.
  */
 
 #include "libtropic_port_posix_tcp.h"

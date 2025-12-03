@@ -3,7 +3,7 @@
  * @brief Struct and function declarations for dealing with bit assignment.
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
- * @license For the license see file LICENSE.txt file in the root directory of this source tree.
+ * @license For the license see LICENSE.md file in the root directory of this source tree.
  */
 
 #ifndef BITS_H
