@@ -20,11 +20,10 @@
 #include "lt_aesgcm.h"
 #include "lt_hkdf.h"
 #include "lt_l1.h"
-#include "lt_l1_port_wrap.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l3_api_structs.h"
 #include "lt_l3_process.h"
-#include "lt_random.h"
+#include "lt_port_wrap.h"
 #include "lt_sha256.h"
 #include "lt_x25519.h"
 

@@ -2,19 +2,21 @@
 #define LT_L1_PORT_WRAP_H
 
 /**
- * @defgroup group_l1_port_wrap_functions 6.1. Layer 1: Port Wrappers
- * @brief Functions that call port specific functions (used internally)
+ * @defgroup group_port_wrap_functions 8. HAL Wrappers
+ * @brief Functions that call port-specific functions (used internally)
  *
  * @{
  */
 
 /**
- * @file lt_l1_port_wrap.h
- * @brief Layer 1 functions declarations
+ * @file lt_port_wrap.h
+ * @brief Declarations of wrappers for the port-specific functions
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
+
+#include <stddef.h>
 
 #include "libtropic_common.h"
 
@@ -88,6 +90,16 @@ lt_ret_t lt_l1_delay(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_unused_
  */
 lt_ret_t lt_l1_delay_on_int(lt_l2_state_t *s2, uint32_t ms) __attribute__((warn_unused_result));
 #endif
+
+/**
+ * @brief Get random bytes in a form of 32bit numbers. This is wrapper for platform defined function.
+ *
+ * @param h           Handle for communication with TROPIC01
+ * @param buff        Buffer to be filled
+ * @param count       Number of random bytes
+ * @return            LT_OK if success, otherwise returns other error code.
+ */
+lt_ret_t lt_random_bytes(lt_handle_t *h, void *buff, size_t count) __attribute__((warn_unused_result));
 
 /** @} */  // end of group_l1_functions
 

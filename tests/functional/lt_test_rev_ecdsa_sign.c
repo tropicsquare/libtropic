@@ -13,7 +13,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "lt_l3_api_structs.h"
-#include "lt_random.h"
+#include "lt_port_wrap.h"
 #include "lt_sha256.h"
 #include "string.h"
 #include "uECC.h"

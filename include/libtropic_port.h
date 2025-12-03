@@ -2,17 +2,17 @@
 #define LT_LIBTROPIC_PORT_H
 
 /**
- * @defgroup group_port_functions 6.2. Layer 1: Port Interface
+ * @defgroup group_port_functions 7. HAL Interface
  * @brief Functions defined for each supported platform.
- * @details Function used by host platform during l1 operations. Check 'hal/' folder to see what is supported.
- *          All of these functions have to be impemented by the port for libtropic to work.
+ * @details Function used by host platform during hardware-specific operations. Check 'hal/' folder to see what is
+ * supported. All of these functions have to be impemented by the port for libtropic to work.
  *
  * @{
  */
 
 /**
  * @file libtropic_port.h
- * @brief Header file with layer 1 interfaces which are defined based on host platform
+ * @brief Header file with HAL interfaces which are defined based on host platform
  * @copyright Copyright (c) 2020-2025 Tropic Square s.r.o.
  *
  * @license For the license see LICENSE.md in the root directory of this source tree.
