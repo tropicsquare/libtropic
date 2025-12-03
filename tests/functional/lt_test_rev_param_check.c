@@ -6,6 +6,8 @@
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
+#include <string.h>
+
 #include "libtropic.h"
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
@@ -156,78 +158,93 @@ void lt_test_rev_param_check(lt_handle_t *h)
 
         uint16_t data_read_size;
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_read(NULL, 0, data, sizeof(data), &data_read_size));
-        LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_read(h, 0, data, sizeof(data), &data_read_size));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_read(h, (uint16_t)(TR01_R_MEM_DATA_SLOT_MAX + 1), data, sizeof(data), &data_read_size));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_read(h, 0, NULL, sizeof(data), &data_read_size));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_read(h, 0, data, sizeof(data), NULL));
         
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_erase(NULL, 0));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_r_mem_data_erase(h, (uint16_t)(TR01_R_MEM_DATA_SLOT_MAX + 1)));
     }
 
-    /* Random */
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_random_value_get(NULL, NULL, 0));
     {
         uint8_t buf[1];
-        LT_TEST_ASSERT(LT_PARAM_ERR, lt_random_value_get(h, NULL, 1));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_random_value_get(NULL, buf, sizeof(buf)));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_random_value_get(h, NULL, sizeof(buf)));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_random_value_get(h, buf, (uint16_t)(TR01_RANDOM_VALUE_GET_LEN_MAX + 1)));
     }
 
-    /* ECC / crypto operations */
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_generate(NULL, TR01_ECC_SLOT_0, TR01_CURVE_ED25519));
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_generate(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), TR01_CURVE_ED25519));
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_store(NULL, TR01_ECC_SLOT_0, TR01_CURVE_ED25519, NULL));
+    LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_generate(h, TR01_ECC_SLOT_0, 0xFF));
+
     {
         uint8_t key[32];
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_store(NULL, TR01_ECC_SLOT_0, TR01_CURVE_ED25519, key));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_store(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), TR01_CURVE_ED25519, key));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_store(h, TR01_ECC_SLOT_0, (lt_ecc_curve_type_t)0xFF, key));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_store(h, TR01_ECC_SLOT_0, TR01_CURVE_ED25519, NULL));
     }
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_read(NULL, TR01_ECC_SLOT_0, NULL, 0, NULL, NULL));
+
     {
         uint8_t key[64];
         lt_ecc_curve_type_t curve;
         lt_ecc_key_origin_t origin;
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_read(NULL, TR01_ECC_SLOT_0, key, sizeof(key), &curve, &origin));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_read(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), key, sizeof(key), &curve, &origin));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_read(h, TR01_ECC_SLOT_0, NULL, sizeof(key), &curve, &origin));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_read(h, TR01_ECC_SLOT_0, key, sizeof(key), NULL, &origin));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_read(h, TR01_ECC_SLOT_0, key, sizeof(key), &curve, NULL));
     }
+
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_erase(NULL, TR01_ECC_SLOT_0));
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_key_erase(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1)));
 
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(NULL, TR01_ECC_SLOT_0, NULL, 0, NULL));
     {
         uint8_t msg[1], sig[64];
-        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), msg, 1, sig));
-        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(h, TR01_ECC_SLOT_0, NULL, 1, sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(NULL, TR01_ECC_SLOT_0, msg, sizeof(msg), sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), msg, sizeof(msg), sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(h, TR01_ECC_SLOT_0, NULL, sizeof(msg), sig));
+        // LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(h, TR01_ECC_SLOT_0, msg, TR01_L3_ECDSA_SIGN_CMD_MSG_LEN_MAX + 1, sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_ecdsa_sign(h, TR01_ECC_SLOT_0, msg, sizeof(msg), NULL));
     }
 
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_ecc_eddsa_sign(NULL, TR01_ECC_SLOT_0, NULL, 0, NULL));
     {
         uint8_t msg[1], sig[64];
         LT_TEST_ASSERT(LT_PARAM_ERR,
-                       lt_ecc_eddsa_sign(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), msg, 1, sig));
+                       lt_ecc_eddsa_sign(NULL, TR01_ECC_SLOT_0, msg, sizeof(msg), sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR,
+                       lt_ecc_eddsa_sign(h, (lt_ecc_slot_t)(TR01_ECC_SLOT_31 + 1), msg, sizeof(msg), sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR,
+                       lt_ecc_eddsa_sign(h, TR01_ECC_SLOT_0, NULL, sizeof(msg), sig));
         LT_TEST_ASSERT(LT_PARAM_ERR,
                        lt_ecc_eddsa_sign(h, TR01_ECC_SLOT_0, msg, (uint16_t)(TR01_L3_EDDSA_SIGN_CMD_MSG_LEN_MAX + 1), sig));
+        LT_TEST_ASSERT(LT_PARAM_ERR,
+                       lt_ecc_eddsa_sign(h, TR01_ECC_SLOT_0, msg, sizeof(msg), NULL));
     }
 
-    /* Monotonic counters */
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_init(NULL, TR01_MCOUNTER_INDEX_0, 0));
     LT_TEST_ASSERT(LT_PARAM_ERR,
                    lt_mcounter_init(h, (enum lt_mcounter_index_t)(TR01_MCOUNTER_INDEX_15 + 1), 0));
+    LT_TEST_ASSERT(LT_PARAM_ERR,
+                   lt_mcounter_init(h, TR01_MCOUNTER_INDEX_0, TR01_MCOUNTER_VALUE_MAX + 1));
+
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_update(NULL, TR01_MCOUNTER_INDEX_0));
     LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_update(h, (enum lt_mcounter_index_t)(TR01_MCOUNTER_INDEX_15 + 1)));
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_get(NULL, TR01_MCOUNTER_INDEX_0, NULL));
+
     {
         uint32_t mv;
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_get(NULL, TR01_MCOUNTER_INDEX_0, &mv));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_get(h, (enum lt_mcounter_index_t)(TR01_MCOUNTER_INDEX_15 + 1), &mv));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_mcounter_get(h, TR01_MCOUNTER_INDEX_0, NULL));
     }
 
-    /* MAC and Destroy */
-    LT_TEST_ASSERT(LT_PARAM_ERR, lt_mac_and_destroy(NULL, TR01_MAC_AND_DESTROY_SLOT_0, NULL, NULL));
     {
         uint8_t out[1], in[1];
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mac_and_destroy(NULL, TR01_MAC_AND_DESTROY_SLOT_0, out, in));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mac_and_destroy(h, (lt_mac_and_destroy_slot_t)(TR01_MAC_AND_DESTROY_SLOT_127 + 1), out, in));
         LT_TEST_ASSERT(LT_PARAM_ERR, lt_mac_and_destroy(h, TR01_MAC_AND_DESTROY_SLOT_0, NULL, in));
-        LT_TEST_ASSERT(LT_PARAM_ERR,
-                       lt_mac_and_destroy(h, (lt_mac_and_destroy_slot_t)(TR01_MAC_AND_DESTROY_SLOT_127 + 1), out,
-                                          in));
+        LT_TEST_ASSERT(LT_PARAM_ERR, lt_mac_and_destroy(h, TR01_MAC_AND_DESTROY_SLOT_0, out, NULL));
     }
+
+    LT_TEST_ASSERT(0, strcmp(lt_ret_verbose(LT_RET_T_LAST_VALUE + 1), "FATAL ERROR, unknown return value"));
 }
