@@ -13,6 +13,7 @@
 
 #include "libtropic.h"
 #include "libtropic_logging.h"
+#include "libtropic_macros.h"
 #include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_mock.h"
 
@@ -23,8 +24,8 @@ int main(void)
     int ret = 0;
 
     // Disable buffering on stdout/stderr to simplify CI logs.
-    (void)setvbuf(stdout, NULL, _IONBF, 0);
-    (void)setvbuf(stderr, NULL, _IONBF, 0);
+    LT_UNUSED(setvbuf(stdout, NULL, _IONBF, 0));
+    LT_UNUSED(setvbuf(stderr, NULL, _IONBF, 0));
 
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
@@ -49,7 +50,7 @@ int main(void)
 
     // Seed PRNG similarly to integration main so tests are reproducible when desired.
     unsigned int prng_seed = 0;
-    (void)getentropy(&prng_seed, sizeof(prng_seed));
+    LT_UNUSED(getentropy(&prng_seed, sizeof(prng_seed)));
     srand(prng_seed);
     LT_LOG_INFO("PRNG initialized with seed=%u", prng_seed);
 

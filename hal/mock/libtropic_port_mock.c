@@ -18,6 +18,7 @@
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
+#include "libtropic_macros.h"
 #include "lt_l1.h"
 
 // Mock test control API -----------------------------------------------------
@@ -124,7 +125,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout_ms)
 {
-    (void)timeout_ms;
+    LT_UNUSED(timeout_ms);
     if (!s2) {
         return LT_PARAM_ERR;
     }
