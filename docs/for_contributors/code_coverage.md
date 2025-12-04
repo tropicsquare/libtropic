@@ -8,7 +8,7 @@ To measure total code coverage from both functional and functional mock tests, c
     - CAL is also excluded from coverage collection because we cannot mock CFP return values, which makes full coverage impossible without unit tests.
 
 ## Running Functional Tests with Coverage against Model
-We support collecting coverage only against [TROPIC01 Model](../other/tropic01_model/index.md). Refer to the [documentation](../other/tropic01_model/index.md) to prepare the model.
+We support collecting coverage only against [TROPIC01 Model](../other/tropic01_model/index.md) (refer to this link for preparation instructions).
 
 To activate coverage collection, add the switch `-DLT_TEST_COVERAGE=1` when invoking `cmake`. Follow these steps:
 ```shell
