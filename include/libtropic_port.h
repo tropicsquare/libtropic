@@ -127,6 +127,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
  * @brief Port-specific logging function.
  * @note  The caller should not append any newline characters. This function is exlusively used by the logging macros in
  * libtropic_logging.h, that always append "\r\n" at the end.
+ * @warning Some implementations use size limited buffer for temporarily storing the log message.
  *
  * @param format      Pointer to a null-terminated byte string specifying how to interpret the data
  * @param ...         Arguments specifying data to print
