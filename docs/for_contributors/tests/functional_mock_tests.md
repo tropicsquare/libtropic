@@ -14,7 +14,7 @@ ctest -V
 ```
 
 !!! info "Strict Compilation"
-    It is strongly recommended to develop tests with strict compilation flags enabled. You can enable the flags by passing `-DLT_STRICT_COMPILATION=1` to `cmake`.
+    Strict compilation flags are applied by default. It is strongly recommended to develop tests with strict compilation flags enabled. You can disable the flags by passing `-DLT_STRICT_COMPILATION=0` to `cmake`.
 
 ## Adding a New Test
 
