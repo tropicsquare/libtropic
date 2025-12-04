@@ -10,7 +10,6 @@
  */
 
 #include <assert.h>
-#include <stdio.h>
 
 #include "libtropic_port.h"
 
