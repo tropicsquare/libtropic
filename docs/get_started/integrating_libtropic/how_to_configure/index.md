@@ -23,7 +23,7 @@ set(LT_CFG_OPT value)
 - boolean
 - default value: `OFF`
 
-[Functional tests](../../../for_contributors/functional_tests.md) will be built as part of the Libtropic library.
+[Functional tests](../../../for_contributors/tests/functional_tests.md) will be built as part of the Libtropic library.
 
 ### `LT_SH0_KEYS`
 - string

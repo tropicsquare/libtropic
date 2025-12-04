@@ -1,7 +1,7 @@
 # TROPIC01 Model
 The CMake project in the `tropic01_model/` directory builds libtropic so it can communicate with the TROPIC01 Python model. The CMake project offers the following:
 
-1. Running libtropic's [Functional Tests](../../for_contributors/functional_tests.md). The testing is managed by CTest — it executes both the test and the model automatically, along with the creation of model configuration.
+1. Running libtropic's [Functional Tests](../../for_contributors/tests/functional_tests.md). The testing is managed by CTest — it executes both the test and the model automatically, along with the creation of model configuration.
 2. Running libtropic's [Examples](../../get_started/examples/index.md).
 3. Supports most of the Libtropic's [Available CMake Options](../../get_started/integrating_libtropic/how_to_configure/index.md#available-cmake-options) — they will be propagated to Libtropic's CMake by the model's CMake.
 4. Additional CMake configuration options:

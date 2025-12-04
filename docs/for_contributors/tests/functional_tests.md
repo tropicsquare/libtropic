@@ -1,15 +1,15 @@
 # Functional Tests
-Functional tests are used to verify the libtropic core API and are implemented in `tests/functional/`. In the `libtropic` repository, these tests are run against the [TROPIC01 Model](../other/tropic01_model/index.md) only. Testing against the TROPIC01 model is also used in a CI job, triggered for the `master` and `develop` branches (pushes and pull requests). The tests can also be run in the [libtropic platform repositories](https://github.com/tropicsquare/libtropic#get-started).
+Functional tests are used to verify the libtropic core API and are implemented in `tests/functional/`. In the `libtropic` repository, these tests are run against the [TROPIC01 Model](../../other/tropic01_model/index.md) only. Testing against the TROPIC01 model is also used in a CI job, triggered for the `master` and `develop` branches (pushes and pull requests). The tests can also be run in the [libtropic platform repositories](https://github.com/tropicsquare/libtropic#get-started).
 
 The functional tests are organized into two categories, as some of them may cause irreversible changes to the chip:
 
 - **Reversible** (`lt_test_rev_*.c`): only reversible operations are executed on the TROPIC01 chip.
 - **Irreversible** (`lt_test_ire_*.c`): irreversible operations are executed - the state or contents of the TROPIC01 chip **cannot** be reverted.
 !!! info "Compiling Functional Tests"
-    Functional tests are not compiled by default. They can be compiled using the [LT_BUILD_TESTS](../get_started/integrating_libtropic/how_to_configure/index.md#lt_build_tests) CMake option. See [How to Configure](../get_started/integrating_libtropic/how_to_configure/index.md) section for ways to enable this option.
+    Functional tests are not compiled by default. They can be compiled using the [LT_BUILD_TESTS](../../get_started/integrating_libtropic/how_to_configure/index.md#lt_build_tests) CMake option. See [How to Configure](../../get_started/integrating_libtropic/how_to_configure/index.md) section for ways to enable this option.
 
 !!! failure "Cannot Establish a Secure Channel Session"
-    Refer to the dedicated section in the [FAQ](../faq.md#i-cannot-establish-a-secure-session).
+    Refer to the dedicated section in the [FAQ](../../faq.md#i-cannot-establish-a-secure-session).
 
 ??? tip "Advanced Tip: Running a Test With Your Own Pairing Key"
     If you have already written your own public key to one of the available slots and want to execute a test that uses a Secure Session, define the arrays for your private and public key as globals and, after `#include "libtropic_functional_tests.h"`, do the following:
@@ -31,7 +31,7 @@ To add a new test, you need to:
         - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST` (it must match the name of the function that implements the test)
         - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
             with test source files. Add your test source file there.
-5. Make sure your test works - you can run it against the [TROPIC01 Model](../other/tropic01_model/index.md). If the test
+5. Make sure your test works - you can run it against the [TROPIC01 Model](../../other/tropic01_model/index.md). If the test
    fails, you either:
     - Did a mistake in the test. Fix it.
     - Or you found a bug - if you are certain it is a bug and not a problem in your test,

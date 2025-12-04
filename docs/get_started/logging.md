@@ -45,4 +45,4 @@ LT_LOG_INFO("Initializing handle: %d", ret);
 ```
 
 !!! info "Other Macros"
-    There are also macros used for assertion. These are used in [Functional Tests](../for_contributors/functional_tests.md).
+    There are also macros used for assertion. These are used in [Functional Tests](../for_contributors/tests/functional_tests.md).
