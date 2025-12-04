@@ -70,9 +70,6 @@ Change the lines marked with `TODO`.
 #include "libtropic_logging.h"
 #include "libtropic_port_mock.h"
 #include "lt_functional_mock_tests.h"
-#include "lt_l1.h"
-#include "lt_l2_api_structs.h"
-#include "lt_l2_frame_check.h"
 #include "lt_mock_helpers.h"
 #include "lt_test_common.h"
 
