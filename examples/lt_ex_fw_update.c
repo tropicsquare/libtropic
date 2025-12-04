@@ -8,6 +8,7 @@
  */
 
 #include <inttypes.h>
+#include <stdio.h>
 
 #include "fw_CPU.h"
 #include "fw_SPECT.h"
