@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+### Added
+- Logging: `lt_port_log` function for platform-specific logging mechanism; is used by the logging macros declared in `libtropic_logging.h`.
+
+### Fixed
+
+### Removed
+- Logging: Redundant/unused macros `LT_LOG`, `LT_LOG_RESULT`, `LT_LOG_VALUE`.
+
 ## [3.0.0]
 
 ### Changed

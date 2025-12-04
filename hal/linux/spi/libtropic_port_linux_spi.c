@@ -28,6 +28,7 @@
 #include <string.h>
 
 // Other
+#include <stdarg.h>
 #include <sys/random.h>
 
 #include "libtropic_common.h"
@@ -306,3 +307,12 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     return LT_FAIL;
 }
 #endif
+
+void lt_port_log(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+}

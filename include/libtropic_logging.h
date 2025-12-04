@@ -10,22 +10,12 @@
  */
 
 #include <assert.h>
-#include <stdio.h>
+
+#include "libtropic_port.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// Only info-level loggers and decorators.
-// This has no effect, test runner just simply copies these lines to the log.
-#define LT_LOG(f_, ...) LT_LOG_INFO(f_, ##__VA_ARGS__)
-#define LT_LOG_RESULT(f_, ...) LT_LOG_INFO("  result: " f_, ##__VA_ARGS__)
-#define LT_LOG_VALUE(f_, ...) LT_LOG_INFO("\t\t- " f_, ##__VA_ARGS__)
-#define LT_LOG_LINE(f_, ...)                                                                                           \
-    LT_LOG_INFO(                                                                                                       \
-        "\t----------------------------------------------------------------------------------------------------------" \
-        "---" f_,                                                                                                      \
-        ##__VA_ARGS__)
 
 // Loggers with selectable message type.
 
@@ -35,33 +25,38 @@ extern "C" {
         if (0) {                                                 \
             /* A base string ensures printf is always valid. */  \
             /* Using a single space is minimal and effective. */ \
-            printf(" " __VA_ARGS__);                             \
+            lt_port_log(" " __VA_ARGS__);                        \
         }                                                        \
     } while (0)
 
 #if LT_LOG_ENABLE_INFO
-#define LT_LOG_INFO(f_, ...) printf("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_INFO(f_, ...) lt_port_log("INFO    [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_INFO(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
 
 #if LT_LOG_ENABLE_WARN
-#define LT_LOG_WARN(f_, ...) printf("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_WARN(f_, ...) lt_port_log("WARNING [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_WARN(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
 
 #if LT_LOG_ENABLE_ERROR
-#define LT_LOG_ERROR(f_, ...) printf("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_ERROR(f_, ...) lt_port_log("ERROR   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_ERROR(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
 
 #if LT_LOG_ENABLE_DEBUG
-#define LT_LOG_DEBUG(f_, ...) printf("DEBUG   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
+#define LT_LOG_DEBUG(f_, ...) lt_port_log("DEBUG   [%4d] " f_ "\r\n", __LINE__, ##__VA_ARGS__)
 #else
 #define LT_LOG_DEBUG(f_, ...) LT_LOG_DISABLED(f_, ##__VA_ARGS__)
 #endif
+
+// This has no effect, test runner just simply copies these lines to the log.
+#define LT_LOG_LINE(f_, ...)                                                                                \
+    LT_LOG_INFO("\t-----------------------------------------------------------------------------------" f_, \
+                ##__VA_ARGS__)
 
 // Assertions. Will log as a system message and call native assert function.
 // Note that parameters are stored to _val_ and _exp_ for a case when there

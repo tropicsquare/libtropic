@@ -9,6 +9,7 @@
  */
 
 #include <inttypes.h>
+#include <stdio.h>
 
 #include "libtropic.h"
 #include "libtropic_common.h"
