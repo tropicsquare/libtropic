@@ -9,6 +9,7 @@
 #include "libtropic.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
+#include "lt_test_common.h"
 
 void lt_test_rev_handshake_req(lt_handle_t *h)
 {

@@ -15,6 +15,7 @@
 #include "libtropic_logging.h"
 #include "lt_l2_api_structs.h"
 #include "lt_port_wrap.h"
+#include "lt_test_common.h"
 
 #define REBOOT_WAIT_ATTEMPTS 10
 

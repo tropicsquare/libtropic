@@ -15,6 +15,7 @@
 #include "libtropic_logging.h"
 #include "lt_l3_api_structs.h"
 #include "lt_port_wrap.h"
+#include "lt_test_common.h"
 #include "string.h"
 
 // Pre-generated key for testing using OpenSSL

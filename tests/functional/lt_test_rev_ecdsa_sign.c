@@ -15,6 +15,7 @@
 #include "lt_l3_api_structs.h"
 #include "lt_port_wrap.h"
 #include "lt_sha256.h"
+#include "lt_test_common.h"
 #include "string.h"
 #include "uECC.h"
 

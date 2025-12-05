@@ -13,6 +13,7 @@
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
 #include "lt_port_wrap.h"
+#include "lt_test_common.h"
 #include "string.h"
 
 /** @brief Maximal possible size of UDATA slot in User R-Memory accross all Application FWs. */

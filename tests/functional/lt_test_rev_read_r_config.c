@@ -12,6 +12,7 @@
 #include "libtropic_common.h"
 #include "libtropic_functional_tests.h"
 #include "libtropic_logging.h"
+#include "lt_test_common.h"
 
 void lt_test_rev_read_r_config(lt_handle_t *h)
 {

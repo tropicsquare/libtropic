@@ -6,6 +6,8 @@
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
+#include "lt_test_common.h"
+
 #include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>

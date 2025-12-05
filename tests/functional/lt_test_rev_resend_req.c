@@ -16,6 +16,7 @@
 #include "lt_l1.h"
 #include "lt_l2_api_structs.h"
 #include "lt_l2_frame_check.h"
+#include "lt_test_common.h"
 
 lt_handle_t *g_h;
 
