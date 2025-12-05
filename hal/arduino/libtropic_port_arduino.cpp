@@ -29,9 +29,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     pinMode(device->int_gpio_pin, INPUT);
 #endif
 
-    // Initialize RNG
-    randomSeed(device->rng_seed);
-
     return LT_OK;
 }
 

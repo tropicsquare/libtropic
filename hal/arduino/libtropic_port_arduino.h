@@ -28,8 +28,6 @@ typedef struct lt_dev_arduino_t {
 #endif
     /** @public @brief SPI settings. */
     SPISettings spi_settings;
-    /** @public @brief Seed for random number generator. */
-    unsigned int rng_seed;
 
     /** @private @brief Pointer to the SPI class. */
     SPIClass *spi;

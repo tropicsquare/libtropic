@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Logging: Redundant/unused macros `LT_LOG`, `LT_LOG_RESULT`, `LT_LOG_VALUE`.
+- Arduino HAL: Removed `rng_seed` from `lt_dev_arduino_t`, as it should be user's responsibility to initialize the PRNG.
 
 ## [3.0.0]
 
