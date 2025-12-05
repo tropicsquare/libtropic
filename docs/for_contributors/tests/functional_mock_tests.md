@@ -1,5 +1,5 @@
 # Functional Mock Tests
-Functional Mock Tests are tests run against the mock HAL (not against any real target, including the model). As such, all communication must be mocked. They supplement the classic [functional tests](./functional_tests.md) and are intended to test behavior that is difficult to trigger on real targets.
+Functional Mock Tests run against the *mock HAL* (not a real target or model). They are used to verify behavior that is difficult or impossible to reproduce on a real device (for example, rare hardware error conditions or unusual timing). These tests live in `tests/functional_mock` and require you to explicitly mock the data that would appear on the MISO line.
 
 ## Compiling and Running Tests
 These tests are compiled standalone in the `tests/functional_mock` directory. The tests can be compiled and run as follows:
@@ -19,33 +19,33 @@ ctest -V
 ## Adding a New Test
 
 !!! important
-    If possible and feasible, prefer implementing classic functional tests, as they can run on all platforms. Use functional mock tests only to cover behavior that cannot be easily tested on real targets (for example, extremely rare hardware errors).
+    If possible and feasible, prefer implementing classic functional tests, as they can run on all platforms. Use functional mock tests only to cover behavior that cannot be easily tested on real targets (for example, extremely rare hardware errors) or do not use any communication at all (typically parameter checking tests).
 
-### Basic Concepts
-To write these tests, you need to understand TROPIC01's communication protocol at a low level. Here are the units and layers of communication:
+### Basic concepts
+You must understand three TROPIC01 protocol layers when writing these tests:
 
-- *One unit of communication on L1 = SPI transfer*, represented by `lt_port_spi_transfer`. One or more bytes can be transferred in a single transfer.
-- *One unit of communication on L2 = frame*. A frame is initiated by a falling edge on CSN and terminated by a rising edge. A frame can be transferred in a single L1 transfer or across multiple L1 transfers. As long as CSN is low and part of the frame remains, the host can perform SPI transfers. Consequently, a frame can be read byte-by-byte.
-- *One unit of communication on L3 = packet*. A packet is encapsulated in an L2 frame's REQ_DATA/RSP_DATA (similar to ISO/OSI encapsulation). Because L2 frames have a limited size, an L3 packet may need to be split into multiple frames. From the HAL perspective this is still part of the frame.
+- L1 — SPI transfer: a single call to `lt_port_spi_transfer`. Any number of bytes can be sent/received in one transfer.
+- L2 — Frame: started by CSN falling edge and ended by CSN rising edge. A frame may be delivered in one L1 transfer or across multiple L1 transfers (sending byte-by-byte is allowed while CSN is low).
+- L3 — Packet: a logical packet carried inside L2 frames' REQ_DATA/RSP_DATA. L3 packets can be split across several L2 frames.
 
-Additional key points:
+Key practical points and rules
 
-- We mock incoming data — the data that would appear on the MISO line.
-- There is no distinction between "writing" and "reading" at the SPI level. Everything is an SPI transaction where the contents of the buffers are swapped. We distinguish "reads" from "writes" only by the `REQ_ID`: "reads" have `REQ_ID == Get_Response (0xAA)`, and everything else is treated as a "write". Therefore you must also mock incoming data for "writes" (currently, this is only a single `CHIP_STATUS` byte). Other bytes may be undefined, invalid, or zero.
-- In principle, the lengths of outgoing and incoming data must match due to the nature of SPI. However, to simplify tests the mock HAL does not require filling the remainder of the buffer after `CHIP_STATUS`. If Libtropic attempts to read incoming data (MISO) beyond what the test queued, the mock HAL returns zeros (up to `LT_L1_MAX_LENGTH`). A logging macro can be enabled to simplify test design.
-- Data sent to the mocked HAL (outgoing data — "MOSI") are ignored by the current implementation to keep test complexity manageable.
-- Data are mocked by "frames" (see next point), not by individual bytes. After a CSN rising edge, the next mocked "frame" is taken from the internal mock queue.
-- There are two types of incoming data (from chip — on MISO):
-  - *Answer to response frames* (answer to frames which have `REQ_ID == Get_Response`) have following structure: `CHIP_STATUS`, `STATUS`, `RSP_LEN`, `RSP_DATA`, `RSP_CRC`.
-  - *Answer to request frames* (answer to frames with all other `REQ_ID`s) contain only `CHIP_STATUS`. As such, it is correct to complete transaction after receiving only this byte in this case, although it is not a complete "frame".
-  - For simplicity, we refer to both types as "frames" => even single mocked `CHIP_STATUS` byte is a frame from the mock HAL perspective, although it does not contain other fields.
-- If no mocked transaction is available in the queue, attempting to start a transaction by pulling CSN low results in an error.
-- Any SPI transfer attempted while CSN is high results in an error, since transfers are only allowed while CSN is low (after CSN falling edge).
+- SPI always exchanges bytes: every transfer swaps master's and slave's data. For the mock HAL you should *mock the MISO side* (what the chip would send back). MOSI (what host — Libtropic — sends) is ignored by the current mock implementation.
+- We distinguish a host "read" vs "write" only by the packet `REQ_ID`. Frames with `REQ_ID == Get_Response (0xAA)` are treated as reads (the host expects complete frame on MISO). All other REQ_IDs are requests; the chip normally answers those with a single `CHIP_STATUS` byte.
+- Mocked data are queued as L2 frames — not as individual bytes. After a CSN rising edge the next queued mocked frame becomes the source for subsequent MISO bytes.
+- If your code attempts to read more MISO bytes than you queued, the mock HAL returns zeros (up to `LT_L1_MAX_LENGTH`). This keeps tests simpler but means you should queue the bytes the code will actually read for clarity.
+- If there is no mocked frame in the queue when the test pulls CSN low, the mock HAL reports an error. Any SPI transfer while CSN is high is also an error.
 
-There are also some quirks to be aware of:
+Two common mocked frame shapes
 
-- When determining the size of a mocked L2 request, do not rely on `sizeof()` because some structures are reused for multiple argument types. For example, `lt_l2_get_info_rsp_t` is not always `sizeof(lt_l2_get_info_rsp_t)` bytes long. You must either determine the size manually or use `calc_mocked_resp_len()`, which calculates the correct length for you (including the CRC length).
-- Another side effect is that the CRC is not always stored in the `crc` field; it can appear in the previous fields if the data are shorter.
+- Response frame (for `REQ_ID == Get_Response`, 0xAA): MISO contains
+    `CHIP_STATUS`, `STATUS`, `RSP_LEN`, `RSP_DATA`, `RSP_CRC`.
+- Request acknowledgement frame (for other `REQ_ID`s): MISO contains only `CHIP_STATUS`.
+
+Notes about lengths and CRC
+
+- Do not assume `sizeof()` matches the transmitted length — some reply structures are overlayed or have variable-length fields. Use the helper `calc_mocked_resp_len()` (found in the mock helpers) to produce correct mocked lengths including CRC.
+- The CRC bytes may not always sit in a named `crc` field in the C struct; if the data are shorter the CRC can appear earlier in the layout. Use the `add_resp_crc()` helper or compute the CRC manually when constructing the frame bytes.
 
 ### Creating the Test
 To add a new test, do the following:
