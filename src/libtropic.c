@@ -1658,7 +1658,7 @@ lt_ret_t lt_print_bytes(const uint8_t *bytes, const size_t bytes_cnt, char *out_
         if (out_buf && out_buf_size > 0) {
             out_buf[0] = '\0';
         }
-        return LT_FAIL;
+        return LT_PARAM_ERR;
     }
 
     for (size_t i = 0; i < bytes_cnt; i++) {
