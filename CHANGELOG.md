@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logging: `lt_port_log` function for platform-specific logging mechanism; is used by the logging macros declared in `libtropic_logging.h`.
 
 ### Fixed
+- `lt_print_fw_header` function now returns `LT_PARAM_ERR` when incorrect bank ID is used instead of `LT_FAIL`.
 
 ### Removed
 - Logging: Redundant/unused macros `LT_LOG`, `LT_LOG_RESULT`, `LT_LOG_VALUE`.
