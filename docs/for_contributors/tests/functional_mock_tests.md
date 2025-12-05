@@ -34,8 +34,11 @@ Additional key points:
 - There is no distinction between "writing" and "reading" at the SPI level. Everything is an SPI transaction where the contents of the buffers are swapped. We distinguish "reads" from "writes" only by the `REQ_ID`: "reads" have `REQ_ID == Get_Response (0xAA)`, and everything else is treated as a "write". Therefore you must also mock incoming data for "writes" (currently, this is only a single `CHIP_STATUS` byte). Other bytes may be undefined, invalid, or zero.
 - In principle, the lengths of outgoing and incoming data must match due to the nature of SPI. However, to simplify tests the mock HAL does not require filling the remainder of the buffer after `CHIP_STATUS`. If Libtropic attempts to read incoming data (MISO) beyond what the test queued, the mock HAL returns zeros (up to `LT_L1_MAX_LENGTH`). A logging macro can be enabled to simplify test design.
 - Data sent to the mocked HAL (outgoing data — "MOSI") are ignored by the current implementation to keep test complexity manageable.
-- Data are mocked by "frames", not by individual bytes. After a CSN rising edge, the next mocked transaction is taken from the internal mock queue.
-- By "frames" we also include the single `CHIP_STATUS` that is sent when `REQ_ID == Get_Response`.
+- Data are mocked by "frames" (see next point), not by individual bytes. After a CSN rising edge, the next mocked "frame" is taken from the internal mock queue.
+- There are two types of incoming data (from chip — on MISO):
+  - *Answer to response frames* (answer to frames which have `REQ_ID == Get_Response`) have following structure: `CHIP_STATUS`, `STATUS`, `RSP_LEN`, `RSP_DATA`, `RSP_CRC`.
+  - *Answer to request frames* (answer to frames with all other `REQ_ID`s) contain only `CHIP_STATUS`. As such, it is correct to complete transaction after receiving only this byte in this case, although it is not a complete "frame".
+  - For simplicity, we refer to both types as "frames" => even single mocked `CHIP_STATUS` byte is a frame from the mock HAL perspective, although it does not contain other fields.
 - If no mocked transaction is available in the queue, attempting to start a transaction by pulling CSN low results in an error.
 - Any SPI transfer attempted while CSN is high results in an error, since transfers are only allowed while CSN is low (after CSN falling edge).
 
