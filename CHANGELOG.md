@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Logging: `lt_port_log` function for platform-specific logging mechanism; is used by the logging macros declared in `libtropic_logging.h`.
+- ESP-IDF HAL for Espressif SoCs.
 
 ### Fixed
 
