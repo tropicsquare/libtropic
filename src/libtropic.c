@@ -1916,7 +1916,7 @@ lt_ret_t lt_print_fw_header(lt_handle_t *h, const lt_bank_id_t bank_id, int (*pr
             break;
         default:
             print_func("    Reading header: Unknown bank ID: %d\r\n", (int)bank_id);
-            return LT_FAIL;
+            return LT_PARAM_ERR;
     }
 
     lt_ret_t ret = lt_get_info_fw_bank(h, bank_id, header, sizeof(header), &read_header_size);
