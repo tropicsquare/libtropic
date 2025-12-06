@@ -231,11 +231,17 @@ lt_ret_t lt_l1_retrieve_alarm_log(lt_l2_state_t *s2, const uint32_t timeout_ms)
     uint8_t log_size = s2->buff[2];
     LT_LOG_DEBUG("LOG SIZE: %" PRId8, log_size);
 
-    LT_LOG_DEBUG("------------ CPU Log BEGIN ------------");
-    for (size_t i = 3; i < log_size; i++) {
+    LT_LOG_DEBUG("------------ DECODED CPU Log BEGIN ------------");
+    for (size_t i = 0; i < 256; i++) { // Ignore log size for now
         LT_LOG_DEBUG("%c", s2->buff[i]);
     }
-    LT_LOG_DEBUG("------------- CPU Log END -------------");
+    LT_LOG_DEBUG("------------- DECODED CPU Log END -------------");
+
+    LT_LOG_DEBUG("------------ RAW CPU Log BEGIN ------------");
+    for (size_t i = 0; i < 256; i++) { // Ignore log size for now
+        LT_LOG_DEBUG("0x%02d", s2->buff[i]);
+    }
+    LT_LOG_DEBUG("------------- RAW CPU Log END -------------");
 
     ret = lt_l1_spi_csn_high(s2);
     if (ret != LT_OK) {
