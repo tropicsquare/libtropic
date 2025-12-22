@@ -55,7 +55,7 @@ int main(void)
          
     // Device structure.
     //
-    // Modify this according to your environment. Provided values
+    // Modify this according to your environment. Default values
     // are compatible with RPi and our RPi shield.              
     lt_dev_posix_usb_dongle_t device = {0};
     strcpy(device.dev_path, LT_USB_DEVKIT_PATH); // LT_USB_DEVKIT_PATH is defined in CMakeLists.txt. Pass -DLT_USB_DEVKIT_PATH=<path> to cmake if you want to change it.
