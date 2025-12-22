@@ -80,7 +80,7 @@ int main(void)
     // Modify this according to your environment. Provided values
     // are compatible with RPi and our RPi shield.              
     lt_dev_posix_usb_dongle_t device = {0};
-    strcpy(device.dev_path, "/dev/ttyACM0");
+    strcpy(device.dev_path, LT_USB_DEVKIT_PATH); // LT_USB_DEVKIT_PATH is defined in CMakeLists.txt. Pass -DLT_USB_DEVKIT_PATH=<path> to cmake if you want to change it.
     device.baud_rate = 115200;
     lt_handle.l2.device = &device;
 
@@ -216,11 +216,7 @@ int main(void)
     //                                                           
     // In production, this would be done only once, typically     
     // during termination of the application.                     
-    status = mbedtls_psa_crypto_free();
-    if (status != PSA_SUCCESS) {
-        fprintf(stderr, "PSA Crypto deinitialization failed, status=%d (psa_status_t)\n", status);
-        return -1;
-    }
+    mbedtls_psa_crypto_free();
 
     return 0;
 }
