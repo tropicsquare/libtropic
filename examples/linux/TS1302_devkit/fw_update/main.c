@@ -106,6 +106,7 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
@@ -137,6 +138,7 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
@@ -147,6 +149,7 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nRISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
@@ -156,6 +159,7 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nSPECT FW update failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
@@ -166,6 +170,7 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nRISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
@@ -175,6 +180,7 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nSPECT FW update failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
@@ -185,9 +191,10 @@ int main(void)
     if (ret != LT_OK) {
         fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
-    printf("OK, TROPIC01 is executing Application FW now\n");
+    printf("OK!\nTROPIC01 is executing Application FW now\n");
 
     if(get_fw_versions(&lt_handle) != LT_OK) {
         lt_deinit(&lt_handle);
@@ -199,6 +206,7 @@ int main(void)
     ret = lt_deinit(&lt_handle);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to deinitialize handle, ret=%s\n", lt_ret_verbose(ret));
+        lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
     }
@@ -208,7 +216,11 @@ int main(void)
     //                                                           
     // In production, this would be done only once, typically     
     // during termination of the application.                     
-    mbedtls_psa_crypto_free();
+    status = mbedtls_psa_crypto_free();
+    if (status != PSA_SUCCESS) {
+        fprintf(stderr, "PSA Crypto deinitialization failed, status=%d (psa_status_t)\n", status);
+        return -1;
+    }
 
     return 0;
 }
