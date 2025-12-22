@@ -26,9 +26,9 @@
 
 int main(void)
 {
-    printf("======================================");
-    printf("==== TROPIC01 Hello World Example ====");
-    printf("======================================");
+    printf("======================================\n");
+    printf("==== TROPIC01 Hello World Example ====\n");
+    printf("======================================\n");
 
     // Cryptographic function provider initialization.
     //                                                           
@@ -38,7 +38,7 @@ int main(void)
     // the first occurrence of any Libtropic function            
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
-        fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)", status);
+        fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)\n", status);
         return -1;
     }
                               
