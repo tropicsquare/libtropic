@@ -18,7 +18,10 @@ set(PATH_LIBTROPIC ../../../../)
 #   Configuration                                                         #
 #                                                                         #
 ###########################################################################
-
+if (NOT DEFINED LT_USB_DEVKIT_PATH)
+    set(LT_USB_DEVKIT_PATH "/dev/ttyACM0" CACHE STRING "Path to the USB device representing the USB devkit serial port.")
+endif()
+message(STATUS "Using serial port: ${LT_USB_DEVKIT_PATH}. You can change it by passing -DLT_USB_DEVKIT_PATH=<path> to cmake.")
 
 ###########################################################################
 #                                                                         #
@@ -72,6 +75,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
 )
 
-# Define executable and link dependencies.
+# Define executable, pass defines, and link dependencies.
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_USB_DEVKIT_PATH=\"${LT_USB_DEVKIT_PATH}\")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic)

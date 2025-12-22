@@ -55,11 +55,11 @@ int main(void)
          
     // Device structure.
     //
-    // Modify this according to your environment. Provided values
+    // Modify this according to your environment. Default values
     // are compatible with RPi and our RPi shield.              
     lt_dev_linux_spi_t device = {0};
-    strcpy(device.gpio_dev, "/dev/gpiochip0");
-    strcpy(device.spi_dev, "/dev/spidev0.0");
+    strcpy(device.gpio_dev, LT_SPI_DEVKIT_GPIO_PATH); // LT_SPI_DEVKIT_GPIO_PATH is defined in CMakeLists.txt. Pass -DLT_SPI_DEVKIT_GPIO_PATH=<path> to cmake if you want to change it.
+    strcpy(device.spi_dev, LT_SPI_DEVKIT_SPI_PATH); // LT_SPI_DEVKIT_SPI_PATH is defined in CMakeLists.txt. Pass -DLT_SPI_DEVKIT_SPI_PATH=<path> to cmake if you want to change it.
     device.spi_speed = 5000000;  // 5 MHz (change if needed).
     device.gpio_cs_num = 25;     // GPIO 25 as on RPi shield.
 #if LT_USE_INT_PIN
