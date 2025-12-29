@@ -80,12 +80,28 @@ make
 ./libtropic_hello_world
 ```
 
+## Build and Run a Chip Identification Example
+
+Next, we will read important identification data from the chip.
+
+```bash
+cd identify_chip
+mkdir build
+cd build
+cmake ..
+make
+./libtropic_identify_chip | tee chip_info.txt # We will backup the info to a file. 
+```
+
+> [!IMPORTANT]
+> Do not forget to store the output of this example! It is crucial for providing any support by Tropic Square.
+
 ## Build and Run a Firmware Update Example
 After trying out communication, we will update the TROPIC01's firmware using our firmware update example, as new firmware versions fix bugs and ensure compatibility with the latest Libtropic SDK.
 
 > [!IMPORTANT]
 > - Using outdated firmware is not recommended. Outdated firmware may not be compatible with the latest version of the Libtropic SDK.
-> - Firmware update example will print important information about the chip and its firmwares. Save the output for future reference, as it contains useful information for eventual support.
+> - Make sure you stored chip identification from the previous step.
 > - Use a stable power source and avoid disconnecting the devkit or rebooting your computer during the update. Interrupting a firmware update can brick the device.
 
 To update both internal firmware to the latest versions, execute the following example:
