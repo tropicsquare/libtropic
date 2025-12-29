@@ -1,39 +1,12 @@
 # Examples
-The `examples/` directory contains multiple examples demonstrating how to use libtropic.
-**Make sure to read this page before diving into the examples.**
+For each supported host platform, we have several examples available. Each example is a standalone project. Examples are available in the `examples/` directory, sorted by host platforms (and HALs).
 
-## Example Categories
-Some examples may cause irreversible changes to the chip, so they are organized into two categories:
+There are always at least two basic examples for each platform:
+- Hello World example,
+- Firmware update example.
 
-- [Reversible Examples](reversible_examples.md)
-- [Irreversible Examples](irreversible_examples.md)
+Those two examples are thoroughly documented in [Tutorials](../tutorials/index.md). The tutorials will guide you on preparing your environment, compilation and running those examples.
 
-!!! question "What are Irreversible Changes?"
-    Irreversible changes include writing to I-config, writing or invalidating pairing keys, or performing a firmware update.
-
-## Building
-Examples can be compiled using the [LT_BUILD_EXAMPLES](../integrating_libtropic/how_to_configure/index.md#lt_build_examples) CMake option. See [How to Configure](../integrating_libtropic/how_to_configure/index.md) section for ways to enable this option.
-
-We recommend trying the examples in one of our [platform repositories](../integrating_libtropic/integration_examples.md) using a real TROPIC01 chip on one of our supported platforms, or on a [TROPIC01 model](../../other/tropic01_model/index.md) directly on your computer. Both the platform repositories and the model contain detailed guides on compiling examples.
-
-!!! failure "Cannot Establish a Secure Channel Session"
-    Refer to the dedicated section in the [FAQ](../../faq.md#i-cannot-establish-a-secure-session).
-
-??? tip "Advanced Tip: Running an Example With Your Own Pairing Key"
-    If you have already written your own public key to one of the available slots and want to execute an example that uses a Secure Session, define the arrays for your private and public key as globals and, after `#include "libtropic_examples.h"`, do the following:
-    ```c
-    #undef LT_EX_SH0_PRIV
-    #define LT_EX_SH0_PRIV <var_name_with_your_private_pairing_key>
-
-    #undef LT_EX_SH0_PUB
-    #define LT_EX_SH0_PUB <var_name_with_your_public_pairing_key>
-    ```
-
-## Should I Use the Model or a Real Chip?
-All of the examples are compatible with the TROPIC01 chip, and the majority of them are also compatible with the TROPIC01 model. It is highly recommended to try the model first, especially for irreversible examples, as they make irreversible changes to the real chip.
-
-Some examples are not compatible with the model (such as the firmware update example). Any such incompatibility is always noted in the example description in this documentation.
-
-## Where Do I Start?
-We recommend starting with [Reversible Examples](reversible_examples.md), specifically `lt_ex_hello_world.c`.  
-This example demonstrates the usage of basic libtropic API functions. After understanding this example, you can dive into more complex ones.
+For some platforms, we have also prepared some advanced examples, which are described in following pages in detail:
+- Linux
+    - [Full chain verification example](linux/full_chain.md).
