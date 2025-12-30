@@ -25,15 +25,6 @@ set(LT_CFG_OPT value)
 
 [Functional tests](../../../for_contributors/tests/functional_tests.md) will be built as part of the Libtropic library.
 
-### `LT_SH0_KEYS`
-- string
-- default value: `"prod0"`
-
-Programs, compiled when `LT_BUILD_EXAMPLES` or `LT_BUILD_TESTS` are set, depend on the [Default Pairing Keys for a Secure Channel Handshake](../../default_pairing_keys.md). Keys that will be used in these programs can be changed by setting `LT_SH0_KEYS` to one of the available values.
-
-!!! tip "See Available Values When Using CMake CLI"
-    Pass `-DLT_SH0_KEYS=` to `cmake`, which will invoke an error, but will print the available values.
-
 ### `LT_HELPERS`
 - boolean
 - default value: `ON`
