@@ -11,9 +11,6 @@
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_examples.h"
-#include "libtropic_functional_tests.h"
-#include "libtropic_logging.h"
 #include "libtropic_port_linux_spi.h"
 #include "fw_CPU.h"
 #include "fw_SPECT.h"
