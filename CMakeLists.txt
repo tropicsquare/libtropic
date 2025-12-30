@@ -23,32 +23,6 @@ option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" O
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 
-# Select pairing keys written during manufacturing into your TROPIC01
-set(LT_SH0_KEYS "prod0" CACHE STRING "Choose which pairing keys in slot 0 will be used in examples/tests")
-set_property(CACHE LT_SH0_KEYS PROPERTY STRINGS "eng_sample" "prod0")
-
-if(LT_BUILD_TESTS OR LT_BUILD_EXAMPLES)
-    # These are internal macros for selecting SH0 keys (examples/tests)
-    set(LT_USE_SH0_ENG_SAMPLE 0 CACHE INTERNAL "")
-    set(LT_USE_SH0_PROD0      0 CACHE INTERNAL "")
-
-    # Define SH0 macros based on selected string (examples/tests)
-    if(LT_SH0_KEYS STREQUAL "eng_sample")
-        message(STATUS "Using Engineering sample keys in examples/tests")
-        set(LT_USE_SH0_ENG_SAMPLE 1)
-        set(LT_USE_SH0_PROD0      0)
-    elseif(LT_SH0_KEYS STREQUAL "prod0")
-        message(STATUS "Using Production 0 keys in examples/tests")
-        set(LT_USE_SH0_ENG_SAMPLE 0)
-        set(LT_USE_SH0_PROD0      1)
-    else()
-        get_property(lt_sh0_keys_choices CACHE LT_SH0_KEYS PROPERTY STRINGS)
-        message(FATAL_ERROR "Incorrect SH0 keys for examples/tests specified: '${LT_SH0_KEYS}'\nAvailable SH0 keys: ${lt_sh0_keys_choices}")
-    endif()
-else()
-    message(STATUS "Skipping SH0 key selection (examples/tests not enabled)")
-endif()
-
 # TROPIC01 silicon revision: useful for firmware update and functional tests
 # (as some behavior) differ between revisions.
 set(LT_SILICON_REV "ACAB" CACHE STRING "Set TROPIC01 silicon revision")

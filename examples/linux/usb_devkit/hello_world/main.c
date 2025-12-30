@@ -19,10 +19,19 @@
 #include "libtropic_mbedtls_v4.h"
 #include "psa/crypto.h"
 
-/** @brief Message to send with Ping L3 command. */
+// @brief Message to send with Ping L3 command.
 #define PING_MSG "This is Hello World message from TROPIC01!!"
-/** @brief Size of the Ping message, including '\0'. */
+// Size of the Ping message, including '\0'.
 #define PING_MSG_SIZE 44
+
+// Choose pairing keypair for slot 0.
+#if LT_USE_SH0_ENG_SAMPLE
+#define LT_EX_SH0_PRIV sh0priv_eng_sample
+#define LT_EX_SH0_PUB sh0pub_eng_sample
+#elif LT_USE_SH0_PROD0
+#define LT_EX_SH0_PRIV sh0priv_prod0
+#define LT_EX_SH0_PUB sh0pub_prod0
+#endif
 
 int main(void)
 {
@@ -78,10 +87,12 @@ int main(void)
     printf("OK\n");
 
     printf("Starting Secure Session with key slot %d...", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
+    // Keys are chosen based on the CMake option LT_SH0_KEYS.
     ret = lt_verify_chip_and_start_secure_session(&lt_handle, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to start Secure Session with key %d, ret=%s\n", (int)TR01_PAIRING_KEY_SLOT_INDEX_0,
                      lt_ret_verbose(ret));
+        fprintf(stderr, "Check if you use correct SH0 keys! Hint: if you use an engineering sample chip, compile with -DLT_SH0_KEYS=eng_sample\n");
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
