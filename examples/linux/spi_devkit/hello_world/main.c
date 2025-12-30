@@ -88,6 +88,17 @@ int main(void)
     }
     printf("OK\n");
 
+    // We need to ensure we are not in the Startup Mode, as L3 commands are available only in the Application Firmware.
+    printf("Sending reboot request...");
+    ret = lt_reboot(&lt_handle, TR01_REBOOT);
+    if (ret != LT_OK) {
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
+        lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
+        return -1;
+    }
+    printf("OK\n");
+
     printf("Starting Secure Session with key slot %d...", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
     // Keys are chosen based on the CMake option LT_SH0_KEYS.
     ret = lt_verify_chip_and_start_secure_session(&lt_handle, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
