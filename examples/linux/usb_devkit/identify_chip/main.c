@@ -74,7 +74,7 @@ int main(void)
     printf("Sending reboot request...");
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -86,7 +86,7 @@ int main(void)
     uint8_t fw_ver[4];
     ret = lt_get_info_riscv_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to get RISC-V FW version, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get RISC-V FW version, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -96,7 +96,7 @@ int main(void)
 
     ret = lt_get_info_spect_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to get SPECT FW version, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get SPECT FW version, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -108,7 +108,7 @@ int main(void)
     printf("Sending maintenance reboot request...");
     ret = lt_reboot(&lt_handle, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -120,7 +120,7 @@ int main(void)
     // When TROPIC01 is in Start-up Mode, we can get RISC-V bootloader version the same way as we got RISC-V FW version.
     ret = lt_get_info_riscv_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to get RISC-V bootloader version, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get RISC-V bootloader version, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -131,28 +131,28 @@ int main(void)
     printf("Firmware bank headers:\n");
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW1, printf);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to print TR01_FW_BANK_FW1 header, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_FW1 header, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW2, printf);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to print TR01_FW_BANK_FW2 header, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_FW2 header, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_SPECT1, printf);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to print TR01_FW_BANK_SPECT1 header, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_SPECT1 header, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_SPECT2, printf);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to print TR01_FW_BANK_SPECT2 header, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_SPECT2 header, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -163,7 +163,7 @@ int main(void)
     printf("Chip ID data:\n");
     ret = lt_get_info_chip_id(&lt_handle, &chip_id);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to get chip ID, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get chip ID, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -172,7 +172,7 @@ int main(void)
     printf("---------------------------------------------------------\n");
     ret = lt_print_chip_id(&chip_id, printf);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("Failed to print chip ID, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print chip ID, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -182,7 +182,7 @@ int main(void)
     printf("Sending reboot request...");
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
-        LT_LOG_ERROR("\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
