@@ -28,6 +28,28 @@ if (NOT DEFINED LT_SPI_DEVKIT_GPIO_PATH)
 endif()
 message(STATUS "Using GPIO device: ${LT_SPI_DEVKIT_GPIO_PATH}. You can change it by passing -DLT_SPI_DEVKIT_GPIO_PATH=<path> to cmake.")
 
+# Select pairing keys written during manufacturing into your TROPIC01
+set(LT_SH0_KEYS "prod0" CACHE STRING "Choose which pairing keys in slot 0 will be used in this example")
+set_property(CACHE LT_SH0_KEYS PROPERTY STRINGS "eng_sample" "prod0")
+
+# These are internal macros for selecting SH0 keys (examples/tests)
+set(LT_USE_SH0_ENG_SAMPLE 0 CACHE INTERNAL "")
+set(LT_USE_SH0_PROD0      0 CACHE INTERNAL "")
+
+# Define SH0 macros based on selected string (examples/tests)
+if(LT_SH0_KEYS STREQUAL "eng_sample")
+    message(STATUS "Using Engineering sample keys in examples/tests")
+    set(LT_USE_SH0_ENG_SAMPLE 1)
+    set(LT_USE_SH0_PROD0      0)
+elseif(LT_SH0_KEYS STREQUAL "prod0")
+    message(STATUS "Using Production 0 keys in examples/tests")
+    set(LT_USE_SH0_ENG_SAMPLE 0)
+    set(LT_USE_SH0_PROD0      1)
+else()
+    get_property(lt_sh0_keys_choices CACHE LT_SH0_KEYS PROPERTY STRINGS)
+    message(FATAL_ERROR "Incorrect SH0 keys for examples/tests specified: '${LT_SH0_KEYS}'\nAvailable SH0 keys: ${lt_sh0_keys_choices}")
+endif()
+
 ###########################################################################
 #                                                                         #
 #   Set up dependencies                                                   #
@@ -84,4 +106,6 @@ set(SOURCES
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_SPI_DEVKIT_SPI_PATH=\"${LT_SPI_DEVKIT_SPI_PATH}\")
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_SPI_DEVKIT_GPIO_PATH=\"${LT_SPI_DEVKIT_GPIO_PATH}\")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_USE_SH0_ENG_SAMPLE=${LT_USE_SH0_ENG_SAMPLE})
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_USE_SH0_PROD0=${LT_USE_SH0_PROD0})
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic)
