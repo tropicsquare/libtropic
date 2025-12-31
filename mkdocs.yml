@@ -53,6 +53,15 @@ nav:
   - Introduction: index.md
   - Get Started:
     - get_started/index.md
+    - Tutorials:
+      - get_started/tutorials/index.md
+      - Linux:
+        - RPi / Arduino Devkit: get_started/tutorials/linux/arduino_rpi_shield.md
+        - USB Devkit: get_started/tutorials/linux/usb_devkit.md
+    - Examples:
+      - get_started/examples/index.md
+      - Linux:
+        - Full Chain Verification: get_started/examples/linux/full_chain.md
     - Libtropic Architecture: get_started/libtropic_architecture.md
     - Integrating Libtropic:
       - get_started/integrating_libtropic/index.md
@@ -63,10 +72,6 @@ nav:
       - How to Configure: get_started/integrating_libtropic/how_to_configure/index.md
       - How to Use: get_started/integrating_libtropic/how_to_use/index.md
       - Integration Examples: get_started/integrating_libtropic/integration_examples.md
-    - Examples:
-      - get_started/examples/index.md
-      - Reversible Examples: get_started/examples/reversible_examples.md
-      - Irreversible Examples: get_started/examples/irreversible_examples.md
     - TROPIC01 Firmware: get_started/tropic01_fw.md
     - Default Pairing Keys for a Secure Channel Handshake: get_started/default_pairing_keys.md
     - Logging: get_started/logging.md
