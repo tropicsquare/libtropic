@@ -208,7 +208,6 @@ int main(void)
     ret = lt_deinit(&lt_handle);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to deinitialize handle, ret=%s\n", lt_ret_verbose(ret));
-        lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
     }
