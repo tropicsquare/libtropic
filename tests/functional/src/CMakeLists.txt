@@ -210,6 +210,7 @@ set(LIBTROPIC_TEST_LIST
     lt_test_rev_erase_r_config
     lt_test_rev_handshake_req
     lt_test_rev_mcounter
+    lt_test_rev_param_check
     lt_test_rev_get_info_req_app
     lt_test_rev_get_info_req_bootloader
     lt_test_rev_read_i_config
@@ -261,6 +262,7 @@ set(TEST_SRCS
     ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_erase_r_config.c
     ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_handshake_req.c
     ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_mcounter.c
+    ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_param_check.c
     ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_get_info_req_app.c
     ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_get_info_req_bootloader.c
     ${PATH_LIBTROPIC}/tests/functional/src/lt_test_rev_read_i_config.c
