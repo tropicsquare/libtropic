@@ -68,7 +68,7 @@ cd examples/linux/spi_devkit
 
 ## Build and Run a Basic Hello World Example
 
-This basic example demonstrates basic usage of the Libtropic SDK. In the example, the Secure Session is estabilished and a Ping L3 Command is sent to verify that the Secure Session works.
+This basic example demonstrates basic usage of the Libtropic SDK. In the example, the Secure Session is established and a Ping L3 Command is sent to verify that the Secure Session works.
 This example is also useful as a template for your project, as it contains minimal `CMakeLists.txt` to build Libtropic including dependencies.
 
 ```bash
