@@ -32,9 +32,9 @@ This error normally means that the L3 packet size we sent to the TROPIC01 is inc
 ### `LT_L3_INVALID_CMD` or `LT_L2_UNKNOWN_REQ`
 This error means that the TROPIC01 does not recognize the L3 command or L2 request it received. However, this behavior can be caused by the TROPIC01 being in Maintenance Mode. Maintenance Mode does not implement the entire API — it does not implement `Handshake_Req` nor any L3 commands, so handshake attempts will always fail.
 
-A TROPIC01 will be in Maintenance Mode after a user-triggered reboot (calling `lt_reboot` with `TR01_MAINTENANCE_REBOOT` as `startup_id`). In that case, reboot the chip back to Application Mode by calling `lt_reboot` with `TR01_REBOOT`. During evaluation you can also use the [lt_ex_show_chip_id_and_fwver.c](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc) example, which reboots to Application Mode at the end.
+A TROPIC01 will be in Maintenance Mode after a user-triggered reboot (calling `lt_reboot` with `TR01_MAINTENANCE_REBOOT` as `startup_id`). In that case, reboot the chip back to Application Mode by calling `lt_reboot` with `TR01_REBOOT`.
 
-However, a TROPIC01 can also enter Maintenance Mode automatically after an unsuccessful update or if firmware banks are empty or corrupted. In that case, a simple reboot will not help; you must run the firmware update again, either using the [lt_ex_fw_update.c](get_started/examples/irreversible_examples.md#lt_ex_fw_updatec) example or from your application code.
+However, a TROPIC01 can also enter Maintenance Mode automatically after an unsuccessful update or if firmware banks are empty or corrupted. In that case, a simple reboot will not help; you must run the firmware update again, either using the firmware update example (see [Tutorials](./get_started/tutorials/index.md)) or from your application code.
 
 ## I cannot establish a Secure Session
 There are two main causes:
@@ -43,10 +43,10 @@ There are two main causes:
    All new TROPIC01s use production pairing keys, which are used by default in Libtropic. Some devkits still contain preview chips (engineering samples). For those, you need to use different keys. Refer to the [Default Pairing Keys for a Secure Channel Handshake](get_started/default_pairing_keys.md).
 
 2. Your TROPIC01 is in Maintenance Mode.
-   Reboot to Application Mode by calling `lt_reboot` with `TR01_REBOOT`, or during evaluation use the [lt_ex_show_chip_id_and_fwver.c](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc) example, which reboots to Application Mode at the end.
+   Reboot to Application Mode by calling `lt_reboot` with `TR01_REBOOT`.
 
 ## FW update failed
-If our [lt_ex_fw_update](get_started/examples/irreversible_examples.md#lt_ex_fw_updatec) example program failed:
+If our firmware update example program in the tutorial failed:
 
 1. Try the suggestions in [I received an error](#i-received-an-error).
 2. Make sure you have correct values set in the following CMake options:
@@ -58,13 +58,13 @@ If our [lt_ex_fw_update](get_started/examples/irreversible_examples.md#lt_ex_fw_
 You have two options:
 
 1. Read it from the packaging you received your TROPIC01 product in.
-2. Run our example program [lt_ex_show_chip_id_and_fwver](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](get_started/integrating_libtropic/integration_examples.md).
+2. Run our example Identify Chip (see [Tutorials](./get_started/tutorials/index.md)), which **does not** require the Secure Channel Session.
 
 ## What is the silicon revision of my TROPIC01?
 You have two options:
 
 1. Read the product number (P/N) from the packaging you received your TROPIC01 product in. After that, refer to the [Available Parts](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#available-parts) section (in the [TROPIC01 GitHub repository](https://github.com/tropicsquare/tropic01)) and read the linked Catalog list, which will help you decode the silicon revision based on your P/N.
-2. Run our example program [lt_ex_show_chip_id_and_fwver](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](get_started/integrating_libtropic/integration_examples.md).
+2. Run our example Identify Chip (see [Tutorials](./get_started/tutorials/index.md)), which **does not** require the Secure Channel Session.
 
 ## What FW versions is my TROPIC01 running?
-Run our example program [lt_ex_show_chip_id_and_fwver](get_started/examples/reversible_examples.md#lt_ex_show_chip_id_and_fwverc), which **does not** require the Secure Channel Session. For building instructions, refer to our [Integration Examples](get_started/integrating_libtropic/integration_examples.md).
+Run our example Identify Chip (see [Tutorials](./get_started/tutorials/index.md)), which **does not** require the Secure Channel Session.
