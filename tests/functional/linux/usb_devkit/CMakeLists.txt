@@ -29,6 +29,10 @@ endif()
 #                                                                         #
 ###########################################################################
 
+# Override path to USB devkit device
+set(LT_USB_DEVKIT_PATH "/dev/ttyACM0" CACHE STRING "Path to the USB device representing the USB devkit serial port.")
+message(STATUS "Using serial port: ${LT_USB_DEVKIT_PATH}. You can change it by passing -DLT_USB_DEVKIT_PATH=<path> to cmake.")
+
 # Optional prefix to tests registered to CTest. Useful when running same test against
 # different chips to differentiate them by their name in JUnit output.
 if (NOT DEFINED CTEST_PREFIX)
@@ -71,9 +75,7 @@ endif()
 #                                                                         #
 # This section will automatically configure CTest for launching tests     #
 # defined in libtropic. Do NOT hardcode any test definitions here.        #
-# Define them in libtropic.                                               #
-#                                                                         #
-# To build functional tests, use -DLT_BUILD_TESTS=1 in cmake invocation.  #
+# Define them in common CMakeLists.txt for functional tests.              #
 #                                                                         #
 ###########################################################################
 # Enable CTest.
@@ -91,8 +93,9 @@ foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
     add_executable(${exe_name} ${SOURCES})
     target_link_libraries(${exe_name} PRIVATE libtropic_functional_tests)
 
-    # Enable test registry using LT_BUILD_TESTS and choose correct test for the binary.
+    # Choose correct test for the binary.
     target_compile_definitions(${exe_name} PRIVATE ${test_macro})
+    target_compile_definitions(${exe_name} PRIVATE LT_USB_DEVKIT_PATH=\"${LT_USB_DEVKIT_PATH}\")
 
     if(CTEST_PREFIX STREQUAL "")
         set(TEST_NAME_WITH_PREFIX ${test_name})
