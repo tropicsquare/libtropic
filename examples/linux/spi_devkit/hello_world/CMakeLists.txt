@@ -65,8 +65,6 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 
-target_compile_definitions(tropic PUBLIC LT_USE_SH0_PROD0=1) # Temp hack to use sh0 prod keys. This should handled more inteligently using CMake options.
-
 # ------------------------------------------------------------------------
 # External dependencies
 # ------------------------------------------------------------------------
