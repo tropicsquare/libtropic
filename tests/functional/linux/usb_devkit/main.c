@@ -25,14 +25,7 @@ int main(void)
 {
     int ret = 0;
 
-    ////////////////////////////////////////////////////////////////
-    // CRYPTOGRAPHIC FUNCTION PROVIDER INITIALIZATION             //
-    //                                                            //
-    // In production, this would typically be done only once,     //
-    // usually at the start of the application or before          //
-    // the first use of cryptographic functions but no later than //
-    // the first occurrence of any Libtropic function             //
-    ////////////////////////////////////////////////////////////////
+    // CFP initialization
 #if LT_USE_MBEDTLS_V4
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
@@ -41,12 +34,7 @@ int main(void)
     }
 #endif
 
-    ////////////////////////////////////////////////////////////////
-    // HANDLE INITIALIZATION                                      //
-    //                                                            //
-    // Libtropic handle is declared here (on stack) for           //
-    // simplicity. In production, you put it on heap if needed.   //
-    ////////////////////////////////////////////////////////////////
+    // Handle initialization
     lt_handle_t __lt_handle__ = {0};
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
@@ -54,28 +42,13 @@ int main(void)
     __lt_handle__.l3.buff_len = sizeof(l3_buffer);
 #endif
 
-    ////////////////////////////////////////////////////////////////
-    // DEVICE MAPPINGS                                            //
-    //                                                            //
-    // Modify this according to your environment. Usually you     //
-    // have to change at least the dev_path, as it is dynamically //
-    // assigned by the OS (if you have multiple USB serial        //
-    // devices).                                                  //
-    ////////////////////////////////////////////////////////////////
+    // Device mappings
     lt_dev_posix_usb_dongle_t device = {0};
     strcpy(device.dev_path, "/dev/ttyACM0");
     device.baud_rate = 115200;
     __lt_handle__.l2.device = &device;
 
-    ////////////////////////////////////////////////////////////////
-    // CRYPTO ABSTRACTION LAYER CONTEXT                           //
-    //                                                            //
-    // Context for the selected CAL implementation is chosen here //
-    // based on the configuration macro. This is only for         //
-    // convenient switching between different CALs for demo       //
-    // purposes, in production applications you would typically   //
-    // stick to a single CAL.                                     //
-    ////////////////////////////////////////////////////////////////
+    // CAL context (selectable)
 #if LT_USE_TREZOR_CRYPTO
     lt_ctx_trezor_crypto_t
 #elif LT_USE_MBEDTLS_V4
@@ -84,17 +57,9 @@ int main(void)
         crypto_ctx;
     __lt_handle__.l3.crypto_ctx = &crypto_ctx;
 
-    ////////////////////////////////////////////////////////////////
-    // TEST CODE                                                  //
-    ////////////////////////////////////////////////////////////////
+    // Test code (correct test function is selected automatically per binary)
 #include "lt_test_registry.c.inc"
 
-    ////////////////////////////////////////////////////////////////
-    // CRYPTOGRAPHIC FUNCTION PROVIDER DEINITIALIZATION           //
-    //                                                            //
-    // In production, this would be done only once, typically     //
-    // during termination of the application.                     //
-    ////////////////////////////////////////////////////////////////
 #if LT_USE_MBEDTLS_V4
     mbedtls_psa_crypto_free();
 #endif
