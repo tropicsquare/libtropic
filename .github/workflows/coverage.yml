@@ -4,6 +4,7 @@ on:
     branches:
       - 'master'
       - 'develop'
+      - 'ETR01SDK-466-New-example-structure-proposal' # TODO remove after fixing the CI
 
 jobs:
   check_if_enabled:
@@ -40,29 +41,18 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
-          
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in the release." >&2
-            exit 1
-          fi
-
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
-
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential
-            pip install ${{ env.WHEEL_FILE_NAME }}
+            ./tests/functional/model/download_deps.sh
+            ./scripts/tropic01_model/install_linux.sh
+            source ./scripts/tropic01_model/.venv/bin/activate
             pip install gcovr jsonschema
 
       - name: Compile and run functional tests with coverage enabled, export trace
         run: |
-            cd tropic01_model/
+            source ./scripts/tropic01_model/.venv/bin/activate
+            cd tests/functional/model/
             cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DLT_TEST_COVERAGE=1
             cd build/
             ninja
@@ -73,6 +63,7 @@ jobs:
 
       - name: Compile and run functional mock tests with coverage enabled, export trace
         run: |
+          source ./scripts/tropic01_model/.venv/bin/activate
           cd tests/functional_mock
           mkdir -p build
           cd build
@@ -85,7 +76,8 @@ jobs:
 
       - name: Merge coverage and generate markdown report
         run: |
-          gcovr --json-add-tracefile tropic01_model/coverage_trace.json --json-add-tracefile tests/functional_mock/coverage_trace.json --markdown coverage_report.md
+          source ./scripts/tropic01_model/.venv/bin/activate
+          gcovr --json-add-tracefile tests/functional/model/coverage_trace.json --json-add-tracefile tests/functional_mock/coverage_trace.json --markdown coverage_report.md
 
       - name: Post or update PR comment
         uses: actions/github-script@v7
