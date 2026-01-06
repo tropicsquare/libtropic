@@ -31,10 +31,11 @@ jobs:
             ./tests/functional/model/download_deps.sh
             ./scripts/tropic01_model/install_linux.sh
             source ./scripts/tropic01_model/.venv/bin/activate
-            pip install jsonschema pyaml
+            pip install jsonschema
 
       - name: Compile libtropic with tests and AddressSanitizer
         run: |
+            source ./scripts/tropic01_model/.venv/bin/activate
             cd tests/functional/model/
             cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
             cd build/
@@ -42,6 +43,7 @@ jobs:
 
       - name: Execute tests with CTest
         run: |
+            source ./scripts/tropic01_model/.venv/bin/activate
             cd tests/functional/model/build
             ctest -V
       
@@ -72,10 +74,11 @@ jobs:
             ./tests/functional/model/download_deps.sh
             ./scripts/tropic01_model/install_linux.sh
             source ./scripts/tropic01_model/.venv/bin/activate
-            pip install jsonschema pyaml
+            pip install jsonschema
 
       - name: Compile libtropic with tests and Valgrind
         run: |
+            source ./scripts/tropic01_model/.venv/bin/activate
             cd tests/functional/model/
             cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
             cd build/
@@ -83,6 +86,7 @@ jobs:
 
       - name: Execute tests with CTest
         run: |
+            source ./scripts/tropic01_model/.venv/bin/activate
             cd tests/functional/model/build
             ctest -V
       
