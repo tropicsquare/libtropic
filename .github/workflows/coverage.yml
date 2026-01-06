@@ -58,8 +58,7 @@ jobs:
             ninja
             ctest -V
 
-            cd ..
-            gcovr --json coverage_trace.json --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*|\.\./hal/.*|\.\./cal/.*'
+            gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../../..
 
       - name: Compile and run functional mock tests with coverage enabled, export trace
         run: |
@@ -71,13 +70,12 @@ jobs:
           ninja
           ctest -V
 
-          cd ..
-          gcovr --json coverage_trace.json --exclude 'build/_deps/.*|\.\./tests/.*|\.\./vendor/.*|\.\./\.\./hal/.*|\.\./\.\./cal/.*'
+          gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../..
 
       - name: Merge coverage and generate markdown report
         run: |
           source ./scripts/tropic01_model/.venv/bin/activate
-          gcovr --json-add-tracefile tests/functional/model/coverage_trace.json --json-add-tracefile tests/functional_mock/coverage_trace.json --markdown coverage_report.md
+          gcovr --json-add-tracefile tests/functional_mock/build/coverage_trace.json --json-add-tracefile tests/functional/model/build/coverage_trace.json --markdown coverage_report.md
 
       - name: Post or update PR comment
         uses: actions/github-script@v7
