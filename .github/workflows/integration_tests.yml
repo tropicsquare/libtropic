@@ -24,36 +24,24 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
-          
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in the release." >&2
-            exit 1
-          fi
-
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
-
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential
-            pip install ${{ env.WHEEL_FILE_NAME }}
+            ./tests/functional/model/download_deps.sh
+            ./scripts/tropic01_model/install_linux.sh
+            source ./scripts/tropic01_model/.venv/bin/activate
             pip install jsonschema
 
       - name: Compile libtropic with tests and AddressSanitizer
         run: |
-            cd tropic01_model/
-            cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
+            cd tests/functional/model/
+            cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
             cd build/
             ninja
 
       - name: Execute tests with CTest
         run: |
-            cd tropic01_model/build/
+            cd tests/functional/model/build
             ctest -V
       
       - name: Upload run logs
@@ -61,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: asan_run_logs
-          path: tropic01_model/build/run_logs/
+          path: tests/functional/model/build/run_logs
 
   tests_valgrind:
     name: Run tests with Valgrind
@@ -77,36 +65,24 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
-          
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in the release." >&2
-            exit 1
-          fi
-
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
-
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential valgrind
-            pip install ${{ env.WHEEL_FILE_NAME }}
+            ./tests/functional/model/download_deps.sh
+            ./scripts/tropic01_model/install_linux.sh
+            source ./scripts/tropic01_model/.venv/bin/activate
             pip install jsonschema
 
       - name: Compile libtropic with tests and Valgrind
         run: |
-            cd tropic01_model/
-            cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DLT_BUILD_TESTS=1 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
+            cd tests/functional/model/
+            cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
             cd build/
             ninja
 
       - name: Execute tests with CTest
         run: |
-            cd tropic01_model/build/
+            cd tests/functional/model/build
             ctest -V
       
       - name: Upload run logs
@@ -114,4 +90,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: valgrind_run_logs
-          path: tropic01_model/build/run_logs/
+          path: tests/functional/model/build/run_logs
