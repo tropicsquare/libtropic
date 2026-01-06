@@ -7,17 +7,16 @@
 
 #include <arpa/inet.h>
 #include <errno.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_port_posix_tcp.h"
-
 #include "libtropic_mbedtls_v4.h"
+#include "libtropic_port_posix_tcp.h"
 #include "psa/crypto.h"
 
 // @brief Message to send with Ping L3 command.
@@ -36,20 +35,20 @@ int main(void)
     printf("======================================\n");
 
     // Cryptographic function provider initialization.
-    //                                                           
-    // In production, this would typically be done only once,    
-    // usually at the start of the application or before         
+    //
+    // In production, this would typically be done only once,
+    // usually at the start of the application or before
     // the first use of cryptographic functions but no later than
-    // the first occurrence of any Libtropic function            
+    // the first occurrence of any Libtropic function
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
         fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)\n", status);
         return -1;
     }
-                              
+
     // Libtropic handle.
     //
-    // It is declared here (on stack) for        
+    // It is declared here (on stack) for
     // simplicity. In production, you put it on heap if needed.
     lt_handle_t lt_handle = {0};
 
@@ -58,7 +57,7 @@ int main(void)
     device.addr = inet_addr("127.0.0.1");
     device.port = 28992;
     lt_handle.l2.device = &device;
-       
+
     // Generate seed for the PRNG and seed it.
     // Note: model uses rand(), which is not cryptographically secure. Better alternative should be used in production.
     unsigned int prng_seed;
@@ -95,11 +94,14 @@ int main(void)
     printf("OK\n");
 
     printf("Starting Secure Session with key slot %d...", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
-    ret = lt_verify_chip_and_start_secure_session(&lt_handle, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(&lt_handle, LT_EX_SH0_PRIV, LT_EX_SH0_PUB,
+                                                  TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to start Secure Session with key %d, ret=%s\n", (int)TR01_PAIRING_KEY_SLOT_INDEX_0,
-                     lt_ret_verbose(ret));
-        fprintf(stderr, "Check if you use correct SH0 keys! Hint: if you use an engineering sample chip, compile with -DLT_SH0_KEYS=eng_sample\n");
+                lt_ret_verbose(ret));
+        fprintf(stderr,
+                "Check if you use correct SH0 keys! Hint: if you use an engineering sample chip, compile with "
+                "-DLT_SH0_KEYS=eng_sample\n");
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -137,11 +139,11 @@ int main(void)
         return -1;
     }
     printf("OK\n");
-    
+
     // Cryptographic function provider deinitialization.
-    //                                                           
-    // In production, this would be done only once, typically     
-    // during termination of the application.                     
+    //
+    // In production, this would be done only once, typically
+    // during termination of the application.
     mbedtls_psa_crypto_free();
 
     return 0;
