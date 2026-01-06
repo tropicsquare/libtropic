@@ -83,12 +83,6 @@ add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 # Customize libtropic's compilation
 target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 
-if(LT_ASAN)
-    message(STATUS "AddressSanitizer (ASan) is enabled for the entire project.")
-    add_compile_options(${LT_ASAN_COMPILE_FLAGS})
-    add_link_options(${LT_ASAN_LINK_FLAGS})
-endif()
-
 if(LT_STRICT_COMPILATION)
     message(STATUS "Enabling strict compilation flags.")
     # Enable strict compile flags for Libtropic library
@@ -304,3 +298,10 @@ target_compile_definitions(libtropic_functional_tests PUBLIC
     LT_USE_TREZOR_CRYPTO=${LT_USE_TREZOR_CRYPTO}
     LT_USE_MBEDTLS_V4=${LT_USE_MBEDTLS_V4}
 )
+
+# Turn on ASAN for entire project
+if(LT_ASAN)
+    message(STATUS "AddressSanitizer (ASan) is enabled for the entire project.")
+    add_compile_options(${LT_ASAN_COMPILE_FLAGS})
+    add_link_options(${LT_ASAN_LINK_FLAGS})
+endif()
