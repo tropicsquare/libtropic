@@ -4,7 +4,6 @@ on:
     branches:
       - 'master'
       - 'develop'
-      - 'ETR01SDK-466-New-example-structure-proposal' # TODO remove after fixing the CI
 
 jobs:
   check_if_enabled:
