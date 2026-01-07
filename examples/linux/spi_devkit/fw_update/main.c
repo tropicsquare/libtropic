@@ -5,21 +5,20 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
-#include "libtropic.h"
-#include "libtropic_common.h"
-#include "libtropic_port_linux_spi.h"
 #include "fw_CPU.h"
 #include "fw_SPECT.h"
-
+#include "libtropic.h"
+#include "libtropic_common.h"
 #include "libtropic_mbedtls_v4.h"
+#include "libtropic_port_linux_spi.h"
 #include "psa/crypto.h"
 
-int get_fw_versions(lt_handle_t *lt_handle) {
-    
+int get_fw_versions(lt_handle_t *lt_handle)
+{
     uint8_t cpu_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
     uint8_t spect_fw_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE] = {0};
 
@@ -48,22 +47,22 @@ int main(void)
     printf("==========================================\n");
     printf("==== TROPIC01 Firmware Update Example ====\n");
     printf("==========================================\n");
-    
+
     // Cryptographic function provider initialization.
-    //                                                           
-    // In production, this would typically be done only once,    
-    // usually at the start of the application or before         
+    //
+    // In production, this would typically be done only once,
+    // usually at the start of the application or before
     // the first use of cryptographic functions but no later than
-    // the first occurrence of any Libtropic function            
+    // the first occurrence of any Libtropic function
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
         fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)\n", status);
         return -1;
     }
-                              
+
     // Libtropic handle.
     //
-    // It is declared here (on stack) for        
+    // It is declared here (on stack) for
     // simplicity. In production, you put it on heap if needed.
     lt_handle_t lt_handle = {0};
 #if LT_SEPARATE_L3_BUFF
@@ -71,21 +70,24 @@ int main(void)
     lt_handle.l3.buff = l3_buffer;
     lt_handle.l3.buff_len = sizeof(l3_buffer);
 #endif
-         
+
     // Device structure.
     //
     // Modify this according to your environment. Default values
-    // are compatible with RPi and our RPi shield.              
+    // are compatible with RPi and our RPi shield.
     lt_dev_linux_spi_t device = {0};
-    strcpy(device.gpio_dev, LT_SPI_DEVKIT_GPIO_PATH); // LT_SPI_DEVKIT_GPIO_PATH is defined in CMakeLists.txt. Pass -DLT_SPI_DEVKIT_GPIO_PATH=<path> to cmake if you want to change it.
-    strcpy(device.spi_dev, LT_SPI_DEVKIT_SPI_PATH); // LT_SPI_DEVKIT_SPI_PATH is defined in CMakeLists.txt. Pass -DLT_SPI_DEVKIT_SPI_PATH=<path> to cmake if you want to change it.
-    device.spi_speed = 5000000;  // 5 MHz (change if needed).
-    device.gpio_cs_num = 25;     // GPIO 25 as on RPi shield.
+    strcpy(device.gpio_dev,
+           LT_SPI_DEVKIT_GPIO_PATH);  // LT_SPI_DEVKIT_GPIO_PATH is defined in CMakeLists.txt. Pass
+                                      // -DLT_SPI_DEVKIT_GPIO_PATH=<path> to cmake if you want to change it.
+    strcpy(device.spi_dev,
+           LT_SPI_DEVKIT_SPI_PATH);  // LT_SPI_DEVKIT_SPI_PATH is defined in CMakeLists.txt. Pass
+                                     // -DLT_SPI_DEVKIT_SPI_PATH=<path> to cmake if you want to change it.
+    device.spi_speed = 5000000;      // 5 MHz (change if needed).
+    device.gpio_cs_num = 25;         // GPIO 25 as on RPi shield.
 #if LT_USE_INT_PIN
     device.gpio_int_num = 5;  // GPIO 5 as on RPi shield.
 #endif
     lt_handle.l2.device = &device;
-
 
     // Crypto abstraction layer (CAL) context.
     lt_ctx_mbedtls_v4_t crypto_ctx;
@@ -113,7 +115,7 @@ int main(void)
     }
     printf("OK\n");
 
-    if(get_fw_versions(&lt_handle) != LT_OK) {
+    if (get_fw_versions(&lt_handle) != LT_OK) {
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -132,7 +134,6 @@ int main(void)
         return 0;
     }
     printf("\nStarting firmware update...\n");
-
 
     // The chip must be in Start-up Mode to be able to perform a firmware update.
     printf("- Sending maintenance reboot request...");
@@ -198,7 +199,7 @@ int main(void)
     }
     printf("OK!\nTROPIC01 is executing Application FW now\n");
 
-    if(get_fw_versions(&lt_handle) != LT_OK) {
+    if (get_fw_versions(&lt_handle) != LT_OK) {
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -212,11 +213,11 @@ int main(void)
         return -1;
     }
     printf("OK\n");
-    
+
     // Cryptographic function provider deinitialization.
-    //                                                           
-    // In production, this would be done only once, typically     
-    // during termination of the application.                     
+    //
+    // In production, this would be done only once, typically
+    // during termination of the application.
     mbedtls_psa_crypto_free();
 
     return 0;

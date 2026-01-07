@@ -5,15 +5,14 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_port_posix_usb_dongle.h"
-
 #include "libtropic_mbedtls_v4.h"
+#include "libtropic_port_posix_usb_dongle.h"
 #include "psa/crypto.h"
 
 int main(void)
@@ -23,20 +22,20 @@ int main(void)
     printf("==============================================\n");
 
     // Cryptographic function provider initialization.
-    //                                                           
-    // In production, this would typically be done only once,    
-    // usually at the start of the application or before         
+    //
+    // In production, this would typically be done only once,
+    // usually at the start of the application or before
     // the first use of cryptographic functions but no later than
-    // the first occurrence of any Libtropic function            
+    // the first occurrence of any Libtropic function
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
         fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)\n", status);
         return -1;
     }
-                              
+
     // Libtropic handle.
     //
-    // It is declared here (on stack) for        
+    // It is declared here (on stack) for
     // simplicity. In production, you put it on heap if needed.
     lt_handle_t lt_handle = {0};
 #if LT_SEPARATE_L3_BUFF
@@ -44,16 +43,16 @@ int main(void)
     lt_handle.l3.buff = l3_buffer;
     lt_handle.l3.buff_len = sizeof(l3_buffer);
 #endif
-         
+
     // Device structure.
     //
     // Modify this according to your environment. Default values
-    // are compatible with RPi and our RPi shield.              
+    // are compatible with RPi and our RPi shield.
     lt_dev_posix_usb_dongle_t device = {0};
-    strcpy(device.dev_path, LT_USB_DEVKIT_PATH); // LT_USB_DEVKIT_PATH is defined in CMakeLists.txt. Pass -DLT_USB_DEVKIT_PATH=<path> to cmake if you want to change it.
+    strcpy(device.dev_path, LT_USB_DEVKIT_PATH);  // LT_USB_DEVKIT_PATH is defined in CMakeLists.txt. Pass
+                                                  // -DLT_USB_DEVKIT_PATH=<path> to cmake if you want to change it.
     device.baud_rate = 115200;
     lt_handle.l2.device = &device;
-
 
     // Crypto abstraction layer (CAL) context.
     lt_ctx_mbedtls_v4_t crypto_ctx;
@@ -91,8 +90,8 @@ int main(void)
         mbedtls_psa_crypto_free();
         return -1;
     }
-    printf("  RISC-V FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3], fw_ver[2],
-                fw_ver[1], fw_ver[0]);
+    printf("  RISC-V FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3], fw_ver[2], fw_ver[1],
+           fw_ver[0]);
 
     ret = lt_get_info_spect_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
@@ -101,8 +100,8 @@ int main(void)
         mbedtls_psa_crypto_free();
         return -1;
     }
-    printf("  SPECT FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3], fw_ver[2],
-                fw_ver[1], fw_ver[0]);
+    printf("  SPECT FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3], fw_ver[2], fw_ver[1],
+           fw_ver[0]);
 
     // We need to do the maintenance reboot to check bootloader version and FW bank headers in the Startup Mode.
     printf("Sending maintenance reboot request...");
@@ -125,8 +124,8 @@ int main(void)
         mbedtls_psa_crypto_free();
         return -1;
     }
-    printf("  RISC-V bootloader version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3] & 0x7f,
-                fw_ver[2], fw_ver[1], fw_ver[0]);
+    printf("  RISC-V bootloader version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3] & 0x7f, fw_ver[2],
+           fw_ver[1], fw_ver[0]);
 
     printf("Firmware bank headers:\n");
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW1, printf);
@@ -168,7 +167,7 @@ int main(void)
         mbedtls_psa_crypto_free();
         return -1;
     }
-    
+
     printf("---------------------------------------------------------\n");
     ret = lt_print_chip_id(&chip_id, printf);
     if (ret != LT_OK) {
@@ -197,11 +196,11 @@ int main(void)
         return -1;
     }
     printf("OK\n");
-    
+
     // Cryptographic function provider deinitialization.
-    //                                                           
-    // In production, this would be done only once, typically     
-    // during termination of the application.                     
+    //
+    // In production, this would be done only once, typically
+    // during termination of the application.
     mbedtls_psa_crypto_free();
 
     return 0;

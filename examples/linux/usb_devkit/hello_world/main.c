@@ -5,15 +5,14 @@
  * @license For the license see file LICENSE.txt file in the root directory of this source tree.
  */
 
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 #include "libtropic.h"
 #include "libtropic_common.h"
-#include "libtropic_port_posix_usb_dongle.h"
-
 #include "libtropic_mbedtls_v4.h"
+#include "libtropic_port_posix_usb_dongle.h"
 #include "psa/crypto.h"
 
 // @brief Message to send with Ping L3 command.
@@ -37,20 +36,20 @@ int main(void)
     printf("======================================\n");
 
     // Cryptographic function provider initialization.
-    //                                                           
-    // In production, this would typically be done only once,    
-    // usually at the start of the application or before         
+    //
+    // In production, this would typically be done only once,
+    // usually at the start of the application or before
     // the first use of cryptographic functions but no later than
-    // the first occurrence of any Libtropic function            
+    // the first occurrence of any Libtropic function
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
         fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)\n", status);
         return -1;
     }
-                              
+
     // Libtropic handle.
     //
-    // It is declared here (on stack) for        
+    // It is declared here (on stack) for
     // simplicity. In production, you put it on heap if needed.
     lt_handle_t lt_handle = {0};
 #if LT_SEPARATE_L3_BUFF
@@ -58,16 +57,16 @@ int main(void)
     lt_handle.l3.buff = l3_buffer;
     lt_handle.l3.buff_len = sizeof(l3_buffer);
 #endif
-         
+
     // Device structure.
     //
     // Modify this according to your environment. Default values
-    // are compatible with RPi and our RPi shield.              
+    // are compatible with RPi and our RPi shield.
     lt_dev_posix_usb_dongle_t device = {0};
-    strcpy(device.dev_path, LT_USB_DEVKIT_PATH); // LT_USB_DEVKIT_PATH is defined in CMakeLists.txt. Pass -DLT_USB_DEVKIT_PATH=<path> to cmake if you want to change it.
+    strcpy(device.dev_path, LT_USB_DEVKIT_PATH);  // LT_USB_DEVKIT_PATH is defined in CMakeLists.txt. Pass
+                                                  // -DLT_USB_DEVKIT_PATH=<path> to cmake if you want to change it.
     device.baud_rate = 115200;
     lt_handle.l2.device = &device;
-
 
     // Crypto abstraction layer (CAL) context.
     lt_ctx_mbedtls_v4_t crypto_ctx;
@@ -96,11 +95,14 @@ int main(void)
 
     printf("Starting Secure Session with key slot %d...", (int)TR01_PAIRING_KEY_SLOT_INDEX_0);
     // Keys are chosen based on the CMake option LT_SH0_KEYS.
-    ret = lt_verify_chip_and_start_secure_session(&lt_handle, LT_EX_SH0_PRIV, LT_EX_SH0_PUB, TR01_PAIRING_KEY_SLOT_INDEX_0);
+    ret = lt_verify_chip_and_start_secure_session(&lt_handle, LT_EX_SH0_PRIV, LT_EX_SH0_PUB,
+                                                  TR01_PAIRING_KEY_SLOT_INDEX_0);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to start Secure Session with key %d, ret=%s\n", (int)TR01_PAIRING_KEY_SLOT_INDEX_0,
-                     lt_ret_verbose(ret));
-        fprintf(stderr, "Check if you use correct SH0 keys! Hint: if you use an engineering sample chip, compile with -DLT_SH0_KEYS=eng_sample\n");
+                lt_ret_verbose(ret));
+        fprintf(stderr,
+                "Check if you use correct SH0 keys! Hint: if you use an engineering sample chip, compile with "
+                "-DLT_SH0_KEYS=eng_sample\n");
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -138,11 +140,11 @@ int main(void)
         return -1;
     }
     printf("OK\n");
-    
+
     // Cryptographic function provider deinitialization.
-    //                                                           
-    // In production, this would be done only once, typically     
-    // during termination of the application.                     
+    //
+    // In production, this would be done only once, typically
+    // during termination of the application.
     mbedtls_psa_crypto_free();
 
     return 0;
