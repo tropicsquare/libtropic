@@ -12,7 +12,7 @@ on:
 
 jobs:
   examples_asan:
-    name: Compile and run examples for TROPIC01 model
+    name: Compile and run examples for TROPIC01 model with Valgrind
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -44,10 +44,11 @@ jobs:
               -e ./libtropic_hello_world \
               -c ../../../../scripts/tropic01_model/model_cfg.yml \
               -o run_logs/
+              --use-valgrind
       
       - name: Upload run logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: asan_run_logs
-          path: tropic01_model/build/run_logs/
+          path: examples/model/hello_world/build/run_logs/
