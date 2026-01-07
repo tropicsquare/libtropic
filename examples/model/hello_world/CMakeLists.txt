@@ -18,7 +18,7 @@ set(PATH_LIBTROPIC ../../../)
 #                                                                         #
 ###########################################################################
 if(NOT UNIX)
-    message(FATAL_ERROR "Model is compatible with UNIX-like systems only for the moment.")
+    message(FATAL_ERROR "Model is currently compatible with UNIX-like systems only.")
 endif()
 
 ###########################################################################
