@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21.0)
-cmake_policy(SET CMP0152 OLD)
+cmake_policy(SET CMP0152 OLD) # Path resolution policy
 
 ###########################################################################
 #                                                                         #
@@ -39,13 +39,13 @@ if (NOT DEFINED CTEST_PREFIX)
     set(CTEST_PREFIX "")
 endif()
 
-# LT_VALGRIND - as Valgrind does not have to be compiled/linked together with libtropic as ASAN, this switch does not do anything if not using the model.
-# If using the model, the model's test runner script uses it to execute the test binaries with Valgrind (but only when using CTest).
+# This option will pass --use-valgrind to the model's test runner script 
+# which will execute the test binaries with Valgrind.
 option(LT_VALGRIND "Enable Valgrind" OFF)
 
 set(VALGRIND_ARG "")
 if(LT_VALGRIND)
-    message(STATUS "Tests will be run with Valgrind (only when using CTest!).")
+    message(STATUS "Tests will be run with Valgrind.")
     set(VALGRIND_ARG --use-valgrind)
 endif()
 
@@ -58,7 +58,7 @@ set(RUN_LOGS_DIR "${CMAKE_CURRENT_BINARY_DIR}/run_logs/" CACHE STRING "Path to l
 #                                                                         #
 ###########################################################################
 
-# Add path to libtropic's repository root folder
+# Add path to Libtropic repository root directory.
 add_subdirectory(${PATH_FN_TESTS} "libtropic_functional_tests")
 
 ###########################################################################
@@ -68,7 +68,7 @@ add_subdirectory(${PATH_FN_TESTS} "libtropic_functional_tests")
 #                                                                         #
 ###########################################################################
 
-# Add POSIX USB dongle HAL
+# Add POSIX TCP HAL for communication with the model.
 add_subdirectory("${PATH_LIBTROPIC}/hal/posix/tcp" "posix_tcp_hal")
 target_sources(tropic PRIVATE ${LT_HAL_SRCS})
 target_include_directories(tropic PUBLIC ${LT_HAL_INC_DIRS})
@@ -77,7 +77,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/main.c
 )
 
-# Enable strict compile flags for main.c and Libtropic HAL sources
+# Enable strict compile flags for main.c and Libtropic HAL sources.
 if(LT_STRICT_COMPILATION)
     set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/main.c ${LT_HAL_SRCS} PROPERTIES COMPILE_OPTIONS "${LT_STRICT_COMPILATION_FLAGS}")   
 endif()
@@ -87,14 +87,14 @@ endif()
 # FUNCTIONAL TESTS CONFIGURATION                                          #
 #                                                                         #
 # This section will automatically configure CTest for launching tests     #
-# defined in libtropic. Do NOT hardcode any test definitions here.        #
+# defined in Libtropic. Do NOT hardcode any test definitions here.        #
 # Define them in common CMakeLists.txt for functional tests.              #
 #                                                                         #
 ###########################################################################
 # Enable CTest.
 enable_testing()
 
-# Remove tests we don't want to run against model
+# Remove tests we don't want to run against model.
 list(REMOVE_ITEM LIBTROPIC_TEST_LIST
     lt_test_rev_startup_req
     lt_test_rev_get_info_req_bootloader
@@ -102,7 +102,7 @@ list(REMOVE_ITEM LIBTROPIC_TEST_LIST
     lt_test_rev_get_log_req # This test is not run only because the model returns CHIP_STATUS.START=0 when in Maintenance Mode.
 )
 
-# Loop through tests defined in libtropic and prepare environment.
+# Loop through tests defined in Libtropic and prepare environment.
 foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
     # Create a correct macro from test name.
     string(TOUPPER ${test_name} test_macro)
@@ -123,7 +123,7 @@ foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
         set(TEST_NAME_WITH_PREFIX ${CTEST_PREFIX}_${test_name})
     endif()
 
-    # Define the test command
+    # Define the test command.
     set(TEST_COMMAND
         "python3" "-m" "model_runner"
         "-e" "${CMAKE_CURRENT_BINARY_DIR}/${exe_name}"
@@ -131,7 +131,7 @@ foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
         ${VALGRIND_ARG}
         "-o" "${RUN_LOGS_DIR}"
     )
-    # Convert TEST_COMMAND into a space-separated string
+    # Convert TEST_COMMAND into a space-separated string.
     list(JOIN TEST_COMMAND " " TEST_COMMAND)
 
     # Variable for cleanup command which will remove previous log files from ASAN.
