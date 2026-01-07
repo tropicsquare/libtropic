@@ -41,8 +41,8 @@ jobs:
             cd build/
             ninja
             python3 ../../../../scripts/tropic01_model/model_runner.py \
-              -e ./libtropic_hello_world
-              -c ../../../../scripts/tropic01_model/model_cfg.yml
+              -e ./libtropic_hello_world \
+              -c ../../../../scripts/tropic01_model/model_cfg.yml \
               -o run_logs/
       
       - name: Upload run logs
