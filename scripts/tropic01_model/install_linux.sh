@@ -52,7 +52,6 @@ else
 fi
 
 echo "Activating virtual environment..."
-# shellcheck disable=SC1091
 source "$VENV_DIR/bin/activate"
 
 echo "Upgrading pip, setuptools and wheel in venv..."
