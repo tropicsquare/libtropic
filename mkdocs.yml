@@ -55,6 +55,9 @@ nav:
     - get_started/index.md
     - Tutorials:
       - get_started/tutorials/index.md
+      - Model:
+        - get_started/tutorials/model/index.md
+        - 1. Your First Steps: get_started/tutorials/model/first_steps.md
       - Linux:
         - RPi / Arduino Devkit: get_started/tutorials/linux/arduino_rpi_shield.md
         - USB Devkit: get_started/tutorials/linux/usb_devkit.md
@@ -92,9 +95,7 @@ nav:
   - FAQ: faq.md
   - Other:
     - other/index.md
-    - TROPIC01 Model:
-      - other/tropic01_model/index.md
-      - Provisioning Data: other/tropic01_model/provisioning_data.md
+    - Provisioning Data: other/provisioning_data.md
     - Supported Host Platforms:
       - other/supported_host_platforms/index.md
       - STM32: other/supported_host_platforms/stm32.md
