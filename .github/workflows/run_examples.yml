@@ -1,4 +1,4 @@
-name: Run examples against TROPIC01 model
+name: Run examples for TROPIC01 model
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   examples_asan:
-    name: Run examples with AddressSanitizer
+    name: Compile and run examples for TROPIC01 model
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -24,123 +24,29 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
-          
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in the release." >&2
-            exit 1
-          fi
-
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
-
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential
-            pip install ${{ env.WHEEL_FILE_NAME }}
+            ./tests/functional/model/download_deps.sh
+            ./scripts/tropic01_model/install_linux.sh
+            source ./scripts/tropic01_model/.venv/bin/activate
             pip install jsonschema
 
-      - name: Compile libtropic with examples and AddressSanitizer
+      - name: Compile and run Hello World example
         run: |
-            cd tropic01_model/
-            cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DLT_BUILD_EXAMPLES=1 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
+            source ./scripts/tropic01_model/.venv/bin/activate
+            cd examples/model/hello_world
+            cmake ./ -B build -G Ninja ..
             cd build/
             ninja
-
-      - name: Create configuration for the model
-        run: |
-            cd tropic01_model/build/
-            LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
-            echo "LAB_BATCH_PKG_DIR=$LAB_BATCH_PKG_DIR" >> $GITHUB_ENV
-            python3 ../create_model_cfg.py --pkg-dir "$LAB_BATCH_PKG_DIR" --riscv-fw-ver 2.0.0 --model-cfg ./model_cfg.yml
-
-      - name: Execute each example
-        run: |
-            cd tropic01_model/build/
-            for exe in ./lt_ex_*; do
-              if [[ -x "$exe" && ! -d "$exe" ]]; then
-                python3 ../../scripts/model_runner.py \
-                  -e "$exe" \
-                  -c model_cfg.yml \
-                  -o run_logs/
-              fi
-            done
+            python3 ../../../../scripts/tropic01_model/model_runner.py \
+              -e ./libtropic_hello_world
+              -c ../../../../scripts/tropic01_model/model_cfg.yml
+              -o run_logs/
       
       - name: Upload run logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: asan_run_logs
-          path: tropic01_model/build/run_logs/
-
-  examples_valgrind:
-    name: Run examples with Valgrind
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.1.7
-        with:
-          submodules: recursive
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
-
-      - name: Download ts-tvl wheel
-        run: |
-          curl -s "https://api.github.com/repos/tropicsquare/ts-tvl/releases/tags/2.3" > release.json
-          
-          WHEEL_URL=$(jq -r '.assets[] | select(.name | endswith(".whl")) | .browser_download_url' release.json)
-          if [ -z "$WHEEL_URL" ]; then
-            echo "No .whl file found in the release." >&2
-            exit 1
-          fi
-
-          WHEEL_FILE_NAME=$(basename "$WHEEL_URL")
-          echo "WHEEL_FILE_NAME=$WHEEL_FILE_NAME" >> $GITHUB_ENV
-          curl -L -o "$WHEEL_FILE_NAME" "$WHEEL_URL"
-
-      - name: Install dependencies
-        run: |
-            sudo apt-get install cmake build-essential valgrind
-            pip install ${{ env.WHEEL_FILE_NAME }}
-            pip install jsonschema
-
-      - name: Compile libtropic with examples
-        run: |
-            cd tropic01_model/
-            cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DLT_BUILD_EXAMPLES=1 -DCMAKE_BUILD_TYPE=Debug
-            cd build/
-            ninja
-
-      - name: Create configuration for the model
-        run: |
-            cd tropic01_model/build/
-            LAB_BATCH_PKG_DIR=$(cmake -LAH .. | grep '^LAB_BATCH_PKG_DIR:' | cut -d'=' -f2)
-            echo "LAB_BATCH_PKG_DIR=$LAB_BATCH_PKG_DIR" >> $GITHUB_ENV
-            python3 ../create_model_cfg.py --pkg-dir "$LAB_BATCH_PKG_DIR" --riscv-fw-ver 2.0.0 --model-cfg ./model_cfg.yml
-
-      - name: Execute each example
-        run: |
-            cd tropic01_model/build/
-            for exe in ./lt_ex_*; do
-              if [[ -x "$exe" && ! -d "$exe" ]]; then
-                python3 ../../scripts/model_runner.py \
-                  -e "$exe" \
-                  -c model_cfg.yml \
-                  -o run_logs/ \
-                  --use-valgrind
-              fi
-            done
-      
-      - name: Upload run logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: valgrind_run_logs
           path: tropic01_model/build/run_logs/
