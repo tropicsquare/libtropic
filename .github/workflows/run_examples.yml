@@ -43,7 +43,7 @@ jobs:
             python3 ../../../../scripts/tropic01_model/model_runner.py \
               -e ./libtropic_hello_world \
               -c ../../../../scripts/tropic01_model/model_cfg.yml \
-              -o run_logs/
+              -o run_logs/ \
               --use-valgrind
       
       - name: Upload run logs
