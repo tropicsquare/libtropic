@@ -50,5 +50,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: asan_run_logs
+          name: valgrind_run_logs
           path: examples/model/hello_world/build/run_logs/
