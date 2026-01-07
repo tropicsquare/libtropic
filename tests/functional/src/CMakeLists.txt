@@ -238,7 +238,7 @@ foreach(test_name ${LIBTROPIC_TEST_LIST})
     string(REPLACE " " "_" test_macro ${test_macro})
     string(APPEND LIBTROPIC_TEST_FUNCTIONS_CONTENT
         "#elif defined(${test_macro})\n"
-        "  ${test_name}(&__lt_handle__);\n"
+        "  ${test_name}(__lt_handle__);\n"
     )
 endforeach()
 
