@@ -38,11 +38,11 @@ int main(void)
 #endif
 
     // Handle initialization
-    lt_handle_t __lt_handle__ = {0};
+    lt_handle_t lt_handle = {0};
 #if LT_SEPARATE_L3_BUFF
     uint8_t l3_buffer[LT_SIZE_OF_L3_BUFF] __attribute__((aligned(16))) = {0};
-    __lt_handle__.l3.buff = l3_buffer;
-    __lt_handle__.l3.buff_len = sizeof(l3_buffer);
+    lt_handle.l3.buff = l3_buffer;
+    lt_handle.l3.buff_len = sizeof(l3_buffer);
 #endif
 
     // Device mappings
@@ -50,7 +50,7 @@ int main(void)
     lt_dev_posix_tcp_t device;
     device.addr = inet_addr("127.0.0.1");
     device.port = 28992;
-    __lt_handle__.l2.device = &device;
+    lt_handle.l2.device = &device;
 
     // CAL context (selectable)
 #if LT_USE_TREZOR_CRYPTO
@@ -59,9 +59,11 @@ int main(void)
     lt_ctx_mbedtls_v4_t
 #endif
         crypto_ctx;
-    __lt_handle__.l3.crypto_ctx = &crypto_ctx;
+    lt_handle.l3.crypto_ctx = &crypto_ctx;
 
     // Test code (correct test function is selected automatically per binary)
+    // __lt_handle__ identifier is used by the test registry.
+    lt_handle_t *__lt_handle__ = &lt_handle;
 #include "lt_test_registry.c.inc"
 
 #if LT_USE_MBEDTLS_V4
