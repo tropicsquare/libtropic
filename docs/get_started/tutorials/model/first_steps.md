@@ -24,7 +24,7 @@ Before proceeding, make sure you have activated the virtual environment you inst
     === ":fontawesome-brands-windows: Windows"
         TBA
 
-Each examples requires a fresh start of the model. You can start and terminate the model as following:
+Each example requires a fresh start of the model. You can start and terminate the model as following:
 
 !!! example "Using the model"
     === ":fontawesome-brands-linux: Linux"
