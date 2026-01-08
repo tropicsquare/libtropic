@@ -46,7 +46,7 @@ See below for instructions based on your OS.
 
 !!! warning "Paths"
     All commands in all tutorials assume running from the repository root, unless
-    they are preceeded with `cd` (or similar) command. If you are running commands from
+    they are preceded with `cd` (or similar) command. If you are running commands from
     elsewhere, make sure to correct paths in arguments.
 
 1. [Your First Steps with Libtropic](./first_steps.md)
