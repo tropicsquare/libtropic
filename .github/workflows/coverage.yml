@@ -42,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            sudo apt-get install cmake build-essential
+            sudo apt-get install cmake build-essential ninja-build
             ./tests/functional/model/download_deps.sh
             ./scripts/tropic01_model/install_linux.sh
             source ./scripts/tropic01_model/.venv/bin/activate
