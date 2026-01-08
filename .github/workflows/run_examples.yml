@@ -36,7 +36,7 @@ jobs:
         run: |
             source ./scripts/tropic01_model/.venv/bin/activate
             cd examples/model/hello_world
-            cmake ./ -B build -G Ninja ..
+            cmake ./ -B build -G Ninja
             cd build/
             ninja
             python3 ../../../../scripts/tropic01_model/model_runner.py \
