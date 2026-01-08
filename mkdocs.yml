@@ -56,10 +56,10 @@ nav:
     - get_started/index.md
     - Tutorials:
       - get_started/tutorials/index.md
-      - Model:
-        - get_started/tutorials/model/index.md
-        - 1. Your First Steps: get_started/tutorials/model/first_steps.md
-        - 2. Understanding Libtropic: get_started/tutorials/model/understanding_libtropic.md
+      - TROPIC01 Model:
+        - get_started/tutorials/tropic01_model/index.md
+        - 1. First Steps with Libtropic: get_started/tutorials/tropic01_model/first_steps_with_libtropic.md
+        - 2. Understanding Libtropic: get_started/tutorials/tropic01_model/understanding_libtropic.md
       - Linux:
         - RPi / Arduino Devkit: get_started/tutorials/linux/arduino_rpi_shield.md
         - USB Devkit: get_started/tutorials/linux/usb_devkit.md
