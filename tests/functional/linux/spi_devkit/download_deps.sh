@@ -8,7 +8,7 @@ rm -rf "$SCRIPT_DIR/_deps"
 mkdir -p "$SCRIPT_DIR/_deps"
 
 echo "Downloading ed25519..."
-git clone https://github.com/orlp/ed25519.git _deps/ed25519
+git clone https://github.com/orlp/ed25519.git "$SCRIPT_DIR/_deps/ed25519"
 
 echo "Downloading Micro ECC..."
 curl -L -o "$SCRIPT_DIR/_deps/micro-ecc.zip" "https://github.com/kmackay/micro-ecc/archive/refs/tags/v1.1.zip"
