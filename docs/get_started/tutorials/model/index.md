@@ -1,37 +1,57 @@
 # TROPIC01 Model Tutorials
 Using TROPIC01 Model is a great way of evaluating the Libtropic SDK on your computer and discovering amazing TROPIC01 functionality without a need of a physical chip!
 
-Currently, we support following desktop platforms:
-
-- :fontawesome-brands-linux: Linux ✅
-- :fontawesome-brands-apple: macOS ❌
-- :fontawesome-brands-windows: Windows ❌
-
-!!! info "macOS and Windows"
-    Support for macOS and Windows is being prepared.
+!!! info "OS Support"
+    Currently we support Linux only. Support for macOS and Windows is being prepared.
 
 This tutorial assumes you are comfortable with using command line.
 
 First, we will prepare your environment by installing dependencies. Then, you can continue with our tutorials.
 
 ## Install Dependencies and Prepare the Repository
-The tutorials with TROPIC01 Model require following dependencies:
+See below for instructions based on your OS.
 
-- Python >3.8
-    - Python 3.8 is preferred, but newer versions may work as well.
-- CMake
-- GCC
+!!! example "Installation instructions"
+    === ":fontawesome-brands-linux: Linux"
+        1. [Install Python](https://www.python.org/downloads/)
+            - You can also use your distribution's package manager.
+                - Fedora: `sudo dnf install python3`
+                - Debian/Ubuntu: `sudo apt update && sudo apt install python3`
+        2. [Install CMake](https://cmake.org/download/)
+            - You can also use your distribution's package manager.
+                - Fedora: `sudo dnf install cmake`
+                - Debian/Ubuntu: `sudo apt update && sudo apt install cmake`
+        3. Install GCC and Make via your distribution's package manager
+            - Some distributions offer complete development environment (including headers), so it's recommended to install this.
+            - Fedora: `sudo dnf group install development-tools`
+            - Debian/Ubuntu: `sudo apt update && sudo apt install build-essential`
+        4. Get the Libtropic repository:
+            - Using git: `git clone https://github.com/tropicsquare/libtropic.git`
+            - Or you can [download latest release](https://github.com/tropicsquare/libtropic/releases/latest).
+        5. Install TROPIC01 Model
+            - Use our install script: `scripts/tropic01_model/install_linux.sh`
+            - The script will create a virtual environment.
+            - Activate the environment: `source scripts/tropic01_model/.venv/bin/activate`
+        6. Install Python dependencies: jinja2 and jsonschema
+            - It's recommended to use virtual environment created in the step 4.
+            - Run: `pip3 install jinja2 jsonschema`
 
-After you had prepared the dependencies, clone the Libtropic repository:
+    === ":fontawesome-brands-apple: macOS"
+        TBA
 
-```shell
-git clone https://github.com/tropicsquare/libtropic.git
-```
-
-Or you can [download latest release](https://github.com/tropicsquare/libtropic/releases/latest).
+    === ":fontawesome-brands-windows: Windows"
+        TBA
 
 ## Start Experimenting with our Tutorials!
+
+!!! warning "Paths"
+    All commands in all tutorials assume running from the repository root, unless
+    they are preceeded with `cd` (or similar) command. If you are running commands from
+    elsewhere, make sure to correct paths in arguments.
+
 1. [Your First Steps with Libtropic](./first_steps.md)
+
+---
 
 ## Details
 This section provides more details about the TROPIC01 model for those interested.
