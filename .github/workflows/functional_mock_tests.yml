@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            sudo apt-get install cmake build-essential
+            sudo apt-get install cmake build-essential ninja-build
             pip install jsonschema jinja2
 
       - name: Compile functional mock tests with AddressSanitizer
@@ -58,7 +58,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-            sudo apt-get install cmake build-essential valgrind
+            sudo apt-get install cmake build-essential valgrind ninja-build
             pip install jsonschema jinja2
 
       - name: Compile functional mock tests with Valgrind
