@@ -1,22 +1,23 @@
-# 1. Your First Steps with Libtropic
+# 1. First Steps with Libtropic
 
-Hello and welcome to Libtropic SDK! In the first tutorial, we will compile our first examples.
+Hello and welcome to Libtropic SDK! In this first tutorial, we will run our first examples.
 
-Before proceeding, make sure you have activated the virtual environment you installed the TROPIC01 Model in:
+Before proceeding, make sure you have activated the virtual environment you [installed](index.md#install-dependencies-and-prepare-the-repository) the TROPIC01 Model in:
 
-!!! example "Activating the virtual environment"
+!!! example "Activating the Virtual Environment"
     === ":fontawesome-brands-linux: Linux"
-        If the virtual environment is activated, you will see "(.venv)" prefix in front of the prompt. For example:
-
-        ```bash
-        (.venv) me@computer:~/libtropic$
-        ```
-
         To activate the environment, run:
 
         ```bash
         source scripts/tropic01_model/.venv/bin/activate
         ```
+
+        !!! info "Is the Virtual Environment Active?"
+            If the virtual environment is activated, you will see '`(.venv)`' prefix in front of the prompt. For example:
+
+            ```bash
+            (.venv) me@computer:~/libtropic$
+            ```
 
     === ":fontawesome-brands-apple: macOS"
         TBA
@@ -24,9 +25,9 @@ Before proceeding, make sure you have activated the virtual environment you inst
     === ":fontawesome-brands-windows: Windows"
         TBA
 
-Each example requires a fresh start of the model. You can start and terminate the model as following:
+You can start and terminate the model as following:
 
-!!! example "Using the model"
+!!! example "Using the TROPIC01 Model"
     === ":fontawesome-brands-linux: Linux"
         Open a new console (or a new tab in your console emulator). Make sure you have the virtual environment activated. Type:
         
@@ -38,6 +39,9 @@ Each example requires a fresh start of the model. You can start and terminate th
         
         To terminate the server, press ++ctrl+c++ in the console.
 
+        !!! warning
+            Make sure you are running exactly one TROPIC01 Model server instance!
+
     === ":fontawesome-brands-apple: macOS"
         TBA
 
@@ -45,16 +49,21 @@ Each example requires a fresh start of the model. You can start and terminate th
         TBA
 
 ## *Hello, World!* Example
-At first, let's see the *Hello, World!* example. You can find this example at `examples/model/hello_world`.
+At first, let's run the *Hello, World!* example. You can find this example in the `examples/model/hello_world/` directory.
 
-!!! example "Compiling and running the example"
+!!! example "Build and Run the Example"
     === ":fontawesome-brands-linux: Linux"
+        Build the example:
         ```bash
         cd examples/model/hello_world
         mkdir build
         cd build
         cmake ..
         make -j
+        ```
+
+        Run the example:
+        ```bash
         ./libtropic_hello_world
         ```
 
@@ -64,7 +73,7 @@ At first, let's see the *Hello, World!* example. You can find this example at `e
     === ":fontawesome-brands-windows: Windows"
         TBA
 
-You should see an output similar to this:
+Now, you should see an output similar to this:
 
 ```
 ======================================
@@ -81,7 +90,7 @@ Aborting Secure Session...OK
 Deinitializing handle...OK
 ```
 
-If you see the output, congratulations! 🎉 You used Libtropic to send a ping with a message to a TROPIC01 Model!
+If you see the output, congratulations! 🎉 You used Libtropic to send a *Ping* command with a message to the TROPIC01 Model!
 
 Continue with the next tutorial, where we discuss the functions used in this example and understand the basics of Libtropic's and TROPIC01's architectures.
 
