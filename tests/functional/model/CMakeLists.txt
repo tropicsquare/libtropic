@@ -158,7 +158,7 @@ foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
     endif()
 
     # Set the final combined environment for the test.
-    set_tests_properties(${test_name} PROPERTIES
+    set_tests_properties(${TEST_NAME_WITH_PREFIX} PROPERTIES
         ENVIRONMENT "${TEST_ENVIRONMENT}"
     )
 endforeach()
