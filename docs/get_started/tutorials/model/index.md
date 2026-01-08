@@ -73,9 +73,9 @@ For convenience, we provide a default model configuration (`scripts/tropic01_mod
 ??? note "Advanced: Generating config from provisioning data"
     We provide both provisioning data and a Python script that can generate configuration for the model from such data. This is useful mainly for internal purposes, we describe it here for reference.
 
-    To create a model configuration that will initialize the model to the state which is almost identical to a provisioned chip, use the `tropic01_model/create_model_cfg.py` script. Run `--help` to see available options and their explanation:
+    To create a model configuration that will initialize the model to the state which is almost identical to a provisioned chip, use the `scripts/tropic01_model/create_model_cfg.py` script. Run `--help` to see available options and their explanation:
     ```shell
-    cd tropic01_model/
+    cd scripts/tropic01_model/
     python3 create_model_cfg.py --help
     ```
     !!! info "The `--pkg-dir` Option"
