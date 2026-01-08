@@ -49,13 +49,13 @@ You can start and terminate the model as following:
         TBA
 
 ## *Hello, World!* Example
-At first, let's run the *Hello, World!* example. You can find this example in the `examples/model/hello_world/` directory.
+At first, let's run the *Hello, World!* example. You can find this example in the `examples/tropic01_model/hello_world/` directory.
 
 !!! example "Build and Run the Example"
     === ":fontawesome-brands-linux: Linux"
         Build the example:
         ```bash
-        cd examples/model/hello_world
+        cd examples/tropic01_model/hello_world
         mkdir build
         cd build
         cmake ..

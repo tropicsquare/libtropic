@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential valgrind ninja-build
-            ./tests/functional/model/download_deps.sh
+            ./tests/functional/tropic01_model/download_deps.sh
             ./scripts/tropic01_model/install_linux.sh
             source ./scripts/tropic01_model/.venv/bin/activate
             pip install jsonschema
@@ -35,7 +35,7 @@ jobs:
       - name: Compile and run Hello World example
         run: |
             source ./scripts/tropic01_model/.venv/bin/activate
-            cd examples/model/hello_world
+            cd examples/tropic01_model/hello_world
             cmake ./ -B build -G Ninja
             cd build/
             ninja
@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: valgrind_run_logs
-          path: examples/model/hello_world/build/run_logs/
+          path: examples/tropic01_model/hello_world/build/run_logs/

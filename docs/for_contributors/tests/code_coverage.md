@@ -22,7 +22,7 @@ ctest -V
 
 After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results:
 ```shell
-# Execute this from the tests/functional/model/build directory!
+# Execute this from the tests/functional/tropic01_model/build directory!
 gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../../..
 ```
 
@@ -49,7 +49,7 @@ Use the following command to merge results and export in text format:
 
 ```shell
 # Execute this from the repository root (or adjust paths accordingly)
-gcovr --json-add-tracefile tests/functional_mock/build/coverage_trace.json --json-add-tracefile tests/functional/model/build/coverage_trace.json --txt coverage.txt
+gcovr --json-add-tracefile tests/functional_mock/build/coverage_trace.json --json-add-tracefile tests/functional/tropic01_model/build/coverage_trace.json --txt coverage.txt
 ```
 
 !!! tip "Tip: Gcovr Output Formats"

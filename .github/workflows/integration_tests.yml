@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential ninja-build
-            ./tests/functional/model/download_deps.sh
+            ./tests/functional/tropic01_model/download_deps.sh
             ./scripts/tropic01_model/install_linux.sh
             source ./scripts/tropic01_model/.venv/bin/activate
             pip install jsonschema
@@ -35,7 +35,7 @@ jobs:
       - name: Compile libtropic with tests and AddressSanitizer
         run: |
             source ./scripts/tropic01_model/.venv/bin/activate
-            cd tests/functional/model/
+            cd tests/functional/tropic01_model/
             cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DCMAKE_BUILD_TYPE=Debug -DLT_ASAN=1
             cd build/
             ninja
@@ -43,7 +43,7 @@ jobs:
       - name: Execute tests with CTest
         run: |
             source ./scripts/tropic01_model/.venv/bin/activate
-            cd tests/functional/model/build
+            cd tests/functional/tropic01_model/build
             ctest -V
       
       - name: Upload run logs
@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: asan_run_logs
-          path: tests/functional/model/build/run_logs
+          path: tests/functional/tropic01_model/build/run_logs
 
   tests_valgrind:
     name: Run tests with Valgrind
@@ -70,7 +70,7 @@ jobs:
       - name: Install dependencies
         run: |
             sudo apt-get install cmake build-essential valgrind ninja-build
-            ./tests/functional/model/download_deps.sh
+            ./tests/functional/tropic01_model/download_deps.sh
             ./scripts/tropic01_model/install_linux.sh
             source ./scripts/tropic01_model/.venv/bin/activate
             pip install jsonschema
@@ -78,7 +78,7 @@ jobs:
       - name: Compile libtropic with tests and Valgrind
         run: |
             source ./scripts/tropic01_model/.venv/bin/activate
-            cd tests/functional/model/
+            cd tests/functional/tropic01_model/
             cmake ./ -B build -G Ninja -DLT_CAL=mbedtls_v4 -DCMAKE_BUILD_TYPE=Debug -DLT_VALGRIND=1
             cd build/
             ninja
@@ -86,7 +86,7 @@ jobs:
       - name: Execute tests with CTest
         run: |
             source ./scripts/tropic01_model/.venv/bin/activate
-            cd tests/functional/model/build
+            cd tests/functional/tropic01_model/build
             ctest -V
       
       - name: Upload run logs
@@ -94,4 +94,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: valgrind_run_logs
-          path: tests/functional/model/build/run_logs
+          path: tests/functional/tropic01_model/build/run_logs
