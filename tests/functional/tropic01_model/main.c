@@ -62,6 +62,20 @@ int main(void)
         crypto_ctx;
     lt_handle.l3.crypto_ctx = &crypto_ctx;
 
+    // Generate seed for the PRNG.
+    unsigned int prng_seed;
+    if (0 != getentropy(&prng_seed, sizeof(prng_seed))) {
+        LT_LOG_ERROR("main: getentropy() failed (%s)!", strerror(errno));
+        return -1;
+    }
+
+    // Seed the PRNG.
+    // Note: We use rand() for random numbers, which is not cryptographically secure, but it is okay here because the
+    // TCP port is targeted for use with the model only. Thanks to this, we can log the used seed and if needed,
+    // reproduce the random tests.
+    srand(prng_seed);
+    LT_LOG_INFO("PRNG initialized with seed=%u\n", prng_seed);
+
     // Test code (correct test function is selected automatically per binary)
     // __lt_handle__ identifier is used by the test registry.
     lt_handle_t *__lt_handle__ = &lt_handle;
