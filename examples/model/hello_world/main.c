@@ -1,4 +1,5 @@
 /**
+ * @file main.c
  * @brief Simple "Hello, World!" example for Libtropic with TROPIC01 model.
  * @author Tropic Square s.r.o.
  *
