@@ -7,7 +7,7 @@ include (FetchContent)
 #                                                                         #
 ###########################################################################
 project(libtropic_hello_world
-        DESCRIPTION "Libtropic Hello World example on model."
+        DESCRIPTION "Libtropic Hello World example on TROPIC01 model."
         LANGUAGES C)
 
 set(PATH_LIBTROPIC ../../../)
@@ -18,7 +18,7 @@ set(PATH_LIBTROPIC ../../../)
 #                                                                         #
 ###########################################################################
 if(NOT UNIX)
-    message(FATAL_ERROR "Model is currently compatible with UNIX-like systems only.")
+    message(FATAL_ERROR "TROPIC01 model is currently compatible with UNIX-like systems only.")
 endif()
 
 ###########################################################################
