@@ -47,6 +47,7 @@ theme:
     - navigation.top
     - navigation.footer
     - search.suggest
+    - content.tabs.link # Allow linking tabs with the same label on a page.
 
 # Navigation menu setup
 nav:
@@ -58,6 +59,7 @@ nav:
       - Model:
         - get_started/tutorials/model/index.md
         - 1. Your First Steps: get_started/tutorials/model/first_steps.md
+        - 2. Understanding Libtropic: get_started/tutorials/model/understanding_libtropic.md
       - Linux:
         - RPi / Arduino Devkit: get_started/tutorials/linux/arduino_rpi_shield.md
         - USB Devkit: get_started/tutorials/linux/usb_devkit.md
@@ -138,6 +140,9 @@ markdown_extensions:
   - pymdownx.inlinehilite  # Inline code highlighting
   - pymdownx.superfences   # Fenced code blocks
   - pymdownx.tasklist      # Checklists
+  - pymdownx.tabbed:       # Tabs. Requires superfences.
+      alternate_style: true
+  - pymdownx.keys          # Allow rendering of keys (Ctrl, ...) to illustrate shortcuts.
 
 extra:
   version:
