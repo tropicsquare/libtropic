@@ -63,7 +63,6 @@ sudo usermod -aG gpio "$USER"
 ```bash
 git clone https://github.com/tropicsquare/libtropic.git
 cd libtropic
-git submodule update --init --recursive
 cd examples/linux/spi_devkit
 ```
 

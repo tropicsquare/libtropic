@@ -44,7 +44,6 @@ sudo usermod -aG dialout "$USER"
 ```bash
 git clone https://github.com/tropicsquare/libtropic.git
 cd libtropic
-git submodule update --init --recursive
 cd examples/linux/usb_devkit
 ```
 
