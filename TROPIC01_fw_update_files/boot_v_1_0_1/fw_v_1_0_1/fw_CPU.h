@@ -1,4 +1,7 @@
 #pragma once
+
+#include <stdint.h>
+
 /**
  * @brief CPU firmware version fw_v1.0.1_signed.bin for bootloader v1.0.1
  */

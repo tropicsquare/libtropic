@@ -1,4 +1,7 @@
 #pragma once
+
+#include <stdint.h>
+
 /**
  * @brief SPECT firmware version spect_app-v1.0.0_signed.bin for bootloader v1.0.1
  */

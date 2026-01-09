@@ -1,4 +1,7 @@
 #pragma once
+
+#include <stdint.h>
+
 /**
  * @brief CPU firmware version fw_v2.0.0.hex32_signed_chunks.bin for bootloader v2.0.1
  */
