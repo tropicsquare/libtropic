@@ -53,6 +53,15 @@ int main(void)
     device.port = 28992;
     lt_handle.l2.device = &device;
 
+    // Generate a seed for the PRNG and seed it.
+    unsigned int prng_seed;
+    if (0 != getentropy(&prng_seed, sizeof(prng_seed))) {
+        LT_LOG_ERROR("main: getentropy() failed (%s)!", strerror(errno));
+        return -1;
+    }
+    srand(prng_seed);
+    LT_LOG_INFO("PRNG initialized with seed=%u\n", prng_seed);
+
     // CAL context (selectable)
 #if LT_USE_TREZOR_CRYPTO
     lt_ctx_trezor_crypto_t
