@@ -108,7 +108,7 @@ int main(void)
     printf("Rebooting TROPIC01...");
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -139,7 +139,7 @@ int main(void)
     printf("- Sending maintenance reboot request...");
     ret = lt_reboot(&lt_handle, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -150,7 +150,7 @@ int main(void)
     printf("  - Updating RISC-V FW...");
     ret = lt_do_mutable_fw_update(&lt_handle, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW1);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nRISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nRISC-V FW update failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -160,7 +160,7 @@ int main(void)
     printf("  - Updating SPECT FW...");
     ret = lt_do_mutable_fw_update(&lt_handle, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT1);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nSPECT FW update failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nSPECT FW update failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -171,7 +171,7 @@ int main(void)
     printf("  - Updating RISC-V FW...");
     ret = lt_do_mutable_fw_update(&lt_handle, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW2);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nRISC-V FW update failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nRISC-V FW update failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -181,7 +181,7 @@ int main(void)
     printf("  - Updating SPECT FW...");
     ret = lt_do_mutable_fw_update(&lt_handle, fw_SPECT, sizeof(fw_SPECT), TR01_FW_BANK_SPECT2);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nSPECT FW update failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nSPECT FW update failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
@@ -192,7 +192,7 @@ int main(void)
     printf("Sending reboot request...");
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
-        fprintf(stderr, "\nlt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
         mbedtls_psa_crypto_free();
         return -1;
