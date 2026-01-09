@@ -79,7 +79,7 @@ For convenience, we provide a default model configuration (`scripts/tropic01_mod
     python3 create_model_cfg.py --help
     ```
     !!! info "The `--pkg-dir` Option"
-        The script expects a path to one of the lab batch packages inside `scripts/tropic01_model/provisioning_data/` - see [Provisioning Data](provisioning_data.md) for more information.
+        The script expects a path to one of the lab batch packages inside `scripts/tropic01_model/provisioning_data/`. See [Provisioning Data](../../../other/provisioning_data.md) for more information.
 
 !!! warning "Using custom pairing keys"   
     If you change the pairing keys in the model's configuration, you will not be able to run our examples without modification, as they use default pairing keys. Each example contains `LT_EX_SH0_PRIV` and `LT_EX_SH0_PUB` at the beginning. Simply modify these constants to use arrays with your own keys to make examples work with custom keys.
