@@ -6,10 +6,10 @@ We first recommend starting with our **TROPIC01 Model**.
 ## A. I want to play with the TROPIC01 Model
 Using TROPIC01 Model is a great way of evaluating the Libtropic SDK on your computer and discovering amazing TROPIC01 functionality without a need of a physical chip!
 
-Continue with [📜 the tutorials](model/index.md).
+Continue with the [TROPIC01 Model Tutorials](model/index.md).
 
 ## B. I want the real deal
-If you have already experimented with our [TROPIC01 Model](model/index.md) and you are ready to try the TROPIC01 chip, go ahead!
+If you have already experimented with our TROPIC01 Model and you are ready to try the TROPIC01 chip, go ahead!
 
 Pick a tutorial based on your host platform and a development kit you want to use:
 

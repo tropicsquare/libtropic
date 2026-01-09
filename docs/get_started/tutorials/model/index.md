@@ -68,7 +68,7 @@ The Libtropic uses the TCP HAL implemented in `hal/posix/tcp/libtropic_port_posi
 
 The TROPIC01 Model can be configured. To configure the model, pass a YAML configuration file to the model — see the [Model Configuration](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration) section in the [TROPIC Verification Library](https://github.com/tropicsquare/ts-tvl).
 
-For convenience, we provide a default model configuration (`scripts/tropic01_model/model_cfg.yml`), suitable for both examples and tests. If you want to modify the configuration, you can take this file as template and then modify the values according to the [documentation](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration). Internally, we generate the configuration from our [provisioning data](../../../other/provisioning_data.md).
+For convenience, we provide a default model configuration (`scripts/tropic01_model/model_cfg.yml`), suitable for both examples and tests. If you want to customize the configuration, you can take this file as template and then modify the values according to the [documentation](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration). Internally, we generate the configuration from our [provisioning data](../../../other/provisioning_data.md).
 
 ??? note "Advanced: Generating config from provisioning data"
     We provide both provisioning data and a Python script that can generate configuration for the model from such data. This is useful mainly for internal purposes, we describe it here for reference.

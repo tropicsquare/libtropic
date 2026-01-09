@@ -6,13 +6,13 @@ Before proceeding, make sure you have activated the virtual environment you inst
 
 !!! example "Activating the virtual environment"
     === ":fontawesome-brands-linux: Linux"
-        If the virtual environment is activated, you will see "(.venv)" prefix in front of the prompt. For example:
+        If the virtual environment is already activated, you will see "(.venv)" prefix in front of the prompt. For example:
 
         ```bash
         (.venv) me@computer:~/libtropic$
         ```
 
-        To activate the environment, run:
+        If you don't see the "(.venv)" prefix, activate the environment:
 
         ```bash
         source scripts/tropic01_model/.venv/bin/activate
@@ -35,6 +35,7 @@ Each example requires a fresh start of the model. You can start and terminate th
         ``` 
 
         This will start a new TROPIC01 Model server. You can inspect the output after running examples if you are interested.
+        Make sure you are running exactly one TROPIC01 Model server instance!
         
         To terminate the server, press ++ctrl+c++ in the console.
 
@@ -47,7 +48,7 @@ Each example requires a fresh start of the model. You can start and terminate th
 ## *Hello, World!* Example
 At first, let's see the *Hello, World!* example. You can find this example at `examples/model/hello_world`.
 
-!!! example "Compiling and running the example"
+!!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         ```bash
         cd examples/model/hello_world
@@ -81,7 +82,7 @@ Aborting Secure Session...OK
 Deinitializing handle...OK
 ```
 
-If you see the output, congratulations! 🎉 You used Libtropic to send a ping with a message to a TROPIC01 Model!
+If you see the output, congratulations! 🎉 You used Libtropic to send a *Ping* command with a message to the TROPIC01 Model!
 
 Continue with the next tutorial, where we discuss the functions used in this example and understand the basics of Libtropic's and TROPIC01's architectures.
 
