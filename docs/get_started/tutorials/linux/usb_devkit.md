@@ -36,6 +36,7 @@ Make sure you have access to a USB UART interface. Usually, your user account ha
 groups
 # If not, add yourself to the dialout group
 sudo usermod -aG dialout "$USER"
+# Log out and log in again to reflect changes.
 ```
 
 ## Clone the Libtropic Repository

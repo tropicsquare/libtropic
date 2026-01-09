@@ -55,6 +55,7 @@ groups
 # Add yourself to each group you are not in
 sudo usermod -aG spi "$USER"
 sudo usermod -aG gpio "$USER"
+# Log out and log in again to reflect changes.
 ```
 
 ## Clone the Libtropic Repository
