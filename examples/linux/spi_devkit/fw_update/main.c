@@ -17,7 +17,7 @@
 #include "libtropic_port_linux_spi.h"
 #include "psa/crypto.h"
 
-int get_fw_versions(lt_handle_t *lt_handle)
+lt_ret_t get_fw_versions(lt_handle_t *lt_handle)
 {
     uint8_t cpu_fw_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE] = {0};
     uint8_t spect_fw_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE] = {0};
@@ -26,12 +26,12 @@ int get_fw_versions(lt_handle_t *lt_handle)
     lt_ret_t ret = lt_get_info_riscv_fw_ver(lt_handle, cpu_fw_ver);
     if (ret != LT_OK) {
         fprintf(stderr, "\nFailed to get RISC-V FW version, ret=%s", lt_ret_verbose(ret));
-        return LT_FAIL;
+        return ret;
     }
     ret = lt_get_info_spect_fw_ver(lt_handle, spect_fw_ver);
     if (ret != LT_OK) {
         fprintf(stderr, "\nFailed to get SPECT FW version, ret=%s", lt_ret_verbose(ret));
-        return LT_FAIL;
+        return ret;
     }
     printf("OK\n");
 
