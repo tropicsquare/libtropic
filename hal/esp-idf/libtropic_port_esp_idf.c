@@ -224,16 +224,20 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     spi_transaction.tx_buffer = s2->buff + offset;
     spi_transaction.rx_buffer = s2->buff + offset;
 
-    // Queue the SPI transaction.
-    // Use portMAX_DELAY for queuing as it should be instantaneous (queue is typically not full).
-    ret = spi_device_queue_trans(dev->spi_handle, &spi_transaction, portMAX_DELAY);
+    // Queue the SPI transaction with the specified timeout.
+    // This ensures we don't block indefinitely if the queue is full.
+    ret = spi_device_queue_trans(dev->spi_handle, &spi_transaction, ticks_to_wait);
     if (ret != ESP_OK) {
-        LT_LOG_ERROR("spi_device_queue_trans() failed: %s", esp_err_to_name(ret));
+        if (ret == ESP_ERR_TIMEOUT) {
+            LT_LOG_ERROR("spi_device_queue_trans() timed out after %" PRIu32 " ms", timeout_ms);
+        } else {
+            LT_LOG_ERROR("spi_device_queue_trans() failed: %s", esp_err_to_name(ret));
+        }
         return LT_FAIL;
     }
 
     // Get the transaction result with the specified timeout.
-    // This is where the actual SPI transfer happens and timeout_ms is applied.
+    // This is where the actual SPI transfer executes.
     ret = spi_device_get_trans_result(dev->spi_handle, &trans_result, ticks_to_wait);
     if (ret != ESP_OK) {
         if (ret == ESP_ERR_TIMEOUT) {
