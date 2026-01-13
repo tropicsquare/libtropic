@@ -241,6 +241,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     }
 
     // Calculate remaining time for the get_trans_result operation.
+    // Note: Tick subtraction handles overflow correctly due to unsigned arithmetic.
     elapsed_ticks = xTaskGetTickCount() - start_ticks;
     if (elapsed_ticks >= ticks_to_wait) {
         // Already exceeded timeout during queue operation.
@@ -254,7 +255,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     ret = spi_device_get_trans_result(dev->spi_handle, &trans_result, remaining_ticks);
     if (ret != ESP_OK) {
         if (ret == ESP_ERR_TIMEOUT) {
-            LT_LOG_ERROR("spi_device_get_trans_result() timed out after %" PRIu32 " ms", timeout_ms);
+            LT_LOG_ERROR("SPI transfer timed out (total timeout: %" PRIu32 " ms)", timeout_ms);
         } else {
             LT_LOG_ERROR("spi_device_get_trans_result() failed: %s", esp_err_to_name(ret));
         }
