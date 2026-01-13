@@ -236,6 +236,8 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     }
 
     // Get the transaction result with timeout.
+    // Note: trans_result should point to the same transaction we queued (&spi_transaction).
+    // We must call this to ensure the transaction completes and to respect the timeout.
     ret = spi_device_get_trans_result(dev->spi_handle, &trans_result, ticks_to_wait);
     if (ret != ESP_OK) {
         if (ret == ESP_ERR_TIMEOUT) {
