@@ -27,9 +27,11 @@
 #include "libtropic_port.h"
 
 #if LT_USE_INT_PIN
-// This macro is needed in portYIELD_FROM_ISR.
-// But for some reason, it is not defined in some ESP-IDF versions.
-// It probably depends on some tracing configuration.
+// traceISR_EXIT_TO_SCHEDULER is a FreeRTOS tracing macro used by portYIELD_FROM_ISR.
+// It should be defined in FreeRTOS headers (typically as an empty macro when tracing
+// is disabled), but some ESP-IDF configurations omit this definition.
+// Defining it here as an empty macro is the correct behavior when tracing is not enabled.
+// See: FreeRTOS trace macros in FreeRTOS.h and FreeRTOSConfig.h
 #ifndef traceISR_EXIT_TO_SCHEDULER
 #define traceISR_EXIT_TO_SCHEDULER() \
     do {                             \
