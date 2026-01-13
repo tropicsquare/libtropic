@@ -1,0 +1,3 @@
+/home/runner/work/libtropic/libtropic/_codeql_build_dir/CMakeFiles/tropic.dir
+/home/runner/work/libtropic/libtropic/_codeql_build_dir/CMakeFiles/edit_cache.dir
+/home/runner/work/libtropic/libtropic/_codeql_build_dir/CMakeFiles/rebuild_cache.dir
