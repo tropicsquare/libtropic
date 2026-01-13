@@ -241,8 +241,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     lt_dev_esp_idf_t *dev = (lt_dev_esp_idf_t *)(s2->device);
     esp_err_t ret;
     spi_transaction_t spi_transaction;
-    spi_transaction_t *trans_result;
-    TickType_t ticks_to_wait = pdMS_TO_TICKS(timeout_ms), start_ticks, elapsed_ticks, remaining_ticks;
+    TickType_t ticks_to_wait = pdMS_TO_TICKS(timeout_ms);
 
     // Prepare the SPI transaction.
     memset(&spi_transaction, 0, sizeof(spi_transaction));
@@ -250,31 +249,11 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     spi_transaction.tx_buffer = s2->buff + offset;
     spi_transaction.rx_buffer = s2->buff + offset;
 
-    // Record start time to track total elapsed time.
-    start_ticks = xTaskGetTickCount();
-
-    // Queue the SPI transaction with the specified timeout.
-    // This ensures we don't block indefinitely if the queue is full.
-    ret = spi_device_queue_trans(dev->spi_handle, &spi_transaction, ticks_to_wait);
+    // Perform the SPI transaction with the specified timeout.
+    // This function internally queues the transaction and waits for completion.
+    ret = spi_device_transmit(dev->spi_handle, &spi_transaction, ticks_to_wait);
     if (ret != ESP_OK) {
-        LT_LOG_ERROR("spi_device_queue_trans() failed: %s", esp_err_to_name(ret));
-        return LT_FAIL;
-    }
-
-    // Calculate remaining time for the get_trans_result operation.
-    elapsed_ticks = xTaskGetTickCount() - start_ticks;
-    if (elapsed_ticks > ticks_to_wait) {
-        // Already exceeded timeout during queue operation.
-        LT_LOG_ERROR("Timeout exceeded during spi_device_queue_trans()");
-        return LT_FAIL;
-    }
-    remaining_ticks = ticks_to_wait - elapsed_ticks;
-
-    // Get the transaction result with the remaining timeout.
-    // This is where the actual SPI transfer executes.
-    ret = spi_device_get_trans_result(dev->spi_handle, &trans_result, remaining_ticks);
-    if (ret != ESP_OK) {
-        LT_LOG_ERROR("spi_device_get_trans_result() failed: %s", esp_err_to_name(ret));
+        LT_LOG_ERROR("spi_device_transmit() failed: %s", esp_err_to_name(ret));
         return LT_FAIL;
     }
 
