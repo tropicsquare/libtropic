@@ -8,6 +8,7 @@
 
 #include "libtropic_port_esp_idf.h"
 
+#include <inttypes.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -228,9 +229,8 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     ret = spi_device_transmit(dev->spi_handle, &spi_transaction, ticks_to_wait);
     if (ret != ESP_OK) {
         if (ret == ESP_ERR_TIMEOUT) {
-            LT_LOG_ERROR("spi_device_transmit() timed out after %lu ms", timeout_ms);
-        }
-        else {
+            LT_LOG_ERROR("spi_device_transmit() timed out after %" PRIu32 " ms", timeout_ms);
+        } else {
             LT_LOG_ERROR("spi_device_transmit() failed: %s", esp_err_to_name(ret));
         }
         return LT_FAIL;
