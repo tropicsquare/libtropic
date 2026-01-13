@@ -263,7 +263,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
 
     // Calculate remaining time for the get_trans_result operation.
     elapsed_ticks = xTaskGetTickCount() - start_ticks;
-    if (elapsed_ticks >= ticks_to_wait) {
+    if (elapsed_ticks > ticks_to_wait) {
         // Already exceeded timeout during queue operation.
         LT_LOG_ERROR("Timeout exceeded during spi_device_queue_trans()");
         return LT_FAIL;
