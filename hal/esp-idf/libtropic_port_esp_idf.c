@@ -211,10 +211,10 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len, uint32_t timeout_ms)
 {
-    LT_UNUSED(timeout_ms);
     lt_dev_esp_idf_t *dev = (lt_dev_esp_idf_t *)(s2->device);
     esp_err_t ret;
     spi_transaction_t spi_transaction;
+    TickType_t ticks_to_wait = pdMS_TO_TICKS(timeout_ms);
 
     // Prepare the SPI transaction.
     memset(&spi_transaction, 0, sizeof(spi_transaction));
@@ -222,24 +222,19 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_len
     spi_transaction.tx_buffer = s2->buff + offset;
     spi_transaction.rx_buffer = s2->buff + offset;
 
-    // Acquire the SPI bus.
-    // portMAX_DELAY is required by the implementation.
-    ret = spi_device_acquire_bus(dev->spi_handle, portMAX_DELAY);
+    // Execute the SPI transaction with timeout.
+    // spi_device_transmit internally handles bus acquisition and performs the transaction
+    // with the specified timeout.
+    ret = spi_device_transmit(dev->spi_handle, &spi_transaction, ticks_to_wait);
     if (ret != ESP_OK) {
-        LT_LOG_ERROR("spi_device_acquire_bus() failed: %s", esp_err_to_name(ret));
+        if (ret == ESP_ERR_TIMEOUT) {
+            LT_LOG_ERROR("spi_device_transmit() timed out after %lu ms", timeout_ms);
+        }
+        else {
+            LT_LOG_ERROR("spi_device_transmit() failed: %s", esp_err_to_name(ret));
+        }
         return LT_FAIL;
     }
-
-    // Execute the SPI transaction.
-    ret = spi_device_polling_transmit(dev->spi_handle, &spi_transaction);
-    if (ret != ESP_OK) {
-        LT_LOG_ERROR("spi_device_polling_transmit() failed: %s", esp_err_to_name(ret));
-        spi_device_release_bus(dev->spi_handle);
-        return LT_FAIL;
-    }
-
-    // Release the SPI bus.
-    spi_device_release_bus(dev->spi_handle);
 
     return LT_OK;
 }
