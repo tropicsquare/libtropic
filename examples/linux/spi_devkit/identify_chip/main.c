@@ -18,6 +18,11 @@
 
 int main(void)
 {
+    // Cosmetics: Disable buffering to keep output in order. You do not need to do in your app if you don't care about
+    // stdout/stderr output being shuffled or you use stdout only (or different output mechanism altogether).
+    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stderr, NULL, _IONBF, 0);
+
     printf("==============================================\n");
     printf("==== TROPIC01 Chip Identification Example ====\n");
     printf("==============================================\n");
