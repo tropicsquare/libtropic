@@ -39,7 +39,7 @@ target_link_libraries(my_binary_name PRIVATE tropic)
 ```
 
 !!! note "Inspiration for CMakeLists.txt"
-    The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to the [Integration Examples](../integration_examples.md) section and the [CMake Documentation](https://cmake.org/cmake/help/latest/index.html).
+    The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to our standalone example projects in `examples/` (explained in [Tutorials](../../../tutorials/index.md)) and the [CMake Documentation](https://cmake.org/cmake/help/latest/index.html).
 
 !!! info "Supported Host Platforms and CFPs"
     Refer to sections [Supported Host Platforms](../../../other/supported_host_platforms/index.md) and [Supported Cryptographic Functionality Providers](../../../other/supported_cfps/index.md) to see what is supported.

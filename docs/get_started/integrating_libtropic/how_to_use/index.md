@@ -13,11 +13,6 @@ To start using Libtropic in your application, include the following headers:
     The headers `libtropic_port_<port_name>.h` and `libtropic_<cfp_name>.h` are typically only needed when initializing the `lt_handle_t` instance — see the example below.
 
 ## Libtropic Bare-Bone Example
-!!! tip
-    For ideas about what to do in step 8 of the example below, refer to the [Tutorials](../../../tutorials/index.md).
-
-    We recommend checking the [Integration Examples](../integration_examples.md) section for complete examples showing how to use Libtropic on some supported platforms.
-
 The following bare-bone example shows how to initialize Libtropic, so it can be used to communicate with TROPIC01:
 ```c
 #include "libtropic_common.h"
@@ -103,3 +98,6 @@ int main(void) {
     return 0;
 }
 ```
+
+!!! question "How to apply this?"
+    If you don't know how to apply the information above, we recommend checking out our [Tutorials](../../../tutorials/index.md), where we discuss some basic examples of using Libtropic in our standalone example projects in `examples/`.

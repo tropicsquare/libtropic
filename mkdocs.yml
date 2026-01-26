@@ -76,7 +76,6 @@ nav:
         - Compile as a Static Library: get_started/integrating_libtropic/how_to_build/compile_as_static_library.md
       - How to Configure: get_started/integrating_libtropic/how_to_configure/index.md
       - How to Use: get_started/integrating_libtropic/how_to_use/index.md
-      - Integration Examples: get_started/integrating_libtropic/integration_examples.md
     - TROPIC01 Firmware: get_started/tropic01_fw.md
     - Default Pairing Keys for a Secure Channel Handshake: get_started/default_pairing_keys.md
     - Logging: get_started/logging.md
