@@ -9,12 +9,12 @@ HALs for these ports are available in the `libtropic/hal/posix/` directory.
 Libtropic example usage with **some** of these ports is currently available in our [libtropic-linux](https://github.com/tropicsquare/libtropic-linux) repository. Other operating systems were not tested.
 
 ## TCP
-We use this port with the [TROPIC01 Python Model](../../get_started/tutorials/model/index.md), which acts as a server, to which libtropic connects via the specified TCP port.
+We use this port with the [TROPIC01 Python Model](../../tutorials/model/index.md), which acts as a server, to which libtropic connects via the specified TCP port.
 
 !!! warning "Disclaimer"
     The TCP HAL is implemented with consideration of the following:
 
-    1. It is primarily targeted for use with the [TROPIC01 Python Model][TROPIC01 Python Model](../../get_started/tutorials/model/index.md).
+    1. It is primarily targeted for use with the [TROPIC01 Python Model][TROPIC01 Python Model](../../tutorials/model/index.md).
     2. To ensure reproducibility of randomized functional tests, the [rand](https://en.cppreference.com/w/c/numeric/random/rand) function is used in the `lt_port_random_bytes` function with a known random seed instead of more cryptographically secure solutions.
 
 !!! failure "Interrupt Pin Support"

@@ -121,4 +121,4 @@ After successful execution, your chip will contain the latest firmware and will 
 
 ## FAQ
 
-If you encounter any issues, please check the [FAQ](../../../faq.md) before filing an issue or reaching out to our [support](https://support.desk.tropicsquare.com/).
+If you encounter any issues, please check the [FAQ](../../faq.md) before filing an issue or reaching out to our [support](https://support.desk.tropicsquare.com/).

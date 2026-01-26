@@ -34,7 +34,7 @@ This error means that the TROPIC01 does not recognize the L3 command or L2 reque
 
 A TROPIC01 will be in Maintenance Mode after a user-triggered reboot (calling `lt_reboot` with `TR01_MAINTENANCE_REBOOT` as `startup_id`). In that case, reboot the chip back to Application Mode by calling `lt_reboot` with `TR01_REBOOT`.
 
-However, a TROPIC01 can also enter Maintenance Mode automatically after an unsuccessful update or if firmware banks are empty or corrupted. In that case, a simple reboot will not help; you must run the firmware update again, either using the firmware update example (see [Tutorials](./get_started/tutorials/index.md)) or from your application code.
+However, a TROPIC01 can also enter Maintenance Mode automatically after an unsuccessful update or if firmware banks are empty or corrupted. In that case, a simple reboot will not help; you must run the firmware update again, either using the firmware update example (see [Tutorials](./tutorials/index.md)) or from your application code.
 
 ## I cannot establish a Secure Session
 There are two main causes:
@@ -58,13 +58,13 @@ If our firmware update example program in the tutorial failed:
 You have two options:
 
 1. Read it from the packaging you received your TROPIC01 product in.
-2. Run our example Identify Chip (see [Tutorials](./get_started/tutorials/index.md)), which **does not** require the Secure Channel Session.
+2. Run our example Identify Chip (see [Tutorials](./tutorials/index.md)), which **does not** require the Secure Channel Session.
 
 ## What is the silicon revision of my TROPIC01?
 You have two options:
 
 1. Read the product number (P/N) from the packaging you received your TROPIC01 product in. After that, refer to the [Available Parts](https://github.com/tropicsquare/tropic01?tab=readme-ov-file#available-parts) section (in the [TROPIC01 GitHub repository](https://github.com/tropicsquare/tropic01)) and read the linked Catalog list, which will help you decode the silicon revision based on your P/N.
-2. Run our example Identify Chip (see [Tutorials](./get_started/tutorials/index.md)), which **does not** require the Secure Channel Session.
+2. Run our example Identify Chip (see [Tutorials](./tutorials/index.md)), which **does not** require the Secure Channel Session.
 
 ## What FW versions is my TROPIC01 running?
-Run our example Identify Chip (see [Tutorials](./get_started/tutorials/index.md)), which **does not** require the Secure Channel Session.
+Run our example Identify Chip (see [Tutorials](./tutorials/index.md)), which **does not** require the Secure Channel Session.

@@ -14,7 +14,7 @@ To start using Libtropic in your application, include the following headers:
 
 ## Libtropic Bare-Bone Example
 !!! tip
-    For ideas about what to do in step 8 of the example below, refer to the [Tutorials](../../tutorials/index.md).
+    For ideas about what to do in step 8 of the example below, refer to the [Tutorials](../../../tutorials/index.md).
 
     We recommend checking the [Integration Examples](../integration_examples.md) section for complete examples showing how to use Libtropic on some supported platforms.
 

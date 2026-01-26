@@ -52,21 +52,21 @@ theme:
 # Navigation menu setup
 nav:
   - Introduction: index.md
+  - Tutorials:
+      - tutorials/index.md
+      - Model:
+        - tutorials/model/index.md
+        - 1. Your First Steps: tutorials/model/first_steps.md
+        - 2. Understanding Libtropic: tutorials/model/understanding_libtropic.md
+        - 3. HW Wallet Example: tutorials/model/hw_wallet_example.md
+        - 4. Mac-And-Destroy Example: tutorials/model/macandd_example.md
+        - 5. Separate API Example: tutorials/model/separate_api.md
+      - Linux:
+        - RPi / Arduino Devkit: tutorials/linux/arduino_rpi_shield.md
+        - USB Devkit: tutorials/linux/usb_devkit.md
+      - ESP32: tutorials/esp32/index.md
   - Get Started:
     - get_started/index.md
-    - Tutorials:
-      - get_started/tutorials/index.md
-      - Model:
-        - get_started/tutorials/model/index.md
-        - 1. Your First Steps: get_started/tutorials/model/first_steps.md
-        - 2. Understanding Libtropic: get_started/tutorials/model/understanding_libtropic.md
-        - 3. HW Wallet Example: get_started/tutorials/model/hw_wallet_example.md
-        - 4. Mac-And-Destroy Example: get_started/tutorials/model/macandd_example.md
-        - 5. Separate API Example: get_started/tutorials/model/separate_api.md
-      - Linux:
-        - RPi / Arduino Devkit: get_started/tutorials/linux/arduino_rpi_shield.md
-        - USB Devkit: get_started/tutorials/linux/usb_devkit.md
-      - ESP32: get_started/tutorials/esp32/index.md
     - Libtropic Architecture: get_started/libtropic_architecture.md
     - Integrating Libtropic:
       - get_started/integrating_libtropic/index.md

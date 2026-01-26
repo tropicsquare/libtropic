@@ -34,7 +34,7 @@ The following table outlines the tested and supported compatibility between rele
 > [!WARNING]
 > Using mismatched versions of the components may result in unpredictable behavior or errors. It is strongly advised to use the latest compatible versions of all components to ensure proper functionality. 
 
-For retrieving firmware versions from TROPIC01 and updating its firmware, refer to the [Tutorials](https://tropicsquare.github.io/libtropic/latest/get_started/tutorials/) and select your platform. Follow the instructions for **Chip Identification** and **Firmware Update** example.
+For retrieving firmware versions from TROPIC01 and updating its firmware, refer to the [Tutorials](https://tropicsquare.github.io/libtropic/latest/tutorials/) and select your platform. Follow the instructions for **Chip Identification** and **Firmware Update** example.
 
 ## Repository structure
 * `CMakeLists.txt` Root CMake project file

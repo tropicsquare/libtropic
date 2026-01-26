@@ -13,7 +13,7 @@ In our [functional](../for_contributors/tests/functional_tests.md) and [function
 You can also use GNU Debugger to debug the tests:
 
 - Add CMake switch `-DCMAKE_BUILD_TYPE=Debug` and run the binary using `gdb`.
-    - If you want to use the debugger with the model, you can't use the model runner. Run the model server manually instead and then run the test binary using `gdb`. See the [model tutorial](../get_started/tutorials/model/index.md).
+    - If you want to use the debugger with the model, you can't use the model runner. Run the model server manually instead and then run the test binary using `gdb`. See the [model tutorial](../tutorials/model/index.md).
 
 !!! question "Not sure if ASan or Valgrind is working?"
     Paste one of the following snippets to a source file where you want to check the error detection.
