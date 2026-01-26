@@ -62,7 +62,7 @@ typedef struct lt_ctx_mycrypto_t {
 ```
 
     !!! question "Which Contexts Are Needed?"
-        This structure must include all contexts the functions in the CAL might need. The structure will be defined in the user's application and assigned to the `crypto_ctx` void pointer in the `lt_handle_t` — see the [Libtropic Bare-Bone Example](../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
+        This structure must include all contexts the functions in the CAL might need. The structure will be defined in the user's application and assigned to the `crypto_ctx` void pointer in the `lt_handle_t` — see the [Libtropic Bare-Bone Example](../reference/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information.
 
 5. Additionally, other source files and headers can be created for the needs of the implementation.
 
@@ -89,4 +89,4 @@ set(LT_CAL_INC_DIRS ${LT_CAL_INC_DIRS} PARENT_SCOPE)
 ```
 
 ### Provide Some Information About the CAL
-All currently supported CFPs are listed in the [Supported Cryptographic Functionality Providers](../other/supported_cfps/index.md) section. Add the new CFP there and provide some information about it and the CAL (see other sections for inspiration).
+All currently supported CFPs are listed in the [Supported Cryptographic Functionality Providers](../compatibility/cfps/index.md) section. Add the new CFP there and provide some information about it and the CAL (see other sections for inspiration).

@@ -17,7 +17,7 @@ ctest -V
     Strict compilation flags are applied by default. It is strongly recommended to develop tests with strict compilation flags enabled. You can disable the flags by passing `-DLT_STRICT_COMPILATION=0` to `cmake`.
 
 ### Debugging
-We support running tests with GNU Debugger, Valgrind and Address Sanitizer. See [Debugging](../../get_started/debugging.md).
+We support running tests with GNU Debugger, Valgrind and Address Sanitizer. See [Debugging](../../reference/debugging.md).
 
 ## Adding a New Test
 

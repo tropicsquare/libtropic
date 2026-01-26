@@ -65,23 +65,39 @@ nav:
         - RPi / Arduino Devkit: tutorials/linux/arduino_rpi_shield.md
         - USB Devkit: tutorials/linux/usb_devkit.md
       - ESP32: tutorials/esp32/index.md
-  - Get Started:
-    - get_started/index.md
-    - Libtropic Architecture: get_started/libtropic_architecture.md
+  - Reference:
+    - reference/index.md
+    - Libtropic Architecture: reference/libtropic_architecture.md
     - Integrating Libtropic:
-      - get_started/integrating_libtropic/index.md
+      - reference/integrating_libtropic/index.md
       - How to Build:
-        - get_started/integrating_libtropic/how_to_build/index.md
-        - Add to an Existing Project: get_started/integrating_libtropic/how_to_build/adding_to_project.md
-        - Compile as a Static Library: get_started/integrating_libtropic/how_to_build/compile_as_static_library.md
-      - How to Configure: get_started/integrating_libtropic/how_to_configure/index.md
-      - How to Use: get_started/integrating_libtropic/how_to_use/index.md
-    - TROPIC01 Firmware: get_started/tropic01_fw.md
-    - Default Pairing Keys for a Secure Channel Handshake: get_started/default_pairing_keys.md
-    - Logging: get_started/logging.md
-    - Debugging: get_started/debugging.md
-  - API Reference:
-    - doxygen/build/html/index.html
+        - reference/integrating_libtropic/how_to_build/index.md
+        - Add to an Existing Project: reference/integrating_libtropic/how_to_build/adding_to_project.md
+        - Compile as a Static Library: reference/integrating_libtropic/how_to_build/compile_as_static_library.md
+      - How to Configure: reference/integrating_libtropic/how_to_configure/index.md
+      - How to Use: reference/integrating_libtropic/how_to_use/index.md
+    - API Reference:
+      - doxygen/build/html/index.html
+    - TROPIC01 Firmware: reference/tropic01_fw.md
+    - Default Pairing Keys for a Secure Channel Handshake: reference/default_pairing_keys.md
+    - Logging: reference/logging.md
+    - Debugging: reference/debugging.md
+    - Provisioning Data: reference/provisioning_data.md
+  - Compatibility:
+    - compatibility/index.md
+    - Host Platforms:
+      - compatibility/host_platforms/index.md
+      - STM32: compatibility/host_platforms/stm32.md
+      - ESP32: compatibility/host_platforms/esp32.md
+      - Linux: compatibility/host_platforms/linux.md
+      - POSIX: compatibility/host_platforms/posix.md
+      - Arduino: compatibility/host_platforms/arduino.md
+    - Cryptographic Functionality Providers:
+      - compatibility/cfps/index.md
+      - Trezor Crypto: compatibility/cfps/trezor_crypto.md
+      - MbedTLS: compatibility/cfps/mbedtls.md
+      - OpenSSL: compatibility/cfps/openssl.md
+      - WolfCrypt: compatibility/cfps/wolfcrypt.md
   - For Contributors:
     - for_contributors/index.md
     - Contributing Guide: for_contributors/contributing_guide.md
@@ -94,22 +110,6 @@ nav:
     - Adding a New Host Platform: for_contributors/adding_host_platform.md
     - Adding a New Cryptographic Functionality Provider: for_contributors/adding_cfp.md
   - FAQ: faq.md
-  - Other:
-    - other/index.md
-    - Provisioning Data: other/provisioning_data.md
-    - Supported Host Platforms:
-      - other/supported_host_platforms/index.md
-      - STM32: other/supported_host_platforms/stm32.md
-      - ESP32: other/supported_host_platforms/esp32.md
-      - Linux: other/supported_host_platforms/linux.md
-      - POSIX: other/supported_host_platforms/posix.md
-      - Arduino: other/supported_host_platforms/arduino.md
-    - Supported Cryptographic Functionality Providers:
-      - other/supported_cfps/index.md
-      - Trezor Crypto: other/supported_cfps/trezor_crypto.md
-      - MbedTLS: other/supported_cfps/mbedtls.md
-      - OpenSSL: other/supported_cfps/openssl.md
-      - WolfCrypt: other/supported_cfps/wolfcrypt.md
 
 plugins:
   - search

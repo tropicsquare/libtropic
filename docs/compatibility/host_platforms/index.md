@@ -1,4 +1,4 @@
-# Supported Host Platforms
+# Host Platforms
 These are the currently supported host platforms:
 
 - [STM32](stm32.md)

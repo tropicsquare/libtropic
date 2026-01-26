@@ -89,4 +89,4 @@ set(LT_HAL_INC_DIRS ${LT_HAL_INC_DIRS} PARENT_SCOPE)
 ```
 
 ### Provide Some Information About the HAL
-All currently supported host platforms are listed in the [Supported Host Platforms](../other/supported_host_platforms/index.md) section. Add the new host platform there and provide some information about it and the HAL (see other sections for inspiration).
+All currently supported host platforms are listed in the [Supported Host Platforms](../compatibility/host_platforms/index.md) section. Add the new host platform there and provide some information about it and the HAL (see other sections for inspiration).

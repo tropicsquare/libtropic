@@ -1,4 +1,4 @@
-# Supported Cryptographic Functionality Providers
+# Cryptographic Functionality Providers
 These are the currently supported CFPs (Cryptographic Functionality Providers):
 
 - Crypto libraries:

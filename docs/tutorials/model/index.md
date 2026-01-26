@@ -71,7 +71,7 @@ The Libtropic uses the TCP HAL implemented in `hal/posix/tcp/libtropic_port_posi
 
 The TROPIC01 Model can be configured. To configure the model, pass a YAML configuration file to the model — see the [Model Configuration](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration) section in the [TROPIC Verification Library](https://github.com/tropicsquare/ts-tvl).
 
-For convenience, we provide a default model configuration (`scripts/tropic01_model/model_cfg.yml`), suitable for both examples and tests. If you want to customize the configuration, you can take this file as template and then modify the values according to the [documentation](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration). Internally, we generate the configuration from our [provisioning data](../../other/provisioning_data.md).
+For convenience, we provide a default model configuration (`scripts/tropic01_model/model_cfg.yml`), suitable for both examples and tests. If you want to customize the configuration, you can take this file as template and then modify the values according to the [documentation](https://github.com/tropicsquare/ts-tvl?tab=readme-ov-file#model-configuration). Internally, we generate the configuration from our [provisioning data](../../reference/provisioning_data.md).
 
 ??? note "Advanced: Generating config from provisioning data"
     We provide both provisioning data and a Python script that can generate configuration for the model from such data. This is useful mainly for internal purposes, we describe it here for reference.
@@ -82,7 +82,7 @@ For convenience, we provide a default model configuration (`scripts/tropic01_mod
     python3 create_model_cfg.py --help
     ```
     !!! info "The `--pkg-dir` Option"
-        The script expects a path to one of the lab batch packages inside `scripts/tropic01_model/provisioning_data/`. See [Provisioning Data](../../other/provisioning_data.md) for more information.
+        The script expects a path to one of the lab batch packages inside `scripts/tropic01_model/provisioning_data/`. See [Provisioning Data](../../reference/provisioning_data.md) for more information.
 
 !!! warning "Using custom pairing keys"   
     If you change the pairing keys in the model's configuration, you will not be able to run our examples without modification, as they use default pairing keys. Each example contains `LT_EX_SH0_PRIV` and `LT_EX_SH0_PUB` at the beginning. Simply modify these constants to use arrays with your own keys to make examples work with custom keys.

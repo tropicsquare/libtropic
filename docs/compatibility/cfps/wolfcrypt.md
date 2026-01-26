@@ -16,7 +16,7 @@ WolfSSL must be configured with the following features (CMake options):
 ## Initialization and Deinitialization
 Libtropic does not handle initialization and deinitialization of WolfCrypt, this is the user's responsibility. Specifically, it is assumed that:
 
-1. [wolfCrypt_Init](https://www.wolfssl.com/documentation/manuals/wolfssl/group__wolfCrypt.html#function-wolfcrypt_init) is called before the instance of the CAL is handed to Libtropic's `lt_init` function. See the [Libtropic Bare-Bone Example](../../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information about the CAL instance.
+1. [wolfCrypt_Init](https://www.wolfssl.com/documentation/manuals/wolfssl/group__wolfCrypt.html#function-wolfcrypt_init) is called before the instance of the CAL is handed to Libtropic's `lt_init` function. See the [Libtropic Bare-Bone Example](../../reference/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information about the CAL instance.
 2. [wolfCrypt_Cleanup](https://www.wolfssl.com/documentation/manuals/wolfssl/group__wolfCrypt.html#function-wolfcrypt_cleanup) is called in the user's application cleanup logic. Although freeing the WolfCrypt's resources is not required by Libtropic, it **cannot** be called sooner than the last call of Libtropic's `lt_deinit` function, otherwise all Secure Channel Session related commands will return with errors.
 
 ## Cryptographic Callbacks

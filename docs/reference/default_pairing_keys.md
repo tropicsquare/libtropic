@@ -20,8 +20,8 @@ To establish a Secure Channel Session with your new TROPIC01, do the following:
 
     There are two options, depending on what you want to do — choose one:
 
-    1. You want to run our **examples** or **tests** that establish a Secure Channel Session:
-        1. Your P/N is `TROPIC01-ES` -> Set [LT_SH0_KEYS](integrating_libtropic/how_to_configure/index.md#lt_sh0_keys) CMake option to `"eng_sample"` (refer to [How to Configure](integrating_libtropic/how_to_configure/index.md) section for ways to set it).
+    1. You want to run our **examples** (see [Tutorials](../tutorials/index.md)) that establish a Secure Channel Session:
+        1. Your P/N is `TROPIC01-ES` -> Set `LT_SH0_KEYS` CMake option to `"eng_sample"`.
         2. Your P/N is **not** `TROPIC01-ES` -> nothing has to be done, the production keys are used by default.
     2. You are writing **your own** application -> select the correct key pair arrays according to [Default Pairing Keys in Libtropic](#default-pairing-keys-in-libtropic) and simply pass them to either:
         1. `lt_verify_chip_and_start_secure_session` helper function, or

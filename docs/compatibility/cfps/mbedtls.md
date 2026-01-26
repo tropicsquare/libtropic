@@ -11,7 +11,7 @@ CAL files of this port are available in the `libtropic/cal/mbedtls_v4/` director
 ## Initialization and Deinitialization
 Libtropic does not handle initialization and deinitialization of MbedTLS, this is the user's responsibility. Specifically, it is assumed that:
     
-1. [psa_crypto_init()](https://mbed-tls.readthedocs.io/projects/api/en/development/api/group/group__initialization/#_CPPv415psa_crypto_initv) is called before the instance of the CAL is handed to Libtropic's `lt_init()`. See the [Libtropic Bare-Bone Example](../../get_started/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information about the CAL instance.
+1. [psa_crypto_init()](https://mbed-tls.readthedocs.io/projects/api/en/development/api/group/group__initialization/#_CPPv415psa_crypto_initv) is called before the instance of the CAL is handed to Libtropic's `lt_init()`. See the [Libtropic Bare-Bone Example](../../reference/integrating_libtropic/how_to_use/index.md#libtropic-bare-bone-example) for more information about the CAL instance.
 2. [mbedtls_psa_crypto_free()](https://mbed-tls.readthedocs.io/projects/api/en/development/api/file/crypto__extra_8h/#_CPPv423mbedtls_psa_crypto_freev) is called in the user's application cleanup logic. Although freeing the MbedTLS's resources is not required by Libtropic, it **cannot** be called sooner than the last call of Libtropic's `lt_deinit()`, otherwise all Secure Channel Session related commands will return with errors.
 
 ## Configuration

@@ -1,5 +1,5 @@
-# Get Started
-This section provides information to help you get started with libtropic.
+# Reference
+This section provides all necessary information about Libtropic and other related things.
 
 - [Libtropic Architecture](libtropic_architecture.md)
 - [Integrating Libtropic](integrating_libtropic/index.md)
