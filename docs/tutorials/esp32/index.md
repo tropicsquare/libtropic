@@ -20,55 +20,10 @@ See below for instructions based on your OS.
         TBA
 
 ## Start with our Examples!
-Now, let's build and flash the available examples.
 
-### Build and Run Hello World Example
-!!! example "Building and running the Hello World example"
-    === ":fontawesome-brands-linux: Linux"
-        ```bash
-        cd examples/esp32/<your_board>/hello_world/
-        idf.py build flash monitor
-        ```
-
-    === ":fontawesome-brands-apple: macOS"
-        TBA
-
-    === ":fontawesome-brands-windows: Windows"
-        TBA
-
-After this, you should see a colored output in your terminal.
-
-### Build and Run Chip Identification Example
-!!! example "Building and running the Identify Chip example"
-    === ":fontawesome-brands-linux: Linux"
-        ```bash
-        cd examples/esp32/<your_board>/identify_chip/
-        idf.py build flash monitor
-        ```
-
-    === ":fontawesome-brands-apple: macOS"
-        TBA
-
-    === ":fontawesome-brands-windows: Windows"
-        TBA
-
-After this, you should see a colored output in your terminal.
-
-### Build and Run a Firmware Update Example
-!!! example "Building and running the Firmware Update example"
-    === ":fontawesome-brands-linux: Linux"
-        ```bash
-        cd examples/esp32/<your_board>/fw_update/
-        idf.py build flash monitor
-        ```
-
-    === ":fontawesome-brands-apple: macOS"
-        TBA
-
-    === ":fontawesome-brands-windows: Windows"
-        TBA
-
-After this, you should see a colored output in your terminal.
+- [Chip Identification](identify_chip.md)
+- [Hello, World!](hello_world.md)
+- [FW Update](fw_update.md)
 
 ## FAQ
 If you encounter any issues, please check the [FAQ](../../faq.md) before filing an issue or reaching out to our [support](https://support.desk.tropicsquare.com/).
