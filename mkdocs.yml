@@ -66,9 +66,9 @@ nav:
         - USB Devkit: tutorials/linux/usb_devkit.md
       - ESP32:
         - tutorials/esp32/index.md
-        - Chip Identification: tutorials/esp32/identify_chip.md
-        - Hello, World!: tutorials/esp32/hello_world.md
-        - FW Update: tutorials/esp32/fw_update.md
+        - 1. Chip Identification: tutorials/esp32/identify_chip.md
+        - 2. FW Update: tutorials/esp32/fw_update.md
+        - 3. Hello, World!: tutorials/esp32/hello_world.md
   - Reference:
     - reference/index.md
     - Libtropic Architecture: reference/libtropic_architecture.md

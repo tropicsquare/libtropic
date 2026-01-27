@@ -20,10 +20,12 @@ See below for instructions based on your OS.
         TBA
 
 ## Start with our Examples!
+!!! warning "Do not skip!"
+    We strongly recommend going through each example in this specific order without skipping. You will gather basic information about the chip and update your TROPIC01's firmware, which will guarantee compatibility with the latest Libtropic API.
 
-- [Chip Identification](identify_chip.md)
-- [Hello, World!](hello_world.md)
-- [FW Update](fw_update.md)
+1. [Chip Identification](identify_chip.md)
+2. [FW Update](fw_update.md)
+3. [Hello, World!](hello_world.md)
 
 ## FAQ
 If you encounter any issues, please check the [FAQ](../../faq.md) before filing an issue or reaching out to our [support](https://support.desk.tropicsquare.com/).
