@@ -32,15 +32,15 @@ endif()
 #                                                                         #
 ###########################################################################
 
-if (NOT DEFINED LT_SPI_DEVKIT_SPI_PATH)
-    set(LT_SPI_DEVKIT_SPI_PATH "/dev/spidev0.0" CACHE STRING "Path to the SPI device to which the SPI devkit is connected.")
+if (NOT DEFINED LT_SPI_DEV_PATH)
+    set(LT_SPI_DEV_PATH "/dev/spidev0.0" CACHE STRING "Path to the SPI device where TROPIC01 is connected.")
 endif()
-message(STATUS "Using SPI device: ${LT_SPI_DEVKIT_SPI_PATH}. You can change it by passing -DLT_SPI_DEVKIT_SPI_PATH=<path> to cmake.")
+message(STATUS "Using SPI device: ${LT_SPI_DEV_PATH}. You can change it by passing -DLT_SPI_DEV_PATH=<path> to cmake.")
 
-if (NOT DEFINED LT_SPI_DEVKIT_GPIO_PATH)
-    set(LT_SPI_DEVKIT_GPIO_PATH "/dev/gpiochip0" CACHE STRING "Path to the GPIO device to which the SPI devkit's CS is connected.")
+if (NOT DEFINED LT_GPIO_DEV_PATH)
+    set(LT_GPIO_DEV_PATH "/dev/gpiochip0" CACHE STRING "Path to the GPIO device to which TROPIC01's Chip Select (CS) pin is connected.")
 endif()
-message(STATUS "Using GPIO device: ${LT_SPI_DEVKIT_GPIO_PATH}. You can change it by passing -DLT_SPI_DEVKIT_GPIO_PATH=<path> to cmake.")
+message(STATUS "Using GPIO device: ${LT_GPIO_DEV_PATH}. You can change it by passing -DLT_GPIO_DEV_PATH=<path> to cmake.")
 
 # Optional prefix to tests registered to CTest. Useful when running same test against
 # different chips to differentiate them by their name in JUnit output.
@@ -107,8 +107,8 @@ foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
 
     # Choose correct test for the binary.
     target_compile_definitions(${exe_name} PRIVATE ${test_macro})
-    target_compile_definitions(${exe_name} PRIVATE LT_SPI_DEVKIT_SPI_PATH=\"${LT_SPI_DEVKIT_SPI_PATH}\")
-    target_compile_definitions(${exe_name} PRIVATE LT_SPI_DEVKIT_GPIO_PATH=\"${LT_SPI_DEVKIT_GPIO_PATH}\")
+    target_compile_definitions(${exe_name} PRIVATE LT_SPI_DEV_PATH=\"${LT_SPI_DEV_PATH}\")
+    target_compile_definitions(${exe_name} PRIVATE LT_GPIO_DEV_PATH=\"${LT_GPIO_DEV_PATH}\")
 
     if(CTEST_PREFIX STREQUAL "")
         set(TEST_NAME_WITH_PREFIX ${test_name})

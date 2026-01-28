@@ -17,15 +17,15 @@ set(PATH_LIBTROPIC ../../../../)
 #   Configuration                                                         #
 #                                                                         #
 ###########################################################################
-if (NOT DEFINED LT_SPI_DEVKIT_SPI_PATH)
-    set(LT_SPI_DEVKIT_SPI_PATH "/dev/spidev0.0" CACHE STRING "Path to the SPI device to which the SPI devkit is connected.")
+if (NOT DEFINED LT_SPI_DEV_PATH)
+    set(LT_SPI_DEV_PATH "/dev/spidev0.0" CACHE STRING "Path to the SPI device where TROPIC01 is connected.")
 endif()
-message(STATUS "Using SPI device: ${LT_SPI_DEVKIT_SPI_PATH}. You can change it by passing -DLT_SPI_DEVKIT_SPI_PATH=<path> to cmake.")
+message(STATUS "Using SPI device: ${LT_SPI_DEV_PATH}. You can change it by passing -DLT_SPI_DEV_PATH=<path> to cmake.")
 
-if (NOT DEFINED LT_SPI_DEVKIT_GPIO_PATH)
-    set(LT_SPI_DEVKIT_GPIO_PATH "/dev/gpiochip0" CACHE STRING "Path to the GPIO device to which the SPI devkit's CS is connected.")
+if (NOT DEFINED LT_GPIO_DEV_PATH)
+    set(LT_GPIO_DEV_PATH "/dev/gpiochip0" CACHE STRING "Path to the GPIO device to which TROPIC01's Chip Select (CS) pin is connected.")
 endif()
-message(STATUS "Using GPIO device: ${LT_SPI_DEVKIT_GPIO_PATH}. You can change it by passing -DLT_SPI_DEVKIT_GPIO_PATH=<path> to cmake.")
+message(STATUS "Using GPIO device: ${LT_GPIO_DEV_PATH}. You can change it by passing -DLT_GPIO_DEV_PATH=<path> to cmake.")
 
 ###########################################################################
 #                                                                         #
@@ -79,6 +79,6 @@ set(SOURCES
 
 # Define executable, pass defines, and link dependencies.
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_SPI_DEVKIT_SPI_PATH=\"${LT_SPI_DEVKIT_SPI_PATH}\")
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_SPI_DEVKIT_GPIO_PATH=\"${LT_SPI_DEVKIT_GPIO_PATH}\")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_SPI_DEV_PATH=\"${LT_SPI_DEV_PATH}\")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LT_GPIO_DEV_PATH=\"${LT_GPIO_DEV_PATH}\")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic)

@@ -29,7 +29,7 @@ jobs:
 
       - name: Build SPI examples
         run: |
-          cd examples/linux/spi_devkit/hello_world
+          cd examples/linux/spi/hello_world
           cmake ./ -B build -G Ninja
           cd build && ninja
 
