@@ -1,4 +1,4 @@
-# 3. Hardware Wallet Example
+# 2. Hardware Wallet Example
 This example demonstrates how to use configuration objects and different pairing keys to manage access to TROPIC01 features. A hardware wallet device scenario is used as a model for this example.
 
 !!! success "Prerequisites"
@@ -28,14 +28,21 @@ In this example, you will:
 ## Build and Run
 Before proceeding, make sure you have activated the virtual environment you installed the TROPIC01 Model in and started it. If you're lost, see [First Steps](first_steps.md).
 
-Now, you can build and run the example (the example project is located at `examples/model/hw_wallet/`):
+Now, you can build and run the example:
 
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
-        ```bash
+        Go to the example's project directory:
+        ```bash { .copy }
         cd examples/model/hw_wallet/
+        ```
+        Create a `build/` directory and switch to it:
+        ```bash { .copy }
         mkdir build/
         cd build/
+        ```
+        And finally, build and run the example:
+        ```bash { .copy }
         cmake ..
         make
         ./libtropic_hw_wallet
@@ -49,3 +56,5 @@ Now, you can build and run the example (the example project is located at `examp
 
 !!! warning "Irreversible Changes"
     Because this example performs some irreversible changes, the model has to be terminated and started again before running the example binary again. This action results in making the model behave like a fresh TROPIC01 chip again.
+
+[Next tutorial :material-arrow-right:](macandd_example.md){ .md-button }

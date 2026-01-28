@@ -14,7 +14,7 @@ Before proceeding, make sure you have activated the virtual environment you inst
 
         If you don't see the "(.venv)" prefix, activate the environment:
 
-        ```bash
+        ```bash { .copy }
         source scripts/tropic01_model/.venv/bin/activate
         ```
 
@@ -24,13 +24,13 @@ Before proceeding, make sure you have activated the virtual environment you inst
     === ":fontawesome-brands-windows: Windows"
         TBA
 
-Each example requires a fresh start of the model. You can start and terminate the model as following:
+Some examples require a fresh start of the model. You can start and terminate the model as following:
 
 !!! example "Using the model"
     === ":fontawesome-brands-linux: Linux"
         Open a new console (or a new tab in your console emulator). Make sure you have the virtual environment activated. Type:
         
-        ```bash
+        ```bash { .copy }
         model_server tcp -c scripts/tropic01_model/model_cfg.yml
         ``` 
 
@@ -46,14 +46,21 @@ Each example requires a fresh start of the model. You can start and terminate th
         TBA
 
 ## *Hello, World!* Example
-At first, let's see the *Hello, World!* example. You can find this example at `examples/model/hello_world`.
+At first, let's see the *Hello, World!* example:
 
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
-        ```bash
-        cd examples/model/hello_world
-        mkdir build
-        cd build
+        Go to the example's project directory:
+        ```bash { .copy }
+        cd examples/model/hello_world/
+        ```
+        Create a `build/` directory and switch to it:
+        ```bash { .copy }
+        mkdir build/
+        cd build/
+        ```
+        And finally, build and run the example
+        ```bash { .copy }
         cmake ..
         make
         ./libtropic_hello_world
@@ -84,6 +91,6 @@ Deinitializing handle...OK
 
 If you see the output, congratulations! 🎉 You used Libtropic to send a *Ping* command with a message to the TROPIC01 Model!
 
-Continue with the next tutorial, where we discuss the functions used in this example and understand the basics of Libtropic's and TROPIC01's architectures.
+<!-- Continue with the next tutorial, where we discuss the functions used in this example and understand the basics of Libtropic's and TROPIC01's architectures. -->
 
-[Next tutorial :material-arrow-right:](./understanding_libtropic.md){ .md-button }
+[Next tutorial :material-arrow-right:](hw_wallet_example.md){ .md-button }

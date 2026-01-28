@@ -9,7 +9,7 @@ This tutorial assumes you are comfortable with using command line.
 First, we will prepare your environment by installing dependencies. Then, you can continue with our tutorials.
 
 ## Install Dependencies and Prepare the Repository
-See below for instructions based on your OS.
+See below for instructions based on your OS:
 
 !!! example "Installation instructions"
     === ":fontawesome-brands-linux: Linux"

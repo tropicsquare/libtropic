@@ -1,4 +1,4 @@
-# 4. Mac-And-Destroy Example
+# 3. Mac-And-Destroy Example
 This example illustrates MAC-And-Destroy, the flagship feature of TROPIC01.
 
 !!! success "Prerequisites"
@@ -25,14 +25,21 @@ You can use these functions as an inspiration for your project.
 ## Build and Run
 Before proceeding, make sure you have activated the virtual environment you installed the TROPIC01 Model in and started it. If you're lost, see [First Steps](first_steps.md).
 
-Now, you can build and run the example (the example project is located at `examples/model/mac_and_destroy/`):
+Now, you can build and run the example:
 
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
-        ```bash
+        Go to the example's project directory:
+        ```bash { .copy }
         cd examples/model/mac_and_destroy/
+        ```
+        Create a `build/` directory and switch to it:
+        ```bash { .copy }
         mkdir build/
         cd build/
+        ```
+        And finally, build and run the example:
+        ```bash { .copy }
         cmake ..
         make
         ./libtropic_mac_and_destroy
@@ -43,3 +50,5 @@ Now, you can build and run the example (the example project is located at `examp
 
     === ":fontawesome-brands-windows: Windows"
         TBA
+
+[Next tutorial :material-arrow-right:](separate_api.md){ .md-button }

@@ -1,4 +1,4 @@
-# 5. Separate API Example
+# 4. Separate API Example
 This example showcases the Libtropic's Separate API. It is functionally similar to the *Hello, World!* example, but it uses distinct API calls for incoming and outgoing data. This approach is useful for secure, tunneled communication, such as during chip provisioning in a factory.
 
 !!! success "Prerequisites"
@@ -14,14 +14,21 @@ You will learn about some of the low-level API functions used to process outgoin
 ## Build and Run
 Before proceeding, make sure you have activated the virtual environment you installed the TROPIC01 Model in and started it. If you're lost, see [First Steps](first_steps.md).
 
-Now, you can build and run the example (the example project is located at `examples/model/separate_api/`):
+Now, you can build and run the example:
 
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
-        ```bash
+        Go to the example's project directory:
+        ```bash { .copy }
         cd examples/model/separate_api/
+        ```
+        Create a `build/` directory and switch to it:
+        ```bash { .copy }
         mkdir build/
         cd build/
+        ```
+        And finally, build and run the example:
+        ```bash { .copy }
         cmake ..
         make
         ./libtropic_separate_api
