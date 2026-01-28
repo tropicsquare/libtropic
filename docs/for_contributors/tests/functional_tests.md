@@ -17,7 +17,7 @@ cd tests/functional/model
 mkdir build
 cd build
 cmake -DLT_CAL=mbedtls_v4 ..
-make -j
+make
 ```
 
 As you can see, there is one mandatory parameter for selection of the Crypto Abstraction Layer. See `cal/` directory for currently supported CALs or just run `cmake -DLT_CAL= ..` for enumeration of supported options. There are also other options, see [Available Options](#available-options).

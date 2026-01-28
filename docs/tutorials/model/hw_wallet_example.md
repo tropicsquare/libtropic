@@ -37,7 +37,7 @@ Now, you can build and run the example (the example project is located at `examp
         mkdir build/
         cd build/
         cmake ..
-        make -j
+        make
         ./libtropic_hw_wallet
         ```
 

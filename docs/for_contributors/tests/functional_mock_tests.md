@@ -9,7 +9,7 @@ cd tests/functional_mock
 mkdir -p build
 cd build
 cmake ..
-make -j
+make
 ctest -V
 ```
 

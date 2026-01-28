@@ -19,7 +19,7 @@
         And finally, build and run the example:
         ```bash { .yaml .copy }
         cmake ..
-        make -j
+        make
         ./libtropic_fw_update
         ```
 

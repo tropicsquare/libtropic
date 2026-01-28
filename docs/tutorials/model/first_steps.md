@@ -55,7 +55,7 @@ At first, let's see the *Hello, World!* example. You can find this example at `e
         mkdir build
         cd build
         cmake ..
-        make -j
+        make
         ./libtropic_hello_world
         ```
 
