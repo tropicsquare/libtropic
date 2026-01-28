@@ -27,14 +27,6 @@ PSA Crypto must be configured with the following features:
 - `PSA_WANT_KEY_TYPE_ECC_KEY_PAIR` - ECC key pair support.
 - `PSA_WANT_KEY_TYPE_ECC_PUBLIC_KEY` - ECC public key support.
 
-## Build Dependencies
-Note that MbedTLS 4.0.0 has the following Python dependencies to build it:
-
-- `jinja2`,
-- `jsonschema`.
-
-Refer to the MbedTLS documentation for more information.
-
 ## Implementation Notes
 ### Including PSA Crypto Headers
 The MbedTLS headers contain some redundant declarations, see [this issue on GitHub](https://github.com/Mbed-TLS/mbedtls/issues/10376). As the errors are present in headers, not in the implementation files (.c), our strict compilation flags catch those problems, even though we restrict compilation with strict flags only to our own code. To keep ability to use this flag without triggering compilation errors due problems with PSA Crypto, we have to wrap `#include` like following:
