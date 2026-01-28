@@ -6,21 +6,26 @@
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         Go to the example's project directory:
-        ```bash { .yaml .copy }
+        ```bash {.copy }
         cd examples/stm32/<your_board>/identify_chip/
         ```
 
         Create a `build/` directory and switch to it:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         mkdir build/
         cd build/
         ```
 
+        Open your STM32's serial port using your preferred serial monitor with configuration 8-N-1 and baudrate set to 115200. By default, the serial port is mapped to `/dev/ttyACM0`. For example, using GTKTerm:
+        ```bash { .copy }
+        gtkterm -p /dev/ttyACM0 -s 115200
+        ```
+
         And finally, build and run the example:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cmake ..
         make
-        ./libtropic_identify_chip
+        make flash
         ```
 
     === ":fontawesome-brands-apple: macOS"
@@ -29,6 +34,6 @@
     === ":fontawesome-brands-windows: Windows"
         TBA
 
-    After this, you should see a colored output in your terminal.
+    After this, you should see a colored output in your serial monitor.
 
 [Next example :material-arrow-right:](fw_update.md){ .md-button }
