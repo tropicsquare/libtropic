@@ -77,6 +77,11 @@ nav:
         - 1. Chip Identification: tutorials/esp32/identify_chip.md
         - 2. FW Update: tutorials/esp32/fw_update.md
         - 3. Hello, World!: tutorials/esp32/hello_world.md
+      - STM32:
+        - tutorials/stm32/index.md
+        - 1. Chip Identification: tutorials/stm32/identify_chip.md
+        - 2. FW Update: tutorials/stm32/fw_update.md
+        - 3. Hello, World!: tutorials/stm32/hello_world.md
   - Reference:
     - reference/index.md
     - Libtropic Architecture: reference/libtropic_architecture.md
