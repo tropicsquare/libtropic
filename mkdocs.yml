@@ -150,6 +150,9 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.keys          # Allow rendering of keys (Ctrl, ...) to illustrate shortcuts.
 
+validation:
+  absolute_links: relative_to_docs
+
 extra:
   version:
     provider: mike
