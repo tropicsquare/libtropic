@@ -19,7 +19,7 @@
         And finally, build and run the example:
         ```bash { .yaml .copy }
         cmake ..
-        make -j
+        make
         ./libtropic_hello_world
         ```
 
@@ -37,7 +37,7 @@ If your TROPIC01 has engineering sample pairing keys, you can switch to them usi
         You can pass `LT_SH0_KEYS` to `cmake` as follows:
         ```bash { .yaml .copy }
         cmake -DLT_SH0_KEYS="eng_sample" ..
-        make -j
+        make
         ```
 
     === ":fontawesome-brands-apple: macOS"
