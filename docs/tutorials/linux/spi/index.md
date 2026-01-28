@@ -30,15 +30,15 @@ First, install the dependencies and prepare the repository:
         - `sudo apt update && sudo apt install cmake`
     2. Install GCC and Make via your distribution's package manager:
         - `sudo apt update && sudo apt install build-essential`
-    3. Get the Libtropic repository:
-        - Using git: `git clone https://github.com/tropicsquare/libtropic.git`
-        - Or you can [download latest release](https://github.com/tropicsquare/libtropic/releases/latest).
-    4. Install [MbedTLS](https://github.com/Mbed-TLS/mbedtls)'s Python dependencies: [jinja2](https://pypi.org/project/Jinja2/) and [jsonschema](https://pypi.org/project/jsonschema/)
+    3. Install [MbedTLS](https://github.com/Mbed-TLS/mbedtls)'s Python dependencies: [jinja2](https://pypi.org/project/Jinja2/) and [jsonschema](https://pypi.org/project/jsonschema/)
         - We recommend using [Python virtual environment](https://docs.python.org/3/library/venv.html):
             - Create it: `python3 -m venv .venv`
             - Activate it: `source .venv/bin/activate`
             - Update it: `pip3 install --upgrade pip`
         - Install the dependencies: `pip3 install jinja2 jsonschema`
+    4. Get the Libtropic repository:
+        - Using git: `git clone https://github.com/tropicsquare/libtropic.git`
+        - Or you can [download latest release](https://github.com/tropicsquare/libtropic/releases/latest).
 
 After that, setup your system:
 !!! example "System Setup Instructions"
