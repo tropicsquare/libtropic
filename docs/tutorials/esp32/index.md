@@ -1,5 +1,5 @@
 # ESP32 Tutorial
-This tutorial will guide you through the building of the examples in the `examples/esp32/` directory. In this directory, there are multiple subdirectories for each supported ESP32 board. Most of the instructions in this tutorial are common for all of the boards.
+This tutorial will help you get started with TROPIC01 on ESP32-based platforms using Libtropic. We will go through our examples in the `examples/esp32/` directory. In this directory, there are multiple subdirectories for each supported ESP32 board. Most of the instructions in this tutorial are common for all of the boards.
 
 ## Hardware Setup
 ### TROPIC01
@@ -67,7 +67,7 @@ Follow the connection instructions for your ESP32 board below:
         </div>
 
 !!! question "How to Use Different Pins?"
-    The pin connections above are used in our examples by default. If you want to use different pins, go to the examples's `main.c`, look for the `app_main()` function and adjust the assignments to the `lt_dev_esp_idf_t` structure.
+    The pin connections above are used in our examples by default. The pins can be changed in each example's `main.c` — look for the `app_main()` function and adjust the initialization of the `lt_dev_esp_idf_t` structure.
 
 ## Install Dependencies and Prepare the Repository
 See below for instructions based on your OS:
