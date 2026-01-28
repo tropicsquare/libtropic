@@ -62,8 +62,11 @@ nav:
         - 4. Mac-And-Destroy Example: tutorials/model/macandd_example.md
         - 5. Separate API Example: tutorials/model/separate_api.md
       - Linux:
-        - RPi / Arduino Devkit: tutorials/linux/arduino_rpi_shield.md
-        - USB Devkit: tutorials/linux/usb_devkit.md
+        - Linux SPI:
+          - tutorials/linux/spi/index.md
+          - 1. Chip Identification: tutorials/linux/spi/identify_chip.md
+          - 2. FW Update: tutorials/linux/spi/fw_update.md
+          - 3. Hello, World!: tutorials/linux/spi/hello_world.md
       - ESP32:
         - tutorials/esp32/index.md
         - 1. Chip Identification: tutorials/esp32/identify_chip.md
