@@ -32,9 +32,6 @@ See below for instructions based on your OS.
             - Use our install script: `scripts/tropic01_model/install_linux.sh`
             - The script will create a virtual environment.
             - Activate the environment: `source scripts/tropic01_model/.venv/bin/activate`
-        6. Install Python dependencies: jinja2 and jsonschema
-            - It's recommended to use virtual environment created in the step 4.
-            - Run: `pip3 install jinja2 jsonschema`
 
     === ":fontawesome-brands-apple: macOS"
         TBA
