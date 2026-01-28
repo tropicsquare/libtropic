@@ -6,18 +6,18 @@
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         Go to the example's project directory:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cd examples/linux/usb_devkit/hello_world/
         ```
 
         Create a `build/` directory and switch to it:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         mkdir build/
         cd build/
         ```
 
         And finally, build and run the example:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cmake ..
         make
         ./libtropic_hello_world
@@ -35,7 +35,7 @@ If your TROPIC01 has engineering sample pairing keys, you can switch to them usi
 !!! example "Switching to engineering sample pairing keys"
     === ":fontawesome-brands-linux: Linux"
         You can pass `LT_SH0_KEYS` to `cmake` as follows:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cmake -DLT_SH0_KEYS="eng_sample" ..
         make
         ```

@@ -6,12 +6,12 @@
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         Go to the example's project directory:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cd examples/esp32/<your_board>/fw_update/
         ```
 
         Build, flash and run the serial monitor using this command:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         idf.py build flash monitor
         ```
 

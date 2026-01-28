@@ -6,18 +6,18 @@
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         Go to the example's project directory:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cd examples/linux/usb_devkit/identify_chip/
         ```
 
         Create a `build/` directory and switch to it:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         mkdir build/
         cd build/
         ```
 
         And finally, build and run the example:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cmake ..
         make
         ./libtropic_identify_chip

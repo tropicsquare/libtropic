@@ -6,12 +6,12 @@
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         Go to the example's project directory:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         cd examples/esp32/<your_board>/hello_world/
         ```
 
         Build, flash and run the serial monitor using this command:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         idf.py build flash monitor
         ```
 
@@ -27,7 +27,7 @@ If your TROPIC01 has engineering sample pairing keys, you can switch to them usi
 !!! example "Switching to engineering sample pairing keys"
     === ":fontawesome-brands-linux: Linux"
         You can pass any CMake option to `idf.py` as follows:
-        ```bash { .yaml .copy }
+        ```bash { .copy }
         idf.py -DLT_SH0_KEYS="eng_sample" build flash monitor
         ```
 
