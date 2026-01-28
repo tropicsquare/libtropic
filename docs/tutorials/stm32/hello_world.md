@@ -51,4 +51,4 @@ If your TROPIC01 has engineering sample pairing keys, you can switch to them usi
     === ":fontawesome-brands-windows: Windows"
         TBA
 
-Additionally, see [Default Pairing Keys for a Secure Channel Handshake](../../../reference/default_pairing_keys.md) for more information.
+Additionally, see [Default Pairing Keys for a Secure Channel Handshake](../../reference/default_pairing_keys.md) for more information.
