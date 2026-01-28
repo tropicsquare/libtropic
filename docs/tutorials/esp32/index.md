@@ -6,31 +6,32 @@ This tutorial will help you get started with TROPIC01 on ESP32-based platforms u
 !!! info "TROPI01 Devkit for ESP32 boards"
     Currently, we don't offer a devkit for ESP32 boards. However, you can use any of our devkits that use SPI, except the USB DevKit.
 
-For the purpose of this tutorial, we will use the TROPIC01 Mini Board:
+For the purpose of this tutorial, we will use our TROPIC01 Arduino Shield:
 <figure style="text-align: center;">
-<img src="../../img/TS1701_Mini_Board_prod_photo.png" alt="TROPIC01 Mini Board" width="150"/>
+<img src="../../img/arduino-shield-highlighted-pins.svg" alt="TROPIC01 Arduino Shield with highlighted pins" width="500"/>
 <figcaption style="font-size: 0.9em; color: #555; margin-top: 0.5em;">
-    TROPIC01 Mini Board
+    TROPIC01 Arduino Shield with highlighted pins
   </figcaption>
 </figure>
-You can get TROPIC01 Mini Board and other devkits [here](https://www.tropicsquare.com/order-devkit).
+You can get TROPIC01 Arduino Shield and other devkits [here](https://www.tropicsquare.com/order-devkit).
 
 ### Your ESP32 Board
-Follow the connection instructions for your ESP32 board below:
+Unfortunately, ESP32 boards and our Arduino shield are not a plug-and-play, so, please, prepare some jump wires and use the figure above with highlighted pins to help you during the setup. Follow the connection instructions for your ESP32 board below:
 !!! example "Connection Instructions"
     === "ESP32-DevKitC-V4"
         ESP32-DevKitC-V4 pin layout [here](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32_devkitC_v4_pinlayout.png).
         <div style="text-align:center" markdown="1">
 
-        | ESP32-DevKitC-V4 Pin | TROPIC01 Mini Board Pin |
-        |:--------------------:|:-----------------------:|
-        | 3V3                  | VCC                     |
-        | GND                  | GND                     |
-        | GPIO32               | GPO                     |
-        | GPIO23               | SDI                     |
-        | GPIO19               | SDO                     |
-        | GPIO18               | SCK                     |
-        | GPIO5                | CSN                     |
+        | TROPIC01 Arduino Shield Pin | ESP32-DevKitC-V4 Pin |
+        |:---------------------------:|:--------------------:|
+        | IOREF                       | 3V3                  |
+        | +3V3                        | 3V3                  |
+        | GND                         | GND                  |
+        | GPO                         | GPIO32               |
+        | MOSI                        | GPIO23               |
+        | MISO                        | GPIO19               |
+        | SCK                         | GPIO18               |
+        | CS                          | GPIO5                |
         
         </div>
     
@@ -38,15 +39,16 @@ Follow the connection instructions for your ESP32 board below:
         ESP32-S3-DevKitC-1 pin layout [here](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/_images/ESP32-S3_DevKitC-1_pinlayout_v1.1.jpg).
         <div style="text-align:center" markdown="1">
 
-        | ESP32-S3-DevKitC-1 Pin | TROPIC01 Mini Board Pin |
-        |:----------------------:|:-----------------------:|
-        | 3V3                    | VCC                     |
-        | GND                    | GND                     |
-        | GPIO1                  | GPO                     |
-        | GPIO11                 | SDI                     |
-        | GPIO13                 | SDO                     |
-        | GPIO12                 | SCK                     |
-        | GPIO10                 | CSN                     |
+        | TROPIC01 Arduino Shield Pin | ESP32-S3-DevKitC-1 Pin |
+        |:---------------------------:|:----------------------:|
+        | IOREF                       | 3V3                    |
+        | +3V3                        | 3V3                    |
+        | GND                         | GND                    |
+        | GPO                         | GPIO1                  |
+        | MOSI                        | GPIO11                 |
+        | MISO                        | GPIO13                 |
+        | SCK                         | GPIO12                 |
+        | CS                          | GPIO10                 |
         
         </div>
 
@@ -54,22 +56,23 @@ Follow the connection instructions for your ESP32 board below:
         ESP32-C3-DevKit-RUST-1 pin layout [here](https://www.espboards.dev/img/fBEsfgdrv0-1000.png).
         <div style="text-align:center" markdown="1">
 
-        | ESP32-C3-DevKit-RUST-1 Pin | TROPIC01 Mini Board Pin |
-        |:--------------------------:|:-----------------------:|
-        | 3V3                        | VCC                     |
-        | GND                        | GND                     |
-        | GPIO10                     | GPO                     |
-        | GPIO1                      | SDI                     |
-        | GPIO0                      | SDO                     |
-        | GPIO3                      | SCK                     |
-        | GPIO8                      | CSN                     |
+        | TROPIC01 Arduino Shield Pin | ESP32-C3-DevKit-RUST-1 Pin |
+        |:---------------------------:|:--------------------------:|
+        | IOREF                       | 3V3                        |
+        | +3V3                        | 3V3                        |
+        | GND                         | GND                        |
+        | GPO                         | GPIO10                     |
+        | MOSI                        | GPIO1                      |
+        | MISO                        | GPIO0                      |
+        | SCK                         | GPIO3                      |
+        | CS                          | GPIO8                      |
         
         </div>
 
 !!! question "How to Use Different Pins?"
     The pin connections above are used in our examples by default. The pins can be changed in each example's `main.c` — look for the `app_main()` function and adjust the initialization of the `lt_dev_esp_idf_t` structure.
 
-## Install Dependencies and Prepare the Repository
+## Software Setup
 See below for instructions based on your OS:
 
 !!! example "Installation Instructions"
