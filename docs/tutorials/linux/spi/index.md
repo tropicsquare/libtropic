@@ -16,9 +16,9 @@ For the purpose of this example, we will use [Raspberry Pi 4](https://www.raspbe
 The aforementioned setup looks like the following:
 
 ??? info "Show images"
-    ![RPi Devkit Setup Top](./img/rpi_shield_setup_1.jpg)
+    ![RPi Devkit Setup Top](../img/rpi_shield_setup_1.jpg)
 
-    ![RPi Devkit Setup Side](./img/rpi_shield_setup_2.jpg)
+    ![RPi Devkit Setup Side](../img/rpi_shield_setup_2.jpg)
 
 !!! question "I am not using TROPIC01 Raspberry Pi Shield, how to use different pins?"
     The examples assume that TROPIC01 Raspberry Pi Shield is used by default. The pins and other things can be changed in each example's `main.c` — look for the `main()` function and adjust the initialization of the `lt_dev_linux_spi_t` structure.
@@ -65,4 +65,4 @@ After that, setup your system:
 3. [Hello, World!](hello_world.md)
 
 ## FAQ
-If you encounter any issues, please check the [FAQ](../../faq.md) before filing an issue or reaching out to our [support](https://support.desk.tropicsquare.com/).
+If you encounter any issues, please check the [FAQ](../../../faq.md) before filing an issue or reaching out to our [support](https://support.desk.tropicsquare.com/).
