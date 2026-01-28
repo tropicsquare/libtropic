@@ -16,4 +16,4 @@ Pick a tutorial based on your host platform and a development kit you want to us
 - :fontawesome-brands-linux: Linux
     - [:fontawesome-solid-microchip: Linux SPI](linux/spi/index.md)
     - [:fontawesome-brands-usb: TROPIC01 USB Devkit](linux/usb_devkit/index.md)
-- [ESP32](esp32/index.md)
+- [:simple-espressif: ESP32](esp32/index.md)
