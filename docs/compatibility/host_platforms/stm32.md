@@ -6,3 +6,5 @@ Currently supported STM32 platforms are:
     - Using interrupt pin (`LT_USE_INT_PIN`) is not supported for this platform.
 
 HALs for these ports are available in the `libtropic/hal/stm32/` directory.
+
+See our [STM32 Tutorial](../../tutorials/stm32/index.md) to quickly get started.

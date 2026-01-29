@@ -17,3 +17,4 @@ Pick a tutorial based on your host platform:
     - [:fontawesome-solid-microchip: Linux SPI](linux/spi/index.md)
     - [:fontawesome-brands-usb: TROPIC01 USB Devkit](linux/usb_devkit/index.md)
 - [:simple-espressif: ESP32](esp32/index.md)
+- [:simple-stmicroelectronics: STM32](stm32/index.md)
