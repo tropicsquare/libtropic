@@ -8,15 +8,15 @@ This tutorial will help you get started with TROPIC01 on ESP32-based platforms u
 
 For the purpose of this tutorial, we will use our TROPIC01 Arduino Shield:
 <figure style="text-align: center;">
-<img src="../../img/arduino-shield-highlighted-pins.svg" alt="TROPIC01 Arduino Shield with highlighted pins" width="500"/>
+<img src="../../img/arduino-shield-pinout.svg" alt="TROPIC01 Arduino Shield pinout" width="500"/>
 <figcaption style="font-size: 0.9em; color: #555; margin-top: 0.5em;">
-    TROPIC01 Arduino Shield with highlighted pins
+    TROPIC01 Arduino Shield pinout
   </figcaption>
 </figure>
 You can get TROPIC01 Arduino Shield and other devkits [here](https://www.tropicsquare.com/order-devkit).
 
 ### Your ESP32 Board
-Unfortunately, ESP32 boards and our Arduino shield are not a plug-and-play, so, please, prepare some jump wires and use the figure above with highlighted pins to help you during the setup. Follow the connection instructions for your ESP32 board below:
+Unfortunately, ESP32 boards and our Arduino shield are not a plug-and-play, so, please, prepare some jump wires and use the figure above with Arduino Shield Pinout to help you during the setup. Follow the connection instructions for your ESP32 board below:
 !!! example "Connection Instructions"
     === "ESP32-DevKitC-V4"
         ESP32-DevKitC-V4 pin layout [here](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/_images/esp32_devkitC_v4_pinlayout.png).

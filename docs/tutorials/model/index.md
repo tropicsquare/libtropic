@@ -17,10 +17,10 @@ See below for instructions based on your OS:
             - You can also use your distribution's package manager.
                 - Fedora: `sudo dnf install python3`
                 - Debian/Ubuntu: `sudo apt update && sudo apt install python3`
-        2. [Install CMake](https://cmake.org/download/)
-            - You can also use your distribution's package manager.
-                - Fedora: `sudo dnf install cmake`
-                - Debian/Ubuntu: `sudo apt update && sudo apt install cmake`
+        2. Install CMake:
+            - Ubuntu/Debian: `sudo apt update && sudo apt install cmake`
+            - Fedora: `sudo dnf install cmake`
+            - Other: [cmake.org](https://cmake.org/download/)
         3. Install GCC and Make via your distribution's package manager
             - Some distributions offer complete development environment (including headers), so it's recommended to install this.
             - Fedora: `sudo dnf group install development-tools`

@@ -26,8 +26,10 @@ The aforementioned setup looks like the following:
 ## Software Setup
 First, install the dependencies and prepare the repository:
 !!! example "Installation Instructions"
-    1. Install CMake [directly](https://cmake.org/download/) or use your distribution's package manager:
-        - `sudo apt update && sudo apt install cmake`
+    1. Install CMake:
+        - Ubuntu/Debian: `sudo apt update && sudo apt install cmake`
+        - Fedora: `sudo dnf install cmake`
+        - Other: [cmake.org](https://cmake.org/download/)
     2. Install GCC and Make via your distribution's package manager:
         - `sudo apt update && sudo apt install build-essential`
     3. Get the Libtropic repository:
