@@ -62,8 +62,8 @@ Choose and follow instructions depending on your OS:
         4. Install [OpenOCD](https://openocd.org/pages/getting-openocd.html):
             - Ubuntu/Debian: `sudo apt update && sudo apt install openocd`
             - Fedora: `sudo dnf install openocd`
-        5. Install a serial monitor of your choice (`minicom`, `screen`, `GTKTerm`, `PuTTY`, or `RealTerm`).
-            - For beginners we recommend GTKTerm.
+        5. Install a serial monitor of your choice (`minicom`, `screen`, `GTKTerm`).
+            - For beginners we recommend GUI-based GTKTerm.
                 - Ubuntu/Debian: `sudo apt update && sudo apt install gtkterm`
                 - Fedora: `sudo dnf install gtkterm`
         6. Get the Libtropic repository:
