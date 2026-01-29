@@ -10,7 +10,7 @@ We will go through our examples in the `examples/stm32/` directory. In this dire
         The Nucleo F439ZI board is compatible with our **TROPIC01 Arduino Shield**, which we recommend for this tutorial. You can get the shield [here](https://www.tropicsquare.com/order-devkit).
 
         <figure style="text-align: center;">
-        <img src="../../img/tropic01_arduino_shield_pinout.png" alt="TROPIC01 Arduino Shield Pinout" width="600"/>
+        <img src="../../img/arduino-shield-pinout.svg" alt="TROPIC01 Arduino Shield pinout" width="600"/>
         <figcaption style="font-size: 0.9em; color: #555; margin-top: 0.5em;">
             TROPIC01 Arduino Shield pinout
         </figcaption>
@@ -44,9 +44,8 @@ We will go through our examples in the `examples/stm32/` directory. In this dire
     ??? question "Advanced: How to Use Different Nucleo Pins?"
         The pin assignments above are used in our examples by default. The pins can be changed in the source code of each example. However, apart from changing assignment, you also have to initialize different peripherals, which is not documented here.
 
-## Install Dependencies and Prepare the Repository
-Choose and follow instructions depending on your OS:
-
+## Software Setup
+First, install the dependencies and prepare the repository:
 !!! example "Installation Instructions"
     === ":fontawesome-brands-linux: Linux"
         1. Install CMake:
@@ -76,6 +75,7 @@ Choose and follow instructions depending on your OS:
     === ":fontawesome-brands-windows: Windows"
         TBA
 
+After that, setup your system:
 !!! example "System Setup Instructions"
     === ":fontawesome-brands-linux: Linux"
         To upload the example programs, you need to have access to USB devices (usually, you must be a member of the `plugdev` group). Also, permissions (udev rules) have to be correctly configured, refer to the [OpenOCD documentation](https://openocd.org/pages/documentation.html).
