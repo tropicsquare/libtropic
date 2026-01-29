@@ -20,6 +20,9 @@
         ```bash { .copy }
         gtkterm -p /dev/ttyACM0 -s 115200
         ```
+        
+        !!! warning
+            Make sure only one serial monitor has the STM32's serial port open, otherwise your output may appear mangled.
 
         And finally, build and run the example:
         ```bash { .copy }
