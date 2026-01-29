@@ -10,42 +10,49 @@ The functional tests are organized into two categories, as some of them may caus
 !!! danger "DANGER!"
     Functional tests are for internal use only and are provided only for reference. Some tests can **destroy** your chip. **Do not run the tests** unless you use model only or you are absolutely sure what you are doing. If you damage your chip with the tests, we are unable to provide any support.
 
-For each supported host platform (HAL), there is a subdirectory in `tests/functional`. Tests can be compiled as following (we will use model as an example):
+For each supported host platform (HAL), there is a subdirectory in `tests/functional/`. Tests can be compiled as following (we will use model as an example):
 
-```bash
-cd tests/functional/model
-mkdir build
-cd build
-cmake -DLT_CAL=mbedtls_v4 ..
-make
-```
+!!! example "Compiling Functional Tests for Model"
+    Create a `build/` directory and switch to it:
+    ```bash { .copy }
+    cd tests/functional/model/
+    mkdir build/
+    cd build/
+    ```
+    Build the tests for model with Crypto Abstraction Layer (CAL) for MbedTLS:
+    ```bash { .copy }
+    cmake -DLT_CAL=mbedtls_v4 ..
+    make
+    ```
 
-As you can see, there is one mandatory parameter for selection of the Crypto Abstraction Layer. See `cal/` directory for currently supported CALs or just run `cmake -DLT_CAL= ..` for enumeration of supported options. There are also other options, see [Available Options](#available-options).
+As you can see, there is one mandatory parameter for selection of the Crypto Abstraction Layer (CAL). See `cal/` directory for currently supported CALs or just run `cmake -DLT_CAL= ..` for enumeration of supported options. There are also other options, see [Available Options](#available-options).
 
-After compilation is finished, the tests can be run using CTest. To see available tests, run:
+After compilation is finished, the tests can be run using CTest:
+!!! example "Using CTest"
+    To see available tests, run:
+    ```bash { .copy }
+    ctest -N
+    ```
 
-```shell
-ctest -N
-```
-To select specific test(s) using regular expression, run:
-```shell
-ctest -R <test_regex>
-```
-where `<test_regex>` is a regular expression for the test names from the list.
+    To select specific test(s) using regular expression, run:
+    ```bash { .copy }
+    ctest -R <test_regex>
+    ```
+    where `<test_regex>` is a regular expression for the test names from the list.
 
-To run all reversible tests, simply run:
-```shell
-ctest _rev_
-```
-  
-To exclude some tests, run:
-```shell
-ctest -E <test_regex>
-```
-where `<test_regex>` is a regular expression for the test names from the list.
+    To run all reversible tests, simply run:
+    ```bash { .copy }
+    ctest _rev_
+    ```
+    
+    To exclude some tests, run:
+    ```bash { .copy }
+    ctest -E <test_regex>
+    ```
+    where `<test_regex>` is a regular expression for the test names from the list.
 
 ### Test Logs
-Tests on the model output all logging information into separate files in `build/run_logs`. All other platforms output logging to stdout, which can be redirected either using standard [Bash redirection](https://www.gnu.org/software/bash/manual/html_node/Redirections.html) or using [CTest options](https://cmake.org/cmake/help/latest/manual/ctest.1.html#run-tests).
+Tests on the model output all logging information into separate files in `tests/functional/model/build/run_logs/`. All other platforms output logging to stdout, which can be redirected either using standard [Bash redirection](https://www.gnu.org/software/bash/manual/html_node/Redirections.html) or using [CTest options](https://cmake.org/cmake/help/latest/manual/ctest.1.html#run-tests).
 
 To enable verbose output from CTest, run `ctest -V` or `ctest -W` switch for even more verbose output.
 
@@ -64,18 +71,19 @@ Options common for all host platforms:
 We support running tests with GNU Debugger, Valgrind and Address Sanitizer. See [Debugging](../../reference/debugging.md).
 
 ## Compatibility
-Not all tests are compatible with the model, as it does not implement all of the TROPIC01's functionality. To see which tests are unavailable for the model, simply run `ctest -N` and compare with the sources or have a look at `CMakeLists.txt`, where the tests are removed using `list(REMOVE_ITEM LIBTROPIC_TEST_LIST <list>)`.
+Not all tests are compatible with the model, as it does not implement all of the TROPIC01's functionality. To see which tests are unavailable for the model, simply run `ctest -N` and compare with the sources or have a look at `tests/functional/model/CMakeLists.txt`, where the tests are removed using `list(REMOVE_ITEM LIBTROPIC_TEST_LIST <list>)`.
 
 ## Adding a New Test
 To add a new test, you need to:
 
 1. Decide whether the test is reversible or irreversible (see [Test Types and Cleanup](#test-types-and-cleanup) if you are not sure).
 2. Write the new test (see [Test Template](#test-template)).
-3. Add the declaration together with a Doxygen comment to `include/libtropic_functional_tests.h`.
-4. Add the test to the root `CMakeLists.txt`:
-        - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST` (it must match the name of the function that implements the test)
-        - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
-            with test source files. Add your test source file there.
+3. Add the declaration together with a Doxygen comment to `tests/functional/src/libtropic_functional_tests.h`.
+4. Add the test to `tests/functional/src/CMakeLists.txt`:
+
+    - In the section "LIBTROPIC FUNCTIONAL TESTS", add the test name to the `LIBTROPIC_TEST_LIST` (it must match the name of the function that implements the test)
+    - Below the `LIBTROPIC_TEST_LIST`, there is a section where `SDK_SRCS` is extended
+        with test source files. Add your test source file there.
 5. Make sure your test works - you can run it against the model. If the test
    fails, you either:
     - Did a mistake in the test. Fix it.
@@ -106,7 +114,7 @@ You can reuse your cleanup function at the end of the test so you don't have to 
 ### Test Template
 Change the lines marked with `TODO`.
 
-```c
+```c { .copy }
 /**
  * @file TODO: FILL ME
  * @brief TODO: FILL ME

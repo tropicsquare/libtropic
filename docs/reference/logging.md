@@ -1,5 +1,5 @@
 # Logging
-Libtropic contains a logging functionality, which is disabled by default (unless you compile *tests* or *examples*).
+Libtropic contains a logging functionality, which is disabled by default.
 
 You may find it useful to enable logging during libtropic evaluation or integration. There are five logging levels:
 

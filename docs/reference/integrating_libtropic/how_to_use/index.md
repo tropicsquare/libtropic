@@ -14,7 +14,7 @@ To start using Libtropic in your application, include the following headers:
 
 ## Libtropic Bare-Bone Example
 The following bare-bone example shows how to initialize Libtropic, so it can be used to communicate with TROPIC01:
-```c
+```c { .copy }
 #include "libtropic_common.h"
 #include "libtropic.h"
 #include "libtropic_port_<port_name>.h"

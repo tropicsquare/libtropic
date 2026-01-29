@@ -1,11 +1,12 @@
 # Linux
 Libtropic support on Linux is implemented with:
 
-- [SPI and GPIO Linux Userspace API](#spi-and-gpio-linux-userspace-api)
+- [Linux](#linux)
+  - [SPI and GPIO Linux Userspace API](#spi-and-gpio-linux-userspace-api)
 
 HALs for these ports are available in the `libtropic/hal/linux/` directory.
 
-Libtropic example usage with these ports is currently available in our [libtropic-linux](https://github.com/tropicsquare/libtropic-linux) repository.
+See our [Linux SPI Tutorial](../../tutorials/linux/spi/index.md) to quickly get started.
 
 ## SPI and GPIO Linux Userspace API
 This port uses the [SPI](https://docs.kernel.org/spi/spidev.html) and [GPIO](https://docs.kernel.org/userspace-api/gpio/chardev.html) Linux Userspace API. It was tested on:

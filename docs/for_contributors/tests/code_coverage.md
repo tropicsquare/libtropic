@@ -10,47 +10,56 @@ To measure total code coverage from both functional and functional mock tests, c
 ## Running Functional Tests with Coverage against Model
 We support collecting coverage only against [TROPIC01 Model](../../tutorials/model/index.md) (refer to this link for preparation instructions).
 
-To activate coverage collection, add the switch `-DLT_TEST_COVERAGE=1` when invoking `cmake`. Follow these steps:
-```shell
-cd tests/functional/model
-mkdir -p build
-cd build
-cmake -DLT_TEST_COVERAGE=1 -DLT_CAL="mbedtls_v4" ..
-make
-ctest -V
-```
+!!! example "Collecting coverage of Functional Tests"
+    Create a `build/` directory and switch to it:
+    ```bash { .copy }
+    cd tests/functional/model/
+    mkdir -p build/
+    cd build/
+    ```
+    To activate coverage collection, add the switch `-DLT_TEST_COVERAGE=1` when invoking `cmake`:
+    ```bash { .copy }
+    cmake -DLT_TEST_COVERAGE=1 -DLT_CAL="mbedtls_v4" ..
+    make
+    ctest -V
+    ```
 
-After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results:
-```shell
-# Execute this from the tests/functional/model/build directory!
-gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../../..
-```
+    After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results (execute from the `tests/functional/model/build/` directory):
+    ```bash { .copy }
+    gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../../..
+    ```
 
 ## Running Functional Mock Tests
 Run functional mock tests on the same platform you used for the previous tests. The tests can be compiled and run as following:
 
-```shell
-cd tests/functional_mock
-mkdir -p build
-cd build
-cmake -DLT_TEST_COVERAGE=1 ..
-make
-ctest -V
-```
+!!! example "Collecting coverage of Functional Mock Tests"
+    Create a `build/` directory and switch to it:
+    ```bash { .copy }
+    cd tests/functional_mock/
+    mkdir -p build/
+    cd build/
+    ```
+    To activate coverage collection, add the switch `-DLT_TEST_COVERAGE=1` when invoking `cmake`:
+    ```bash { .copy }
+    cmake -DLT_TEST_COVERAGE=1 ..
+    make
+    ctest -V
+    ```
 
-After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results:
-```shell
-# Execute this from the tests/functional_mock/build directory!
-gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../..
-```
+    After CTest finishes, use [gcovr](https://github.com/gcovr/gcovr) to export results (execute from the `tests/functional_mock/build/` directory):
+    ```bash { .copy }
+    gcovr --json coverage_trace.json --exclude '.*_deps/.*|.*cal/.*|.*hal/.*' -r ../../..
+    ```
 
 ## Merging and Exporting Total Coverage
-Use the following command to merge results and export in text format:
-
-```shell
-# Execute this from the repository root (or adjust paths accordingly)
-gcovr --json-add-tracefile tests/functional_mock/build/coverage_trace.json --json-add-tracefile tests/functional/model/build/coverage_trace.json --txt coverage.txt
-```
+Merge results and export in text format:
+!!! example "Merging Coverage Results and Exporting to Text Format"
+    Execute this from the repository root (or adjust paths accordingly):
+    ```bash { .copy }
+    gcovr --json-add-tracefile tests/functional_mock/build/coverage_trace.json \
+          --json-add-tracefile tests/functional/model/build/coverage_trace.json \
+          --txt coverage.txt
+    ```
 
 !!! tip "Tip: Gcovr Output Formats"
     You can use `--html` or `--html-details` output options to export in a HTML format or `--markdown` to export in a Markdown format instead of `--txt`.

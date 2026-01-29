@@ -18,14 +18,14 @@ You can also use GNU Debugger to debug the tests:
 !!! question "Not sure if ASan or Valgrind is working?"
     Paste one of the following snippets to a source file where you want to check the error detection.
 
-    ```c
+    ```c { .copy }
     char *p = malloc(10);
     if (!p) return 1;
     p[10] = 'X'; // one-past-end heap buffer write -> ASan/Valgrind should report
     free(p);
     ```
 
-    ```c
+    ```c { .copy }
     char *p = malloc(16);
     if (!p) return 1;
     free(p);

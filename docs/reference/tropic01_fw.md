@@ -17,7 +17,7 @@ There are multiple kinds of FW running in TROPIC01:
 Libtropic provides not only implementation of the FW update L2 commands, but also the necessary files for updating both the RISC-V and SPECT FW. Refer to:
 
 1. [Firmware Update Files](#firmware-update-files) section for more information about the `TROPIC01_fw_update_files/` directory.
-2. [Tutorials](../tutorials/index.md), where we demonstrate the firmware update feature. Have a look at, for example, [Firmware Update on TROPIC01 USB Devkit on Linux](../tutorials/linux/usb_devkit/fw_update.md)
+2. [Tutorials](../tutorials/index.md), where we demonstrate the firmware update feature. Have a look at, for example, [Firmware Update on TROPIC01 USB Devkit on Linux](../tutorials/linux/usb_devkit/fw_update.md).
 
 ### Firmware Update Files
 The `TROPIC01_fw_update_files/` directory provides TROPIC01 FW update files in two formats:

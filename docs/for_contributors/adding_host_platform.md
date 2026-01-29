@@ -14,7 +14,7 @@ To add support for a our new platform (`my_board` with `my_mcu`):
     For inspiration, see the existing HALs inside `hal/`.
 
 After these steps, the sources and include directories of the new HAL should be available in consumer's `CMakeLists.txt` by calling:
-```cmake
+```cmake { .copy }
 add_subdirectory("<path_to_libtropic>/hal/my_mcu/my_board")
 ```
 
@@ -32,7 +32,7 @@ By doing this, the CMake variables `LT_HAL_SRCS` and `LT_HAL_INC_DIRS` will beco
     - `libtropic_port_my_mcu_my_board.c`.
 4. Inside `libtropic_port_my_mcu_my_board.h`, declare:
     1. A new device structure with public and private members in the following way:
-```c
+```c { .copy }
 typedef struct lt_dev_my_mcu_my_board_t {
     // Public part
     /** @brief @public first public member comment */
@@ -52,7 +52,7 @@ typedef struct lt_dev_my_mcu_my_board_t {
     2. Additional macros or types you will need in `libtropic_port_my_mcu_my_board.c`.
 
 5. Inside `libtropic_port_my_mcu_my_board.c`, implement all functions declared in `include/libtropic_port.h`. All of the port functions have an instance of `lt_l2_state_t` as one of the parameters, where your instance of `lt_dev_my_mcu_my_board_t` will be saved, so you can get it in a following way:
-```c
+```c { .copy }
 // one of the functions from include/libtropic_port.h
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
@@ -72,7 +72,7 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 
 ### Create and Implement the HAL CMakeLists.txt
 Inside `hal/my_mcu/my_board/`, create a `CMakeLists.txt` with the following contents:
-```cmake
+```cmake { .copy }
 set(LT_HAL_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/libtropic_port_my_mcu_my_board.c
     # Other source files if needed

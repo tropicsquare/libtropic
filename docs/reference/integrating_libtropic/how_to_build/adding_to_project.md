@@ -2,39 +2,39 @@
 We recommend adding Libtropic to an existing project as a [git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). Libtropic uses the CMake build system, so it can be added to the compilation of existing CMake projects as follows:
 
 1. Set path to the Libtropic submodule, for example as:
-```cmake
+```cmake { .copy }
 set(PATH_LIBTROPIC ${CMAKE_CURRENT_SOURCE_DIR}/../vendor/libtropic/)
 ```
 2. Add the Libtropic subdirectory:
-```cmake
+```cmake { .copy }
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 ```
 3. By default, Libtropic does not link a CFP (Cryptographic Functionality Provider) or its CAL (Crypto Abstraction Layer), so it can be built as a static library. This is the consumer's responsibility:
     1. For the chosen CFP (e.g. MbedTLS v4.0.0), add the correct subdirectory inside `libtropic/cal/`, which provides the corresponding CAL sources and include directories:
-    ```cmake
+    ```cmake { .copy }
     add_subdirectory("${PATH_LIBTROPIC}cal/mbedtls_v4")
     ```
     2. Add the obtained sources and include directories to the `tropic` target:
-    ```cmake
+    ```cmake { .copy }
     target_sources(tropic PRIVATE ${LT_CAL_SRCS})
     target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS})
     ```
     3. Link the CFP (provided by the consumer) to the `tropic` target:
-    ```cmake
+    ```cmake { .copy }
     target_link_libraries(tropic PUBLIC mbedtls)
     ```
 4. By default, libtropic does not link platform-specific code or its HAL, so it can be built as a static library. This is the consumer's responsibility:
     1. For the chosen platform (e.g. Linux with HW SPI), add a corresponding HAL using `add_subdirectory`:
-    ```cmake
+    ```cmake { .copy }
     add_subdirectory("${PATH_TO_LIBTROPIC}hal/linux/spi")
     ```
     2. Add HAL sources and include directories to the `tropic` target. In the previous step, `LT_HAL_SRCS` and `LT_HAL_INC_DIRS` variables were populated based on the selected HAL, so you can use those:
-    ```cmake
+    ```cmake { .copy }
     target_sources(tropic PRIVATE ${LT_HAL_SRCS})
     target_include_directories(tropic PUBLIC ${LT_HAL_INC_DIRS})
     ```
 5. And finally, link Libtropic with your binary:
-```cmake
+```cmake { .copy }
 target_link_libraries(my_binary_name PRIVATE tropic)
 ```
 
@@ -42,7 +42,7 @@ target_link_libraries(my_binary_name PRIVATE tropic)
     The exact CMake calls depend on a configuration of the project into which libtropic is being added. For more inspiration, refer to our standalone example projects in `examples/` (explained in [Tutorials](../../../tutorials/index.md)) and the [CMake Documentation](https://cmake.org/cmake/help/latest/index.html).
 
 !!! info "Supported Host Platforms and CFPs"
-    Refer to sections [Supported Host Platforms](../../../compatibility/host_platforms/index.md) and [Supported Cryptographic Functionality Providers](../../../compatibility/cfps/index.md) to see what is supported.
+    Refer to [Compatibility](../../../compatibility/index.md) section to see what is supported.
 
 
 ## Do You Use a Makefile Instead of CMake?

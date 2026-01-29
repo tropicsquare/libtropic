@@ -1,23 +1,18 @@
 # How to Configure
 Libtropic can be configured using the [Available CMake Options](#available-cmake-options) (let's say `LT_CFG_OPT`) in the following ways:
 
-1. Via a command line when building the project:
-```cmake
-cmake -DLT_CFG_OPT=value ..
-```
-2. Using the CMake GUI. This makes the configuring process more user-friendly compared to the previous way. For more information, refer to the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) documentation.
-3. In your project's `CMakeLists.txt`:
-```cmake
-set(LT_CFG_OPT value)
-```
+!!! example "Configuring Libtropic"
+    1. Via a command line when building the project:
+    ```cmake { .copy }
+    cmake -DLT_CFG_OPT=value ..
+    ```
+    2. Using the CMake GUI. This makes the configuring process more user-friendly compared to the previous way. For more information, refer to the [cmake-gui](https://cmake.org/cmake/help/latest/manual/cmake-gui.1.html) documentation.
+    3. In your project's `CMakeLists.txt`:
+    ```cmake  { .copy }
+    set(LT_CFG_OPT value)
+    ```
 
 ## Available CMake Options
-
-### `LT_BUILD_TESTS`
-- boolean
-- default value: `OFF`
-
-[Functional tests](../../../for_contributors/tests/functional_tests.md) will be built as part of the Libtropic library.
 
 ### `LT_HELPERS`
 - boolean

@@ -23,7 +23,7 @@ To add support for a new CFP (let's say `mycrypto`):
     For inspiration, see the existing CALs inside `cal/`.
 
 After these steps, the sources and include directories of the new CAL should be available in consumer's `CMakeLists.txt` by calling:
-```cmake
+```cmake { .copy }
 add_subdirectory("<path_to_libtropic>/cal/mycrypto")
 ```
 
@@ -50,7 +50,7 @@ By doing this, the CMake variables `LT_CAL_SRCS` and `LT_CAL_INC_DIRS` will beco
         To implement Curve25519 functions, copy declarations from `lt_x25519.h` to `lt_mycrypto_x25519.c` and provide implementations.
 
 4. Inside `cal/mycrypto/`, create a file `libtropic_mycrypto.h`. This file should declare the **context structure** for `mycrypto`:
-```c
+```c { .copy }
 typedef struct lt_ctx_mycrypto_t {
     /** @private @brief AES-GCM context for encryption. */
     // TODO
@@ -68,7 +68,7 @@ typedef struct lt_ctx_mycrypto_t {
 
 ### Create and Implement the CAL CMakeLists.txt
 Inside `cal/mycrypto/`, create a `CMakeLists.txt` with the following contents:
-```cmake
+```cmake { .copy }
 set(LT_CAL_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_common.c    
     ${CMAKE_CURRENT_SOURCE_DIR}/lt_mycrypto_aesgcm.c
