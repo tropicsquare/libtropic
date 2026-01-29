@@ -6,7 +6,7 @@
 !!! example "Building and running the example"
     === ":fontawesome-brands-linux: Linux"
         Go to the example's project directory:
-        ```bash {.copy }
+        ```bash { .copy }
         cd examples/stm32/<your_board>/identify_chip/
         ```
 
