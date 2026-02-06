@@ -91,7 +91,8 @@ static HAL_StatusTypeDef DBG_UART_Init(void)
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         /* Error */
-        while (1);
+        while (1)
+            ;
     }
 
     /* Configure HSI as USART clock source */
@@ -321,7 +322,8 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLQ = 4;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
         /* Initialization Error */
-        while (1);
+        while (1)
+            ;
     }
 
     /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
@@ -334,7 +336,8 @@ void SystemClock_Config(void)
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
     if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) {
         /* Initialization Error */
-        while (1);
+        while (1)
+            ;
     }
 }
 

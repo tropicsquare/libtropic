@@ -8,20 +8,19 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+   public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+   private slots:
     void on_buttonLoad_clicked();
     void on_spinAccount_valueChanged(int arg1);
 
-private:
+   private:
     Ui::MainWindow *ui;
 };
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

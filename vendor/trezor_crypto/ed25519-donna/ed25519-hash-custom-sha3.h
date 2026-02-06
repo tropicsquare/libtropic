@@ -1,12 +1,12 @@
 /*
-	a custom hash must have a 512bit digest and implement:
+    a custom hash must have a 512bit digest and implement:
 
-	struct ed25519_hash_context;
+    struct ed25519_hash_context;
 
-	void ed25519_hash_init(ed25519_hash_context *ctx);
-	void ed25519_hash_update(ed25519_hash_context *ctx, const uint8_t *in, size_t inlen);
-	void ed25519_hash_final(ed25519_hash_context *ctx, uint8_t *hash);
-	void ed25519_hash(uint8_t *hash, const uint8_t *in, size_t inlen);
+    void ed25519_hash_init(ed25519_hash_context *ctx);
+    void ed25519_hash_update(ed25519_hash_context *ctx, const uint8_t *in, size_t inlen);
+    void ed25519_hash_final(ed25519_hash_context *ctx, uint8_t *hash);
+    void ed25519_hash(uint8_t *hash, const uint8_t *in, size_t inlen);
 */
 
 #ifndef ED25519_HASH_CUSTOM
@@ -20,4 +20,4 @@
 #define ed25519_hash_final(ctx, hash) sha3_Final((ctx), (hash))
 #define ed25519_hash(hash, in, inlen) sha3_512((in), (inlen), (hash))
 
-#endif // ED25519_HASH_CUSTOM
+#endif  // ED25519_HASH_CUSTOM

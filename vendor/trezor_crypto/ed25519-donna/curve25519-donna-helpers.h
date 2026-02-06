@@ -1,8 +1,8 @@
 /*
-	Public domain by Andrew M. <liquidsun@gmail.com>
-	See: https://github.com/floodyberry/curve25519-donna
+    Public domain by Andrew M. <liquidsun@gmail.com>
+    See: https://github.com/floodyberry/curve25519-donna
 
-	Curve25519 implementation agnostic helpers
+    Curve25519 implementation agnostic helpers
 */
 
 /*

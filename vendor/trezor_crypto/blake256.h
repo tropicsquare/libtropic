@@ -31,17 +31,17 @@
 #ifndef __BLAKE256_H__
 #define __BLAKE256_H__
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define BLAKE256_DIGEST_LENGTH 32
-#define BLAKE256_BLOCK_LENGTH  64
+#define BLAKE256_BLOCK_LENGTH 64
 
 typedef struct {
-  uint32_t h[8], s[4], t[2];
-  size_t buflen;
-  uint8_t nullt;
-  uint8_t buf[64];
+    uint32_t h[8], s[4], t[2];
+    size_t buflen;
+    uint8_t nullt;
+    uint8_t buf[64];
 } BLAKE256_CTX;
 
 void blake256_Init(BLAKE256_CTX *);

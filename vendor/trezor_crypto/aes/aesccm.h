@@ -28,16 +28,12 @@
 
 #include "aes/aes.h"
 
-AES_RETURN aes_ccm_encrypt(aes_encrypt_ctx *encrypt_ctx, const uint8_t *nonce,
-                           size_t nonce_len, const uint8_t *adata,
-                           size_t adata_len, const uint8_t *plaintext,
-                           size_t plaintext_len, size_t mac_len,
-                           uint8_t *ciphertext);
+AES_RETURN aes_ccm_encrypt(aes_encrypt_ctx *encrypt_ctx, const uint8_t *nonce, size_t nonce_len,
+                           const uint8_t *adata, size_t adata_len, const uint8_t *plaintext,
+                           size_t plaintext_len, size_t mac_len, uint8_t *ciphertext);
 
-AES_RETURN aes_ccm_decrypt(aes_encrypt_ctx *encrypt_ctx, const uint8_t *nonce,
-                           size_t nonce_len, const uint8_t *adata,
-                           size_t adata_len, const uint8_t *ciphertext,
-                           size_t ciphertext_len, size_t mac_len,
-                           uint8_t *plaintext);
+AES_RETURN aes_ccm_decrypt(aes_encrypt_ctx *encrypt_ctx, const uint8_t *nonce, size_t nonce_len,
+                           const uint8_t *adata, size_t adata_len, const uint8_t *ciphertext,
+                           size_t ciphertext_len, size_t mac_len, uint8_t *plaintext);
 
 #endif

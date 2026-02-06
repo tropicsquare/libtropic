@@ -26,6 +26,7 @@
 #define __SLIP39_WORDLIST_H__
 
 #include <stdint.h>
+
 #include "slip39.h"
 
 /**
@@ -39,8 +40,8 @@
  * Each word is uniquely defined by four buttons.
  */
 static const struct {
-  uint16_t sequence;
-  uint16_t index;
+    uint16_t sequence;
+    uint16_t index;
 } words_button_seq[SLIP39_WORD_COUNT] = {
     {1212, 0},     // academic
     {1216, 7},     // adapt

@@ -106,14 +106,15 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     }
 
     // Create configuration for the SPI CS GPIO pin.
-    gpio_config_t spi_cs_gpio_cfg = {.pin_bit_mask = (1ULL << dev->spi_cs_gpio_pin),
-                                     .mode = GPIO_MODE_OUTPUT,
-                                     .pull_up_en = GPIO_PULLUP_DISABLE,
-                                     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-                                     .intr_type = GPIO_INTR_DISABLE
+    gpio_config_t spi_cs_gpio_cfg = {
+        .pin_bit_mask = (1ULL << dev->spi_cs_gpio_pin),
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE
 #if SOC_GPIO_SUPPORT_PIN_HYS_FILTER
-                                     ,
-                                     .hys_ctrl_mode = GPIO_HYS_SOFT_DISABLE
+        ,
+        .hys_ctrl_mode = GPIO_HYS_SOFT_DISABLE
 #endif
     };
 
@@ -135,14 +136,15 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
 #if LT_USE_INT_PIN
     // Create configuration for the GPIO connected to TROPIC01's interrupt pin.
-    gpio_config_t int_gpio_cfg = {.pin_bit_mask = (1ULL << dev->int_gpio_pin),
-                                  .mode = GPIO_MODE_INPUT,
-                                  .pull_up_en = GPIO_PULLUP_DISABLE,
-                                  .pull_down_en = GPIO_PULLDOWN_DISABLE,
-                                  .intr_type = GPIO_INTR_POSEDGE
+    gpio_config_t int_gpio_cfg = {
+        .pin_bit_mask = (1ULL << dev->int_gpio_pin),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_POSEDGE
 #if SOC_GPIO_SUPPORT_PIN_HYS_FILTER
-                                  ,
-                                  .hys_ctrl_mode = GPIO_HYS_SOFT_DISABLE
+        ,
+        .hys_ctrl_mode = GPIO_HYS_SOFT_DISABLE
 #endif
     };
 

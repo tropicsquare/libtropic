@@ -1,8 +1,8 @@
 /*
-	Public domain by Andrew M. <liquidsun@gmail.com>
-	See: https://github.com/floodyberry/curve25519-donna
+    Public domain by Andrew M. <liquidsun@gmail.com>
+    See: https://github.com/floodyberry/curve25519-donna
 
-	32 bit integer curve25519 implementation
+    32 bit integer curve25519 implementation
 */
 
 typedef uint32_t bignum25519[10];

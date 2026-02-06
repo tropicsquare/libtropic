@@ -1,7 +1,7 @@
 extern const ge25519 ALIGN(16) ge25519_basepoint;
 
 /*
-	d
+    d
 */
 
 extern const bignum25519 ALIGN(16) ge25519_ecd;
@@ -9,7 +9,7 @@ extern const bignum25519 ALIGN(16) ge25519_ecd;
 extern const bignum25519 ALIGN(16) ge25519_ec2d;
 
 /*
-	sqrt(-1)
+    sqrt(-1)
 */
 
 extern const bignum25519 ALIGN(16) ge25519_sqrtneg1;

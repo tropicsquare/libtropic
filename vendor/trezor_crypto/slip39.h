@@ -30,14 +30,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-const char* get_word(uint16_t index);
+const char *get_word(uint16_t index);
 
-bool word_index(uint16_t* index, const char* word, uint8_t word_length);
+bool word_index(uint16_t *index, const char *word, uint8_t word_length);
 
 uint16_t slip39_word_completion_mask(uint16_t prefix);
 
-const char* button_sequence_to_word(uint16_t prefix);
+const char *button_sequence_to_word(uint16_t prefix);
 
-extern const char* const SLIP39_WORDLIST[SLIP39_WORD_COUNT];
+extern const char *const SLIP39_WORDLIST[SLIP39_WORD_COUNT];
 
 #endif
