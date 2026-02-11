@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Size of `l3_chunk` member of `lt_l2_encrypted_cmd_req_t` and `lt_l2_encrypted_cmd_rsp_t` structs to `TR01_L2_CHUNK_MAX_DATA_SIZE`.
 - `hal/`: don't include `libtropic_port.h` in HAL headers if not used.
 - `lt_init()` is successful even if TROPIC01 has invalid Application FW, so Libtropic can be used in Start-up Mode.
+- `lt_init_tr01_attrs()` reboots back to Start-up Mode if TROPIC01 was in this mode before executing the function.
 
 ### Removed
 
