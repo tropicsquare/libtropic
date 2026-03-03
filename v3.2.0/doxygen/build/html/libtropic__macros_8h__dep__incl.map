@@ -1,0 +1,55 @@
+<map id="libtropic_macros.h" name="libtropic_macros.h">
+<area shape="rect" id="Node000001" title="Various helper macros." alt="" coords="1473,5,1616,31"/>
+<area shape="rect" id="Node000002" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="1469,79,1620,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1547,44,1547,79,1542,79,1542,44"/>
+<area shape="rect" id="Node000003" href="$libtropic_8h.html" title="Libtropic library main API header file." alt="" coords="28,159,115,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1456,96,1170,99,787,108,405,126,247,139,128,155,101,162,100,157,127,149,247,133,405,121,787,103,1170,94,1455,90"/>
+<area shape="rect" id="Node000004" href="$libtropic__l2_8h.html" title="Layer 2 functions declarations." alt="" coords="139,159,246,185"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1456,97,1195,102,849,113,507,130,366,141,258,155,228,162,226,157,258,149,365,136,507,125,849,108,1195,97,1456,91"/>
+<area shape="rect" id="Node000005" href="$libtropic__l3_8h.html" title="Layer 3 functions declarations." alt="" coords="270,159,377,185"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1456,97,911,115,609,132,484,143,389,155,358,162,357,157,388,149,483,137,609,127,911,110,1455,92"/>
+<area shape="rect" id="Node000006" href="$libtropic__port_8h.html" title="Header file with HAL interfaces which are defined based on host platform." alt="" coords="401,159,521,185"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="1456,95,1285,97,1055,105,795,123,662,137,533,155,499,162,498,157,532,149,662,132,794,118,1055,99,1284,91,1456,89"/>
+<area shape="rect" id="Node000012" href="$libtropic__port__mock_8h.html" title="Mock HAL implementation (only for testing purposes)." alt="" coords="545,159,707,185"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="1455,98,1131,115,926,132,721,155,678,162,677,157,720,149,926,126,1130,110,1455,93"/>
+<area shape="rect" id="Node000013" href="$libtropic__port__posix__tcp_8h.html" title="Port for communication with the TROPIC01 Model using TCP." alt="" coords="732,152,883,192"/>
+<area shape="poly" id="edge12_Node000002_Node000013" title=" " alt="" coords="1456,100,1203,119,1050,134,896,155,884,157,883,151,895,149,1049,129,1203,114,1455,95"/>
+<area shape="rect" id="Node000014" href="$libtropic__secure__memzero_8h.html" title="Declarations for secure memory zeroing." alt="" coords="907,159,1113,185"/>
+<area shape="poly" id="edge13_Node000002_Node000014" title=" " alt="" coords="1456,107,1126,155,1080,162,1079,157,1126,149,1455,102"/>
+<area shape="rect" id="Node000015" href="$lt__aesgcm_8h.html" title="AES&#45;GCM function declarations." alt="" coords="1138,159,1239,185"/>
+<area shape="poly" id="edge14_Node000002_Node000015" title=" " alt="" coords="1468,109,1253,155,1226,162,1225,157,1252,149,1467,104"/>
+<area shape="rect" id="Node000016" href="$lt__asn1__der_8h.html" title="ASN1 DER parser." alt="" coords="1264,159,1372,185"/>
+<area shape="poly" id="edge15_Node000002_Node000016" title=" " alt="" coords="1500,111,1352,162,1350,157,1498,106"/>
+<area shape="rect" id="Node000017" href="$lt__crypto__common_8h.html" title="Common CAL declarations." alt="" coords="1397,159,1551,185"/>
+<area shape="poly" id="edge16_Node000002_Node000017" title=" " alt="" coords="1527,116,1486,161,1482,157,1523,113"/>
+<area shape="rect" id="Node000018" href="$lt__hkdf_8h.html" title="HKDF function declaration." alt="" coords="1576,159,1655,185"/>
+<area shape="poly" id="edge17_Node000002_Node000018" title=" " alt="" coords="1566,113,1607,157,1603,161,1562,116"/>
+<area shape="rect" id="Node000019" href="$lt__hmac__sha256_8h.html" title="HMAC SHA256 functions declarations." alt="" coords="1679,159,1819,185"/>
+<area shape="poly" id="edge18_Node000002_Node000019" title=" " alt="" coords="1588,106,1720,157,1718,162,1586,111"/>
+<area shape="rect" id="Node000020" href="$lt__l1_8h.html" title="Layer 1 functions declarations." alt="" coords="1843,159,1905,185"/>
+<area shape="poly" id="edge19_Node000002_Node000020" title=" " alt="" coords="1634,104,1730,122,1832,149,1851,157,1849,162,1831,155,1729,128,1633,109"/>
+<area shape="rect" id="Node000021" href="$lt__l2__api__structs_8h.html" title="Layer 2 structure declaration." alt="" coords="1929,159,2069,185"/>
+<area shape="poly" id="edge20_Node000002_Node000021" title=" " alt="" coords="1634,102,1768,123,1919,149,1953,157,1952,162,1917,155,1767,128,1633,108"/>
+<area shape="rect" id="Node000022" href="$lt__l2__frame__check_8h.html" title="Layer 2 frame check functions declarations." alt="" coords="2093,159,2247,185"/>
+<area shape="poly" id="edge21_Node000002_Node000022" title=" " alt="" coords="1634,97,1840,117,2082,149,2121,157,2120,162,2082,155,1839,123,1634,102"/>
+<area shape="rect" id="Node000023" href="$lt__l3__api__structs_8h.html" title="Layer 3 structure declaration." alt="" coords="2271,159,2411,185"/>
+<area shape="poly" id="edge22_Node000002_Node000023" title=" " alt="" coords="1634,93,1914,111,2087,127,2260,149,2297,157,2296,162,2259,155,2086,132,1913,116,1634,99"/>
+<area shape="rect" id="Node000024" href="$lt__l3__process_8h.html" title="Layer 3 transfer functions declarations." alt="" coords="2435,159,2553,185"/>
+<area shape="poly" id="edge23_Node000002_Node000024" title=" " alt="" coords="1634,90,1784,94,1981,103,2202,121,2424,149,2457,157,2456,162,2423,155,2202,126,1981,108,1784,99,1634,96"/>
+<area shape="rect" id="Node000025" href="$lt__port__wrap_8h.html" title="Declarations of wrappers for the port&#45;specific functions." alt="" coords="2578,159,2693,185"/>
+<area shape="poly" id="edge24_Node000002_Node000025" title=" " alt="" coords="1634,89,1807,90,2039,98,2302,117,2436,131,2566,149,2599,157,2598,162,2566,155,2435,136,2301,122,2039,104,1806,96,1634,94"/>
+<area shape="rect" id="Node000026" href="$lt__sha256_8h.html" title="SHA256 functions declarations." alt="" coords="2717,159,2815,185"/>
+<area shape="poly" id="edge25_Node000002_Node000026" title=" " alt="" coords="1634,92,2180,109,2484,126,2610,137,2705,149,2735,157,2733,162,2704,155,2609,142,2483,131,2180,114,1634,97"/>
+<area shape="rect" id="Node000027" href="$lt__tr01__attrs_8h.html" title="Declarations for handling TROPIC01 attributes based on FW versions." alt="" coords="2839,159,2952,185"/>
+<area shape="poly" id="edge26_Node000002_Node000027" title=" " alt="" coords="1634,92,2239,109,2579,126,2720,137,2828,149,2860,157,2859,162,2827,155,2720,142,2579,131,2238,114,1634,97"/>
+<area shape="rect" id="Node000007" href="$libtropic__logging_8h.html" title="Macros for logging." alt="" coords="5,247,148,273"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="405,191,389,195,160,243,127,250,126,245,159,237,388,189,404,186"/>
+<area shape="rect" id="Node000008" href="$libtropic__port__arduino_8cpp.html" title="Port for the Arduino framework." alt="" coords="172,247,363,273"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="423,193,295,250,293,245,421,188"/>
+<area shape="rect" id="Node000009" href="$libtropic__port__linux__spi_8h.html" title="Port for communication using Generic SPI and GPIO Linux UAPI." alt="" coords="387,240,534,280"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="463,198,463,240,458,240,458,198"/>
+<area shape="rect" id="Node000010" href="$libtropic__port__linux__spi__native__cs_8h.html" title="Port for communication using Generic SPI UAPI with native CS handling and GPIO UAPI for interrupt han..." alt="" coords="558,240,705,280"/>
+<area shape="poly" id="edge9_Node000006_Node000010" title=" " alt="" coords="497,189,595,237,592,242,495,193"/>
+<area shape="rect" id="Node000011" href="$libtropic__port__posix__usb__dongle_8h.html" title="Port for communication with USB UART Dongle (TS1302)." alt="" coords="729,240,880,280"/>
+<area shape="poly" id="edge10_Node000006_Node000011" title=" " alt="" coords="518,185,533,189,730,238,728,243,532,195,516,191"/>
+</map>
