@@ -19,7 +19,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
 # Set path to Libtropic
-set(PATH_LIBTROPIC ../../../../)
+set(PATH_LIBTROPIC ../../../../../)
 
 # Set the project name
 set(CMAKE_PROJECT_NAME tropic01_util)
