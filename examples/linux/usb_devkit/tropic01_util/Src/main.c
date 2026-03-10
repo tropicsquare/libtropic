@@ -21,9 +21,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "libtropic.h"
+#include "libtropic_logging.h"
 #include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_stm32u5xx.h"
 #include "psa/crypto.h"
@@ -38,12 +41,30 @@
 /* USER CODE BEGIN PTD */
 
 /** @brief Used for tracking the state of the USB Devkit's main loop. */
-typedef enum { USB_DEVKIT_READING, USB_DEVKIT_PROCESSING, USB_DEVKIT_WRITING } usb_devkit_state_t;
+typedef enum {
+    READ_MAGIC_BYTE_1,
+    READ_MAGIC_BYTE_2,
+    READ_DATA_LEN,
+    READ_DATA,
+    READ_VERIFY_CRC,
+    PROCESS_DATA,
+    WRITE_DATA
+} usb_devkit_state_t;
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+#define FRAME_MAGIC_BYTE_1 0xAA
+#define FRAME_MAGIC_BYTE_2 0x55
+#define FRAME_MAGIC_BYTES 2
+#define FRAME_DATA_LEN_SIZE 2
+#define FRAME_DATA_MAX_SIZE 4093
+#define FRAME_CRC_SIZE 2
+#define FRAME_MAX_SIZE (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + FRAME_DATA_MAX_SIZE + FRAME_CRC_SIZE)
+
 #define USB_READ_TIMEOUT_MS 50
 
 #define CHECK_LT_RET           \
@@ -74,7 +95,7 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 /* USER CODE BEGIN PV */
 
-usb_devkit_state_t usb_devkit_state = USB_DEVKIT_READING;
+usb_devkit_state_t usb_devkit_state = READ_MAGIC_BYTE_1;
 
 /* USER CODE END PV */
 
@@ -86,6 +107,9 @@ static void MX_DCACHE1_Init(void);
 static void MX_ICACHE_Init(void);
 static void MX_RNG_Init(void);
 static void MX_USB_DRD_FS_PCD_Init(void);
+
+static size_t usb_read_chunk(uint8_t *buff, size_t to_read);
+static size_t usb_write_chunk(const uint8_t *buff, size_t to_write);
 
 #if defined(__ICCARM__)
 /* New definition from EWARM V9, compatible with EWARM8 */
@@ -100,10 +124,60 @@ int iar_fputc(int ch);
 
 /* USER CODE BEGIN PFP */
 
+/**
+ * @brief Read up to `to_read` bytes from the USB CDC RX FIFO into `buff`.
+ *
+ * This helper is non-blocking: when no bytes are currently available, it
+ * returns 0. When data is available, it reads at most `to_read` bytes.
+ *
+ * @param[out] buff Destination buffer for received bytes.
+ * @param[in] to_read Maximum number of bytes to read in this call.
+ * @return Number of bytes actually read.
+ */
+static size_t usb_read_chunk(uint8_t *buff, size_t to_read)
+{
+    uint32_t avail_bytes = tud_cdc_available();
+    if (avail_bytes == 0 || to_read == 0) {
+        return 0;
+    }
+
+    size_t chunk_size = MIN(to_read, (size_t)avail_bytes);
+    return (size_t)tud_cdc_read(buff, chunk_size);
+}
+
+/**
+ * @brief Write up to `to_write` bytes to the USB CDC TX FIFO from `buff`.
+ *
+ * This helper is non-blocking: when there is no room in the TX FIFO, it
+ * calls tud_cdc_write_flush() and returns 0. When room is available, it
+ * writes at most `to_write` bytes.
+ *
+ * @param[in] buff Source buffer with bytes to write.
+ * @param[in] to_write Number of bytes to write in this call.
+ * @return Number of bytes actually written.
+ */
+static size_t usb_write_chunk(const uint8_t *buff, size_t to_write)
+{
+    uint32_t free_bytes = tud_cdc_write_available();
+    if (free_bytes == 0 || to_write == 0) {
+        tud_cdc_write_flush();
+        return 0;
+    }
+
+    size_t chunk_size = MIN(to_write, (size_t)free_bytes);
+    return (size_t)tud_cdc_write(buff, chunk_size);
+}
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+// tinyUSB calls this function when the USB bus is reset or unplugged.
+void tud_umount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
+
+// tinyUSB calls this function when the USB is plugged and recognized.
+void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
 
 /* USER CODE END 0 */
 
@@ -180,10 +254,6 @@ int main(void)
     lt_ret = lt_init(&lt_handle);
     CHECK_LT_RET;
 
-    lt_ret = lt_verify_chip_and_start_secure_session(&lt_handle, sh0priv_prod0, sh0pub_prod0,
-                                                     TR01_PAIRING_KEY_SLOT_INDEX_0);
-    CHECK_LT_RET;
-
     // Turn on the LED to indicate that the initialization succeeded.
     HAL_GPIO_WritePin(APP_LED_GPIO_Port, APP_LED_Pin, GPIO_PIN_SET);
 
@@ -191,9 +261,19 @@ int main(void)
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
-    uint8_t data_buffer[256], ping_recv[256];
-    int data_buffer_idx = 0;
-    uint32_t last_packet_arrival = 0;
+    // Variables for the DATA_LEN field in the frame.
+    uint8_t in_data_len_bytes[FRAME_DATA_LEN_SIZE];  // Incoming DATA_LEN bytes.
+    size_t in_data_len_bytes_read = 0;               // Number of incoming DATA_LEN bytes read so far.
+    size_t in_data_len = 0;                          // Parsed incoming DATA_LEN.
+    // Variables for DATA field in the frame.
+    uint8_t in_data[FRAME_DATA_MAX_SIZE];  // Incoming DATA bytes.
+    size_t in_data_read = 0;               // Number of incoming DATA bytes read so far.
+    uint8_t out_frame[FRAME_MAX_SIZE];     // Outgoing frame bytes.
+    size_t out_frame_len = 0;              // Actual number of outgoing frame bytes.
+    size_t out_frame_written = 0;          // Number of outgoing frame bytes written so far.
+    // Variables for CRC field in the frame.
+    uint8_t in_crc[FRAME_CRC_SIZE];  // Incoming CRC bytes.
+    size_t in_crc_read = 0;          // Number of incoming CRC bytes read so far.
     while (1) {
         /* USER CODE END WHILE */
 
@@ -202,61 +282,126 @@ int main(void)
         // TinyUSB task.
         tud_task();
 
-        // Check if we are mounted in the host device.
-        if (!tud_mounted()) {
-            usb_devkit_state = USB_DEVKIT_READING;
-            data_buffer_idx = 0;
-            continue;
-        }
-
         switch (usb_devkit_state) {
-            case USB_DEVKIT_READING:
-                uint32_t bytes_to_read = tud_cdc_available();
+            case READ_MAGIC_BYTE_1: {
+                uint8_t magic_byte_1;
+                if (tud_cdc_read(&magic_byte_1, 1) == 1 && magic_byte_1 == FRAME_MAGIC_BYTE_1) {
+                    usb_devkit_state = READ_MAGIC_BYTE_2;
+                }
+                break;
+            }
 
-                if (bytes_to_read > 0) {  // New packet arrived
-                    last_packet_arrival = HAL_GetTick();
-
-                    if (data_buffer_idx + bytes_to_read >= sizeof(data_buffer)) {
-                        // Buffer for the received data is full. Stop reading and process the read
-                        // data.
-                        usb_devkit_state = USB_DEVKIT_PROCESSING;
+            case READ_MAGIC_BYTE_2: {
+                uint8_t magic_byte_2;
+                if (tud_cdc_read(&magic_byte_2, 1) == 1) {
+                    if (magic_byte_2 == FRAME_MAGIC_BYTE_2) {
+                        in_data_len_bytes_read = 0;
+                        usb_devkit_state = READ_DATA_LEN;
                     }
                     else {
-                        // Read and append received data to buffer.
-                        uint32_t actually_read = tud_cdc_read(data_buffer, bytes_to_read);
-                        if (actually_read != bytes_to_read) {
-                            Error_Handler();
-                        }
-                        data_buffer_idx += bytes_to_read;
+                        usb_devkit_state = READ_MAGIC_BYTE_1;
                     }
                 }
-                else if (data_buffer_idx > 0 &&
-                         (HAL_GetTick() - last_packet_arrival) > USB_READ_TIMEOUT_MS) {
-                    // No more packets, process the read data.
-                    usb_devkit_state = USB_DEVKIT_PROCESSING;
+                break;
+            }
+
+            case READ_DATA_LEN: {
+                uint8_t *read_ptr = in_data_len_bytes + in_data_len_bytes_read;
+                size_t to_read = FRAME_DATA_LEN_SIZE - in_data_len_bytes_read;
+
+                in_data_len_bytes_read += usb_read_chunk(read_ptr, to_read);
+                if (in_data_len_bytes_read == FRAME_DATA_LEN_SIZE) {
+                    // DATA_LEN comes as big-endian.
+                    in_data_len = ((size_t)in_data_len_bytes[0] << 8) | (size_t)in_data_len_bytes[1];
+
+                    if (in_data_len == 0 || in_data_len > FRAME_DATA_MAX_SIZE) {
+                        usb_devkit_state = READ_MAGIC_BYTE_1;
+                    }
+                    else {
+                        in_data_read = 0;
+                        usb_devkit_state = READ_DATA;
+                    }
                 }
                 break;
+            }
 
-            case USB_DEVKIT_PROCESSING:
-                lt_ret = lt_ping(&lt_handle, (const uint8_t *)data_buffer, ping_recv, data_buffer_idx);
-                CHECK_LT_RET;
+            case READ_DATA: {
+                uint8_t *read_ptr = in_data + in_data_read;
+                size_t to_read = in_data_len - in_data_read;
 
-                usb_devkit_state = USB_DEVKIT_WRITING;
+                in_data_read += usb_read_chunk(read_ptr, to_read);
+                if (in_data_read == in_data_len) {
+                    in_crc_read = 0;
+                    usb_devkit_state = READ_VERIFY_CRC;
+                }
                 break;
+            }
 
-            case USB_DEVKIT_WRITING:
-                uint32_t actually_written = tud_cdc_write(ping_recv, data_buffer_idx);
+            case READ_VERIFY_CRC: {
+                uint8_t *read_ptr = in_crc + in_crc_read;
+                size_t to_read = FRAME_CRC_SIZE - in_crc_read;
 
-                if (actually_written == data_buffer_idx) {
-                    // All data has been written, go back to reading.
-                    data_buffer_idx = 0;
-                    usb_devkit_state = USB_DEVKIT_READING;
+                in_crc_read += usb_read_chunk(read_ptr, to_read);
+                if (in_crc_read == FRAME_CRC_SIZE) {
+                    // CRC comes as big-endian.
+                    uint16_t in_crc_parsed = ((uint16_t)in_crc[0] << 8) | (uint16_t)in_crc[1];
+                    // 1. Calculate CRC for DATA_LEN.
+                    uint32_t frame_data_len_word = 0;
+                    memcpy(&frame_data_len_word, in_data_len_bytes, FRAME_DATA_LEN_SIZE);
+                    HAL_CRC_Calculate(&hcrc, &frame_data_len_word, (uint32_t)FRAME_DATA_LEN_SIZE);
+                    // 2. Calculate CRC for DATA.
+                    uint32_t in_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)in_data,
+                                                            (uint32_t)in_data_len);
+                    // 3. Compare CRCs.
+                    if (in_crc_parsed == (uint16_t)(in_crc_hw & 0xFFFF)) {
+                        usb_devkit_state = PROCESS_DATA;
+                    }
+                    else {
+                        printf("crc error\n");
+                        usb_devkit_state = READ_MAGIC_BYTE_1;
+                    }
+                }
+                break;
+            }
+
+            case PROCESS_DATA: {
+                out_frame[0] = FRAME_MAGIC_BYTE_2;
+                out_frame[1] = FRAME_MAGIC_BYTE_1;
+                out_frame[2] = (in_data_len >> 8) & 0xFF;
+                out_frame[3] = in_data_len & 0xFF;
+                memcpy(out_frame + 4, in_data, in_data_len);
+
+                // Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
+                size_t out_data_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE;
+                uint32_t out_data_len_word = 0;
+                memcpy(&out_data_len_word, out_frame + FRAME_MAGIC_BYTES, FRAME_DATA_LEN_SIZE);
+                uint32_t out_crc_hw = HAL_CRC_Calculate(&hcrc, &out_data_len_word,
+                                                        (uint32_t)FRAME_DATA_LEN_SIZE);
+                out_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)(out_frame + out_data_pos),
+                                                (uint32_t)in_data_len);
+
+                uint16_t out_crc = (uint16_t)(out_crc_hw & 0xFFFF);
+                size_t out_crc_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + in_data_len;
+                out_frame[out_crc_pos] = (uint8_t)((out_crc >> 8) & 0xFF);
+                out_frame[out_crc_pos + 1] = (uint8_t)(out_crc & 0xFF);
+
+                out_frame_len = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + in_data_len + FRAME_CRC_SIZE;
+                out_frame_written = 0;
+                usb_devkit_state = WRITE_DATA;
+                break;
+            }
+
+            case WRITE_DATA: {
+                uint8_t *write_ptr = out_frame + out_frame_written;
+                size_t to_write = out_frame_len - out_frame_written;
+
+                out_frame_written += usb_write_chunk(write_ptr, to_write);
+                if (out_frame_written == out_frame_len) {
                     tud_cdc_write_flush();
-                }
-                else {
-                    Error_Handler();
+                    usb_devkit_state = READ_MAGIC_BYTE_1;
                 }
                 break;
+            }
         }
     }
     /* USER CODE END 3 */
