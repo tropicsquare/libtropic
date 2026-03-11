@@ -94,7 +94,9 @@ target_link_libraries(tropic PUBLIC mbedtls)
 FetchContent_Declare(
     tinyusb
     GIT_REPOSITORY https://github.com/hathach/tinyusb.git
-    GIT_TAG 0.20.0
+    # TinyUSB release 0.20.0 commit. Upstream does not publish archive SHA256.
+    GIT_TAG 3af1bec1a9161ee8dec29487831f7ac7ade9e189
+    GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(tinyusb)
 
