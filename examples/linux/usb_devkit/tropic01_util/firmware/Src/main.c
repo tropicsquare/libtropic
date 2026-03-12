@@ -507,7 +507,20 @@ int main(void)
                         usb_devkit_state = PROCESS_DATA;
                     }
                     else {
-                        usb_devkit_state = READ_MAGIC_BYTE_1;
+                        // 1. Construct response.
+                        UsbDevkitResp resp = UsbDevkitResp_init_zero;
+                        resp.which_type = UsbDevkitResp_error_tag;
+                        resp.type.error.code = ERROR_RESP_CODE_BAD_CRC;
+                        // 2. Encode response.
+                        uint8_t pb_data_out[UsbDevkitResp_size];
+                        pb_ostream_t pb_out = pb_ostream_from_buffer(pb_data_out, sizeof(pb_data_out));
+                        if (!pb_encode(&pb_out, UsbDevkitResp_fields, &resp)) {
+                            Error_Handler();
+                        }
+                        // 3. Construct frame.
+                        construct_frame(pb_data_out, pb_out.bytes_written, out_frame, &out_frame_len);
+                        out_frame_written = 0;
+                        usb_devkit_state = WRITE_DATA;
                     }
                 }
                 break;
