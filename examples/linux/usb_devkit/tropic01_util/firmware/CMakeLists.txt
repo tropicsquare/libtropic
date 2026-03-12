@@ -19,7 +19,14 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
 # Set path to Libtropic
-set(PATH_LIBTROPIC ../../../../../)
+set(PATH_LIBTROPIC ../../../../..)
+include(${PATH_LIBTROPIC}/cmake/strict_compile_flags.cmake)
+
+# Enable strict compilation flags
+set(LT_STRICT_COMPILATION ON CACHE BOOL "Enable strict compilation")
+
+# Path to protobuf schema used for USB DevKit command/response exchange.
+set(PATH_PROTOBUF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
 
 # Set the project name
 set(CMAKE_PROJECT_NAME tropic01_util)
@@ -107,12 +114,12 @@ FetchContent_MakeAvailable(tinyusb)
 ###########################################################################
 
 # Add MbedTLS v4 CAL
-add_subdirectory("${PATH_LIBTROPIC}cal/mbedtls_v4" "mbedtls_v4_cal")
+add_subdirectory("${PATH_LIBTROPIC}/cal/mbedtls_v4" "mbedtls_v4_cal")
 target_sources(tropic PRIVATE ${LT_CAL_SRCS})
 target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS})
 
 # Add STM32U5xx HAL
-add_subdirectory("${PATH_LIBTROPIC}hal/stm32/stm32u5xx" "stm32u5xx_hal")
+add_subdirectory("${PATH_LIBTROPIC}/hal/stm32/stm32u5xx" "stm32u5xx_hal")
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
@@ -168,6 +175,16 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${tinyusb_SOURCE_DIR}/src/class/cdc/cdc_device.c
     ${tinyusb_SOURCE_DIR}/src/portable/st/stm32_fsdev/dcd_stm32_fsdev.c
 )
+
+# Enable strict compile flags for Libtropic HAL/CAL sources when requested.
+if(LT_STRICT_COMPILATION)
+    set_source_files_properties(${LT_HAL_SRCS} ${LT_CAL_SRCS} PROPERTIES COMPILE_OPTIONS "${LT_STRICT_COMPILATION_FLAGS}")
+
+    # Do not enforce prototypes on main.c.
+    set(LT_STRICT_COMPILATION_FLAGS_NO_MISSING_PROTOTYPES ${LT_STRICT_COMPILATION_FLAGS})
+    list(REMOVE_ITEM LT_STRICT_COMPILATION_FLAGS_NO_MISSING_PROTOTYPES "-Wmissing-prototypes")
+    set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Src/main.c PROPERTIES COMPILE_OPTIONS "${LT_STRICT_COMPILATION_FLAGS_NO_MISSING_PROTOTYPES}")
+endif()
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
