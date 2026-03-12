@@ -26,7 +26,7 @@ include(${PATH_LIBTROPIC}/cmake/strict_compile_flags.cmake)
 set(LT_STRICT_COMPILATION ON CACHE BOOL "Enable strict compilation")
 
 # Path to protobuf schema used for USB DevKit command/response exchange.
-set(PATH_PROTOBUF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
+set(PATH_PROTOBUF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf)
 
 # Set the project name
 set(CMAKE_PROJECT_NAME tropic01_util)
@@ -106,6 +106,24 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(tinyusb)
+
+# ------------------------------------------------------------------------
+# nanopb (protobuf for embedded C)
+# ------------------------------------------------------------------------
+FetchContent_Declare(
+    nanopb
+    URL https://github.com/nanopb/nanopb/releases/download/nanopb-0.4.9.1/nanopb-0.4.9.1.tar.gz
+    URL_HASH SHA256=882cd8473ad932b24787e676a808e4fb29c12e086d20bcbfbacc66c183094b5c
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(nanopb)
+
+# Use the official nanopb CMake module and helper function.
+list(APPEND CMAKE_MODULE_PATH ${nanopb_SOURCE_DIR}/extra)
+find_package(Nanopb REQUIRED)
+
+set(PROTO_FILE ${PATH_PROTOBUF_DIR}/usb_devkit_messages.proto)
+nanopb_generate_cpp(TARGET proto ${PROTO_FILE})
 
 ###########################################################################
 #                                                                         #
@@ -206,4 +224,5 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     tropic
+    proto
 )

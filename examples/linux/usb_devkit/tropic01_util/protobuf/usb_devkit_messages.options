@@ -1,0 +1,17 @@
+# nanopb generator options for usb_devkit_messages.proto
+# Tune these limits to your transport frame size and product requirements.
+
+# Disable enum long names (EnumName_ENUM_VALUE -> ENUM_VALUE).
+usb_devkit_messages.proto long_names:false
+
+# PIN fields.
+PinSetCmd.new_pin max_length:32
+PinVerifyCmd.pin max_length:32
+
+# App memory operations.
+RMemWriteCmd.data max_size:475
+RMemReadResp.data max_size:475
+
+# Raw SPI transfer payloads.
+SendSpiDataCmd.tx_data max_size:257
+SendSpiDataResp.rx_data max_size:257

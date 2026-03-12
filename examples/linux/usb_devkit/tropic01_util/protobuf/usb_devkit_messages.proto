@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+message UsbDevkitCmd {
+	oneof type {
+		AppCmd app = 1;
+		RawCmd raw = 2;
+	}
+}
+
+message UsbDevkitResp {
+	oneof type {
+		AppResp app = 1;
+		RawResp raw = 2;
+		ErrorResp error = 3;
+	}
+}
+
+message AppCmd {
+	oneof type {
+		PinSetCmd pin_set = 1;
+		PinVerifyCmd pin_verify = 2;
+		RMemReadCmd r_mem_read = 3;
+		RMemWriteCmd r_mem_write = 4;
+	}
+}
+
+message PinSetCmd {
+	string new_pin = 1;
+	uint32 attempts = 2;
+}
+
+message PinVerifyCmd {
+	string pin = 1;
+}
+
+message RMemReadCmd {
+	uint32 udata_slot = 1;
+}
+
+message RMemWriteCmd {
+	uint32 udata_slot = 1;
+	bytes data = 2;
+}
+
+message AppResp {
+	AppRespResultCode result_code = 1;
+	oneof type {
+		PinVerifyResp pin_verify = 2;
+		RMemReadResp r_mem_read = 3;
+	}
+}
+
+enum AppRespResultCode {
+	APP_RESP_RESULT_CODE_UNSPECIFIED = 0;
+	APP_RESP_RESULT_CODE_OK = 1;
+	APP_RESP_RESULT_CODE_FAIL = 2;
+}
+
+message PinVerifyResp {
+	bool success = 1;
+	uint32 attempts_left = 2;
+}
+
+message RMemReadResp {
+	uint32 data_size = 1;
+	bytes data = 2;
+}
+
+message RawCmd {
+	oneof type {
+		SendSpiDataCmd send_spi_data = 1;
+		SetAutoCsModeCmd set_auto_cs_mode = 2;
+		SetCsCmd set_cs = 3;
+		SetTr01PwrCmd set_tr01_pwr = 4;
+		GetGpoCmd get_gpo = 5;
+	}
+}
+
+message SendSpiDataCmd {
+	bytes tx_data = 1;
+}
+
+message SetAutoCsModeCmd {
+	bool on = 1;
+}
+
+message SetCsCmd {
+	bool high = 1;
+}
+
+message SetTr01PwrCmd {
+	bool on = 1;
+}
+
+message GetGpoCmd {
+	// Empty command used to read TROPIC01 GPO pin.
+}
+
+message RawResp {
+	RawRespResultCode result_code = 1;
+	oneof type {
+		SendSpiDataResp send_spi_data = 2;
+		GetGpoResp get_gpo = 3;
+	}
+}
+
+enum RawRespResultCode {
+	RAW_RESP_RESULT_CODE_UNSPECIFIED = 0;
+	RAW_RESP_RESULT_CODE_OK = 1;
+	RAW_RESP_RESULT_CODE_FAIL = 2;
+	RAW_RESP_RESULT_CODE_SPI_ERROR = 3;
+	RAW_RESP_RESULT_CODE_CS_NOT_SET = 4;
+	RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON = 5;
+	RAW_RESP_RESULT_CODE_UNKNOWN_CMD = 6;
+}
+
+message SendSpiDataResp {
+	bytes rx_data = 1;
+}
+
+message GetGpoResp {
+	bool high = 1;
+}
+
+message ErrorResp {
+	ErrorRespCode code = 1;
+}
+
+enum ErrorRespCode {
+	ERROR_RESP_CODE_UNSPECIFIED = 0;
+	ERROR_RESP_CODE_BAD_CRC = 1;
+	ERROR_RESP_CODE_PB_DECODE = 2;
+	ERROR_RESP_CODE_PB_UNKNOWN_CMD = 3;
+}
