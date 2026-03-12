@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,8 +30,11 @@
 #include "libtropic_logging.h"
 #include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_stm32u5xx.h"
+#include "pb_decode.h"
+#include "pb_encode.h"
 #include "psa/crypto.h"
 #include "tusb.h"
+#include "usb_devkit_messages.pb.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -96,6 +100,7 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 /* USER CODE BEGIN PV */
 
 usb_devkit_state_t usb_devkit_state = READ_MAGIC_BYTE_1;
+bool auto_cs_mode = 1;
 
 /* USER CODE END PV */
 
@@ -110,6 +115,11 @@ static void MX_USB_DRD_FS_PCD_Init(void);
 
 static size_t usb_read_chunk(uint8_t *buff, size_t to_read);
 static size_t usb_write_chunk(const uint8_t *buff, size_t to_write);
+static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
+static void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
+static bool process_pb_data(const uint8_t *pb_data_in, size_t pb_data_in_len, uint8_t *pb_data_out,
+                            size_t pb_data_out_size, size_t *pb_data_out_len);
+static void construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame, size_t *frame_len);
 
 #if defined(__ICCARM__)
 /* New definition from EWARM V9, compatible with EWARM8 */
@@ -178,6 +188,146 @@ void tud_umount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
 
 // tinyUSB calls this function when the USB is plugged and recognized.
 void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
+
+/**
+ * @brief Process USB DevKit raw command.
+ *
+ * @param[in]  cmd   USB DevKit command.
+ * @param[out] resp  USB DevKit response.
+ */
+static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
+{
+    resp->which_type = UsbDevkitResp_raw_tag;
+    resp->type.raw.result_code = RAW_RESP_RESULT_CODE_OK;
+
+    switch (cmd->type.raw.which_type) {
+        case RawCmd_send_spi_data_tag:
+            // TODO: Implement direct SPI transfer and fill SendSpiDataResp.rx_data.
+            resp->type.raw.result_code = RAW_RESP_RESULT_CODE_SPI_ERROR;
+            break;
+
+        case RawCmd_set_auto_cs_mode_tag:
+            auto_cs_mode = cmd->type.raw.type.set_auto_cs_mode.on;
+            break;
+
+        case RawCmd_set_cs_tag:
+            if (auto_cs_mode) {
+                resp->type.raw.result_code = RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON;
+            }
+            else {
+                HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin,
+                                  cmd->type.raw.type.set_cs.high ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            }
+            break;
+
+        case RawCmd_set_tr01_pwr_tag:
+            HAL_GPIO_WritePin(TR01_PWR_GPIO_Port, TR01_PWR_Pin,
+                              cmd->type.raw.type.set_tr01_pwr.on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            break;
+
+        case RawCmd_get_gpo_tag:
+            resp->type.raw.which_type = RawResp_get_gpo_tag;
+            resp->type.raw.type.get_gpo.high = (HAL_GPIO_ReadPin(TR01_GPO_GPIO_Port, TR01_GPO_Pin) ==
+                                                GPIO_PIN_SET);
+            break;
+
+        default:
+            resp->type.raw.result_code = RAW_RESP_RESULT_CODE_UNKNOWN_CMD;
+            break;
+    }
+}
+
+static void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
+{
+    (void)cmd;
+    // TODO: Implement AppCmd handling via libtropic API calls.
+    resp->which_type = UsbDevkitResp_error_tag;
+    resp->type.error.code = ERROR_RESP_CODE_PB_UNKNOWN_CMD;
+}
+
+/**
+ * @brief Decode UsbDevkitCmd from payload, execute command, and encode UsbDevkitResp.
+ *
+ * @param[in]  pb_data_in        Input protobuf bytes.
+ * @param[in]  pb_data_in_len    Length of input protobuf bytes.
+ * @param[out] pb_data_out       Output buffer for encoded UsbDevkitResp protobuf bytes.
+ * @param[in]  pb_data_out_size  Size of pb_data_out buffer.
+ * @param[out] pb_data_out_len   Number of bytes written to pb_data_out.
+ * @retval     true              Response encoded successfully.
+ * @retval     false             Response could not be encoded.
+ */
+static bool process_pb_data(const uint8_t *pb_data_in, size_t pb_data_in_len, uint8_t *pb_data_out,
+                            size_t pb_data_out_size, size_t *pb_data_out_len)
+{
+    UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
+    UsbDevkitResp resp = UsbDevkitResp_init_zero;
+
+    pb_istream_t pb_in = pb_istream_from_buffer(pb_data_in, pb_data_in_len);
+    if (!pb_decode(&pb_in, UsbDevkitCmd_fields, &cmd)) {
+        resp.which_type = UsbDevkitResp_error_tag;
+        resp.type.error.code = ERROR_RESP_CODE_PB_DECODE;
+    }
+    else {
+        switch (cmd.which_type) {
+            case UsbDevkitCmd_raw_tag:
+                process_raw_cmd(&cmd, &resp);
+                break;
+
+            case UsbDevkitCmd_app_tag:
+                process_app_cmd(&cmd, &resp);
+                break;
+
+            default:
+                resp.which_type = UsbDevkitResp_error_tag;
+                resp.type.error.code = ERROR_RESP_CODE_PB_UNKNOWN_CMD;
+                break;
+        }
+    }
+
+    pb_ostream_t pb_out = pb_ostream_from_buffer(pb_data_out, pb_data_out_size);
+    if (!pb_encode(&pb_out, UsbDevkitResp_fields, &resp)) {
+        return false;
+    }
+
+    *pb_data_out_len = pb_out.bytes_written;
+    return true;
+}
+
+/**
+ * @brief Construct the frame to send.
+ *
+ * @param[in]  data       DATA field in the frame.
+ * @param[in]  data_len   DATA_LEN field in the frame.
+ * @param[out] frame      Constructed frame.
+ * @param[out] frame_len  Constructed frame length.
+ */
+static void construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame, size_t *frame_len)
+{
+    // 1. Place magic bytes into the frame.
+    frame[0] = FRAME_MAGIC_BYTE_2;
+    frame[1] = FRAME_MAGIC_BYTE_1;
+    // 2. Place DATA_LEN into the frame.
+    frame[2] = (data_len >> 8) & 0xFF;
+    frame[3] = data_len & 0xFF;
+    // 3. Place DATA into the frame.
+    memcpy(frame + 4, data, data_len);
+
+    // 4. Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
+    size_t data_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE;
+    uint32_t data_len_word = 0;  // Needed because HAL_CRC_Calculate accepts uint32_t.
+    memcpy(&data_len_word, frame + FRAME_MAGIC_BYTES, FRAME_DATA_LEN_SIZE);
+    uint32_t out_crc_hw = HAL_CRC_Calculate(&hcrc, &data_len_word, (uint32_t)FRAME_DATA_LEN_SIZE);
+    out_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)(frame + data_pos), (uint32_t)data_len);
+    // 5. Get the calculated CRC.
+    uint16_t out_crc = (uint16_t)(out_crc_hw & 0xFFFF);
+    size_t out_crc_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len;
+    // 6. Place CRC into the frame.
+    frame[out_crc_pos] = (uint8_t)((out_crc >> 8) & 0xFF);
+    frame[out_crc_pos + 1] = (uint8_t)(out_crc & 0xFF);
+
+    // 7. Calculate frame length.
+    *frame_len = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len + FRAME_CRC_SIZE;
+}
 
 /* USER CODE END 0 */
 
@@ -357,7 +507,6 @@ int main(void)
                         usb_devkit_state = PROCESS_DATA;
                     }
                     else {
-                        printf("crc error\n");
                         usb_devkit_state = READ_MAGIC_BYTE_1;
                     }
                 }
@@ -365,27 +514,14 @@ int main(void)
             }
 
             case PROCESS_DATA: {
-                out_frame[0] = FRAME_MAGIC_BYTE_2;
-                out_frame[1] = FRAME_MAGIC_BYTE_1;
-                out_frame[2] = (in_data_len >> 8) & 0xFF;
-                out_frame[3] = in_data_len & 0xFF;
-                memcpy(out_frame + 4, in_data, in_data_len);
-
-                // Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
-                size_t out_data_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE;
-                uint32_t out_data_len_word = 0;
-                memcpy(&out_data_len_word, out_frame + FRAME_MAGIC_BYTES, FRAME_DATA_LEN_SIZE);
-                uint32_t out_crc_hw = HAL_CRC_Calculate(&hcrc, &out_data_len_word,
-                                                        (uint32_t)FRAME_DATA_LEN_SIZE);
-                out_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)(out_frame + out_data_pos),
-                                                (uint32_t)in_data_len);
-
-                uint16_t out_crc = (uint16_t)(out_crc_hw & 0xFFFF);
-                size_t out_crc_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + in_data_len;
-                out_frame[out_crc_pos] = (uint8_t)((out_crc >> 8) & 0xFF);
-                out_frame[out_crc_pos + 1] = (uint8_t)(out_crc & 0xFF);
-
-                out_frame_len = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + in_data_len + FRAME_CRC_SIZE;
+                // 1. Process protobuf payload.
+                uint8_t pb_out[UsbDevkitResp_size] = {0};
+                size_t pb_out_len = 0;
+                if (!process_pb_data(in_data, in_data_len, pb_out, sizeof(pb_out), &pb_out_len)) {
+                    Error_Handler();
+                }
+                // 2. Construct frame.
+                construct_frame(pb_out, pb_out_len, out_frame, &out_frame_len);
                 out_frame_written = 0;
                 usb_devkit_state = WRITE_DATA;
                 break;
