@@ -93,7 +93,7 @@ DCACHE_HandleTypeDef hdcache1;
 
 RNG_HandleTypeDef hrng;
 
-SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef *hspi1 = NULL;
 
 PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
@@ -202,8 +202,29 @@ static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
 
     switch (cmd->type.raw.which_type) {
         case RawCmd_send_spi_data_tag:
-            // TODO: Implement direct SPI transfer and fill SendSpiDataResp.rx_data.
-            resp->type.raw.result_code = RAW_RESP_RESULT_CODE_SPI_ERROR;
+            // 1. Drive CS low (only if auto CS mode is on).
+            if (auto_cs_mode) {
+                HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin, GPIO_PIN_RESET);
+            }
+            // 2. Do SPI transfer.
+            HAL_StatusTypeDef ret = HAL_SPI_TransmitReceive(
+                hspi1, cmd->type.raw.type.send_spi_data.tx_data.bytes,
+                resp->type.raw.type.send_spi_data.rx_data.bytes,
+                cmd->type.raw.type.send_spi_data.tx_data.size,
+                cmd->type.raw.type.send_spi_data.timeout_ms);
+            // 3. Drive CS high (only if auto CS mode is on).
+            if (auto_cs_mode) {
+                HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin, GPIO_PIN_SET);
+            }
+            // 4. Check HAL_SPI_TransmitReceive return value.
+            if (ret == HAL_OK) {
+                resp->type.raw.which_type = RawResp_send_spi_data_tag;
+                resp->type.raw.type.send_spi_data.rx_data.size =
+                    cmd->type.raw.type.send_spi_data.tx_data.size;
+            }
+            else {
+                resp->type.raw.result_code = RAW_RESP_RESULT_CODE_SPI_ERROR;
+            }
             break;
 
         case RawCmd_set_auto_cs_mode_tag:
@@ -211,6 +232,7 @@ static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
             break;
 
         case RawCmd_set_cs_tag:
+            // CS can be manually set only if auto CS mode is off.
             if (auto_cs_mode) {
                 resp->type.raw.result_code = RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON;
             }
@@ -403,6 +425,9 @@ int main(void)
     // Initialize Libtropic.
     lt_ret = lt_init(&lt_handle);
     CHECK_LT_RET;
+
+    // Save pointer to the SPI handle so we can use SPI with raw commands.
+    hspi1 = &lt_device.spi_handle;
 
     // Turn on the LED to indicate that the initialization succeeded.
     HAL_GPIO_WritePin(APP_LED_GPIO_Port, APP_LED_Pin, GPIO_PIN_SET);

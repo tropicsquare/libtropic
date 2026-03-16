@@ -78,6 +78,7 @@ message RawCmd {
 
 message SendSpiDataCmd {
 	bytes tx_data = 1;
+	uint32 timeout_ms = 2;
 }
 
 message SetAutoCsModeCmd {
@@ -107,11 +108,10 @@ message RawResp {
 enum RawRespResultCode {
 	RAW_RESP_RESULT_CODE_UNSPECIFIED = 0;
 	RAW_RESP_RESULT_CODE_OK = 1;
-	RAW_RESP_RESULT_CODE_FAIL = 2;
-	RAW_RESP_RESULT_CODE_SPI_ERROR = 3;
-	RAW_RESP_RESULT_CODE_CS_NOT_SET = 4;
-	RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON = 5;
-	RAW_RESP_RESULT_CODE_UNKNOWN_CMD = 6;
+	RAW_RESP_RESULT_CODE_FAIL = 2; // Generic error.
+	RAW_RESP_RESULT_CODE_SPI_ERROR = 3; // Error during SPI transfer.
+	RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON = 4; // SetCsCmd was received, but Auto CS mode is on.
+	RAW_RESP_RESULT_CODE_UNKNOWN_CMD = 5;
 }
 
 message SendSpiDataResp {
