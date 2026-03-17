@@ -117,9 +117,12 @@ static size_t usb_read_chunk(uint8_t *buff, size_t to_read);
 static size_t usb_write_chunk(const uint8_t *buff, size_t to_write);
 static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
 static void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
-static bool process_pb_data(const uint8_t *pb_data_in, size_t pb_data_in_len, uint8_t *pb_data_out,
-                            size_t pb_data_out_size, size_t *pb_data_out_len);
-static void construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame, size_t *frame_len);
+static bool process_data(const uint8_t *pb_data_in, size_t pb_data_in_len, uint8_t *pb_data_out,
+                         size_t pb_data_out_size, size_t *pb_data_out_len);
+static bool construct_resp(const UsbDevkitResp *resp, uint8_t *frame_buff, size_t frame_buff_size,
+                           size_t *frame_buff_len);
+static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
+                            size_t frame_buff_size, size_t *frame_buff_len);
 
 #if defined(__ICCARM__)
 /* New definition from EWARM V9, compatible with EWARM8 */
@@ -268,23 +271,25 @@ static void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
 }
 
 /**
- * @brief Decode UsbDevkitCmd from payload, execute command, and encode UsbDevkitResp.
+ * @brief Decode UsbDevkitCmd from `data`, execute the command, encode UsbDevkitResp and construct
+ * frame.
  *
- * @param[in]  pb_data_in        Input protobuf bytes.
- * @param[in]  pb_data_in_len    Length of input protobuf bytes.
- * @param[out] pb_data_out       Output buffer for encoded UsbDevkitResp protobuf bytes.
- * @param[in]  pb_data_out_size  Size of pb_data_out buffer.
- * @param[out] pb_data_out_len   Number of bytes written to pb_data_out.
- * @retval     true              Response encoded successfully.
- * @retval     false             Response could not be encoded.
+ * @param[in]  data             DATA field from incoming frame.
+ * @param[in]  data_len         DATA_LEN field from incoming frame.
+ * @param[out] frame_buff       Buffer for the constructed frame.
+ * @param[in]  frame_buff_size  Size of `frame_buff`.
+ * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
+ * @retval     true             Success.
+ * @retval     false            Fail.
  */
-static bool process_pb_data(const uint8_t *pb_data_in, size_t pb_data_in_len, uint8_t *pb_data_out,
-                            size_t pb_data_out_size, size_t *pb_data_out_len)
+static bool process_data(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
+                         size_t frame_buff_size, size_t *frame_buff_len)
 {
     UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
     UsbDevkitResp resp = UsbDevkitResp_init_zero;
 
-    pb_istream_t pb_in = pb_istream_from_buffer(pb_data_in, pb_data_in_len);
+    // 1. Decode command and process it.
+    pb_istream_t pb_in = pb_istream_from_buffer(data, data_len);
     if (!pb_decode(&pb_in, UsbDevkitCmd_fields, &cmd)) {
         resp.which_type = UsbDevkitResp_error_tag;
         resp.type.error.code = ERROR_RESP_CODE_PB_DECODE;
@@ -306,49 +311,84 @@ static bool process_pb_data(const uint8_t *pb_data_in, size_t pb_data_in_len, ui
         }
     }
 
-    pb_ostream_t pb_out = pb_ostream_from_buffer(pb_data_out, pb_data_out_size);
-    if (!pb_encode(&pb_out, UsbDevkitResp_fields, &resp)) {
+    // 2. Construct response.
+    return construct_resp(&resp, frame_buff, frame_buff_size, frame_buff_len);
+}
+
+/**
+ * @brief Encodes UsbDevkitResp and constructs frame.
+ *
+ * @param[in]  resp             USB DevKit response.
+ * @param[out] frame_buff       Buffer for storing the frame.
+ * @param[in]  frame_buff_size  Size of `out_buff`.
+ * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
+ * @retval     true             Response encoded successfully.
+ * @retval     false            Response could not be encoded.
+ */
+static bool construct_resp(const UsbDevkitResp *resp, uint8_t *frame_buff, size_t frame_buff_size,
+                           size_t *frame_buff_len)
+{
+    // 1. Encode response.
+    uint8_t pb_data_out[UsbDevkitResp_size];
+    pb_ostream_t pb_out = pb_ostream_from_buffer(pb_data_out, sizeof(pb_data_out));
+    if (!pb_encode(&pb_out, UsbDevkitResp_fields, resp)) {
         return false;
     }
 
-    *pb_data_out_len = pb_out.bytes_written;
+    // 2. Construct frame.
+    if (!construct_frame(pb_data_out, pb_out.bytes_written, frame_buff, frame_buff_size,
+                         frame_buff_len)) {
+        return false;
+    }
+
     return true;
 }
 
 /**
  * @brief Construct the frame to send.
  *
- * @param[in]  data       DATA field in the frame.
- * @param[in]  data_len   DATA_LEN field in the frame.
- * @param[out] frame      Constructed frame.
- * @param[out] frame_len  Constructed frame length.
+ * @param[in]  data             DATA field in the frame.
+ * @param[in]  data_len         DATA_LEN field in the frame.
+ * @param[out] frame_buff       Buffer for the constructed frame.
+ * @param[in]  frame_buff_size  Size of `frame_buff`.
+ * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
+ * @retval     true             Frame constructed successfully.
+ * @retval     false            Frame could not be constructed.
  */
-static void construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame, size_t *frame_len)
+static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
+                            size_t frame_buff_size, size_t *frame_buff_len)
 {
-    // 1. Place magic bytes into the frame.
-    frame[0] = FRAME_MAGIC_BYTE_2;
-    frame[1] = FRAME_MAGIC_BYTE_1;
-    // 2. Place DATA_LEN into the frame.
-    frame[2] = (data_len >> 8) & 0xFF;
-    frame[3] = data_len & 0xFF;
-    // 3. Place DATA into the frame.
-    memcpy(frame + 4, data, data_len);
+    // 1. Check if buffer for the frame is big enough.
+    if (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len + FRAME_CRC_SIZE > frame_buff_size) {
+        return false;
+    }
 
-    // 4. Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
+    // 2. Place magic bytes into the frame.
+    frame_buff[0] = FRAME_MAGIC_BYTE_2;
+    frame_buff[1] = FRAME_MAGIC_BYTE_1;
+    // 3. Place DATA_LEN into the frame.
+    frame_buff[2] = (data_len >> 8) & 0xFF;
+    frame_buff[3] = data_len & 0xFF;
+    // 4. Place DATA into the frame.
+    memcpy(frame_buff + 4, data, data_len);
+
+    // 5. Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
     size_t data_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE;
     uint32_t data_len_word = 0;  // Needed because HAL_CRC_Calculate accepts uint32_t.
-    memcpy(&data_len_word, frame + FRAME_MAGIC_BYTES, FRAME_DATA_LEN_SIZE);
+    memcpy(&data_len_word, frame_buff + FRAME_MAGIC_BYTES, FRAME_DATA_LEN_SIZE);
     uint32_t out_crc_hw = HAL_CRC_Calculate(&hcrc, &data_len_word, (uint32_t)FRAME_DATA_LEN_SIZE);
-    out_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)(frame + data_pos), (uint32_t)data_len);
-    // 5. Get the calculated CRC.
+    out_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)(frame_buff + data_pos),
+                                    (uint32_t)data_len);
+    // 6. Get the calculated CRC.
     uint16_t out_crc = (uint16_t)(out_crc_hw & 0xFFFF);
     size_t out_crc_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len;
-    // 6. Place CRC into the frame.
-    frame[out_crc_pos] = (uint8_t)((out_crc >> 8) & 0xFF);
-    frame[out_crc_pos + 1] = (uint8_t)(out_crc & 0xFF);
+    // 7. Place CRC into the frame.
+    frame_buff[out_crc_pos] = (uint8_t)((out_crc >> 8) & 0xFF);
+    frame_buff[out_crc_pos + 1] = (uint8_t)(out_crc & 0xFF);
 
-    // 7. Calculate frame length.
-    *frame_len = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len + FRAME_CRC_SIZE;
+    // 8. Calculate frame length.
+    *frame_buff_len = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len + FRAME_CRC_SIZE;
+    return true;
 }
 
 /* USER CODE END 0 */
@@ -490,7 +530,16 @@ int main(void)
                     in_data_len = ((size_t)in_data_len_bytes[0] << 8) | (size_t)in_data_len_bytes[1];
 
                     if (in_data_len == 0 || in_data_len > FRAME_DATA_MAX_SIZE) {
-                        usb_devkit_state = READ_MAGIC_BYTE_1;
+                        // 1. Construct error response.
+                        UsbDevkitResp resp = UsbDevkitResp_init_zero;
+                        resp.which_type = UsbDevkitResp_error_tag;
+                        resp.type.error.code = ERROR_RESP_CODE_BAD_DATA_LEN;
+                        if (!construct_resp(&resp, out_frame, sizeof(out_frame), &out_frame_len)) {
+                            Error_Handler();
+                        }
+                        // 2. Prepare for writing.
+                        out_frame_written = 0;
+                        usb_devkit_state = WRITE_DATA;
                     }
                     else {
                         in_data_read = 0;
@@ -536,14 +585,10 @@ int main(void)
                         UsbDevkitResp resp = UsbDevkitResp_init_zero;
                         resp.which_type = UsbDevkitResp_error_tag;
                         resp.type.error.code = ERROR_RESP_CODE_BAD_CRC;
-                        // 2. Encode response.
-                        uint8_t pb_data_out[UsbDevkitResp_size];
-                        pb_ostream_t pb_out = pb_ostream_from_buffer(pb_data_out, sizeof(pb_data_out));
-                        if (!pb_encode(&pb_out, UsbDevkitResp_fields, &resp)) {
+                        if (!construct_resp(&resp, out_frame, sizeof(out_frame), &out_frame_len)) {
                             Error_Handler();
                         }
-                        // 3. Construct frame.
-                        construct_frame(pb_data_out, pb_out.bytes_written, out_frame, &out_frame_len);
+                        // 2. Prepare for writing.
                         out_frame_written = 0;
                         usb_devkit_state = WRITE_DATA;
                     }
@@ -552,14 +597,13 @@ int main(void)
             }
 
             case PROCESS_DATA: {
-                // 1. Process protobuf payload.
-                uint8_t pb_out[UsbDevkitResp_size] = {0};
-                size_t pb_out_len = 0;
-                if (!process_pb_data(in_data, in_data_len, pb_out, sizeof(pb_out), &pb_out_len)) {
+                // 1. Process incoming DATA and construct response.
+                if (!process_data(in_data, in_data_len, out_frame, sizeof(out_frame),
+                                  &out_frame_len)) {
                     Error_Handler();
                 }
-                // 2. Construct frame.
-                construct_frame(pb_out, pb_out_len, out_frame, &out_frame_len);
+
+                // 2. Prepare for writing.
                 out_frame_written = 0;
                 usb_devkit_state = WRITE_DATA;
                 break;
