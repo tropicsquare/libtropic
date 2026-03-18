@@ -112,7 +112,7 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 /* USER CODE BEGIN PV */
 
 usb_devkit_state_t usb_devkit_state = READ_MAGIC_BYTE_1;
-bool auto_cs_mode = 1;
+bool auto_cs_mode = true;
 
 /* USER CODE END PV */
 
