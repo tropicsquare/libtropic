@@ -39,15 +39,15 @@
 #error "Interrupt PIN not supported in the USB DevKit port!"
 #endif
 
-#define USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1 0xAA
-#define USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2 0x55
-#define USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES 2
-#define USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE 2
-#define USB_DEVKIT_NEW_FW_FRAME_DATA_MAX_SIZE 4093
-#define USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE 2
-#define USB_DEVKIT_NEW_FW_OUT_FRAME_MAX_SIZE                                       \
-    (USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + \
-     UsbDevkitCmd_size + USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE)
+#define LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_1 0xAA
+#define LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_2 0x55
+#define LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES 2
+#define LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE 2
+#define LT_USB_DT_NEW_FW_FRAME_DATA_MAX_SIZE 4093
+#define LT_USB_DT_NEW_FW_FRAME_CRC_SIZE 2
+#define LT_USB_DT_NEW_FW_OUT_FRAME_MAX_SIZE                                                          \
+    (LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES + LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE + UsbDevkitCmd_size + \
+     LT_USB_DT_NEW_FW_FRAME_CRC_SIZE)
 
 /**
  * @brief Macro used for identifying which FW running on the USB DevKit (legacy FW or not).
@@ -56,8 +56,8 @@
  * (used by legacy FW). This sequence should trigger "ERROR: unknown command" in the legacy FW and
  * ErrorResp with ERROR_RESP_CODE_BAD_DATA_LEN in the newer FW.
  */
-#define USB_DEVKIT_FW_ID_MSG \
-    {USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1, USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2, 0x00, 0x00, '\n'}
+#define LT_USB_DT_FW_ID_MSG \
+    {LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_1, LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_2, 0x00, 0x00, '\n'}
 
 // getentropy() has a limit of random bytes it can generate in one call. The POSIX.1-2024 standard
 // requires GETENTROPY_MAX to be defined in limits.h, but because this standard is quite new, we will
@@ -173,14 +173,14 @@ static bool read_port(int fd, uint8_t *buffer, size_t size)
 static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
                             size_t frame_buff_size, size_t *frame_buff_len)
 {
-    if (USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len +
-            USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE >
+    if (LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES + LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len +
+            LT_USB_DT_NEW_FW_FRAME_CRC_SIZE >
         frame_buff_size) {
         return false;
     }
     // 1. Place magic bytes into the frame.
-    frame_buff[0] = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1;
-    frame_buff[1] = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2;
+    frame_buff[0] = LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_1;
+    frame_buff[1] = LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_2;
     // 2. Place DATA_LEN into the frame.
     frame_buff[2] = (data_len >> 8) & 0xFF;
     frame_buff[3] = data_len & 0xFF;
@@ -188,17 +188,17 @@ static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame
     memcpy(frame_buff + 4, data, data_len);
 
     // 4. Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
-    uint16_t crc = crc16(frame_buff + USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES,
-                         (int16_t)(USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len));
+    uint16_t crc = crc16(frame_buff + LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES,
+                         (int16_t)(LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len));
     // 5. Place CRC into the frame.
-    size_t crc_pos = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE +
+    size_t crc_pos = LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES + LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE +
                      data_len;
     frame_buff[crc_pos] = (uint8_t)(crc & 0xFF);
     frame_buff[crc_pos + 1] = (uint8_t)((crc >> 8) & 0xFF);
 
     // 6. Calculate frame length.
-    *frame_buff_len = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE +
-                      data_len + USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE;
+    *frame_buff_len = LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES + LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE +
+                      data_len + LT_USB_DT_NEW_FW_FRAME_CRC_SIZE;
     return true;
 }
 
@@ -213,7 +213,7 @@ static bool send_usb_devkit_cmd(int fd, const UsbDevkitCmd *cmd)
     }
 
     // 2. Construct frame.
-    uint8_t frame[USB_DEVKIT_NEW_FW_OUT_FRAME_MAX_SIZE];
+    uint8_t frame[LT_USB_DT_NEW_FW_OUT_FRAME_MAX_SIZE];
     size_t frame_len = 0;
     if (!construct_frame(pb_data, pb_ostream.bytes_written, frame, sizeof(frame), &frame_len)) {
         LT_LOG_ERROR("Failed to construct frame.");
@@ -231,14 +231,14 @@ static bool send_usb_devkit_cmd(int fd, const UsbDevkitCmd *cmd)
 static bool recv_usb_devkit_resp(int fd, UsbDevkitResp *resp)
 {
     // 1. Read magic bytes.
-    uint8_t magic_bytes[USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES];
+    uint8_t magic_bytes[LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTES];
     if (!read_port(fd, magic_bytes, sizeof(magic_bytes))) {
         LT_LOG_ERROR("Failed to read magic bytes.");
         return false;
     }
     // 2. Check magic bytes.
-    if (magic_bytes[0] != USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2 ||
-        magic_bytes[1] != USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1) {
+    if (magic_bytes[0] != LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_2 ||
+        magic_bytes[1] != LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_1) {
         LT_LOG_ERROR("Received unexpected magic bytes: 0x%02" PRIx8 ", 0x%02" PRIx8, magic_bytes[0],
                      magic_bytes[1]);
         return false;
@@ -246,22 +246,21 @@ static bool recv_usb_devkit_resp(int fd, UsbDevkitResp *resp)
 
     // 3. Read DATA_LEN.
     // Using one buffer for DATA_LEN and DATA for easier CRC calculation.
-    uint8_t data_len_and_data_bytes[USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE +
-                                    USB_DEVKIT_NEW_FW_FRAME_DATA_MAX_SIZE];
-    if (!read_port(fd, data_len_and_data_bytes, USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE)) {
+    uint8_t data_len_and_data_bytes[LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE + UsbDevkitResp_size];
+    if (!read_port(fd, data_len_and_data_bytes, LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE)) {
         LT_LOG_ERROR("Failed to read DATA_LEN bytes.");
         return false;
     }
     // DATA_LEN comes as big-endian.
     size_t data_len = 0;
     data_len = ((size_t)data_len_and_data_bytes[0] << 8) | (size_t)data_len_and_data_bytes[1];
-    if (data_len == 0 || data_len > USB_DEVKIT_NEW_FW_FRAME_DATA_MAX_SIZE) {
+    if (data_len == 0 || data_len > UsbDevkitResp_size) {
         LT_LOG_ERROR("Unexpected DATA_LEN=%zu.", data_len);
         return false;
     }
 
     // 4. Read DATA.
-    if (!read_port(fd, data_len_and_data_bytes + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE, data_len)) {
+    if (!read_port(fd, data_len_and_data_bytes + LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE, data_len)) {
         LT_LOG_ERROR("Failed to read DATA.");
         return false;
     }
@@ -274,7 +273,7 @@ static bool recv_usb_devkit_resp(int fd, UsbDevkitResp *resp)
     }
     // 6. Verify CRC.
     uint16_t crc_calc = crc16(data_len_and_data_bytes,
-                              (int16_t)(USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len));
+                              (int16_t)(LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len));
 
     if (crc != crc_calc) {
         LT_LOG_ERROR("CRC mismatch in USB DevKit response (received=0x%04" PRIx16
@@ -285,7 +284,7 @@ static bool recv_usb_devkit_resp(int fd, UsbDevkitResp *resp)
 
     // 7. Decode DATA.
     pb_istream_t pb_istream = pb_istream_from_buffer(
-        data_len_and_data_bytes + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE, data_len);
+        data_len_and_data_bytes + LT_USB_DT_NEW_FW_FRAME_DATA_LEN_SIZE, data_len);
     if (!pb_decode(&pb_istream, UsbDevkitResp_fields, resp)) {
         LT_LOG_ERROR("Failed to decode UsbDevkitResp: %s", PB_GET_ERROR(&pb_istream));
         return false;
@@ -368,7 +367,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
 
     // Check what FW is USB DevKit running:
     // 1. Send the identification message.
-    uint8_t fw_id_msg[] = USB_DEVKIT_FW_ID_MSG;
+    uint8_t fw_id_msg[] = LT_USB_DT_FW_ID_MSG;
     if (!write_port(device->fd, fw_id_msg, sizeof(fw_id_msg))) {
         LT_LOG_INFO("Failed to send a message to identify USB DevKit FW.");
         close(device->fd);
@@ -383,8 +382,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         return LT_FAIL;
     }
     // 3. Check the response.
-    if (fw_id_msg_resp[0] == USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2 &&
-        fw_id_msg_resp[1] == USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1) {
+    if (fw_id_msg_resp[0] == LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_2 &&
+        fw_id_msg_resp[1] == LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_1) {
         device->legacy_fw = false;
     }
     else if (fw_id_msg_resp[0] == 'E' && fw_id_msg_resp[1] == 'R') {
