@@ -67,7 +67,19 @@ typedef enum {
 #define FRAME_DATA_LEN_SIZE 2
 #define FRAME_DATA_MAX_SIZE 4093
 #define FRAME_CRC_SIZE 2
-#define FRAME_MAX_SIZE (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + FRAME_DATA_MAX_SIZE + FRAME_CRC_SIZE)
+
+#if UsbDevkitCmd_size > FRAME_DATA_MAX_SIZE
+#error \
+    "Maximal size of UsbDevkitCmd is bigger than the maximal allowed size of DATA field in the frame!"
+#endif
+
+#if UsbDevkitResp_size > FRAME_DATA_MAX_SIZE
+#error \
+    "Maximal size of UsbDevkitResp is bigger than the maximal allowed size of DATA field in the frame!"
+#endif
+
+#define OUT_FRAME_MAX_SIZE \
+    (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + UsbDevkitResp_size + FRAME_CRC_SIZE)
 
 #define USB_READ_TIMEOUT_MS 50
 
@@ -481,11 +493,11 @@ int main(void)
     size_t in_data_len_bytes_read = 0;               // Number of incoming DATA_LEN bytes read so far.
     size_t in_data_len = 0;                          // Parsed incoming DATA_LEN.
     // Variables for DATA field in the frame.
-    uint8_t in_data[FRAME_DATA_MAX_SIZE];  // Incoming DATA bytes.
-    size_t in_data_read = 0;               // Number of incoming DATA bytes read so far.
-    uint8_t out_frame[FRAME_MAX_SIZE];     // Outgoing frame bytes.
-    size_t out_frame_len = 0;              // Actual number of outgoing frame bytes.
-    size_t out_frame_written = 0;          // Number of outgoing frame bytes written so far.
+    uint8_t in_data[UsbDevkitCmd_size];     // Incoming DATA bytes.
+    size_t in_data_read = 0;                // Number of incoming DATA bytes read so far.
+    uint8_t out_frame[OUT_FRAME_MAX_SIZE];  // Outgoing frame bytes.
+    size_t out_frame_len = 0;               // Actual number of outgoing frame bytes.
+    size_t out_frame_written = 0;           // Number of outgoing frame bytes written so far.
     // Variables for CRC field in the frame.
     uint8_t in_crc[FRAME_CRC_SIZE];  // Incoming CRC bytes.
     size_t in_crc_read = 0;          // Number of incoming CRC bytes read so far.
@@ -529,7 +541,7 @@ int main(void)
                     // DATA_LEN comes as big-endian.
                     in_data_len = ((size_t)in_data_len_bytes[0] << 8) | (size_t)in_data_len_bytes[1];
 
-                    if (in_data_len == 0 || in_data_len > FRAME_DATA_MAX_SIZE) {
+                    if (in_data_len == 0 || in_data_len > UsbDevkitCmd_size) {
                         // 1. Construct error response.
                         UsbDevkitResp resp = UsbDevkitResp_init_zero;
                         resp.which_type = UsbDevkitResp_error_tag;
