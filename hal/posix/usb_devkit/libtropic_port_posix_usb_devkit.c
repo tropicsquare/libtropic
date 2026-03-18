@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "libtropic_common.h"
@@ -34,10 +35,6 @@
 #include "pb_decode.h"
 #include "pb_encode.h"
 #include "usb_devkit_messages.pb.h"
-
-#if LT_USE_INT_PIN
-#error "Interrupt PIN not supported in the USB DevKit port!"
-#endif
 
 #define LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_1 0xAA
 #define LT_USB_DT_NEW_FW_FRAME_MAGIC_BYTE_2 0x55
@@ -653,6 +650,142 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
 
     return LT_OK;
 }
+
+#if LT_USE_INT_PIN
+/**
+ * @brief Get time for timeout measurement in milliseconds.
+ *
+ * Prefer CLOCK_MONOTONIC when available and supported; otherwise fall back to CLOCK_REALTIME.
+ * Strictly POSIX compliant.
+ *
+ * @param[out] time_ms  Current time in milliseconds.
+ * @retval true   Time obtained successfully.
+ * @retval false  Time retrieval failed.
+ */
+static bool get_time_ms(uint64_t *time_ms)
+{
+    struct timespec ts;
+
+#if defined(CLOCK_MONOTONIC)
+    static int monotonic_supported = -1;  // -1: Unchecked, 0: No, 1: Yes
+
+    // Check sysconf only once (it is a syscall -> calling it in a loop can introduce overhead).
+    if (monotonic_supported == -1) {
+#if defined(_SC_MONOTONIC_CLOCK)
+        monotonic_supported = (sysconf(_SC_MONOTONIC_CLOCK) > 0) ? 1 : 0;
+#else
+        // Assume supported if CLOCK_MONOTONIC exists but _SC_MONOTONIC_CLOCK does not.
+        monotonic_supported = 1;
+#endif
+    }
+
+    if (monotonic_supported == 1) {
+        if (clock_gettime(CLOCK_MONOTONIC, &ts) == 0) {
+            *time_ms = ((uint64_t)ts.tv_sec * 1000U) + ((uint64_t)ts.tv_nsec / 1000000U);
+            return true;
+        }
+        LT_LOG_WARN("clock_gettime(CLOCK_MONOTONIC) failed: errno=%d (%s). Will try CLOCK_REALTIME.",
+                    errno, strerror(errno));
+    }
+#endif
+
+    // Fallback to POSIX standard wall-clock
+    if (clock_gettime(CLOCK_REALTIME, &ts) == 0) {
+        *time_ms = ((uint64_t)ts.tv_sec * 1000U) + ((uint64_t)ts.tv_nsec / 1000000U);
+        return true;
+    }
+
+    LT_LOG_ERROR("clock_gettime(CLOCK_REALTIME) failed: errno=%d (%s).", errno, strerror(errno));
+    return false;
+}
+
+lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
+{
+    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
+    uint64_t start_ms = 0;
+
+    if (!get_time_ms(&start_ms)) {
+        return LT_FAIL;
+    }
+
+    while (1) {
+        if (device->legacy_fw) {
+            const uint8_t gpo_cmd[] = "GPO\n";
+            if (!write_port(device->fd, gpo_cmd, sizeof(gpo_cmd))) {
+                LT_LOG_ERROR("Failed to send GPO command.");
+                return LT_L1_SPI_ERROR;
+            }
+
+            uint8_t gpo_cmd_resp[9];  // The buffer has space for additional '\0' (added later).
+            if (!read_port(device->fd, gpo_cmd_resp, sizeof(gpo_cmd_resp) - 1)) {
+                LT_LOG_ERROR("Failed to read response for GPO command.");
+                return LT_L1_SPI_ERROR;
+            }
+            gpo_cmd_resp[sizeof(gpo_cmd_resp) - 1] = '\0';
+
+            uint8_t gpo_cmd_ack[4];
+            if (!read_port(device->fd, gpo_cmd_ack, sizeof(gpo_cmd_ack))) {
+                LT_LOG_ERROR("Failed to read ACK for GPO command.");
+                return LT_L1_SPI_ERROR;
+            }
+            if (memcmp(gpo_cmd_ack, "OK\r\n", sizeof(gpo_cmd_ack)) != 0) {
+                LT_LOG_ERROR("USB DevKit did not ACK GPO command.");
+                return LT_L1_SPI_ERROR;
+            }
+
+            int gpo_val;
+            if (1 != sscanf((char *)gpo_cmd_resp, "GPO: %d", &gpo_val)) {
+                LT_LOG_ERROR("Failed to get the value of GPO from the response.");
+                return LT_FAIL;
+            }
+            if (gpo_val) {
+                return LT_OK;
+            }
+        }
+        else {
+            // 1. Prepare command.
+            UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
+            cmd.which_type = UsbDevkitCmd_raw_tag;
+            cmd.type.raw.which_type = RawCmd_get_gpo_tag;
+            // 2. Send command.
+            if (!send_usb_devkit_cmd(device->fd, &cmd)) {
+                return LT_FAIL;
+            }
+            // 3. Get response.
+            UsbDevkitResp resp = UsbDevkitResp_init_zero;
+            if (!recv_usb_devkit_resp(device->fd, &resp)) {
+                return LT_FAIL;
+            }
+
+            // 4. Check response.
+            if (resp.which_type != UsbDevkitResp_raw_tag) {
+                LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
+                return LT_FAIL;
+            }
+            if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
+                LT_LOG_ERROR("RawRespResultCode is not OK, result_code=%d.",
+                             resp.type.raw.result_code);
+                return LT_FAIL;
+            }
+            if (resp.type.raw.which_type != RawResp_get_gpo_tag) {
+                LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+                return LT_FAIL;
+            }
+            if (resp.type.raw.type.get_gpo.high) {
+                return LT_OK;
+            }
+        }
+
+        uint64_t now_ms = 0;
+        if (!get_time_ms(&now_ms)) {
+            return LT_FAIL;
+        }
+        if ((now_ms - start_ms) >= ms) {
+            return LT_L1_INT_TIMEOUT;
+        }
+    }
+}
+#endif
 
 int lt_port_log(const char *format, ...)
 {
