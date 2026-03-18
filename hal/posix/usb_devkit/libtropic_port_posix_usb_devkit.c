@@ -410,7 +410,7 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         cmd.which_type = UsbDevkitCmd_raw_tag;
         cmd.type.raw.which_type = RawCmd_set_auto_cs_mode_tag;
         cmd.type.raw.type.set_auto_cs_mode.on = false;
-
+        // 2. Send command.
         if (!send_usb_devkit_cmd(device->fd, &cmd)) {
             close(device->fd);
             return LT_FAIL;
@@ -422,7 +422,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
             close(device->fd);
             return LT_FAIL;
         }
-
         // 3. Check response.
         if (resp.which_type != UsbDevkitResp_raw_tag) {
             LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
@@ -500,18 +499,17 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
         cmd.which_type = UsbDevkitCmd_raw_tag;
         cmd.type.raw.which_type = RawCmd_set_cs_tag;
         cmd.type.raw.type.set_cs.high = false;
-
+        // 2. Send command.
         if (!send_usb_devkit_cmd(device->fd, &cmd)) {
             return LT_FAIL;
         }
 
-        // 2. Get response.
+        // 3. Get response.
         UsbDevkitResp resp = UsbDevkitResp_init_zero;
         if (!recv_usb_devkit_resp(device->fd, &resp)) {
             return LT_FAIL;
         }
-
-        // 3. Check response.
+        // 4. Check response.
         if (resp.which_type != UsbDevkitResp_raw_tag) {
             LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
             return LT_FAIL;
@@ -548,23 +546,22 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
         }
     }
     else {
-        // 1. Prepare command for driving CS low.
+        // 1. Prepare command for driving CS high.
         UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
         cmd.which_type = UsbDevkitCmd_raw_tag;
         cmd.type.raw.which_type = RawCmd_set_cs_tag;
         cmd.type.raw.type.set_cs.high = true;
-
+        // 2. Send command.
         if (!send_usb_devkit_cmd(device->fd, &cmd)) {
             return LT_FAIL;
         }
 
-        // 2. Get response.
+        // 3. Get response.
         UsbDevkitResp resp = UsbDevkitResp_init_zero;
         if (!recv_usb_devkit_resp(device->fd, &resp)) {
             return LT_FAIL;
         }
-
-        // 3. Check response.
+        // 4. Check response.
         if (resp.which_type != UsbDevkitResp_raw_tag) {
             LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
             return LT_FAIL;
@@ -619,7 +616,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         }
     }
     else {
-        // 1. Prepare command for driving CS low.
+        // 1. Prepare command.
         UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
         cmd.which_type = UsbDevkitCmd_raw_tag;
         cmd.type.raw.which_type = RawCmd_send_spi_data_tag;
@@ -650,7 +647,7 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
             LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
             return LT_FAIL;
         }
-        // 4. Get the received SPI payload.
+        // 5. Get the received SPI payload.
         memcpy(s2->buff + offset, resp.type.raw.type.send_spi_data.rx_data.bytes, tx_data_length);
     }
 
