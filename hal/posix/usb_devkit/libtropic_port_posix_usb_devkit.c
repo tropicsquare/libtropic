@@ -30,10 +30,34 @@
 #include "libtropic_logging.h"
 #include "libtropic_macros.h"
 #include "libtropic_port.h"
+#include "lt_crc16.h"
+#include "pb_decode.h"
+#include "pb_encode.h"
+#include "usb_devkit_messages.pb.h"
 
 #if LT_USE_INT_PIN
 #error "Interrupt PIN not supported in the USB DevKit port!"
 #endif
+
+#define USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1 0xAA
+#define USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2 0x55
+#define USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES 2
+#define USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE 2
+#define USB_DEVKIT_NEW_FW_FRAME_DATA_MAX_SIZE 4093
+#define USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE 2
+#define USB_DEVKIT_NEW_FW_OUT_FRAME_MAX_SIZE                                       \
+    (USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + \
+     UsbDevkitCmd_size + USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE)
+
+/**
+ * @brief Macro used for identifying which FW running on the USB DevKit (legacy FW or not).
+ *
+ * @note We send magic bytes (used by newer FW), two 0x00 bytes (DATA_LEN in the newer FW) and '\n'
+ * (used by legacy FW). This sequence should trigger "ERROR: unknown command" in the legacy FW and
+ * ErrorResp with ERROR_RESP_CODE_BAD_DATA_LEN in the newer FW.
+ */
+#define USB_DEVKIT_FW_ID_MSG \
+    {USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1, USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2, 0x00, 0x00, '\n'}
 
 // getentropy() has a limit of random bytes it can generate in one call. The POSIX.1-2024 standard
 // requires GETENTROPY_MAX to be defined in limits.h, but because this standard is quite new, we will
@@ -135,9 +159,146 @@ static bool read_port(int fd, uint8_t *buffer, size_t size)
     return true;
 }
 
+/**
+ * @brief Construct the frame with a command to send to TROPIC01 USB DevKit with the new FW.
+ *
+ * @param[in]  data             DATA field in the frame.
+ * @param[in]  data_len         DATA_LEN field in the frame.
+ * @param[out] frame_buff       Constructed frame.
+ * @param[in]  frame_buff_size  Size of `frame_buff`.
+ * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
+ * @retval     true             Frame constructed successfully.
+ * @retval     false            Frame could not be constructed, `frame_buff` is too small.
+ */
+static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
+                            size_t frame_buff_size, size_t *frame_buff_len)
+{
+    if (USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len +
+            USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE >
+        frame_buff_size) {
+        return false;
+    }
+    // 1. Place magic bytes into the frame.
+    frame_buff[0] = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1;
+    frame_buff[1] = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2;
+    // 2. Place DATA_LEN into the frame.
+    frame_buff[2] = (data_len >> 8) & 0xFF;
+    frame_buff[3] = data_len & 0xFF;
+    // 3. Place DATA into the frame.
+    memcpy(frame_buff + 4, data, data_len);
+
+    // 4. Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
+    uint16_t crc = crc16(frame_buff + USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES,
+                         (int16_t)(USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len));
+    // 5. Place CRC into the frame.
+    size_t crc_pos = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE +
+                     data_len;
+    frame_buff[crc_pos] = (uint8_t)(crc & 0xFF);
+    frame_buff[crc_pos + 1] = (uint8_t)((crc >> 8) & 0xFF);
+
+    // 6. Calculate frame length.
+    *frame_buff_len = USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE +
+                      data_len + USB_DEVKIT_NEW_FW_FRAME_CRC_SIZE;
+    return true;
+}
+
+static bool send_usb_devkit_cmd(int fd, const UsbDevkitCmd *cmd)
+{
+    // 1. Encode command as protobuf payload.
+    uint8_t pb_data[UsbDevkitCmd_size];
+    pb_ostream_t pb_ostream = pb_ostream_from_buffer(pb_data, sizeof(pb_data));
+    if (!pb_encode(&pb_ostream, UsbDevkitCmd_fields, cmd)) {
+        LT_LOG_ERROR("Failed to encode UsbDevkitCmd: %s", PB_GET_ERROR(&pb_ostream));
+        return false;
+    }
+
+    // 2. Construct frame.
+    uint8_t frame[USB_DEVKIT_NEW_FW_OUT_FRAME_MAX_SIZE];
+    size_t frame_len = 0;
+    if (!construct_frame(pb_data, pb_ostream.bytes_written, frame, sizeof(frame), &frame_len)) {
+        LT_LOG_ERROR("Failed to construct frame.");
+        return false;
+    }
+    // 3. Send frame.
+    if (!write_port(fd, frame, frame_len)) {
+        LT_LOG_ERROR("Failed to send UsbDevkitCmd.");
+        return false;
+    }
+
+    return true;
+}
+
+static bool recv_usb_devkit_resp(int fd, UsbDevkitResp *resp)
+{
+    // 1. Read magic bytes.
+    uint8_t magic_bytes[USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTES];
+    if (!read_port(fd, magic_bytes, sizeof(magic_bytes))) {
+        LT_LOG_ERROR("Failed to read magic bytes.");
+        return false;
+    }
+    // 2. Check magic bytes.
+    if (magic_bytes[0] != USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2 ||
+        magic_bytes[1] != USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1) {
+        LT_LOG_ERROR("Received unexpected magic bytes: 0x%02" PRIx8 ", 0x%02" PRIx8, magic_bytes[0],
+                     magic_bytes[1]);
+        return false;
+    }
+
+    // 3. Read DATA_LEN.
+    // Using one buffer for DATA_LEN and DATA for easier CRC calculation.
+    uint8_t data_len_and_data_bytes[USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE +
+                                    USB_DEVKIT_NEW_FW_FRAME_DATA_MAX_SIZE];
+    if (!read_port(fd, data_len_and_data_bytes, USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE)) {
+        LT_LOG_ERROR("Failed to read DATA_LEN bytes.");
+        return false;
+    }
+    // DATA_LEN comes as big-endian.
+    size_t data_len = 0;
+    data_len = ((size_t)data_len_and_data_bytes[0] << 8) | (size_t)data_len_and_data_bytes[1];
+    if (data_len == 0 || data_len > USB_DEVKIT_NEW_FW_FRAME_DATA_MAX_SIZE) {
+        LT_LOG_ERROR("Unexpected DATA_LEN=%zu.", data_len);
+        return false;
+    }
+
+    // 4. Read DATA.
+    if (!read_port(fd, data_len_and_data_bytes + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE, data_len)) {
+        LT_LOG_ERROR("Failed to read DATA.");
+        return false;
+    }
+
+    // 5. Read CRC.
+    uint16_t crc;
+    if (!read_port(fd, (uint8_t *)&crc, sizeof(crc))) {
+        LT_LOG_ERROR("Failed to read CRC.");
+        return false;
+    }
+    // 6. Verify CRC.
+    uint16_t crc_calc = crc16(data_len_and_data_bytes,
+                              (int16_t)(USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE + data_len));
+
+    if (crc != crc_calc) {
+        LT_LOG_ERROR("CRC mismatch in USB DevKit response (received=0x%04" PRIx16
+                     ", calculated=0x%04" PRIx16 ").",
+                     crc, crc_calc);
+        return false;
+    }
+
+    // 7. Decode DATA.
+    pb_istream_t pb_istream = pb_istream_from_buffer(
+        data_len_and_data_bytes + USB_DEVKIT_NEW_FW_FRAME_DATA_LEN_SIZE, data_len);
+    if (!pb_decode(&pb_istream, UsbDevkitResp_fields, resp)) {
+        LT_LOG_ERROR("Failed to decode UsbDevkitResp: %s", PB_GET_ERROR(&pb_istream));
+        return false;
+    }
+
+    return true;
+}
+
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
 {
     lt_dev_posix_usb_devkit_t *device = (lt_dev_posix_usb_devkit_t *)s2->device;
+
+    device->legacy_fw = false;
 
     // Initialize the serial port.
     device->fd = open(device->dev_path, O_RDWR | O_NOCTTY);
@@ -205,6 +366,77 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         return LT_FAIL;
     }
 
+    // Check what FW is USB DevKit running:
+    // 1. Send the identification message.
+    uint8_t fw_id_msg[] = USB_DEVKIT_FW_ID_MSG;
+    if (!write_port(device->fd, fw_id_msg, sizeof(fw_id_msg))) {
+        LT_LOG_INFO("Failed to send a message to identify USB DevKit FW.");
+        close(device->fd);
+        return LT_FAIL;
+    }
+    // 2. Receive response.
+    // We read only 2 bytes, as that should be enough to indentify the FW.
+    uint8_t fw_id_msg_resp[2];
+    if (!read_port(device->fd, fw_id_msg_resp, sizeof(fw_id_msg_resp))) {
+        LT_LOG_ERROR("Failed to read USB DevKit FW identification response.");
+        close(device->fd);
+        return LT_FAIL;
+    }
+    // 3. Check the response.
+    if (fw_id_msg_resp[0] == USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_2 &&
+        fw_id_msg_resp[1] == USB_DEVKIT_NEW_FW_FRAME_MAGIC_BYTE_1) {
+        device->legacy_fw = false;
+    }
+    else if (fw_id_msg_resp[0] == 'E' && fw_id_msg_resp[1] == 'R') {
+        device->legacy_fw = true;
+    }
+    else {
+        LT_LOG_ERROR("Could not identify USB DevKit FW.");
+        close(device->fd);
+        return LT_FAIL;
+    }
+
+    // 4. Drop the rest of the response.
+    // Both USB DevKit FWs send more than 2 bytes -> we drop the remaining unread bytes, so we start
+    // clean.
+    if (0 != tcflush(device->fd, TCIFLUSH)) {
+        LT_LOG_ERROR("tcflush() failed: errno=%d (%s).", errno, strerror(errno));
+        close(device->fd);
+        return LT_FAIL;
+    }
+
+    if (!device->legacy_fw) {
+        // 1. Prepare command for disabling auto CS mode.
+        UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
+        cmd.which_type = UsbDevkitCmd_raw_tag;
+        cmd.type.raw.which_type = RawCmd_set_auto_cs_mode_tag;
+        cmd.type.raw.type.set_auto_cs_mode.on = false;
+
+        if (!send_usb_devkit_cmd(device->fd, &cmd)) {
+            close(device->fd);
+            return LT_FAIL;
+        }
+
+        // 2. Get response.
+        UsbDevkitResp resp = UsbDevkitResp_init_zero;
+        if (!recv_usb_devkit_resp(device->fd, &resp)) {
+            close(device->fd);
+            return LT_FAIL;
+        }
+
+        // 3. Check response.
+        if (resp.which_type != UsbDevkitResp_raw_tag) {
+            LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
+            close(device->fd);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
+            LT_LOG_ERROR("Auto CS mode was not disabled, result_code=%d.", resp.type.raw.result_code);
+            close(device->fd);
+            return LT_FAIL;
+        }
+    }
+
     return LT_OK;
 }
 
@@ -212,9 +444,12 @@ lt_ret_t lt_port_deinit(lt_l2_state_t *s2)
 {
     lt_dev_posix_usb_devkit_t *device = (lt_dev_posix_usb_devkit_t *)s2->device;
 
+    device->legacy_fw = false;
+
     if (close(device->fd)) {
         return LT_FAIL;
     }
+
     return LT_OK;
 }
 
@@ -257,8 +492,37 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    LT_UNUSED(s2);
-    // CS LOW is handled automatically when SPI transfer is executed.
+    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
+
+    // In legacy USB DevKit FW, CS LOW is handled automatically when SPI transfer is executed.
+    if (!device->legacy_fw) {
+        // 1. Prepare command for driving CS low.
+        UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
+        cmd.which_type = UsbDevkitCmd_raw_tag;
+        cmd.type.raw.which_type = RawCmd_set_cs_tag;
+        cmd.type.raw.type.set_cs.high = false;
+
+        if (!send_usb_devkit_cmd(device->fd, &cmd)) {
+            return LT_FAIL;
+        }
+
+        // 2. Get response.
+        UsbDevkitResp resp = UsbDevkitResp_init_zero;
+        if (!recv_usb_devkit_resp(device->fd, &resp)) {
+            return LT_FAIL;
+        }
+
+        // 3. Check response.
+        if (resp.which_type != UsbDevkitResp_raw_tag) {
+            LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
+            LT_LOG_ERROR("CS was not driven low, result_code=%d.", resp.type.raw.result_code);
+            return LT_FAIL;
+        }
+    }
+
     return LT_OK;
 }
 
@@ -266,62 +530,129 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
     lt_dev_posix_usb_devkit_t *device = (lt_dev_posix_usb_devkit_t *)s2->device;
 
-    uint8_t cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
-    if (!write_port(device->fd, cs_high, 5)) {
-        LT_LOG_ERROR("Failed to send CS=0 command.");
-        return LT_L1_SPI_ERROR;
+    if (device->legacy_fw) {
+        uint8_t cs_high[] = "CS=0\n";  // Yes, CS=0 really means that CSN is low
+        if (!write_port(device->fd, cs_high, 5)) {
+            LT_LOG_ERROR("Failed to send CS=0 command.");
+            return LT_L1_SPI_ERROR;
+        }
+
+        uint8_t buff[4];
+        if (!read_port(device->fd, buff, 4)) {
+            LT_LOG_ERROR("Failed to read response for CS=0 command.");
+            return LT_L1_SPI_ERROR;
+        }
+
+        if (memcmp(buff, "OK\r\n", 4) != 0) {
+            LT_LOG_ERROR("USB DevKit did not ACK CS=0 command.");
+            return LT_L1_SPI_ERROR;
+        }
+    }
+    else {
+        // 1. Prepare command for driving CS low.
+        UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
+        cmd.which_type = UsbDevkitCmd_raw_tag;
+        cmd.type.raw.which_type = RawCmd_set_cs_tag;
+        cmd.type.raw.type.set_cs.high = true;
+
+        if (!send_usb_devkit_cmd(device->fd, &cmd)) {
+            return LT_FAIL;
+        }
+
+        // 2. Get response.
+        UsbDevkitResp resp = UsbDevkitResp_init_zero;
+        if (!recv_usb_devkit_resp(device->fd, &resp)) {
+            return LT_FAIL;
+        }
+
+        // 3. Check response.
+        if (resp.which_type != UsbDevkitResp_raw_tag) {
+            LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
+            LT_LOG_ERROR("CS was not driven high, result_code=%d.", resp.type.raw.result_code);
+            return LT_FAIL;
+        }
     }
 
-    uint8_t buff[4];
-    if (!read_port(device->fd, buff, 4)) {
-        LT_LOG_ERROR("Failed to read response for CS=0 command.");
-        return LT_L1_SPI_ERROR;
-    }
-
-    if (memcmp(buff, "OK\r\n", 4) != 0) {
-        LT_LOG_ERROR("USB DevKit did not ACK CS=0 command.");
-        return LT_L1_SPI_ERROR;
-    }
     return LT_OK;
 }
 
 lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_data_length,
                               uint32_t timeout_ms)
 {
-    LT_UNUSED(timeout_ms);
-
     lt_dev_posix_usb_devkit_t *device = (lt_dev_posix_usb_devkit_t *)s2->device;
 
     if (offset + tx_data_length > TR01_L1_LEN_MAX) {
+        LT_LOG_ERROR("Invalid data length!");
         return LT_L1_DATA_LEN_ERROR;
     }
 
-    // Bytes from handle which are about to be sent are encoded as chars and stored to
-    // buffered_chars.
-    uint8_t buffered_chars[LT_USB_DEVKIT_SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
-    for (int i = 0; i < tx_data_length; i++) {
-        sprintf((char *)(buffered_chars + i * 2), "%02" PRIX8, s2->buff[i + offset]);
+    if (device->legacy_fw) {
+        LT_UNUSED(timeout_ms);
+        // Bytes from handle which are about to be sent are encoded as chars and stored to
+        // buffered_chars.
+        uint8_t buffered_chars[LT_USB_DEVKIT_SPI_TRANSFER_BUFF_SIZE_MAX] = {0};
+        for (int i = 0; i < tx_data_length; i++) {
+            sprintf((char *)(buffered_chars + i * 2), "%02" PRIX8, s2->buff[i + offset]);
+        }
+
+        // Control characters to keep CS LOW (they are expected by USB DevKit, see the top of this file
+        // for more information).
+        buffered_chars[tx_data_length * 2] = 'x';
+        buffered_chars[tx_data_length * 2 + 1] = '\n';
+
+        if (!write_port(device->fd, buffered_chars, (tx_data_length * 2) + 2)) {
+            LT_LOG_ERROR("Failed to write SPI payload.");
+            return LT_L1_SPI_ERROR;
+        }
+
+        lt_port_delay(s2, LT_USB_DEVKIT_READ_WRITE_DELAY);
+
+        if (!read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2)) {
+            LT_LOG_ERROR("Failed to read SPI payload.");
+            return LT_L1_SPI_ERROR;
+        }
+
+        for (size_t count = 0; count < tx_data_length; count++) {
+            sscanf((char *)&buffered_chars[count * 2], "%02" SCNx8, &s2->buff[count + offset]);
+        }
     }
+    else {
+        // 1. Prepare command for driving CS low.
+        UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
+        cmd.which_type = UsbDevkitCmd_raw_tag;
+        cmd.type.raw.which_type = RawCmd_send_spi_data_tag;
+        memcpy(cmd.type.raw.type.send_spi_data.tx_data.bytes, s2->buff + offset, tx_data_length);
+        cmd.type.raw.type.send_spi_data.tx_data.size = tx_data_length;
+        cmd.type.raw.type.send_spi_data.timeout_ms = timeout_ms;
 
-    // Control characters to keep CS LOW (they are expected by USB DevKit, see the top of this file for
-    // more information).
-    buffered_chars[tx_data_length * 2] = 'x';
-    buffered_chars[tx_data_length * 2 + 1] = '\n';
+        // 2. Send command.
+        if (!send_usb_devkit_cmd(device->fd, &cmd)) {
+            return LT_FAIL;
+        }
+        // 3. Get response.
+        UsbDevkitResp resp = UsbDevkitResp_init_zero;
+        if (!recv_usb_devkit_resp(device->fd, &resp)) {
+            return LT_FAIL;
+        }
 
-    if (!write_port(device->fd, buffered_chars, (tx_data_length * 2) + 2)) {
-        LT_LOG_ERROR("Failed to write SPI payload.");
-        return LT_L1_SPI_ERROR;
-    }
-
-    lt_port_delay(s2, LT_USB_DEVKIT_READ_WRITE_DELAY);
-
-    if (!read_port(device->fd, buffered_chars, (2 * tx_data_length) + 2)) {
-        LT_LOG_ERROR("Failed to read SPI payload.");
-        return LT_L1_SPI_ERROR;
-    }
-
-    for (size_t count = 0; count < tx_data_length; count++) {
-        sscanf((char *)&buffered_chars[count * 2], "%02" SCNx8, &s2->buff[count + offset]);
+        // 4. Check response.
+        if (resp.which_type != UsbDevkitResp_raw_tag) {
+            LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
+            LT_LOG_ERROR("RawRespResultCode is not OK, result_code=%d.", resp.type.raw.result_code);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.which_type != RawResp_send_spi_data_tag) {
+            LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+            return LT_FAIL;
+        }
+        // 4. Get the received SPI payload.
+        memcpy(s2->buff + offset, resp.type.raw.type.send_spi_data.rx_data.bytes, tx_data_length);
     }
 
     return LT_OK;

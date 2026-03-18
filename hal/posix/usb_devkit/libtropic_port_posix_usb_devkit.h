@@ -9,6 +9,8 @@
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
+#include <stdbool.h>
+
 #include "libtropic_port.h"
 
 #ifdef __cplusplus
@@ -32,6 +34,8 @@ typedef struct lt_dev_posix_usb_devkit_t {
 
     /** @private @brief UART device file descriptor. */
     int fd;
+    /** @private @brief Whether the USB DevKit is running legacy FW. */
+    bool legacy_fw;
 } lt_dev_posix_usb_devkit_t;
 
 #ifdef __cplusplus
