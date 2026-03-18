@@ -27,6 +27,8 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
+
 #include "stm32u5xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -52,6 +54,10 @@ extern "C" {
 /* Exported variables ------------------------------------------------------- */
 /* USER CODE BEGIN EV */
 extern RNG_HandleTypeDef hrng;
+extern SPI_HandleTypeDef *hspi1;
+extern CRC_HandleTypeDef hcrc;
+
+extern bool auto_cs_mode;
 /* USER CODE END EV */
 
 /* Exported functions prototypes ---------------------------------------------*/

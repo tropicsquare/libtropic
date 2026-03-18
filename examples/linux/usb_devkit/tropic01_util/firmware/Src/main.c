@@ -30,11 +30,10 @@
 #include "libtropic_logging.h"
 #include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_stm32u5xx.h"
-#include "pb_decode.h"
-#include "pb_encode.h"
 #include "psa/crypto.h"
 #include "tusb.h"
 #include "usb_devkit_messages.pb.h"
+#include "usb_devkit_protocol.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -60,26 +59,6 @@ typedef enum {
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-#define FRAME_MAGIC_BYTE_1 0xAA
-#define FRAME_MAGIC_BYTE_2 0x55
-#define FRAME_MAGIC_BYTES 2
-#define FRAME_DATA_LEN_SIZE 2
-#define FRAME_DATA_MAX_SIZE 4093
-#define FRAME_CRC_SIZE 2
-
-#if UsbDevkitCmd_size > FRAME_DATA_MAX_SIZE
-#error \
-    "Maximal size of UsbDevkitCmd is bigger than the maximal allowed size of DATA field in the frame!"
-#endif
-
-#if UsbDevkitResp_size > FRAME_DATA_MAX_SIZE
-#error \
-    "Maximal size of UsbDevkitResp is bigger than the maximal allowed size of DATA field in the frame!"
-#endif
-
-#define OUT_FRAME_MAX_SIZE \
-    (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + UsbDevkitResp_size + FRAME_CRC_SIZE)
 
 #define USB_READ_TIMEOUT_MS 50
 
@@ -125,17 +104,6 @@ static void MX_ICACHE_Init(void);
 static void MX_RNG_Init(void);
 static void MX_USB_DRD_FS_PCD_Init(void);
 
-static size_t usb_read_chunk(uint8_t *buff, size_t to_read);
-static size_t usb_write_chunk(const uint8_t *buff, size_t to_write);
-static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
-static void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
-static bool process_data(const uint8_t *pb_data_in, size_t pb_data_in_len, uint8_t *pb_data_out,
-                         size_t pb_data_out_size, size_t *pb_data_out_len);
-static bool construct_resp(const UsbDevkitResp *resp, uint8_t *frame_buff, size_t frame_buff_size,
-                           size_t *frame_buff_len);
-static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
-                            size_t frame_buff_size, size_t *frame_buff_len);
-
 #if defined(__ICCARM__)
 /* New definition from EWARM V9, compatible with EWARM8 */
 int iar_fputc(int ch);
@@ -148,6 +116,20 @@ int iar_fputc(int ch);
 #endif /* __ICCARM__ */
 
 /* USER CODE BEGIN PFP */
+
+static size_t usb_read_chunk(uint8_t *buff, size_t to_read);
+static size_t usb_write_chunk(const uint8_t *buff, size_t to_write);
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
+// tinyUSB calls this function when the USB bus is reset or unplugged.
+void tud_umount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
+
+// tinyUSB calls this function when the USB is plugged and recognized.
+void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
 
 /**
  * @brief Read up to `to_read` bytes from the USB CDC RX FIFO into `buff`.
@@ -191,216 +173,6 @@ static size_t usb_write_chunk(const uint8_t *buff, size_t to_write)
 
     size_t chunk_size = MIN(to_write, (size_t)free_bytes);
     return (size_t)tud_cdc_write(buff, chunk_size);
-}
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-// tinyUSB calls this function when the USB bus is reset or unplugged.
-void tud_umount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
-
-// tinyUSB calls this function when the USB is plugged and recognized.
-void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
-
-/**
- * @brief Process USB DevKit raw command.
- *
- * @param[in]  cmd   USB DevKit command.
- * @param[out] resp  USB DevKit response.
- */
-static void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
-{
-    resp->which_type = UsbDevkitResp_raw_tag;
-    resp->type.raw.result_code = RAW_RESP_RESULT_CODE_OK;
-
-    switch (cmd->type.raw.which_type) {
-        case RawCmd_send_spi_data_tag:
-            // 1. Drive CS low (only if auto CS mode is on).
-            if (auto_cs_mode) {
-                HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin, GPIO_PIN_RESET);
-            }
-            // 2. Do SPI transfer.
-            HAL_StatusTypeDef ret = HAL_SPI_TransmitReceive(
-                hspi1, cmd->type.raw.type.send_spi_data.tx_data.bytes,
-                resp->type.raw.type.send_spi_data.rx_data.bytes,
-                cmd->type.raw.type.send_spi_data.tx_data.size,
-                cmd->type.raw.type.send_spi_data.timeout_ms);
-            // 3. Drive CS high (only if auto CS mode is on).
-            if (auto_cs_mode) {
-                HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin, GPIO_PIN_SET);
-            }
-            // 4. Check HAL_SPI_TransmitReceive return value.
-            if (ret == HAL_OK) {
-                resp->type.raw.which_type = RawResp_send_spi_data_tag;
-                resp->type.raw.type.send_spi_data.rx_data.size =
-                    cmd->type.raw.type.send_spi_data.tx_data.size;
-            }
-            else {
-                resp->type.raw.result_code = RAW_RESP_RESULT_CODE_SPI_ERROR;
-            }
-            break;
-
-        case RawCmd_set_auto_cs_mode_tag:
-            auto_cs_mode = cmd->type.raw.type.set_auto_cs_mode.on;
-            break;
-
-        case RawCmd_set_cs_tag:
-            // CS can be manually set only if auto CS mode is off.
-            if (auto_cs_mode) {
-                resp->type.raw.result_code = RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON;
-            }
-            else {
-                HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin,
-                                  cmd->type.raw.type.set_cs.high ? GPIO_PIN_SET : GPIO_PIN_RESET);
-            }
-            break;
-
-        case RawCmd_set_tr01_pwr_tag:
-            HAL_GPIO_WritePin(TR01_PWR_GPIO_Port, TR01_PWR_Pin,
-                              cmd->type.raw.type.set_tr01_pwr.on ? GPIO_PIN_SET : GPIO_PIN_RESET);
-            break;
-
-        case RawCmd_get_gpo_tag:
-            resp->type.raw.which_type = RawResp_get_gpo_tag;
-            resp->type.raw.type.get_gpo.high = (HAL_GPIO_ReadPin(TR01_GPO_GPIO_Port, TR01_GPO_Pin) ==
-                                                GPIO_PIN_SET);
-            break;
-
-        default:
-            resp->type.raw.result_code = RAW_RESP_RESULT_CODE_UNKNOWN_CMD;
-            break;
-    }
-}
-
-static void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
-{
-    (void)cmd;
-    // TODO: Implement AppCmd handling via libtropic API calls.
-    resp->which_type = UsbDevkitResp_error_tag;
-    resp->type.error.code = ERROR_RESP_CODE_PB_UNKNOWN_CMD;
-}
-
-/**
- * @brief Decode UsbDevkitCmd from `data`, execute the command, encode UsbDevkitResp and construct
- * frame.
- *
- * @param[in]  data             DATA field from incoming frame.
- * @param[in]  data_len         DATA_LEN field from incoming frame.
- * @param[out] frame_buff       Buffer for the constructed frame.
- * @param[in]  frame_buff_size  Size of `frame_buff`.
- * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
- * @retval     true             Success.
- * @retval     false            Fail.
- */
-static bool process_data(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
-                         size_t frame_buff_size, size_t *frame_buff_len)
-{
-    UsbDevkitCmd cmd = UsbDevkitCmd_init_zero;
-    UsbDevkitResp resp = UsbDevkitResp_init_zero;
-
-    // 1. Decode command and process it.
-    pb_istream_t pb_in = pb_istream_from_buffer(data, data_len);
-    if (!pb_decode(&pb_in, UsbDevkitCmd_fields, &cmd)) {
-        resp.which_type = UsbDevkitResp_error_tag;
-        resp.type.error.code = ERROR_RESP_CODE_PB_DECODE;
-    }
-    else {
-        switch (cmd.which_type) {
-            case UsbDevkitCmd_raw_tag:
-                process_raw_cmd(&cmd, &resp);
-                break;
-
-            case UsbDevkitCmd_app_tag:
-                process_app_cmd(&cmd, &resp);
-                break;
-
-            default:
-                resp.which_type = UsbDevkitResp_error_tag;
-                resp.type.error.code = ERROR_RESP_CODE_PB_UNKNOWN_CMD;
-                break;
-        }
-    }
-
-    // 2. Construct response.
-    return construct_resp(&resp, frame_buff, frame_buff_size, frame_buff_len);
-}
-
-/**
- * @brief Encodes UsbDevkitResp and constructs frame.
- *
- * @param[in]  resp             USB DevKit response.
- * @param[out] frame_buff       Buffer for storing the frame.
- * @param[in]  frame_buff_size  Size of `out_buff`.
- * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
- * @retval     true             Response encoded successfully.
- * @retval     false            Response could not be encoded.
- */
-static bool construct_resp(const UsbDevkitResp *resp, uint8_t *frame_buff, size_t frame_buff_size,
-                           size_t *frame_buff_len)
-{
-    // 1. Encode response.
-    uint8_t pb_data_out[UsbDevkitResp_size];
-    pb_ostream_t pb_out = pb_ostream_from_buffer(pb_data_out, sizeof(pb_data_out));
-    if (!pb_encode(&pb_out, UsbDevkitResp_fields, resp)) {
-        return false;
-    }
-
-    // 2. Construct frame.
-    if (!construct_frame(pb_data_out, pb_out.bytes_written, frame_buff, frame_buff_size,
-                         frame_buff_len)) {
-        return false;
-    }
-
-    return true;
-}
-
-/**
- * @brief Construct the frame to send.
- *
- * @param[in]  data             DATA field in the frame.
- * @param[in]  data_len         DATA_LEN field in the frame.
- * @param[out] frame_buff       Buffer for the constructed frame.
- * @param[in]  frame_buff_size  Size of `frame_buff`.
- * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
- * @retval     true             Frame constructed successfully.
- * @retval     false            Frame could not be constructed, `frame_buff` is too small.
- */
-static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
-                            size_t frame_buff_size, size_t *frame_buff_len)
-{
-    // 1. Check if buffer for the frame is big enough.
-    if (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len + FRAME_CRC_SIZE > frame_buff_size) {
-        return false;
-    }
-
-    // 2. Place magic bytes into the frame.
-    frame_buff[0] = FRAME_MAGIC_BYTE_2;
-    frame_buff[1] = FRAME_MAGIC_BYTE_1;
-    // 3. Place DATA_LEN into the frame.
-    frame_buff[2] = (data_len >> 8) & 0xFF;
-    frame_buff[3] = data_len & 0xFF;
-    // 4. Place DATA into the frame.
-    memcpy(frame_buff + 4, data, data_len);
-
-    // 5. Calculate CRC16 over DATA_LEN || DATA and append it as big-endian.
-    size_t data_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE;
-    uint32_t data_len_word = 0;  // Needed because HAL_CRC_Calculate accepts uint32_t.
-    memcpy(&data_len_word, frame_buff + FRAME_MAGIC_BYTES, FRAME_DATA_LEN_SIZE);
-    uint32_t out_crc_hw = HAL_CRC_Calculate(&hcrc, &data_len_word, (uint32_t)FRAME_DATA_LEN_SIZE);
-    out_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)(frame_buff + data_pos),
-                                    (uint32_t)data_len);
-    // 6. Get the calculated CRC.
-    uint16_t out_crc = (uint16_t)(out_crc_hw & 0xFFFF);
-    size_t out_crc_pos = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len;
-    // 7. Place CRC into the frame.
-    frame_buff[out_crc_pos] = (uint8_t)((out_crc >> 8) & 0xFF);
-    frame_buff[out_crc_pos + 1] = (uint8_t)(out_crc & 0xFF);
-
-    // 8. Calculate frame length.
-    *frame_buff_len = FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + data_len + FRAME_CRC_SIZE;
-    return true;
 }
 
 /* USER CODE END 0 */
