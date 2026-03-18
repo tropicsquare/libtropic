@@ -365,7 +365,7 @@ static bool construct_resp(const UsbDevkitResp *resp, uint8_t *frame_buff, size_
  * @param[in]  frame_buff_size  Size of `frame_buff`.
  * @param[out] frame_buff_len   Constructed frame length (number of bytes written to `frame_buff`).
  * @retval     true             Frame constructed successfully.
- * @retval     false            Frame could not be constructed.
+ * @retval     false            Frame could not be constructed, `frame_buff` is too small.
  */
 static bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff,
                             size_t frame_buff_size, size_t *frame_buff_len)
