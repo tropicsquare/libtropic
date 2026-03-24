@@ -29,6 +29,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
 
+#include "libtropic_common.h"
 #include "stm32u5xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -58,6 +59,7 @@ extern SPI_HandleTypeDef *hspi1;
 extern CRC_HandleTypeDef hcrc;
 
 extern bool auto_cs_mode;
+extern lt_handle_t lt_handle;
 /* USER CODE END EV */
 
 /* Exported functions prototypes ---------------------------------------------*/

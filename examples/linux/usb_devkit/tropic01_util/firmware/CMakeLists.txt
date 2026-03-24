@@ -179,6 +179,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/sysmem.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_descriptors.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_devkit_protocol.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_devkit_app_commands.c
 
     # MbedTLS platform-specific implementations
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/mbedtls_v4/mbedtls_platform.c

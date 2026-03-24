@@ -4,14 +4,22 @@
 # Disable enum long names (EnumName_ENUM_VALUE -> ENUM_VALUE).
 usb_devkit_messages.proto long_names:false
 
-# PIN fields.
-PinSetCmd.new_pin max_length:32
-PinVerifyCmd.pin max_length:32
+PinSetCmd.new_pin          max_length:32
+PinSetCmd.attempts         int_size:IS_8
+PinSetCmd.additional_data  max_size:256
+PinSetCmd.secret           max_size:32 fixed_length:true
+PinSetResp.crypto_key      max_size:32 fixed_length:true
 
-# App memory operations.
-RMemWriteCmd.data max_size:475
-RMemReadResp.data max_size:475
+PinVerifyCmd.pin              max_length:32
+PinVerifyCmd.additional_data  max_size:256
+PinVerifyResp.attempts_left   int_size:IS_8
+PinVerifyResp.crypto_key      max_size:32 fixed_length:true
 
-# Raw SPI transfer payloads.
+RMemReadCmd.udata_slot int_size:IS_16
+RMemReadResp.data  max_size:475
+
+RMemWriteCmd.udata_slot int_size:IS_16
+RMemWriteCmd.data  max_size:475
+
 SendSpiDataCmd.tx_data   max_size:257
 SendSpiDataResp.rx_data  max_size:257

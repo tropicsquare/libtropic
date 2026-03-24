@@ -44,9 +44,10 @@ _Min_Stack_Size = 0x400;	/* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  RAM	(xrw)	: ORIGIN = 0x20000000,	LENGTH = 256K
-  SRAM4	(xrw)	: ORIGIN = 0x28000000,	LENGTH = 16K
-  FLASH	(rx)	: ORIGIN = 0x08000000,	LENGTH = 256K
+  RAM	         (xrw) : ORIGIN = 0x20000000,	LENGTH = 256K
+  SRAM4	       (xrw) : ORIGIN = 0x28000000,	LENGTH = 16K
+  FLASH	       (rx)	 : ORIGIN = 0x08000000,	LENGTH = 248K
+  MACANDD_NV (rw)  : ORIGIN = 0x0803E000,	LENGTH = 8K
 }
 
 /* Sections */
@@ -163,4 +164,12 @@ SECTIONS
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
+
+  .macandd_nv (NOLOAD) :
+  {
+    . = ALIGN(16);
+    __macandd_nv_start__ = .;
+    . = . + LENGTH(MACANDD_NV);
+    __macandd_nv_end__ = .;
+  } >MACANDD_NV
 }

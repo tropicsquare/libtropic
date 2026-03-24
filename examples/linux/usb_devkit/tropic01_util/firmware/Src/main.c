@@ -92,6 +92,7 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 usb_devkit_state_t usb_devkit_state = READ_MAGIC_BYTE_1;
 bool auto_cs_mode = true;
+lt_handle_t lt_handle = {0};
 
 /* USER CODE END PV */
 
@@ -222,7 +223,6 @@ int main(void)
     HAL_GPIO_WritePin(TR01_PWR_GPIO_Port, TR01_PWR_Pin, GPIO_PIN_SET);
 
     // Setup Libtropic.
-    lt_handle_t lt_handle = {0};
     lt_dev_stm32u5xx_t lt_device = {0};
     lt_ctx_mbedtls_v4_t lt_crypto_ctx = {0};
     lt_ret_t lt_ret;
@@ -248,6 +248,10 @@ int main(void)
 
     // Initialize Libtropic.
     lt_ret = lt_init(&lt_handle);
+    CHECK_LT_RET;
+
+    lt_ret = lt_verify_chip_and_start_secure_session(&lt_handle, sh0priv_prod0, sh0pub_prod0,
+                                                     TR01_PAIRING_KEY_SLOT_INDEX_0);
     CHECK_LT_RET;
 
     // Save pointer to the SPI handle so we can use SPI with raw commands.

@@ -1,8 +1,11 @@
 #include "usb_devkit_protocol.h"
 
+#include "libtropic.h"
+#include "libtropic_common.h"
 #include "main.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
+#include "usb_devkit_app_commands.h"
 #include "usb_devkit_messages.pb.h"
 
 void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
@@ -77,10 +80,30 @@ void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
 
 void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
 {
-    (void)cmd;
-    // TODO: Implement AppCmd handling via libtropic API calls.
-    resp->which_type = UsbDevkitResp_error_tag;
-    resp->type.error.code = ERROR_RESP_CODE_PB_UNKNOWN_CMD;
+    resp->which_type = UsbDevkitResp_app_tag;
+
+    switch (cmd->type.app.which_type) {
+        case AppCmd_pin_set_tag:
+            resp->type.app.which_type = AppResp_pin_set_tag;
+            set_pin(&cmd->type.app.type.pin_set, &resp->type.app);
+            break;
+
+        case AppCmd_pin_verify_tag:
+            resp->type.app.which_type = AppResp_pin_verify_tag;
+            verify_pin(&cmd->type.app.type.pin_verify, &resp->type.app);
+            break;
+
+            // case AppCmd_r_mem_read_tag:
+            //     break;
+
+            // case AppCmd_r_mem_write_tag:
+            //     break;
+
+        default:
+            resp->which_type = UsbDevkitResp_error_tag;
+            resp->type.error.res_code = ERROR_RESP_CODE_UNKNOWN_CMD;
+            break;
+    }
 }
 
 bool process_data(const uint8_t *data, size_t data_len, uint8_t *frame_buff, size_t frame_buff_size,

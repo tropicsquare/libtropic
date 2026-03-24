@@ -1,12 +1,17 @@
 syntax = "proto3";
 
+// ============================== UsbDevkitCmd ===============================
 message UsbDevkitCmd {
 	oneof type {
 		AppCmd app = 1;
 		RawCmd raw = 2;
 	}
 }
+// ===========================================================================
 
+
+
+// ============================== UsbDevkitResp ==============================
 message UsbDevkitResp {
 	oneof type {
 		AppResp app = 1;
@@ -14,7 +19,11 @@ message UsbDevkitResp {
 		ErrorResp error = 3;
 	}
 }
+// ===========================================================================
 
+
+
+// ================================= AppCmd ==================================
 message AppCmd {
 	oneof type {
 		PinSetCmd pin_set = 1;
@@ -23,48 +32,90 @@ message AppCmd {
 		RMemWriteCmd r_mem_write = 4;
 	}
 }
-
+// ------------------------------- PinSetCmd
 message PinSetCmd {
 	string new_pin = 1;
 	uint32 attempts = 2;
+	optional bytes additional_data = 3;
+	bytes secret = 4;
 }
-
+// ------------------------------- PinVerifyCmd
 message PinVerifyCmd {
 	string pin = 1;
+	optional bytes additional_data = 2;
 }
-
+// ------------------------------- RMemReadCmd
 message RMemReadCmd {
 	uint32 udata_slot = 1;
 }
-
+// ------------------------------- RMemWriteCmd
 message RMemWriteCmd {
 	uint32 udata_slot = 1;
 	bytes data = 2;
 }
+// ===========================================================================
 
+
+
+// ================================= AppResp =================================
 message AppResp {
-	AppRespResultCode result_code = 1;
 	oneof type {
+		PinSetResp pin_set = 1;
 		PinVerifyResp pin_verify = 2;
 		RMemReadResp r_mem_read = 3;
+		RMemWriteResp r_mem_write = 4;
 	}
+	optional uint32 libtropic_error_code = 5;
 }
-
-enum AppRespResultCode {
-	APP_RESP_RESULT_CODE_UNSPECIFIED = 0;
-	APP_RESP_RESULT_CODE_OK = 1;
-	APP_RESP_RESULT_CODE_FAIL = 2;
+// ------------------------------- PinSetResp
+message PinSetResp {
+	PinSetRespCode res_code = 1;
+	bytes crypto_key = 2;
 }
-
+enum PinSetRespCode {
+	PIN_SET_RESP_CODE_UNSPECIFIED = 0;
+	PIN_SET_RESP_CODE_OK = 1;
+	PIN_SET_RESP_CODE_ERROR = 2;
+	PIN_SET_RESP_CODE_ATTEMPS_OUT_OF_RANGE = 3;
+	PIN_SET_RESP_CODE_FLASH_WRITE_ERROR = 4;
+}
+// ------------------------------- PinVerifyResp
 message PinVerifyResp {
-	bool success = 1;
-	uint32 attempts_left = 2;
+	PinVerifyRespCode res_code = 1;
+	bytes crypto_key = 3;
 }
-
+enum PinVerifyRespCode {
+	PIN_VERIFY_RESP_CODE_UNSPECIFIED = 0;
+	PIN_VERIFY_RESP_CODE_OK = 1;
+	PIN_VERIFY_RESP_CODE_ERROR = 2;
+	PIN_VERIFY_RESP_CODE_DEPLETED_ATTEMPS_OUT_OF_RANGE = 3;
+	PIN_VERIFY_RESP_CODE_WRONG_PIN = 4;
+	PIN_VERIFY_RESP_CODE_FLASH_READ_ERROR = 5;
+	PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR = 6;
+}
+// ------------------------------- RMemReadResp
 message RMemReadResp {
-	uint32 data_size = 1;
+	RMemReadRespCode res_code = 1;
 	bytes data = 2;
 }
+enum RMemReadRespCode {
+	R_MEM_READ_RESP_CODE_UNSPECIFIED = 0;
+	R_MEM_READ_RESP_CODE_OK = 1;
+	R_MEM_READ_RESP_CODE_ERROR = 2;
+}
+// ------------------------------- RMemWriteResp
+message RMemWriteResp {
+	RMemWriteRespCode res_code = 1;
+}
+enum RMemWriteRespCode {
+	R_MEM_WRITE_RESP_CODE_UNSPECIFIED = 0;
+	R_MEM_WRITE_RESP_CODE_OK = 1;
+	R_MEM_WRITE_RESP_CODE_ERROR = 2;
+}
+// ===========================================================================
+
+
+
 // ================================= RawCmd ==================================
 message RawCmd {
 	oneof type {
