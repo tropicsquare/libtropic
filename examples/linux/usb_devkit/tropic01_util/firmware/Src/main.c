@@ -317,7 +317,7 @@ int main(void)
                         // 1. Construct error response.
                         UsbDevkitResp resp = UsbDevkitResp_init_zero;
                         resp.which_type = UsbDevkitResp_error_tag;
-                        resp.type.error.code = ERROR_RESP_CODE_BAD_DATA_LEN;
+                        resp.type.error.res_code = ERROR_RESP_CODE_BAD_DATA_LEN;
                         if (!construct_resp(&resp, out_frame, sizeof(out_frame), &out_frame_len)) {
                             Error_Handler();
                         }
@@ -368,7 +368,7 @@ int main(void)
                         // 1. Construct response.
                         UsbDevkitResp resp = UsbDevkitResp_init_zero;
                         resp.which_type = UsbDevkitResp_error_tag;
-                        resp.type.error.code = ERROR_RESP_CODE_BAD_CRC;
+                        resp.type.error.res_code = ERROR_RESP_CODE_BAD_CRC;
                         if (!construct_resp(&resp, out_frame, sizeof(out_frame), &out_frame_len)) {
                             Error_Handler();
                         }

@@ -8,10 +8,10 @@
 void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
 {
     resp->which_type = UsbDevkitResp_raw_tag;
-    resp->type.raw.result_code = RAW_RESP_RESULT_CODE_OK;
 
     switch (cmd->type.raw.which_type) {
         case RawCmd_send_spi_data_tag:
+            resp->type.raw.which_type = RawResp_send_spi_data_tag;
             // 1. Drive CS low (only if auto CS mode is on).
             if (auto_cs_mode) {
                 HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin, GPIO_PIN_RESET);
@@ -28,43 +28,49 @@ void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
             }
             // 4. Check HAL_SPI_TransmitReceive return value.
             if (ret == HAL_OK) {
-                resp->type.raw.which_type = RawResp_send_spi_data_tag;
                 resp->type.raw.type.send_spi_data.rx_data.size =
                     cmd->type.raw.type.send_spi_data.tx_data.size;
             }
-            else {
-                resp->type.raw.result_code = RAW_RESP_RESULT_CODE_SPI_ERROR;
-            }
+            // SendSpiDataRespCode is designed in a way the values are HAL_StatusTypeDef + 1.
+            resp->type.raw.type.send_spi_data.res_code = (SendSpiDataRespCode)(ret + 1);
             break;
 
         case RawCmd_set_auto_cs_mode_tag:
+            resp->type.raw.which_type = RawResp_set_auto_cs_mode_tag;
             auto_cs_mode = cmd->type.raw.type.set_auto_cs_mode.on;
+            resp->type.raw.type.set_auto_cs_mode.res_code = SET_AUTO_CS_MODE_RESP_CODE_OK;
             break;
 
         case RawCmd_set_cs_tag:
+            resp->type.raw.which_type = RawResp_set_cs_tag;
             // CS can be manually set only if auto CS mode is off.
             if (auto_cs_mode) {
-                resp->type.raw.result_code = RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON;
+                resp->type.raw.type.set_cs.res_code = SET_CS_RESP_CODE_AUTO_CS_MODE_ON;
             }
             else {
                 HAL_GPIO_WritePin(TR01_CS_GPIO_Port, TR01_CS_Pin,
                                   cmd->type.raw.type.set_cs.high ? GPIO_PIN_SET : GPIO_PIN_RESET);
+                resp->type.raw.type.set_cs.res_code = SET_CS_RESP_CODE_OK;
             }
             break;
 
         case RawCmd_set_tr01_pwr_tag:
+            resp->type.raw.which_type = RawResp_set_tr01_pwr_tag;
             HAL_GPIO_WritePin(TR01_PWR_GPIO_Port, TR01_PWR_Pin,
                               cmd->type.raw.type.set_tr01_pwr.on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            resp->type.raw.type.set_tr01_pwr.res_code = SET_TR01_PWR_RESP_CODE_OK;
             break;
 
         case RawCmd_get_gpo_tag:
             resp->type.raw.which_type = RawResp_get_gpo_tag;
             resp->type.raw.type.get_gpo.high = (HAL_GPIO_ReadPin(TR01_GPO_GPIO_Port, TR01_GPO_Pin) ==
                                                 GPIO_PIN_SET);
+            resp->type.raw.type.get_gpo.res_code = GET_GPO_RESP_CODE_OK;
             break;
 
         default:
-            resp->type.raw.result_code = RAW_RESP_RESULT_CODE_UNKNOWN_CMD;
+            resp->which_type = UsbDevkitResp_error_tag;
+            resp->type.error.res_code = ERROR_RESP_CODE_UNKNOWN_CMD;
             break;
     }
 }
@@ -87,7 +93,7 @@ bool process_data(const uint8_t *data, size_t data_len, uint8_t *frame_buff, siz
     pb_istream_t pb_in = pb_istream_from_buffer(data, data_len);
     if (!pb_decode(&pb_in, UsbDevkitCmd_fields, &cmd)) {
         resp.which_type = UsbDevkitResp_error_tag;
-        resp.type.error.code = ERROR_RESP_CODE_PB_DECODE;
+        resp.type.error.res_code = ERROR_RESP_CODE_PB_DECODE;
     }
     else {
         switch (cmd.which_type) {
@@ -101,7 +107,7 @@ bool process_data(const uint8_t *data, size_t data_len, uint8_t *frame_buff, siz
 
             default:
                 resp.which_type = UsbDevkitResp_error_tag;
-                resp.type.error.code = ERROR_RESP_CODE_PB_UNKNOWN_CMD;
+                resp.type.error.res_code = ERROR_RESP_CODE_UNKNOWN_CMD;
                 break;
         }
     }

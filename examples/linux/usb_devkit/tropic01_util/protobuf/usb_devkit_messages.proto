@@ -65,7 +65,7 @@ message RMemReadResp {
 	uint32 data_size = 1;
 	bytes data = 2;
 }
-
+// ================================= RawCmd ==================================
 message RawCmd {
 	oneof type {
 		SendSpiDataCmd send_spi_data = 1;
@@ -75,61 +75,100 @@ message RawCmd {
 		GetGpoCmd get_gpo = 5;
 	}
 }
-
+// ------------------------------- SendSpiDataCmd
 message SendSpiDataCmd {
 	bytes tx_data = 1;
 	uint32 timeout_ms = 2;
 }
-
+// ------------------------------- SetAutoCsModeCmd
 message SetAutoCsModeCmd {
 	bool on = 1;
 }
-
+// ------------------------------- SetCsCmd
 message SetCsCmd {
 	bool high = 1;
 }
-
+// ------------------------------- SetTr01PwrCmd
 message SetTr01PwrCmd {
 	bool on = 1;
 }
-
+// ------------------------------- GetGpoCmd
 message GetGpoCmd {
 	// Empty command used to read TROPIC01 GPO pin.
 }
+// ===========================================================================
 
+
+
+// ================================= RawResp =================================
 message RawResp {
-	RawRespResultCode result_code = 1;
 	oneof type {
-		SendSpiDataResp send_spi_data = 2;
-		GetGpoResp get_gpo = 3;
+		SendSpiDataResp send_spi_data = 1;
+		SetAutoCsModeResp set_auto_cs_mode = 2;
+		SetCsResp set_cs = 3;
+		SetTr01PwrResp set_tr01_pwr = 4;
+		GetGpoResp get_gpo = 5;
 	}
 }
-
-enum RawRespResultCode {
-	RAW_RESP_RESULT_CODE_UNSPECIFIED = 0;
-	RAW_RESP_RESULT_CODE_OK = 1;
-	RAW_RESP_RESULT_CODE_FAIL = 2; // Generic error.
-	RAW_RESP_RESULT_CODE_SPI_ERROR = 3; // Error during SPI transfer.
-	RAW_RESP_RESULT_CODE_AUTO_CS_MODE_ON = 4; // SetCsCmd was received, but Auto CS mode is on.
-	RAW_RESP_RESULT_CODE_UNKNOWN_CMD = 5;
-}
-
+// ------------------------------- SendSpiDataResp
 message SendSpiDataResp {
-	bytes rx_data = 1;
+	SendSpiDataRespCode res_code = 1;
+	bytes rx_data = 2;
 }
-
+enum SendSpiDataRespCode {
+	SEND_SPI_DATA_RESP_CODE_UNSPECIFIED = 0;
+	SEND_SPI_DATA_RESP_CODE_OK = 1;
+	SEND_SPI_DATA_RESP_CODE_ERROR = 2;
+	SEND_SPI_DATA_RESP_CODE_BUSY = 3;
+	SEND_SPI_DATA_RESP_CODE_TIMEOUT = 4;
+}
+// ------------------------------- SetAutoCsModeResp
+message SetAutoCsModeResp {
+	SetAutoCsModeRespCode res_code = 1;
+}
+enum SetAutoCsModeRespCode {
+	SET_AUTO_CS_MODE_RESP_CODE_UNSPECIFIED = 0;
+	SET_AUTO_CS_MODE_RESP_CODE_OK = 1;
+}
+// ------------------------------- SetCsResp
+message SetCsResp {
+	SetCsRespCode res_code = 1;
+}
+enum SetCsRespCode {
+	SET_CS_RESP_CODE_UNSPECIFIED = 0;
+	SET_CS_RESP_CODE_OK = 1;
+	SET_CS_RESP_CODE_AUTO_CS_MODE_ON = 2;
+}
+// ------------------------------- SetTr01PwrResp
+message SetTr01PwrResp {
+	SetTr01PwrRespCode res_code = 1;
+}
+enum SetTr01PwrRespCode {
+	SET_TR01_PWR_RESP_CODE_UNSPECIFIED = 0;
+	SET_TR01_PWR_RESP_CODE_OK = 1;
+}
+// ------------------------------- GetGpoResp
 message GetGpoResp {
-	bool high = 1;
+	GetGpoRespCode res_code = 1;
+	bool high = 2;
 }
+enum GetGpoRespCode {
+	GET_GPO_RESP_CODE_UNSPECIFIED = 0;
+	GET_GPO_RESP_CODE_OK = 1;
+}
+// ===========================================================================
 
+
+
+// ================================ ErrorResp ================================
 message ErrorResp {
-	ErrorRespCode code = 1;
+	ErrorRespCode res_code = 1;
 }
-
 enum ErrorRespCode {
 	ERROR_RESP_CODE_UNSPECIFIED = 0;
 	ERROR_RESP_CODE_BAD_DATA_LEN = 1;
 	ERROR_RESP_CODE_BAD_CRC = 2;
 	ERROR_RESP_CODE_PB_DECODE = 3;
-	ERROR_RESP_CODE_PB_UNKNOWN_CMD = 4;
+	ERROR_RESP_CODE_UNKNOWN_CMD = 4;
 }
+// ===========================================================================

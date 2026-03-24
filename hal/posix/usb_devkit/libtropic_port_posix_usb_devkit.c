@@ -425,8 +425,13 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
             close(device->fd);
             return LT_FAIL;
         }
-        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
-            LT_LOG_ERROR("Auto CS mode was not disabled, result_code=%d.", resp.type.raw.result_code);
+        if (resp.type.raw.which_type != RawResp_set_auto_cs_mode_tag) {
+            LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.type.set_auto_cs_mode.res_code != SET_AUTO_CS_MODE_RESP_CODE_OK) {
+            LT_LOG_ERROR("Auto CS mode was not disabled, res_code=%d.",
+                         resp.type.raw.type.set_auto_cs_mode.res_code);
             close(device->fd);
             return LT_FAIL;
         }
@@ -511,8 +516,12 @@ lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
             LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
             return LT_FAIL;
         }
-        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
-            LT_LOG_ERROR("CS was not driven low, result_code=%d.", resp.type.raw.result_code);
+        if (resp.type.raw.which_type != RawResp_set_cs_tag) {
+            LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.type.set_cs.res_code != SET_CS_RESP_CODE_OK) {
+            LT_LOG_ERROR("CS was not driven low, res_code=%d.", resp.type.raw.type.set_cs.res_code);
             return LT_FAIL;
         }
     }
@@ -563,8 +572,12 @@ lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
             LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
             return LT_FAIL;
         }
-        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
-            LT_LOG_ERROR("CS was not driven high, result_code=%d.", resp.type.raw.result_code);
+        if (resp.type.raw.which_type != RawResp_set_cs_tag) {
+            LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.type.set_cs.res_code != SET_CS_RESP_CODE_OK) {
+            LT_LOG_ERROR("CS was not driven high, res_code=%d.", resp.type.raw.type.set_cs.res_code);
             return LT_FAIL;
         }
     }
@@ -636,12 +649,13 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
             LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
             return LT_FAIL;
         }
-        if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
-            LT_LOG_ERROR("RawRespResultCode is not OK, result_code=%d.", resp.type.raw.result_code);
-            return LT_FAIL;
-        }
         if (resp.type.raw.which_type != RawResp_send_spi_data_tag) {
             LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+            return LT_FAIL;
+        }
+        if (resp.type.raw.type.send_spi_data.res_code != SEND_SPI_DATA_RESP_CODE_OK) {
+            LT_LOG_ERROR("SendSpiDataRespCode is not OK, res_code=%d.",
+                         resp.type.raw.type.send_spi_data.res_code);
             return LT_FAIL;
         }
         // 5. Get the received SPI payload.
@@ -762,13 +776,13 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
                 LT_LOG_ERROR("Received unexpected UsbDevkitResp tag=%d.", resp.which_type);
                 return LT_FAIL;
             }
-            if (resp.type.raw.result_code != RAW_RESP_RESULT_CODE_OK) {
-                LT_LOG_ERROR("RawRespResultCode is not OK, result_code=%d.",
-                             resp.type.raw.result_code);
-                return LT_FAIL;
-            }
             if (resp.type.raw.which_type != RawResp_get_gpo_tag) {
                 LT_LOG_ERROR("Received unexpected RawResp tag=%d.", resp.type.raw.which_type);
+                return LT_FAIL;
+            }
+            if (resp.type.raw.type.get_gpo.res_code != GET_GPO_RESP_CODE_OK) {
+                LT_LOG_ERROR("GetGpoRespCode is not OK, res_code=%d.",
+                             resp.type.raw.type.get_gpo.res_code);
                 return LT_FAIL;
             }
             if (resp.type.raw.type.get_gpo.high) {

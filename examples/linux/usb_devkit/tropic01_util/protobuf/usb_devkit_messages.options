@@ -13,5 +13,5 @@ RMemWriteCmd.data max_size:475
 RMemReadResp.data max_size:475
 
 # Raw SPI transfer payloads.
-SendSpiDataCmd.tx_data max_size:257
-SendSpiDataResp.rx_data max_size:257
+SendSpiDataCmd.tx_data   max_size:257
+SendSpiDataResp.rx_data  max_size:257
