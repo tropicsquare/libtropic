@@ -12,7 +12,6 @@ PinSetResp.crypto_key      max_size:32 fixed_length:true
 
 PinVerifyCmd.pin              max_length:32
 PinVerifyCmd.additional_data  max_size:256
-PinVerifyResp.attempts_left   int_size:IS_8
 PinVerifyResp.crypto_key      max_size:32 fixed_length:true
 
 RMemReadCmd.udata_slot int_size:IS_16
