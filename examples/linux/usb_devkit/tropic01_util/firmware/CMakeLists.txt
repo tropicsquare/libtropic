@@ -125,6 +125,27 @@ find_package(Nanopb REQUIRED)
 set(PROTO_FILE ${PATH_PROTOBUF_DIR}/usb_devkit_messages.proto)
 nanopb_generate_cpp(TARGET proto ${PROTO_FILE})
 
+# Generate Python protobuf bindings for host-side testing utility.
+find_program(PROTOC_EXECUTABLE protoc REQUIRED)
+set(PY_PROTO_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../tropic01_util_app/protobuf)
+set(PY_PROTO_FILE ${PY_PROTO_OUT_DIR}/usb_devkit_messages_pb2.py)
+find_program(PROTOC_GEN_MYPY protoc-gen-mypy)
+if(NOT PROTOC_GEN_MYPY)
+    message(WARNING "protoc plugin 'protoc-gen-mypy' not found. Install mypy-protobuf to generate .pyi stubs for protobuf: pip install mypy-protobuf")
+endif()
+add_custom_command(
+    OUTPUT ${PY_PROTO_FILE}
+    COMMAND ${PROTOC_EXECUTABLE}
+            --proto_path=${PATH_PROTOBUF_DIR}
+            --python_out=${PY_PROTO_OUT_DIR}
+            $<$<BOOL:${PROTOC_GEN_MYPY}>:--mypy_out=${PY_PROTO_OUT_DIR}>
+            ${PROTO_FILE}
+    DEPENDS ${PROTO_FILE}
+    COMMENT "Generating Python protobuf bindings: usb_devkit_messages_pb2.py"
+    VERBATIM
+)
+add_custom_target(proto_py ALL DEPENDS ${PY_PROTO_FILE})
+
 ###########################################################################
 #                                                                         #
 #   Sources                                                               #
@@ -228,3 +249,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     tropic
     proto
 )
+
+# Keep generated host protobuf in sync with schema during firmware builds.
+add_dependencies(${CMAKE_PROJECT_NAME} proto_py)
