@@ -58,7 +58,6 @@ extern RNG_HandleTypeDef hrng;
 extern SPI_HandleTypeDef *hspi1;
 extern CRC_HandleTypeDef hcrc;
 
-extern bool auto_cs_mode;
 extern lt_handle_t lt_handle;
 /* USER CODE END EV */
 

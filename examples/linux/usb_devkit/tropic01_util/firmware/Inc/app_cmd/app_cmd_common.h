@@ -1,7 +1,10 @@
-#ifndef USB_DEVKIT_APP_COMMANDS_H
-#define USB_DEVKIT_APP_COMMANDS_H
+#ifndef APP_CMD_COMMON_H
+#define APP_CMD_COMMON_H
+
+#include <stdint.h>
 
 #include "libtropic_common.h"
+#include "main.h"
 #include "psa/crypto.h"
 #include "usb_devkit_messages.pb.h"
 
@@ -16,7 +19,16 @@ typedef struct macandd_data_t {
     lt_mac_and_destroy_slot_t depleted_attempts;
 } macandd_data_t;
 
-void set_pin(const PinSetCmd *cmd, AppResp *resp);
-void verify_pin(const PinVerifyCmd *cmd, AppResp *resp);
+extern macandd_data_t g_macandd_data;
 
-#endif  // USB_DEVKIT_APP_COMMANDS_H
+/**
+ * @brief Process USB DevKit application command.
+ *
+ * @param[in]  cmd   USB DevKit command.
+ * @param[out] resp  USB DevKit response.
+ */
+void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
+
+HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len);
+
+#endif  // APP_CMD_COMMON_H

@@ -26,14 +26,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "frame_protocol.h"
 #include "libtropic.h"
 #include "libtropic_logging.h"
 #include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_stm32u5xx.h"
 #include "psa/crypto.h"
 #include "tusb.h"
-#include "usb_devkit_messages.pb.h"
-#include "usb_devkit_protocol.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -43,24 +42,10 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-/** @brief Used for tracking the state of the USB Devkit's main loop. */
-typedef enum {
-    READ_MAGIC_BYTE_1,
-    READ_MAGIC_BYTE_2,
-    READ_DATA_LEN,
-    READ_DATA,
-    READ_VERIFY_CRC,
-    PROCESS_DATA,
-    WRITE_DATA
-} usb_devkit_state_t;
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-#define USB_READ_TIMEOUT_MS 50
 
 #define CHECK_LT_RET           \
     {                          \
@@ -89,9 +74,6 @@ SPI_HandleTypeDef *hspi1 = NULL;
 PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 /* USER CODE BEGIN PV */
-
-usb_devkit_state_t usb_devkit_state = READ_MAGIC_BYTE_1;
-bool auto_cs_mode = true;
 lt_handle_t lt_handle = {0};
 
 /* USER CODE END PV */
@@ -118,63 +100,10 @@ int iar_fputc(int ch);
 
 /* USER CODE BEGIN PFP */
 
-static size_t usb_read_chunk(uint8_t *buff, size_t to_read);
-static size_t usb_write_chunk(const uint8_t *buff, size_t to_write);
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-// tinyUSB calls this function when the USB bus is reset or unplugged.
-void tud_umount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
-
-// tinyUSB calls this function when the USB is plugged and recognized.
-void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
-
-/**
- * @brief Read up to `to_read` bytes from the USB CDC RX FIFO into `buff`.
- *
- * This helper is non-blocking: when no bytes are currently available, it
- * returns 0. When data is available, it reads at most `to_read` bytes.
- *
- * @param[out] buff Destination buffer for received bytes.
- * @param[in] to_read Maximum number of bytes to read in this call.
- * @return Number of bytes actually read.
- */
-static size_t usb_read_chunk(uint8_t *buff, size_t to_read)
-{
-    uint32_t avail_bytes = tud_cdc_available();
-    if (avail_bytes == 0 || to_read == 0) {
-        return 0;
-    }
-
-    size_t chunk_size = MIN(to_read, (size_t)avail_bytes);
-    return (size_t)tud_cdc_read(buff, chunk_size);
-}
-
-/**
- * @brief Write up to `to_write` bytes to the USB CDC TX FIFO from `buff`.
- *
- * This helper is non-blocking: when there is no room in the TX FIFO, it
- * calls tud_cdc_write_flush() and returns 0. When room is available, it
- * writes at most `to_write` bytes.
- *
- * @param[in] buff Source buffer with bytes to write.
- * @param[in] to_write Number of bytes to write in this call.
- * @return Number of bytes actually written.
- */
-static size_t usb_write_chunk(const uint8_t *buff, size_t to_write)
-{
-    uint32_t free_bytes = tud_cdc_write_available();
-    if (free_bytes == 0 || to_write == 0) {
-        tud_cdc_write_flush();
-        return 0;
-    }
-
-    size_t chunk_size = MIN(to_write, (size_t)free_bytes);
-    return (size_t)tud_cdc_write(buff, chunk_size);
-}
 
 /* USER CODE END 0 */
 
@@ -260,157 +189,8 @@ int main(void)
     // Turn on the LED to indicate that the initialization succeeded.
     HAL_GPIO_WritePin(APP_LED_GPIO_Port, APP_LED_Pin, GPIO_PIN_SET);
 
+    usb_devkit_main_loop();
     /* USER CODE END 2 */
-
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    // Variables for the DATA_LEN field in the frame.
-    uint8_t in_data_len_bytes[FRAME_DATA_LEN_SIZE];  // Incoming DATA_LEN bytes.
-    size_t in_data_len_bytes_read = 0;               // Number of incoming DATA_LEN bytes read so far.
-    size_t in_data_len = 0;                          // Parsed incoming DATA_LEN.
-    // Variables for DATA field in the frame.
-    uint8_t in_data[UsbDevkitCmd_size];     // Incoming DATA bytes.
-    size_t in_data_read = 0;                // Number of incoming DATA bytes read so far.
-    uint8_t out_frame[OUT_FRAME_MAX_SIZE];  // Outgoing frame bytes.
-    size_t out_frame_len = 0;               // Actual number of outgoing frame bytes.
-    size_t out_frame_written = 0;           // Number of outgoing frame bytes written so far.
-    // Variables for CRC field in the frame.
-    uint8_t in_crc[FRAME_CRC_SIZE];  // Incoming CRC bytes.
-    size_t in_crc_read = 0;          // Number of incoming CRC bytes read so far.
-    while (1) {
-        /* USER CODE END WHILE */
-
-        /* USER CODE BEGIN 3 */
-
-        // TinyUSB task.
-        tud_task();
-
-        switch (usb_devkit_state) {
-            case READ_MAGIC_BYTE_1: {
-                uint8_t magic_byte_1;
-                if (tud_cdc_read(&magic_byte_1, 1) == 1 && magic_byte_1 == FRAME_MAGIC_BYTE_1) {
-                    usb_devkit_state = READ_MAGIC_BYTE_2;
-                }
-                break;
-            }
-
-            case READ_MAGIC_BYTE_2: {
-                uint8_t magic_byte_2;
-                if (tud_cdc_read(&magic_byte_2, 1) == 1) {
-                    if (magic_byte_2 == FRAME_MAGIC_BYTE_2) {
-                        in_data_len_bytes_read = 0;
-                        usb_devkit_state = READ_DATA_LEN;
-                    }
-                    else {
-                        usb_devkit_state = READ_MAGIC_BYTE_1;
-                    }
-                }
-                break;
-            }
-
-            case READ_DATA_LEN: {
-                uint8_t *read_ptr = in_data_len_bytes + in_data_len_bytes_read;
-                size_t to_read = FRAME_DATA_LEN_SIZE - in_data_len_bytes_read;
-
-                in_data_len_bytes_read += usb_read_chunk(read_ptr, to_read);
-                if (in_data_len_bytes_read == FRAME_DATA_LEN_SIZE) {
-                    // DATA_LEN comes as big-endian.
-                    in_data_len = ((size_t)in_data_len_bytes[0] << 8) | (size_t)in_data_len_bytes[1];
-
-                    if (in_data_len == 0 || in_data_len > UsbDevkitCmd_size) {
-                        // 1. Construct error response.
-                        UsbDevkitResp resp = UsbDevkitResp_init_zero;
-                        resp.which_type = UsbDevkitResp_error_tag;
-                        resp.type.error.res_code = ERROR_RESP_CODE_BAD_DATA_LEN;
-                        if (!construct_resp(&resp, out_frame, sizeof(out_frame), &out_frame_len)) {
-                            Error_Handler();
-                        }
-                        // 2. Prepare for writing.
-                        out_frame_written = 0;
-                        usb_devkit_state = WRITE_DATA;
-                    }
-                    else {
-                        in_data_read = 0;
-                        usb_devkit_state = READ_DATA;
-                    }
-                }
-                break;
-            }
-
-            case READ_DATA: {
-                uint8_t *read_ptr = in_data + in_data_read;
-                size_t to_read = in_data_len - in_data_read;
-
-                in_data_read += usb_read_chunk(read_ptr, to_read);
-                if (in_data_read == in_data_len) {
-                    in_crc_read = 0;
-                    usb_devkit_state = READ_VERIFY_CRC;
-                }
-                break;
-            }
-
-            case READ_VERIFY_CRC: {
-                uint8_t *read_ptr = in_crc + in_crc_read;
-                size_t to_read = FRAME_CRC_SIZE - in_crc_read;
-
-                in_crc_read += usb_read_chunk(read_ptr, to_read);
-                if (in_crc_read == FRAME_CRC_SIZE) {
-                    // CRC comes as big-endian.
-                    uint16_t in_crc_parsed = ((uint16_t)in_crc[0] << 8) | (uint16_t)in_crc[1];
-                    // 1. Calculate CRC for DATA_LEN.
-                    uint32_t frame_data_len_word = 0;
-                    memcpy(&frame_data_len_word, in_data_len_bytes, FRAME_DATA_LEN_SIZE);
-                    HAL_CRC_Calculate(&hcrc, &frame_data_len_word, (uint32_t)FRAME_DATA_LEN_SIZE);
-                    // 2. Calculate CRC for DATA.
-                    uint32_t in_crc_hw = HAL_CRC_Accumulate(&hcrc, (uint32_t *)(void *)in_data,
-                                                            (uint32_t)in_data_len);
-                    // 3. Compare CRCs.
-                    if (in_crc_parsed == (uint16_t)(in_crc_hw & 0xFFFF)) {
-                        usb_devkit_state = PROCESS_DATA;
-                    }
-                    else {
-                        // 1. Construct response.
-                        UsbDevkitResp resp = UsbDevkitResp_init_zero;
-                        resp.which_type = UsbDevkitResp_error_tag;
-                        resp.type.error.res_code = ERROR_RESP_CODE_BAD_CRC;
-                        if (!construct_resp(&resp, out_frame, sizeof(out_frame), &out_frame_len)) {
-                            Error_Handler();
-                        }
-                        // 2. Prepare for writing.
-                        out_frame_written = 0;
-                        usb_devkit_state = WRITE_DATA;
-                    }
-                }
-                break;
-            }
-
-            case PROCESS_DATA: {
-                // 1. Process incoming DATA and construct response.
-                if (!process_data(in_data, in_data_len, out_frame, sizeof(out_frame),
-                                  &out_frame_len)) {
-                    Error_Handler();
-                }
-
-                // 2. Prepare for writing.
-                out_frame_written = 0;
-                usb_devkit_state = WRITE_DATA;
-                break;
-            }
-
-            case WRITE_DATA: {
-                uint8_t *write_ptr = out_frame + out_frame_written;
-                size_t to_write = out_frame_len - out_frame_written;
-
-                out_frame_written += usb_write_chunk(write_ptr, to_write);
-                if (out_frame_written == out_frame_len) {
-                    tud_cdc_write_flush();
-                    usb_devkit_state = READ_MAGIC_BYTE_1;
-                }
-                break;
-            }
-        }
-    }
-    /* USER CODE END 3 */
 }
 
 /**

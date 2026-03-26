@@ -199,8 +199,17 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/syscalls.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/sysmem.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_descriptors.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_devkit_protocol.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_devkit_app_commands.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/frame_protocol.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/app_cmd_common.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/pin_set.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/pin_verify.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/raw_cmd_common.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/get_gpo.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/send_spi_data.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/set_auto_cs_mode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/set_cs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/set_tr01_pwr.c
+    
 
     # MbedTLS platform-specific implementations
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/mbedtls_v4/mbedtls_platform.c

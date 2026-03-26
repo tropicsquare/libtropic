@@ -1,5 +1,9 @@
-#ifndef USB_DEVKIT_PROTOCOL_H
-#define USB_DEVKIT_PROTOCOL_H
+#ifndef FRAME_PROTOCOL_H
+#define FRAME_PROTOCOL_H
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #include "usb_devkit_messages.pb.h"
 
@@ -23,21 +27,22 @@
 #define OUT_FRAME_MAX_SIZE \
     (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + UsbDevkitResp_size + FRAME_CRC_SIZE)
 
-/**
- * @brief Process USB DevKit raw command.
- *
- * @param[in]  cmd   USB DevKit command.
- * @param[out] resp  USB DevKit response.
- */
-void process_raw_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
+/** @brief Used for tracking the state of the USB Devkit's main loop. */
+typedef enum {
+    READ_MAGIC_BYTE_1,
+    READ_MAGIC_BYTE_2,
+    READ_DATA_LEN,
+    READ_DATA,
+    READ_VERIFY_CRC,
+    PROCESS_DATA,
+    WRITE_DATA
+} usb_devkit_state_t;
 
 /**
- * @brief Process USB DevKit application command.
+ * @brief USB Devkit main loop.
  *
- * @param[in]  cmd   USB DevKit command.
- * @param[out] resp  USB DevKit response.
  */
-void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
+void usb_devkit_main_loop(void);
 
 /**
  * @brief Decode UsbDevkitCmd from `data`, execute the command, encode UsbDevkitResp and construct
@@ -81,4 +86,4 @@ bool construct_resp(const UsbDevkitResp *resp, uint8_t *frame_buff, size_t frame
 bool construct_frame(const uint8_t *data, size_t data_len, uint8_t *frame_buff, size_t frame_buff_size,
                      size_t *frame_buff_len);
 
-#endif  // USB_DEVKIT_PROTOCOL_H
+#endif  // FRAME_PROTOCOL_H
