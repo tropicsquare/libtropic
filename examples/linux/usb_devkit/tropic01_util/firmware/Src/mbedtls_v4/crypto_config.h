@@ -45,107 +45,27 @@
  * \{
  */
 
-#define PSA_WANT_ALG_CBC_NO_PADDING 1
-#define PSA_WANT_ALG_CBC_PKCS7 1
-#define PSA_WANT_ALG_CCM 1
-#define PSA_WANT_ALG_CCM_STAR_NO_TAG 1
-#define PSA_WANT_ALG_CMAC 1
-#define PSA_WANT_ALG_CFB 1
-#define PSA_WANT_ALG_CHACHA20_POLY1305 1
-#define PSA_WANT_ALG_CTR 1
-#define PSA_WANT_ALG_DETERMINISTIC_ECDSA 1
-#define PSA_WANT_ALG_ECB_NO_PADDING 1
-#define PSA_WANT_ALG_ECDH 1
-#define PSA_WANT_ALG_FFDH 1
-#define PSA_WANT_ALG_ECDSA 1
-#define PSA_WANT_ALG_JPAKE 1
+/* Minimal PSA configuration for Libtropic: keep only algorithms and key types
+ * actually used by the project (X25519 ECDH, AES-GCM, SHA-256/HMAC, HKDF).
+ * Reducing these to a minimum cuts the amount of code compiled into Mbed TLS.
+ */
 #define PSA_WANT_ALG_GCM 1
+#define PSA_WANT_ALG_HMAC 1
+#define PSA_WANT_ALG_SHA_256 1
+#define PSA_WANT_ALG_ECDH 1
+#define PSA_WANT_ECC_MONTGOMERY_255 1
 #define PSA_WANT_ALG_HKDF 1
 #define PSA_WANT_ALG_HKDF_EXTRACT 1
 #define PSA_WANT_ALG_HKDF_EXPAND 1
-#define PSA_WANT_ALG_HMAC 1
-#define PSA_WANT_ALG_MD5 1
-#define PSA_WANT_ALG_OFB 1
-#define PSA_WANT_ALG_PBKDF2_HMAC 1
-#define PSA_WANT_ALG_PBKDF2_AES_CMAC_PRF_128 1
-#define PSA_WANT_ALG_RIPEMD160 1
-#define PSA_WANT_ALG_RSA_OAEP 1
-#define PSA_WANT_ALG_RSA_PKCS1V15_CRYPT 1
-#define PSA_WANT_ALG_RSA_PKCS1V15_SIGN 1
-#define PSA_WANT_ALG_RSA_PSS 1
-#define PSA_WANT_ALG_SHA_1 1
-#define PSA_WANT_ALG_SHA_224 1
-#define PSA_WANT_ALG_SHA_256 1
-#define PSA_WANT_ALG_SHA_384 1
-#define PSA_WANT_ALG_SHA_512 1
-#define PSA_WANT_ALG_SHA3_224 1
-#define PSA_WANT_ALG_SHA3_256 1
-#define PSA_WANT_ALG_SHA3_384 1
-#define PSA_WANT_ALG_SHA3_512 1
-#define PSA_WANT_ALG_STREAM_CIPHER 1
-#define PSA_WANT_ALG_TLS12_PRF 1
-#define PSA_WANT_ALG_TLS12_PSK_TO_MS 1
-#define PSA_WANT_ALG_TLS12_ECJPAKE_TO_PMS 1
 
-#define PSA_WANT_ECC_BRAINPOOL_P_R1_256 1
-#define PSA_WANT_ECC_BRAINPOOL_P_R1_384 1
-#define PSA_WANT_ECC_BRAINPOOL_P_R1_512 1
-#define PSA_WANT_ECC_MONTGOMERY_255 1
-#define PSA_WANT_ECC_MONTGOMERY_448 1
-#define PSA_WANT_ECC_SECP_K1_256 1
-/* For secp256r1, consider enabling #MBEDTLS_PSA_P256M_DRIVER_ENABLED
- * (see the description in psa/crypto_config.h for details). */
-#define PSA_WANT_ECC_SECP_R1_256 1
-#define PSA_WANT_ECC_SECP_R1_384 1
-#define PSA_WANT_ECC_SECP_R1_521 1
-/* These 2 curves are not part of the public API. They are kept temporarily for
- * internal testing only and will removed in a future minor version. */
-#define PSA_WANT_ECC_SECP_K1_192 1
-#define PSA_WANT_ECC_SECP_R1_192 1
-
-#define PSA_WANT_DH_RFC7919_2048 1
-#define PSA_WANT_DH_RFC7919_3072 1
-#define PSA_WANT_DH_RFC7919_4096 1
-#define PSA_WANT_DH_RFC7919_6144 1
-#define PSA_WANT_DH_RFC7919_8192 1
-
-#define PSA_WANT_KEY_TYPE_DERIVE 1
-#define PSA_WANT_KEY_TYPE_PASSWORD 1
-#define PSA_WANT_KEY_TYPE_PASSWORD_HASH 1
-#define PSA_WANT_KEY_TYPE_HMAC 1
 #define PSA_WANT_KEY_TYPE_AES 1
-#define PSA_WANT_KEY_TYPE_ARIA 1
-#define PSA_WANT_KEY_TYPE_CAMELLIA 1
-#define PSA_WANT_KEY_TYPE_CHACHA20 1
+#define PSA_WANT_KEY_TYPE_HMAC 1
 #define PSA_WANT_KEY_TYPE_ECC_PUBLIC_KEY 1
-#define PSA_WANT_KEY_TYPE_DH_PUBLIC_KEY 1
-#define PSA_WANT_KEY_TYPE_RAW_DATA 1
-#define PSA_WANT_KEY_TYPE_RSA_PUBLIC_KEY 1
-
-/*
- * The following symbols extend and deprecate the legacy
- * PSA_WANT_KEY_TYPE_xxx_KEY_PAIR ones. They include the usage of that key in
- * the name's suffix. "_USE" is the most generic and it can be used to describe
- * a generic suport, whereas other ones add more features on top of that and
- * they are more specific.
- */
 #define PSA_WANT_KEY_TYPE_ECC_KEY_PAIR_BASIC 1
 #define PSA_WANT_KEY_TYPE_ECC_KEY_PAIR_IMPORT 1
 #define PSA_WANT_KEY_TYPE_ECC_KEY_PAIR_EXPORT 1
 #define PSA_WANT_KEY_TYPE_ECC_KEY_PAIR_GENERATE 1
-#define PSA_WANT_KEY_TYPE_ECC_KEY_PAIR_DERIVE 1
 
-#define PSA_WANT_KEY_TYPE_RSA_KEY_PAIR_BASIC 1
-#define PSA_WANT_KEY_TYPE_RSA_KEY_PAIR_IMPORT 1
-#define PSA_WANT_KEY_TYPE_RSA_KEY_PAIR_EXPORT 1
-#define PSA_WANT_KEY_TYPE_RSA_KEY_PAIR_GENERATE 1
-// #define PSA_WANT_KEY_TYPE_RSA_KEY_PAIR_DERIVE   1 /* Not supported */
-
-#define PSA_WANT_KEY_TYPE_DH_KEY_PAIR_BASIC 1
-#define PSA_WANT_KEY_TYPE_DH_KEY_PAIR_IMPORT 1
-#define PSA_WANT_KEY_TYPE_DH_KEY_PAIR_EXPORT 1
-#define PSA_WANT_KEY_TYPE_DH_KEY_PAIR_GENERATE 1
-// #define PSA_WANT_KEY_TYPE_DH_KEY_PAIR_DERIVE    1 /* Not supported */
 /** \} name SECTION Cryptographic mechanism selection (PSA API) */
 
 /**
@@ -753,7 +673,7 @@
  *
  * Uncomment to enable the LMS verification algorithm and public key operations.
  */
-#define MBEDTLS_LMS_C
+// #define MBEDTLS_LMS_C
 
 /**
  * \def MBEDTLS_LMS_PRIVATE
@@ -765,7 +685,7 @@
  *
  * Uncomment to enable the LMS signature algorithm and private key operations.
  */
-#define MBEDTLS_LMS_PRIVATE
+// #define MBEDTLS_LMS_PRIVATE
 
 /**
  * \def MBEDTLS_MD_C
@@ -799,7 +719,7 @@
  *
  * Auto enables: PSA_WANT_ALG_ECB_NO_PADDING
  */
-#define MBEDTLS_NIST_KW_C
+// #define MBEDTLS_NIST_KW_C
 
 /**
  * \def MBEDTLS_PK_C
@@ -828,7 +748,7 @@
  *
  * This module adds support for the PKCS#5 functions.
  */
-#define MBEDTLS_PKCS5_C
+// #define MBEDTLS_PKCS5_C
 
 /**
  * \def MBEDTLS_PK_PARSE_C
@@ -855,7 +775,7 @@
  *
  * Disable if you only need to support RFC 5915 + 5480 key formats.
  */
-#define MBEDTLS_PK_PARSE_EC_EXTENDED
+// #define MBEDTLS_PK_PARSE_EC_EXTENDED
 
 /**
  * \def MBEDTLS_PK_PARSE_EC_COMPRESSED
@@ -864,7 +784,7 @@
  * (PSA_ECC_FAMILY_SECP_XXX and PSA_ECC_FAMILY_BRAINPOOL_XXX) which are using the
  * compressed point format.
  */
-#define MBEDTLS_PK_PARSE_EC_COMPRESSED
+// #define MBEDTLS_PK_PARSE_EC_COMPRESSED
 
 /**
  * \def MBEDTLS_PK_WRITE_C
@@ -935,7 +855,7 @@
  *
  * This modules adds support for decoding / parsing PEM files.
  */
-#define MBEDTLS_PEM_PARSE_C
+// #define MBEDTLS_PEM_PARSE_C
 
 /**
  * \def MBEDTLS_PEM_WRITE_C
@@ -949,7 +869,7 @@
  *
  * This modules adds support for encoding / writing PEM files.
  */
-#define MBEDTLS_PEM_WRITE_C
+// #define MBEDTLS_PEM_WRITE_C
 
 /** \} name SECTION: Data format support */
 
@@ -1473,7 +1393,7 @@
  *
  * This modules adds support for the AES-NI instructions on x86.
  */
-#define MBEDTLS_AESNI_C
+// #define MBEDTLS_AESNI_C
 
 /**
  * \def MBEDTLS_AESCE_C
@@ -1499,7 +1419,7 @@
  *
  * This module adds support for the AES Armv8-A Cryptographic Extensions on Armv8 systems.
  */
-#define MBEDTLS_AESCE_C
+// #define MBEDTLS_AESCE_C
 
 /**
  * \def MBEDTLS_AES_ROM_TABLES
@@ -1597,7 +1517,7 @@
  *
  * Uncomment this macro to use less memory for Camellia.
  */
-#define MBEDTLS_CAMELLIA_SMALL_MEMORY
+// #define MBEDTLS_CAMELLIA_SMALL_MEMORY
 
 /**
  * Enable the verified implementations of ECDH primitives from Project Everest
@@ -1689,7 +1609,7 @@
  *
  * Requires: The GCM built-in implementation
  */
-#define MBEDTLS_GCM_LARGE_TABLE
+// #define MBEDTLS_GCM_LARGE_TABLE
 
 /**
  * \def MBEDTLS_HAVE_ASM
@@ -1912,7 +1832,7 @@
  *
  * Uncomment to enable the smaller implementation of SHA512.
  */
-#define MBEDTLS_SHA512_SMALLER
+// #define MBEDTLS_SHA512_SMALLER
 
 /**
  * \def MBEDTLS_SHA512_USE_A64_CRYPTO_IF_PRESENT
