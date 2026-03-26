@@ -203,6 +203,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/app_cmd_common.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/pin_set.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/pin_verify.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/r_mem_read.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/r_mem_write.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/r_mem_erase.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/raw_cmd_common.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/get_gpo.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/raw_cmd/send_spi_data.c

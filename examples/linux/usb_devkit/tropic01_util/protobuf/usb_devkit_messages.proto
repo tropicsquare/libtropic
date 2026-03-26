@@ -30,6 +30,7 @@ message AppCmd {
 		PinVerifyCmd pin_verify = 2;
 		RMemReadCmd r_mem_read = 3;
 		RMemWriteCmd r_mem_write = 4;
+		RMemEraseCmd r_mem_erase = 5;
 	}
 }
 // ------------------------------- PinSetCmd
@@ -53,19 +54,24 @@ message RMemWriteCmd {
 	uint32 udata_slot = 1;
 	bytes data = 2;
 }
+// ------------------------------- RMemEraseCmd
+message RMemEraseCmd {
+	uint32 udata_slot = 1;
+}
 // ===========================================================================
 
 
 
 // ================================= AppResp =================================
 message AppResp {
+	optional uint32 libtropic_error_code = 1;
 	oneof type {
-		PinSetResp pin_set = 1;
-		PinVerifyResp pin_verify = 2;
-		RMemReadResp r_mem_read = 3;
-		RMemWriteResp r_mem_write = 4;
+		PinSetResp pin_set = 2;
+		PinVerifyResp pin_verify = 3;
+		RMemReadResp r_mem_read = 4;
+		RMemWriteResp r_mem_write = 5;
+		RMemEraseResp r_mem_erase = 6;
 	}
-	optional uint32 libtropic_error_code = 5;
 }
 // ------------------------------- PinSetResp
 message PinSetResp {
@@ -111,6 +117,15 @@ enum RMemWriteRespCode {
 	R_MEM_WRITE_RESP_CODE_UNSPECIFIED = 0;
 	R_MEM_WRITE_RESP_CODE_OK = 1;
 	R_MEM_WRITE_RESP_CODE_ERROR = 2;
+}
+// ------------------------------- RMemEraseResp
+message RMemEraseResp {
+	RMemEraseRespCode res_code = 1;
+}
+enum RMemEraseRespCode {
+	R_MEM_ERASE_RESP_CODE_UNSPECIFIED = 0;
+	R_MEM_ERASE_RESP_CODE_OK = 1;
+	R_MEM_ERASE_RESP_CODE_ERROR = 2;
 }
 // ===========================================================================
 

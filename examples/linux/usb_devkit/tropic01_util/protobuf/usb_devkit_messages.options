@@ -20,5 +20,7 @@ RMemReadResp.data  max_size:475
 RMemWriteCmd.udata_slot int_size:IS_16
 RMemWriteCmd.data  max_size:475
 
+RMemEraseCmd.udata_slot int_size:IS_16
+
 SendSpiDataCmd.tx_data   max_size:257
 SendSpiDataResp.rx_data  max_size:257

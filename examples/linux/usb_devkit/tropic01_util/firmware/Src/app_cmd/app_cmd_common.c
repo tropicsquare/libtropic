@@ -1,7 +1,12 @@
 #include "app_cmd/app_cmd_common.h"
 
+#include <stdint.h>
+
 #include "app_cmd/pin_set.h"
 #include "app_cmd/pin_verify.h"
+#include "app_cmd/r_mem_erase.h"
+#include "app_cmd/r_mem_read.h"
+#include "app_cmd/r_mem_write.h"
 #include "main.h"
 #include "usb_devkit_messages.pb.h"
 
@@ -72,11 +77,20 @@ void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
             pin_verify(&cmd->type.app.type.pin_verify, &resp->type.app);
             break;
 
-            // case AppCmd_r_mem_read_tag:
-            //     break;
+        case AppCmd_r_mem_read_tag:
+            resp->type.app.which_type = AppResp_r_mem_read_tag;
+            r_mem_read(&cmd->type.app.type.r_mem_read, &resp->type.app);
+            break;
 
-            // case AppCmd_r_mem_write_tag:
-            //     break;
+        case AppCmd_r_mem_write_tag:
+            resp->type.app.which_type = AppResp_r_mem_write_tag;
+            r_mem_write(&cmd->type.app.type.r_mem_write, &resp->type.app);
+            break;
+
+        case AppCmd_r_mem_erase_tag:
+            resp->type.app.which_type = AppResp_r_mem_erase_tag;
+            r_mem_erase(&cmd->type.app.type.r_mem_erase, &resp->type.app);
+            break;
 
         default:
             resp->which_type = UsbDevkitResp_error_tag;

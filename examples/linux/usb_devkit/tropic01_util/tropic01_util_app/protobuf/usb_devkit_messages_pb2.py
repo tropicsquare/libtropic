@@ -15,7 +15,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19usb_devkit_messages.proto\"F\n\x0cUsbDevkitCmd\x12\x16\n\x03\x61pp\x18\x01 \x01(\x0b\x32\x07.AppCmdH\x00\x12\x16\n\x03raw\x18\x02 \x01(\x0b\x32\x07.RawCmdH\x00\x42\x06\n\x04type\"f\n\rUsbDevkitResp\x12\x17\n\x03\x61pp\x18\x01 \x01(\x0b\x32\x08.AppRespH\x00\x12\x17\n\x03raw\x18\x02 \x01(\x0b\x32\x08.RawRespH\x00\x12\x1b\n\x05\x65rror\x18\x03 \x01(\x0b\x32\n.ErrorRespH\x00\x42\x06\n\x04type\"\x9e\x01\n\x06\x41ppCmd\x12\x1d\n\x07pin_set\x18\x01 \x01(\x0b\x32\n.PinSetCmdH\x00\x12#\n\npin_verify\x18\x02 \x01(\x0b\x32\r.PinVerifyCmdH\x00\x12\"\n\nr_mem_read\x18\x03 \x01(\x0b\x32\x0c.RMemReadCmdH\x00\x12$\n\x0br_mem_write\x18\x04 \x01(\x0b\x32\r.RMemWriteCmdH\x00\x42\x06\n\x04type\"p\n\tPinSetCmd\x12\x0f\n\x07new_pin\x18\x01 \x01(\t\x12\x10\n\x08\x61ttempts\x18\x02 \x01(\r\x12\x1c\n\x0f\x61\x64\x64itional_data\x18\x03 \x01(\x0cH\x00\x88\x01\x01\x12\x0e\n\x06secret\x18\x04 \x01(\x0c\x42\x12\n\x10_additional_data\"M\n\x0cPinVerifyCmd\x12\x0b\n\x03pin\x18\x01 \x01(\t\x12\x1c\n\x0f\x61\x64\x64itional_data\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x42\x12\n\x10_additional_data\"!\n\x0bRMemReadCmd\x12\x12\n\nudata_slot\x18\x01 \x01(\r\"0\n\x0cRMemWriteCmd\x12\x12\n\nudata_slot\x18\x01 \x01(\r\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\xdf\x01\n\x07\x41ppResp\x12\x1e\n\x07pin_set\x18\x01 \x01(\x0b\x32\x0b.PinSetRespH\x00\x12$\n\npin_verify\x18\x02 \x01(\x0b\x32\x0e.PinVerifyRespH\x00\x12#\n\nr_mem_read\x18\x03 \x01(\x0b\x32\r.RMemReadRespH\x00\x12%\n\x0br_mem_write\x18\x04 \x01(\x0b\x32\x0e.RMemWriteRespH\x00\x12!\n\x14libtropic_error_code\x18\x05 \x01(\rH\x01\x88\x01\x01\x42\x06\n\x04typeB\x17\n\x15_libtropic_error_code\"C\n\nPinSetResp\x12!\n\x08res_code\x18\x01 \x01(\x0e\x32\x0f.PinSetRespCode\x12\x12\n\ncrypto_key\x18\x02 \x01(\x0c\"I\n\rPinVerifyResp\x12$\n\x08res_code\x18\x01 \x01(\x0e\x32\x12.PinVerifyRespCode\x12\x12\n\ncrypto_key\x18\x03 \x01(\x0c\"A\n\x0cRMemReadResp\x12#\n\x08res_code\x18\x01 \x01(\x0e\x32\x11.RMemReadRespCode\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"5\n\rRMemWriteResp\x12$\n\x08res_code\x18\x01 \x01(\x0e\x32\x12.RMemWriteRespCode\"\xcd\x01\n\x06RawCmd\x12(\n\rsend_spi_data\x18\x01 \x01(\x0b\x32\x0f.SendSpiDataCmdH\x00\x12-\n\x10set_auto_cs_mode\x18\x02 \x01(\x0b\x32\x11.SetAutoCsModeCmdH\x00\x12\x1b\n\x06set_cs\x18\x03 \x01(\x0b\x32\t.SetCsCmdH\x00\x12&\n\x0cset_tr01_pwr\x18\x04 \x01(\x0b\x32\x0e.SetTr01PwrCmdH\x00\x12\x1d\n\x07get_gpo\x18\x05 \x01(\x0b\x32\n.GetGpoCmdH\x00\x42\x06\n\x04type\"5\n\x0eSendSpiDataCmd\x12\x0f\n\x07tx_data\x18\x01 \x01(\x0c\x12\x12\n\ntimeout_ms\x18\x02 \x01(\r\"\x1e\n\x10SetAutoCsModeCmd\x12\n\n\x02on\x18\x01 \x01(\x08\"\x18\n\x08SetCsCmd\x12\x0c\n\x04high\x18\x01 \x01(\x08\"\x1b\n\rSetTr01PwrCmd\x12\n\n\x02on\x18\x01 \x01(\x08\"\x0b\n\tGetGpoCmd\"\xd3\x01\n\x07RawResp\x12)\n\rsend_spi_data\x18\x01 \x01(\x0b\x32\x10.SendSpiDataRespH\x00\x12.\n\x10set_auto_cs_mode\x18\x02 \x01(\x0b\x32\x12.SetAutoCsModeRespH\x00\x12\x1c\n\x06set_cs\x18\x03 \x01(\x0b\x32\n.SetCsRespH\x00\x12\'\n\x0cset_tr01_pwr\x18\x04 \x01(\x0b\x32\x0f.SetTr01PwrRespH\x00\x12\x1e\n\x07get_gpo\x18\x05 \x01(\x0b\x32\x0b.GetGpoRespH\x00\x42\x06\n\x04type\"J\n\x0fSendSpiDataResp\x12&\n\x08res_code\x18\x01 \x01(\x0e\x32\x14.SendSpiDataRespCode\x12\x0f\n\x07rx_data\x18\x02 \x01(\x0c\"=\n\x11SetAutoCsModeResp\x12(\n\x08res_code\x18\x01 \x01(\x0e\x32\x16.SetAutoCsModeRespCode\"-\n\tSetCsResp\x12 \n\x08res_code\x18\x01 \x01(\x0e\x32\x0e.SetCsRespCode\"7\n\x0eSetTr01PwrResp\x12%\n\x08res_code\x18\x01 \x01(\x0e\x32\x13.SetTr01PwrRespCode\"=\n\nGetGpoResp\x12!\n\x08res_code\x18\x01 \x01(\x0e\x32\x0f.GetGpoRespCode\x12\x0c\n\x04high\x18\x02 \x01(\x08\"-\n\tErrorResp\x12 \n\x08res_code\x18\x01 \x01(\x0e\x32\x0e.ErrorRespCode*\xbf\x01\n\x0ePinSetRespCode\x12!\n\x1dPIN_SET_RESP_CODE_UNSPECIFIED\x10\x00\x12\x18\n\x14PIN_SET_RESP_CODE_OK\x10\x01\x12\x1b\n\x17PIN_SET_RESP_CODE_ERROR\x10\x02\x12*\n&PIN_SET_RESP_CODE_ATTEMPS_OUT_OF_RANGE\x10\x03\x12\'\n#PIN_SET_RESP_CODE_FLASH_WRITE_ERROR\x10\x04*\xa9\x02\n\x11PinVerifyRespCode\x12$\n PIN_VERIFY_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1b\n\x17PIN_VERIFY_RESP_CODE_OK\x10\x01\x12\x1e\n\x1aPIN_VERIFY_RESP_CODE_ERROR\x10\x02\x12\x36\n2PIN_VERIFY_RESP_CODE_DEPLETED_ATTEMPS_OUT_OF_RANGE\x10\x03\x12\"\n\x1ePIN_VERIFY_RESP_CODE_WRONG_PIN\x10\x04\x12)\n%PIN_VERIFY_RESP_CODE_FLASH_READ_ERROR\x10\x05\x12*\n&PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR\x10\x06*u\n\x10RMemReadRespCode\x12$\n R_MEM_READ_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1b\n\x17R_MEM_READ_RESP_CODE_OK\x10\x01\x12\x1e\n\x1aR_MEM_READ_RESP_CODE_ERROR\x10\x02*y\n\x11RMemWriteRespCode\x12%\n!R_MEM_WRITE_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1c\n\x18R_MEM_WRITE_RESP_CODE_OK\x10\x01\x12\x1f\n\x1bR_MEM_WRITE_RESP_CODE_ERROR\x10\x02*\xc8\x01\n\x13SendSpiDataRespCode\x12\'\n#SEND_SPI_DATA_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1e\n\x1aSEND_SPI_DATA_RESP_CODE_OK\x10\x01\x12!\n\x1dSEND_SPI_DATA_RESP_CODE_ERROR\x10\x02\x12 \n\x1cSEND_SPI_DATA_RESP_CODE_BUSY\x10\x03\x12#\n\x1fSEND_SPI_DATA_RESP_CODE_TIMEOUT\x10\x04*f\n\x15SetAutoCsModeRespCode\x12*\n&SET_AUTO_CS_MODE_RESP_CODE_UNSPECIFIED\x10\x00\x12!\n\x1dSET_AUTO_CS_MODE_RESP_CODE_OK\x10\x01*p\n\rSetCsRespCode\x12 \n\x1cSET_CS_RESP_CODE_UNSPECIFIED\x10\x00\x12\x17\n\x13SET_CS_RESP_CODE_OK\x10\x01\x12$\n SET_CS_RESP_CODE_AUTO_CS_MODE_ON\x10\x02*[\n\x12SetTr01PwrRespCode\x12&\n\"SET_TR01_PWR_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1d\n\x19SET_TR01_PWR_RESP_CODE_OK\x10\x01*M\n\x0eGetGpoRespCode\x12!\n\x1dGET_GPO_RESP_CODE_UNSPECIFIED\x10\x00\x12\x18\n\x14GET_GPO_RESP_CODE_OK\x10\x01*\xaf\x01\n\rErrorRespCode\x12\x1f\n\x1b\x45RROR_RESP_CODE_UNSPECIFIED\x10\x00\x12 \n\x1c\x45RROR_RESP_CODE_BAD_DATA_LEN\x10\x01\x12\x1b\n\x17\x45RROR_RESP_CODE_BAD_CRC\x10\x02\x12\x1d\n\x19\x45RROR_RESP_CODE_PB_DECODE\x10\x03\x12\x1f\n\x1b\x45RROR_RESP_CODE_UNKNOWN_CMD\x10\x04\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19usb_devkit_messages.proto\"F\n\x0cUsbDevkitCmd\x12\x16\n\x03\x61pp\x18\x01 \x01(\x0b\x32\x07.AppCmdH\x00\x12\x16\n\x03raw\x18\x02 \x01(\x0b\x32\x07.RawCmdH\x00\x42\x06\n\x04type\"f\n\rUsbDevkitResp\x12\x17\n\x03\x61pp\x18\x01 \x01(\x0b\x32\x08.AppRespH\x00\x12\x17\n\x03raw\x18\x02 \x01(\x0b\x32\x08.RawRespH\x00\x12\x1b\n\x05\x65rror\x18\x03 \x01(\x0b\x32\n.ErrorRespH\x00\x42\x06\n\x04type\"\xc4\x01\n\x06\x41ppCmd\x12\x1d\n\x07pin_set\x18\x01 \x01(\x0b\x32\n.PinSetCmdH\x00\x12#\n\npin_verify\x18\x02 \x01(\x0b\x32\r.PinVerifyCmdH\x00\x12\"\n\nr_mem_read\x18\x03 \x01(\x0b\x32\x0c.RMemReadCmdH\x00\x12$\n\x0br_mem_write\x18\x04 \x01(\x0b\x32\r.RMemWriteCmdH\x00\x12$\n\x0br_mem_erase\x18\x05 \x01(\x0b\x32\r.RMemEraseCmdH\x00\x42\x06\n\x04type\"p\n\tPinSetCmd\x12\x0f\n\x07new_pin\x18\x01 \x01(\t\x12\x10\n\x08\x61ttempts\x18\x02 \x01(\r\x12\x1c\n\x0f\x61\x64\x64itional_data\x18\x03 \x01(\x0cH\x00\x88\x01\x01\x12\x0e\n\x06secret\x18\x04 \x01(\x0c\x42\x12\n\x10_additional_data\"M\n\x0cPinVerifyCmd\x12\x0b\n\x03pin\x18\x01 \x01(\t\x12\x1c\n\x0f\x61\x64\x64itional_data\x18\x02 \x01(\x0cH\x00\x88\x01\x01\x42\x12\n\x10_additional_data\"!\n\x0bRMemReadCmd\x12\x12\n\nudata_slot\x18\x01 \x01(\r\"0\n\x0cRMemWriteCmd\x12\x12\n\nudata_slot\x18\x01 \x01(\r\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"\"\n\x0cRMemEraseCmd\x12\x12\n\nudata_slot\x18\x01 \x01(\r\"\x86\x02\n\x07\x41ppResp\x12!\n\x14libtropic_error_code\x18\x01 \x01(\rH\x01\x88\x01\x01\x12\x1e\n\x07pin_set\x18\x02 \x01(\x0b\x32\x0b.PinSetRespH\x00\x12$\n\npin_verify\x18\x03 \x01(\x0b\x32\x0e.PinVerifyRespH\x00\x12#\n\nr_mem_read\x18\x04 \x01(\x0b\x32\r.RMemReadRespH\x00\x12%\n\x0br_mem_write\x18\x05 \x01(\x0b\x32\x0e.RMemWriteRespH\x00\x12%\n\x0br_mem_erase\x18\x06 \x01(\x0b\x32\x0e.RMemEraseRespH\x00\x42\x06\n\x04typeB\x17\n\x15_libtropic_error_code\"C\n\nPinSetResp\x12!\n\x08res_code\x18\x01 \x01(\x0e\x32\x0f.PinSetRespCode\x12\x12\n\ncrypto_key\x18\x02 \x01(\x0c\"I\n\rPinVerifyResp\x12$\n\x08res_code\x18\x01 \x01(\x0e\x32\x12.PinVerifyRespCode\x12\x12\n\ncrypto_key\x18\x03 \x01(\x0c\"A\n\x0cRMemReadResp\x12#\n\x08res_code\x18\x01 \x01(\x0e\x32\x11.RMemReadRespCode\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c\"5\n\rRMemWriteResp\x12$\n\x08res_code\x18\x01 \x01(\x0e\x32\x12.RMemWriteRespCode\"5\n\rRMemEraseResp\x12$\n\x08res_code\x18\x01 \x01(\x0e\x32\x12.RMemEraseRespCode\"\xcd\x01\n\x06RawCmd\x12(\n\rsend_spi_data\x18\x01 \x01(\x0b\x32\x0f.SendSpiDataCmdH\x00\x12-\n\x10set_auto_cs_mode\x18\x02 \x01(\x0b\x32\x11.SetAutoCsModeCmdH\x00\x12\x1b\n\x06set_cs\x18\x03 \x01(\x0b\x32\t.SetCsCmdH\x00\x12&\n\x0cset_tr01_pwr\x18\x04 \x01(\x0b\x32\x0e.SetTr01PwrCmdH\x00\x12\x1d\n\x07get_gpo\x18\x05 \x01(\x0b\x32\n.GetGpoCmdH\x00\x42\x06\n\x04type\"5\n\x0eSendSpiDataCmd\x12\x0f\n\x07tx_data\x18\x01 \x01(\x0c\x12\x12\n\ntimeout_ms\x18\x02 \x01(\r\"\x1e\n\x10SetAutoCsModeCmd\x12\n\n\x02on\x18\x01 \x01(\x08\"\x18\n\x08SetCsCmd\x12\x0c\n\x04high\x18\x01 \x01(\x08\"\x1b\n\rSetTr01PwrCmd\x12\n\n\x02on\x18\x01 \x01(\x08\"\x0b\n\tGetGpoCmd\"\xd3\x01\n\x07RawResp\x12)\n\rsend_spi_data\x18\x01 \x01(\x0b\x32\x10.SendSpiDataRespH\x00\x12.\n\x10set_auto_cs_mode\x18\x02 \x01(\x0b\x32\x12.SetAutoCsModeRespH\x00\x12\x1c\n\x06set_cs\x18\x03 \x01(\x0b\x32\n.SetCsRespH\x00\x12\'\n\x0cset_tr01_pwr\x18\x04 \x01(\x0b\x32\x0f.SetTr01PwrRespH\x00\x12\x1e\n\x07get_gpo\x18\x05 \x01(\x0b\x32\x0b.GetGpoRespH\x00\x42\x06\n\x04type\"J\n\x0fSendSpiDataResp\x12&\n\x08res_code\x18\x01 \x01(\x0e\x32\x14.SendSpiDataRespCode\x12\x0f\n\x07rx_data\x18\x02 \x01(\x0c\"=\n\x11SetAutoCsModeResp\x12(\n\x08res_code\x18\x01 \x01(\x0e\x32\x16.SetAutoCsModeRespCode\"-\n\tSetCsResp\x12 \n\x08res_code\x18\x01 \x01(\x0e\x32\x0e.SetCsRespCode\"7\n\x0eSetTr01PwrResp\x12%\n\x08res_code\x18\x01 \x01(\x0e\x32\x13.SetTr01PwrRespCode\"=\n\nGetGpoResp\x12!\n\x08res_code\x18\x01 \x01(\x0e\x32\x0f.GetGpoRespCode\x12\x0c\n\x04high\x18\x02 \x01(\x08\"-\n\tErrorResp\x12 \n\x08res_code\x18\x01 \x01(\x0e\x32\x0e.ErrorRespCode*\xbf\x01\n\x0ePinSetRespCode\x12!\n\x1dPIN_SET_RESP_CODE_UNSPECIFIED\x10\x00\x12\x18\n\x14PIN_SET_RESP_CODE_OK\x10\x01\x12\x1b\n\x17PIN_SET_RESP_CODE_ERROR\x10\x02\x12*\n&PIN_SET_RESP_CODE_ATTEMPS_OUT_OF_RANGE\x10\x03\x12\'\n#PIN_SET_RESP_CODE_FLASH_WRITE_ERROR\x10\x04*\xa9\x02\n\x11PinVerifyRespCode\x12$\n PIN_VERIFY_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1b\n\x17PIN_VERIFY_RESP_CODE_OK\x10\x01\x12\x1e\n\x1aPIN_VERIFY_RESP_CODE_ERROR\x10\x02\x12\x36\n2PIN_VERIFY_RESP_CODE_DEPLETED_ATTEMPS_OUT_OF_RANGE\x10\x03\x12\"\n\x1ePIN_VERIFY_RESP_CODE_WRONG_PIN\x10\x04\x12)\n%PIN_VERIFY_RESP_CODE_FLASH_READ_ERROR\x10\x05\x12*\n&PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR\x10\x06*u\n\x10RMemReadRespCode\x12$\n R_MEM_READ_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1b\n\x17R_MEM_READ_RESP_CODE_OK\x10\x01\x12\x1e\n\x1aR_MEM_READ_RESP_CODE_ERROR\x10\x02*y\n\x11RMemWriteRespCode\x12%\n!R_MEM_WRITE_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1c\n\x18R_MEM_WRITE_RESP_CODE_OK\x10\x01\x12\x1f\n\x1bR_MEM_WRITE_RESP_CODE_ERROR\x10\x02*y\n\x11RMemEraseRespCode\x12%\n!R_MEM_ERASE_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1c\n\x18R_MEM_ERASE_RESP_CODE_OK\x10\x01\x12\x1f\n\x1bR_MEM_ERASE_RESP_CODE_ERROR\x10\x02*\xc8\x01\n\x13SendSpiDataRespCode\x12\'\n#SEND_SPI_DATA_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1e\n\x1aSEND_SPI_DATA_RESP_CODE_OK\x10\x01\x12!\n\x1dSEND_SPI_DATA_RESP_CODE_ERROR\x10\x02\x12 \n\x1cSEND_SPI_DATA_RESP_CODE_BUSY\x10\x03\x12#\n\x1fSEND_SPI_DATA_RESP_CODE_TIMEOUT\x10\x04*f\n\x15SetAutoCsModeRespCode\x12*\n&SET_AUTO_CS_MODE_RESP_CODE_UNSPECIFIED\x10\x00\x12!\n\x1dSET_AUTO_CS_MODE_RESP_CODE_OK\x10\x01*p\n\rSetCsRespCode\x12 \n\x1cSET_CS_RESP_CODE_UNSPECIFIED\x10\x00\x12\x17\n\x13SET_CS_RESP_CODE_OK\x10\x01\x12$\n SET_CS_RESP_CODE_AUTO_CS_MODE_ON\x10\x02*[\n\x12SetTr01PwrRespCode\x12&\n\"SET_TR01_PWR_RESP_CODE_UNSPECIFIED\x10\x00\x12\x1d\n\x19SET_TR01_PWR_RESP_CODE_OK\x10\x01*M\n\x0eGetGpoRespCode\x12!\n\x1dGET_GPO_RESP_CODE_UNSPECIFIED\x10\x00\x12\x18\n\x14GET_GPO_RESP_CODE_OK\x10\x01*\xaf\x01\n\rErrorRespCode\x12\x1f\n\x1b\x45RROR_RESP_CODE_UNSPECIFIED\x10\x00\x12 \n\x1c\x45RROR_RESP_CODE_BAD_DATA_LEN\x10\x01\x12\x1b\n\x17\x45RROR_RESP_CODE_BAD_CRC\x10\x02\x12\x1d\n\x19\x45RROR_RESP_CODE_PB_DECODE\x10\x03\x12\x1f\n\x1b\x45RROR_RESP_CODE_UNKNOWN_CMD\x10\x04\x62\x06proto3')
 
 _PINSETRESPCODE = DESCRIPTOR.enum_types_by_name['PinSetRespCode']
 PinSetRespCode = enum_type_wrapper.EnumTypeWrapper(_PINSETRESPCODE)
@@ -25,6 +25,8 @@ _RMEMREADRESPCODE = DESCRIPTOR.enum_types_by_name['RMemReadRespCode']
 RMemReadRespCode = enum_type_wrapper.EnumTypeWrapper(_RMEMREADRESPCODE)
 _RMEMWRITERESPCODE = DESCRIPTOR.enum_types_by_name['RMemWriteRespCode']
 RMemWriteRespCode = enum_type_wrapper.EnumTypeWrapper(_RMEMWRITERESPCODE)
+_RMEMERASERESPCODE = DESCRIPTOR.enum_types_by_name['RMemEraseRespCode']
+RMemEraseRespCode = enum_type_wrapper.EnumTypeWrapper(_RMEMERASERESPCODE)
 _SENDSPIDATARESPCODE = DESCRIPTOR.enum_types_by_name['SendSpiDataRespCode']
 SendSpiDataRespCode = enum_type_wrapper.EnumTypeWrapper(_SENDSPIDATARESPCODE)
 _SETAUTOCSMODERESPCODE = DESCRIPTOR.enum_types_by_name['SetAutoCsModeRespCode']
@@ -55,6 +57,9 @@ R_MEM_READ_RESP_CODE_ERROR = 2
 R_MEM_WRITE_RESP_CODE_UNSPECIFIED = 0
 R_MEM_WRITE_RESP_CODE_OK = 1
 R_MEM_WRITE_RESP_CODE_ERROR = 2
+R_MEM_ERASE_RESP_CODE_UNSPECIFIED = 0
+R_MEM_ERASE_RESP_CODE_OK = 1
+R_MEM_ERASE_RESP_CODE_ERROR = 2
 SEND_SPI_DATA_RESP_CODE_UNSPECIFIED = 0
 SEND_SPI_DATA_RESP_CODE_OK = 1
 SEND_SPI_DATA_RESP_CODE_ERROR = 2
@@ -83,11 +88,13 @@ _PINSETCMD = DESCRIPTOR.message_types_by_name['PinSetCmd']
 _PINVERIFYCMD = DESCRIPTOR.message_types_by_name['PinVerifyCmd']
 _RMEMREADCMD = DESCRIPTOR.message_types_by_name['RMemReadCmd']
 _RMEMWRITECMD = DESCRIPTOR.message_types_by_name['RMemWriteCmd']
+_RMEMERASECMD = DESCRIPTOR.message_types_by_name['RMemEraseCmd']
 _APPRESP = DESCRIPTOR.message_types_by_name['AppResp']
 _PINSETRESP = DESCRIPTOR.message_types_by_name['PinSetResp']
 _PINVERIFYRESP = DESCRIPTOR.message_types_by_name['PinVerifyResp']
 _RMEMREADRESP = DESCRIPTOR.message_types_by_name['RMemReadResp']
 _RMEMWRITERESP = DESCRIPTOR.message_types_by_name['RMemWriteResp']
+_RMEMERASERESP = DESCRIPTOR.message_types_by_name['RMemEraseResp']
 _RAWCMD = DESCRIPTOR.message_types_by_name['RawCmd']
 _SENDSPIDATACMD = DESCRIPTOR.message_types_by_name['SendSpiDataCmd']
 _SETAUTOCSMODECMD = DESCRIPTOR.message_types_by_name['SetAutoCsModeCmd']
@@ -150,6 +157,13 @@ RMemWriteCmd = _reflection.GeneratedProtocolMessageType('RMemWriteCmd', (_messag
   })
 _sym_db.RegisterMessage(RMemWriteCmd)
 
+RMemEraseCmd = _reflection.GeneratedProtocolMessageType('RMemEraseCmd', (_message.Message,), {
+  'DESCRIPTOR' : _RMEMERASECMD,
+  '__module__' : 'usb_devkit_messages_pb2'
+  # @@protoc_insertion_point(class_scope:RMemEraseCmd)
+  })
+_sym_db.RegisterMessage(RMemEraseCmd)
+
 AppResp = _reflection.GeneratedProtocolMessageType('AppResp', (_message.Message,), {
   'DESCRIPTOR' : _APPRESP,
   '__module__' : 'usb_devkit_messages_pb2'
@@ -184,6 +198,13 @@ RMemWriteResp = _reflection.GeneratedProtocolMessageType('RMemWriteResp', (_mess
   # @@protoc_insertion_point(class_scope:RMemWriteResp)
   })
 _sym_db.RegisterMessage(RMemWriteResp)
+
+RMemEraseResp = _reflection.GeneratedProtocolMessageType('RMemEraseResp', (_message.Message,), {
+  'DESCRIPTOR' : _RMEMERASERESP,
+  '__module__' : 'usb_devkit_messages_pb2'
+  # @@protoc_insertion_point(class_scope:RMemEraseResp)
+  })
+_sym_db.RegisterMessage(RMemEraseResp)
 
 RawCmd = _reflection.GeneratedProtocolMessageType('RawCmd', (_message.Message,), {
   'DESCRIPTOR' : _RAWCMD,
@@ -279,74 +300,80 @@ _sym_db.RegisterMessage(ErrorResp)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _PINSETRESPCODE._serialized_start=2067
-  _PINSETRESPCODE._serialized_end=2258
-  _PINVERIFYRESPCODE._serialized_start=2261
-  _PINVERIFYRESPCODE._serialized_end=2558
-  _RMEMREADRESPCODE._serialized_start=2560
-  _RMEMREADRESPCODE._serialized_end=2677
-  _RMEMWRITERESPCODE._serialized_start=2679
-  _RMEMWRITERESPCODE._serialized_end=2800
-  _SENDSPIDATARESPCODE._serialized_start=2803
-  _SENDSPIDATARESPCODE._serialized_end=3003
-  _SETAUTOCSMODERESPCODE._serialized_start=3005
-  _SETAUTOCSMODERESPCODE._serialized_end=3107
-  _SETCSRESPCODE._serialized_start=3109
-  _SETCSRESPCODE._serialized_end=3221
-  _SETTR01PWRRESPCODE._serialized_start=3223
-  _SETTR01PWRRESPCODE._serialized_end=3314
-  _GETGPORESPCODE._serialized_start=3316
-  _GETGPORESPCODE._serialized_end=3393
-  _ERRORRESPCODE._serialized_start=3396
-  _ERRORRESPCODE._serialized_end=3571
+  _PINSETRESPCODE._serialized_start=2235
+  _PINSETRESPCODE._serialized_end=2426
+  _PINVERIFYRESPCODE._serialized_start=2429
+  _PINVERIFYRESPCODE._serialized_end=2726
+  _RMEMREADRESPCODE._serialized_start=2728
+  _RMEMREADRESPCODE._serialized_end=2845
+  _RMEMWRITERESPCODE._serialized_start=2847
+  _RMEMWRITERESPCODE._serialized_end=2968
+  _RMEMERASERESPCODE._serialized_start=2970
+  _RMEMERASERESPCODE._serialized_end=3091
+  _SENDSPIDATARESPCODE._serialized_start=3094
+  _SENDSPIDATARESPCODE._serialized_end=3294
+  _SETAUTOCSMODERESPCODE._serialized_start=3296
+  _SETAUTOCSMODERESPCODE._serialized_end=3398
+  _SETCSRESPCODE._serialized_start=3400
+  _SETCSRESPCODE._serialized_end=3512
+  _SETTR01PWRRESPCODE._serialized_start=3514
+  _SETTR01PWRRESPCODE._serialized_end=3605
+  _GETGPORESPCODE._serialized_start=3607
+  _GETGPORESPCODE._serialized_end=3684
+  _ERRORRESPCODE._serialized_start=3687
+  _ERRORRESPCODE._serialized_end=3862
   _USBDEVKITCMD._serialized_start=29
   _USBDEVKITCMD._serialized_end=99
   _USBDEVKITRESP._serialized_start=101
   _USBDEVKITRESP._serialized_end=203
   _APPCMD._serialized_start=206
-  _APPCMD._serialized_end=364
-  _PINSETCMD._serialized_start=366
-  _PINSETCMD._serialized_end=478
-  _PINVERIFYCMD._serialized_start=480
-  _PINVERIFYCMD._serialized_end=557
-  _RMEMREADCMD._serialized_start=559
-  _RMEMREADCMD._serialized_end=592
-  _RMEMWRITECMD._serialized_start=594
-  _RMEMWRITECMD._serialized_end=642
-  _APPRESP._serialized_start=645
-  _APPRESP._serialized_end=868
-  _PINSETRESP._serialized_start=870
-  _PINSETRESP._serialized_end=937
-  _PINVERIFYRESP._serialized_start=939
-  _PINVERIFYRESP._serialized_end=1012
-  _RMEMREADRESP._serialized_start=1014
-  _RMEMREADRESP._serialized_end=1079
-  _RMEMWRITERESP._serialized_start=1081
-  _RMEMWRITERESP._serialized_end=1134
-  _RAWCMD._serialized_start=1137
-  _RAWCMD._serialized_end=1342
-  _SENDSPIDATACMD._serialized_start=1344
-  _SENDSPIDATACMD._serialized_end=1397
-  _SETAUTOCSMODECMD._serialized_start=1399
-  _SETAUTOCSMODECMD._serialized_end=1429
-  _SETCSCMD._serialized_start=1431
-  _SETCSCMD._serialized_end=1455
-  _SETTR01PWRCMD._serialized_start=1457
-  _SETTR01PWRCMD._serialized_end=1484
-  _GETGPOCMD._serialized_start=1486
-  _GETGPOCMD._serialized_end=1497
-  _RAWRESP._serialized_start=1500
-  _RAWRESP._serialized_end=1711
-  _SENDSPIDATARESP._serialized_start=1713
-  _SENDSPIDATARESP._serialized_end=1787
-  _SETAUTOCSMODERESP._serialized_start=1789
-  _SETAUTOCSMODERESP._serialized_end=1850
-  _SETCSRESP._serialized_start=1852
-  _SETCSRESP._serialized_end=1897
-  _SETTR01PWRRESP._serialized_start=1899
-  _SETTR01PWRRESP._serialized_end=1954
-  _GETGPORESP._serialized_start=1956
-  _GETGPORESP._serialized_end=2017
-  _ERRORRESP._serialized_start=2019
-  _ERRORRESP._serialized_end=2064
+  _APPCMD._serialized_end=402
+  _PINSETCMD._serialized_start=404
+  _PINSETCMD._serialized_end=516
+  _PINVERIFYCMD._serialized_start=518
+  _PINVERIFYCMD._serialized_end=595
+  _RMEMREADCMD._serialized_start=597
+  _RMEMREADCMD._serialized_end=630
+  _RMEMWRITECMD._serialized_start=632
+  _RMEMWRITECMD._serialized_end=680
+  _RMEMERASECMD._serialized_start=682
+  _RMEMERASECMD._serialized_end=716
+  _APPRESP._serialized_start=719
+  _APPRESP._serialized_end=981
+  _PINSETRESP._serialized_start=983
+  _PINSETRESP._serialized_end=1050
+  _PINVERIFYRESP._serialized_start=1052
+  _PINVERIFYRESP._serialized_end=1125
+  _RMEMREADRESP._serialized_start=1127
+  _RMEMREADRESP._serialized_end=1192
+  _RMEMWRITERESP._serialized_start=1194
+  _RMEMWRITERESP._serialized_end=1247
+  _RMEMERASERESP._serialized_start=1249
+  _RMEMERASERESP._serialized_end=1302
+  _RAWCMD._serialized_start=1305
+  _RAWCMD._serialized_end=1510
+  _SENDSPIDATACMD._serialized_start=1512
+  _SENDSPIDATACMD._serialized_end=1565
+  _SETAUTOCSMODECMD._serialized_start=1567
+  _SETAUTOCSMODECMD._serialized_end=1597
+  _SETCSCMD._serialized_start=1599
+  _SETCSCMD._serialized_end=1623
+  _SETTR01PWRCMD._serialized_start=1625
+  _SETTR01PWRCMD._serialized_end=1652
+  _GETGPOCMD._serialized_start=1654
+  _GETGPOCMD._serialized_end=1665
+  _RAWRESP._serialized_start=1668
+  _RAWRESP._serialized_end=1879
+  _SENDSPIDATARESP._serialized_start=1881
+  _SENDSPIDATARESP._serialized_end=1955
+  _SETAUTOCSMODERESP._serialized_start=1957
+  _SETAUTOCSMODERESP._serialized_end=2018
+  _SETCSRESP._serialized_start=2020
+  _SETCSRESP._serialized_end=2065
+  _SETTR01PWRRESP._serialized_start=2067
+  _SETTR01PWRRESP._serialized_end=2122
+  _GETGPORESP._serialized_start=2124
+  _GETGPORESP._serialized_end=2185
+  _ERRORRESP._serialized_start=2187
+  _ERRORRESP._serialized_end=2232
 # @@protoc_insertion_point(module_scope)
