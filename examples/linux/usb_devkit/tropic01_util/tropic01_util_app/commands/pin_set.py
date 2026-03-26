@@ -137,7 +137,7 @@ def decode_resp(resp: pb.AppResp) -> int:
 
 PIN_SET_SPEC = ApplicationCommandSpec(
     name="pin-set",
-    help_text="Setup new PIN (utilizing MAC-and-destroy feature)",
+    help_text="Setup new PIN (utilizing MAC-And-Destroy feature)",
     response_type="pin_set",
     add_arguments=add_arguments,
     build_app_cmd_from_args=build_cmd_from_args,

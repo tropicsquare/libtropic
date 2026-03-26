@@ -43,7 +43,7 @@ def decode_resp(resp: pb.AppResp) -> int:
 
 PIN_VERIFY_SPEC = ApplicationCommandSpec(
     name="pin-verify",
-    help_text="Verify PIN (utilizing MAC-and-destroy feature)",
+    help_text="Verify PIN (utilizing MAC-And-Destroy feature)",
     response_type="pin_verify",
     add_arguments=add_arguments,
     build_app_cmd_from_args=build_cmd_from_args,
