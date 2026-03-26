@@ -80,7 +80,7 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
         u[PSA_HASH_LENGTH(PSA_ALG_SHA_256)], ignored[TR01_MAC_AND_DESTROY_DATA_SIZE],
         v[PSA_HASH_LENGTH(PSA_ALG_SHA_256)], w[TR01_MAC_AND_DESTROY_DATA_SIZE],
         k_i[PSA_HASH_LENGTH(PSA_ALG_SHA_256)],
-        kdf_key_zeros[256] = {0},
+        kdf_key_zeros[32] = {0},
         pin_with_add_data[sizeof(cmd->pin) + sizeof(cmd->additional_data.bytes)];
     size_t pin_with_add_data_len;
     macandd_data_t macandd_data = {0};
