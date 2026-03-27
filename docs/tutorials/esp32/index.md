@@ -27,11 +27,11 @@ Unfortunately, ESP32 boards and our Arduino shield are not plug-and-play, so ple
         | IOREF                       | 3V3                  |
         | +3V3                        | 3V3                  |
         | GND                         | GND                  |
-        | GPO                         | GPIO32               |
-        | MOSI                        | GPIO23               |
-        | MISO                        | GPIO19               |
         | SCK                         | GPIO18               |
+        | MISO                        | GPIO19               |
+        | MOSI                        | GPIO23               |
         | CS                          | GPIO5                |
+        | GPO                         | GPIO32               |
         
         </div>
     
@@ -44,11 +44,11 @@ Unfortunately, ESP32 boards and our Arduino shield are not plug-and-play, so ple
         | IOREF                       | 3V3                    |
         | +3V3                        | 3V3                    |
         | GND                         | GND                    |
-        | GPO                         | GPIO1                  |
-        | MOSI                        | GPIO11                 |
-        | MISO                        | GPIO13                 |
         | SCK                         | GPIO12                 |
+        | MISO                        | GPIO13                 |
+        | MOSI                        | GPIO11                 |
         | CS                          | GPIO10                 |
+        | GPO                         | GPIO1                  |
         
         </div>
 
@@ -61,11 +61,11 @@ Unfortunately, ESP32 boards and our Arduino shield are not plug-and-play, so ple
         | IOREF                       | 3V3                        |
         | +3V3                        | 3V3                        |
         | GND                         | GND                        |
-        | GPO                         | GPIO10                     |
-        | MOSI                        | GPIO1                      |
-        | MISO                        | GPIO0                      |
         | SCK                         | GPIO3                      |
+        | MISO                        | GPIO0                      |
+        | MOSI                        | GPIO1                      |
         | CS                          | GPIO8                      |
+        | GPO                         | GPIO10                     |
         
         </div>
 
@@ -78,7 +78,7 @@ See below for instructions based on your OS:
 !!! example "Installation Instructions"
     === ":fontawesome-brands-linux: Linux"
         1. Setup ESP-IDF and its dependencies:
-            - Complete the first 4 steps in the [official ESP-IDF setup guide](https://docs.espressif.com/projects/esp-idf/en/v5.5.3/esp32/get-started/linux-macos-setup.html).
+            - Complete the first 4 steps in the [official ESP-IDF setup guide](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/linux-macos-setup.html).
             - We recommend getting the 5.5.1 version, but any 5.x.x version should work.
         2. Get the Libtropic repository:
             - Using git: `git clone https://github.com/tropicsquare/libtropic.git`

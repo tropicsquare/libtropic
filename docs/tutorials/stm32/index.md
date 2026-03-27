@@ -1,5 +1,5 @@
 # STM32 Tutorials
-These tutorials will help you get started with TROPIC01 on STM32-based platforms using Libtropic. To see the currently supported STM32 platforms, refer to the [STM32 Compatibility](../../compatibility/host_platforms/stm32.md) page.
+These tutorials will help you get started with TROPIC01 on STM32-based platforms using Libtropic. Currently, we officially support [Nucleo F439ZI](https://www.st.com/en/evaluation-tools/nucleo-f439zi.html) and [Nucleo L432KC](https://www.st.com/en/evaluation-tools/nucleo-l432kc.html) development boards.
 
 We will go through our examples in the `examples/stm32/` directory. In this directory, there are multiple subdirectories for each supported Nucleo board. Most of the instructions in this tutorial are common for all of the boards.
 
@@ -20,11 +20,11 @@ We will go through our examples in the `examples/stm32/` directory. In this dire
         
         |  TROPIC01     |   NUCLEO F439ZI  |
         |---------------|------------------|
-        |  GND          |  GND             |
         |  3V3          |  3V3             |
+        |  GND          |  GND             |
+        |  SCK          |  GPIOA_5         |
         |  MISO (SDO)   |  GPIOA_6         |
         |  MOSI (SDI)   |  GPIOA_7         |
-        |  SCK          |  GPIOA_5         |
         |  CS (CSN)     |  GPIOD_14        |
         |  GPO          |  GPIOF_15        |
 
@@ -34,11 +34,11 @@ We will go through our examples in the `examples/stm32/` directory. In this dire
 
         |  TROPIC01     |  NUCLEO L432KC  |
         |---------------|-----------------|
-        |  GND          |  GND            |
         |  3V3          |  3V3            |
-        |  MISO (SDO)   |  A5             |
-        |  MOSI (SDI)   |  A6             |
+        |  GND          |  GND            |
         |  SCK          |  A4             |
+        |  MISO (SDO)   |  A6             |
+        |  MOSI (SDI)   |  A5             |
         |  CS (CSN)     |  A3             |
     
     ??? question "Advanced: How to Use Different Nucleo Pins?"
