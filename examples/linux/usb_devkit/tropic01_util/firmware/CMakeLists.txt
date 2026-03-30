@@ -188,6 +188,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${PATH_TO_STM32CUBEU5}/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_rng_ex.c
     ${PATH_TO_STM32CUBEU5}/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_spi.c
     ${PATH_TO_STM32CUBEU5}/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_spi_ex.c
+    ${PATH_TO_STM32CUBEU5}/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_hash.c
+    ${PATH_TO_STM32CUBEU5}/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_hash_ex.c
     ${PATH_TO_STM32CUBEU5}/STM32U5xx_HAL_Driver/Src/stm32u5xx_ll_usb.c
 
     # Project sources

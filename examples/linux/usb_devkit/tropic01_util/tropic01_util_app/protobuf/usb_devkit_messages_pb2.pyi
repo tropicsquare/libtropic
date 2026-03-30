@@ -28,6 +28,7 @@ class _PinSetRespCodeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_PinSet
     PIN_SET_RESP_CODE_ERROR: _PinSetRespCode.ValueType  # 2
     PIN_SET_RESP_CODE_ATTEMPS_OUT_OF_RANGE: _PinSetRespCode.ValueType  # 3
     PIN_SET_RESP_CODE_FLASH_WRITE_ERROR: _PinSetRespCode.ValueType  # 4
+    PIN_SET_RESP_CODE_KDF_ERROR: _PinSetRespCode.ValueType  # 5
 
 class PinSetRespCode(_PinSetRespCode, metaclass=_PinSetRespCodeEnumTypeWrapper): ...
 
@@ -36,6 +37,7 @@ PIN_SET_RESP_CODE_OK: PinSetRespCode.ValueType  # 1
 PIN_SET_RESP_CODE_ERROR: PinSetRespCode.ValueType  # 2
 PIN_SET_RESP_CODE_ATTEMPS_OUT_OF_RANGE: PinSetRespCode.ValueType  # 3
 PIN_SET_RESP_CODE_FLASH_WRITE_ERROR: PinSetRespCode.ValueType  # 4
+PIN_SET_RESP_CODE_KDF_ERROR: PinSetRespCode.ValueType  # 5
 Global___PinSetRespCode: _TypeAlias = PinSetRespCode  # noqa: Y015
 
 class _PinVerifyRespCode:

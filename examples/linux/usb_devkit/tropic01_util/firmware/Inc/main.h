@@ -55,6 +55,7 @@ extern "C" {
 /* Exported variables ------------------------------------------------------- */
 /* USER CODE BEGIN EV */
 extern RNG_HandleTypeDef hrng;
+extern HASH_HandleTypeDef hhash;
 extern SPI_HandleTypeDef *hspi1;
 extern CRC_HandleTypeDef hcrc;
 

@@ -84,6 +84,7 @@ enum PinSetRespCode {
 	PIN_SET_RESP_CODE_ERROR = 2;
 	PIN_SET_RESP_CODE_ATTEMPS_OUT_OF_RANGE = 3;
 	PIN_SET_RESP_CODE_FLASH_WRITE_ERROR = 4;
+	PIN_SET_RESP_CODE_KDF_ERROR = 5;
 }
 // ------------------------------- PinVerifyResp
 message PinVerifyResp {

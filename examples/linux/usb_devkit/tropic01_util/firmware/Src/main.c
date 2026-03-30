@@ -69,6 +69,8 @@ DCACHE_HandleTypeDef hdcache1;
 
 RNG_HandleTypeDef hrng;
 
+HASH_HandleTypeDef hhash;
+
 SPI_HandleTypeDef *hspi1 = NULL;
 
 PCD_HandleTypeDef hpcd_USB_DRD_FS;

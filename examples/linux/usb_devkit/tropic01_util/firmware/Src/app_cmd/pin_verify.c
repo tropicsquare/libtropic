@@ -27,51 +27,10 @@ static void decrypt(const uint8_t *data, const uint8_t *key, uint8_t *destinatio
     }
 }
 
-/**
- * @brief PSA Crypto HMAC-SHA256 wrapper.
- *
- * @param key       Key data buffer
- * @param key_len   Length of data in key buffer
- * @param data      Data buffer
- * @param data_len  Length of data buffer
- * @param output    Output buffer for HMAC result
- * @return          psa_status_t
- */
-static psa_status_t hmac_sha256(const uint8_t *key, const size_t key_len, const uint8_t *data,
-                                const size_t data_len, uint8_t *output)
-{
-    psa_key_attributes_t attributes = PSA_KEY_ATTRIBUTES_INIT;
-    psa_key_id_t key_id = 0;
-    psa_status_t status;
-    size_t output_len;
-
-    // Set key attributes for HMAC.
-    psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_SIGN_HASH);
-    psa_set_key_algorithm(&attributes, PSA_ALG_HMAC(PSA_ALG_SHA_256));
-    psa_set_key_type(&attributes, PSA_KEY_TYPE_HMAC);
-
-    // Import key.
-    status = psa_import_key(&attributes, key, key_len, &key_id);
-    if (status != PSA_SUCCESS) {
-        goto cleanup;
-    }
-
-    // Compute HMAC.
-    status = psa_mac_compute(key_id, PSA_ALG_HMAC(PSA_ALG_SHA_256), data, data_len, output,
-                             PSA_HASH_LENGTH(PSA_ALG_SHA_256), &output_len);
-
-cleanup:
-    if (key_id != 0) {
-        psa_destroy_key(key_id);
-    }
-    psa_reset_key_attributes(&attributes);
-    return status;
-}
-
 void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
 {
     // Assume error by default.
-    resp->type.pin_set.res_code = PIN_SET_RESP_CODE_ERROR;
+    resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_ERROR;
 
     // Variables used during the pin verification process.
     // Using notation from this document:
@@ -85,8 +44,7 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
     size_t pin_with_add_data_len;
     macandd_data_t macandd_data = {0};
     lt_ret_t lt_ret;
-    psa_status_t psa_status;
-    // HAL_StatusTypeDef hal_status;
+    HAL_StatusTypeDef hal_status;
 
     // 1. Load MAC-and-destroy non-confidential data from non-volatile memory.
     // TODO: read from flash
@@ -94,7 +52,7 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
 
     // 2. Check depleted attempts.
     if (macandd_data.depleted_attempts >= TR01_MACANDD_ROUNDS_MAX) {
-        resp->type.pin_set.res_code = PIN_VERIFY_RESP_CODE_DEPLETED_ATTEMPS_OUT_OF_RANGE;
+        resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_DEPLETED_ATTEMPS_OUT_OF_RANGE;
         return;
     }
 
@@ -109,9 +67,10 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
                cmd->additional_data.size);
         pin_with_add_data_len += cmd->additional_data.size;
     }
-    psa_status = hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin_with_add_data,
+    hal_status = hmac_sha256(kdf_key_zeros, sizeof(kdf_key_zeros), pin_with_add_data,
                              pin_with_add_data_len, v);
-    if (psa_status != PSA_SUCCESS) {
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_SET_RESP_CODE_KDF_ERROR;
         goto cleanup;
     }
 
@@ -127,14 +86,15 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
 
     // hal_status = macandd_data_store(&macandd_data);
     // if (hal_status != HAL_OK) {
-    //     resp->type.pin_set.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
+    //     resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
     //     goto cleanup;
     // }
     memcpy(&g_macandd_data, &macandd_data, sizeof(macandd_data_t));
 
     // 6. Compute k_i = KDF(w, PIN || A).
-    psa_status = hmac_sha256(w, sizeof(w), pin_with_add_data, pin_with_add_data_len, k_i);
-    if (psa_status != PSA_SUCCESS) {
+    hal_status = hmac_sha256(w, sizeof(w), pin_with_add_data, pin_with_add_data_len, k_i);
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_SET_RESP_CODE_KDF_ERROR;
         goto cleanup;
     }
 
@@ -142,20 +102,22 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
     decrypt(macandd_data.ciphertexts[macandd_data.depleted_attempts - 1], k_i, s);
 
     // 9. Compute t = KDF(s, "0x00").
-    psa_status = hmac_sha256(s, sizeof(s), (uint8_t *)"0", 1, t);
-    if (psa_status != PSA_SUCCESS) {
+    hal_status = hmac_sha256(s, sizeof(s), (uint8_t *)"0", 1, t);
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_SET_RESP_CODE_KDF_ERROR;
         goto cleanup;
     }
 
     // 10. Compare t to the stored tag.
     if (memcmp(t, macandd_data.auth_tag, sizeof(t)) != 0) {
-        resp->type.pin_set.res_code = PIN_VERIFY_RESP_CODE_WRONG_PIN;
+        resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_WRONG_PIN;
         goto cleanup;
     }
 
     // 11. Compute u = KDF(s, "0x01").
-    psa_status = hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
-    if (psa_status != PSA_SUCCESS) {
+    hal_status = hmac_sha256(s, sizeof(s), (uint8_t *)"1", 1, u);
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_SET_RESP_CODE_KDF_ERROR;
         goto cleanup;
     }
 
@@ -171,18 +133,19 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
     macandd_data.depleted_attempts = 0;
     // hal_status = macandd_data_store(&macandd_data);
     // if (hal_status != HAL_OK) {
-    //     resp->type.pin_set.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
+    //     resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
     //     goto cleanup;
     // }
     memcpy(&g_macandd_data, &macandd_data, sizeof(macandd_data_t));
 
     // 14. Compute k = KDF(s, "0x02").
-    psa_status = hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, resp->type.pin_verify.crypto_key);
-    if (psa_status != PSA_SUCCESS) {
+    hal_status = hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, resp->type.pin_verify.crypto_key);
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_SET_RESP_CODE_KDF_ERROR;
         goto cleanup;
     }
 
-    resp->type.pin_set.res_code = PIN_SET_RESP_CODE_OK;
+    resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_OK;
     goto cleanup;
 
 libtropic_error:

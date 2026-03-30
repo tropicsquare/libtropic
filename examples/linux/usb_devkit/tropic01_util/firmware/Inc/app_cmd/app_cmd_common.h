@@ -29,6 +29,19 @@ extern macandd_data_t g_macandd_data;
  */
 void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
 
+/**
+ * @brief STM32 HASH peripheral HMAC-SHA256 wrapper.
+ *
+ * @param key       Key data buffer
+ * @param key_len   Length of data in key buffer
+ * @param data      Data buffer
+ * @param data_len  Length of data buffer
+ * @param output    Output buffer for HMAC result
+ * @return          HAL_StatusTypeDef
+ */
+HAL_StatusTypeDef hmac_sha256(const uint8_t *key, const size_t key_len, const uint8_t *data,
+                              const size_t data_len, uint8_t *output);
+
 HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len);
 
 #endif  // APP_CMD_COMMON_H

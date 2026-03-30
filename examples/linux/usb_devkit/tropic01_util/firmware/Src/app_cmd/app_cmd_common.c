@@ -10,6 +10,24 @@
 #include "main.h"
 #include "usb_devkit_messages.pb.h"
 
+HAL_StatusTypeDef hmac_sha256(const uint8_t *key, const size_t key_len, const uint8_t *data,
+                              const size_t data_len, uint8_t *output)
+{
+    if (!key || !data || !output) {
+        return HAL_ERROR;
+    }
+
+    hhash.Init.DataType = HASH_DATATYPE_8B;
+    hhash.Init.KeySize = (uint32_t)key_len;
+    hhash.Init.pKey = (uint8_t *)key;
+
+    if (HAL_HASH_Init(&hhash) != HAL_OK) {
+        return HAL_ERROR;
+    }
+
+    return HAL_HMACEx_SHA256_Start(&hhash, data, (uint32_t)data_len, output, HAL_MAX_DELAY);
+}
+
 HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len)
 {
     uint32_t page_error = 0U;
