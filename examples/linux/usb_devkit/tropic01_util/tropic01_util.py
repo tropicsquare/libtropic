@@ -13,7 +13,11 @@ from tropic01_util_app.protobuf import usb_devkit_messages_pb2 as pb
 
 def main() -> int:
 	"""CLI entrypoint: parse args, dispatch command, transport frame, decode response."""
-	parser = argparse.ArgumentParser(description="TROPIC01 USB DevKit App-command host utility")
+	parser = argparse.ArgumentParser(
+		description="TROPIC01 USB DevKit App-command host utility",
+		formatter_class=argparse.ArgumentDefaultsHelpFormatter
+	)
+
 	parser.add_argument("--port", default="/dev/ttyACM0", help="TROPIC01 USB Devkit serial port")
 	parser.add_argument("--baudrate", type=int, default=115200, help="Serial baudrate")
 	parser.add_argument(
