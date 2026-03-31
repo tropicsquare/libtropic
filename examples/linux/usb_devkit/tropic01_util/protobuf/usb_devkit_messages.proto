@@ -31,6 +31,7 @@ message AppCmd {
 		RMemReadCmd r_mem_read = 3;
 		RMemWriteCmd r_mem_write = 4;
 		RMemEraseCmd r_mem_erase = 5;
+		GetRandBytesCmd get_random_bytes = 6;
 	}
 }
 // ------------------------------- PinSetCmd
@@ -58,6 +59,10 @@ message RMemWriteCmd {
 message RMemEraseCmd {
 	uint32 udata_slot = 1;
 }
+// ------------------------------- GetRandBytesCmd
+message GetRandBytesCmd {
+	uint32 count = 1;
+}
 // ===========================================================================
 
 
@@ -71,6 +76,7 @@ message AppResp {
 		RMemReadResp r_mem_read = 4;
 		RMemWriteResp r_mem_write = 5;
 		RMemEraseResp r_mem_erase = 6;
+		GetRandBytesResp get_random_bytes = 7;
 	}
 }
 // ------------------------------- PinSetResp
@@ -129,6 +135,16 @@ enum RMemEraseRespCode {
 	R_MEM_ERASE_RESP_CODE_UNSPECIFIED = 0;
 	R_MEM_ERASE_RESP_CODE_OK = 1;
 	R_MEM_ERASE_RESP_CODE_ERROR = 2;
+}
+// ------------------------------- GetRandBytesResp
+message GetRandBytesResp {
+	GetRandBytesRespCode res_code = 1;
+	bytes random_bytes = 2;
+}
+enum GetRandBytesRespCode {
+	GET_RAND_BYTES_RESP_CODE_UNSPECIFIED = 0;
+	GET_RAND_BYTES_RESP_CODE_OK = 1;
+	GET_RAND_BYTES_RESP_CODE_ERROR = 2;
 }
 // ===========================================================================
 

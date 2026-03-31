@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include "app_cmd/get_rand_bytes.h"
 #include "app_cmd/pin_set.h"
 #include "app_cmd/pin_verify.h"
 #include "app_cmd/r_mem_erase.h"
@@ -108,6 +109,11 @@ void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp)
         case AppCmd_r_mem_erase_tag:
             resp->type.app.which_type = AppResp_r_mem_erase_tag;
             r_mem_erase(&cmd->type.app.type.r_mem_erase, &resp->type.app);
+            break;
+
+        case AppCmd_get_random_bytes_tag:
+            resp->type.app.which_type = AppResp_get_random_bytes_tag;
+            get_rand_bytes(&cmd->type.app.type.get_random_bytes, &resp->type.app);
             break;
 
         default:

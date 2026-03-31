@@ -120,6 +120,23 @@ R_MEM_ERASE_RESP_CODE_OK: RMemEraseRespCode.ValueType  # 1
 R_MEM_ERASE_RESP_CODE_ERROR: RMemEraseRespCode.ValueType  # 2
 Global___RMemEraseRespCode: _TypeAlias = RMemEraseRespCode  # noqa: Y015
 
+class _GetRandBytesRespCode:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _GetRandBytesRespCodeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_GetRandBytesRespCode.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    GET_RAND_BYTES_RESP_CODE_UNSPECIFIED: _GetRandBytesRespCode.ValueType  # 0
+    GET_RAND_BYTES_RESP_CODE_OK: _GetRandBytesRespCode.ValueType  # 1
+    GET_RAND_BYTES_RESP_CODE_ERROR: _GetRandBytesRespCode.ValueType  # 2
+
+class GetRandBytesRespCode(_GetRandBytesRespCode, metaclass=_GetRandBytesRespCodeEnumTypeWrapper): ...
+
+GET_RAND_BYTES_RESP_CODE_UNSPECIFIED: GetRandBytesRespCode.ValueType  # 0
+GET_RAND_BYTES_RESP_CODE_OK: GetRandBytesRespCode.ValueType  # 1
+GET_RAND_BYTES_RESP_CODE_ERROR: GetRandBytesRespCode.ValueType  # 2
+Global___GetRandBytesRespCode: _TypeAlias = GetRandBytesRespCode  # noqa: Y015
+
 class _SendSpiDataRespCode:
     ValueType = _typing.NewType("ValueType", _builtins.int)
     V: _TypeAlias = ValueType  # noqa: Y015
@@ -295,6 +312,7 @@ class AppCmd(_message.Message):
     R_MEM_READ_FIELD_NUMBER: _builtins.int
     R_MEM_WRITE_FIELD_NUMBER: _builtins.int
     R_MEM_ERASE_FIELD_NUMBER: _builtins.int
+    GET_RANDOM_BYTES_FIELD_NUMBER: _builtins.int
     @_builtins.property
     def pin_set(self) -> Global___PinSetCmd: ...
     @_builtins.property
@@ -305,6 +323,8 @@ class AppCmd(_message.Message):
     def r_mem_write(self) -> Global___RMemWriteCmd: ...
     @_builtins.property
     def r_mem_erase(self) -> Global___RMemEraseCmd: ...
+    @_builtins.property
+    def get_random_bytes(self) -> Global___GetRandBytesCmd: ...
     def __init__(
         self,
         *,
@@ -313,12 +333,13 @@ class AppCmd(_message.Message):
         r_mem_read: Global___RMemReadCmd | None = ...,
         r_mem_write: Global___RMemWriteCmd | None = ...,
         r_mem_erase: Global___RMemEraseCmd | None = ...,
+        get_random_bytes: Global___GetRandBytesCmd | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["get_random_bytes", b"get_random_bytes", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["get_random_bytes", b"get_random_bytes", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_type: _TypeAlias = _typing.Literal["pin_set", "pin_verify", "r_mem_read", "r_mem_write", "r_mem_erase"]  # noqa: Y015
+    _WhichOneofReturnType_type: _TypeAlias = _typing.Literal["pin_set", "pin_verify", "r_mem_read", "r_mem_write", "r_mem_erase", "get_random_bytes"]  # noqa: Y015
     _WhichOneofArgType_type: _TypeAlias = _typing.Literal["type", b"type"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_type) -> _WhichOneofReturnType_type | None: ...
 
@@ -440,6 +461,24 @@ class RMemEraseCmd(_message.Message):
 Global___RMemEraseCmd: _TypeAlias = RMemEraseCmd  # noqa: Y015
 
 @_typing.final
+class GetRandBytesCmd(_message.Message):
+    """------------------------------- GetRandBytesCmd"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    COUNT_FIELD_NUMBER: _builtins.int
+    count: _builtins.int
+    def __init__(
+        self,
+        *,
+        count: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["count", b"count"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___GetRandBytesCmd: _TypeAlias = GetRandBytesCmd  # noqa: Y015
+
+@_typing.final
 class AppResp(_message.Message):
     """================================= AppResp ================================="""
 
@@ -451,6 +490,7 @@ class AppResp(_message.Message):
     R_MEM_READ_FIELD_NUMBER: _builtins.int
     R_MEM_WRITE_FIELD_NUMBER: _builtins.int
     R_MEM_ERASE_FIELD_NUMBER: _builtins.int
+    GET_RANDOM_BYTES_FIELD_NUMBER: _builtins.int
     libtropic_res_code: _builtins.int
     @_builtins.property
     def pin_set(self) -> Global___PinSetResp: ...
@@ -462,6 +502,8 @@ class AppResp(_message.Message):
     def r_mem_write(self) -> Global___RMemWriteResp: ...
     @_builtins.property
     def r_mem_erase(self) -> Global___RMemEraseResp: ...
+    @_builtins.property
+    def get_random_bytes(self) -> Global___GetRandBytesResp: ...
     def __init__(
         self,
         *,
@@ -471,14 +513,15 @@ class AppResp(_message.Message):
         r_mem_read: Global___RMemReadResp | None = ...,
         r_mem_write: Global___RMemWriteResp | None = ...,
         r_mem_erase: Global___RMemEraseResp | None = ...,
+        get_random_bytes: Global___GetRandBytesResp | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code", "libtropic_res_code", b"libtropic_res_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code", "get_random_bytes", b"get_random_bytes", "libtropic_res_code", b"libtropic_res_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code", "libtropic_res_code", b"libtropic_res_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code", "get_random_bytes", b"get_random_bytes", "libtropic_res_code", b"libtropic_res_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     _WhichOneofReturnType__libtropic_res_code: _TypeAlias = _typing.Literal["libtropic_res_code"]  # noqa: Y015
     _WhichOneofArgType__libtropic_res_code: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code"]  # noqa: Y015
-    _WhichOneofReturnType_type: _TypeAlias = _typing.Literal["pin_set", "pin_verify", "r_mem_read", "r_mem_write", "r_mem_erase"]  # noqa: Y015
+    _WhichOneofReturnType_type: _TypeAlias = _typing.Literal["pin_set", "pin_verify", "r_mem_read", "r_mem_write", "r_mem_erase", "get_random_bytes"]  # noqa: Y015
     _WhichOneofArgType_type: _TypeAlias = _typing.Literal["type", b"type"]  # noqa: Y015
     @_typing.overload
     def WhichOneof(self, oneof_group: _WhichOneofArgType__libtropic_res_code) -> _WhichOneofReturnType__libtropic_res_code | None: ...
@@ -585,6 +628,27 @@ class RMemEraseResp(_message.Message):
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___RMemEraseResp: _TypeAlias = RMemEraseResp  # noqa: Y015
+
+@_typing.final
+class GetRandBytesResp(_message.Message):
+    """------------------------------- GetRandBytesResp"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    RES_CODE_FIELD_NUMBER: _builtins.int
+    RANDOM_BYTES_FIELD_NUMBER: _builtins.int
+    res_code: Global___GetRandBytesRespCode.ValueType
+    random_bytes: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        res_code: Global___GetRandBytesRespCode.ValueType = ...,
+        random_bytes: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["random_bytes", b"random_bytes", "res_code", b"res_code"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___GetRandBytesResp: _TypeAlias = GetRandBytesResp  # noqa: Y015
 
 @_typing.final
 class RawCmd(_message.Message):
