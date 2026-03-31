@@ -1,46 +1,70 @@
 from __future__ import annotations
-"""Shared command abstraction and generic protobuf response handling."""
+"""Common CLI-command interface and app-command sender utilities."""
 
 import argparse
 from dataclasses import dataclass
+import serial
 from typing import Callable
+
+from .frame_protocol import build_frame, read_response_frame
 from .protobuf import usb_devkit_messages_pb2 as pb
 
 
 @dataclass(frozen=True)
-class ApplicationCommandSpec:
-    """Per-command hooks used by the generic CLI flow."""
-    name: str # Command name used in CLI by the user.
-    help_text: str # Help text do display in CLI.
-    response_type: str # Identifier of the specific oneof field in the protobuf message.
-    add_arguments: Callable[[argparse.ArgumentParser], None] # Function to add command arguments.
-    build_app_cmd_from_args: Callable[[argparse.Namespace], pb.AppCmd] # Function to build the command from CLI args.
-    decode_app_resp: Callable[[pb.AppResp], int] # Function to decode the response.
+class CliCommandSpec:
+    """Common command contract used by all CLI command implementations."""
+
+    name: str
+    help_text: str
+    description: str
+    add_arguments: Callable[[argparse.ArgumentParser], None]
+    execute: Callable[[argparse.Namespace, "AppCommandSender"], int]
 
 
-def process_and_print_resp(payload: bytes, app_cmd_spec: ApplicationCommandSpec) -> int:
-    """Decode UsbDevkitResp envelope, then delegate command-specific decoding."""
+def decode_usb_devkit_app_resp(payload: bytes, expected_resp_type: str) -> pb.AppResp:
+    """Decode UsbDevkitResp payload, validate the response type and return the enclosed AppResp."""
     resp = pb.UsbDevkitResp()
     resp.ParseFromString(payload)
 
     top = resp.WhichOneof("type")
     if top == "error":
         err_name = pb.ErrorRespCode.Name(resp.error.res_code)
-        print(f"Device error response: {err_name}")
-        return 1
+        raise ValueError(f"Device error response: {err_name}")
 
     if top != "app":
-        print(f"Unexpected top-level response type: {top}")
-        return 1
+        raise ValueError(f"Unexpected top-level response type: {top}")
+    
+    actual_response_type = resp.app.WhichOneof("type")
+    if actual_response_type != expected_resp_type:
+        raise ValueError(f"Unexpected app response type: {actual_response_type}")
 
-    app_type = resp.app.WhichOneof("type")
-    if app_type != app_cmd_spec.response_type:
-        print(f"Unexpected app response type: {app_type}")
-        return 1
+    return resp.app
 
-    status = app_cmd_spec.decode_app_resp(resp.app)
 
-    if resp.app.HasField("libtropic_error_code"):
-        print(f"libtropic_error_code: {resp.app.libtropic_error_code}")
+def print_libtropic_res_code(app_resp: pb.AppResp, command_name: str) -> None:
+    """Print optional libtropic error code when present in AppResp."""
+    if app_resp.HasField("libtropic_res_code"):
+        print(f"{command_name} libtropic_res_code: {app_resp.libtropic_res_code}")
 
-    return status
+
+class AppCommandSender:
+    """Sends one or many AppCmd requests within one CLI command."""
+
+    def __init__(self, ser: serial.Serial):
+        self._ser = ser
+
+    def _send_and_receive_on_serial(self, payload: bytes) -> bytes:
+        """Send one framed request using the configured open serial instance."""
+        frame = build_frame(payload)
+        self._ser.reset_input_buffer()
+        self._ser.reset_output_buffer()
+        self._ser.write(frame)
+        self._ser.flush()
+        return read_response_frame(self._ser)
+
+    def send(self, app_cmd: pb.AppCmd, expected_resp_type: str) -> pb.AppResp:
+        """Send one AppCmd and verify response oneof type."""
+        payload = pb.UsbDevkitCmd(app=app_cmd).SerializeToString()
+        response_payload = self._send_and_receive_on_serial(payload)
+        app_resp = decode_usb_devkit_app_resp(response_payload, expected_resp_type)
+        return app_resp

@@ -3,18 +3,18 @@ from __future__ import annotations
 
 import argparse
 
-from ..command_core import ApplicationCommandSpec
+from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
 from ..utils import parse_hex_bytes
 from ..protobuf import usb_devkit_messages_pb2 as pb
 
 
 def add_arguments(parser: argparse.ArgumentParser) -> None:
     """Register pin-verify specific CLI flags."""
-    parser.add_argument("--pin", required=True, help="PIN string")
+    parser.add_argument("--pin", required=True, help="PIN string.")
     parser.add_argument(
         "--additional-data-hex",
         default=None,
-        help="Optional additional data as hex, e.g. deadbeef",
+        help="Optional additional data as hex, e.g. deadbeef.",
     )
 
 
@@ -41,11 +41,19 @@ def decode_resp(resp: pb.AppResp) -> int:
     return 0
 
 
-PIN_VERIFY_SPEC = ApplicationCommandSpec(
+def execute(args: argparse.Namespace, app_cmd_sender: AppCommandSender) -> int:
+    """Execute pin-verify command and validate the pin_verify response type."""
+    cmd = build_cmd_from_args(args)
+    app_resp = app_cmd_sender.send(cmd, expected_resp_type="pin_verify")
+    status = decode_resp(app_resp)
+    print_libtropic_res_code(app_resp, PIN_VERIFY_SPEC.name)
+    return status
+
+
+PIN_VERIFY_SPEC = CliCommandSpec(
     name="pin-verify",
     help_text="Verify PIN (utilizing MAC-And-Destroy feature)",
-    response_type="pin_verify",
+    description="Verifies the PIN using the TROPIC01 MAC-And-Destroy feature. Upon success, returns the cryptographic key (guarded by the PIN).",
     add_arguments=add_arguments,
-    build_app_cmd_from_args=build_cmd_from_args,
-    decode_app_resp=decode_resp,
+    execute=execute,
 )

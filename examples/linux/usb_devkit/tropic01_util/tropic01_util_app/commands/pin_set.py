@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ..command_core import ApplicationCommandSpec
+from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
 from ..utils import parse_hex_bytes
 from ..protobuf import usb_devkit_messages_pb2 as pb
 
@@ -57,35 +57,35 @@ def derive_secret_from_bip39_words_file(file_path: str, passphrase: str) -> byte
 
 def add_arguments(parser: argparse.ArgumentParser) -> None:
     """Register pin-set specific CLI flags."""
-    parser.add_argument("--pin", required=True, help="New PIN string")
+    parser.add_argument("--pin", required=True, help="New PIN string.")
     parser.add_argument(
-        "--attempts", required=True, type=int, help="Allowed attempts before destroy"
+        "--attempts", required=True, type=int, help="Allowed attempts before destroy."
     )
     parser.add_argument(
         "--additional-data-hex",
         default=None,
-        help="Optional additional data as hex, e.g. deadbeef",
+        help="Optional additional data as hex, e.g. deadbeef.",
     )
     secret_group = parser.add_mutually_exclusive_group(required=True)
     secret_group.add_argument(
         "--secret-hex",
         default=None,
-        help="32-byte secret as hex (64 hex chars) used as the MAC-and-destroy secret",
+        help="32-byte secret as hex (64 hex chars) used as the MAC-And-Destroy secret.",
     )
     secret_group.add_argument(
         "--secret-bip39-words",
         default=None,
-        help="BIP39 words (12/15/18/21/24) used to derive the MAC-and-destroy secret",
+        help="BIP39 words (12/15/18/21/24) used to derive the MAC-And-Destroy secret.",
     )
     secret_group.add_argument(
         "--secret-bip39-file",
         default=None,
-        help="Path to text file containing BIP39 words used to derive the MAC-and-destroy secret",
+        help="Path to text file containing BIP39 words used to derive the MAC-And-Destroy secret.",
     )
     parser.add_argument(
         "--secret-bip39-passphrase",
         default="",
-        help="Optional BIP39 passphrase used to derive the MAC-and-destroy secret with --secret-bip39-words/--secret-bip39-file; ignored with --secret-hex",
+        help="Optional BIP39 passphrase used to derive the MAC-And-Destroy secret with --secret-bip39-words/--secret-bip39-file; ignored with --secret-hex.",
     )
 
 
@@ -135,11 +135,19 @@ def decode_resp(resp: pb.AppResp) -> int:
     return 0
 
 
-PIN_SET_SPEC = ApplicationCommandSpec(
+def execute(args: argparse.Namespace, app_cmd_sender: AppCommandSender) -> int:
+    """Execute pin-set command and validate the pin_set response type."""
+    cmd = build_cmd_from_args(args)
+    app_resp = app_cmd_sender.send(cmd, expected_resp_type="pin_set")
+    status = decode_resp(app_resp)
+    print_libtropic_res_code(app_resp, PIN_SET_SPEC.name)
+    return status
+
+
+PIN_SET_SPEC = CliCommandSpec(
     name="pin-set",
     help_text="Setup new PIN (utilizing MAC-And-Destroy feature)",
-    response_type="pin_set",
+    description="Sets up a new PIN using the TROPIC01 MAC-And-Destroy feature. Upon success, returns a cryptographic key (guarded by the PIN).",
     add_arguments=add_arguments,
-    build_app_cmd_from_args=build_cmd_from_args,
-    decode_app_resp=decode_resp,
+    execute=execute,
 )

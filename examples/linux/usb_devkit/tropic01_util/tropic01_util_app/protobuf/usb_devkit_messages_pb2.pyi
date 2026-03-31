@@ -74,12 +74,14 @@ class _RMemReadRespCodeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_RMem
     R_MEM_READ_RESP_CODE_UNSPECIFIED: _RMemReadRespCode.ValueType  # 0
     R_MEM_READ_RESP_CODE_OK: _RMemReadRespCode.ValueType  # 1
     R_MEM_READ_RESP_CODE_ERROR: _RMemReadRespCode.ValueType  # 2
+    R_MEM_READ_RESP_CODE_SLOT_EMPTY: _RMemReadRespCode.ValueType  # 3
 
 class RMemReadRespCode(_RMemReadRespCode, metaclass=_RMemReadRespCodeEnumTypeWrapper): ...
 
 R_MEM_READ_RESP_CODE_UNSPECIFIED: RMemReadRespCode.ValueType  # 0
 R_MEM_READ_RESP_CODE_OK: RMemReadRespCode.ValueType  # 1
 R_MEM_READ_RESP_CODE_ERROR: RMemReadRespCode.ValueType  # 2
+R_MEM_READ_RESP_CODE_SLOT_EMPTY: RMemReadRespCode.ValueType  # 3
 Global___RMemReadRespCode: _TypeAlias = RMemReadRespCode  # noqa: Y015
 
 class _RMemWriteRespCode:
@@ -91,12 +93,14 @@ class _RMemWriteRespCodeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_RMe
     R_MEM_WRITE_RESP_CODE_UNSPECIFIED: _RMemWriteRespCode.ValueType  # 0
     R_MEM_WRITE_RESP_CODE_OK: _RMemWriteRespCode.ValueType  # 1
     R_MEM_WRITE_RESP_CODE_ERROR: _RMemWriteRespCode.ValueType  # 2
+    R_MEM_WRITE_RESP_CODE_SLOT_NOT_EMPTY: _RMemWriteRespCode.ValueType  # 3
 
 class RMemWriteRespCode(_RMemWriteRespCode, metaclass=_RMemWriteRespCodeEnumTypeWrapper): ...
 
 R_MEM_WRITE_RESP_CODE_UNSPECIFIED: RMemWriteRespCode.ValueType  # 0
 R_MEM_WRITE_RESP_CODE_OK: RMemWriteRespCode.ValueType  # 1
 R_MEM_WRITE_RESP_CODE_ERROR: RMemWriteRespCode.ValueType  # 2
+R_MEM_WRITE_RESP_CODE_SLOT_NOT_EMPTY: RMemWriteRespCode.ValueType  # 3
 Global___RMemWriteRespCode: _TypeAlias = RMemWriteRespCode  # noqa: Y015
 
 class _RMemEraseRespCode:
@@ -441,13 +445,13 @@ class AppResp(_message.Message):
 
     DESCRIPTOR: _descriptor.Descriptor
 
-    LIBTROPIC_ERROR_CODE_FIELD_NUMBER: _builtins.int
+    LIBTROPIC_RES_CODE_FIELD_NUMBER: _builtins.int
     PIN_SET_FIELD_NUMBER: _builtins.int
     PIN_VERIFY_FIELD_NUMBER: _builtins.int
     R_MEM_READ_FIELD_NUMBER: _builtins.int
     R_MEM_WRITE_FIELD_NUMBER: _builtins.int
     R_MEM_ERASE_FIELD_NUMBER: _builtins.int
-    libtropic_error_code: _builtins.int
+    libtropic_res_code: _builtins.int
     @_builtins.property
     def pin_set(self) -> Global___PinSetResp: ...
     @_builtins.property
@@ -461,23 +465,23 @@ class AppResp(_message.Message):
     def __init__(
         self,
         *,
-        libtropic_error_code: _builtins.int | None = ...,
+        libtropic_res_code: _builtins.int | None = ...,
         pin_set: Global___PinSetResp | None = ...,
         pin_verify: Global___PinVerifyResp | None = ...,
         r_mem_read: Global___RMemReadResp | None = ...,
         r_mem_write: Global___RMemWriteResp | None = ...,
         r_mem_erase: Global___RMemEraseResp | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["_libtropic_error_code", b"_libtropic_error_code", "libtropic_error_code", b"libtropic_error_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code", "libtropic_res_code", b"libtropic_res_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["_libtropic_error_code", b"_libtropic_error_code", "libtropic_error_code", b"libtropic_error_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code", "libtropic_res_code", b"libtropic_res_code", "pin_set", b"pin_set", "pin_verify", b"pin_verify", "r_mem_erase", b"r_mem_erase", "r_mem_read", b"r_mem_read", "r_mem_write", b"r_mem_write", "type", b"type"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType__libtropic_error_code: _TypeAlias = _typing.Literal["libtropic_error_code"]  # noqa: Y015
-    _WhichOneofArgType__libtropic_error_code: _TypeAlias = _typing.Literal["_libtropic_error_code", b"_libtropic_error_code"]  # noqa: Y015
+    _WhichOneofReturnType__libtropic_res_code: _TypeAlias = _typing.Literal["libtropic_res_code"]  # noqa: Y015
+    _WhichOneofArgType__libtropic_res_code: _TypeAlias = _typing.Literal["_libtropic_res_code", b"_libtropic_res_code"]  # noqa: Y015
     _WhichOneofReturnType_type: _TypeAlias = _typing.Literal["pin_set", "pin_verify", "r_mem_read", "r_mem_write", "r_mem_erase"]  # noqa: Y015
     _WhichOneofArgType_type: _TypeAlias = _typing.Literal["type", b"type"]  # noqa: Y015
     @_typing.overload
-    def WhichOneof(self, oneof_group: _WhichOneofArgType__libtropic_error_code) -> _WhichOneofReturnType__libtropic_error_code | None: ...
+    def WhichOneof(self, oneof_group: _WhichOneofArgType__libtropic_res_code) -> _WhichOneofReturnType__libtropic_res_code | None: ...
     @_typing.overload
     def WhichOneof(self, oneof_group: _WhichOneofArgType_type) -> _WhichOneofReturnType_type | None: ...
 

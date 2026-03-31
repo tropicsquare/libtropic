@@ -74,14 +74,3 @@ def read_response_frame(ser: serial.Serial) -> bytes:
         )
 
     return payload
-
-
-def send_and_receive(port: str, baudrate: int, timeout: float, payload: bytes) -> bytes:
-    """Send one framed request and return the validated response payload."""
-    frame = build_frame(payload)
-    with serial.Serial(port=port, baudrate=baudrate, timeout=timeout) as ser:
-        ser.reset_input_buffer()
-        ser.reset_output_buffer()
-        ser.write(frame)
-        ser.flush()
-        return read_response_frame(ser)
