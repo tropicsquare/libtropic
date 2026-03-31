@@ -134,8 +134,8 @@ void pin_set(const PinSetCmd *cmd, AppResp *resp)
     goto cleanup;
 
 libtropic_error:
-    resp->has_libtropic_error_code = true;
-    resp->libtropic_error_code = lt_ret;
+    resp->has_libtropic_res_code = true;
+    resp->libtropic_res_code = lt_ret;
     // 8. Return k and purge all other computed values from RAM.
     // We should also clear the command contents, but that is not done here.
 cleanup:

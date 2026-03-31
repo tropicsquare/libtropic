@@ -64,7 +64,7 @@ message RMemEraseCmd {
 
 // ================================= AppResp =================================
 message AppResp {
-	optional uint32 libtropic_error_code = 1;
+	optional uint32 libtropic_res_code = 1;
 	oneof type {
 		PinSetResp pin_set = 2;
 		PinVerifyResp pin_verify = 3;
@@ -109,6 +109,7 @@ enum RMemReadRespCode {
 	R_MEM_READ_RESP_CODE_UNSPECIFIED = 0;
 	R_MEM_READ_RESP_CODE_OK = 1;
 	R_MEM_READ_RESP_CODE_ERROR = 2;
+	R_MEM_READ_RESP_CODE_SLOT_EMPTY = 3;
 }
 // ------------------------------- RMemWriteResp
 message RMemWriteResp {
@@ -118,6 +119,7 @@ enum RMemWriteRespCode {
 	R_MEM_WRITE_RESP_CODE_UNSPECIFIED = 0;
 	R_MEM_WRITE_RESP_CODE_OK = 1;
 	R_MEM_WRITE_RESP_CODE_ERROR = 2;
+	R_MEM_WRITE_RESP_CODE_SLOT_NOT_EMPTY = 3;
 }
 // ------------------------------- RMemEraseResp
 message RMemEraseResp {

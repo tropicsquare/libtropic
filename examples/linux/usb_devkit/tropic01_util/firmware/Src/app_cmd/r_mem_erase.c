@@ -11,8 +11,8 @@ void r_mem_erase(const RMemEraseCmd *cmd, AppResp *resp)
 
     if (lt_ret != LT_OK) {
         resp->type.r_mem_erase.res_code = R_MEM_ERASE_RESP_CODE_ERROR;
-        resp->has_libtropic_error_code = true;
-        resp->libtropic_error_code = lt_ret;
+        resp->has_libtropic_res_code = true;
+        resp->libtropic_res_code = lt_ret;
     }
     else {
         resp->type.r_mem_erase.res_code = R_MEM_ERASE_RESP_CODE_OK;

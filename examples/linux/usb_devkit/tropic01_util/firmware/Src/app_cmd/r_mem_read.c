@@ -11,12 +11,15 @@ void r_mem_read(const RMemReadCmd *cmd, AppResp *resp)
                                          sizeof(resp->type.r_mem_read.data.bytes),
                                          &resp->type.r_mem_read.data.size);
 
-    if (lt_ret != LT_OK) {
-        resp->type.r_mem_read.res_code = R_MEM_READ_RESP_CODE_ERROR;
-        resp->has_libtropic_error_code = true;
-        resp->libtropic_error_code = lt_ret;
+    if (lt_ret == LT_OK) {
+        resp->type.r_mem_read.res_code = R_MEM_READ_RESP_CODE_OK;
+    }
+    else if (lt_ret == LT_L3_R_MEM_DATA_READ_SLOT_EMPTY) {
+        resp->type.r_mem_read.res_code = R_MEM_READ_RESP_CODE_SLOT_EMPTY;
     }
     else {
-        resp->type.r_mem_read.res_code = R_MEM_READ_RESP_CODE_OK;
+        resp->type.r_mem_read.res_code = R_MEM_READ_RESP_CODE_ERROR;
+        resp->has_libtropic_res_code = true;
+        resp->libtropic_res_code = lt_ret;
     }
 }
