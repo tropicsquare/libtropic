@@ -112,7 +112,7 @@ void pin_set(const PinSetCmd *cmd, AppResp *resp)
             goto cleanup;
         }
         // 6.5 Encrypt s using k_i as the key and save the ciphertext.
-        // TODO: use AES
+        // We are using simple XOR here. In production, replace it with some encryption standard!
         encrypt(cmd->secret, k_i, macandd_data.ciphertexts[i]);
     }
 

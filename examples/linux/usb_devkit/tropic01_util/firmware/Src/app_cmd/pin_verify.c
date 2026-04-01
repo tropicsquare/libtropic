@@ -99,6 +99,7 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
     }
 
     // 7., 8. Decrypt c_i using k_i as the key to obtain the plaintext s.
+    // We are using simple XOR here. In production, replace it with some decryption standard!
     decrypt(macandd_data.ciphertexts[macandd_data.depleted_attempts - 1], k_i, s);
 
     // 9. Compute t = KDF(s, "0x00").
