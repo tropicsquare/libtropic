@@ -181,7 +181,7 @@ int main(void)
     lt_ret = lt_init(&lt_handle);
     CHECK_LT_RET;
 
-    lt_ret = lt_verify_chip_and_start_secure_session(&lt_handle, sh0priv_prod0, sh0pub_prod0,
+    lt_ret = lt_verify_chip_and_start_secure_session(&lt_handle, lt_sh0priv_prod0, lt_sh0pub_prod0,
                                                      TR01_PAIRING_KEY_SLOT_INDEX_0);
     CHECK_LT_RET;
 
