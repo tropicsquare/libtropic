@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 
 from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
-from ..protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 
 MAX_GET_RAND_BYTES_COUNT = 255
 

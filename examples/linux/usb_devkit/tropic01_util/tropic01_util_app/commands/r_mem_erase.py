@@ -5,7 +5,7 @@ import argparse
 import sys
 
 from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
-from ..protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 from .r_mem_common import R_MEM_SLOT_COUNT
 
 def build_r_mem_erase_cmd(slot: int) -> pb.AppCmd:

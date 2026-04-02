@@ -28,9 +28,12 @@ set(LT_STRICT_COMPILATION ON CACHE BOOL "Enable strict compilation")
 # Path to protobuf schema used for USB DevKit command/response exchange.
 set(PATH_PROTOBUF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf)
 set(PROTO_FILE ${PATH_PROTOBUF_DIR}/usb_devkit_messages.proto)
-set(FW_PROTO_DIR ${CMAKE_CURRENT_SOURCE_DIR}/protobuf)
+set(FW_PROTO_DIR ${PATH_PROTOBUF_DIR}/generated)
 set(FW_PROTO_C_FILE ${FW_PROTO_DIR}/usb_devkit_messages.pb.c)
 set(FW_PROTO_H_FILE ${FW_PROTO_DIR}/usb_devkit_messages.pb.h)
+set(PY_PROTO_OUT_DIR ${FW_PROTO_DIR})
+set(PY_PROTO_FILE ${PY_PROTO_OUT_DIR}/usb_devkit_messages_pb2.py)
+file(MAKE_DIRECTORY ${FW_PROTO_DIR})
 
 # By default, build firmware from committed protobuf artifacts.
 # Developers can opt in to regeneration from .proto.
@@ -124,10 +127,21 @@ FetchContent_Declare(
     URL_HASH SHA256=882cd8473ad932b24787e676a808e4fb29c12e086d20bcbfbacc66c183094b5c
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
-FetchContent_MakeAvailable(nanopb)
-set(NANOPB_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/nanopb-build)
 
 if(LT_PROTO_GENERATE)
+    set(nanopb_BUILD_GENERATOR ON CACHE BOOL "Build nanopb generator" FORCE)
+    unset(nanopb_PROTOC_PATH CACHE)
+else()
+    # In default mode we only need runtime library, not code generation.
+    # Point nanopb's protoc path to an existing binary to avoid requiring protobuf-compiler.
+    set(nanopb_BUILD_GENERATOR OFF CACHE BOOL "Build nanopb generator" FORCE)
+    set(nanopb_PROTOC_PATH ${CMAKE_COMMAND} CACHE FILEPATH "Path to protoc used by nanopb" FORCE)
+endif()
+FetchContent_MakeAvailable(nanopb)
+
+if(LT_PROTO_GENERATE)
+    set(NANOPB_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/nanopb-build)
+
     # Keep previous nanopb CMake helper behavior for firmware sources.
     list(APPEND CMAKE_MODULE_PATH ${nanopb_SOURCE_DIR}/extra)
     find_package(Nanopb REQUIRED)
@@ -140,19 +154,20 @@ if(LT_PROTO_GENERATE)
     add_custom_command(TARGET proto POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${GEN_FW_PROTO_C_FILE} ${FW_PROTO_C_FILE}
         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${GEN_FW_PROTO_H_FILE} ${FW_PROTO_H_FILE}
-        COMMENT "Updating committed firmware nanopb bindings in ${FW_PROTO_DIR}"
+        COMMENT "Updating generated firmware nanopb bindings in ${FW_PROTO_DIR}"
     )
 
     find_program(PROTOC_EXECUTABLE protoc REQUIRED)
-    set(PY_PROTO_OUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../tropic01_util_app/protobuf)
-    set(PY_PROTO_FILE ${PY_PROTO_OUT_DIR}/usb_devkit_messages_pb2.py)
     find_program(PROTOC_GEN_MYPY protoc-gen-mypy)
     if(NOT PROTOC_GEN_MYPY)
-        message(WARNING "protoc plugin 'protoc-gen-mypy' not found. Install mypy-protobuf to generate .pyi stubs for protobuf: pip install mypy-protobuf")
+        message(FATAL_ERROR "protoc plugin 'protoc-gen-mypy' not found. Install mypy-protobuf to generate required .pyi stubs for protobuf: pip install mypy-protobuf")
     endif()
     set(PY_PROTO_MYPY_ARG)
     if(PROTOC_GEN_MYPY)
-        set(PY_PROTO_MYPY_ARG --mypy_out=${PY_PROTO_OUT_DIR})
+        set(PY_PROTO_MYPY_ARG
+            --plugin=protoc-gen-mypy=${PROTOC_GEN_MYPY}
+            --mypy_out=${PY_PROTO_OUT_DIR}
+        )
     endif()
     add_custom_command(
         OUTPUT ${PY_PROTO_FILE}
@@ -169,8 +184,7 @@ if(LT_PROTO_GENERATE)
     add_dependencies(proto_codegen proto)
 else()
     add_library(proto STATIC ${FW_PROTO_C_FILE})
-    target_link_libraries(proto PUBLIC protobuf-nanopb)
-    target_link_directories(proto PUBLIC ${NANOPB_BUILD_LIB_DIR})
+    target_link_libraries(proto PUBLIC protobuf-nanopb-static)
     target_include_directories(proto PUBLIC ${FW_PROTO_DIR} ${nanopb_SOURCE_DIR})
 
     if(NOT EXISTS ${FW_PROTO_C_FILE} OR NOT EXISTS ${FW_PROTO_H_FILE})

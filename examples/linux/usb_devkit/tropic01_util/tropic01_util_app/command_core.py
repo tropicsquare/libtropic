@@ -7,7 +7,7 @@ import serial
 from typing import Callable
 
 from .frame_protocol import build_frame, read_response_frame
-from .protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 
 
 @dataclass(frozen=True)

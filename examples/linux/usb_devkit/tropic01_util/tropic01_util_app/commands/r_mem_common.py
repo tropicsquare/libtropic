@@ -1,7 +1,7 @@
 from __future__ import annotations
 """Shared helpers for R-Memory CLI commands."""
 
-from ..protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 
 MAX_R_MEM_CHUNK_SIZE = 475
 # TROPIC01 supports user-data slots 0..511 (512 total).

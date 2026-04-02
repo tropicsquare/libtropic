@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 
 from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
-from ..protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 from ..utils import parse_hex_bytes
 from .r_mem_common import (
     MAX_R_MEM_CHUNK_SIZE,

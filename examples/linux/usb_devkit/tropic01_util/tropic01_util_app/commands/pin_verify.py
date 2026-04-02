@@ -5,7 +5,7 @@ import argparse
 
 from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
 from ..utils import parse_hex_bytes
-from ..protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 
 
 def add_arguments(parser: argparse.ArgumentParser) -> None:

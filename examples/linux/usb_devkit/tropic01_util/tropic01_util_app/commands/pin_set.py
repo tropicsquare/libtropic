@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ..command_core import AppCommandSender, CliCommandSpec, print_libtropic_res_code
 from ..utils import parse_hex_bytes
-from ..protobuf import usb_devkit_messages_pb2 as pb
+from protobuf.generated import usb_devkit_messages_pb2 as pb
 
 
 def bip32_master_private_key_from_seed(seed: bytes) -> bytes:
