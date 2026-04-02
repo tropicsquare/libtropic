@@ -492,7 +492,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
-    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
+    lt_dev_posix_usb_devkit_t *device = (lt_dev_posix_usb_devkit_t *)s2->device;
 
     // In legacy USB DevKit FW, CS LOW is handled automatically when SPI transfer is executed.
     if (!device->legacy_fw) {
@@ -715,7 +715,7 @@ static bool get_time_ms(uint64_t *time_ms)
 
 lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 {
-    lt_dev_posix_usb_dongle_t *device = (lt_dev_posix_usb_dongle_t *)s2->device;
+    lt_dev_posix_usb_devkit_t *device = (lt_dev_posix_usb_devkit_t *)s2->device;
     uint64_t start_ms = 0;
 
     if (!get_time_ms(&start_ms)) {
