@@ -37,7 +37,7 @@ file(MAKE_DIRECTORY ${FW_PROTO_DIR})
 
 # By default, build firmware from committed protobuf artifacts.
 # Developers can opt in to regeneration from .proto.
-option(LT_PROTO_GENERATE "Regenerate nanopb and Python protobuf bindings from .proto (requires protoc)." OFF)
+option(GEN_PROTO_FILES "Regenerate nanopb and Python protobuf bindings from .proto (requires protoc)." OFF)
 
 # Set the project name
 set(CMAKE_PROJECT_NAME tropic01_util)
@@ -128,7 +128,7 @@ FetchContent_Declare(
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 
-if(LT_PROTO_GENERATE)
+if(GEN_PROTO_FILES)
     set(nanopb_BUILD_GENERATOR ON CACHE BOOL "Build nanopb generator" FORCE)
     unset(nanopb_PROTOC_PATH CACHE)
 else()
@@ -139,7 +139,7 @@ else()
 endif()
 FetchContent_MakeAvailable(nanopb)
 
-if(LT_PROTO_GENERATE)
+if(GEN_PROTO_FILES)
     set(NANOPB_BUILD_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/_deps/nanopb-build)
 
     # Keep previous nanopb CMake helper behavior for firmware sources.
@@ -188,7 +188,7 @@ else()
     target_include_directories(proto PUBLIC ${FW_PROTO_DIR} ${nanopb_SOURCE_DIR})
 
     if(NOT EXISTS ${FW_PROTO_C_FILE} OR NOT EXISTS ${FW_PROTO_H_FILE})
-        message(FATAL_ERROR "Missing committed nanopb files in ${FW_PROTO_DIR}. Enable -DLT_PROTO_GENERATE=ON to regenerate them from .proto.")
+        message(FATAL_ERROR "Missing committed nanopb files in ${FW_PROTO_DIR}. Enable -DGEN_PROTO_FILES=ON to regenerate them from .proto.")
     endif()
 endif()
 

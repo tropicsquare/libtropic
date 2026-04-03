@@ -8,4 +8,4 @@ Development mode (regenerate protobuf from `.proto`):
 - outputs generated files into `../protobuf/generated/`
 
 Enable development mode with:
-- `-DLT_PROTO_GENERATE=ON`
+- `-DGEN_PROTO_FILES=ON`
