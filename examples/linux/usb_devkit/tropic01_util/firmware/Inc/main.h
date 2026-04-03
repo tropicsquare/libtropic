@@ -85,6 +85,7 @@ extern RNG_HandleTypeDef hrng;
 extern HASH_HandleTypeDef hhash;
 extern SPI_HandleTypeDef *hspi1;
 extern CRC_HandleTypeDef hcrc;
+extern DCACHE_HandleTypeDef hdcache1;
 
 extern lt_handle_t lt_handle;
 /* USER CODE END EV */

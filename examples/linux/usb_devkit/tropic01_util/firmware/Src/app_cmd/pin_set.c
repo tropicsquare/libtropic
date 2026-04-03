@@ -11,8 +11,7 @@
 #include "psa/crypto.h"
 #include "usb_devkit_messages.pb.h"
 
-extern uint32_t __macandd_nv_start__;
-macandd_data_t g_macandd_data = {0};
+extern uint8_t __macandd_nv_start__[];
 
 /**
  * @brief Simple XOR "encryption" function. Replace with another encryption algorithm if needed.
@@ -41,9 +40,9 @@ void pin_set(const PinSetCmd *cmd, AppResp *resp)
     // Variables used during the pin set process.
     // Using notation from this document:
     // https://github.com/tropicsquare/tropic01-rtl/blob/public/doc/theory/MAC-and-destroy-v2.pdf
-    uint8_t t[PSA_HASH_LENGTH(PSA_ALG_SHA_256)], u[PSA_HASH_LENGTH(PSA_ALG_SHA_256)],
-        ignored[TR01_MAC_AND_DESTROY_DATA_SIZE], v[PSA_HASH_LENGTH(PSA_ALG_SHA_256)],
-        w[TR01_MAC_AND_DESTROY_DATA_SIZE], k_i[PSA_HASH_LENGTH(PSA_ALG_SHA_256)],
+    uint8_t u[PSA_HASH_LENGTH(PSA_ALG_SHA_256)], ignored[TR01_MAC_AND_DESTROY_DATA_SIZE],
+        v[PSA_HASH_LENGTH(PSA_ALG_SHA_256)], w[TR01_MAC_AND_DESTROY_DATA_SIZE],
+        k_i[PSA_HASH_LENGTH(PSA_ALG_SHA_256)],
         kdf_key_zeros[32] = {0},
         pin_with_add_data[sizeof(cmd->new_pin) + sizeof(cmd->additional_data.bytes)];
     size_t pin_with_add_data_len;
@@ -56,15 +55,15 @@ void pin_set(const PinSetCmd *cmd, AppResp *resp)
     // Notation: where the aforementioned document uses s, we use cmd->secret.
 
     // 2. Compute t = KDF(s, "0x00")).
-    hal_status = hmac_sha256(cmd->secret, sizeof(cmd->secret), (uint8_t *)"0", 1, t);
+    hal_status = hmac_sha256(cmd->secret, sizeof(cmd->secret), (uint8_t *)"0", 1,
+                             macandd_data.auth_tag);
     if (hal_status != HAL_OK) {
         resp->type.pin_set.res_code = PIN_SET_RESP_CODE_KDF_ERROR;
         goto cleanup;
     }
 
-    // 3. Initialize depleted attempts to 0 and save tag t.
+    // 3. Initialize depleted attempts to 0.
     macandd_data.depleted_attempts = TR01_MAC_AND_DESTROY_SLOT_0;
-    memcpy(macandd_data.auth_tag, t, sizeof(macandd_data.auth_tag));
 
     // 4. Compute u = KDF(s, "0x01")).
     hal_status = hmac_sha256(cmd->secret, sizeof(cmd->secret), (uint8_t *)"1", 1, u);
@@ -125,11 +124,12 @@ void pin_set(const PinSetCmd *cmd, AppResp *resp)
     }
 
     // 9. Store MAC-and-destroy non-confidential data in non-volatile memory.
-    // hal_status = macandd_data_store(&macandd_data);
-    // if (hal_status != HAL_OK) {
-    //     resp->type.pin_set.res_code = PIN_SET_RESP_CODE_FLASH_WRITE_ERROR;
-    // }
-    memcpy(&g_macandd_data, &macandd_data, sizeof(macandd_data_t));
+    hal_status = flash_write((uint32_t)(uintptr_t)__macandd_nv_start__, &macandd_data,
+                             sizeof(macandd_data));
+    if (hal_status != HAL_OK) {
+        resp->type.pin_set.res_code = PIN_SET_RESP_CODE_FLASH_WRITE_ERROR;
+        goto cleanup;
+    }
     resp->type.pin_set.res_code = PIN_SET_RESP_CODE_OK;
     goto cleanup;
 
@@ -139,7 +139,6 @@ libtropic_error:
     // 8. Return k and purge all other computed values from RAM.
     // We should also clear the command contents, but that is not done here.
 cleanup:
-    mbedtls_platform_zeroize(t, sizeof(t));
     mbedtls_platform_zeroize(u, sizeof(u));
     mbedtls_platform_zeroize(ignored, sizeof(ignored));
     mbedtls_platform_zeroize(v, sizeof(v));

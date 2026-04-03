@@ -11,7 +11,7 @@
 #include "psa/crypto.h"
 #include "usb_devkit_messages.pb.h"
 
-extern uint32_t __macandd_nv_start__;
+extern uint8_t __macandd_nv_start__[];
 
 /**
  * @brief Simple XOR "decryption" function. Replace with another decryption algorithm if needed.
@@ -47,8 +47,7 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
     HAL_StatusTypeDef hal_status;
 
     // 1. Load MAC-and-destroy non-confidential data from non-volatile memory.
-    // TODO: read from flash
-    memcpy(&macandd_data, &g_macandd_data, sizeof(macandd_data_t));
+    memcpy(&macandd_data, __macandd_nv_start__, sizeof(macandd_data));
 
     // 2. Check depleted attempts.
     if (macandd_data.depleted_attempts >= TR01_MACANDD_ROUNDS_MAX) {
@@ -81,15 +80,15 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
         goto libtropic_error;
     }
 
-    // Do step 3. (store depleted attempts back to NVM after increment) here, because only now has the
+    // Do step 3 (store depleted attempts back to NVM after increment) here, because only now has the
     // attempt been really depleted (M&D slot destroyed).
 
-    // hal_status = macandd_data_store(&macandd_data);
-    // if (hal_status != HAL_OK) {
-    //     resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
-    //     goto cleanup;
-    // }
-    memcpy(&g_macandd_data, &macandd_data, sizeof(macandd_data_t));
+    hal_status = flash_write((uint32_t)(uintptr_t)__macandd_nv_start__, &macandd_data,
+                             sizeof(macandd_data));
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
+        goto cleanup;
+    }
 
     // 6. Compute k_i = KDF(w, PIN || A).
     hal_status = hmac_sha256(w, sizeof(w), pin_with_add_data, pin_with_add_data_len, k_i);
@@ -132,12 +131,12 @@ void pin_verify(const PinVerifyCmd *cmd, AppResp *resp)
 
     // 13. Reset depleted attempts and store into non-volatile memory.
     macandd_data.depleted_attempts = 0;
-    // hal_status = macandd_data_store(&macandd_data);
-    // if (hal_status != HAL_OK) {
-    //     resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
-    //     goto cleanup;
-    // }
-    memcpy(&g_macandd_data, &macandd_data, sizeof(macandd_data_t));
+    hal_status = flash_write((uint32_t)(uintptr_t)__macandd_nv_start__, &macandd_data,
+                             sizeof(macandd_data));
+    if (hal_status != HAL_OK) {
+        resp->type.pin_verify.res_code = PIN_VERIFY_RESP_CODE_FLASH_WRITE_ERROR;
+        goto cleanup;
+    }
 
     // 14. Compute k = KDF(s, "0x02").
     hal_status = hmac_sha256(s, sizeof(s), (uint8_t *)"2", 1, resp->type.pin_verify.crypto_key);

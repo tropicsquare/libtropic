@@ -1,6 +1,7 @@
 #include "app_cmd/app_cmd_common.h"
 
 #include <stdint.h>
+#include <string.h>
 
 #include "app_cmd/get_rand_bytes.h"
 #include "app_cmd/pin_set.h"
@@ -33,19 +34,51 @@ HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len)
 {
     uint32_t page_error = 0U;
     uint32_t write_addr = addr;
+    uint32_t padded_len;
+    uint32_t end_addr;
     HAL_StatusTypeDef hal_status;
     FLASH_EraseInitTypeDef erase = {0};
     const uint8_t *src = (const uint8_t *)data;
     size_t remaining = data_len;
     uint8_t quadword[16];
 
+    // HAL quadword programming requires valid input and a non-empty payload.
+    if ((data == NULL) || (data_len == 0U)) {
+        LOG_DEBUG("bad arguments");
+        return HAL_ERROR;
+    }
+
+    // STM32U5 FLASH_TYPEPROGRAM_QUADWORD requires 16-byte aligned destination.
+    if ((addr % sizeof(quadword)) != 0U) {
+        LOG_DEBUG("destination not 16B aligned");
+        return HAL_ERROR;
+    }
+
+    // Round up to full quadwords because partial tail writes are padded with 0xFF.
+    padded_len = (uint32_t)(((data_len + (sizeof(quadword) - 1U)) / sizeof(quadword)) *
+                            sizeof(quadword));
+    if ((UINT32_MAX - addr) < (padded_len - 1U)) {
+        LOG_DEBUG("padded length does not fit");
+        return HAL_ERROR;
+    }
+    end_addr = addr + padded_len - 1U;
+
     erase.TypeErase = FLASH_TYPEERASE_PAGES;
     erase.Banks = ((addr - FLASH_BASE) < FLASH_BANK_SIZE) ? FLASH_BANK_1 : FLASH_BANK_2;
     erase.Page = ((addr - FLASH_BASE) % FLASH_BANK_SIZE) / FLASH_PAGE_SIZE;
-    erase.NbPages = 1;
+    // This helper currently supports only single-bank writes in one call.
+    if ((((addr - FLASH_BASE) < FLASH_BANK_SIZE) ? FLASH_BANK_1 : FLASH_BANK_2) !=
+        (((end_addr - FLASH_BASE) < FLASH_BANK_SIZE) ? FLASH_BANK_1 : FLASH_BANK_2)) {
+        LOG_DEBUG("writes to multiple banks not supported");
+        return HAL_ERROR;
+    }
+    // Erase every page touched by the padded write range.
+    erase.NbPages = ((((end_addr - FLASH_BASE) % FLASH_BANK_SIZE) / FLASH_PAGE_SIZE) - erase.Page) +
+                    1U;
 
     hal_status = HAL_FLASH_Unlock();
     if (hal_status != HAL_OK) {
+        LOG_DEBUG("failed to unlock flash, hal_status=%d", (int)hal_status);
         return hal_status;
     }
 
@@ -53,17 +86,21 @@ HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len)
 
     hal_status = HAL_FLASHEx_Erase(&erase, &page_error);
     if (hal_status != HAL_OK) {
+        LOG_DEBUG("failed to erase flash, hal_status=%d", (int)hal_status);
         goto lock_and_exit;
     }
 
+    // Program data in 16-byte chunks; short tail is padded with erased value 0xFF.
     while (remaining > 0) {
         size_t chunk = remaining > sizeof(quadword) ? sizeof(quadword) : remaining;
 
         memset(quadword, 0xFF, sizeof(quadword));
         memcpy(quadword, src, chunk);
 
-        hal_status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_QUADWORD, write_addr, (uint32_t)quadword);
+        hal_status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_QUADWORD, write_addr,
+                                       (uint32_t)(uintptr_t)quadword);
         if (hal_status != HAL_OK) {
+            LOG_DEBUG("failed to program flash, hal_status=%d", (int)hal_status);
             goto lock_and_exit;
         }
 
@@ -72,12 +109,25 @@ HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len)
         write_addr += sizeof(quadword);
     }
 
+    // Ensure readback sees freshly programmed flash data.
+    // Temporarily use full D-cache invalidation for robustness.
+    hal_status = HAL_DCACHE_Invalidate(&hdcache1);
+    if (hal_status != HAL_OK) {
+        LOG_DEBUG("failed to unlock flash, hal_status=%d", (int)hal_status);
+        goto lock_and_exit;
+    }
+
+    // Verify programmed bytes exactly match requested payload.
     if (memcmp((const void *)addr, data, data_len) != 0) {
+        LOG_DEBUG("read out bytes after programming mismatch");
         hal_status = HAL_ERROR;
     }
 
 lock_and_exit:
-    (void)HAL_FLASH_Lock();
+    HAL_StatusTypeDef lock_status = HAL_FLASH_Lock();
+    if (lock_status != HAL_OK) {
+        LOG_DEBUG("failed to lock flash, hal_status=%d", (int)lock_status);
+    }
     return hal_status;
 }
 

@@ -42,6 +42,15 @@ void process_app_cmd(const UsbDevkitCmd *cmd, UsbDevkitResp *resp);
 HAL_StatusTypeDef hmac_sha256(const uint8_t *key, const size_t key_len, const uint8_t *data,
                               const size_t data_len, uint8_t *output);
 
+/**
+ * @brief Write data to internal flash memory.
+ * @warning After a successful write, the whole data cache is invalidated.
+ *
+ * @param addr      Destination flash address
+ * @param data      Source buffer with payload to write
+ * @param data_len  Number of payload bytes to write
+ * @return          HAL_StatusTypeDef
+ */
 HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len);
 
 #endif  // APP_CMD_COMMON_H
