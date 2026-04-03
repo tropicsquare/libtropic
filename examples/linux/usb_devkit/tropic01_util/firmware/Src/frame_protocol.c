@@ -25,7 +25,7 @@ void tud_umount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
 void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
 
 /**
- * @brief Read up to `to_read` bytes from the USB CDC RX FIFO into `buff`.
+ * @brief Read up to `to_read` bytes from the TROPIC01 Util USB CDC RX FIFO into `buff`.
  *
  * This helper is non-blocking: when no bytes are currently available, it
  * returns 0. When data is available, it reads at most `to_read` bytes.
@@ -36,17 +36,17 @@ void tud_mount_cb(void) { usb_devkit_state = READ_MAGIC_BYTE_1; }
  */
 static size_t usb_read_chunk(uint8_t *buff, size_t to_read)
 {
-    uint32_t avail_bytes = tud_cdc_available();
+    uint32_t avail_bytes = tud_cdc_n_available(TR01_UTIL_CDC_ITF);
     if (avail_bytes == 0 || to_read == 0) {
         return 0;
     }
 
     size_t chunk_size = MIN(to_read, (size_t)avail_bytes);
-    return (size_t)tud_cdc_read(buff, chunk_size);
+    return (size_t)tud_cdc_n_read(TR01_UTIL_CDC_ITF, buff, chunk_size);
 }
 
 /**
- * @brief Write up to `to_write` bytes to the USB CDC TX FIFO from `buff`.
+ * @brief Write up to `to_write` bytes to the TROPIC01 Util USB CDC TX FIFO from `buff`.
  *
  * This helper is non-blocking: when there is no room in the TX FIFO, it
  * calls tud_cdc_write_flush() and returns 0. When room is available, it
@@ -58,14 +58,14 @@ static size_t usb_read_chunk(uint8_t *buff, size_t to_read)
  */
 static size_t usb_write_chunk(const uint8_t *buff, size_t to_write)
 {
-    uint32_t free_bytes = tud_cdc_write_available();
+    uint32_t free_bytes = tud_cdc_n_write_available(TR01_UTIL_CDC_ITF);
     if (free_bytes == 0 || to_write == 0) {
-        tud_cdc_write_flush();
+        tud_cdc_n_write_flush(TR01_UTIL_CDC_ITF);
         return 0;
     }
 
     size_t chunk_size = MIN(to_write, (size_t)free_bytes);
-    return (size_t)tud_cdc_write(buff, chunk_size);
+    return (size_t)tud_cdc_n_write(TR01_UTIL_CDC_ITF, buff, chunk_size);
 }
 
 void usb_devkit_main_loop(void)
@@ -94,7 +94,8 @@ void usb_devkit_main_loop(void)
         switch (usb_devkit_state) {
             case READ_MAGIC_BYTE_1: {
                 uint8_t magic_byte_1;
-                if (tud_cdc_read(&magic_byte_1, 1) == 1 && magic_byte_1 == FRAME_MAGIC_BYTE_1) {
+                if (tud_cdc_n_read(TR01_UTIL_CDC_ITF, &magic_byte_1, 1) == 1 &&
+                    magic_byte_1 == FRAME_MAGIC_BYTE_1) {
                     usb_devkit_state = READ_MAGIC_BYTE_2;
                 }
                 break;
@@ -102,7 +103,7 @@ void usb_devkit_main_loop(void)
 
             case READ_MAGIC_BYTE_2: {
                 uint8_t magic_byte_2;
-                if (tud_cdc_read(&magic_byte_2, 1) == 1) {
+                if (tud_cdc_n_read(TR01_UTIL_CDC_ITF, &magic_byte_2, 1) == 1) {
                     if (magic_byte_2 == FRAME_MAGIC_BYTE_2) {
                         in_data_len_bytes_read = 0;
                         usb_devkit_state = READ_DATA_LEN;
@@ -209,7 +210,7 @@ void usb_devkit_main_loop(void)
 
                 out_frame_written += usb_write_chunk(write_ptr, to_write);
                 if (out_frame_written == out_frame_len) {
-                    tud_cdc_write_flush();
+                    tud_cdc_n_write_flush(TR01_UTIL_CDC_ITF);
                     usb_devkit_state = READ_MAGIC_BYTE_1;
                 }
                 break;

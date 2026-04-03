@@ -28,6 +28,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "libtropic_common.h"
 #include "stm32u5xx_hal.h"
@@ -49,6 +51,31 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+// Numbers of CDC interfaces for TROPIC01 Util app and for debugging.
+#define TR01_UTIL_CDC_ITF 0u
+#define DEBUG_CDC_ITF 1u
+
+#if USB_DEVKIT_DEBUG_CDC_ITF
+// A helper macro to find the last slash or backslash
+#define __FILENAME__                                         \
+    (strrchr(__FILE__, '/')    ? strrchr(__FILE__, '/') + 1  \
+     : strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 \
+                               : __FILE__)
+
+#define LOG_DEBUG(f_, ...)                                         \
+    printf("[%s:%d] " f_ "\n",                                     \
+           strrchr(__FILE__, '/')    ? strrchr(__FILE__, '/') + 1  \
+           : strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 \
+                                     : __FILE__,                   \
+           __LINE__, ##__VA_ARGS__)
+#else
+#define LOG_DEBUG(f_, ...)             \
+    do {                               \
+        if (0) {                       \
+            printf(f_, ##__VA_ARGS__); \
+        }                              \
+    } while (0)
+#endif
 
 /* USER CODE END EM */
 

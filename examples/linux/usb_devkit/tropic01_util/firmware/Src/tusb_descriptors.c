@@ -7,13 +7,31 @@
 #define USB_PID 0x5740
 #define USB_BCD 0x0200
 
-#define CONFIG_TOTAL_LEN 75
+#ifdef USB_DEVKIT_DEBUG_CDC_ITF
+#define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + (2 * TUD_CDC_DESC_LEN))
+#else
+#define CONFIG_TOTAL_LEN (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN)
+#endif
 
-#define EPNUM_CDC_NOTIF 0x82
-#define EPNUM_CDC_OUT 0x01
-#define EPNUM_CDC_IN 0x81
+#define EPNUM_CDC0_NOTIF 0x82
+#define EPNUM_CDC0_OUT 0x01
+#define EPNUM_CDC0_IN 0x81
 
-enum { ITF_NUM_CDC = 0, ITF_NUM_CDC_DATA, ITF_NUM_TOTAL };
+#ifdef USB_DEVKIT_DEBUG_CDC_ITF
+#define EPNUM_CDC1_NOTIF 0x84
+#define EPNUM_CDC1_OUT 0x03
+#define EPNUM_CDC1_IN 0x83
+#endif
+
+enum {
+    ITF_NUM_CDC0 = 0,
+    ITF_NUM_CDC0_DATA,
+#ifdef USB_DEVKIT_DEBUG_CDC_ITF
+    ITF_NUM_CDC1,
+    ITF_NUM_CDC1_DATA,
+#endif
+    ITF_NUM_TOTAL
+};
 
 //--------------------------------------------------------------------
 // Device Descriptors
@@ -42,8 +60,12 @@ uint8_t const *tud_descriptor_device_cb(void) { return (uint8_t const *)&desc_de
 // full speed configuration
 static uint8_t const desc_fs_configuration[] = {
     TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0xC0, 0),
-    TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, EPNUM_CDC_NOTIF, 8, EPNUM_CDC_OUT, EPNUM_CDC_IN,
+    TUD_CDC_DESCRIPTOR(ITF_NUM_CDC0, 4, EPNUM_CDC0_NOTIF, 8, EPNUM_CDC0_OUT, EPNUM_CDC0_IN,
                        CFG_TUD_CDC_EP_BUFSIZE),
+#ifdef USB_DEVKIT_DEBUG_CDC_ITF
+    TUD_CDC_DESCRIPTOR(ITF_NUM_CDC1, 5, EPNUM_CDC1_NOTIF, 8, EPNUM_CDC1_OUT, EPNUM_CDC1_IN,
+                       CFG_TUD_CDC_EP_BUFSIZE),
+#endif
 };
 
 uint8_t const *tud_descriptor_configuration_cb(uint8_t index)
@@ -71,10 +93,10 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 
     static uint16_t descriptor[32];
     const char *strings[] = {
-        [1] = "TropicSquare",
-        [2] = "TROPIC01 USB DevKit",
-        [3] = NULL,
-        [4] = "TROPIC01 CDC",
+        [1] = "TropicSquare",       [2] = "TROPIC01 USB DevKit", [3] = NULL, [4] = "TROPIC01 CDC",
+#ifdef USB_DEVKIT_DEBUG_CDC_ITF
+        [5] = "TROPIC01 Debug CDC",
+#endif
     };
 
     uint8_t length;

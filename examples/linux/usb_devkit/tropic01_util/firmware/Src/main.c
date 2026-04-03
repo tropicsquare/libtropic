@@ -432,6 +432,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+#if USB_DEVKIT_DEBUG_CDC_ITF
 /**
  * @brief  Retargets the C library printf function to the USB.
  * @param  None
@@ -443,15 +444,16 @@ PUTCHAR_PROTOTYPE
         by default
     */
     if (ch == '\n') {
-        tud_cdc_write("\r\n", 2);
+        tud_cdc_n_write(DEBUG_CDC_ITF, "\r\n", 2);
     }
     else {
-        tud_cdc_write(&ch, 1);
+        tud_cdc_n_write(DEBUG_CDC_ITF, &ch, 1);
     }
 
-    tud_cdc_write_flush();
+    tud_cdc_n_write_flush(DEBUG_CDC_ITF);
     return ch;
 }
+#endif
 
 /* USER CODE END 4 */
 

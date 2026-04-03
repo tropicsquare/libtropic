@@ -38,6 +38,7 @@ file(MAKE_DIRECTORY ${FW_PROTO_DIR})
 # By default, build firmware from committed protobuf artifacts.
 # Developers can opt in to regeneration from .proto.
 option(GEN_PROTO_FILES "Regenerate nanopb and Python protobuf bindings from .proto (requires protoc)." OFF)
+option(USB_DEVKIT_DEBUG_CDC_ITF "Enable debug logging over a dedicated USB CDC interface (also enable for libtropic logging)." OFF)
 
 # Set the project name
 set(CMAKE_PROJECT_NAME tropic01_util)
@@ -246,7 +247,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/startup_stm32u535cctx.s
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/syscalls.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/sysmem.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Src/usb_descriptors.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/tusb_descriptors.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/frame_protocol.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/app_cmd_common.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_cmd/pin_set.c
@@ -277,6 +278,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${tinyusb_SOURCE_DIR}/src/class/cdc/cdc_device.c
     ${tinyusb_SOURCE_DIR}/src/portable/st/stm32_fsdev/dcd_stm32_fsdev.c
 )
+
+if(USB_DEVKIT_DEBUG_CDC_ITF)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE USB_DEVKIT_DEBUG_CDC_ITF)
+endif()
 
 # Enable strict compile flags for Libtropic HAL/CAL sources when requested.
 if(LT_STRICT_COMPILATION)
