@@ -44,7 +44,7 @@ HAL_StatusTypeDef hmac_sha256(const uint8_t *key, const size_t key_len, const ui
 
 /**
  * @brief Write data to internal flash memory.
- * @warning After a successful write, the whole data cache is invalidated.
+ * @warning After a successful write, the whole I-Cache is invalidated.
  *
  * @param addr      Destination flash address
  * @param data      Source buffer with payload to write

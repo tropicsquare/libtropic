@@ -110,10 +110,9 @@ HAL_StatusTypeDef flash_write(uint32_t addr, const void *data, size_t data_len)
     }
 
     // Ensure readback sees freshly programmed flash data.
-    // Temporarily use full D-cache invalidation for robustness.
-    hal_status = HAL_DCACHE_Invalidate(&hdcache1);
+    hal_status = HAL_ICACHE_Invalidate();
     if (hal_status != HAL_OK) {
-        LOG_DEBUG("failed to unlock flash, hal_status=%d", (int)hal_status);
+        LOG_DEBUG("failed to invalidate I-Cache, hal_status=%d", (int)hal_status);
         goto lock_and_exit;
     }
 
