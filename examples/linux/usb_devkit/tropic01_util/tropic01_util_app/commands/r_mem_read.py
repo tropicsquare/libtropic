@@ -14,23 +14,6 @@ def build_r_mem_read_cmd(slot: int) -> pb.AppCmd:
     cmd.r_mem_read.udata_slot = slot
     return cmd
 
-def decode_r_mem_read_resp_with_output(resp: pb.AppResp, output_file: str | None) -> int:
-    code = resp.r_mem_read.res_code
-    print(f"r-mem-read result: {pb.RMemReadRespCode.Name(code)}")
-    if code != pb.R_MEM_READ_RESP_CODE_OK:
-        return 1
-
-    data = bytes(resp.r_mem_read.data)
-    print(f"r-mem-read data_len: {len(data)}")
-    print(f"r-mem-read data_hex: {data.hex()}")
-
-    if output_file is not None:
-        Path(output_file).write_bytes(data)
-        print(f"r-mem-read wrote {len(data)} bytes to: {output_file}")
-
-    return 0
-
-
 def _read_slot(app_cmd_sender: AppCommandSender, slot: int) -> pb.AppResp:
     """Read one slot and return raw AppResp."""
     cmd = build_r_mem_read_cmd(slot)
@@ -40,8 +23,11 @@ def _read_slot(app_cmd_sender: AppCommandSender, slot: int) -> pb.AppResp:
 def _emit_data(data: bytes, output_file: str | None) -> None:
     """Write read data to file or print to stdout."""
     if output_file is not None:
-        Path(output_file).write_bytes(data)
-        print(f"r-mem-read wrote {len(data)} bytes to: {output_file}")
+        if len(data) > 0:
+            Path(output_file).write_bytes(data)
+            print(f"r-mem-read wrote {len(data)} bytes to: {output_file}")
+        else:
+            print("r-mem-read no data read; output file was not written")
         return
 
     print(f"r-mem-read data_len: {len(data)}")
