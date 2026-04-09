@@ -93,9 +93,9 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 
     static uint16_t descriptor[32];
     const char *strings[] = {
-        [1] = "TropicSquare",       [2] = "TROPIC01 USB DevKit", [3] = NULL, [4] = "TROPIC01 CDC",
+        [1] = "TropicSquare",         [2] = "TROPIC01 USB DevKit", [3] = NULL, [4] = "USB DevKit CDC",
 #ifdef USB_DEVKIT_DEBUG_CDC_ITF
-        [5] = "TROPIC01 Debug CDC",
+        [5] = "USB DevKit Debug CDC",
 #endif
     };
 
