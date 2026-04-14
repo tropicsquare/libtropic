@@ -17,7 +17,7 @@ def main() -> int:
 		formatter_class=argparse.ArgumentDefaultsHelpFormatter
 	)
 
-	parser.add_argument("--port", default="/dev/ttyACM0", help="TROPIC01 USB Devkit serial port")
+	parser.add_argument("--port", default="/dev/ttyACM0", help="TROPIC01 USB DevKit serial port")
 	parser.add_argument("--baudrate", type=int, default=115200, help="Serial baudrate")
 	parser.add_argument(
 		"--timeout", type=float, default=1.0, help="Serial read timeout in seconds"
@@ -25,7 +25,7 @@ def main() -> int:
 
 	subparsers = parser.add_subparsers(
 		title="commands",
-		description="Application commands to send to the USB Devkit.",
+		description="Application commands to send to the USB DevKit.",
 		dest="command",
 		required=True
 	)

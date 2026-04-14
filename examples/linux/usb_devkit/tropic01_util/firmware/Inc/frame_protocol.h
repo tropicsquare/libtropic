@@ -27,7 +27,7 @@
 #define OUT_FRAME_MAX_SIZE \
     (FRAME_MAGIC_BYTES + FRAME_DATA_LEN_SIZE + UsbDevkitResp_size + FRAME_CRC_SIZE)
 
-/** @brief Used for tracking the state of the USB Devkit's main loop. */
+/** @brief Used for tracking the state of the USB DevKit main loop. */
 typedef enum {
     READ_MAGIC_BYTE_1,
     READ_MAGIC_BYTE_2,
@@ -39,7 +39,7 @@ typedef enum {
 } usb_devkit_state_t;
 
 /**
- * @brief USB Devkit main loop.
+ * @brief USB DevKit main loop.
  *
  */
 void usb_devkit_main_loop(void);
