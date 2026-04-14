@@ -50,10 +50,17 @@ def execute(args: argparse.Namespace, app_cmd_sender: AppCommandSender) -> int:
     return status
 
 
+PIN_VERIFY_DESC = "Verifies the PIN using the TROPIC01 MAC-And-Destroy feature."\
+                  " Upon success, returns the cryptographic key (guarded by the PIN)."\
+                  " Note: A successful attempt after aprox. 7 wrong attempts might result in a timeout " \
+                  "because the reinitialization of destroyed slots took too long - just increase the timeout " \
+                  "with --timeout. For a reference, reinitializing maximum allowed amount of slots (128) takes " \
+                  "around 20 seconds."
+
 PIN_VERIFY_SPEC = CliCommandSpec(
     name="pin-verify",
     help_text="Verify PIN (utilizing MAC-And-Destroy feature)",
-    description="Verifies the PIN using the TROPIC01 MAC-And-Destroy feature. Upon success, returns the cryptographic key (guarded by the PIN).",
+    description=PIN_VERIFY_DESC,
     add_arguments=add_arguments,
     execute=execute,
 )

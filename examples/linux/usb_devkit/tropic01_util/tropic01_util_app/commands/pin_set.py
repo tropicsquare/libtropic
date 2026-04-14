@@ -144,10 +144,16 @@ def execute(args: argparse.Namespace, app_cmd_sender: AppCommandSender) -> int:
     return status
 
 
+PIN_SET_DESC = "Sets up a new PIN using the TROPIC01 MAC-And-Destroy feature."\
+               " Upon success, returns a cryptographic key (guarded by the PIN)."\
+               " Note: around 7 attempts, you might get a timeout because the operation took too long - "\
+               "just increase the timeout with --timeout. For a reference, setting up maximum allowed "\
+                "attempts (128) takes around 20 seconds."
+
 PIN_SET_SPEC = CliCommandSpec(
     name="pin-set",
     help_text="Setup new PIN (utilizing MAC-And-Destroy feature)",
-    description="Sets up a new PIN using the TROPIC01 MAC-And-Destroy feature. Upon success, returns a cryptographic key (guarded by the PIN).",
+    description=PIN_SET_DESC,
     add_arguments=add_arguments,
     execute=execute,
 )
