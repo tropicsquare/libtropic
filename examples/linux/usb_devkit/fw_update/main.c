@@ -173,6 +173,19 @@ int main(void)
     }
     printf("OK\n");
 
+    // Reboot into Maintenance Mode. This step is crucial if we want to update both FW bank pairs.
+    // If the reboot is not done, then in the case of ACAB silicon revision, the second FW bank pair
+    // will not be updated, which increases the possibility of a downgrade attack.
+    printf("- Rebooting TROPIC01 into Maintenance Mode...");
+    ret = lt_reboot(&lt_handle, TR01_MAINTENANCE_REBOOT);
+    if (ret != LT_OK) {
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
+        lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
+        return -1;
+    }
+    printf("OK\n");
+
     printf("- Updating TR01_FW_BANK_FW2 and TR01_FW_BANK_SPECT2\n");
     printf("  - Updating RISC-V FW...");
     ret = lt_do_mutable_fw_update(&lt_handle, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW2);

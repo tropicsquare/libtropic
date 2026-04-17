@@ -168,6 +168,19 @@ void app_main(void)
     }
     ESP_LOGI(TAG, "OK");
 
+    // Reboot into Maintenance Mode. This step is crucial if we want to update both FW bank pairs.
+    // If the reboot is not done, then in the case of ACAB silicon revision, the second FW bank pair
+    // will not be updated, which increases the possibility of a downgrade attack.
+    ESP_LOGI(TAG, "- Rebooting TROPIC01 into Maintenance Mode...");
+    ret = lt_reboot(&lt_handle, TR01_MAINTENANCE_REBOOT);
+    if (ret != LT_OK) {
+        ESP_LOGE(TAG, "lt_reboot() failed, ret=%s", lt_ret_verbose(ret));
+        lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
+        return;
+    }
+    ESP_LOGI(TAG, "OK");
+
     ESP_LOGI(TAG, "- Updating TR01_FW_BANK_FW2 and TR01_FW_BANK_SPECT2");
     ESP_LOGI(TAG, "  - Updating RISC-V FW...");
     ret = lt_do_mutable_fw_update(&lt_handle, fw_CPU, sizeof(fw_CPU), TR01_FW_BANK_FW2);
