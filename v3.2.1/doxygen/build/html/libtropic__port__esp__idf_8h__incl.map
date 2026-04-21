@@ -1,0 +1,11 @@
+<map id="libtropic_port_esp_idf.h" name="libtropic_port_esp_idf.h">
+<area shape="rect" id="Node000001" title="Declarations for the ESP&#45;IDF port." alt="" coords="224,5,363,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,109,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="238,48,105,92,104,87,236,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="133,93,280,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="274,48,232,86,228,82,271,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="305,93,455,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="316,44,359,82,355,86,313,48"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="479,93,617,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="355,43,498,87,497,92,354,48"/>
+</map>
