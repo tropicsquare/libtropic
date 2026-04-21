@@ -29,6 +29,7 @@ For details, see particular part number in [TROPIC01](https://github.com/tropics
 | 3.0.0     | 1.0.0–2.0.0    | 1.0.0    | 2.0.1         | :white_check_mark: |
 | 3.1.0     | 1.0.0–2.0.0    | 1.0.0    | 2.0.1         | :white_check_mark: |
 | 3.2.0     | 1.0.0–2.0.0    | 1.0.0    | 2.0.1         | :white_check_mark: |
+| 3.2.1     | 1.0.0–2.0.0    | 1.0.0    | 2.0.1         | :white_check_mark: |
 
 > [!WARNING]
 > Mismatched component versions may cause errors or unpredictable behavior. Use the latest compatible versions whenever possible.

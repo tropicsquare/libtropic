@@ -113,7 +113,7 @@ get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
 ###########################################################################
 
 project(libtropic_SDK
-        VERSION 3.2.0
+        VERSION 3.2.1
         DESCRIPTION "TROPIC01 software development kit"
         HOMEPAGE_URL "https://tropicsquare.github.io/libtropic/latest/"
         LANGUAGES C)
