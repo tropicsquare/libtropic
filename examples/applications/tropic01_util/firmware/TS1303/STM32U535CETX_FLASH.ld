@@ -5,8 +5,8 @@
 **
 **  Author      : STM32CubeIDE
 **
-**  Abstract    : Linker script for STM32U535xC Device from STM32U5 series
-**                      256Kbytes FLASH
+**  Abstract    : Linker script for STM32U535xE Device from STM32U5 series
+**                      512Kbytes FLASH
 **                      272Kbytes RAM
 **
 **                Set heap size, stack size and stack location according
@@ -44,10 +44,10 @@ _Min_Stack_Size = 0x400;	/* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  RAM	        (xrw) : ORIGIN = 0x20000000,	LENGTH = 256K
-  SRAM4	      (xrw) : ORIGIN = 0x28000000,	LENGTH = 16K
-  FLASH	      (rx)	: ORIGIN = 0x08000000,	LENGTH = 248K
-  MACANDD_NV  (rw)  : ORIGIN = 0x0803E000,	LENGTH = 8K
+  RAM         (xrw) : ORIGIN = 0x20000000, LENGTH = 256K
+  SRAM4       (xrw) : ORIGIN = 0x28000000, LENGTH = 16K
+  FLASH       (rx)  : ORIGIN = 0x08000000, LENGTH = 504K
+  MACANDD_NV  (rw)  : ORIGIN = 0x0807E000, LENGTH = 8K
 }
 
 /* Sections */

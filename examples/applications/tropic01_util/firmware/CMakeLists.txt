@@ -6,8 +6,23 @@ include (FetchContent)
 #   Set up project, paths, configuration                                  #
 #                                                                         #
 ###########################################################################
-# Path to toolchain file
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/gcc-arm-none-eabi.cmake)
+# USB DevKit revision controls selected STM32 variant and linker script.
+set(USB_DEVKIT_REVISION "TS1303" CACHE STRING "Revision of the USB DevKit (TS1302 or TS1303)")
+set_property(CACHE USB_DEVKIT_REVISION PROPERTY STRINGS "TS1302" "TS1303")
+# Validate specified USB DevKit revision
+get_property(usb_devkit_rev_choices CACHE USB_DEVKIT_REVISION PROPERTY STRINGS)
+set(usb_devkit_rev_valid FALSE)
+foreach(usb_devkit_rev_choice IN LISTS usb_devkit_rev_choices)
+    if(USB_DEVKIT_REVISION STREQUAL ${usb_devkit_rev_choice})
+        set(usb_devkit_rev_valid TRUE)
+        break()
+    endif()
+endforeach()
+if (NOT usb_devkit_rev_valid)
+    message(FATAL_ERROR "Invalid USB DevKit revision: '${USB_DEVKIT_REVISION}'\nAllowed revisions: ${usb_devkit_rev_choices}")
+endif()
+# Select the correct toolchain file
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${USB_DEVKIT_REVISION}/gcc-arm-none-eabi.cmake)
 
 # Path to STM32 drivers.
 # We provide a stripped-down snapshot of STM32CubeU5 repo in this example.
@@ -244,7 +259,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/stm32u5xx_it.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/stm32u5xx_hal_msp.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/system_stm32u5xx.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Src/startup_stm32u535cctx.s
+    ${CMAKE_CURRENT_SOURCE_DIR}/Src/startup_stm32u535xx.s
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/syscalls.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/sysmem.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/tusb_descriptors.c
