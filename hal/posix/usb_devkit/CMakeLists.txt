@@ -20,13 +20,13 @@ set(LT_HAL_SRCS
     ${nanopb_SOURCE_DIR}/pb_common.c
     ${nanopb_SOURCE_DIR}/pb_encode.c
     ${nanopb_SOURCE_DIR}/pb_decode.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../examples/linux/usb_devkit/tropic01_util/protobuf/generated/usb_devkit_messages.pb.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../examples/applications/tropic01_util/protobuf/generated/usb_devkit_messages.pb.c
 )
 
 set(LT_HAL_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../../examples/linux/usb_devkit/tropic01_util/protobuf/generated/
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../examples/applications/tropic01_util/protobuf/generated/
     ${nanopb_SOURCE_DIR}
 )
 

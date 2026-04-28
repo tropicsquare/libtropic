@@ -19,7 +19,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
 # Set path to Libtropic
-set(PATH_LIBTROPIC ../../../../..)
+set(PATH_LIBTROPIC ../../../..)
 include(${PATH_LIBTROPIC}/cmake/strict_compile_flags.cmake)
 
 # Enable strict compilation flags
