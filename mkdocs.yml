@@ -86,6 +86,9 @@ nav:
         - 1. Chip Identification: tutorials/stm32/identify_chip.md
         - 2. FW Update: tutorials/stm32/fw_update.md
         - 3. Hello, World!: tutorials/stm32/hello_world.md
+      - Raspberry Pi Pico:
+        - tutorials/rpi-pico/index.md
+        - 1. Chip Identification: tutorials/rpi-pico/identify_chip.md
   - Reference:
     - reference/index.md
     - Libtropic Architecture: reference/libtropic_architecture.md
