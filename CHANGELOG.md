@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the `LT_SILICON_REV_` prefix to the `ABAB` and `ACAB` build-time configuration macros to avoid naming collisions; these macros are user-facing when building Libtropic from sources, especially outside CMake.
 - `lt_do_mutable_fw_update()`: changed parameters, reworked to do the recommended FW update procedure.
 - Updated all FW update examples to use the reworked `lt_do_mutable_fw_update()` helper function.
+- Replaced `LT_DEVICE_PATH_MAX_LEN` with `LT_SPI_PATH_MAX_LEN` in Linux SPI, SPI native CS HALs and `LT_USB_DEVKIT_PATH_MAX_LEN` in POSIX USB DevKit HAL.
 
 ### Added
 - ECC + EdDSA example for USB DevKit.

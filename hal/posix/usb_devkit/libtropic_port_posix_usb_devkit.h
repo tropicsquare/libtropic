@@ -9,14 +9,13 @@
  * @license For the license see LICENSE.md in the root directory of this source tree.
  */
 
-#include "libtropic_port.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #define LT_USB_DEVKIT_READ_WRITE_DELAY 10
 #define LT_USB_DEVKIT_SPI_TRANSFER_BUFF_SIZE_MAX ((TR01_L1_LEN_MAX * 2) + 1)
+#define LT_USB_DEVKIT_PATH_MAX_LEN 256
 
 /**
  * @brief Device structure for TROPIC01 USB DevKit POSIX port.
@@ -26,7 +25,7 @@ extern "C" {
  */
 typedef struct lt_dev_posix_usb_devkit_t {
     /** @public @brief Path to USB UART device. */
-    char dev_path[LT_DEVICE_PATH_MAX_LEN];
+    char dev_path[LT_USB_DEVKIT_PATH_MAX_LEN];
     /** @public @brief UART baudrate. */
     uint32_t baud_rate;
 

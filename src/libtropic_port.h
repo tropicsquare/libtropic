@@ -28,11 +28,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Max length of a path to a device in the device tree.
- */
-#define LT_DEVICE_PATH_MAX_LEN 256
-
-/**
  * @brief Platform defined init function. Init resources and set pins as needed.
  *
  * @param s2          Structure holding l2 state

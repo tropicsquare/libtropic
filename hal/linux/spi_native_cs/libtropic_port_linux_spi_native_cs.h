@@ -16,7 +16,7 @@
 #include <linux/gpio.h>
 #endif
 
-#include "libtropic_port.h"
+#define LT_SPI_PATH_MAX_LEN 256
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,10 +32,10 @@ typedef struct lt_dev_linux_spi_native_cs_t {
     /** @public @brief SPI speed in Hz. */
     int spi_speed;
     /** @public @brief Path to the SPI device. */
-    char spi_dev[LT_DEVICE_PATH_MAX_LEN];
+    char spi_dev[LT_SPI_PATH_MAX_LEN];
 #if LT_USE_INT_PIN
     /** @public @brief Path to the GPIO device. */
-    char gpio_dev[LT_DEVICE_PATH_MAX_LEN];
+    char gpio_dev[LT_SPI_PATH_MAX_LEN];
     /** @public @brief Number of the GPIO pin to map interrupt pin to. */
     int gpio_int_num;
 #endif
