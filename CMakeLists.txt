@@ -140,10 +140,10 @@ set(SDK_SRCS ${SDK_SRCS}
 set(SDK_INCS ${SDK_INCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_port.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l2.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l3.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_secure_memzero.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_secure_memzero.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_port.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_port_wrap.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
