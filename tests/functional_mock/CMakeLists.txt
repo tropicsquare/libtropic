@@ -152,6 +152,9 @@ foreach(test_name IN LISTS LIBTROPIC_MOCK_TEST_LIST)
         ${CMAKE_CURRENT_BINARY_DIR}/${TEST_SPECIFIC_MAIN}
     )
     target_link_libraries(${exe_name} PUBLIC libtropic_functional_mock_tests_objs)
+
+    # Make private headers of Libtropic available
+    target_include_directories(${exe_name} PRIVATE "${PATH_TO_LIBTROPIC}/src")
     
     if(LT_STRICT_COMPILATION)
         target_link_libraries(${exe_name} PRIVATE libtropic::strict_comp_flags)

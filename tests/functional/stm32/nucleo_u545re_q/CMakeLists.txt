@@ -209,6 +209,10 @@ foreach(TEST_NAME IN LISTS LIBTROPIC_TEST_LIST)
     # Define executable (separate for each test) and link dependencies.
     add_executable(${EXE_NAME} ${SOURCES})
     target_link_libraries(${EXE_NAME} PRIVATE libtropic_functional_tests)
+
+    # Make private headers of Libtropic available
+    target_include_directories(${EXE_NAME} PRIVATE "${PATH_LIBTROPIC}/src")
+
     target_compile_definitions(${EXE_NAME} PRIVATE -D${STM32_DEVICE}) # Configure target MCU (used by STM32 HAL)
     target_include_directories(${EXE_NAME} PRIVATE ${INCLUDE_DIRS})
     # Choose correct test for the binary.

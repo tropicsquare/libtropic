@@ -110,6 +110,10 @@ foreach(test_name IN LISTS LIBTROPIC_TEST_LIST)
 
     add_executable(${exe_name} ${SOURCES})
     target_link_libraries(${exe_name} PRIVATE libtropic_functional_tests)
+
+    # Make private headers of Libtropic available
+    target_include_directories(${exe_name} PRIVATE "${PATH_LIBTROPIC}/src")
+
     # Place all per-test generated outputs into a per-test subdirectory to avoid collisions
     set_target_properties(${exe_name} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${test_name}
