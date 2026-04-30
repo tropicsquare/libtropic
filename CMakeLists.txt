@@ -106,7 +106,6 @@ get_directory_property(HAS_PARENT_SCOPE PARENT_DIRECTORY)
 #   Collect files:                                                        #
 #                                                                         #
 #   SDK_SRCS:       source files                                          #
-#   SDK_INCS:       header files                                          #
 #   SDK_DIRS_PRIV:  private directories                                   #
 #   SDK_DIRS_PUB:   public directories                                    #
 #                                                                         #
@@ -137,28 +136,12 @@ set(SDK_SRCS ${SDK_SRCS}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_secure_memzero.c
 )
 
-set(SDK_INCS ${SDK_INCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_common.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l2.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libtropic_l3.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_secure_memzero.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/libtropic_port.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_crc16.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_port_wrap.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l1.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l2_frame_check.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_l3_process.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_hkdf.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lt_asn1_der.h
-)
 set(SDK_DIRS_PRIV ${SDK_DIRS_PRIV}
     ${CMAKE_CURRENT_SOURCE_DIR}/src/
 )
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
-
 
 ###########################################################################
 # Libtropic fw update:                                                    #
@@ -173,16 +156,11 @@ else()
     message(FATAL_ERROR "Invalid silicon revision: '${LT_SILICON_REV}'\nAvailable silicon revisions: ${lt_silicon_rev_choices}")
 endif()
 
-set(SDK_INCS ${SDK_INCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_UPDATE_DATA_VER}/fw_CPU.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_UPDATE_DATA_VER}/fw_SPECT.h
-)
-
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
     ${CMAKE_CURRENT_SOURCE_DIR}/TROPIC01_fw_update_files/${BL_FOLDER}/fw_v_${LT_CPU_FW_UPDATE_DATA_VER}/
 )
 
-add_library(tropic ${SDK_SRCS} ${SDK_INCS})
+add_library(tropic ${SDK_SRCS})
 
 target_include_directories(tropic PRIVATE ${SDK_DIRS_PRIV})
 target_include_directories(tropic PUBLIC ${SDK_DIRS_PUB})
