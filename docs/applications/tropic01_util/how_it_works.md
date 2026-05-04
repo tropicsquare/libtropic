@@ -1,5 +1,5 @@
 # How It Works
-This section provide more detailed information about the TROPIC01 Util ecosystem — the new TROPIC01 USB DevKit firmware and the Python CLI application.
+This section provides more detailed information about the TROPIC01 Util ecosystem — the new TROPIC01 USB DevKit firmware and the Python CLI application.
 
 ## Old USB DevKit Firmware
 Before diving into the new firmware, let's see how the old firmware works to get an idea what has changed:
@@ -24,7 +24,7 @@ The new firmware was developed to leverage the rich hardware of the STM32U5 micr
 </figure>
 
 - The USB DevKit implements a command-response protocol — it accepts either **raw commands** (*RawCmd*) or **application commands** (*AppCmd*), and returns **raw** (*RawResp*), **application** (*AppResp*), or **error** responses (*ErrorResp*). Both types of commands use binary format rather than ASCII.
-    - Error responses (omitted from the image for the sake of clarity) are returned when some error occures before the USB DevKit can know which command (raw or application) it received.
+    - Error responses (omitted from the image for the sake of clarity) are returned when some error occurs before the USB DevKit can know which command (raw or application) it received.
 - **Raw commands** are designed to provide the same capabilities as the old firmware did.
 - **Application commands** are issued through the Python CLI (TROPIC01 Util) and allow us to perform more complex operations:
     - Libtropic with STM32U5xx HAL is built into the STM32U5 firmware, exposing the entire Libtropic API for communication with TROPIC01.

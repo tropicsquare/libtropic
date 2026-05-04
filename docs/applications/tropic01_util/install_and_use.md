@@ -90,7 +90,7 @@ Next, flash the new USB DevKit firmware:
         cd libtropic/examples/applications/tropic01_util/firmware/build/
         ```
 
-        flash the firmware:
+        Flash the firmware:
         ```bash { .copy }
         dfu-util -a 0 -s 0x08000000:leave -D tropic01_util.bin
         ```
@@ -143,4 +143,4 @@ As previously mentioned, TROPIC01 Util is a Python CLI application used to inter
 !!! info "Secure Session establishment"
     There is no command for establishing a secure session. When the USB DevKit is connected to USB, during startup, it establishes a Secure Session with TROPIC01 using the default `prod0` keys in Pairing Key slot 0. For more information about the default pairing keys, refer to [Default Pairing Keys for a Secure Channel Handshake](../../reference/default_pairing_keys.md).
     
-    Because the usage of `prod0` keys is hardcoded into the USB DevKit firmware, there is no possibility to use other pairing keys without modifying the firmare and flashing it into the USB DevKit.
+    Because the usage of `prod0` keys is hardcoded into the USB DevKit firmware, there is no possibility to use other pairing keys without modifying the firmware and flashing it into the USB DevKit.
