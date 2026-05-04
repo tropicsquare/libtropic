@@ -12,4 +12,5 @@ Libtropic is a C-based Software Development Kit (SDK) developed by [Tropic Squar
 - [Reference](reference/index.md): Everything about Libtropic.
 - [Compatibility](compatibility/index.md): Hardware/software supported by Libtropic.
 - [For Contributors](for_contributors/index.md): Start developing with or contributing to Libtropic.
+- [Applications](applications/index.md): Applications/integrations where Libtropic is used.
 - [FAQ](./faq.md): Frequently Asked Questions, solutions to common problems.
