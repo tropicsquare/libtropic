@@ -1,0 +1,21 @@
+<map id="libtropic_l3.h" name="libtropic_l3.h">
+<area shape="rect" id="Node000001" title="Layer 3 functions declarations." alt="" coords="83,5,189,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,152,88,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,33,89,80,58,141,54,138,84,77,123,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="99,79,173,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="139,31,139,65,133,65,133,31"/>
+<area shape="rect" id="Node000004" href="$libtropic__common_8h.html" title="Shared definitions and functions commonly used by more libtropic&#39;s layers." alt="" coords="201,79,351,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="160,28,242,70,240,75,157,33"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="240,107,98,150,96,145,238,101"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="113,152,183,177"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="257,106,182,147,180,143,254,102"/>
+<area shape="rect" id="Node000006" href="$libtropic__macros_8h.html" title="Various helper macros." alt="" coords="207,152,350,177"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="279,104,280,138,275,139,274,104"/>
+<area shape="rect" id="Node000007" href="$tropic01__application__co_8h.html" title="Application Configuration Objects registers." alt="" coords="374,152,562,177"/>
+<area shape="poly" id="edge7_Node000004_Node000007" title=" " alt="" coords="308,102,425,144,423,149,306,107"/>
+<area shape="rect" id="Node000009" href="$tropic01__bootloader__co_8h.html" title="Bootloader Configuration Objects registers." alt="" coords="587,152,773,177"/>
+<area shape="poly" id="edge9_Node000004_Node000009" title=" " alt="" coords="341,101,602,147,601,152,340,107"/>
+<area shape="rect" id="Node000008" href="$bits_8h.html" title="Struct and function declarations for dealing with bit assignment." alt="" coords="544,225,603,251"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="486,175,546,215,544,220,483,180"/>
+<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="664,180,604,220,601,215,661,175"/>
+</map>

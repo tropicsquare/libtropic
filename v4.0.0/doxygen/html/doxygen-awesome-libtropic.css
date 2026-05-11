@@ -1,0 +1,94 @@
+/*
+ * Copyright (c) 2021 Nordic Semiconductor ASA
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/* Inspired by Zephyr template */
+
+html {
+    --primary-color: white;
+    --primary-dark-color: #1A3761;
+    --primary-light-color: #3c63ff;
+    --primary-lighter-color: #6584ff;
+    --primary-lightest-color: #829bff;
+
+    --side-nav-background: #0032FF;
+    --side-nav-foreground: white;
+
+    --page-outline-vis: #3b4978;
+
+    --searchbar-background: var(--page-background-color);
+    --searchbar-foreground: var(--page-foreground-color);
+
+    --link-color: #0032FF;
+    --param-color: #0032FF;
+
+    --side-nav-fixed-width: 300px;
+
+    --search-menu-hover-color: #3c63ff;
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not(.light-mode) {
+        color-scheme: dark;
+
+        --primary-color: white;
+        --primary-dark-color: #6584ff;
+        --primary-light-color: #829bff;
+        --primary-lighter-color: #829bff;
+        --primary-lightest-color: #829bff;
+
+        --side-nav-background: #0032FF;
+        --side-nav-foreground: white;
+
+        --page-outline-vis: #44568d;
+
+        --link-color: #6584ff;
+
+        --param-color: #6584ff;
+    }
+}
+
+html.dark-mode {
+    color-scheme: dark;
+
+    --primary-color: white;
+    --primary-dark-color: #6584ff;
+    --primary-light-color: #829bff;
+    --primary-lighter-color: #829bff;
+    --primary-lightest-color: #829bff;
+
+    --side-nav-background: #0032FF;
+    --side-nav-foreground: white;
+
+    --link-color: #6584ff;
+
+    --param-color: #6584ff;
+}
+
+.sm-dox a {
+    color: white !important;
+}
+
+.paramname {
+    color: var(--param-color);
+}
+
+dl.section dd, dl.bug dd, dl.deprecated dd {
+    margin-inline-start: revert;
+}
+
+/* adjust top and title to ~match Sphinx docs */
+#top {
+    background: var(--side-nav-background);
+}
+
+#titlearea table {
+    width: 100%;
+}
+
+@media screen and (min-width: 767px) {
+    #doc-content {
+        padding-top: calc(var(--top-height) - 180px);
+    }
+}
