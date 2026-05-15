@@ -27,11 +27,11 @@ Unfortunately, Raspberry Pi Pico boards and our Arduino shield are not plug-and-
         | IOREF                       | 3V3(OUT)              |
         | +3V3                        | 3V3(OUT)              |
         | GND                         | GND                   |
-        | SCK                         | GPxx                  |
-        | MISO                        | GPxx                  |
-        | MOSI                        | GPxx                  |
-        | CS                          | GPxx                  |
-        | GPO                         | GPxx                  |
+        | SCK                         | GP14                  |
+        | MISO                        | GP12                  |
+        | MOSI                        | GP15                  |
+        | CS                          | GP13                  |
+        | GPO                         | GP22                  |
         
         </div>
     
@@ -44,11 +44,11 @@ Unfortunately, Raspberry Pi Pico boards and our Arduino shield are not plug-and-
         | IOREF                       | 3V3(OUT)                |
         | +3V3                        | 3V3(OUT)                |
         | GND                         | GND                     |
-        | SCK                         | GPxx                    |
-        | MISO                        | GPxx                    |
-        | MOSI                        | GPxx                    |
-        | CS                          | GPxx                    |
-        | GPO                         | GPxx                    |
+        | SCK                         | GP14                    |
+        | MISO                        | GP12                    |
+        | MOSI                        | GP15                    |
+        | CS                          | GP13                    |
+        | GPO                         | GP22                    |
         
         </div>
 
@@ -64,25 +64,27 @@ See below for instructions based on your OS:
             - Ubuntu/Debian:
               ```bash { .copy }
               sudo apt update
-              sudo apt install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3
+              sudo apt install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3 libusb-1.0-0-dev
               ```
         2. Install Pico SDK:
             ```bash { .copy }
-            git clone https://github.com/raspberrypi/pico-sdk.git ~/pico-sdk
-            cd ~/pico-sdk
+            git clone https://github.com/raspberrypi/pico-sdk.git
+            cd pico-sdk/
             git submodule update --init
             ```
         3. Export `PICO_SDK_PATH`:
             ```bash { .copy }
-            echo 'export PICO_SDK_PATH=$HOME/pico-sdk' >> ~/.bashrc
-            source ~/.bashrc
+            export PICO_SDK_PATH=<path_to_pico-sdk>
             ```
-        4. Install picotool:
+        4. Install picotool with USB support:
             ```bash { .copy }
-            git clone https://github.com/raspberrypi/picotool.git ~/picotool
-            cmake -S ~/picotool -B ~/picotool/build -G Ninja
-            cmake --build ~/picotool/build
-            sudo cmake --install ~/picotool/build
+            git clone https://github.com/raspberrypi/picotool.git
+            cd picotool/
+            mkdir build/
+            cd build/
+            cmake -G Ninja -DPICOTOOL_FORCE_FETCH_LIBUSB=1 ..
+            ninja
+            sudo cmake --install .
             ```
         5. Install a serial monitor of your choice (`minicom`, `screen`, `GTKTerm`).
             - For beginners we recommend GUI-based GTKTerm.

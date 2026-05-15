@@ -56,13 +56,14 @@
             ```bash { .copy }
             sudo umount pico_mnt/
             ```
+        7. Open your Pico's serial port using your preffered serial monitor with configuration 8-n-1 and baudrate set to 115200. By default, the port is mapped to `/dev/ttyACM0`. For example, using GTKTerm:
+            ```bash { .copy }
+            gtkterm -p /dev/ttyACM0 -s 115200
+            ```
+
+            !!! warning "DTR signal support"
+                The program will wait until a serial monitor is connected, i.e. after the DTR signal is asserted — make sure your serial monitor asserts it! The program waits for the DTR signal so no output is lost before you connect to the serial (the serial port is created only after flashing the program).
         
-        After this, The board should automatically disconnect as a USB Mass Storage Device and run your code.
-        
-        To observe the output, open your Pico's serial port using your preferred serial monitor with configuration 8-N-1 and baudrate set to 115200. By default, the serial port is mapped to `/dev/ttyACM0`. For example, using GTKTerm:
-        ```bash { .copy }
-        gtkterm -p /dev/ttyACM0 -s 115200
-        ```
         After this, you should see output in your serial terminal.
         
         Optional next program uploads can be done with `picotool`. This means the BOOTSEL button does not have to be manually pressed. There are two options:
@@ -75,7 +76,7 @@
 
         2. Direct upload (no mount required):
         ```bash { .copy }
-        picotool load libtropic_identify_chip.elf --flash
+        picotool load libtropic_identify_chip.elf -f
         ```
 
             !!! note
