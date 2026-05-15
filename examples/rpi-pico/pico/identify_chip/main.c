@@ -13,16 +13,17 @@
 #include "hardware/spi.h"
 #include "libtropic.h"
 #include "libtropic_common.h"
+#include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_rpi_pico.h"
-#include "libtropic_trezor_crypto.h"
 #include "pico/stdlib.h"
 
 int main(void)
 {
     stdio_init_all();
-
-    // Give USB CDC terminal time to enumerate before first logs are printed.
-    sleep_ms(2000);
+    // Loop until the USB CDC serial connection is actively opened by your PC.
+    while (!stdio_usb_connected()) {
+        sleep_ms(10);
+    }
 
     printf("==============================================\n");
     printf("==== TROPIC01 Chip Identification Example ====\n");
@@ -31,17 +32,15 @@ int main(void)
     lt_handle_t lt_handle = {0};
 
     // Defaults correspond to SPI0 pins on Pico boards.
-    lt_dev_rpi_pico_t device = {
-        .spi_instance = spi0,
-        .spi_baudrate = 5000000,
-        .cs_pin = 17,
-        .pin_miso = 16,
-        .pin_mosi = 19,
-        .pin_sck = 18,
-    };
+    lt_dev_rpi_pico_t device = {.spi_instance = spi0,
+                                .spi_baudrate = 5000000,
+                                .cs_pin = 13,
+                                .pin_miso = 12,
+                                .pin_mosi = 15,
+                                .pin_sck = 14};
     lt_handle.l2.device = &device;
 
-    lt_ctx_trezor_crypto_t crypto_ctx = {0};
+    lt_ctx_mbedtls_v4_t crypto_ctx = {0};
     lt_handle.l3.crypto_ctx = &crypto_ctx;
 
     printf("Initializing handle...");

@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 # Pico (RP2040).
-set(PICO_BOARD pico CACHE STRING "Pico SDK board target" FORCE)
+set(PICO_BOARD pico_w CACHE STRING "Pico SDK board target" FORCE)
 
-if(NOT DEFINED PICO_SDK_PATH)
-	message(FATAL_ERROR "PICO_SDK_PATH is not set. Export it before configuring this example.")
+if(NOT DEFINED ENV{PICO_SDK_PATH})
+	message(FATAL_ERROR "PICO_SDK_PATH is not set. Please set the PICO_SDK_PATH environment variable.")
+else()
+	set(PICO_SDK_PATH $ENV{PICO_SDK_PATH})
 endif()
 
 include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
@@ -12,7 +14,10 @@ include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 project(
 	libtropic_identify_chip
 	DESCRIPTION "Libtropic chip identification example on Raspberry Pi Pico"
-	LANGUAGES C)
+	LANGUAGES C CXX)
+
+# Let pico_mbedtls provide MBEDTLS_CONFIG_FILE once (avoid duplicate -D defines).
+set(PICO_MBEDTLS_CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/mbedtls_config.h")
 
 pico_sdk_init()
 
@@ -23,12 +28,18 @@ endif()
 # Add path to libtropic source.
 add_subdirectory(${PATH_LIBTROPIC} "libtropic")
 
-# Add CAL and HAL used by this example.
-add_subdirectory("${PATH_LIBTROPIC}cal/trezor_crypto" "trezor_crypto_cal")
+# Add MbedTLS v4 CAL
+add_subdirectory("${PATH_LIBTROPIC}cal/mbedtls_v4" "mbedtls_v4_cal")
+target_sources(tropic PRIVATE ${LT_CAL_SRCS})
+target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Add Libtropic Raspberry Pi Pico HAL
 add_subdirectory("${PATH_LIBTROPIC}hal/rpi-pico" "rpi_pico_hal")
-target_sources(tropic PRIVATE ${LT_CAL_SRCS} ${LT_HAL_SRCS})
-target_include_directories(tropic PUBLIC ${LT_CAL_INC_DIRS} ${LT_HAL_INC_DIRS})
-target_link_libraries(tropic PUBLIC pico_stdlib hardware_spi hardware_gpio pico_rand)
+target_sources(tropic PRIVATE ${LT_HAL_SRCS})
+target_include_directories(tropic PUBLIC ${LT_HAL_INC_DIRS})
+
+# Add other Pico SDK deps
+target_link_libraries(tropic PUBLIC pico_stdlib hardware_spi hardware_gpio pico_rand pico_mbedtls)
 
 set(SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/main.c
