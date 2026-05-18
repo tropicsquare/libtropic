@@ -66,6 +66,11 @@ See below for instructions based on your OS:
               sudo apt update
               sudo apt install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3 libusb-1.0-0-dev
               ```
+            - Fedora:
+              ```bash { .copy }
+              sudo dnf groupinstall "Development Tools"
+              sudo dnf install cmake ninja-build arm-none-eabi-gcc-cs-c++ arm-none-eabi-gcc arm-none-eabi-newlib python3 libusb1-devel
+              ```
         2. Install Pico SDK:
             ```bash { .copy }
             git clone https://github.com/raspberrypi/pico-sdk.git
