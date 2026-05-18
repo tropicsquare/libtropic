@@ -45,28 +45,34 @@ int main(void)
 
     printf("Initializing handle...");
     lt_ret_t ret = lt_init(&lt_handle);
-    if (ret != LT_OK) {
-        printf("\nFailed to initialize handle, ret=%s\n", lt_ret_verbose(ret));
+    if (LT_OK != ret) {
+        fprintf(stderr, "\nFailed to initialize handle, ret=%s\n", lt_ret_verbose(ret));
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
 
+    // First, we check versions of both updateable firmwares. To do that, we need TROPIC01 to **not**
+    // be in the Start-up Mode. If there are valid firmwares, TROPIC01 will begin to execute them
+    // automatically on boot.
     printf("Sending reboot request...");
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
-        printf("\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
 
     printf("Reading data from chip...\n");
 
-    uint8_t fw_ver[4] = {0};
+    uint8_t fw_ver[4];
     ret = lt_get_info_riscv_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
-        printf("Failed to get RISC-V FW version, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get RISC-V FW version, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("  RISC-V FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3],
@@ -74,28 +80,35 @@ int main(void)
 
     ret = lt_get_info_spect_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
-        printf("Failed to get SPECT FW version, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get SPECT FW version, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("  SPECT FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3],
            fw_ver[2], fw_ver[1], fw_ver[0]);
 
+    // We need to do the maintenance reboot to check bootloader version and FW bank headers in the
+    // Startup Mode.
     printf("Sending maintenance reboot request...");
     ret = lt_reboot(&lt_handle, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
-        printf("\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
 
     printf("Reading data from chip...\n");
 
+    // When TROPIC01 is in Start-up Mode, we can get RISC-V bootloader version the same way as we got
+    // RISC-V FW version.
     ret = lt_get_info_riscv_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
-        printf("Failed to get RISC-V bootloader version, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get RISC-V bootloader version, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("  RISC-V bootloader version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n",
@@ -104,26 +117,30 @@ int main(void)
     printf("Firmware bank headers:\n");
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW1, printf);
     if (ret != LT_OK) {
-        printf("Failed to print TR01_FW_BANK_FW1 header, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_FW1 header, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW2, printf);
     if (ret != LT_OK) {
-        printf("Failed to print TR01_FW_BANK_FW2 header, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_FW2 header, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_SPECT1, printf);
     if (ret != LT_OK) {
-        printf("Failed to print TR01_FW_BANK_SPECT1 header, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_SPECT1 header, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_SPECT2, printf);
     if (ret != LT_OK) {
-        printf("Failed to print TR01_FW_BANK_SPECT2 header, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print TR01_FW_BANK_SPECT2 header, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
 
@@ -132,16 +149,18 @@ int main(void)
     printf("Chip ID data:\n");
     ret = lt_get_info_chip_id(&lt_handle, &chip_id);
     if (ret != LT_OK) {
-        printf("Failed to get chip ID, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to get chip ID, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
 
     printf("---------------------------------------------------------\n");
     ret = lt_print_chip_id(&chip_id, printf);
     if (ret != LT_OK) {
-        printf("Failed to print chip ID, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "Failed to print chip ID, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("---------------------------------------------------------\n");
@@ -149,19 +168,27 @@ int main(void)
     printf("Sending reboot request...");
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
-        printf("\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
+        fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
         lt_deinit(&lt_handle);
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK!\n");
 
     printf("Deinitializing handle...");
     ret = lt_deinit(&lt_handle);
-    if (ret != LT_OK) {
-        printf("\nFailed to deinitialize handle, ret=%s\n", lt_ret_verbose(ret));
+    if (LT_OK != ret) {
+        fprintf(stderr, "\nFailed to deinitialize handle, ret=%s\n", lt_ret_verbose(ret));
+        mbedtls_psa_crypto_free();
         return -1;
     }
     printf("OK\n");
+
+    // Cryptographic function provider deinitialization.
+    //
+    // In production, this would be done only once, typically
+    // during termination of the application.
+    mbedtls_psa_crypto_free();
 
     return 0;
 }
