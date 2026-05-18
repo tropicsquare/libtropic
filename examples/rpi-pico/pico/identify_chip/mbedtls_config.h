@@ -44,4 +44,8 @@
 #undef MBEDTLS_PSA_ITS_FILE_C
 #endif
 
+#ifdef MBEDTLS_SHA3_C
+#undef MBEDTLS_SHA3_C
+#endif
+
 #endif /* LIBTROPIC_PICO_MBEDTLS_CONFIG_H */
