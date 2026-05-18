@@ -63,7 +63,6 @@ See below for instructions based on your OS:
         1. Install build dependencies:
             - Ubuntu/Debian:
               ```bash { .copy }
-              sudo apt update
               sudo apt install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3 libusb-1.0-0-dev
               ```
             - Fedora:
@@ -75,7 +74,7 @@ See below for instructions based on your OS:
             ```bash { .copy }
             git clone https://github.com/raspberrypi/pico-sdk.git
             cd pico-sdk/
-            git submodule update --init
+            git submodule update --init --recursive
             ```
         3. Export `PICO_SDK_PATH`:
             ```bash { .copy }
