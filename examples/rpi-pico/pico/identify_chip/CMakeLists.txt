@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21.0)
 
 # Pico (RP2040).
-set(PICO_BOARD pico_w CACHE STRING "Pico SDK board target" FORCE)
+set(PICO_BOARD pico CACHE STRING "Pico SDK board target" FORCE)
 
 if(NOT DEFINED ENV{PICO_SDK_PATH})
 	message(FATAL_ERROR "PICO_SDK_PATH is not set. Please set the PICO_SDK_PATH environment variable, e.g. 'export PICO_SDK_PATH=<path_to_pico_sdk>'.")
