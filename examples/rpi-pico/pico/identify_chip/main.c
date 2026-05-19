@@ -15,11 +15,15 @@
 #include "libtropic_common.h"
 #include "libtropic_mbedtls_v4.h"
 #include "libtropic_port_rpi_pico.h"
-#include "pico/bootrom.h"
 #include "pico/stdlib.h"
 #include "psa/crypto.h"
 
-static void error_handler(lt_handle_t *lt_handle)
+/**
+ * @brief Cleanup function.
+ *
+ * @param lt_handle  Handle for communication with TROPIC01 (pass NULL to not call lt_deinit())
+ */
+static void cleanup(lt_handle_t *lt_handle)
 {
     // Deinitialize Libtropic handle.
     // Must be called only if lt_init() was successful!
@@ -27,19 +31,24 @@ static void error_handler(lt_handle_t *lt_handle)
         lt_deinit(lt_handle);
     }
 
-    // Free MbedTLS resources.
+    // Cryptographic function provider deinitialization.
+    //
+    // In production, this would be done only once, typically
+    // during termination of the application.
     mbedtls_psa_crypto_free();
 
-    // Force Pico into BOOTSEL mode to ensure availability.
-    // Parameter 1: USB mass storage activity LED pin (0 = default)
-    // Parameter 2: Disable interface types (0 = enable both USB drive and picotool)
-    reset_usb_boot(0, 0);
+    // Stay alive so the board is available via USB.
+    while (1) {
+        tight_loop_contents();
+    }
 }
 
 int main(void)
 {
     stdio_init_all();
+
     // Loop until the USB CDC serial connection is actively opened by your PC.
+    // This prevents loosing output from this example after flashing and before opening the serial.
     while (!stdio_usb_connected()) {
         sleep_ms(10);
     }
@@ -57,7 +66,7 @@ int main(void)
     psa_status_t status = psa_crypto_init();
     if (status != PSA_SUCCESS) {
         fprintf(stderr, "PSA Crypto initialization failed, status=%d (psa_status_t)\n", status);
-        error_handler(NULL);  // We pass NULL to indicate Libtropic handle was not initialized.
+        cleanup(NULL);  // We pass NULL to indicate Libtropic handle was not initialized yet.
     }
 
     // Libtropic handle.
@@ -69,10 +78,9 @@ int main(void)
     // Device structure.
     //
     // Modify this according to your environment.
-    // Defaults correspond to SPI0 pins on Pico boards.
     lt_dev_rpi_pico_t device = {0};
-    device.spi_instance = spi0;
-    device.spi_baudrate = 5000000;
+    device.spi_instance = spi1;
+    device.spi_baudrate = 6250000;
     device.cs_pin = 13;
     device.pin_miso = 12;
     device.pin_mosi = 15;
@@ -90,7 +98,7 @@ int main(void)
     lt_ret_t ret = lt_init(&lt_handle);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to initialize handle, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(NULL);  // We pass NULL to indicate Libtropic handle was not initialized.
+        cleanup(NULL);  // We pass NULL to indicate Libtropic handle was not initialized.
     }
     printf("OK\n");
 
@@ -101,7 +109,7 @@ int main(void)
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
         fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("OK\n");
 
@@ -111,7 +119,7 @@ int main(void)
     ret = lt_get_info_riscv_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to get RISC-V FW version, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("  RISC-V FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3],
            fw_ver[2], fw_ver[1], fw_ver[0]);
@@ -119,7 +127,7 @@ int main(void)
     ret = lt_get_info_spect_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to get SPECT FW version, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("  SPECT FW version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n", fw_ver[3],
            fw_ver[2], fw_ver[1], fw_ver[0]);
@@ -130,7 +138,7 @@ int main(void)
     ret = lt_reboot(&lt_handle, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("OK\n");
 
@@ -141,7 +149,7 @@ int main(void)
     ret = lt_get_info_riscv_fw_ver(&lt_handle, fw_ver);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to get RISC-V bootloader version, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("  RISC-V bootloader version: %" PRIX8 ".%" PRIX8 ".%" PRIX8 " (.%" PRIX8 ")\n",
            fw_ver[3] & 0x7f, fw_ver[2], fw_ver[1], fw_ver[0]);
@@ -150,22 +158,22 @@ int main(void)
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW1, printf);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to print TR01_FW_BANK_FW1 header, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_FW2, printf);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to print TR01_FW_BANK_FW2 header, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_SPECT1, printf);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to print TR01_FW_BANK_SPECT1 header, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     ret = lt_print_fw_header(&lt_handle, TR01_FW_BANK_SPECT2, printf);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to print TR01_FW_BANK_SPECT2 header, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
 
     struct lt_chip_id_t chip_id = {0};
@@ -174,14 +182,14 @@ int main(void)
     ret = lt_get_info_chip_id(&lt_handle, &chip_id);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to get chip ID, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
 
     printf("---------------------------------------------------------\n");
     ret = lt_print_chip_id(&chip_id, printf);
     if (ret != LT_OK) {
         fprintf(stderr, "Failed to print chip ID, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("---------------------------------------------------------\n");
 
@@ -189,7 +197,7 @@ int main(void)
     ret = lt_reboot(&lt_handle, TR01_REBOOT);
     if (ret != LT_OK) {
         fprintf(stderr, "\nlt_reboot() failed, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(&lt_handle);
+        cleanup(&lt_handle);
     }
     printf("OK!\n");
 
@@ -197,20 +205,11 @@ int main(void)
     ret = lt_deinit(&lt_handle);
     if (LT_OK != ret) {
         fprintf(stderr, "\nFailed to deinitialize handle, ret=%s\n", lt_ret_verbose(ret));
-        error_handler(NULL);  // We pass NULL to not deinitialize Libtropic handle.
+        cleanup(NULL);  // We pass NULL to not deinitialize Libtropic handle.
     }
     printf("OK\n");
 
-    // Cryptographic function provider deinitialization.
-    //
-    // In production, this would be done only once, typically
-    // during termination of the application.
-    mbedtls_psa_crypto_free();
+    cleanup(NULL);  // We pass NULL to not deinitialize Libtropic handle.
 
-    // Force Pico into BOOTSEL mode to ensure availability.
-    // Parameter 1: USB mass storage activity LED pin (0 = default)
-    // Parameter 2: Disable interface types (0 = enable both USB drive and picotool)
-    reset_usb_boot(0, 0);
-
-    return 0;  // Shouldn't be accessible.
+    return 0;  // This should not be reached.
 }
