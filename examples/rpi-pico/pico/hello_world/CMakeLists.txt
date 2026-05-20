@@ -97,7 +97,7 @@ set(SOURCES
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic pico_stdlib hardware_spi hardware_gpio pico_rand)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic pico_stdlib hardware_spi hardware_gpio pico_rand pico_mbedtls)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 	# These ensure picotool can reboot into bootloader.	
 	PICO_STDIO_USB_ENABLE_RESET_VIA_BAUD_RATE=1
@@ -111,3 +111,18 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 1)
 pico_enable_stdio_uart(${CMAKE_PROJECT_NAME} 0)
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
+
+# Some Mbed TLS PSA helper sources are not exposed via the pico_mbedtls target
+# in some SDK versions, so we include them directly.
+# This issue is fixed by this PR: https://github.com/raspberrypi/pico-sdk/pull/2711
+# However, the fix is not part of any release version yet.
+if(DEFINED PICO_SDK_PATH)
+	set(PICO_MBEDTLS_LIB_DIR "${PICO_SDK_PATH}/lib/mbedtls/library")
+	if(EXISTS ${PICO_MBEDTLS_LIB_DIR}/psa_util.c)
+		target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+			${PICO_MBEDTLS_LIB_DIR}/psa_util.c
+			${PICO_MBEDTLS_LIB_DIR}/psa_crypto_ffdh.c
+			${PICO_MBEDTLS_LIB_DIR}/psa_crypto_driver_wrappers_no_static.c
+		)
+	endif()
+endif()
