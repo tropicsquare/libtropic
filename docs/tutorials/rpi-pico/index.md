@@ -94,6 +94,8 @@ See below for instructions based on your OS:
             - For beginners we recommend GUI-based GTKTerm.
                 - Ubuntu/Debian: `sudo apt update && sudo apt install gtkterm`
                 - Fedora: `sudo dnf install gtkterm`
+            !!! warning "DTR signal support"
+                Make sure the serial monitor asserts the [DTR](https://en.wikipedia.org/wiki/Data_Terminal_Ready) signal (all of the mentioned serial monitors should do it by default).
         6. Get the Libtropic repository:
             - Using git: `git clone https://github.com/tropicsquare/libtropic.git`
             - Or you can download the [latest release](https://github.com/tropicsquare/libtropic/releases/latest).
