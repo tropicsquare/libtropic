@@ -80,13 +80,13 @@ See below for instructions based on your OS:
             ```bash { .copy }
             export PICO_SDK_PATH=<path_to_pico-sdk>
             ```
-        4. Install picotool with USB support:
+        4. Install picotool:
             ```bash { .copy }
             git clone https://github.com/raspberrypi/picotool.git
             cd picotool/
             mkdir build/
             cd build/
-            cmake -G Ninja -DPICOTOOL_FORCE_FETCH_LIBUSB=1 ..
+            cmake -G Ninja ..
             ninja
             sudo cmake --install .
             ```
