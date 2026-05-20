@@ -11,10 +11,9 @@ endif()
 
 include(${PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
-project(
-	libtropic_identify_chip
-	DESCRIPTION "Libtropic chip identification example on Raspberry Pi Pico 2"
-	LANGUAGES C CXX)
+project(libtropic_identify_chip
+		DESCRIPTION "Libtropic chip identification example on Raspberry Pi Pico 2."
+		LANGUAGES C CXX)
 
 # Let pico_mbedtls provide MBEDTLS_CONFIG_FILE once (avoid duplicate -D defines).
 set(PICO_MBEDTLS_CONFIG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/mbedtls_config.h")
