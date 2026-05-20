@@ -45,7 +45,7 @@ set(SOURCES
 )
 
 add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic pico_stdlib hardware_spi hardware_gpio pico_rand)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE tropic)
 # This ensures picotool can reboot into bootloader.
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 	PICO_STDIO_USB_ENABLE_RESET_VIA_BAUD_RATE=1
