@@ -9,7 +9,7 @@ endif()
 #   Set up projects and paths                                             #
 #                                                                         #
 ###########################################################################
-# Pico (RP2040).
+# Pico 2 (RP2350).
 set(PICO_BOARD pico2 CACHE STRING "Pico SDK board target" FORCE)
 
 if(NOT DEFINED ENV{PICO_SDK_PATH})
