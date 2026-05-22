@@ -116,3 +116,5 @@ There are two ways to flash firmware to a Pico board: with and without `picotool
 
     === ":fontawesome-brands-windows: Windows"
         TBA
+
+[Next example :material-arrow-right:](fw_update.md){ .md-button }
