@@ -31,11 +31,7 @@
 #define LT_EX_SH0_PUB lt_sh0pub_prod0
 #endif
 
-/**
- * @brief Cleanup function.
- *
- * @param lt_handle  Handle for communication with TROPIC01 (pass NULL to not call lt_deinit())
- */
+// Cleanup function (pass NULL as Libtropic handle to not deinitialize it).
 static void cleanup(lt_handle_t *lt_handle)
 {
     // Deinitialize Libtropic handle.
