@@ -89,6 +89,7 @@ nav:
       - Raspberry Pi Pico:
         - tutorials/rpi-pico/index.md
         - 1. Chip Identification: tutorials/rpi-pico/identify_chip.md
+        - 3. Hello, World!: tutorials/rpi-pico/hello_world.md
   - Reference:
     - reference/index.md
     - Libtropic Architecture: reference/libtropic_architecture.md
