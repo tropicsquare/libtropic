@@ -82,8 +82,8 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     gpio_put(device->cs_pin, 1);
 
 #ifdef LT_USE_INT_PIN
-    gpio_init(device->int_pin);
-    gpio_set_dir(device->int_pin, GPIO_IN);
+    gpio_init(device->int_gpio_pin);
+    gpio_set_dir(device->int_gpio_pin, GPIO_IN);
 #endif
 
     device->initialized = true;
@@ -135,7 +135,7 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     lt_dev_rpi_pico_t *device = (lt_dev_rpi_pico_t *)(s2->device);
 
     absolute_time_t start = get_absolute_time();
-    while (gpio_get(device->int_pin) == 0) {
+    while (gpio_get(device->int_gpio_pin) == 0) {
         if (absolute_time_diff_us(start, get_absolute_time()) / 1000 > ms) {
             return LT_L1_INT_TIMEOUT;
         }
