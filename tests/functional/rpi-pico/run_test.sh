@@ -12,6 +12,8 @@ TEST_NAME="$2"
 PICO_SERIAL_NUMBER="$3"
 
 BAUD="115200"
+SERIAL_WAIT_TIMEOUT_S="10"
+SERIAL_WAIT_POLL_S="0.2"
 SENTINEL_OK="TEST FINISHED"
 SENTINEL_FAIL_1="ASSERT FAIL"
 SENTINEL_FAIL_2="WARNING"
@@ -23,12 +25,31 @@ set -euo pipefail
 picotool load -x "${BUILD_DIR}/${TEST_NAME}.elf" --ser "${PICO_SERIAL_NUMBER}" -f
 
 # --- 3. MONITOR (PTY wrapper, no timeout) ---
-# Locate the serial device to get output from.
-PICO_SERIAL_DEVICE=$(find /dev/serial/by-id/ \( -type l -o -type c \) -iname "*${PICO_SERIAL_NUMBER}*" | head -n1)
-if ! ls "$PICO_SERIAL_DEVICE"; then
-    echo "Cannot open Pico board serial (serial number $PICO_SERIAL_NUMBER), terminating."
+# Locate the serial device to get output from (may appear shortly after flashing).
+wait_for_serial_device() {
+    local start_ts
+    start_ts=$(date +%s)
+
+    while true; do
+        PICO_SERIAL_DEVICE=$(find /dev/serial/by-id/ \( -type l -o -type c \) -iname "*${PICO_SERIAL_NUMBER}*" | head -n1)
+
+        if [[ -n "${PICO_SERIAL_DEVICE}" ]] && [[ -e "${PICO_SERIAL_DEVICE}" ]]; then
+            return 0
+        fi
+
+        if (( $(date +%s) - start_ts >= SERIAL_WAIT_TIMEOUT_S )); then
+            return 1
+        fi
+
+        sleep "$SERIAL_WAIT_POLL_S"
+    done
+}
+
+if ! wait_for_serial_device; then
+    echo "Timed out (${SERIAL_WAIT_TIMEOUT_S}s) waiting for Pico board serial (serial number ${PICO_SERIAL_NUMBER})."
     exit 1
 fi
+
 echo "Using serial device: $PICO_SERIAL_DEVICE"
 
 # Configure serial port
