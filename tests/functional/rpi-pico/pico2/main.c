@@ -50,6 +50,10 @@ int main(void)
 {
     stdio_init_all();
 
+    // Disable buffering.
+    setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stderr, NULL, _IONBF, 0);
+
     // Loop until the USB CDC serial connection is actively opened by your PC.
     // This prevents loosing output from this example after flashing and before opening the serial.
     while (!stdio_usb_connected()) {
