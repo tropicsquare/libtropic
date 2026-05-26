@@ -101,6 +101,8 @@ int main(void)
     lt_handle_t *__lt_handle__ = &lt_handle;
 #include "lt_test_registry.c.inc"
 
+    LT_FINISH_TEST();
+
     cleanup();
 
     return 0;  // This should not be reached.
