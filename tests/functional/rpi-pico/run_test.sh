@@ -20,7 +20,7 @@ SENTINEL_FAIL_3="ERROR"
 set -euo pipefail
 
 # --- 2. FLASH DEVICE ---
-picotool load "${BUILD_DIR}/${TEST_NAME}.elf" --ser "${PICO_SERIAL_NUMBER}" -f
+picotool load -x "${BUILD_DIR}/${TEST_NAME}.elf" --ser "${PICO_SERIAL_NUMBER}" -f
 
 # --- 3. MONITOR (PTY wrapper, no timeout) ---
 # Locate the serial device to get output from.
