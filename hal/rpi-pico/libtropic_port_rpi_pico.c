@@ -147,21 +147,16 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 
 int lt_port_log(const char *format, ...)
 {
-    static char log_buff[1024];
     va_list args;
     int ret;
 
     va_start(args, format);
-    ret = vsnprintf(log_buff, sizeof(log_buff), format, args);
+    ret = vfprintf(stderr, format, args);
+    fflush(stderr);
     va_end(args);
 
-    if (ret > 0) {
-        size_t len = strnlen(log_buff, sizeof(log_buff));
-
-        // Pico SDK
-        fwrite(log_buff, 1, len, stdout);
-        fflush(stdout);
-    }
+    // Force the Pico HW to send USB packets now.
+    stdio_flush();
 
     return ret;
 }
