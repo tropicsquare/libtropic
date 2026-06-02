@@ -52,14 +52,6 @@ fi
 
 echo "Using serial device: $PICO_SERIAL_DEVICE"
 
-# Configure serial port
-stty -F "$PICO_SERIAL_DEVICE" "$BAUD" \
-  cs8 -cstopb -parenb \
-  -ixon -ixoff -crtscts \
-  -icanon -echo -echoe -echok -echoctl -echoke \
-  -icrnl -inlcr -igncr -opost min 1 time 0 \
-  -hupcl
-
 serial_reader() {
     GOT_ERROR=0
     exec 3<"$PICO_SERIAL_DEVICE"
@@ -80,6 +72,14 @@ serial_reader() {
 # Start serial reading in background
 serial_reader &
 READER_PID=$!
+
+# Configure serial port
+stty -F "$PICO_SERIAL_DEVICE" "$BAUD" \
+  cs8 -cstopb -parenb \
+  -ixon -ixoff -crtscts \
+  -icanon -echo -echoe -echok -echoctl -echoke \
+  -icrnl -inlcr -igncr -opost min 1 time 0 \
+  -hupcl
 
 # Ensure the background serial reader is killed on script termination
 cleanup() {
