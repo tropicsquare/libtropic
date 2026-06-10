@@ -1,10 +1,15 @@
-#ifndef LT_PORT_RPI_PICO_H
-#define LT_PORT_RPI_PICO_H
+#ifndef LIBTROPIC_PORT_RPI_PICO_H
+#define LIBTROPIC_PORT_RPI_PICO_H
 
 /**
- * @file lt_port_rpi_pico_.c
+ * @file libtropic_port_rpi_pico.h
  * @author Wuard
- * @brief Port for Raspberry Pi Pico (RP2040) using native SPI (and GPIO for chip select).
+ * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2026 Tropic Square s.r.o.
+ * @brief Port for Raspberry Pi Pico and Pico 2 (RP2040 and RP2350) using native SPI (and GPIO for chip
+ * select).
+ *
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  **/
 
 #include "hardware/gpio.h"
@@ -20,25 +25,24 @@
 typedef struct lt_dev_rpi_pico_t {
     /** @brief @public SPI instance (e.g., spi0 or spi1). */
     spi_inst_t *spi_instance;
-
-    /** @brief @public SPI frequency in Hz (e.g., 1 MHz, 4 MHz, etc.). */
-    uint32_t spi_baudrate;
-
+    /** @brief @public SPI CLK frequency (Hz). */
+    uint spi_baudrate;
     /** @brief @public Pin used for chip select (GPIO). */
     uint cs_pin;
-
-    /** @brief @public SPI pins */
+    /** @brief @public SPI MISO pin. */
     uint pin_miso;
+    /** @brief @public SPI MOSI pin. */
     uint pin_mosi;
+    /** @brief @public SPI CLK pin. */
     uint pin_sck;
 
 #ifdef LT_USE_INT_PIN
-    /** @brief @public Pin used for interrupts (optional). */
-    uint16_t int_gpio_pin;
+    /** @brief @public GPIO pin connected to TROPIC01's interrupt pin. */
+    uint int_gpio_pin;
 #endif
 
-    /** @brief @private Initialization flag */
+    /** @brief @private Device structure initialization flag. */
     bool initialized;
 } lt_dev_rpi_pico_t;
 
-#endif  // LT_PORT_PICO_H
+#endif  // LIBTROPIC_PORT_RPI_PICO_H

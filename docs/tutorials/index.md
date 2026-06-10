@@ -16,3 +16,4 @@ Pick a set of tutorials based on your host platform:
 - [:fontawesome-brands-linux: Linux](linux/index.md)
 - [:simple-espressif: ESP32](esp32/index.md)
 - [:simple-stmicroelectronics: STM32](stm32/index.md)
+- [:fontawesome-brands-raspberry-pi: Raspberry Pi Pico](rpi-pico/index.md)

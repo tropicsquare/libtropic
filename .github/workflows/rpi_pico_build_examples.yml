@@ -1,0 +1,109 @@
+name: Build examples for Raspberry Pi Pico boards
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
+      - 'develop'
+
+jobs:
+  rpi_pico_build_examples:
+    name: Build examples for Raspberry Pi Pico boards
+    runs-on: ubuntu-latest
+    env:
+      PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y cmake build-essential ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi git python3 ccache
+            pip3 install jsonschema
+
+      - name: Cache pico-sdk
+        uses: actions/cache@v4
+        with:
+          path: pico-sdk
+          key: pico-sdk-2.2.0
+
+      - name: Clone Pico SDK (pinned to 2.2.0) and verify SHA
+        run: |
+            # shallow clone the tag and try shallow submodule fetch to save time
+            git clone --depth 1 --branch 2.2.0 https://github.com/raspberrypi/pico-sdk.git $PICO_SDK_PATH
+            # attempt shallow submodule initialization; fall back if not supported
+            git -C $PICO_SDK_PATH submodule update --init --recursive --depth 1 || git -C $PICO_SDK_PATH submodule update --init --recursive
+            EXPECTED_SHA="a1438dff1d38bd9c65dbd693f0e5db4b9ae91779"
+            ACTUAL_SHA=$(git -C $PICO_SDK_PATH rev-parse HEAD)
+            echo "pico-sdk HEAD: $ACTUAL_SHA (expected $EXPECTED_SHA)"
+            if [ "$ACTUAL_SHA" != "$EXPECTED_SHA" ]; then
+              echo "ERROR: pico-sdk commit SHA mismatch"
+              exit 1
+            fi
+
+      - name: Compile Raspberry Pi Pico examples
+        run: |
+          # enable ccache usage for CMake
+          export CMAKE_EXTRA_ARGS="-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+
+          cd examples/rpi-pico/pico/hello_world
+          cmake ./ -B build -G Ninja $CMAKE_EXTRA_ARGS
+          cd build && ninja
+
+          cd ../../identify_chip
+          cmake ./ -B build -G Ninja $CMAKE_EXTRA_ARGS
+          cd build && ninja
+
+          cd ../../fw_update
+          cmake ./ -B build -G Ninja $CMAKE_EXTRA_ARGS -DLT_DISABLE_MAINTENANCE_MODE=OFF
+          cd build && ninja
+
+          cd ..
+          cmake ./ -B build_dis_mm -G Ninja $CMAKE_EXTRA_ARGS -DLT_DISABLE_MAINTENANCE_MODE=ON
+          cd build_dis_mm && ninja
+
+          cd ..
+          cmake ./ -B build_abab -G Ninja $CMAKE_EXTRA_ARGS -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=OFF
+          cd build_abab && ninja
+
+          cd ..
+          cmake ./ -B build_abab_dis_mm -G Ninja $CMAKE_EXTRA_ARGS -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=ON
+          cd build_abab_dis_mm && ninja
+
+      - name: Compile Raspberry Pi Pico 2 examples
+        run: |
+          # enable ccache usage for CMake
+          export CMAKE_EXTRA_ARGS="-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+
+          cd examples/rpi-pico/pico2/hello_world
+          cmake ./ -B build -G Ninja $CMAKE_EXTRA_ARGS
+          cd build && ninja
+
+          cd ../../identify_chip
+          cmake ./ -B build -G Ninja $CMAKE_EXTRA_ARGS
+          cd build && ninja
+
+          cd ../../fw_update
+          cmake ./ -B build -G Ninja $CMAKE_EXTRA_ARGS -DLT_DISABLE_MAINTENANCE_MODE=OFF
+          cd build && ninja
+
+          cd ..
+          cmake ./ -B build_dis_mm -G Ninja $CMAKE_EXTRA_ARGS -DLT_DISABLE_MAINTENANCE_MODE=ON
+          cd build_dis_mm && ninja
+
+          cd ..
+          cmake ./ -B build_abab -G Ninja $CMAKE_EXTRA_ARGS -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=OFF
+          cd build_abab && ninja
+
+          cd ..
+          cmake ./ -B build_abab_dis_mm -G Ninja $CMAKE_EXTRA_ARGS -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=ON
+          cd build_abab_dis_mm && ninja
