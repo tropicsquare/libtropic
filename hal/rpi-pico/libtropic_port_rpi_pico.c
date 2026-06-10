@@ -1,7 +1,12 @@
 /**
- * @file lt_port_rpi_pico_.c
+ * @file libtropic_port_rpi_pico.c
  * @author Wuard
- * @brief Port for Raspberry Pi Pico (RP2040) using native SPI (and GPIO for chip select).
+ * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2026 Tropic Square s.r.o.
+ * @brief Port for Raspberry Pi Pico and Pico 2 (RP2040 and RP2350) using native SPI (and GPIO for chip
+ * select).
+ *
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  **/
 
 #include "libtropic_port_rpi_pico.h"
@@ -19,6 +24,8 @@
 #include "libtropic_port.h"
 #include "pico/rand.h"
 #include "pico/stdlib.h"
+
+#define LT_RPI_PICO_GPIO_OUTPUT_CHECK_ATTEMPTS 10
 
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
@@ -42,17 +49,35 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
     lt_dev_rpi_pico_t *device = (lt_dev_rpi_pico_t *)(s2->device);
+
     gpio_put(device->cs_pin, 0);
-    while (gpio_get(device->cs_pin));
-    return LT_OK;
+
+    for (int read_attempts = 0; read_attempts < LT_RPI_PICO_GPIO_OUTPUT_CHECK_ATTEMPTS;
+         read_attempts++) {
+        if (!gpio_get(device->cs_pin)) {
+            return LT_OK;
+        }
+    }
+
+    LT_LOG_ERROR("Failed to set CSN low!");
+    return LT_HAL_ERROR;
 }
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
     lt_dev_rpi_pico_t *device = (lt_dev_rpi_pico_t *)(s2->device);
+
     gpio_put(device->cs_pin, 1);
-    while (!gpio_get(device->cs_pin));
-    return LT_OK;
+
+    for (int read_attempts = 0; read_attempts < LT_RPI_PICO_GPIO_OUTPUT_CHECK_ATTEMPTS;
+         read_attempts++) {
+        if (gpio_get(device->cs_pin)) {
+            return LT_OK;
+        }
+    }
+
+    LT_LOG_ERROR("Failed to set CSN high!");
+    return LT_HAL_ERROR;
 }
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
@@ -74,16 +99,14 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     gpio_set_function(device->pin_mosi, GPIO_FUNC_SPI);
     gpio_set_function(device->pin_sck, GPIO_FUNC_SPI);
 
-    gpio_set_function(device->cs_pin, GPIO_FUNC_SIO);
-
     // CS as output
     gpio_init(device->cs_pin);
     gpio_set_dir(device->cs_pin, GPIO_OUT);
     gpio_put(device->cs_pin, 1);
 
 #ifdef LT_USE_INT_PIN
-    gpio_init(device->int_pin);
-    gpio_set_dir(device->int_pin, GPIO_IN);
+    gpio_init(device->int_gpio_pin);
+    gpio_set_dir(device->int_gpio_pin, GPIO_IN);
 #endif
 
     device->initialized = true;
@@ -110,12 +133,12 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     }
 
     // returns the number of bytes transferred, which should be equal to tx_data_length
-    uint16_t dataLen = spi_write_read_blocking(device->spi_instance, s2->buff + offset,
-                                               s2->buff + offset, tx_data_length);
+    uint16_t bytes_transferred = spi_write_read_blocking(device->spi_instance, s2->buff + offset,
+                                                         s2->buff + offset, tx_data_length);
 
-    if (dataLen != tx_data_length) {
+    if (bytes_transferred != tx_data_length) {
         LT_LOG_ERROR("SPI transfer failed! Expected to transfer %u bytes, but transferred %u bytes",
-                     tx_data_length, dataLen);
+                     tx_data_length, bytes_transferred);
         return LT_HAL_ERROR;
     }
 
@@ -135,11 +158,11 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
     lt_dev_rpi_pico_t *device = (lt_dev_rpi_pico_t *)(s2->device);
 
     absolute_time_t start = get_absolute_time();
-    while (gpio_get(device->int_pin) == 0) {
-        if (absolute_time_diff_us(start, get_absolute_time()) / 1000 > ms) {
+    while (gpio_get(device->int_gpio_pin) == 0) {
+        if (absolute_time_diff_us(start, get_absolute_time()) > (int64_t)ms * 1000LL) {
             return LT_L1_INT_TIMEOUT;
         }
-        sleep_ms(1);
+        sleep_us(50);
     }
     return LT_OK;
 }
@@ -147,21 +170,16 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 
 int lt_port_log(const char *format, ...)
 {
-    static char log_buff[1024];
     va_list args;
     int ret;
 
     va_start(args, format);
-    ret = vsnprintf(log_buff, sizeof(log_buff), format, args);
+    ret = vfprintf(stderr, format, args);
+    fflush(stderr);
     va_end(args);
 
-    if (ret > 0) {
-        size_t len = strnlen(log_buff, sizeof(log_buff));
-
-        // Pico SDK
-        fwrite(log_buff, 1, len, stdout);
-        fflush(stdout);
-    }
+    // Force the Pico HW to send USB packets now.
+    stdio_flush();
 
     return ret;
 }

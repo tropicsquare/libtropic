@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Make Raspberry Pi Pico HAL officially supported by Tropic Square.
 
 ### Added
 
@@ -15,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - STM32 examples and tests: replace `return` in the `main()` function with `Error_Handler()`, enhanced error logging.
 - Added `const` to `struct lt_config_obj_desc_t cfg_desc_table` to save RAM space (it is never modified).
 - Marked `lt_ret_strs` pointer with `const`.
+- Raspberry Pi Pico HAL:
+  - `lt_dev_rpi_pico_t`: convert `int_gpio_pin` and `spi_baudrate` types to `uint`,
+  - `lt_port_spi_csn_low()`, `lt_port_spi_csn_high()`: add retry mechanism,
+  - `lt_port_init()`: remove redundant call of `gpio_set_function(device->cs_pin, GPIO_FUNC_SIO)` (done by `gpio_init()`),
+  - use `int_gpio_pin` as declared in `lt_dev_rpi_pico_t`,
+  - `lt_port_delay_on_int()`: avoid division, reduce sleep time to 50 us,
+  - `lt_port_log()`: simplify, enhance, call `stdio_flush()` from Pico SDK to ensure flushing.
 
 ### Removed
 
