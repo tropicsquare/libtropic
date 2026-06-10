@@ -112,6 +112,11 @@ pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 1)
 pico_enable_stdio_uart(${CMAKE_PROJECT_NAME} 0)
 pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
 
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+	message(WARNING "Detected CMAKE_BUILD_TYPE=Release. Forcing -O1 for pico_mbedtls to bypass the RP2040 optimization bug: https://github.com/raspberrypi/pico-sdk/issues/2633")
+	target_compile_options(pico_mbedtls INTERFACE "-O1")
+endif()
+
 # Some Mbed TLS PSA helper sources are not exposed via the pico_mbedtls target
 # in some SDK versions, so we include them directly.
 # This issue is fixed by this PR: https://github.com/raspberrypi/pico-sdk/pull/2711
