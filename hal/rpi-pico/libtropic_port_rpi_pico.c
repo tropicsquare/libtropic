@@ -1,7 +1,12 @@
 /**
- * @file lt_port_rpi_pico_.c
+ * @file libtropic_port_rpi_pico.c
  * @author Wuard
- * @brief Port for Raspberry Pi Pico (RP2040) using native SPI (and GPIO for chip select).
+ * @author Tropic Square s.r.o.
+ * @copyright Copyright (c) 2020-2026 Tropic Square s.r.o.
+ * @brief Port for Raspberry Pi Pico and Pico 2 (RP2040 and RP2350) using native SPI (and GPIO for chip
+ * select).
+ *
+ * @license For the license see LICENSE.md in the root directory of this source tree.
  **/
 
 #include "libtropic_port_rpi_pico.h"
