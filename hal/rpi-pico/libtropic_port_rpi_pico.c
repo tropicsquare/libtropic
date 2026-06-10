@@ -159,10 +159,10 @@ lt_ret_t lt_port_delay_on_int(lt_l2_state_t *s2, uint32_t ms)
 
     absolute_time_t start = get_absolute_time();
     while (gpio_get(device->int_gpio_pin) == 0) {
-        if (absolute_time_diff_us(start, get_absolute_time()) / 1000 > ms) {
+        if (absolute_time_diff_us(start, get_absolute_time()) > (int64_t)ms * 1000LL) {
             return LT_L1_INT_TIMEOUT;
         }
-        sleep_ms(1);
+        sleep_us(50);
     }
     return LT_OK;
 }
