@@ -17,3 +17,8 @@ project(libtropic_functional_tests_rpi_pico
 		LANGUAGES C CXX)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../common.cmake)
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+	message(WARNING "Detected CMAKE_BUILD_TYPE=Release. Forcing -O1 for pico_mbedtls to bypass the RP2040 optimization bug: https://github.com/raspberrypi/pico-sdk/issues/2633")
+	target_compile_options(pico_mbedtls INTERFACE "-O1")
+endif()
