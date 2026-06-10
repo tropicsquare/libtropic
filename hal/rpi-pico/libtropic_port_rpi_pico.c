@@ -74,8 +74,6 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     gpio_set_function(device->pin_mosi, GPIO_FUNC_SPI);
     gpio_set_function(device->pin_sck, GPIO_FUNC_SPI);
 
-    gpio_set_function(device->cs_pin, GPIO_FUNC_SIO);
-
     // CS as output
     gpio_init(device->cs_pin);
     gpio_set_dir(device->cs_pin, GPIO_OUT);
