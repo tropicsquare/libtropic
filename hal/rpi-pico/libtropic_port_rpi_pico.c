@@ -25,6 +25,8 @@
 #include "pico/rand.h"
 #include "pico/stdlib.h"
 
+#define LT_RPI_PICO_GPIO_OUTPUT_CHECK_ATTEMPTS 10
+
 lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 {
     LT_UNUSED(s2);
@@ -47,17 +49,35 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count)
 lt_ret_t lt_port_spi_csn_low(lt_l2_state_t *s2)
 {
     lt_dev_rpi_pico_t *device = (lt_dev_rpi_pico_t *)(s2->device);
+
     gpio_put(device->cs_pin, 0);
-    while (gpio_get(device->cs_pin));
-    return LT_OK;
+
+    for (int read_attempts = 0; read_attempts < LT_RPI_PICO_GPIO_OUTPUT_CHECK_ATTEMPTS;
+         read_attempts++) {
+        if (!gpio_get(device->cs_pin)) {
+            return LT_OK;
+        }
+    }
+
+    LT_LOG_ERROR("Failed to set CSN low!");
+    return LT_HAL_ERROR;
 }
 
 lt_ret_t lt_port_spi_csn_high(lt_l2_state_t *s2)
 {
     lt_dev_rpi_pico_t *device = (lt_dev_rpi_pico_t *)(s2->device);
+
     gpio_put(device->cs_pin, 1);
-    while (!gpio_get(device->cs_pin));
-    return LT_OK;
+
+    for (int read_attempts = 0; read_attempts < LT_RPI_PICO_GPIO_OUTPUT_CHECK_ATTEMPTS;
+         read_attempts++) {
+        if (gpio_get(device->cs_pin)) {
+            return LT_OK;
+        }
+    }
+
+    LT_LOG_ERROR("Failed to set CSN high!");
+    return LT_HAL_ERROR;
 }
 
 lt_ret_t lt_port_init(lt_l2_state_t *s2)
