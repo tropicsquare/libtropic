@@ -15,9 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PICO_SDK_PATH: ${{ github.workspace }}/pico-sdk
-      # use ccache with the ARM cross-compiler to speed repeated builds
-      CC: "ccache arm-none-eabi-gcc"
-      CXX: "ccache arm-none-eabi-g++"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
