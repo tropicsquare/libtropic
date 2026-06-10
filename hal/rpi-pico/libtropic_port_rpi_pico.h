@@ -20,24 +20,23 @@
 typedef struct lt_dev_rpi_pico_t {
     /** @brief @public SPI instance (e.g., spi0 or spi1). */
     spi_inst_t *spi_instance;
-
-    /** @brief @public SPI frequency in Hz (e.g., 1 MHz, 4 MHz, etc.). */
-    uint32_t spi_baudrate;
-
+    /** @brief @public SPI CLK frequency (Hz). */
+    uint spi_baudrate;
     /** @brief @public Pin used for chip select (GPIO). */
     uint cs_pin;
-
-    /** @brief @public SPI pins */
+    /** @brief @public SPI MISO pin. */
     uint pin_miso;
+    /** @brief @public SPI MOSI pin. */
     uint pin_mosi;
+    /** @brief @public SPI CLK pin. */
     uint pin_sck;
 
 #ifdef LT_USE_INT_PIN
-    /** @brief @public Pin used for interrupts (optional). */
-    uint16_t int_gpio_pin;
+    /** @brief @public GPIO pin connected to TROPIC01's interrupt pin. */
+    uint int_gpio_pin;
 #endif
 
-    /** @brief @private Initialization flag */
+    /** @brief @private Device structure initialization flag. */
     bool initialized;
 } lt_dev_rpi_pico_t;
 
