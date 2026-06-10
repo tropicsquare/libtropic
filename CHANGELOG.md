@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make Raspberry Pi Pico HAL officially supported by Tropic Square.
 
 ### Added
+- Raspberry Pi Pico examples and tutorials.
 
 ### Fixed
 - STM32 examples and tests: replace `return` in the `main()` function with `Error_Handler()`, enhanced error logging.
