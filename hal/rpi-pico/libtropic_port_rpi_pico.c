@@ -133,12 +133,12 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
     }
 
     // returns the number of bytes transferred, which should be equal to tx_data_length
-    uint16_t dataLen = spi_write_read_blocking(device->spi_instance, s2->buff + offset,
-                                               s2->buff + offset, tx_data_length);
+    uint16_t bytes_transferred = spi_write_read_blocking(device->spi_instance, s2->buff + offset,
+                                                         s2->buff + offset, tx_data_length);
 
-    if (dataLen != tx_data_length) {
+    if (bytes_transferred != tx_data_length) {
         LT_LOG_ERROR("SPI transfer failed! Expected to transfer %u bytes, but transferred %u bytes",
-                     tx_data_length, dataLen);
+                     tx_data_length, bytes_transferred);
         return LT_HAL_ERROR;
     }
 
