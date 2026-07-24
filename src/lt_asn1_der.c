@@ -36,12 +36,12 @@ struct parse_ctx_t {
     bool cropped;                          /** Searched object was cropped */
 };
 
-#define LT_ASN1_DER_PARSE_ERR(ctx, msg, ...)                           \
+#define LT_ASN1_DER_PARSE_ERR(ctx, ...)                                \
     do {                                                               \
         LT_LOG_ERROR("ASN1 DER Parsing error:");                       \
         LT_LOG_ERROR("    Byte position:    %" PRIu16, ctx->past);     \
         LT_LOG_ERROR("    Byte value:       0x%" PRIx8, *(ctx->head)); \
-        LT_LOG_ERROR("    Error:            " msg, ##__VA_ARGS__);     \
+        LT_LOG_ERROR("    Error:            " __VA_ARGS__);            \
     } while (0);
 
 /**
