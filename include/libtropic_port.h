@@ -22,6 +22,7 @@
 #include <stdlib.h>
 
 #include "libtropic_common.h"
+#include "libtropic_macros.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -138,6 +139,7 @@ lt_ret_t lt_port_random_bytes(lt_l2_state_t *s2, void *buff, size_t count);
  * @return The number of characters printed (like printf), or a negative
  *         value on encoding/printing error.
  */
+LT_PRINTF_ATTR(1, 2)
 int lt_port_log(const char *format, ...);
 
 /** @} */  // end of group_port_functions

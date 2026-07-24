@@ -2,6 +2,7 @@
 #define LT_TEST_COMMON_H
 
 #include "libtropic_common.h"
+#include "libtropic_macros.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -87,6 +88,7 @@ void hexdump_8byte(const uint8_t *data, uint16_t size);
  * @return       The number of characters printed (excluding the terminating null byte), or a negative
  * value if an output error occurs.
  */
+LT_PRINTF_ATTR(1, 2)
 int chip_id_printf_wrapper(const char *format, ...);
 
 #ifdef __cplusplus

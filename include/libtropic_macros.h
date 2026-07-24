@@ -43,6 +43,22 @@ extern "C" {
         ___a < ___b ? ___a : ___b; \
     })
 
+/**
+ * @brief Macro for applying GNU/Clang printf format attributes.
+ *
+ * Enables compile-time format string validation for custom print-like functions.
+ * Expands to `__attribute__((format(printf, fmt, args)))` on supported compilers,
+ * or evaluates to empty on unsupported compilers (e.g., MSVC).
+ *
+ * @param fmt 1-based index of the format string parameter.
+ * @param args 1-based index of the first variadic argument (`...`).
+ */
+#if defined(__GNUC__) || defined(__clang__)
+#define LT_PRINTF_ATTR(fmt, args) __attribute__((format(printf, fmt, args)))
+#else
+#define LT_PRINTF_ATTR(fmt, args) /* Evaluates to empty on MSVC / other compilers */
+#endif
+
 #ifndef __cplusplus
 
 /**
