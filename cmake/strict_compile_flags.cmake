@@ -12,13 +12,19 @@ set(LT_STRICT_COMPILATION_FLAGS
     "-Wfloat-equal"
     "-Wnull-dereference"
     "-Wredundant-decls"
-    "-Wlogical-op"
     "-Wstrict-prototypes"
     "-Wunused-result"
     "-Wmissing-prototypes"
-    "-Wjump-misses-init"
     "-fstack-protector-strong"
     CACHE STRING "Strict compile flags")
+
+# Some flags are GCC-only
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND LT_STRICT_COMPILATION_FLAGS 
+        "-Wlogical-op"
+        "-Wjump-misses-init"
+    )
+endif()
 
 # Create the INTERFACE library with the requested name.
 add_library(libtropic_strict_comp_flags INTERFACE)
