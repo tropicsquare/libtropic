@@ -45,3 +45,9 @@ IndentCaseLabels: true
 BreakBeforeBinaryOperators: None
 # Make breaking at '=' very expensive so it forces breaks inside arguments instead
 PenaltyBreakAssignment: 100
+
+# Newline handling to satisfy '-Wnewline-eof' compiler flag
+# Inserts a single newline character at the end of the file if missing
+InsertNewlineAtEOF: true
+# Prevents extra blank lines from piling up at the end of the file
+KeepEmptyLinesAtEOF: false
