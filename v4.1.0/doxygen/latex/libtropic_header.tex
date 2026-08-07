@@ -1,0 +1,170 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Copyright © 2022 Tropic Square s.r.o. (https://tropicsquare.com/)
+%%
+%% This work is subject to the license terms of the LICENSE.txt file in the
+%% root directory of this source tree.
+%%
+%% If a copy of the LICENSE file was not distributed with this work, you can
+%% obtain one at (https://tropicsquare.com/license).
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Specify Tropic Square document class
+\documentclass[notconfidential]{tropic_design_spec}
+
+% Undefine these commands defined in ts-latex-lib (doxygen redefines it)
+\makeatletter
+	\let\c@LT@tables\undefined
+	\let\c@LT@chunks\undefined
+\makeatother
+
+% Packages required by doxygen
+\PassOptionsToPackage{rgb,table}{xcolor}
+\usepackage{doxygen}
+\usepackage{makeidx}
+
+\makeindex
+
+% Put sections on new page
+\AddToHook{cmd/doxysection/before}{\clearpage}
+
+% Use itemize and enumerate from ts-latex-lib
+\let\DoxyItemize\itemize
+\let\DoxyEnumerate\enumerate
+
+% TODO: redo this
+\newenvironment{TropicRatioTableTwoCol}[3]
+{%
+  \renewcommand{\tropicnumtablecols}{2}
+  \TropicRatioGuts {2}{#3}{#1}{#2}{0}{0}{0}{0}{0}
+}
+{%
+  \endtabularx%
+}
+
+% TODO: redo this
+\newenvironment{TropicRatioTableThreeCol}[4]
+{%
+  \renewcommand{\tropicnumtablecols}{3}
+  \TropicRatioGuts {3}{#4}{#1}{#2}{#3}{0}{0}{0}{0}
+}
+{%
+  \endtabularx%
+}
+
+% Redefine environment for tables with params
+\renewenvironment{DoxyParams}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableTwoCol%
+  {0.2} {0.8}%
+  {Name & Description}%
+}
+{%
+  \endTropicRatioTableTwoCol%
+}
+
+% Redefine environment for tables with data fields
+\renewenvironment{DoxyFields}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableThreeCol%
+  {0.22} {0.43} {0.35}%
+  {Type & Name & Description}%
+}
+{%
+  \endTropicRatioTableThreeCol%
+}
+
+% Redefine environment for tables with enumerators
+\renewenvironment{DoxyEnumFields}[2][0]
+{%
+  \doxysubsubsubsubsection*{#2}%
+  \TropicRatioTableTwoCol%
+  {0.4} {0.6}%
+  {Name & Description}%
+}
+{%
+  \endTropicRatioTableTwoCol%
+}
+
+% Redefine DoxyCodeLine cmd to make code bigger
+\renewcommand\DoxyCodeLine[1]
+{
+  \ifthenelse{\equal{\detokenize{#1}}{}}
+  {
+    \vspace*{\baselineskip}
+  }
+  {
+    \hangpara{\DoxyCodeWidth}{1}{\normalsize #1}\par
+  }
+}
+
+\usepackage{newunicodechar}
+  \newunicodechar{⁻}{${}^{-}$}% Superscript minus
+  \newunicodechar{²}{${}^{2}$}% Superscript two
+  \newunicodechar{³}{${}^{3}$}% Superscript three
+
+% Hyperlinks (required, but should be loaded last)
+% \ifpdf
+%   \PassOptionsToPackage{pdftex,pagebackref=true}{hyperref}
+% \else
+%   \ifxetex
+%     \PassOptionsToPackage{pagebackref=true}{hyperref}
+%   \else
+%     \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
+%   \fi
+% \fi
+% \hypersetup{%
+%   colorlinks=true,%
+%   linkcolor=TropicBlue,%
+%   citecolor=TropicBlue,%
+%   unicode%
+% }
+
+% Custom commands for Doxygen
+\newcommand{\clearemptydoublepage}{%
+  \newpage{\pagestyle{empty}\cleardoublepage}%
+}
+\newcommand{\+}{\discretionary{\mbox{\scriptsize$\hookleftarrow$}}{}{}}
+
+% Hyperlinks (required, but should be loaded last)
+\usepackage{ifpdf}
+\ifpdf
+  \PassOptionsToPackage{pdftex,pagebackref=true}{hyperref}
+\else
+  \PassOptionsToPackage{ps2pdf,pagebackref=true}{hyperref}
+\fi
+\hypersetup{%
+  colorlinks  = true,%
+  linkcolor   = TropicBlue,%
+  citecolor   = TropicBlue,%
+  urlcolor    = TropicBlue,%
+  anchorcolor = TropicBlue,%
+  unicode%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document properties and title page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Design specification - Template}
+\author{Ondrej Ille, Tropic Square}
+\date{July 2021}
+
+% Start of document
+\begin{document}
+
+% Parameters Needed by Design spec class (must be inside document)
+% Set these parameters according to your project.
+\def \projectname {libtropic}
+\def \documentname {C library for TROPIC01 devices}
+\def \versionnumber {0.0.1}
+
+% Title page
+\maketitle
+\pagebreak
+
+% Table of contents
+\tableofcontents
+\pagebreak
