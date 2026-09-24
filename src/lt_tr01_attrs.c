@@ -13,7 +13,7 @@
 #include "libtropic_logging.h"
 
 #define LT_LATEST_RISCV_FW_VER_MAJOR 2
-#define LT_LATEST_RISCV_FW_VER_MINOR 1
+#define LT_LATEST_RISCV_FW_VER_MINOR 2
 #define LT_LATEST_RISCV_FW_VER_PATCH 0
 
 lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
