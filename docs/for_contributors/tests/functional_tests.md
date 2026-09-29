@@ -15,10 +15,20 @@ The functional tests are organized into two categories, as some of them may caus
 
 For each supported host platform (HAL), there is a subdirectory in `tests/functional/`. Tests can be compiled as following (we will use model as an example):
 
+!!! note "Running tests against model"
+    To run the tests against the model, the model virtual environment needs to be active. To do so, run the followingcommand from the project root:
+    ```bash { .copy }
+    source  scripts/tropic01_model/.venv/bin/activate
+    ```
+
 !!! example "Compiling Functional Tests for Model"
-    Create a `build/` directory and switch to it:
+    Download test dependencies:
     ```bash { .copy }
     cd tests/functional/model/
+    ./download_deps.sh
+    ```
+    Create a `build/` directory and switch to it:
+    ```bash { .copy }
     mkdir build/
     cd build/
     ```
@@ -27,6 +37,7 @@ For each supported host platform (HAL), there is a subdirectory in `tests/functi
     cmake -DLT_CAL=mbedtls_v4 ..
     make
     ```
+
 
 As you can see, there is one mandatory parameter for selection of the Crypto Abstraction Layer (CAL). See `cal/` directory for currently supported CALs or just run `cmake -DLT_CAL= ..` for enumeration of supported options. There are also other options, see [Available Options](#available-options).
 
@@ -45,7 +56,7 @@ After compilation is finished, the tests can be run using CTest:
 
     To run all reversible tests, simply run:
     ```bash { .copy }
-    ctest _rev_
+    ctest -R _rev_
     ```
     
     To exclude some tests, run:
