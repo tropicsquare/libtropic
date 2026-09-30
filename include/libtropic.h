@@ -442,7 +442,8 @@ lt_ret_t lt_i_config_read(lt_handle_t *h, const enum lt_config_obj_addr_t addr, 
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
  * @param data_size   Size of data to be written (valid range is from `TR01_R_MEM_DATA_SIZE_MIN`
- * to `h->tr01_attrs.r_mem_udata_slot_size_max`)
+ * to either `444B` (application firmware older than 2.0.0) or `475B` (application firmware
+ * version 2.0.0 and up))
  *
  * @retval            LT_OK Function executed successfully
  * @retval            other Function did not execute successully, you might use lt_ret_verbose() to get

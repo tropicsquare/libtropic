@@ -276,7 +276,8 @@ lt_ret_t lt_in__i_config_read(lt_handle_t *h, uint32_t *obj);
  * @param udata_slot  Memory's slot to be written
  * @param data        Buffer of data to be written into R MEMORY slot
  * @param data_size   Size of data to be written (valid range is from `TR01_R_MEM_DATA_SIZE_MIN`
- * to `h->tr01_attrs.r_mem_udata_slot_size_max`)
+ * to either `444B` (application firmware older than 2.0.0) or `475B` (application firmware
+ * version 2.0.0 and up))
  * @return            LT_OK if success, otherwise returns other error code.
  */
 lt_ret_t lt_out__r_mem_data_write(lt_handle_t *h, const uint16_t udata_slot, const uint8_t *data,
