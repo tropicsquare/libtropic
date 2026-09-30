@@ -9,18 +9,23 @@ import sys
 import os
 import re
 
-def binary_to_c_array(path_to_fw_folder, filename, type, version, boot_version):
+def write_fw_header(path_to_fw_folder, filename, type, version, boot_version):
+    BYTES_PER_LINE = 16
+
     print(path_to_fw_folder)
     with open(path_to_fw_folder + filename, 'rb') as f:
         data = f.read()
 
     major, minor, patch = version
 
-    # 16 bytes per line
-    data_lines = ",\n".join(
-        "    " + ", ".join(f"0x{byte:02x}" for byte in data[i:i + 16])
-        for i in range(0, len(data), 16)
-    )
+    # Format the data as hex bytes, BYTES_PER_LINE per line
+    lines = []
+    for offset in range(0, len(data), BYTES_PER_LINE):
+        chunk = data[offset:offset + BYTES_PER_LINE]  # single line of bytes
+        hex_bytes = [f"0x{byte:02x}" for byte in chunk]  # convert bytes in line to str
+        lines.append("    " + ", ".join(hex_bytes))
+
+    data_lines = ",\n".join(lines)
 
     header_content = f"""\
 #pragma once
@@ -116,6 +121,6 @@ if __name__ == "__main__":
     spect_bin, spect_version = find_fw_binary(fw_dir, "SPECT", boot_version)
     cpu_bin, cpu_version = find_fw_binary(fw_dir, "CPU", boot_version)
 
-    binary_to_c_array(fw_dir, spect_bin, "SPECT", spect_version, boot_version)
-    binary_to_c_array(fw_dir, cpu_bin, "CPU", cpu_version, boot_version)
+    write_fw_header(fw_dir, spect_bin, "SPECT", spect_version, boot_version)
+    write_fw_header(fw_dir, cpu_bin, "CPU", cpu_version, boot_version)
 
