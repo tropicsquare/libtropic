@@ -116,7 +116,6 @@ is not `NULL`. If so, the cleanup function is called automatically before termin
 
 If you need a cleanup function, create the function and assign it to `lt_test_cleanup_function` at the appropriate point in the test (for example, after you back up data that you will restore later).
 
-to duplicate the cleanup code if it would be the same. If you wrap the function call in the `LT_TEST_ASSERT`, do not forget to set `lt_test_cleanup_function` back to `NULL` beforehands, otherwise the cleanup will be called twice.
 You can reuse your cleanup function at the end of the test so you don't have to duplicate the cleanup code. If you wrap the function call in `LT_TEST_ASSERT`, remember to set `lt_test_cleanup_function` back to `NULL` beforehand, otherwise the cleanup will be called twice.
 
 ### Test Template
