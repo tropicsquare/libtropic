@@ -13,15 +13,9 @@ The functional tests are organized into two categories, as some of them may caus
 !!! danger "DANGER!"
     Functional tests are for internal use only and are provided only for reference. Some tests can **destroy** your chip. **Do not run the tests** unless you use model only or you are absolutely sure what you are doing. If you damage your chip with the tests, we are unable to provide any support.
 
-For each supported host platform (HAL), there is a subdirectory in `tests/functional/`. Tests can be compiled as following (we will use model as an example):
+For each supported host platform (HAL), there is a subdirectory in `tests/functional/`. Tests can be built as following (we will use the TROPIC01 model as an example):
 
-!!! note "Running tests against model"
-    To run the tests against the model, the model virtual environment needs to be active. To do so, run the followingcommand from the project root:
-    ```bash { .copy }
-    source  scripts/tropic01_model/.venv/bin/activate
-    ```
-
-!!! example "Compiling Functional Tests for Model"
+!!! example "Building functional tests for TROPIC01 model"
     Download test dependencies:
     ```bash { .copy }
     cd tests/functional/model/
@@ -37,11 +31,11 @@ For each supported host platform (HAL), there is a subdirectory in `tests/functi
     cmake -DLT_CAL=mbedtls_v4 ..
     make
     ```
-
+    Also make sure you have the model installed into a Python virtual environment and the environment activated. Refer to the [TROPIC01 model tutorial](../../tutorials/model/index.md) for instructions.
 
 As you can see, there is one mandatory parameter for selection of the Crypto Abstraction Layer (CAL). See `cal/` directory for currently supported CALs or just run `cmake -DLT_CAL= ..` for enumeration of supported options. There are also other options, see [Available Options](#available-options).
 
-After compilation is finished, the tests can be run using CTest:
+After building the tests, run them using CTest:
 !!! example "Using CTest"
     To see available tests, run:
     ```bash { .copy }
