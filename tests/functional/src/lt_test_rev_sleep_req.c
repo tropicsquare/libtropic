@@ -12,6 +12,8 @@
 #include "libtropic_logging.h"
 #include "lt_test_common.h"
 
+#define LT_TEST_REV_SLEEP_REQ_WAIT_MS 5
+
 void lt_test_rev_sleep_req(lt_handle_t *h)
 {
     LT_LOG_INFO("----------------------------------------------");
@@ -31,6 +33,8 @@ void lt_test_rev_sleep_req(lt_handle_t *h)
 
     LT_LOG_INFO("Sending Sleep_Req...");
     LT_TEST_ASSERT(LT_OK, lt_sleep(h, TR01_L2_SLEEP_KIND_SLEEP));
+    LT_LOG_INFO("Waiting for %d ms...", LT_TEST_REV_SLEEP_REQ_WAIT_MS);
+    LT_TEST_ASSERT(LT_OK, lt_port_delay(&h->l2, LT_TEST_REV_SLEEP_REQ_WAIT_MS));
 
     LT_LOG_INFO("Verifying we are not in Secure Session...");
     LT_TEST_ASSERT(LT_L2_NO_SESSION, lt_ping(h, msg_out, msg_in, sizeof(msg_out)));
