@@ -34,8 +34,8 @@ set_property(CACHE LT_SILICON_REV PROPERTY STRINGS "ABAB" "ACAB")
 # Choose version of RISC-V FW to update to.
 # Available versions can be seen in the compatibility table in the main README.md.
 # Default value is always the latest version available in the current Libtropic release.
-set(LT_CPU_FW_UPDATE_DATA_VER "2_1_0" CACHE STRING "Set TROPIC01 FW version to update to")
-set_property(CACHE LT_CPU_FW_UPDATE_DATA_VER PROPERTY STRINGS "1_0_0" "1_0_1" "2_0_0" "2_1_0")
+set(LT_CPU_FW_UPDATE_DATA_VER "2_2_0" CACHE STRING "Set TROPIC01 FW version to update to")
+set_property(CACHE LT_CPU_FW_UPDATE_DATA_VER PROPERTY STRINGS "1_0_0" "1_0_1" "2_0_0" "2_1_0" "2_2_0")
 # Validate specified version
 get_property(lt_cpu_fw_ver_choices CACHE LT_CPU_FW_UPDATE_DATA_VER PROPERTY STRINGS)
 set(cpu_fw_valid FALSE)
