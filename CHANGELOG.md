@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Increased the R-Memory data buffer in `struct lt_l3_r_mem_data_read_res_t` from 444 to 475 bytes to match the largest possible size of the UDATA slot.
+
 ## [4.1.0]
 
 ### Changed

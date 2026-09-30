@@ -748,7 +748,7 @@ struct lt_l3_r_mem_data_read_res_t {
      * @brief
      * The data stream read from the slot specified in the UDATA_SLOT L3 field.
      */
-    uint8_t data[444]; /**< Data to read */
+    uint8_t data[475]; /**< Data to read */
 } __attribute__((packed));
 
 // clang-format off
