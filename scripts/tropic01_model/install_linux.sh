@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-URL="https://github.com/tropicsquare/ts-tvl/releases/download/2.5/tvl-2.5-py3-none-any.whl"
+URL="https://github.com/tropicsquare/ts-tvl/releases/download/2.7/tvl-2.7-py3-none-any.whl"
 
 # Resolve script directory and venv path
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -76,7 +76,7 @@ else
 fi
 
 echo "Verifying wheel checksum..."
-EXPECTED_CHECKSUM="c51c5dd35a6e075d9dd71c17abba53f4669d54cb4b96500295ee279a9c192ed2"
+EXPECTED_CHECKSUM="b68a1a11600114d610463f32aad7e0a90e22cc4eb605e6e89b1f6362b9a5ed12"
 ACTUAL_CHECKSUM=$(sha256sum "$TMP_WHEEL" | awk '{print $1}')
 if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then
   echo "Checksum mismatch: expected $EXPECTED_CHECKSUM, got $ACTUAL_CHECKSUM" >&2
