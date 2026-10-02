@@ -7,8 +7,6 @@ i_pairing_keys:
     state: written
     value: !!binary |
       +XXrPC/XkMlvKU8VV6UDF4DJqvoUDaKPVedRVzeyUCw=
-riscv_fw_version: !!binary |
-  AAAAAg==
 s_t_priv: !!binary |
   +LljVM+0MRmbQNTaRB7YPl23s9k+uLs8pY4MSgRpK0w=
 s_t_pub: !!binary |
