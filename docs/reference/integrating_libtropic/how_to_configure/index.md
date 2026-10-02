@@ -78,7 +78,7 @@ Silicon revision (e.g. `"ACAB"`) of the currently used TROPIC01 has to be set in
 Defines the TROPIC01's RISC-V CPU FW version (e.g. `"1_0_1"`) to update to. It is used for compiling the correct FW update files for both the RISC-V CPU and SPECT. Available versions can be seen in the [compatibility table](https://github.com/tropicsquare/libtropic?tab=readme-ov-file#firmware-compatibility) in the repository's main `README.md`.
 
 !!! tip "See Available Values When Using CMake CLI"
-    Pass `-DLT_CPU_FW_VERSION=` to `cmake`, which will invoke an error, but will print the available values.
+    Pass `-DLT_CPU_FW_UPDATE_DATA_VER=` to `cmake`, which will invoke an error, but will print the available values.
 
 !!! tip "See Current Configuration"
     Use `cmake -LAH | grep -B 1 LT_` to check current value of all Libtropic options.
