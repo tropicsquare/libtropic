@@ -13,12 +13,16 @@ The functional tests are organized into two categories, as some of them may caus
 !!! danger "DANGER!"
     Functional tests are for internal use only and are provided only for reference. Some tests can **destroy** your chip. **Do not run the tests** unless you use model only or you are absolutely sure what you are doing. If you damage your chip with the tests, we are unable to provide any support.
 
-For each supported host platform (HAL), there is a subdirectory in `tests/functional/`. Tests can be compiled as following (we will use model as an example):
+For each supported host platform (HAL), there is a subdirectory in `tests/functional/`. Tests can be built as following (we will use the TROPIC01 model as an example):
 
-!!! example "Compiling Functional Tests for Model"
-    Create a `build/` directory and switch to it:
+!!! example "Building functional tests for TROPIC01 model"
+    Download test dependencies:
     ```bash { .copy }
     cd tests/functional/model/
+    ./download_deps.sh
+    ```
+    Create a `build/` directory and switch to it:
+    ```bash { .copy }
     mkdir build/
     cd build/
     ```
@@ -27,10 +31,11 @@ For each supported host platform (HAL), there is a subdirectory in `tests/functi
     cmake -DLT_CAL=mbedtls_v4 ..
     make
     ```
+    Also make sure you have the model installed into a Python virtual environment and the environment activated. Refer to the [TROPIC01 model tutorial](../../tutorials/model/index.md) for instructions.
 
 As you can see, there is one mandatory parameter for selection of the Crypto Abstraction Layer (CAL). See `cal/` directory for currently supported CALs or just run `cmake -DLT_CAL= ..` for enumeration of supported options. There are also other options, see [Available Options](#available-options).
 
-After compilation is finished, the tests can be run using CTest:
+After building the tests, run them using CTest:
 !!! example "Using CTest"
     To see available tests, run:
     ```bash { .copy }
@@ -45,7 +50,7 @@ After compilation is finished, the tests can be run using CTest:
 
     To run all reversible tests, simply run:
     ```bash { .copy }
-    ctest _rev_
+    ctest -R _rev_
     ```
     
     To exclude some tests, run:
@@ -111,7 +116,6 @@ is not `NULL`. If so, the cleanup function is called automatically before termin
 
 If you need a cleanup function, create the function and assign it to `lt_test_cleanup_function` at the appropriate point in the test (for example, after you back up data that you will restore later).
 
-to duplicate the cleanup code if it would be the same. If you wrap the function call in the `LT_TEST_ASSERT`, do not forget to set `lt_test_cleanup_function` back to `NULL` beforehands, otherwise the cleanup will be called twice.
 You can reuse your cleanup function at the end of the test so you don't have to duplicate the cleanup code. If you wrap the function call in `LT_TEST_ASSERT`, remember to set `lt_test_cleanup_function` back to `NULL` beforehand, otherwise the cleanup will be called twice.
 
 ### Test Template

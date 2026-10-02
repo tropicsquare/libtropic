@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.2.0]
+
+### Added
+- Application FW 2.2.0 update files for ABAB and ACAB silicon revisions.
+
+### Changed
+- `scripts/tropic01_model/install_linux.sh`: bump ts-tvl to version 2.7.
+- `scripts/tropic01_model/create_model_cfg.py`: remove the `riscv-fw-ver` CLI parameter and regenerate the example `model_cfg.yml`. Since ts-tvl 2.4, the model sets default targeted values for App FW and SPECT FW, so no need to set them anymore.
+
+### Fixed
+- Increased the R-Memory data buffer in `struct lt_l3_r_mem_data_read_res_t` from 444 to 475 bytes to match the largest possible size of the UDATA slot.
+
 ## [4.1.0]
 
 ### Changed
