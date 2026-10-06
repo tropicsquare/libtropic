@@ -583,7 +583,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
     return LT_OK;
 }
 
-#if defined(LT_SILICON_REV_ABAB)
+#if LT_SILICON_REV_ABAB
 lt_ret_t lt_mutable_fw_erase(lt_handle_t *h, const lt_bank_id_t bank_id)
 {
     if (!h || ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) &&
@@ -667,7 +667,7 @@ lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const size
 
     return LT_OK;
 }
-#elif defined(LT_SILICON_REV_ACAB)
+#else
 lt_ret_t lt_mutable_fw_update(lt_handle_t *h, const uint8_t *fw_data, const size_t fw_data_size)
 {
     if (!h || !fw_data || fw_data_size < sizeof(lt_mutable_fw_update_chunk_0_t) ||
@@ -755,8 +755,6 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *fw_data, const
 
     return LT_OK;
 }
-#else
-#error "Undefined silicon revision! One of the LT_SILICON_REV_* macros must be defined."
 #endif
 
 lt_ret_t lt_get_log_req(lt_handle_t *h, uint8_t *log_msg, const uint16_t log_msg_max_size,
@@ -1922,7 +1920,7 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id,
 static lt_ret_t update_mutable_fw_bank(lt_handle_t *h, const uint8_t *fw_data,
                                        const size_t fw_data_size, const lt_bank_id_t bank_id)
 {
-#if defined(LT_SILICON_REV_ABAB)
+#if LT_SILICON_REV_ABAB
     if (!h || !fw_data || fw_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX ||
         ((bank_id != TR01_FW_BANK_FW1) && (bank_id != TR01_FW_BANK_FW2) &&
          (bank_id != TR01_FW_BANK_SPECT1) && (bank_id != TR01_FW_BANK_SPECT2))) {
@@ -1938,8 +1936,8 @@ static lt_ret_t update_mutable_fw_bank(lt_handle_t *h, const uint8_t *fw_data,
         return ret;
     }
 
-#elif defined(LT_SILICON_REV_ACAB)
-    LT_UNUSED(bank_id);  // bank_id is not used with ACAB, chip handles banks on its own
+#else
+    LT_UNUSED(bank_id);  // bank_id is not used with ACAB and newer, chip handles banks on its own
     if (!h || !fw_data || fw_data_size > TR01_MUTABLE_FW_UPDATE_SIZE_MAX) {
         return LT_PARAM_ERR;
     }
@@ -1956,8 +1954,6 @@ static lt_ret_t update_mutable_fw_bank(lt_handle_t *h, const uint8_t *fw_data,
         return ret;
     }
 
-#else
-#error "Undefined silicon revision! One of the LT_SILICON_REV_* macros must be defined."
 #endif
 
     return LT_OK;
@@ -1973,7 +1969,7 @@ static lt_ret_t update_mutable_fw_bank(lt_handle_t *h, const uint8_t *fw_data,
 #define _LT_DO_MUTABLE_FW_UPDATE_FW_VER_ARG(v) \
     (((v) >> 24) & 0xFF), (((v) >> 16) & 0xFF), (((v) >> 8) & 0xFF), ((v) & 0xFF)
 
-#if !defined(LT_SILICON_REV_ABAB)
+#if !LT_SILICON_REV_ABAB
 /**
  * @brief Reads out firmware header from the given firmware bank and validates the firmware version
  * against the expected one.
@@ -2074,7 +2070,7 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *cpu_fw_data,
 
 // 5. Check both FW bank pairs contain the new FW versions. We do this only for ACAB revision and
 // newer, because FW update data for ABAB did not contain information about the FW version.
-#if !defined(LT_SILICON_REV_ABAB)
+#if !LT_SILICON_REV_ABAB
     const struct lt_mutable_fw_update_chunk_0_t *cpu_fw_chunk_0 =
         (const struct lt_mutable_fw_update_chunk_0_t *)cpu_fw_data;
     const struct lt_mutable_fw_update_chunk_0_t *spect_fw_chunk_0 =
@@ -2112,7 +2108,7 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *cpu_fw_data,
         return ret;
     }
 
-#if !defined(LT_SILICON_REV_ABAB)
+#if !LT_SILICON_REV_ABAB
     // 7. Check the updated FW versions were booted.
     uint8_t riscv_ver[TR01_L2_GET_INFO_RISCV_FW_SIZE];
     uint8_t spect_ver[TR01_L2_GET_INFO_SPECT_FW_SIZE];
