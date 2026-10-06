@@ -42,12 +42,30 @@ size_t calc_mocked_resp_len(const void *resp_buf);
  * simulate a specific FW version. As this operation needs to be done in each test that does any
  * communication, this helper function is provided to simplify the process.
  *
+ * @note CHIP_ID with silicon revision ACAB is mocked. Use mock_init_communication_chip_id() to mock
+ * a custom CHIP_ID.
+ *
  * @param h Pointer to the lt_handle_t structure.
  * @param riscv_fw_ver Array representing the desired RISC-V FW version to mock.
  *
  * @return lt_ret_t LT_OK on success, error code otherwise.
  */
 lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4]);
+
+/**
+ * @brief Mock all data required to initialize Libtropic with lt_init(), using a custom CHIP_ID.
+ *
+ * @details Same as mock_init_communication(), but allows to specify the CHIP_ID returned by
+ * TROPIC01 (e.g. to simulate different silicon revisions).
+ *
+ * @param h Pointer to the lt_handle_t structure.
+ * @param chip_id CHIP_ID to mock.
+ * @param riscv_fw_ver Array representing the desired RISC-V FW version to mock.
+ *
+ * @return lt_ret_t LT_OK on success, error code otherwise.
+ */
+lt_ret_t mock_init_communication_chip_id(lt_handle_t *h, const struct lt_chip_id_t *chip_id,
+                                         const uint8_t riscv_fw_ver[4]);
 
 /**
  * @brief Initialize and start a mocked Secure Session for functional mock tests.
