@@ -12,7 +12,6 @@ import re
 def write_fw_header(path_to_fw_folder, filename, type, version, boot_version):
     BYTES_PER_LINE = 16
 
-    print(path_to_fw_folder)
     with open(path_to_fw_folder + filename, 'rb') as f:
         data = f.read()
 
@@ -41,9 +40,7 @@ const uint8_t fw_{type}_ver[4] = {{0, {patch}, {minor}, {major}}};
  * @brief {type} firmware version {filename} for bootloader v{boot_version}
  */
 const uint8_t fw_{type}[] = {{
-{data_lines}
-}};
-"""
+{data_lines}}};"""
 
     header_file_name = path_to_fw_folder + "fw_" + type + ".h"
     with open(header_file_name, 'w') as header:
