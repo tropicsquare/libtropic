@@ -44,7 +44,42 @@ size_t calc_mocked_resp_len(const void *resp_buf)
            resp_buf_bytes[TR01_L2_RSP_LEN_OFFSET] + TR01_L2_REQ_RSP_CRC_SIZE;
 }
 
-lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4])
+/**
+ * @brief Mocks both L2 Request and L2 Response of a single Get_Info Request.
+ *
+ * @param h Pointer to the lt_handle_t structure.
+ * @param object Data of the requested object block to return.
+ * @param object_size Size of the object (at most 128 bytes).
+ *
+ * @return lt_ret_t LT_OK on success, error code otherwise.
+ */
+static lt_ret_t mock_get_info(lt_handle_t *h, const void *object, const uint8_t object_size)
+{
+    uint8_t chip_ready = TR01_L1_CHIP_MODE_READY_bit;
+
+    // Mock response data for Get_Info, for the L2 Request.
+    if (LT_OK != lt_mock_hal_enqueue_response(&h->l2, &chip_ready, sizeof(chip_ready))) {
+        return LT_FAIL;
+    }
+
+    struct lt_l2_get_info_rsp_t get_info_resp = {.chip_status = TR01_L1_CHIP_MODE_READY_bit,
+                                                 .status = TR01_L2_STATUS_REQUEST_OK,
+                                                 .rsp_len = object_size,
+                                                 .object = {0}};
+    memcpy(get_info_resp.object, object, object_size);
+    add_resp_crc(&get_info_resp);
+
+    // Mock response data for Get_Info, for the L2 Response.
+    if (LT_OK != lt_mock_hal_enqueue_response(&h->l2, (uint8_t *)&get_info_resp,
+                                              calc_mocked_resp_len(&get_info_resp))) {
+        return LT_FAIL;
+    }
+
+    return LT_OK;
+}
+
+lt_ret_t mock_init_communication_chip_id(lt_handle_t *h, const struct lt_chip_id_t *chip_id,
+                                         const uint8_t riscv_fw_ver[4])
 {
     // Mock response data for chip mode check.
     uint8_t chip_ready = TR01_L1_CHIP_MODE_READY_bit;
@@ -53,25 +88,25 @@ lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4])
         return LT_FAIL;
     }
 
-    // Mock response data for Get_Info, for both L2 Request.
-    if (LT_OK != lt_mock_hal_enqueue_response(&h->l2, &chip_ready, sizeof(chip_ready))) {
+    // Mock Get_Info for CHIP_ID (used to determine the silicon revision).
+    if (LT_OK != mock_get_info(h, chip_id, TR01_L2_GET_INFO_CHIP_ID_SIZE)) {
         return LT_FAIL;
     }
 
-    struct lt_l2_get_info_rsp_t get_info_resp = {.chip_status = TR01_L1_CHIP_MODE_READY_bit,
-                                                 .status = TR01_L2_STATUS_REQUEST_OK,
-                                                 .rsp_len = TR01_L2_GET_INFO_RISCV_FW_SIZE,
-                                                 .object = {0}};
-    memcpy(get_info_resp.object, riscv_fw_ver, TR01_L2_GET_INFO_RISCV_FW_SIZE);
-    add_resp_crc(&get_info_resp);
-
-    // Mock response data for Get_Info, for both L2 Response.
-    if (LT_OK != lt_mock_hal_enqueue_response(&h->l2, (uint8_t *)&get_info_resp,
-                                              calc_mocked_resp_len(&get_info_resp))) {
+    // Mock Get_Info for the RISC-V FW version.
+    if (LT_OK != mock_get_info(h, riscv_fw_ver, TR01_L2_GET_INFO_RISCV_FW_SIZE)) {
         return LT_FAIL;
     }
 
     return LT_OK;
+}
+
+lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4])
+{
+    const struct lt_chip_id_t chip_id = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
+                                         .silicon_rev = {'A', 'C', 'A', 'B'}};
+
+    return mock_init_communication_chip_id(h, &chip_id, riscv_fw_ver);
 }
 
 lt_ret_t mock_session_start(lt_handle_t *h, const uint8_t kcmd[TR01_AES256_KEY_LEN],

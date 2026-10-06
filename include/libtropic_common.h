@@ -262,12 +262,20 @@ typedef struct lt_l3_state_t {
 #define TR01_AES256_KEY_LEN 32
 
 /**
- * @brief Configures attributes that are different among TROPIC01's Application FW versions.
+ * @brief TROPIC01 silicon revisions.
+ */
+typedef enum lt_tr01_silicon_rev_t { LT_TR01_ABAB, LT_TR01_ACAB, LT_TR01_BDBB } lt_tr01_silicon_rev_t;
+
+/**
+ * @brief Configures attributes that are different among TROPIC01's silicon revisions and Application
+ * FW versions.
  *
  */
 typedef struct lt_tr01_attrs_t {
     /** @private @brief Maximal size of the UDATA slot in the User R-Memory. */
     uint16_t r_mem_udata_slot_size_max;
+    /** @private @brief Silicon revision of TROPIC01. */
+    lt_tr01_silicon_rev_t silicon_rev;
 } lt_tr01_attrs_t;
 
 /**
@@ -415,9 +423,11 @@ typedef enum lt_ret_t {
     LT_CERT_ITEM_NOT_FOUND = 45,
     /** @brief The nonce has reached its maximum value. */
     LT_NONCE_OVERFLOW = 46,
+    /** @brief TROPIC01's silicon revision is not known to the current version of Libtropic. */
+    LT_SILICON_REV_UNKNOWN = 47,
 
     /** @brief Special helper value used to signalize the last enum value, used in lt_ret_verbose. */
-    LT_RET_T_LAST_VALUE = 47
+    LT_RET_T_LAST_VALUE = 48
 } lt_ret_t;
 
 #define LT_TR01_REBOOT_DELAY_MS 250

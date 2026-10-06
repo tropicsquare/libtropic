@@ -1500,7 +1500,8 @@ static const char *const lt_ret_strs[] = {"LT_OK",
                                           "LT_CERT_STORE_INVALID",
                                           "LT_CERT_UNSUPPORTED",
                                           "LT_CERT_ITEM_NOT_FOUND",
-                                          "LT_NONCE_OVERFLOW"};
+                                          "LT_NONCE_OVERFLOW",
+                                          "LT_SILICON_REV_UNKNOWN"};
 
 const char *lt_ret_verbose(lt_ret_t ret)
 {
