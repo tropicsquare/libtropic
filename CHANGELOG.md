@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `scripts/tropic01_model/install_linux.sh`: bump ts-tvl to version 2.7.
 - `scripts/tropic01_model/create_model_cfg.py`: remove the `riscv-fw-ver` CLI parameter and regenerate the example `model_cfg.yml`. Since ts-tvl 2.4, the model sets default targeted values for App FW and SPECT FW, so no need to set them anymore.
 
+### Changed
+- `TROPIC01_fw_update_files/convert.py`: updated script to improve readability and error handling.
+
 ### Fixed
 - Increased the R-Memory data buffer in `struct lt_l3_r_mem_data_read_res_t` from 444 to 475 bytes to match the largest possible size of the UDATA slot.
 
