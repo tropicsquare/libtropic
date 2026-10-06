@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `TROPIC01_fw_update_files/convert.py`: updated script to improve readability and error handling.
+
 ### Fixed
 - Increased the R-Memory data buffer in `struct lt_l3_r_mem_data_read_res_t` from 444 to 475 bytes to match the largest possible size of the UDATA slot.
 
