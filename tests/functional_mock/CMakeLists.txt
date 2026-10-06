@@ -117,6 +117,7 @@ target_include_directories(libtropic_functional_mock_tests_objs PUBLIC ${CMAKE_C
 
 set(LIBTROPIC_MOCK_TEST_LIST
     lt_test_mock_attrs
+    lt_test_mock_silicon_rev
     lt_test_mock_invalid_crc
     lt_test_mock_invalid_in_crc
     lt_test_mock_hardware_fail

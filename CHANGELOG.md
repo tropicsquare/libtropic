@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `silicon_rev` attribute (of a new type `lt_tr01_silicon_rev_t`) to `lt_tr01_attrs_t`. It is initialized from CHIP_ID during `lt_init()` and holds the silicon revision of the connected TROPIC01 (ABAB, ACAB or BDBB).
 - `LT_SILICON_REV_UNKNOWN` to `lt_ret_t`, returned by `lt_init()` if the silicon revision of the connected TROPIC01 is not known to Libtropic.
+- Functional mock test `lt_test_mock_silicon_rev`.
+
 ### Changed
 - `LT_SILICON_REV` CMake option was replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB).
 - `lt_init()` reads CHIP_ID from TROPIC01 in addition to the Application FW version.
