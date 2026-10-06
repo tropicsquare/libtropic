@@ -107,7 +107,7 @@ If one of our firmware update API functions or the `lt_do_mutable_fw_update()` h
 
 1. Try the suggestions in [I received an error](#i-received-an-error).
 2. Make sure you have correct values set in the following CMake options:
-    - [LT_SILICON_REV](reference/integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
+    - [LT_SILICON_REV_ABAB](reference/integrating_libtropic/how_to_configure/index.md#lt_silicon_rev_abab),
     - [LT_CPU_FW_UPDATE_DATA_VER](reference/integrating_libtropic/how_to_configure/index.md#lt_cpu_fw_update_data_ver).
 3. Make sure you are not attempting a firmware downgrade — TROPIC01 does not allow this.
 

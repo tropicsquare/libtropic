@@ -51,7 +51,7 @@ TROPIC01_fw_update_files/
 #### Compiling into Libtropic
 To select which FW version will be compiled together with Libtropic, the user has to set the following CMake variables (both have a default value):
 
-- [LT_SILICON_REV](integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
+- [LT_SILICON_REV_ABAB](integrating_libtropic/how_to_configure/index.md#lt_silicon_rev_abab),
 - [LT_CPU_FW_UPDATE_DATA_VER](integrating_libtropic/how_to_configure/index.md#lt_cpu_fw_update_data_ver).
 
 ## Firmware Hashes

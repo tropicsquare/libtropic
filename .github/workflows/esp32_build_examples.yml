@@ -25,8 +25,8 @@ jobs:
             idf.py -C examples/esp32/ESP32-DevKitC-V4/identify_chip/ build
             idf.py -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-DevKitC-V4/fw_update/ -B build_devkitc_v4 build
             idf.py -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-DevKitC-V4/fw_update/ -B build_dis_mm_devkitc_v4 build
-            idf.py -D LT_SILICON_REV=ABAB -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-DevKitC-V4/fw_update/ -B build_abab_devkitc_v4 build
-            idf.py -D LT_SILICON_REV=ABAB -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-DevKitC-V4/fw_update/ -B build_abab_dis_mm_devkitc_v4 build
+            idf.py -D LT_SILICON_REV_ABAB=ON -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-DevKitC-V4/fw_update/ -B build_abab_devkitc_v4 build
+            idf.py -D LT_SILICON_REV_ABAB=ON -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-DevKitC-V4/fw_update/ -B build_abab_dis_mm_devkitc_v4 build
 
       - name: Build ESP32-S3-DevKitC-1 examples
         run: |
@@ -35,8 +35,8 @@ jobs:
             idf.py -C examples/esp32/ESP32-S3-DevKitC-1/identify_chip/ build
             idf.py -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-S3-DevKitC-1/fw_update/ -B build_s3_devkitc_1 build
             idf.py -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-S3-DevKitC-1/fw_update/ -B build_dis_mm_s3_devkitc_1 build
-            idf.py -D LT_SILICON_REV=ABAB -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-S3-DevKitC-1/fw_update/ -B build_abab_s3_devkitc_1 build
-            idf.py -D LT_SILICON_REV=ABAB -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-S3-DevKitC-1/fw_update/ -B build_abab_dis_mm_s3_devkitc_1 build
+            idf.py -D LT_SILICON_REV_ABAB=ON -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-S3-DevKitC-1/fw_update/ -B build_abab_s3_devkitc_1 build
+            idf.py -D LT_SILICON_REV_ABAB=ON -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-S3-DevKitC-1/fw_update/ -B build_abab_dis_mm_s3_devkitc_1 build
 
       - name: Build ESP32-C3-DevKit-RUST-1 examples
         run: |
@@ -45,5 +45,5 @@ jobs:
             idf.py -C examples/esp32/ESP32-C3-DevKit-RUST-1/identify_chip/ build
             idf.py -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-C3-DevKit-RUST-1/fw_update/ -B build_c3_devkit_rust_1 build
             idf.py -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-C3-DevKit-RUST-1/fw_update/ -B build_dis_mm_c3_devkit_rust_1 build
-            idf.py -D LT_SILICON_REV=ABAB -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-C3-DevKit-RUST-1/fw_update/ -B build_abab_c3_devkit_rust_1 build
-            idf.py -D LT_SILICON_REV=ABAB -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-C3-DevKit-RUST-1/fw_update/ -B build_abab_dis_mm_c3_devkit_rust_1 build
+            idf.py -D LT_SILICON_REV_ABAB=ON -D LT_DISABLE_MAINTENANCE_MODE=OFF -C examples/esp32/ESP32-C3-DevKit-RUST-1/fw_update/ -B build_abab_c3_devkit_rust_1 build
+            idf.py -D LT_SILICON_REV_ABAB=ON -D LT_DISABLE_MAINTENANCE_MODE=ON -C examples/esp32/ESP32-C3-DevKit-RUST-1/fw_update/ -B build_abab_dis_mm_c3_devkit_rust_1 build

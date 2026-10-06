@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `LT_SILICON_REV` CMake option was replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB).
+
 ### Fixed
 - TROPIC01 Util: check if `index` parameter in `tud_descriptor_string_cb()` is not out of bounds.
 - Mac-And-Destroy model example: after a successful PIN check, re-initialize all used slots including the last one (`x < MACANDD_ROUNDS`); previously the next correct PIN was rejected.
