@@ -26,10 +26,20 @@ option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" O
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 
-# TROPIC01 silicon revision: useful for firmware update and functional tests
-# (as some behavior) differ between revisions.
-set(LT_SILICON_REV "ACAB" CACHE STRING "Set TROPIC01 silicon revision")
-set_property(CACHE LT_SILICON_REV PROPERTY STRINGS "ABAB" "ACAB")
+# Enable support for FW update of TROPIC01 with ABAB silicon revision (engineering samples).
+# By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer.
+option(LT_SILICON_REV_ABAB "Support FW update of TROPIC01 with ABAB silicon revision" OFF)
+# LT_SILICON_REV option was removed, help users migrate (it may also be cached in old build directories).
+if (DEFINED LT_SILICON_REV)
+    if (LT_SILICON_REV STREQUAL "ABAB")
+        message(FATAL_ERROR "LT_SILICON_REV option was removed. Use LT_SILICON_REV_ABAB=ON instead. "
+                            "Remove the cached value with '-U LT_SILICON_REV'.")
+    endif()
+    message(WARNING "LT_SILICON_REV option was removed and its value is ignored. "
+                    "FW update of TROPIC01 with ACAB silicon revision and newer is supported by default. "
+                    "To compile for ABAB revision, use LT_SILICON_REV_ABAB=ON.")
+endif()
+
 
 # Choose version of RISC-V FW to update to.
 # Available versions can be seen in the compatibility table in the main README.md.
@@ -188,13 +198,10 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
 # Libtropic fw update:                                                    #
 # Compile only selected FW version for dedicated silicon version          #
 ###########################################################################
-if (LT_SILICON_REV STREQUAL "ABAB")
+if (LT_SILICON_REV_ABAB)
     set(BL_FOLDER boot_v_1_0_1)
-elseif (LT_SILICON_REV STREQUAL "ACAB")
-    set(BL_FOLDER boot_v_2_0_1)
 else()
-    get_property(lt_silicon_rev_choices CACHE LT_SILICON_REV PROPERTY STRINGS)    
-    message(FATAL_ERROR "Invalid silicon revision: '${LT_SILICON_REV}'\nAvailable silicon revisions: ${lt_silicon_rev_choices}")
+    set(BL_FOLDER boot_v_2_0_1)
 endif()
 
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
@@ -276,10 +283,10 @@ endforeach()
 #                                                                         #
 ###########################################################################
 
-if (LT_SILICON_REV STREQUAL "ABAB")
-    target_compile_definitions(tropic PUBLIC LT_SILICON_REV_ABAB)
-elseif (LT_SILICON_REV STREQUAL "ACAB")
-    target_compile_definitions(tropic PUBLIC LT_SILICON_REV_ACAB)
+if (LT_SILICON_REV_ABAB)
+    target_compile_definitions(tropic PUBLIC LT_SILICON_REV_ABAB=1)
+else()
+    target_compile_definitions(tropic PUBLIC LT_SILICON_REV_ABAB=0)
 endif()
 
 if(LT_PRINT_SPI_DATA)
