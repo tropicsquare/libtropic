@@ -22,7 +22,6 @@
  * @param h   Handle for communication with TROPIC01
  * @retval    LT_OK Function executed successfully
  * @retval    LT_SILICON_REV_UNKNOWN Silicon revision of TROPIC01 is not known to Libtropic
- * @retval    LT_APP_FW_TOO_NEW Application FW version of TROPIC01 is too new for Libtropic
  * @retval    other Function did not execute successully, you might use lt_ret_verbose() to get verbose
  * encoding
  */

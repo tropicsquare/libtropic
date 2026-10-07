@@ -39,7 +39,7 @@ static lt_ret_t parse_silicon_rev(const struct lt_chip_id_t *chip_id,
         return LT_OK;
     }
 
-    // number of bytes needs to be sizeof(chip_id->silicon_rev), as the string is null-terminated
+    // number of bytes needs to be sizeof(chip_id->silicon_rev), as the literal is null-terminated
     if (!memcmp(chip_id->silicon_rev, "ACAB", sizeof(chip_id->silicon_rev))) {
         *silicon_rev = LT_TR01_ACAB;
         return LT_OK;
