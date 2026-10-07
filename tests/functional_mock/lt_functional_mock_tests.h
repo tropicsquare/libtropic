@@ -33,7 +33,7 @@ void lt_test_mock_attrs(lt_handle_t *h);
  * @brief Test for checking if TROPIC01 silicon revision is parsed correctly from CHIP_ID.
  *
  * Test steps:
- *  For each known silicon revision (ABAB with CHIP_ID v0.0.0.1, ABAB, ACAB, BDBB):
+ *  For each known silicon revision (ABAB, ACAB, BDBB):
  *   1. Mock TROPIC01 responses on init to return a CHIP_ID with the given silicon revision.
  *   2. Initialize libtropic handle.
  *   3. Verify that the silicon revision in the handle is set correctly.
