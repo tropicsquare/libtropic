@@ -1864,6 +1864,11 @@ lt_ret_t lt_print_chip_id(const struct lt_chip_id_t *chip_id,
 
     uint8_t pn_len = chip_id->part_num_data[0];
     uint8_t pn_data[16];  // 15B for data, last byte for '\0'
+
+    // check if pn_len bytes fit into the buffer
+    if (pn_len > sizeof(pn_data) - 1) {
+        return LT_FAIL;
+    }
     memcpy(pn_data, &chip_id->part_num_data[1], pn_len);
     pn_data[pn_len] = '\0';
     if (LT_OK != lt_print_bytes(chip_id->part_num_data, sizeof(chip_id->part_num_data),
