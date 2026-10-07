@@ -54,22 +54,22 @@ handle.l3.buff_len = sizeof(user_l3_buffer);
 
 Log SPI communication using `printf`. Handy to debug low level communication.
 
-### `LT_SILICON_REV`
-- string
-- default value: latest silicon revision available in the current Libtropic release
+### `LT_SILICON_REV_ABAB`
+- boolean
+- default value: `OFF`
 
-Silicon revision (e.g. `"ACAB"`) of the currently used TROPIC01 has to be set in this option. It is needed for TROPIC01's firmware update and functional tests, as some behavior differs between the TROPIC01 revisions.
+Enable FW update support for TROPIC01 with the ABAB silicon revision (engineering samples). By default, Libtropic supports FW update of TROPIC01 with the ACAB silicon revision and newer (e.g. BDBB). Only the FW update API differs between ABAB and the newer silicon revisions; the rest of Libtropic works with all silicon revisions regardless of this option.
 
 !!! question "What Is the Silicon Revision of My TROPIC01?"
     Refer to the dedicated section in the [FAQ](../../../faq.md#what-is-the-silicon-revision-of-my-tropic01).
 
 !!! warning
-    Because the implementation of Libtropic's FW update functions is chosen at compile-time based on `LT_SILICON_REV`, in one compiled instance of Libtropic, FW update can be done only with TROPIC01 of this silicon revision.
+    Because the implementation of Libtropic's FW update functions is chosen at compile-time based on `LT_SILICON_REV_ABAB`, in one compiled instance of Libtropic, FW update can be done either only with TROPIC01 of the ABAB silicon revision (`ON`), or only with TROPIC01 of the ACAB silicon revision and newer (`OFF`).
     !!! example
-        I passed `-DLT_SILICON_REV=ACAB` to `cmake` during the build. I will be able to do FW updates with TROPIC01 chips that have silicon revision ACAB **only**. Updating a TROPIC01 chip with e.g. ABAB silicon revision will **not** work.
+        I did not pass `LT_SILICON_REV_ABAB` to `cmake` during the build. I will be able to do FW updates with TROPIC01 chips that have silicon revision ACAB or BDBB. Updating a TROPIC01 chip with ABAB silicon revision will **not** work.
 
-!!! tip "See Available Values When Using CMake CLI"
-    Pass `-DLT_SILICON_REV=` to `cmake`, which will invoke an error, but will print the available values.
+!!! note "Migration from `LT_SILICON_REV`"
+    The `LT_SILICON_REV` option was removed. Replace `-DLT_SILICON_REV=ABAB` with `-DLT_SILICON_REV_ABAB=ON` and drop `-DLT_SILICON_REV=ACAB`. When building Libtropic without CMake, define the `LT_SILICON_REV_ABAB` macro to `1` instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros (it defaults to `0` if not defined).
 
 ### `LT_CPU_FW_UPDATE_DATA_VER`
 - string
