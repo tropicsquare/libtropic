@@ -111,6 +111,8 @@ void lt_test_mock_hardware_fail(lt_handle_t *h);
  */
 void lt_test_mock_invalid_app_fw_init(lt_handle_t *h);
 
+void lt_test_mock_invalid_pn(lt_handle_t *h);
+
 #ifdef __cplusplus
 }
 #endif
