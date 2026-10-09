@@ -214,7 +214,11 @@ target_compile_options(tropic PRIVATE -ffunction-sections -fdata-sections)
 # The final executable that links against 'tropic' needs this flag.
 # 'INTERFACE' propagates this requirement to the consumer without
 # applying it to the library target itself.
-target_link_options(tropic INTERFACE -Wl,--gc-sections)
+if(APPLE)
+    target_link_options(tropic INTERFACE -Wl,-dead_strip)
+else()
+    target_link_options(tropic INTERFACE -Wl,--gc-sections)
+endif()
 
 target_compile_definitions(tropic PRIVATE "$<$<CONFIG:DEBUG>:LT_REDUNDANT_ARG_CHECK>")
 
