@@ -33,11 +33,15 @@ option(LT_SILICON_REV_ABAB "Support FW update of TROPIC01 with ABAB silicon revi
 if (DEFINED LT_SILICON_REV)
     if (LT_SILICON_REV STREQUAL "ABAB")
         message(FATAL_ERROR "LT_SILICON_REV option was removed. Use LT_SILICON_REV_ABAB=ON instead. "
-                            "Remove the cached value with '-U LT_SILICON_REV'.")
+                            "Remove the cached value with '-U LT_SILICON_REV'. "
+                            "For more information, see "
+                            "https://tropicsquare.github.io/libtropic/latest/reference/integrating_libtropic/how_to_configure/")
     endif()
     message(WARNING "LT_SILICON_REV option was removed and its value is ignored. "
                     "FW update of TROPIC01 with ACAB silicon revision and newer is supported by default. "
-                    "To compile for ABAB revision, use LT_SILICON_REV_ABAB=ON.")
+                    "To compile for ABAB revision, use LT_SILICON_REV_ABAB=ON. "
+                    "For more information, see "
+                    "https://tropicsquare.github.io/libtropic/latest/reference/integrating_libtropic/how_to_configure/")
 endif()
 
 

@@ -8,17 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- `silicon_rev` attribute (of a new type `lt_tr01_silicon_rev_t`) to `lt_tr01_attrs_t`. It is initialized from CHIP_ID during `lt_init()` and holds the silicon revision of the connected TROPIC01 (ABAB, ACAB or BDBB).
-- `LT_SILICON_REV_UNKNOWN` to `lt_ret_t`, returned by `lt_init()` if the silicon revision of the connected TROPIC01 is not known to Libtropic.
-- Functional mock test `lt_test_mock_silicon_rev`.
+- Out-of-the-box support for TROPIC01 with ACAB and BDBB silicon revisions (FW update of ACAB and newer is supported by default).
 
-### Changed
-- `LT_SILICON_REV` CMake option was replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB).
+### Removed
+- `LT_SILICON_REV` CMake option, replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). Replace `-DLT_SILICON_REV=ABAB` with `-DLT_SILICON_REV_ABAB=ON` and drop `-DLT_SILICON_REV=ACAB`.
+- `LT_SILICON_REV_ACAB` macro. When building Libtropic without CMake (e.g. with a Makefile), define `LT_SILICON_REV_ABAB` to `1` (ABAB) or `0` (ACAB and newer) instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros.
 
 ### Fixed
 - TROPIC01 Util: check if `index` parameter in `tud_descriptor_string_cb()` is not out of bounds.
 - `lt_asn1_der.c`: replaced the length-sized stack VLA in `parse_object()`'s OBJECT IDENTIFIER branch with a fixed 3-byte buffer, preventing an unbounded stack allocation (and potential stack exhaustion) when parsing a device certificate with an attacker-controlled DER length field.
-- `lt_init()` reads CHIP_ID from TROPIC01 in addition to the Application FW version.
 
 ## [4.2.0]
 
