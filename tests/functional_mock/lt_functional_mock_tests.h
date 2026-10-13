@@ -111,6 +111,18 @@ void lt_test_mock_hardware_fail(lt_handle_t *h);
  */
 void lt_test_mock_invalid_app_fw_init(lt_handle_t *h);
 
+/**
+ * @brief Test printing of invalid CHIP_ID
+ *
+ * Test steps:
+ *  1. Call lt_print_chip_id with maximum valid P/N length (15) and verify it returns LT_OK.
+ *  2. Call lt_print_chip_id with P/N length one over maximum (16) and verify it returns LT_FAIL.
+ *  3. Call lt_print_chip_id with invalid P/N length (0xff) and verify it returns LT_FAIL.
+ *
+ * @param h Handle for communication with TROPIC01
+ *
+ * @note This test does not mock any communication with the chip.
+ */
 void lt_test_mock_invalid_pn(lt_handle_t *h);
 
 #ifdef __cplusplus
