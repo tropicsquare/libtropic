@@ -66,10 +66,7 @@ Enable FW update support for TROPIC01 with the ABAB silicon revision (engineerin
 !!! warning
     Because the implementation of Libtropic's FW update functions is chosen at compile-time based on `LT_SILICON_REV_ABAB`, in one compiled instance of Libtropic, FW update can be done either only with TROPIC01 of the ABAB silicon revision (`ON`), or only with TROPIC01 of the ACAB silicon revision and newer (`OFF`).
     !!! example
-        I did not pass `LT_SILICON_REV_ABAB` to `cmake` during the build. I will be able to do FW updates with TROPIC01 chips that have silicon revision ACAB or BDBB. Updating a TROPIC01 chip with ABAB silicon revision will **not** work.
-
-!!! note "Migration from `LT_SILICON_REV`"
-    The `LT_SILICON_REV` option was removed. Replace `-DLT_SILICON_REV=ABAB` with `-DLT_SILICON_REV_ABAB=ON` and drop `-DLT_SILICON_REV=ACAB`. When building Libtropic without CMake, define the `LT_SILICON_REV_ABAB` macro to `1` instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros (it defaults to `0` if not defined).
+        I did not pass `LT_SILICON_REV_ABAB` to `cmake` during the build. I will be able to do FW updates with TROPIC01 chips that have silicon revision ACAB or newer (e.g. BDBB). Updating a TROPIC01 chip with ABAB silicon revision will **not** work.
 
 ### `LT_CPU_FW_UPDATE_DATA_VER`
 - string
