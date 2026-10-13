@@ -435,17 +435,6 @@ typedef enum lt_ret_t {
 #define LT_CRC_ERR_RETRY_ATTEMPTS 3
 #endif
 
-#ifndef LT_SILICON_REV_ABAB
-/**
- * @brief Set to 1 to support FW update of TROPIC01 with ABAB silicon revision. If 0, FW update of
- * TROPIC01 with ACAB silicon revision and newer is supported.
- *
- * @note In CMake-based builds it is set in CMakeLists.txt and can be configured using CMake
- * parameters.
- */
-#define LT_SILICON_REV_ABAB 0
-#endif
-
 //--------------------------------------------------------------------------------------------------------------------//
 /** @brief Maximal size of TROPIC01's certificate */
 #define TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL 3840
