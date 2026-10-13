@@ -193,7 +193,7 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
         (riscv_ver[0] == 0)) {
         read_fw_banks_bootloader_v1_0_1();
     }
-    // Bootloader version 2.0.1 (ACAB)
+    // Bootloader version 2.0.1 (ACAB, BDBB)
     else if (((riscv_ver[3] & 0x7f) == 2) && (riscv_ver[2] == 0) && (riscv_ver[1] == 1) &&
              (riscv_ver[0] == 0)) {
         read_fw_banks_bootloader_v2_0_1();
