@@ -27,7 +27,7 @@ option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 
 # Enable support for FW update of TROPIC01 with ABAB silicon revision (engineering samples).
-# By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer.
+# By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB).
 option(LT_SILICON_REV_ABAB "Support FW update of TROPIC01 with ABAB silicon revision" OFF)
 # LT_SILICON_REV option was removed, help users migrate (it may also be cached in old build directories).
 if (DEFINED LT_SILICON_REV)
@@ -38,7 +38,7 @@ if (DEFINED LT_SILICON_REV)
                             "https://tropicsquare.github.io/libtropic/latest/reference/integrating_libtropic/how_to_configure/")
     endif()
     message(WARNING "LT_SILICON_REV option was removed and its value is ignored. "
-                    "FW update of TROPIC01 with ACAB silicon revision and newer is supported by default. "
+                    "FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB) is supported by default. "
                     "To compile for ABAB revision, use LT_SILICON_REV_ABAB=ON. "
                     "For more information, see "
                     "https://tropicsquare.github.io/libtropic/latest/reference/integrating_libtropic/how_to_configure/")

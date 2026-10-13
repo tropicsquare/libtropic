@@ -2048,8 +2048,8 @@ lt_ret_t lt_do_mutable_fw_update(lt_handle_t *h, const uint8_t *cpu_fw_data,
     }
 
     // 3. Reboot into Maintenance Mode. This step is crucial if we want to update both FW banks pairs.
-    // If the reboot is not done, then in the case of ACAB silicon revision, the second FW bank pair
-    // will not be updated, which increases the possibility of a downgrade attack.
+    // If the reboot is not done, the second FW bank pair will not be updated, which increases the
+    // possibility of a downgrade attack on ACAB and newer silicon revisions.
     ret = lt_reboot(h, TR01_MAINTENANCE_REBOOT);
     if (ret != LT_OK) {
         LT_LOG_ERROR(
