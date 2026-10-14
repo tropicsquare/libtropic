@@ -188,6 +188,9 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 #ifdef ASNDER_LOG_EN
                 LT_LOG_DEBUG("Length too short (< 3), skipping.");
 #endif  // ASNDER_LOG_EN
+
+                // Too short to be the searched OID; skip its bytes to keep the parser in sync.
+                LT_ASN1_DER_DROP_BYTES(ctx, len);
                 break;
             }
 
@@ -198,7 +201,9 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
             uint32_t obj_id = (((uint32_t)buf[0]) << 16) | (((uint32_t)buf[1]) << 8) |
                               (((uint32_t)buf[2]));
 
-            if (ctx->obj_id == obj_id) {
+            // Only the first 3 bytes are compared, so also require len == 3. Otherwise a longer
+            // OID starting with the same 3 bytes would match too.
+            if (ctx->obj_id == obj_id && len == 3) {
 #ifdef ASNDER_LOG_EN
                 LT_LOG_DEBUG("Found searched object: 0x%" PRIx32 ". Next object will be sampled!",
                              ctx->obj_id);
