@@ -684,7 +684,7 @@ struct lt_l2_mutable_fw_update_data_req_t {
     uint8_t
         hash[32];    /**< SHA256 HASH of the next FW chunk of data sent using Mutable_FW_Update_Data */
     uint16_t offset; /**< The offset of the specific bank to write the FW chunk data to */
-    uint8_t data[220]; /**< The binary data to write. Data size should be a multiple of 4 */
+    uint8_t data[216]; /**< The binary data to write. Data size should be a multiple of 4 */
     uint8_t crc[2];    /**< Checksum */
 } __attribute__((__packed__));
 
@@ -700,6 +700,10 @@ LT_STATIC_ASSERT(
         LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, data) +
         LT_MEMBER_SIZE(struct lt_l2_mutable_fw_update_data_req_t, crc)
     )
+)
+// The request is built in place in the L2 buffer, so it has to fit into it.
+LT_STATIC_ASSERT(
+    sizeof(struct lt_l2_mutable_fw_update_data_req_t) <= LT_SIZE_OF_L2_BUFF
 )
 /** \endcond */
 // clang-format on

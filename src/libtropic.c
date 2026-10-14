@@ -724,11 +724,11 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *fw_data, const
                                                           h->l2.buff;
     size_t copy_len;
 
-    // Compute how many bytes are available in the `lt_l2_mutable_fw_update_data_req_t` struct starting
-    // at `req_len`. This is a compile-time-safe calculation and prevents overflow into unknown memory.
-    const size_t dest_offset = offsetof(struct lt_l2_mutable_fw_update_data_req_t, req_len);
-    const size_t dest_capacity = sizeof(*p2_l2_req) > dest_offset ? sizeof(*p2_l2_req) - dest_offset
-                                                                  : 0U;
+    // Max number of bytes copied from one chunk: the `req_len` byte followed by the request data
+    // (`hash`, `offset` and `data`), i.e. everything up to the CRC. This limits `req_len` to the size
+    // of the request data, so the CRC appended by L2 always stays within the L2 buffer.
+    const size_t dest_capacity = offsetof(struct lt_l2_mutable_fw_update_data_req_t, crc) -
+                                 offsetof(struct lt_l2_mutable_fw_update_data_req_t, req_len);
 
     // Data consist of "request" and "data" parts,
     // 'data' byte chunks are taken starting from 'chunk_index'
