@@ -101,6 +101,11 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 
     uint8_t length;
 
+    // Check if index is not out of bounds.
+    if (index >= (sizeof(strings) / sizeof(strings[0]))) {
+        return NULL;
+    }
+
     if (index == 0) {
         descriptor[1] = 0x0409;
         length = 1;
