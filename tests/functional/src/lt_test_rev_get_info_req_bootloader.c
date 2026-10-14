@@ -96,7 +96,7 @@ static void read_fw_banks_bootloader_v1_0_1(void)
     LT_LOG_INFO();
 }
 
-static void read_fw_banks_bootloader_v2_0_1(void)
+static void read_fw_banks_bootloader_v2_0_1_and_newer(void)
 {
     uint8_t fw_header[TR01_L2_GET_INFO_FW_HEADER_SIZE];
     uint16_t read_header_size;
@@ -196,7 +196,12 @@ void lt_test_rev_get_info_req_bootloader(lt_handle_t *h)
     // Bootloader version 2.0.1 (ACAB)
     else if (((riscv_ver[3] & 0x7f) == 2) && (riscv_ver[2] == 0) && (riscv_ver[1] == 1) &&
              (riscv_ver[0] == 0)) {
-        read_fw_banks_bootloader_v2_0_1();
+        read_fw_banks_bootloader_v2_0_1_and_newer();
+    }
+    // Bootloader version 3.1.2 (BDBB)
+    else if (((riscv_ver[3] & 0x7f) == 3) && (riscv_ver[2] == 1) && (riscv_ver[1] == 2) &&
+             (riscv_ver[0] == 0)) {
+        read_fw_banks_bootloader_v2_0_1_and_newer();
     }
     else {
         LT_LOG_ERROR("Unknown bootloader version!");

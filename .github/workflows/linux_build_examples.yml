@@ -47,11 +47,11 @@ jobs:
           cd build_dis_mm && ninja
 
           cd ..
-          cmake ./ -B build_abab -G Ninja -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=OFF
+          cmake ./ -B build_abab -G Ninja -DLT_SILICON_REV_ABAB=ON -DLT_DISABLE_MAINTENANCE_MODE=OFF
           cd build_abab && ninja
 
           cd ..
-          cmake ./ -B build_abab_dis_mm -G Ninja -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=ON
+          cmake ./ -B build_abab_dis_mm -G Ninja -DLT_SILICON_REV_ABAB=ON -DLT_DISABLE_MAINTENANCE_MODE=ON
           cd build_abab_dis_mm && ninja
 
           cd ../../full_chain_verification
@@ -77,11 +77,11 @@ jobs:
           cd build_dis_mm && ninja
 
           cd ..
-          cmake ./ -B build_abab -G Ninja -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=OFF
+          cmake ./ -B build_abab -G Ninja -DLT_SILICON_REV_ABAB=ON -DLT_DISABLE_MAINTENANCE_MODE=OFF
           cd build_abab && ninja
 
           cd ..
-          cmake ./ -B build_abab_dis_mm -G Ninja -DLT_SILICON_REV=ABAB -DLT_DISABLE_MAINTENANCE_MODE=ON
+          cmake ./ -B build_abab_dis_mm -G Ninja -DLT_SILICON_REV_ABAB=ON -DLT_DISABLE_MAINTENANCE_MODE=ON
           cd build_abab_dis_mm && ninja
 
           cd ../../full_chain_verification

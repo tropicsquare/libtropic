@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Out-of-the-box support for TROPIC01 with ACAB and BDBB silicon revisions (FW update of ACAB and newer is supported by default).
+
+### Removed
+- `LT_SILICON_REV` CMake option, replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). Replace `-DLT_SILICON_REV=ABAB` with `-DLT_SILICON_REV_ABAB=ON` and drop `-DLT_SILICON_REV=ACAB`.
+- `LT_SILICON_REV_ACAB` macro. When building Libtropic without CMake (e.g. with a Makefile), define `LT_SILICON_REV_ABAB` to `1` (ABAB) or `0` (ACAB and newer) instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros.
+
 ## [4.2.0]
 
 ### Added

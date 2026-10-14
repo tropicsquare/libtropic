@@ -515,7 +515,7 @@ LT_STATIC_ASSERT(
 // clang-format on
 
 // Firmware update API structs for ABAB silicon revision
-#if defined(LT_SILICON_REV_ABAB)
+#if LT_SILICON_REV_ABAB
 /** @brief Request ID */
 #define TR01_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb1
 /** @brief Request min length */
@@ -596,8 +596,8 @@ LT_STATIC_ASSERT(
 /** \endcond */
 // clang-format on
 
-// Firmware update API structs for ACAB silicon revision
-#elif defined(LT_SILICON_REV_ACAB)
+// Firmware update API structs for ACAB silicon revision and newer
+#else
 /** @brief Request ID */
 #define TR01_L2_MUTABLE_FW_UPDATE_REQ_ID 0xb0
 /** @brief Request min length */
@@ -727,8 +727,6 @@ LT_STATIC_ASSERT(
 )
 /** \endcond */
 // clang-format on
-#else
-#error "Undefined silicon revision! One of the LT_SILICON_REV_* macros must be defined."
 #endif
 
 /** @brief Request ID */
