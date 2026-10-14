@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `LT_SILICON_REV_UNKNOWN` to `lt_ret_t`, returned by `lt_init()` if the silicon revision of the connected TROPIC01 is not known to Libtropic.
 - Out-of-the-box support for TROPIC01 with ACAB and BDBB silicon revisions (FW update of ACAB and newer is supported by default).
 
 ### Removed
