@@ -26,9 +26,9 @@ option(LT_USE_INT_PIN "Use INT pin instead of polling for TROPIC01's response" O
 option(LT_SEPARATE_L3_BUFF "Define L3 buffer separately out of the handle" OFF)
 option(LT_PRINT_SPI_DATA "Print SPI communication to console, used to debug low level communication" OFF)
 
-# Enable support for FW update of TROPIC01 with ABAB silicon revision (engineering samples).
-# By default, Libtropic supports FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB).
-option(LT_SILICON_REV_ABAB "Support FW update of TROPIC01 with ABAB silicon revision" OFF)
+# Enable support for TROPIC01 with ABAB silicon revision (engineering samples).
+# By default, Libtropic supports TROPIC01 with ACAB silicon revision and newer (e.g. BDBB).
+option(LT_SILICON_REV_ABAB "Support for TROPIC01 with ABAB silicon revision" OFF)
 # LT_SILICON_REV option was removed, help users migrate (it may also be cached in old build directories).
 if (DEFINED LT_SILICON_REV)
     if (LT_SILICON_REV STREQUAL "ABAB")

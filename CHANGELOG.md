@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - `LT_SILICON_REV` CMake option, replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). Replace `-DLT_SILICON_REV=ABAB` with `-DLT_SILICON_REV_ABAB=ON` and drop `-DLT_SILICON_REV=ACAB`.
-- `LT_SILICON_REV_ACAB` macro. When building Libtropic without CMake (e.g. with a Makefile), define `LT_SILICON_REV_ABAB` to `1` (ABAB) or `0` (ACAB and newer) instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros.
+- `LT_SILICON_REV_ACAB` macro. When building Libtropic without CMake (e.g. with a Makefile), define `LT_SILICON_REV_ABAB` to `1` (support for ABAB) or `0` (support for ACAB and newer) instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros.
 
 ### Fixed
 - TROPIC01 Util: check if `index` parameter in `tud_descriptor_string_cb()` is not out of bounds.
