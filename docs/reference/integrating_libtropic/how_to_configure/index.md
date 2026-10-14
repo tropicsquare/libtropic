@@ -58,7 +58,7 @@ Log SPI communication using `printf`. Handy to debug low level communication.
 - boolean
 - default value: `OFF`
 
-Enable FW update support for TROPIC01 with the ABAB silicon revision (engineering samples). By default, Libtropic supports FW update of TROPIC01 with the ACAB silicon revision and newer (e.g. BDBB). Only the FW update API differs between ABAB and the newer silicon revisions; the rest of Libtropic works with all silicon revisions regardless of this option.
+Enable support for TROPIC01 with the ABAB silicon revision (engineering samples). By default, Libtropic supports TROPIC01 with the ACAB silicon revision and newer (e.g. BDBB).
 
 !!! question "What Is the Silicon Revision of My TROPIC01?"
     Refer to the dedicated section in the [FAQ](../../../faq.md#what-is-the-silicon-revision-of-my-tropic01).
