@@ -78,9 +78,15 @@ static lt_ret_t mock_get_info(lt_handle_t *h, const void *object, const uint8_t 
     return LT_OK;
 }
 
-lt_ret_t mock_init_communication_chip_id(lt_handle_t *h, const struct lt_chip_id_t *chip_id,
-                                         const uint8_t riscv_fw_ver[4])
+lt_ret_t mock_init_communication(lt_handle_t *h, const struct lt_chip_id_t *chip_id,
+                                 const uint8_t riscv_fw_ver[4])
 {
+    const struct lt_chip_id_t default_chip_id = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
+                                                 .silicon_rev = {'A', 'C', 'A', 'B'}};
+    if (chip_id == NULL) {
+        chip_id = &default_chip_id;
+    }
+
     // Mock response data for chip mode check.
     uint8_t chip_ready = TR01_L1_CHIP_MODE_READY_bit;
 
@@ -99,14 +105,6 @@ lt_ret_t mock_init_communication_chip_id(lt_handle_t *h, const struct lt_chip_id
     }
 
     return LT_OK;
-}
-
-lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4])
-{
-    const struct lt_chip_id_t chip_id = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
-                                         .silicon_rev = {'A', 'C', 'A', 'B'}};
-
-    return mock_init_communication_chip_id(h, &chip_id, riscv_fw_ver);
 }
 
 lt_ret_t mock_session_start(lt_handle_t *h, const uint8_t kcmd[TR01_AES256_KEY_LEN],

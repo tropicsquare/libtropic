@@ -27,7 +27,7 @@ static void test_known_silicon_rev(lt_handle_t *h, const struct lt_chip_id_t *ch
 {
     lt_mock_hal_reset(&h->l2);
     LT_LOG_INFO("Mocking initialization...");
-    LT_TEST_ASSERT(LT_OK, mock_init_communication_chip_id(
+    LT_TEST_ASSERT(LT_OK, mock_init_communication(
                               h, chip_id, (uint8_t[]){0x00, 0x00, 0x00, 0x02}));  // Version 2.0.0
 
     LT_LOG_INFO("Initializing handle");
@@ -51,7 +51,7 @@ static void test_unknown_silicon_rev(lt_handle_t *h, const struct lt_chip_id_t *
 {
     lt_mock_hal_reset(&h->l2);
     LT_LOG_INFO("Mocking initialization...");
-    LT_TEST_ASSERT(LT_OK, mock_init_communication_chip_id(
+    LT_TEST_ASSERT(LT_OK, mock_init_communication(
                               h, chip_id, (uint8_t[]){0x00, 0x00, 0x00, 0x02}));  // Version 2.0.0
 
     // lt_init() cleans up on failure, so lt_deinit() is not called.

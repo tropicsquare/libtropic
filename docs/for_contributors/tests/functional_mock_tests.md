@@ -116,7 +116,7 @@ int lt_test_mock_my_test(lt_handle_t *h)
 
     lt_mock_hal_reset(&h->l2);
     LT_LOG_INFO("Mocking initialization...");
-    LT_TEST_ASSERT(LT_OK, mock_init_communication(h, (uint8_t[]){0x00, 0x00, 0x00, 0x02}));  // Version 2.0.0
+    LT_TEST_ASSERT(LT_OK, mock_init_communication(h, NULL, (uint8_t[]){0x00, 0x00, 0x00, 0x02}));  // Version 2.0.0
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
