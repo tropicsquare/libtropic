@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - TROPIC01 Util: check if `index` parameter in `tud_descriptor_string_cb()` is not out of bounds.
+- `lt_asn1_der.c`: replaced the length-sized stack VLA in `parse_object()`'s OBJECT IDENTIFIER branch with a fixed 3-byte buffer, preventing an unbounded stack allocation (and potential stack exhaustion) when parsing a device certificate with an attacker-controlled DER length field.
 
 ## [4.2.0]
 
