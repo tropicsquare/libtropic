@@ -105,7 +105,7 @@ static lt_ret_t parse_length(struct parse_ctx_t *ctx, uint16_t *len)
     uint8_t b;
     LT_ASN1_DER_GET_NEXT_BYTE(ctx, &b);
 
-    if (b < 127) {
+    if (b < 128) {
         *len = (uint16_t)b;
     }
     else {
