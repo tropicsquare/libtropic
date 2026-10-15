@@ -191,8 +191,8 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
                 break;
             }
 
-            uint8_t buf[len];
-            LT_ASN1_DER_GET_BYTES(ctx, buf, len);
+            uint8_t buf[3];
+            LT_ASN1_DER_GET_BYTES(ctx, buf, 3);
 
             // We skip this step if the len is shorter than 3, so this is OK.
             uint32_t obj_id = (((uint32_t)buf[0]) << 16) | (((uint32_t)buf[1]) << 8) |
@@ -205,6 +205,11 @@ static lt_ret_t parse_object(struct parse_ctx_t *ctx)
 #endif
                 ctx->sample_next = true;
             }
+
+            if (len > 3) {
+                LT_ASN1_DER_DROP_BYTES(ctx, len - 3);
+            }
+
             break;
         }
 
