@@ -478,7 +478,7 @@ static lt_ret_t PIN_entry_check(lt_handle_t *h, const uint8_t *PIN, const uint8_
         goto exit;
     }
 
-    for (int x = nvm.i; x < MACANDD_ROUNDS - 1; x++) {
+    for (int x = nvm.i; x < MACANDD_ROUNDS; x++) {
         uint8_t ignore[TR01_MAC_AND_DESTROY_DATA_SIZE] = {0};
 
         printf("\tDoing M&D sequence...");
