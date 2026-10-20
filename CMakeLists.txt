@@ -205,7 +205,7 @@ set(SDK_DIRS_PUB ${SDK_DIRS_PUB}
 if (LT_SILICON_REV_ABAB)
     set(BL_FOLDER boot_v_1_0_1)
 else()
-    set(BL_FOLDER boot_v_2_0_1)
+    set(BL_FOLDER boot_v_2_0_1_and_newer)
 endif()
 
 set(SDK_DIRS_PUB ${SDK_DIRS_PUB}

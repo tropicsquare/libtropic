@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `LT_SILICON_REV_UNKNOWN` to `lt_ret_t`, returned by `lt_init()` if the silicon revision of the connected TROPIC01 is not known to Libtropic.
 - Out-of-the-box support for TROPIC01 with ACAB and BDBB silicon revisions (FW update of ACAB and newer is supported by default).
 
+### Changed
+- Renamed `TROPIC01_fw_update_files/boot_v_2_0_1/` to `TROPIC01_fw_update_files/boot_v_2_0_1_and_newer/`.
+
 ### Removed
 - `LT_SILICON_REV` CMake option, replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). Replace `-DLT_SILICON_REV=ABAB` with `-DLT_SILICON_REV_ABAB=ON` and drop `-DLT_SILICON_REV=ACAB`.
 - `LT_SILICON_REV_ACAB` macro. When building Libtropic without CMake (e.g. with a Makefile), define `LT_SILICON_REV_ABAB` to `1` (support for ABAB) or `0` (support for ACAB and newer) instead of the former `LT_SILICON_REV_ABAB`/`LT_SILICON_REV_ACAB` macros.
