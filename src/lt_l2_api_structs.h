@@ -118,7 +118,7 @@ LT_STATIC_ASSERT(
     sizeof(struct lt_l2_get_info_rsp_t) ==
     (
         LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, chip_status) +
-        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, status) +
         LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, rsp_len) +
         LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, object) +
         LT_MEMBER_SIZE(struct lt_l2_get_info_rsp_t, crc)
@@ -197,13 +197,14 @@ struct lt_l2_handshake_rsp_t {
 // clang-format off
 /** \cond */
 LT_STATIC_ASSERT(
-    sizeof(struct lt_l2_handshake_req_t) ==
+    sizeof(struct lt_l2_handshake_rsp_t) ==
     (
-        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, req_id) +
-        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, req_len) +
-        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, e_hpub) +
-        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, pkey_index) +
-        LT_MEMBER_SIZE(struct lt_l2_handshake_req_t, crc)
+        LT_MEMBER_SIZE(struct lt_l2_handshake_rsp_t, chip_status) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_rsp_t, status) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_rsp_t, rsp_len) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_rsp_t, e_tpub) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_rsp_t, t_tauth) +
+        LT_MEMBER_SIZE(struct lt_l2_handshake_rsp_t, crc)
     )
 )
 /** \endcond */
