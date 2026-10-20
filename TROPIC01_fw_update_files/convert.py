@@ -12,7 +12,7 @@ import re
 def write_fw_header(path_to_fw_folder, filename, type, version, boot_version):
     BYTES_PER_LINE = 16
 
-    with open(path_to_fw_folder + filename, 'rb') as f:
+    with open(os.path.join(path_to_fw_folder, filename), 'rb') as f:
         data = f.read()
 
     major, minor, patch = version
@@ -42,7 +42,7 @@ const uint8_t fw_{type}_ver[4] = {{0, {patch}, {minor}, {major}}};
 const uint8_t fw_{type}[] = {{
 {data_lines}}};"""
 
-    header_file_name = path_to_fw_folder + "fw_" + type + ".h"
+    header_file_name = os.path.join(path_to_fw_folder, "fw_" + type + ".h")
     with open(header_file_name, 'w') as header:
         header.write(header_content)
 
