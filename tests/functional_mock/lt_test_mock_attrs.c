@@ -45,7 +45,7 @@ void lt_test_mock_attrs(lt_handle_t *h)
 
         lt_mock_hal_reset(&h->l2);
         LT_LOG_INFO("Mocking initialization...");
-        LT_TEST_ASSERT(LT_OK, mock_init_communication(h, NULL, riscv_fw_ver_resp[i]));
+        LT_TEST_ASSERT(LT_OK, mock_init_communication(h, &mock_chip_id_acab, riscv_fw_ver_resp[i]));
 
         LT_LOG_INFO("Initializing handle");
         LT_TEST_ASSERT(LT_OK, lt_init(h));

@@ -21,6 +21,15 @@
 #include "lt_l2_frame_check.h"
 #include "lt_l3_process.h"
 
+// CHIP_ID v0.0.0.1 was used only in ABAB chips and has no silicon revision field.
+const struct lt_chip_id_t mock_chip_id_abab = {.chip_id_ver = {0x00, 0x00, 0x00, 0x01}};
+
+const struct lt_chip_id_t mock_chip_id_acab = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
+                                               .silicon_rev = {'A', 'C', 'A', 'B'}};
+
+const struct lt_chip_id_t mock_chip_id_bdbb = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
+                                               .silicon_rev = {'B', 'D', 'B', 'B'}};
+
 void add_resp_crc(void *resp_buf)
 {
     uint8_t *resp_buf_bytes = (uint8_t *)resp_buf;
@@ -81,10 +90,9 @@ static lt_ret_t mock_get_info(lt_handle_t *h, const void *object, const uint8_t 
 lt_ret_t mock_init_communication(lt_handle_t *h, const struct lt_chip_id_t *chip_id,
                                  const uint8_t riscv_fw_ver[4])
 {
-    const struct lt_chip_id_t default_chip_id = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
-                                                 .silicon_rev = {'A', 'C', 'A', 'B'}};
-    if (chip_id == NULL) {
-        chip_id = &default_chip_id;
+    if (chip_id == NULL || riscv_fw_ver == NULL) {
+        LT_LOG_ERROR("Both CHIP_ID and RISC-V FW version have to be provided.");
+        return LT_PARAM_ERR;
     }
 
     // Mock response data for chip mode check.
