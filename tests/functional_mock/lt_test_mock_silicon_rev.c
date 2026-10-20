@@ -65,20 +65,14 @@ void lt_test_mock_silicon_rev(lt_handle_t *h)
     LT_LOG_INFO("lt_test_mock_silicon_rev()");
     LT_LOG_INFO("----------------------------------------------");
 
-    // CHIP_ID v0.0.0.1 was used only in ABAB chips and has no silicon revision field.
     LT_LOG_INFO("Testing with mocked silicon revision: ABAB (CHIP_ID v0.0.0.1)");
-    const struct lt_chip_id_t chip_id_abab_v0001 = {.chip_id_ver = {0x00, 0x00, 0x00, 0x01}};
-    test_known_silicon_rev(h, &chip_id_abab_v0001, LT_TR01_ABAB);
+    test_known_silicon_rev(h, &mock_chip_id_abab, LT_TR01_ABAB);
 
     LT_LOG_INFO("Testing with mocked silicon revision: ACAB");
-    const struct lt_chip_id_t chip_id_acab = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
-                                              .silicon_rev = {'A', 'C', 'A', 'B'}};
-    test_known_silicon_rev(h, &chip_id_acab, LT_TR01_ACAB);
+    test_known_silicon_rev(h, &mock_chip_id_acab, LT_TR01_ACAB);
 
     LT_LOG_INFO("Testing with mocked silicon revision: BDBB");
-    const struct lt_chip_id_t chip_id_bdbb = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
-                                              .silicon_rev = {'B', 'D', 'B', 'B'}};
-    test_known_silicon_rev(h, &chip_id_bdbb, LT_TR01_BDBB);
+    test_known_silicon_rev(h, &mock_chip_id_bdbb, LT_TR01_BDBB);
 
     LT_LOG_INFO("Testing with mocked silicon revision: unknown");
     const struct lt_chip_id_t chip_id_unknown = {.chip_id_ver = {0x01, 0x00, 0x00, 0x00},
