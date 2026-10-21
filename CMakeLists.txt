@@ -38,7 +38,7 @@ if (DEFINED LT_SILICON_REV)
                             "https://tropicsquare.github.io/libtropic/latest/reference/integrating_libtropic/how_to_configure/")
     endif()
     message(WARNING "LT_SILICON_REV option was removed and its value is ignored. "
-                    "FW update of TROPIC01 with ACAB silicon revision and newer (e.g. BDBB) is supported by default. "
+                    "TROPIC01 with ACAB silicon revision and newer (e.g. BDBB) is supported by default. "
                     "To compile for ABAB revision, use LT_SILICON_REV_ABAB=ON. "
                     "For more information, see "
                     "https://tropicsquare.github.io/libtropic/latest/reference/integrating_libtropic/how_to_configure/")
