@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `lt_asn1_der.c`: replaced the length-sized stack VLA in `parse_object()`'s OBJECT IDENTIFIER branch with a fixed 3-byte buffer, preventing an unbounded stack allocation (and potential stack exhaustion) when parsing a device certificate with an attacker-controlled DER length field.
 - `lt_asn1_der.c`: accept a DER short-form length of exactly 127 (`0x7F`) in `parse_length()`, which was previously misparsed as long-form and rejected. Certificates containing an object of length 127 now parse correctly.
 - `lt_asn1_der.c`: correctly handle OBJECT IDENTIFIERs of length other than 3 bytes.
+- `lt_print_chip_id()`: fixed buffer overflow when CHIP_ID contains an invalid part number length. The 16-byte part number field holds a 1-byte length followed by at most 15 bytes of data, so a length greater than 15 is invalid and `LT_FAIL` is now returned.
 
 ## [4.2.0]
 
