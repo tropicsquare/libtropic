@@ -9,66 +9,91 @@ import sys
 import os
 import re
 
-def binary_to_c_array(path_to_fw_folder, filename, type):
-    print(path_to_fw_folder)
-    with open(path_to_fw_folder + filename, 'rb') as f:
+def write_fw_header(path_to_fw_folder, filename, type, version, is_boot_v_1_0_1):
+    BYTES_PER_LINE = 16
+
+    with open(os.path.join(path_to_fw_folder, filename), 'rb') as f:
         data = f.read()
 
-    header_file_name = path_to_fw_folder + "fw_" + type + ".h"
+    major, minor, patch = version
+
+    # Format the data as hex bytes, BYTES_PER_LINE per line
+    lines = []
+    for offset in range(0, len(data), BYTES_PER_LINE):
+        chunk = data[offset:offset + BYTES_PER_LINE]  # single line of bytes
+        hex_bytes = [f"0x{byte:02x}" for byte in chunk]  # convert bytes in line to str
+        lines.append("    " + ", ".join(hex_bytes))
+
+    data_lines = ",\n".join(lines)
+
+    header_content = f"""\
+#pragma once
+
+#include <stdint.h>
+
+/**
+ * @brief {type} firmware version array {{reserved, patch, minor, major}}
+ */
+const uint8_t fw_{type}_ver[4] = {{0, {patch}, {minor}, {major}}};
+
+/**
+ * @brief {type} firmware version {filename} for bootloader {boot_version_str(is_boot_v_1_0_1)}
+ */
+const uint8_t fw_{type}[] = {{
+{data_lines}}};"""
+
+    header_file_name = os.path.join(path_to_fw_folder, "fw_" + type + ".h")
     with open(header_file_name, 'w') as header:
-        header.write("#pragma once\n")
-        header.write("/**\n")
-        header.write(f" * @brief {type} firmware version {filename} for bootloader v1.0.1\n")
-        header.write(" */\n")
-        header.write("const uint8_t " + "fw_" + type + "[] = {\n")
-        for i, byte in enumerate(data):
-            if i % 16 == 0:
-                header.write("    ")
-            header.write(f"0x{byte:02x}")
-            if i < len(data) - 1:
-                header.write(", ")
-            if (i + 1) % 16 == 0:
-                header.write("\n")
-        header.write("\n};")
-        #header.write(f"\nconst uint16_t {version_name}_len = {len(data)};")
+        header.write(header_content)
 
-def list_files_in_directory(path):
-    try:
-        # List all files in the given directory
-        files = os.listdir(path)
+# Filename prefix of each firmware type, followed by vX.Y.Z
+FW_TYPE_TO_PREFIX = {
+    "SPECT": "spect_app-",
+    "CPU": "fw_",
+}
 
-        # Filter out directories, keep only files
-        files = [f for f in files if os.path.isfile(os.path.join(path, f))]
+def boot_version_str(is_boot_v_1_0_1):
+    return "v1.0.1" if is_boot_v_1_0_1 else "v2.0.1 and newer"
 
-        # Check if there are exactly two files
-        if len(files) != 2:
-            print(f"Expected 2 files, but found {len(files)}.")
-            return None, None
+def get_boot_version_from_path(path):
+    """Determine the bootloader version from the parent folder name of path. Exits if it is unknown.
 
-        # Return the two filenames
-        return files[0], files[1]
-    except FileNotFoundError:
-        print(f"Error: The directory '{path}' does not exist.")
-        return None, None
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None, None
+    Returns True for bootloader 1.0.1, False for bootloader 2.0.1 and newer.
+    """
+    boot_dir = os.path.basename(os.path.dirname(os.path.abspath(path)))
+    if boot_dir == "boot_v_1_0_1":
+        is_boot_v_1_0_1 = True
+    elif boot_dir == "boot_v_2_0_1_and_newer":
+        is_boot_v_1_0_1 = False
+    else:
+        sys.exit(f"Unknown bootloader folder '{boot_dir}', expected boot_v_1_0_1 or boot_v_2_0_1_and_newer")
 
+    print(f"Bootloader version: {boot_version_str(is_boot_v_1_0_1)}")
+    return is_boot_v_1_0_1
 
-def parse_version_from_filename(filename):
-    try:
-        # Use regex to find the version pattern vX.X.X
-        match = re.search(r'v(\d+)\.(\d+)\.(\d+)', filename)
-        if match:
-            # Format the version as 0_3_1
-            version = f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
-            return version
-        else:
-            print(f"No version found in filename: {filename}")
-            return None
-    except Exception as e:
-        print(f"An error occurred while parsing the version: {e}")
-        return None
+def find_fw_binary(path, fw_type, is_boot_v_1_0_1):
+    """Find the only fw_type binary in path that is in the format expected by the bootloader.
+
+    Returns (filename, (major, minor, patch)). Exits if there is not exactly one match.
+    """
+    prefix = FW_TYPE_TO_PREFIX[fw_type]
+    # Bootloader 2.0.1 and newer expects firmware binaries split into chunks
+    suffix = "_signed.bin" if is_boot_v_1_0_1 else "_signed_chunks.bin"
+    # Anything may follow the version (e.g. ".hex32" in CPU FW binaries for bootloader 2.0.1 and newer)
+    pattern = re.compile(re.escape(prefix) + r"v(\d+)\.(\d+)\.(\d+).*" + re.escape(suffix))
+
+    bin_files = sorted(f for f in os.listdir(path) if f.endswith(".bin") and os.path.isfile(os.path.join(path, f)))
+    matches = [f for f in bin_files if pattern.fullmatch(f)]
+
+    if len(matches) != 1:
+        sys.exit(f"Expected exactly one {fw_type} FW named {prefix}vX.Y.Z*{suffix} "
+                 f"for bootloader {boot_version_str(is_boot_v_1_0_1)}, but found {len(matches)}.\n"
+                 f"Present .bin files: {', '.join(bin_files) or 'none'}")
+
+    filename = matches[0]
+    version = tuple(int(g) for g in pattern.fullmatch(filename).groups())
+    print(f"Located {fw_type} FW: {filename} (version {version})")
+    return filename, version
 
 if __name__ == "__main__":
 
@@ -77,32 +102,23 @@ if __name__ == "__main__":
         print()
         print("Please provide the path to the folder containing signed firmware bin files for APP and SPECT..")
         print("Example: ./convert.py /path/to/firmwares/")
-        print("Note: The folder shall contain exactly two bin files with version numbers in their names.")
+        print("Note: The folder shall be inside the boot_v_1_0_1 or boot_v_2_0_1_and_newer folder")
+        print("      and contain one SPECT and one CPU FW bin file")
+        print("      in the format expected by that bootloader version.")
         sys.exit(1)
 
-    filename1, filename2 = list_files_in_directory(sys.argv[1])
+    # check if provided directory exists
+    fw_dir = sys.argv[1]
+    if not os.path.isdir(fw_dir):
+        sys.exit(f"Error: The directory '{fw_dir}' does not exist.")
 
-    if filename1 and filename2:
+    # get bootloader version from parent dir name
+    is_boot_v_1_0_1 = get_boot_version_from_path(fw_dir)
 
-        if "spect" in filename1 and "fw" in filename2:
-            spect_fw_filename = filename1
-            cpu_fw_filename = filename2
-        elif "spect" in filename2 and "fw" in filename1:
-            spect_fw_filename = filename2
-            cpu_fw_filename = filename1
-        else:
-            print("Can't locate SPECT and CPU FWs")
+    # locate fw binaries
+    spect_bin, spect_version = find_fw_binary(fw_dir, "SPECT", is_boot_v_1_0_1)
+    cpu_bin, cpu_version = find_fw_binary(fw_dir, "CPU", is_boot_v_1_0_1)
 
-        print(f"Located SPECT FW: {spect_fw_filename}")
-        print(f"Located CPU FW: {cpu_fw_filename}")
-
-        spect_version = parse_version_from_filename(spect_fw_filename)
-        if spect_version:
-            print(f"Parsed SPECT FW version: {spect_version}")
-            binary_to_c_array(sys.argv[1], spect_fw_filename, "SPECT")
-
-        cpu_version = parse_version_from_filename(cpu_fw_filename)
-        if cpu_version:
-            print(f"Parsed CPU FW version: {cpu_version}")
-            binary_to_c_array(sys.argv[1], cpu_fw_filename, "CPU")
+    write_fw_header(fw_dir, spect_bin, "SPECT", spect_version, is_boot_v_1_0_1)
+    write_fw_header(fw_dir, cpu_bin, "CPU", cpu_version, is_boot_v_1_0_1)
 
