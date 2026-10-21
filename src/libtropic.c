@@ -512,13 +512,13 @@ lt_ret_t lt_sleep(lt_handle_t *h, const uint8_t sleep_kind)
     }
 
     // Setup a request pointer to l2 buffer, which is placed in handle
-    struct lt_l2_startup_req_t *p_l2_req = (struct lt_l2_startup_req_t *)h->l2.buff;
+    struct lt_l2_sleep_req_t *p_l2_req = (struct lt_l2_sleep_req_t *)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_startup_rsp_t *p_l2_resp = (struct lt_l2_startup_rsp_t *)h->l2.buff;
+    struct lt_l2_sleep_rsp_t *p_l2_resp = (struct lt_l2_sleep_rsp_t *)h->l2.buff;
 
     p_l2_req->req_id = TR01_L2_SLEEP_REQ_ID;
     p_l2_req->req_len = TR01_L2_SLEEP_REQ_LEN;
-    p_l2_req->startup_id = sleep_kind;
+    p_l2_req->sleep_kind = sleep_kind;
 
     lt_ret_t ret = lt_l2_transfer(&h->l2);
     if (ret != LT_OK) {
@@ -720,8 +720,8 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *fw_data, const
     struct lt_l2_mutable_fw_update_data_req_t *p2_l2_req =
         (struct lt_l2_mutable_fw_update_data_req_t *)h->l2.buff;
     // Setup a request pointer to l2 buffer with response data
-    struct lt_l2_mutable_fw_update_rsp_t *p_l2_resp = (struct lt_l2_mutable_fw_update_rsp_t *)
-                                                          h->l2.buff;
+    struct lt_l2_mutable_fw_update_data_rsp_t *p_l2_resp =
+        (struct lt_l2_mutable_fw_update_data_rsp_t *)h->l2.buff;
     size_t copy_len;
 
     // Compute how many bytes are available in the `lt_l2_mutable_fw_update_data_req_t` struct starting
