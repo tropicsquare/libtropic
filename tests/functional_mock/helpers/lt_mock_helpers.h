@@ -17,6 +17,17 @@
 extern "C" {
 #endif
 
+// Predefined CHIP_IDs for mock_init_communication(), one per supported silicon revision.
+
+/** @brief CHIP_ID of a TROPIC01 with silicon revision ABAB. */
+extern const struct lt_chip_id_t mock_chip_id_abab;
+
+/** @brief CHIP_ID of a TROPIC01 with silicon revision ACAB. */
+extern const struct lt_chip_id_t mock_chip_id_acab;
+
+/** @brief CHIP_ID of a TROPIC01 with silicon revision BDBB. */
+extern const struct lt_chip_id_t mock_chip_id_bdbb;
+
 /**
  * @brief Adds CRC16 to the end of the mocked response buffer.
  *
@@ -43,11 +54,14 @@ size_t calc_mocked_resp_len(const void *resp_buf);
  * communication, this helper function is provided to simplify the process.
  *
  * @param h Pointer to the lt_handle_t structure.
- * @param riscv_fw_ver Array representing the desired RISC-V FW version to mock.
+ * @param chip_id CHIP_ID to mock (determines the silicon revision). Must be non-NULL. Hint: use
+ * the predefined mock_chip_id_abab, mock_chip_id_acab or mock_chip_id_bdbb.
+ * @param riscv_fw_ver Array representing the desired RISC-V FW version to mock. Must be non-NULL.
  *
  * @return lt_ret_t LT_OK on success, error code otherwise.
  */
-lt_ret_t mock_init_communication(lt_handle_t *h, const uint8_t riscv_fw_ver[4]);
+lt_ret_t mock_init_communication(lt_handle_t *h, const struct lt_chip_id_t *chip_id,
+                                 const uint8_t riscv_fw_ver[4]);
 
 /**
  * @brief Initialize and start a mocked Secure Session for functional mock tests.

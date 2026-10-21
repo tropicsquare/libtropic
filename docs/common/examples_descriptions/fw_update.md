@@ -1,4 +1,4 @@
-This example explains the firmware update process for both ABAB and ACAB silicon revisions. Use this example as a reference for integrating TROPIC01 firmware updates into your application. You will learn:
+This example explains the firmware update process for the ABAB silicon revision as well as ACAB and newer (e.g. BDBB). Use this example as a reference for integrating TROPIC01 firmware updates into your application. You will learn:
 
 - How to read the current firmware versions.
 - How to update the firmware using `lt_do_mutable_fw_update()`, which performs the recommended FW update procedure.

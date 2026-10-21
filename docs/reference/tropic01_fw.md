@@ -34,7 +34,7 @@ TROPIC01_fw_update_files/
 │       ├── fw_SPECT.h
 │       ├── fw_v<A_B_C>.signed.bin
 │       └── spect_app-v<D_E_F>_signed.bin
-├── boot_v_<newer_than_1_0_1>/
+├── boot_v_2_0_1_and_newer/
 │   └── fw_v_<A_B_C>/
 │       ├── fw_CPU.h
 │       ├── fw_SPECT.h
@@ -44,14 +44,14 @@ TROPIC01_fw_update_files/
 ```
 
 - `boot_v_1_0_1/`: directory of available FW update files for bootloader version 1.0.1.
-- `boot_v_<newer_than_1_0_1>/`: directories of available FW update files for bootloader versions newer than 1.0.1 (e.g. 2.0.1). Compared to FW update files for bootloader 1.0.1, the FW data is in chunks, which is reflected in the names of the binaries.
+- `boot_v_2_0_1_and_newer/`: directory of available FW update files for bootloader versions newer than 1.0.1 (e.g. 2.0.1). Compared to FW update files for bootloader 1.0.1, the FW data is in chunks, which is reflected in the names of the binaries.
 - `fw_v_<A_B_C>/`: directory with RISC-V CPU and SPECT FW update files (in both formats) for a given FW version `<A_B_C>`. Note that the RISC-V CPU FW and SPECT FW versions can be different.
 - `convert.py`: Python script for converting firmware binary files into C header files.
 
 #### Compiling into Libtropic
 To select which FW version will be compiled together with Libtropic, the user has to set the following CMake variables (both have a default value):
 
-- [LT_SILICON_REV](integrating_libtropic/how_to_configure/index.md#lt_silicon_rev),
+- [LT_SILICON_REV_ABAB](integrating_libtropic/how_to_configure/index.md#lt_silicon_rev_abab),
 - [LT_CPU_FW_UPDATE_DATA_VER](integrating_libtropic/how_to_configure/index.md#lt_cpu_fw_update_data_ver).
 
 ## Firmware Hashes
