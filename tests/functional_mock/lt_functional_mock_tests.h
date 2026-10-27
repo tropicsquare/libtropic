@@ -125,6 +125,25 @@ void lt_test_mock_invalid_app_fw_init(lt_handle_t *h);
  */
 void lt_test_mock_invalid_pn(lt_handle_t *h);
 
+/**
+ * @brief Test for parsing the X.509 Certificate Store with lt_get_info_cert_store().
+ *
+ * Test steps:
+ *  1. Mock init sequence and initialize Libtropic handle.
+ *  2. For each tested certificate store (valid stores with various certificate layouts, malformed
+ *     headers, a caller-provided buffer that is too small):
+ *   a. Mock the chip mode check and the Get_Info responses with the certificate store blocks.
+ *   b. Call lt_get_info_cert_store() and verify the returned value.
+ *   c. Verify that exactly the expected number of blocks was read.
+ *   d. Verify that nothing was written past the buffers provided by the caller.
+ *   e. For valid stores, verify that each certificate was copied unchanged and nothing was written
+ *      past its length.
+ *  3. Deinitialize Libtropic handle.
+ *
+ * @param h Handle for communication with TROPIC01
+ */
+void lt_test_mock_cert_store(lt_handle_t *h);
+
 #ifdef __cplusplus
 }
 #endif

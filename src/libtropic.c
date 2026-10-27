@@ -35,6 +35,10 @@
 #include "lt_x25519.h"
 
 #define TR01_GET_INFO_BLOCK_LEN 128
+/** Valid range of a certificate length in the X.509 Certificate Store header, see Figure 2 in
+ * ODN_TR01_app_003 (Device Identity and PKI Application Note). */
+#define TR01_CERT_LEN_MIN 0x0002
+#define TR01_CERT_LEN_MAX 0x0EFD
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
@@ -209,16 +213,19 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
-    // Max cert-store length not read out -> Optimized as being read to read out only needed part!
-    int curr_cert = LT_CERT_KIND_DEVICE;
-    uint8_t *cert_head = store->certs[curr_cert];
+    // Index of the certificate being filled
+    int cert_index = LT_CERT_KIND_DEVICE;
 
-    // Worst case full ceert-store is read out
-    for (int i = 0; i < (TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TR01_GET_INFO_BLOCK_LEN); i++) {
+    // Number of bytes already copied into cert_index-th buffer
+    uint16_t cert_copied_len = 0;
+
+    for (int block_index = 0;
+         block_index < (TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TR01_GET_INFO_BLOCK_LEN);
+         block_index++) {
         p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
         p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
         p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
-        p_l2_req->block_index = i;
+        p_l2_req->block_index = block_index;
 
         ret = lt_l2_transfer(&h->l2);
         if (ret != LT_OK) {
@@ -229,71 +236,73 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
             return LT_L2_RSP_LEN_ERROR;
         }
 
-        uint8_t *head = ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object;
-        uint8_t *tail = head + TR01_GET_INFO_BLOCK_LEN;
+        // Next unprocessed byte of the received block and the end of the block.
+        const uint8_t *p_unprocessed = p_l2_resp->object;
+        const uint8_t *p_end = p_unprocessed + TR01_GET_INFO_BLOCK_LEN;
 
-        // Parse the header - Gets lengths and checks buffers are large enough
-        if (i == 0) {
-            if (*head != LT_CERT_STORE_VERSION) {
+        // read cert store header if processing the first block
+        if (block_index == 0) {
+            if (p_unprocessed[0] != LT_CERT_STORE_VERSION || p_unprocessed[1] != LT_NUM_CERTIFICATES) {
                 return LT_CERT_STORE_INVALID;
             }
-            head++;
-            if (*head != LT_NUM_CERTIFICATES) {
-                return LT_CERT_STORE_INVALID;
-            }
-            head++;
+            p_unprocessed += 2;
 
+            uint32_t certs_total_len = 0;
+            // store length of each cert, get combined length
             for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
-                uint16_t curr_len = *head;
-                curr_len <<= 8;
-                head++;
-                curr_len |= *head;
-                head++;
+                store->cert_len[j] = ((uint16_t)p_unprocessed[0] << 8) | p_unprocessed[1];
 
-                if (curr_len > store->buf_len[j]) {
+                // check if cert length is valid
+                if (store->cert_len[j] < TR01_CERT_LEN_MIN || store->cert_len[j] > TR01_CERT_LEN_MAX) {
+                    return LT_CERT_STORE_INVALID;
+                }
+                certs_total_len += store->cert_len[j];
+
+                p_unprocessed += 2;
+            }
+
+            // check that certificates of the reported lengths actually fit the cert store
+            // total size - header
+            if (certs_total_len >
+                TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL - (2 + 2 * LT_NUM_CERTIFICATES)) {
+                return LT_CERT_STORE_INVALID;
+            }
+
+            // check that each cert fits the respective lt_cert_store_t buffer
+            for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
+                if (store->cert_len[j] > store->buf_len[j]) {
                     return LT_PARAM_ERR;
                 }
-                store->cert_len[j] = curr_len;
             }
         }
 
-        // Read out and copy certificate chunk. Assumes that:
-        //  - A single certificate is always larger than 128 bytes -> There is at most one "trailing
-        //  chunk"!
-        //    No need to handle this case explicitly since it is very likely to be like that, but worth
-        //    mentioning.
+        // Copy this block into the certificates. Usually the whole block continues the current
+        // certificate (a single pass). If a certificate ends inside the block, the rest of the
+        // block belongs to the next certificate(s), so keep going until the block is used up.
+        while (p_unprocessed < p_end && cert_index < LT_NUM_CERTIFICATES) {
+            size_t cert_remaining_len = store->cert_len[cert_index] - cert_copied_len;
+            size_t unprocessed_len = (size_t)(p_end - p_unprocessed);
+            size_t to_copy = lt_min(cert_remaining_len, unprocessed_len);
 
-        // Copy certificate chunk
-        int available = tail - head;
-        int till_now = cert_head - store->certs[curr_cert];
-        int till_end = store->cert_len[curr_cert] - till_now;
+            memcpy(store->certs[cert_index] + cert_copied_len, p_unprocessed, to_copy);
+            cert_copied_len += to_copy;
+            p_unprocessed += to_copy;
 
-        int to_copy = (till_end > available) ? available : till_end;
-
-        memcpy(cert_head, head, to_copy);
-        cert_head += to_copy;
-        head += to_copy;
-
-        // Move to the next certificate or finish upon last chunk of last certificate
-        if ((cert_head - store->certs[curr_cert]) >= store->cert_len[curr_cert]) {
-            if (curr_cert >= LT_NUM_CERTIFICATES - 1) {
-                break;
-            }
-            else {
-                curr_cert++;
-                cert_head = store->certs[curr_cert];
+            // if cert_copied_len == cert_len -> end of cert encountered, start copying into the next
+            // cert
+            if (cert_copied_len == store->cert_len[cert_index]) {
+                cert_index++;
+                cert_copied_len = 0;
             }
         }
 
-        // Handle trailing rest of the next certificate
-        if (available > to_copy) {
-            int trailer_len = TR01_GET_INFO_BLOCK_LEN - to_copy;
-            memcpy(cert_head, head, trailer_len);
-            cert_head += trailer_len;
+        if (cert_index == LT_NUM_CERTIFICATES) {
+            return LT_OK;
         }
     }
 
-    return LT_OK;
+    // Unreachable thanks to the certs_total_len check, kept as a safety net.
+    return LT_CERT_STORE_INVALID;
 }
 
 lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub)
@@ -724,11 +733,11 @@ lt_ret_t lt_mutable_fw_update_data(lt_handle_t *h, const uint8_t *fw_data, const
         (struct lt_l2_mutable_fw_update_data_rsp_t *)h->l2.buff;
     size_t copy_len;
 
-    // Compute how many bytes are available in the `lt_l2_mutable_fw_update_data_req_t` struct starting
-    // at `req_len`. This is a compile-time-safe calculation and prevents overflow into unknown memory.
-    const size_t dest_offset = offsetof(struct lt_l2_mutable_fw_update_data_req_t, req_len);
-    const size_t dest_capacity = sizeof(*p2_l2_req) > dest_offset ? sizeof(*p2_l2_req) - dest_offset
-                                                                  : 0U;
+    // Max number of bytes copied from one chunk: the `req_len` byte followed by the request data
+    // (`hash`, `offset` and `data`), i.e. everything up to the CRC. This limits `req_len` to the size
+    // of the request data, so the CRC appended by L2 always stays within the L2 buffer.
+    const size_t dest_capacity = offsetof(struct lt_l2_mutable_fw_update_data_req_t, crc) -
+                                 offsetof(struct lt_l2_mutable_fw_update_data_req_t, req_len);
 
     // Data consist of "request" and "data" parts,
     // 'data' byte chunks are taken starting from 'chunk_index'

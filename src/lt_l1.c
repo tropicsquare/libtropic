@@ -112,9 +112,10 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
                 continue;
             }
 
-            // Take length information and add 2B for crc bytes
-            uint16_t length = s2->buff[2] + 2;
-            if (length > (TR01_L1_LEN_MAX - 2)) {
+            // Take length information and add length of CRC
+            uint16_t length = s2->buff[2] + TR01_L2_REQ_RSP_CRC_SIZE;
+            // First 3 bytes were already read, so the maximum valid read length is MAX_DATA + CRC
+            if (length > (TR01_L2_CHUNK_MAX_DATA_SIZE + TR01_L2_REQ_RSP_CRC_SIZE)) {
                 lt_ret_t ret_unused = lt_l1_spi_csn_high(s2);
                 LT_UNUSED(
                     ret_unused);  // We don't care about it, we return LT_L1_DATA_LEN_ERROR anyway.

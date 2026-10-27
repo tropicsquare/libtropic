@@ -276,6 +276,13 @@ lt_ret_t lt_port_spi_transfer(lt_l2_state_t *s2, uint8_t offset, uint16_t tx_dat
         return LT_HAL_ERROR;
     }
 
+    // SPI is full duplex, so exactly as many bytes must be received as were sent.
+    if (rx_payload_length != tx_payload_length) {
+        LT_LOG_ERROR("Received payload length %d does not match sent length %d.", rx_payload_length,
+                     tx_payload_length);
+        return LT_HAL_ERROR;
+    }
+
     memcpy(s2->buff + offset, &dev->rx_buffer.payload, rx_payload_length);
 
     return LT_OK;
