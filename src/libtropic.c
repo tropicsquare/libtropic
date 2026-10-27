@@ -35,6 +35,10 @@
 #include "lt_x25519.h"
 
 #define TR01_GET_INFO_BLOCK_LEN 128
+/** Valid range of a certificate length in the X.509 Certificate Store header, see Figure 2 in
+ * ODN_TR01_app_003 (Device Identity and PKI Application Note). */
+#define TR01_CERT_LEN_MIN 0x0002
+#define TR01_CERT_LEN_MAX 0x0EFD
 
 lt_ret_t lt_init(lt_handle_t *h)
 {
@@ -241,14 +245,32 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
             }
             p_unprocessed += 2;
 
+            uint32_t certs_total_len = 0;
+            // store length of each cert, get combined length
             for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
-                uint16_t curr_len = ((uint16_t)p_unprocessed[0] << 8) | p_unprocessed[1];
-                p_unprocessed += 2;
+                store->cert_len[j] = ((uint16_t)p_unprocessed[0] << 8) | p_unprocessed[1];
 
-                if (curr_len > store->buf_len[j]) {
+                // check if cert length is valid
+                if (store->cert_len[j] < TR01_CERT_LEN_MIN || store->cert_len[j] > TR01_CERT_LEN_MAX) {
+                    return LT_CERT_STORE_INVALID;
+                }
+                certs_total_len += store->cert_len[j];
+
+                p_unprocessed += 2;
+            }
+
+            // check that certificates of the reported lengths actually fit the cert store
+            // total size - header
+            if (certs_total_len >
+                TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL - (2 + 2 * LT_NUM_CERTIFICATES)) {
+                return LT_CERT_STORE_INVALID;
+            }
+
+            // check that each cert fits the respective lt_cert_store_t buffer
+            for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
+                if (store->cert_len[j] > store->buf_len[j]) {
                     return LT_PARAM_ERR;
                 }
-                store->cert_len[j] = curr_len;
             }
         }
 
