@@ -856,7 +856,9 @@ lt_ret_t lt_in__r_mem_data_read(lt_handle_t *h, uint8_t *data, const uint16_t da
     // Pointer to access L3 buffer with result's data.
     struct lt_l3_r_mem_data_read_res_t *p_l3_res = (struct lt_l3_r_mem_data_read_res_t *)h->l3.buff;
 
-    if (p_l3_res->res_size > TR01_L3_RESULT_SIZE + h->tr01_attrs.r_mem_udata_slot_size_max +
+    // The Result always contains RESULT and PADDING, followed by at most one slot of data.
+    if (p_l3_res->res_size < TR01_L3_RESULT_SIZE + TR01_L3_R_MEM_DATA_READ_PADDING_SIZE ||
+        p_l3_res->res_size > TR01_L3_RESULT_SIZE + h->tr01_attrs.r_mem_udata_slot_size_max +
                                  TR01_L3_R_MEM_DATA_READ_PADDING_SIZE) {
         lt_l3_invalidate_host_session_data(&h->l3);
         return LT_L3_RES_SIZE_ERROR;
