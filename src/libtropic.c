@@ -213,9 +213,11 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     // Setup a request pointer to l2 buffer with response data
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
-    // Max cert-store length not read out -> Optimized as being read to read out only needed part!
+    // Index of the certificate being filled
     int cert_index = LT_CERT_KIND_DEVICE;
-    uint8_t *cert_head = store->certs[cert_index];
+
+    // Number of bytes already copied into cert_index-th buffer
+    uint16_t cert_copied_len = 0;
 
     for (int block_index = 0;
          block_index < (TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TR01_GET_INFO_BLOCK_LEN);
@@ -274,43 +276,33 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
             }
         }
 
-        // Read out and copy certificate chunk. Assumes that:
-        //  - A single certificate is always larger than 128 bytes -> There is at most one "trailing
-        //  chunk"!
-        //    No need to handle this case explicitly since it is very likely to be like that, but worth
-        //    mentioning.
+        // Copy this block into the certificates. Usually the whole block continues the current
+        // certificate (a single pass). If a certificate ends inside the block, the rest of the
+        // block belongs to the next certificate(s), so keep going until the block is used up.
+        while (p_unprocessed < p_end && cert_index < LT_NUM_CERTIFICATES) {
+            size_t cert_remaining_len = store->cert_len[cert_index] - cert_copied_len;
+            size_t unprocessed_len = (size_t)(p_end - p_unprocessed);
+            size_t to_copy = lt_min(cert_remaining_len, unprocessed_len);
 
-        // Copy certificate chunk
-        int available = p_end - p_unprocessed;
-        int till_now = cert_head - store->certs[cert_index];
-        int till_end = store->cert_len[cert_index] - till_now;
+            memcpy(store->certs[cert_index] + cert_copied_len, p_unprocessed, to_copy);
+            cert_copied_len += to_copy;
+            p_unprocessed += to_copy;
 
-        int to_copy = (till_end > available) ? available : till_end;
-
-        memcpy(cert_head, p_unprocessed, to_copy);
-        cert_head += to_copy;
-        p_unprocessed += to_copy;
-
-        // Move to the next certificate or finish upon last chunk of last certificate
-        if ((cert_head - store->certs[cert_index]) >= store->cert_len[cert_index]) {
-            if (cert_index >= LT_NUM_CERTIFICATES - 1) {
-                break;
-            }
-            else {
+            // if cert_copied_len == cert_len -> end of cert encountered, start copying into the next
+            // cert
+            if (cert_copied_len == store->cert_len[cert_index]) {
                 cert_index++;
-                cert_head = store->certs[cert_index];
+                cert_copied_len = 0;
             }
         }
 
-        // Handle trailing rest of the next certificate
-        if (available > to_copy) {
-            int trailer_len = TR01_GET_INFO_BLOCK_LEN - to_copy;
-            memcpy(cert_head, p_unprocessed, trailer_len);
-            cert_head += trailer_len;
+        if (cert_index == LT_NUM_CERTIFICATES) {
+            return LT_OK;
         }
     }
 
-    return LT_OK;
+    // Unreachable thanks to the certs_total_len check, kept as a safety net.
+    return LT_CERT_STORE_INVALID;
 }
 
 lt_ret_t lt_get_st_pub(const struct lt_cert_store_t *store, uint8_t *stpub)
