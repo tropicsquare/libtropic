@@ -234,23 +234,16 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
         const uint8_t *p_unprocessed = p_l2_resp->object;
         const uint8_t *p_end = p_unprocessed + TR01_GET_INFO_BLOCK_LEN;
 
-        // Parse the header - Gets lengths and checks buffers are large enough
+        // read cert store header if processing the first block
         if (block_index == 0) {
-            if (*p_unprocessed != LT_CERT_STORE_VERSION) {
+            if (p_unprocessed[0] != LT_CERT_STORE_VERSION || p_unprocessed[1] != LT_NUM_CERTIFICATES) {
                 return LT_CERT_STORE_INVALID;
             }
-            p_unprocessed++;
-            if (*p_unprocessed != LT_NUM_CERTIFICATES) {
-                return LT_CERT_STORE_INVALID;
-            }
-            p_unprocessed++;
+            p_unprocessed += 2;
 
             for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
-                uint16_t curr_len = *p_unprocessed;
-                curr_len <<= 8;
-                p_unprocessed++;
-                curr_len |= *p_unprocessed;
-                p_unprocessed++;
+                uint16_t curr_len = ((uint16_t)p_unprocessed[0] << 8) | p_unprocessed[1];
+                p_unprocessed += 2;
 
                 if (curr_len > store->buf_len[j]) {
                     return LT_PARAM_ERR;
