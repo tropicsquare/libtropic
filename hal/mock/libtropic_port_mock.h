@@ -30,7 +30,7 @@ typedef struct mock_miso_data_t {
 } mock_miso_data_t;
 
 /// @brief Depth of the mock response queue.
-#define MOCK_QUEUE_DEPTH 16
+#define MOCK_QUEUE_DEPTH 64
 
 /**
  * @brief Device structure for Mock HAL port.
