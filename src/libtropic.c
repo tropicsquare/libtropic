@@ -210,15 +210,16 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
     struct lt_l2_get_info_rsp_t *p_l2_resp = (struct lt_l2_get_info_rsp_t *)h->l2.buff;
 
     // Max cert-store length not read out -> Optimized as being read to read out only needed part!
-    int curr_cert = LT_CERT_KIND_DEVICE;
-    uint8_t *cert_head = store->certs[curr_cert];
+    int cert_index = LT_CERT_KIND_DEVICE;
+    uint8_t *cert_head = store->certs[cert_index];
 
-    // Worst case full ceert-store is read out
-    for (int i = 0; i < (TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TR01_GET_INFO_BLOCK_LEN); i++) {
+    for (int block_index = 0;
+         block_index < (TR01_L2_GET_INFO_REQ_CERT_SIZE_TOTAL / TR01_GET_INFO_BLOCK_LEN);
+         block_index++) {
         p_l2_req->req_id = TR01_L2_GET_INFO_REQ_ID;
         p_l2_req->req_len = TR01_L2_GET_INFO_REQ_LEN;
         p_l2_req->object_id = TR01_L2_GET_INFO_REQ_OBJECT_ID_X509_CERTIFICATE;
-        p_l2_req->block_index = i;
+        p_l2_req->block_index = block_index;
 
         ret = lt_l2_transfer(&h->l2);
         if (ret != LT_OK) {
@@ -229,26 +230,27 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
             return LT_L2_RSP_LEN_ERROR;
         }
 
-        uint8_t *head = ((struct lt_l2_get_info_rsp_t *)h->l2.buff)->object;
-        uint8_t *tail = head + TR01_GET_INFO_BLOCK_LEN;
+        // Next unprocessed byte of the received block and the end of the block.
+        const uint8_t *p_unprocessed = p_l2_resp->object;
+        const uint8_t *p_end = p_unprocessed + TR01_GET_INFO_BLOCK_LEN;
 
         // Parse the header - Gets lengths and checks buffers are large enough
-        if (i == 0) {
-            if (*head != LT_CERT_STORE_VERSION) {
+        if (block_index == 0) {
+            if (*p_unprocessed != LT_CERT_STORE_VERSION) {
                 return LT_CERT_STORE_INVALID;
             }
-            head++;
-            if (*head != LT_NUM_CERTIFICATES) {
+            p_unprocessed++;
+            if (*p_unprocessed != LT_NUM_CERTIFICATES) {
                 return LT_CERT_STORE_INVALID;
             }
-            head++;
+            p_unprocessed++;
 
             for (int j = 0; j < LT_NUM_CERTIFICATES; j++) {
-                uint16_t curr_len = *head;
+                uint16_t curr_len = *p_unprocessed;
                 curr_len <<= 8;
-                head++;
-                curr_len |= *head;
-                head++;
+                p_unprocessed++;
+                curr_len |= *p_unprocessed;
+                p_unprocessed++;
 
                 if (curr_len > store->buf_len[j]) {
                     return LT_PARAM_ERR;
@@ -264,31 +266,31 @@ lt_ret_t lt_get_info_cert_store(lt_handle_t *h, struct lt_cert_store_t *store)
         //    mentioning.
 
         // Copy certificate chunk
-        int available = tail - head;
-        int till_now = cert_head - store->certs[curr_cert];
-        int till_end = store->cert_len[curr_cert] - till_now;
+        int available = p_end - p_unprocessed;
+        int till_now = cert_head - store->certs[cert_index];
+        int till_end = store->cert_len[cert_index] - till_now;
 
         int to_copy = (till_end > available) ? available : till_end;
 
-        memcpy(cert_head, head, to_copy);
+        memcpy(cert_head, p_unprocessed, to_copy);
         cert_head += to_copy;
-        head += to_copy;
+        p_unprocessed += to_copy;
 
         // Move to the next certificate or finish upon last chunk of last certificate
-        if ((cert_head - store->certs[curr_cert]) >= store->cert_len[curr_cert]) {
-            if (curr_cert >= LT_NUM_CERTIFICATES - 1) {
+        if ((cert_head - store->certs[cert_index]) >= store->cert_len[cert_index]) {
+            if (cert_index >= LT_NUM_CERTIFICATES - 1) {
                 break;
             }
             else {
-                curr_cert++;
-                cert_head = store->certs[curr_cert];
+                cert_index++;
+                cert_head = store->certs[cert_index];
             }
         }
 
         // Handle trailing rest of the next certificate
         if (available > to_copy) {
             int trailer_len = TR01_GET_INFO_BLOCK_LEN - to_copy;
-            memcpy(cert_head, head, trailer_len);
+            memcpy(cert_head, p_unprocessed, trailer_len);
             cert_head += trailer_len;
         }
     }
