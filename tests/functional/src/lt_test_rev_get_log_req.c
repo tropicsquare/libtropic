@@ -23,14 +23,27 @@ static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r
 {
     uint8_t log_msg[TR01_GET_LOG_MAX_MSG_LEN + 1];  // +1 for '\0' added later
     uint16_t log_msg_read_size;
+    lt_tr01_mode_t tr01_mode;
     int fw_log_en = (i_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK) &&
                     (r_config_cfg_debug & BOOTLOADER_CO_CFG_DEBUG_FW_LOG_EN_MASK);
 
+    LT_LOG_INFO("Getting TROPIC01 mode...");
+    LT_TEST_ASSERT(LT_OK, lt_get_tr01_mode(g_h, &tr01_mode));
+
+    // Silicon revision BDBB always responds with LT_L2_RESP_DISABLED in Maintenance mode,
+    // regardless of the FW_LOG_EN configuration.
+    bool bdbb_maintenance = (g_h->tr01_attrs.silicon_rev == LT_TR01_BDBB) &&
+                            (tr01_mode == LT_TR01_MAINTENANCE);
+
     LT_LOG_INFO("Getting RISC-V FW log...");
     LT_TEST_ASSERT_COND(lt_get_log_req(g_h, log_msg, TR01_GET_LOG_MAX_MSG_LEN, &log_msg_read_size),
-                        fw_log_en, LT_OK, LT_L2_RESP_DISABLED);
+                        fw_log_en && !bdbb_maintenance, LT_OK, LT_L2_RESP_DISABLED);
 
-    if (fw_log_en) {
+    if (bdbb_maintenance) {
+        LT_LOG_INFO(
+            "RISC-V FW logging is always disabled in Maintenance mode on silicon revision BDBB");
+    }
+    else if (fw_log_en) {
         if (log_msg_read_size) {
             log_msg[log_msg_read_size] = '\0';
             LT_LOG_INFO("RISC-V FW log:");
