@@ -32,8 +32,8 @@ static void lt_test_rev_get_log_req_body(uint32_t i_config_cfg_debug, uint32_t r
 
     // Silicon revision BDBB always responds with LT_L2_RESP_DISABLED in Maintenance mode,
     // regardless of the FW_LOG_EN configuration.
-    int bdbb_maintenance = (g_h->tr01_attrs.silicon_rev == LT_TR01_BDBB) &&
-                           (tr01_mode == LT_TR01_MAINTENANCE);
+    bool bdbb_maintenance = (g_h->tr01_attrs.silicon_rev == LT_TR01_BDBB) &&
+                            (tr01_mode == LT_TR01_MAINTENANCE);
 
     LT_LOG_INFO("Getting RISC-V FW log...");
     LT_TEST_ASSERT_COND(lt_get_log_req(g_h, log_msg, TR01_GET_LOG_MAX_MSG_LEN, &log_msg_read_size),
