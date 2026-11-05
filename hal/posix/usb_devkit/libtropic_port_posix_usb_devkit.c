@@ -26,6 +26,9 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
+#ifdef __APPLE__
+#include <sys/random.h>
+#endif
 
 #include "libtropic_common.h"
 #include "libtropic_logging.h"
@@ -302,7 +305,13 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     device->legacy_fw = false;
 
     // Initialize the serial port.
+#ifdef __APPLE__
+    // O_NONBLOCK is needed on macOS to prevent open() from blocking
+    // while waiting for carrier detect (DCD) on USB serial ports.
+    device->fd = open(device->dev_path, O_RDWR | O_NOCTTY | O_NONBLOCK);
+#else
     device->fd = open(device->dev_path, O_RDWR | O_NOCTTY);
+#endif
     if (device->fd == -1) {
         LT_LOG_ERROR("Error opening serial at \"%s\", errno=%d (%s)", device->dev_path, errno,
                      strerror(errno));
@@ -330,6 +339,12 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
     options.c_iflag &= ~(INLCR | IGNCR | ICRNL | IXON | IXOFF);
     options.c_oflag &= ~(ONLCR | OCRNL);
     options.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+
+#ifdef __APPLE__
+    // Ignore modem control lines (DCD/DTR). Without this, clearing
+    // O_NONBLOCK causes reads/writes to block on macOS USB serial ports.
+    options.c_cflag |= CLOCAL;
+#endif
 
     // Set up timeouts: Calls to read() will return as soon as there is
     // at least one byte available or when 100 ms has passed.
@@ -367,6 +382,15 @@ lt_ret_t lt_port_init(lt_l2_state_t *s2)
         close(device->fd);
         return LT_HAL_ERROR;
     }
+
+#ifdef __APPLE__
+    // Clear O_NONBLOCK now that CLOCAL is active, so subsequent
+    // reads block normally with VTIME timeout.
+    int flags = fcntl(device->fd, F_GETFL, 0);
+    if (flags != -1) {
+        fcntl(device->fd, F_SETFL, flags & ~O_NONBLOCK);
+    }
+#endif
 
     // Check what FW is USB DevKit running:
     // 1. Send the identification message.
