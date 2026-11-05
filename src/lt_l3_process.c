@@ -96,7 +96,9 @@ lt_ret_t lt_l3_decrypt_response(lt_l3_state_t *s3)
 
     struct lt_l3_gen_frame_t *p_frame = (struct lt_l3_gen_frame_t *)s3->buff;
 
-    if (p_frame->cmd_size > TR01_L3_RES_CIPHERTEXT_MAX_SIZE) {
+    // Every L3 Result contains at least the RESULT field.
+    if (p_frame->cmd_size < TR01_L3_RESULT_SIZE ||
+        p_frame->cmd_size > TR01_L3_RES_CIPHERTEXT_MAX_SIZE) {
         lt_l3_invalidate_host_session_data(s3);
         return LT_L3_RES_SIZE_ERROR;
     }
