@@ -70,6 +70,7 @@ lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
 
     // 1. Set some default dummy values for the attributes
     h->tr01_attrs.r_mem_udata_slot_size_max = 0;
+    h->l2.startup_int_pin_supported = false;
 
     // 2. Read CHIP_ID and determine the silicon revision
     ret = lt_get_info_chip_id(h, &chip_id);
@@ -81,6 +82,10 @@ lt_ret_t lt_init_tr01_attrs(lt_handle_t *h)
     if (ret != LT_OK) {
         return ret;
     }
+
+    // Bootloader of BDBB and newer supports the GPO (INT) pin (configured by CFG_GPO), so it can be
+    // used also in Start-up Mode.
+    h->l2.startup_int_pin_supported = (h->tr01_attrs.silicon_rev == LT_TR01_BDBB);
 
     // 3. Read Application FW version
     ret = lt_get_info_riscv_fw_ver(h, riscv_fw_ver);

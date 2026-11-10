@@ -33,6 +33,11 @@ Specifies the log level. See [Logging](../../logging.md) for more information.
 
 Use TROPIC01's interrupt pin while waiting for TROPIC01's response.
 
+The interrupt pin is used in Application Mode on all silicon revisions. In Start-up Mode, it is used only on BDBB and newer silicon revisions; older revisions do not support it in Start-up Mode, so Libtropic polls instead. The silicon revision is determined once TROPIC01 boots its Application FW (e.g. during `lt_init()`); until then, Libtropic polls in Start-up Mode.
+
+!!! warning
+    Libtropic does not check TROPIC01's configuration. The GPO pin has to be configured to signal L2 Responses (`GPO_FUNC` = `INTERRUPT` in the `CFG_GPO` Configuration Object), otherwise Libtropic API functions will fail. On BDBB, this applies to both Application and Start-up Mode.
+
 ### `LT_SEPARATE_L3_BUFF`
 - boolean
 - default value: `OFF`

@@ -30,11 +30,18 @@ static void test_known_silicon_rev(lt_handle_t *h, const struct lt_chip_id_t *ch
     LT_TEST_ASSERT(LT_OK, mock_init_communication(
                               h, chip_id, (uint8_t[]){0x00, 0x00, 0x00, 0x02}));  // Version 2.0.0
 
+    // Set the flag to the opposite of the expected value to check that lt_init() sets it.
+    const bool expected_startup_int_pin_supported = (expected_rev == LT_TR01_BDBB);
+    h->l2.startup_int_pin_supported = !expected_startup_int_pin_supported;
+
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
 
     LT_LOG_INFO("Checking if silicon revision was parsed correctly");
     LT_TEST_ASSERT(expected_rev, h->tr01_attrs.silicon_rev);
+
+    LT_LOG_INFO("Checking if INT pin support in Start-up Mode was set correctly");
+    LT_TEST_ASSERT(expected_startup_int_pin_supported, h->l2.startup_int_pin_supported);
 
     LT_LOG_INFO("Deinitializing handle");
     LT_TEST_ASSERT(LT_OK, lt_deinit(h));
@@ -54,9 +61,15 @@ static void test_unknown_silicon_rev(lt_handle_t *h, const struct lt_chip_id_t *
     LT_TEST_ASSERT(LT_OK, mock_init_communication(
                               h, chip_id, (uint8_t[]){0x00, 0x00, 0x00, 0x02}));  // Version 2.0.0
 
+    // Set the flag to check that lt_init() resets it to the safe default.
+    h->l2.startup_int_pin_supported = true;
+
     // lt_init() cleans up on failure, so lt_deinit() is not called.
     LT_LOG_INFO("Initializing handle, expecting failure");
     LT_TEST_ASSERT(LT_SILICON_REV_UNKNOWN, lt_init(h));
+
+    LT_LOG_INFO("Checking if INT pin support in Start-up Mode fell back to the safe default");
+    LT_TEST_ASSERT(false, h->l2.startup_int_pin_supported);
 }
 
 void lt_test_mock_silicon_rev(lt_handle_t *h)

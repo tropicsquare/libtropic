@@ -53,6 +53,8 @@ lt_ret_t lt_init(lt_handle_t *h)
     h->l3.session_status = LT_SECURE_SESSION_OFF;
     ret = lt_l1_init(&h->l2);
     h->l2.startup_req_sent = false;
+    // Safe default until the silicon revision is known: poll in Start-up Mode.
+    h->l2.startup_int_pin_supported = false;
     if (ret != LT_OK) {
         return ret;
     }

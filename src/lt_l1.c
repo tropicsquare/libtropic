@@ -145,8 +145,9 @@ lt_ret_t lt_l1_read(lt_l2_state_t *s2, const uint32_t max_len, const uint32_t ti
             if (ret != LT_OK) {
                 return ret;
             }
-            if (s2->buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) {
-                // INT pin is not implemented in Start-up Mode
+            if ((s2->buff[0] & TR01_L1_CHIP_MODE_STARTUP_bit) && !s2->startup_int_pin_supported) {
+                // INT pin is not implemented in Start-up Mode of silicon revisions older than BDBB
+                // (or the silicon revision is not known yet).
                 // So we wait a bit before we poll again for CHIP_STATUS
                 ret = lt_l1_delay(s2, LT_L1_READ_RETRY_DELAY_MS);
                 if (ret != LT_OK) {
