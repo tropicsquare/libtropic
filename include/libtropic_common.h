@@ -217,6 +217,12 @@ typedef struct lt_l2_state_t {
     void *device;
     uint8_t buff[LT_SIZE_OF_L2_BUFF];
     bool startup_req_sent;
+    /**
+     * @private @brief Whether TROPIC01 signals a ready L2 Response on the GPO (INT) pin also in
+     * Start-up Mode. Set based on the silicon revision (BDBB and newer). Used only if
+     * LT_USE_INT_PIN is enabled.
+     */
+    bool startup_int_pin_supported;
 
     uint32_t l2_in_crc_error_count;
     uint32_t l2_crc_error_count;
