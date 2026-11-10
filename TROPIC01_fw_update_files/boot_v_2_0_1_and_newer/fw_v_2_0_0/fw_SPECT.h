@@ -8,7 +8,7 @@
 const uint8_t fw_SPECT_ver[4] = {0, 0, 0, 1};
 
 /**
- * @brief SPECT firmware version spect_app-v1.0.0_signed_chunks.bin for bootloader v2.0.1
+ * @brief SPECT firmware version spect_app-v1.0.0_signed_chunks.bin for bootloader v2.0.1 and newer
  */
 const uint8_t fw_SPECT[] = {
     0x68, 0xd7, 0x2a, 0x0a, 0xb1, 0x9a, 0x44, 0xee, 0xf3, 0x8b, 0xd7, 0xb4, 0xdb, 0xe1, 0x13, 0x4e,

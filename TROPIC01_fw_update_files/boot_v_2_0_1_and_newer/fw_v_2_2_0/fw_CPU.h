@@ -8,7 +8,7 @@
 const uint8_t fw_CPU_ver[4] = {0, 0, 2, 2};
 
 /**
- * @brief CPU firmware version fw_v2.2.0.hex32_signed_chunks.bin for bootloader v1.0.1
+ * @brief CPU firmware version fw_v2.2.0.hex32_signed_chunks.bin for bootloader v2.0.1 and newer
  */
 const uint8_t fw_CPU[] = {
     0x68, 0xf4, 0xd2, 0xa8, 0x43, 0x3d, 0xdf, 0xd5, 0xda, 0xdf, 0x03, 0x94, 0xfa, 0xed, 0x8a, 0x99,
