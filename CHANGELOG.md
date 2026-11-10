@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Renamed `TROPIC01_fw_update_files/boot_v_2_0_1/` to `TROPIC01_fw_update_files/boot_v_2_0_1_and_newer/`.
+- `TROPIC01_fw_update_files/convert.py`: updated script to improve readability and error handling.
 
 ### Removed
 - `LT_SILICON_REV` CMake option, replaced by the boolean `LT_SILICON_REV_ABAB` option (default `OFF`). For users:
