@@ -36,6 +36,47 @@
 
 #define TR01_GET_INFO_BLOCK_LEN 128
 
+/**
+ * @brief Gets current mode of TROPIC01 while it might be starting up (after power-up or after
+ * Startup_Req).
+ *
+ * @details Mitigates a bug in TROPIC01's SPI slave: after power-up or after a restart triggered by
+ * Startup_Req, a CHIP_STATUS read done at the moment TROPIC01 becomes ready may return a value not
+ * matching the real state (any of the ALARM, READY and START bits may be wrong). The incorrect value
+ * is transient - the next read in a new SPI transfer returns the correct value.
+ *
+ * lt_get_tr01_mode() polls CHIP_STATUS until READY or ALARM is set, so only its first call can be
+ * affected (a corrupted READY=0 just makes it poll again). Hence, lt_get_tr01_mode() is called twice
+ * and the result of the first call is discarded. CHIP_STATUS reads during normal operation are not
+ * affected, so lt_get_tr01_mode() alone is sufficient there.
+ *
+ * @param h          Handle for communication with TROPIC01
+ * @param[out] mode  Current mode of TROPIC01
+ *
+ * @retval           LT_OK Function executed successfully
+ * @retval           other Function did not execute successully
+ */
+static lt_ret_t get_tr01_mode_after_startup(lt_handle_t *h, lt_tr01_mode_t *mode)
+{
+    lt_tr01_mode_t first_mode;
+    lt_ret_t ret = lt_get_tr01_mode(h, &first_mode);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    ret = lt_get_tr01_mode(h, mode);
+    if (ret != LT_OK) {
+        return ret;
+    }
+
+    if (*mode != first_mode) {
+        LT_LOG_DEBUG("TROPIC01 mode read right after start-up was incorrect (%d), correct mode: %d.",
+                     (int)first_mode, (int)*mode);
+    }
+
+    return LT_OK;
+}
+
 lt_ret_t lt_init(lt_handle_t *h)
 {
     if (!h) {
@@ -73,9 +114,9 @@ lt_ret_t lt_init(lt_handle_t *h)
     }
 
     // Now, we need to initialize TROPIC01 attributes based on its Application FW:
-    // 1. Get current TROPIC01's mode.
+    // 1. Get current TROPIC01's mode. TROPIC01 might be starting up (e.g. right after power-up).
     lt_tr01_mode_t tr01_mode;
-    ret = lt_get_tr01_mode(h, &tr01_mode);
+    ret = get_tr01_mode_after_startup(h, &tr01_mode);
     if (ret != LT_OK) {
         goto crypto_ctx_cleanup;
     }
@@ -565,7 +606,7 @@ lt_ret_t lt_reboot(lt_handle_t *h, const lt_startup_id_t startup_id)
 
     // Get current TROPIC01 mode to check whether TROPIC01 was rebooted into the correct mode.
     lt_tr01_mode_t tr01_mode;
-    ret = lt_get_tr01_mode(h, &tr01_mode);
+    ret = get_tr01_mode_after_startup(h, &tr01_mode);
     if (ret != LT_OK) {
         return ret;
     }

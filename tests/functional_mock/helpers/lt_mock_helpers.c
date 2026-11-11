@@ -95,11 +95,14 @@ lt_ret_t mock_init_communication(lt_handle_t *h, const struct lt_chip_id_t *chip
         return LT_PARAM_ERR;
     }
 
-    // Mock response data for chip mode check.
+    // Mock response data for chip mode check (lt_init() reads CHIP_STATUS twice, see
+    // get_tr01_mode_after_startup())
     uint8_t chip_ready = TR01_L1_CHIP_MODE_READY_bit;
 
-    if (LT_OK != lt_mock_hal_enqueue_response(&h->l2, &chip_ready, sizeof(chip_ready))) {
-        return LT_FAIL;
+    for (int i = 0; i < 2; i++) {
+        if (LT_OK != lt_mock_hal_enqueue_response(&h->l2, &chip_ready, sizeof(chip_ready))) {
+            return LT_FAIL;
+        }
     }
 
     // Mock Get_Info for CHIP_ID (used to determine the silicon revision).
