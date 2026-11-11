@@ -28,10 +28,12 @@ void lt_test_mock_invalid_app_fw_init(lt_handle_t *h)
 
     lt_mock_hal_reset(&h->l2);
 
-    // 1. Mock lt_init() -> lt_get_tr01_mode() response.
-    LT_LOG_INFO("Mocking Get_Response response...");
-    LT_TEST_ASSERT(LT_OK, lt_mock_hal_enqueue_response(&h->l2, lt_get_tr01_mode_mocked_response,
-                                                       sizeof(lt_get_tr01_mode_mocked_response)));
+    // 1. Mock lt_init() -> lt_get_tr01_mode() responses (CHIP_STATUS is read twice).
+    LT_LOG_INFO("Mocking Get_Response responses...");
+    for (int i = 0; i < 2; i++) {
+        LT_TEST_ASSERT(LT_OK, lt_mock_hal_enqueue_response(&h->l2, lt_get_tr01_mode_mocked_response,
+                                                           sizeof(lt_get_tr01_mode_mocked_response)));
+    }
 
     // 2. Mock lt_init() -> lt_reboot() response.
     LT_LOG_INFO("Mocking Startup_Req response...");
@@ -49,10 +51,12 @@ void lt_test_mock_invalid_app_fw_init(lt_handle_t *h)
     LT_TEST_ASSERT(LT_OK, lt_mock_hal_enqueue_response(&h->l2, (uint8_t *)&startup_req_resp,
                                                        calc_mocked_resp_len(&startup_req_resp)));
 
-    // 3. Mock lt_init() -> lt_reboot() -> lt_get_tr01_mode() response.
-    LT_LOG_INFO("Mocking Get_Response response...");
-    LT_TEST_ASSERT(LT_OK, lt_mock_hal_enqueue_response(&h->l2, lt_get_tr01_mode_mocked_response,
-                                                       sizeof(lt_get_tr01_mode_mocked_response)));
+    // 3. Mock lt_init() -> lt_reboot() -> lt_get_tr01_mode() responses (CHIP_STATUS is read twice).
+    LT_LOG_INFO("Mocking Get_Response responses...");
+    for (int i = 0; i < 2; i++) {
+        LT_TEST_ASSERT(LT_OK, lt_mock_hal_enqueue_response(&h->l2, lt_get_tr01_mode_mocked_response,
+                                                           sizeof(lt_get_tr01_mode_mocked_response)));
+    }
 
     LT_LOG_INFO("Initializing handle");
     LT_TEST_ASSERT(LT_OK, lt_init(h));
