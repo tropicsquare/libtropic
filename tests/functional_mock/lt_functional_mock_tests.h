@@ -142,6 +142,24 @@ void lt_test_mock_invalid_app_fw_init(lt_handle_t *h);
  */
 void lt_test_mock_invalid_pn(lt_handle_t *h);
 
+/**
+ * @brief Test for checking the mitigation of CHIP_STATUS corruption after start-up: lt_init() and
+ * lt_reboot() read TROPIC01's mode twice and discard the first result.
+ *
+ * Test steps:
+ *  1. Mock init sequence (with two CHIP_STATUS reads) and initialize Libtropic handle.
+ *  2. Mock Startup_Req followed by a corrupted CHIP_STATUS (ALARM bit) and a correct Application
+ *     Mode CHIP_STATUS and verify lt_reboot(TR01_REBOOT) succeeds.
+ *  3. Mock Startup_Req followed by a corrupted CHIP_STATUS (START bit) and a correct Start-up Mode
+ *     CHIP_STATUS and verify lt_reboot(TR01_MAINTENANCE_REBOOT) succeeds.
+ *  4. Mock Startup_Req followed by ALARM Mode CHIP_STATUS readings and verify lt_reboot() returns
+ *     LT_L1_CHIP_ALARM_MODE.
+ *  5. Deinitialize Libtropic handle.
+ *
+ * @param h Handle for communication with TROPIC01
+ */
+void lt_test_mock_chip_status_mismatch(lt_handle_t *h);
+
 #ifdef __cplusplus
 }
 #endif
